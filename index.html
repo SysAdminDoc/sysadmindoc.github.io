@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Home</title>
+   <link rel="icon" type="image/x-icon" href="./home/favicon.ico">
+
+   <link rel="stylesheet" href="./home/css/normalize.min.css">
+   <link rel="stylesheet" href="./home/css/index.css">
+
+   <script src="./home/js/three.min.js"></script>
+</head>
+
+<body>
+   <canvas id="canvas"></canvas>
+
+   <div id="preloader-text">
+      <div id="preloader-text-title" onclick="playSong()">raingart</div>
+   </div>
+
+   <script src="./home/js/renderRing.js"></script>
+
+   <script>
+      const nextSong = (function() {
+        const songs = [
+          'Jon Snow hip hop beatprod.Silent.mp3',
+          'Krosah - E_S Posthumus.m4a',
+          'Norven.mp3',
+          'Honour.mp3',
+          '「卵とベーコンとソーセージとパン!」「パムパムパムたまごパン!」.mp3',
+        ];
+        //this.instance = -1;
+        //return () => songs[++this.instance % songs.length];
+        // radomised
+        this.instance;
+        return function() {
+          if (!this.instance?.length) this.instance = songs.slice();
+          return instance.splice(Math.random() * this.instance.length | 0, 1);
+        }
+      }());
+
+      const song = new Audio();
+
+      function playSong() {
+        const prefixSongPatch = https://github.com/raingart/raingart.github.io/raw/refs/heads/master/songs/'; //./home/songs/';
+        song.src = prefixSongPatch + nextSong();
+        song.play();
+      }
+      song.addEventListener('ended', playSong);
+   </script>
+
+</body>
+
+</html>
