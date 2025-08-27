@@ -12,6 +12,9 @@
   <script src="./home/js/three.min.js"></script>
 
   <style>
+    /* Import Montserrat per your spec */
+    @import url(https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap);
+
     /* Minimal nudge for mobile to allow sound */
     #unmute {
       position: fixed;
@@ -23,7 +26,7 @@
       border-radius: 10px;
       background: rgba(0,0,0,0.78);
       color: #fff;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(6px);
       z-index: 9999;
@@ -32,49 +35,66 @@
     }
     #unmute:active { transform: translateX(-50%) scale(0.98); }
 
-    /* Your hero text */
-    #preloader-text { position: absolute; inset: 0; display: grid; place-items: center; }
-    #preloader-text-title {
-      font-size: clamp(28px, 6vw, 64px);
-      color: #fff;
-      letter-spacing: 0.1em;
-      text-align: center;
+    /* Layout */
+    #preloader-text {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
     }
 
-    /* Tasteful, minimal glitch: very small offsets, rare slices */
+    /* Your requested font and sizing on the glitch phrase */
+    /* (Overrides the previous clamp so desktop isn't huge) */
     #preloader-text-title.glitch {
+      font-size: 24px;
+      font-weight: 100;
+      font-family: 'Montserrat', sans-serif;
+      color: #fff;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: lowercase;
+      text-shadow: 0 0 10px rgba(127,92,255,0.40);
       position: relative;
-      text-shadow: 0 0 14px rgba(127,92,255,0.18);
     }
-    /* Subtle “ghost” layers */
+
+    /* Visible, tasteful glitch layers */
     #preloader-text-title.glitch::before,
     #preloader-text-title.glitch::after {
       content: attr(data-text);
-      position: absolute; inset: 0;
-      opacity: 0.4;
-      mix-blend-mode: screen;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      background: transparent;
+      overflow: hidden;
+      clip: rect(0, 900px, 0, 0);
       pointer-events: none;
     }
-    /* Slight color offsets */
+    /* Lavender ghost layer (top slices) */
     #preloader-text-title.glitch::before {
       color: rgba(183,139,255,0.85);
-      transform: translate(0.02em, -0.01em);
-      clip-path: inset(0 0 0 0);
-      animation: glitchSlice 4.2s steps(2,end) infinite;
+      animation: glitchTop 3.2s infinite linear alternate-reverse;
     }
+    /* Purple ghost layer (bottom slices) */
     #preloader-text-title.glitch::after {
-      color: rgba(127,92,255,0.75);
-      transform: translate(-0.02em, 0.01em);
-      clip-path: inset(0 0 0 0);
-      animation: glitchSlice 4.2s steps(2,end) infinite reverse;
+      color: rgba(127,92,255,0.85);
+      animation: glitchBottom 2.8s infinite linear alternate-reverse;
     }
-    /* Mostly calm; brief, tiny slices at sparse keyframes */
-    @keyframes glitchSlice {
-      0%, 12%, 12.5%, 60%, 60.6%, 100% { clip-path: inset(0 0 0 0); }
-      12.2% { clip-path: inset(0 0 88% 0); }     /* quick top slice */
-      12.4% { clip-path: inset(42% 0 42% 0); }   /* mid slice */
-      60.2% { clip-path: inset(78% 0 0 0); }     /* bottom slice */
-      60.4% { clip-path: inset(10% 0 55% 0); }   /* another quick slice */
+
+    /* Keyframes tuned to be minimal but clearly visible */
+    @keyframes glitchTop {
+      0%   { clip: rect(0, 9999px, 0, 0); transform: none; }
+      9%   { clip: rect(0, 9999px, 42%, 0); transform: translate(-2px, -2px); }
+      14%  { clip: rect(0, 9999px, 0, 0); transform: none; }
+      48%  { clip: rect(0, 9999px, 18%, 0); transform: translate(-1px, 1px); }
+      54%  { clip: rect(0, 9999px, 0, 0); transform: none; }
+      100% { clip: rect(0, 9999px, 0, 0); transform: none; }
+    }
+    @keyframes glitchBottom {
+      0%   { clip: rect(0, 9999px, 0, 0); transform: none; }
+      12%  { clip: rect(62%, 9999px, 100%, 0); transform: translate(2px, 1px); }
+      20%  { clip: rect(0, 9999px, 0, 0); transform: none; }
+      56%  { clip: rect(74%, 9999px, 100%, 0); transform: translate(1px, -1px); }
+      64%  { clip: rect(0, 9999px, 0, 0); transform: none; }
+      100% { clip: rect(0, 9999px, 0, 0); transform: none; }
     }
 
     /* Hide native controls; JS controls playback */
