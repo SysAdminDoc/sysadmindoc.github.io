@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Nova emded brige</title>
+</head>
+
+<body>
+
+   <button id="nova-embed-pass">load video</button>
+
+   <script>
+      document.getElementById('nova-embed-pass')
+         .addEventListener('click', () => {
+            const
+               vidID = new URLSearchParams(location.search).get('v'),
+               remove = (query = required()) => {
+                  const url = new URL(location);
+                  url.searchParams.delete(query.toString());
+                  return url.toString();
+               };
+
+            location.href = remove('v').replace('raingart.github.io/embed/', 'www.youtube.com/embed/' + vidID);
+         });
+   </script>
+
+</body>
+
+</html>
