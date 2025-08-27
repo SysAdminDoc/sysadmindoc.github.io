@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Home</title>
-  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
+  <title>Coming Soon</title>
+
+  <!-- Your existing CSS and JS includes -->
   <link rel="stylesheet" href="./home/css/normalize.min.css" />
   <link rel="stylesheet" href="./home/css/index.css" />
+  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
   <script src="./home/js/three.min.js"></script>
+
   <style>
-    #play-hint {
+    /* Minimal nudge for mobile to allow sound */
+    #unmute {
       position: fixed;
       left: 50%;
       bottom: 24px;
@@ -20,137 +24,132 @@
       background: rgba(0,0,0,0.78);
       color: #fff;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      cursor: pointer;
-      user-select: none;
       border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(6px);
       z-index: 9999;
+      cursor: pointer;
+      user-select: none;
     }
-    #play-hint:active { transform: translateX(-50%) scale(0.98); }
-    #preloader-text-title { cursor: pointer; }
-    /* Hide the default audio controls; we’re controlling it via JS */
+    #unmute:active { transform: translateX(-50%) scale(0.98); }
+
+    /* Your hero text */
+    #preloader-text { position: absolute; inset: 0; display: grid; place-items: center; }
+    #preloader-text-title { font-size: clamp(28px, 6vw, 64px); color: #fff; letter-spacing: 0.1em; text-align: center; }
+
+    /* Hide native controls; JS controls playback */
     audio { display: none; }
+    body { margin: 0; background: #000; }
   </style>
 </head>
 <body>
+  <!-- Your canvas/bg effect -->
   <canvas id="canvas"></canvas>
 
   <div id="preloader-text">
-    <div id="preloader-text-title">Coming Soon</div>
+    <!-- Replace the text here with your suspense one-liner if you want -->
+    <div id="preloader-text-title">comingsoon</div>
   </div>
 
-  <!-- Invisible audio element that we’ll try to autoplay -->
-  <audio id="bg-audio" preload="auto" playsinline crossorigin="anonymous" muted></audio>
+  <!-- Invisible audio element; muted+playsinline are critical for mobile -->
+  <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
 
-  <!-- Fallback UI if the browser blocks unmuted autoplay -->
-  <div id="play-hint" role="button" aria-label="Unmute audio">Tap to unmute</div>
+  <!-- Tiny prompt shown only if unmuting is blocked until a gesture -->
+  <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
+  <!-- Your renderer -->
   <script src="./home/js/renderRing.js"></script>
+
   <script>
-    // --- Playlist (randomized queue) ---
-    const SONGS = [
-      'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3'
-      // Add more direct file URLs if you like:
-      // 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/AnotherTrack.mp3'
-    ];
-    let queue = [...SONGS];
-    function nextSong() {
-      if (queue.length === 0) queue = [...SONGS];
-      const i = Math.floor(Math.random() * queue.length);
-      return queue.splice(i, 1)[0];
-    }
+    // Direct raw file URL avoids GitHub HTML redirects
+    const SONG_URL = 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3';
 
-    // --- Elements ---
-    const audioEl = document.getElementById('bg-audio');
-    const titleEl = document.getElementById('preloader-text-title');
-    const hintEl  = document.getElementById('play-hint');
+    const audio = document.getElementById('bg-audio');
+    const unmute = document.getElementById('unmute');
+    const title = document.getElementById('preloader-text-title');
 
-    function showHint() { hintEl.style.display = 'inline-block'; }
-    function hideHint() { hintEl.style.display = 'none'; }
-
-    // Gentle volume ramp
-    function fadeTo(target = 1, ms = 800) {
-      const start = audioEl.volume;
-      const delta = target - start;
-      if (delta === 0) return;
+    // Gentle fade to avoid a pop when unmuting on mobile
+    function fadeVolume(to = 0.9, ms = 800) {
+      const from = audio.volume || 0.01;
       const steps = Math.max(1, Math.round(ms / 16));
-      let n = 0;
-      const t = setInterval(() => {
-        n++;
-        audioEl.volume = Math.min(1, Math.max(0, start + (delta * (n / steps))));
-        if (n >= steps) clearInterval(t);
+      let i = 0;
+      const id = setInterval(() => {
+        i++;
+        audio.volume = from + (to - from) * (i / steps);
+        if (i >= steps) clearInterval(id);
       }, 16);
     }
 
-    async function tryPlay(unmute = false) {
-      if (!audioEl.src) audioEl.src = nextSong();
-      if (unmute) {
-        // Try to unmute and set a starting volume prior to play()
-        audioEl.muted = false;
-        audioEl.volume = Math.min(1, Math.max(0, audioEl.volume || 0.8));
+    function showUnmute() { unmute.style.display = 'inline-block'; }
+    function hideUnmute() { unmute.style.display = 'none'; }
+
+    // Try to play; return true on success
+    async function tryPlay(unmuteNow = false) {
+      if (!audio.src) audio.src = SONG_URL;
+      if (unmuteNow) {
+        audio.muted = false;
+        audio.volume = Math.max(0.01, audio.volume || 0.01);
       }
       try {
-        await audioEl.play();
-        // If playback started while muted, attempt an immediate unmute.
-        if (audioEl.muted && unmute) {
-          audioEl.muted = false;
-        }
-        // If we’re now unmuted, fade in to avoid a pop.
-        if (!audioEl.muted) {
-          if (!audioEl.volume) audioEl.volume = 0.01;
-          fadeTo(0.9, 1000);
-          hideHint();
-        }
+        await audio.play();
         return true;
-      } catch (err) {
+      } catch {
         return false;
       }
     }
 
-    async function initAutoplay() {
-      // 1) Start immediately, muted (this is allowed by all browsers)
-      audioEl.muted = true;
-      audioEl.volume = 0.0;
+    async function init() {
+      // 1) Start immediately, muted, which is allowed on iOS and Android
+      audio.muted = true;
+      audio.volume = 0.0;
       await tryPlay(false);
 
-      // 2) Attempt to unmute automatically. Some browsers will allow this
-      // based on prior media engagement; others will block until a gesture.
-      const success = await tryPlay(true);
-      if (!success || audioEl.muted) {
-        // Show a tiny, tasteful unmute nudge
-        showHint();
+      // 2) Attempt to unmute automatically. May succeed if user has prior engagement
+      const ok = await tryPlay(true);
+      if (ok && !audio.muted) {
+        fadeVolume(0.9, 900);
+      } else {
+        // Show a subtle nudge; first tap will unmute
+        showUnmute();
       }
     }
 
-    // On any user gesture, try to unmute and fade in
+    // First gesture anywhere should unmute and fade in
     async function userUnmute() {
-      hideHint();
-      await tryPlay(true);
-      // Some browsers require an explicit resume on WebAudio; we’re not using
-      // a WebAudio graph here, but this covers future changes if you add one.
-      if (window.AudioContext) {
-        if (!window.__ctx) window.__ctx = new AudioContext();
-        if (window.__ctx.state === 'suspended') {
-          try { await window.__ctx.resume(); } catch {}
-        }
+      hideUnmute();
+      audio.muted = false;
+      audio.volume = Math.max(0.01, audio.volume || 0.01);
+      const ok = await tryPlay(true);
+      if (ok) fadeVolume(0.9, 900);
+
+      // iOS: resume a WebAudio context if you add one later
+      if (window.AudioContext && !window.__ctx) {
+        try {
+          window.__ctx = new AudioContext();
+          if (window.__ctx.state === 'suspended') await window.__ctx.resume();
+        } catch {}
       }
     }
 
-    // Keep music going
-    audioEl.addEventListener('ended', () => {
-      audioEl.src = nextSong();
-      audioEl.currentTime = 0;
-      audioEl.play().catch(() => { /* if blocked, next gesture will resume */ });
+    // Keep music going if it ends
+    audio.addEventListener('ended', () => {
+      audio.currentTime = 0;
+      audio.play().catch(() => { showUnmute(); });
     });
 
-    // Wire up gesture-based unmute fallbacks
-    ['pointerdown','keydown'].forEach(evt =>
-      document.addEventListener(evt, userUnmute, { once: true, capture: true })
-    );
-    hintEl.addEventListener('click', userUnmute);
-    titleEl.addEventListener('click', userUnmute);
+    // Mobile-friendly gesture events
+    ['pointerdown','touchstart','click','keydown'].forEach(evt => {
+      document.addEventListener(evt, userUnmute, { once: true, capture: true });
+    });
+    unmute.addEventListener('click', userUnmute);
+    title.addEventListener('click', userUnmute);
 
-    document.addEventListener('DOMContentLoaded', initAutoplay);
+    // iOS sometimes pauses when tab becomes visible again; retry
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
+    });
+
+    // Kick things off
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
