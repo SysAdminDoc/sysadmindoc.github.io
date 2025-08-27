@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home</title>
-  <link rel="icon" type="image/x-icon" href="./home/favicon.ico">
-
-  <link rel="stylesheet" href="./home/css/normalize.min.css">
-  <link rel="stylesheet" href="./home/css/index.css">
-
+  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
+  <link rel="stylesheet" href="./home/css/normalize.min.css" />
+  <link rel="stylesheet" href="./home/css/index.css" />
   <script src="./home/js/three.min.js"></script>
-
   <style>
-    /* Small helper so users can start audio if autoplay is blocked */
     #play-hint {
       position: fixed;
       left: 50%;
@@ -21,92 +16,141 @@
       transform: translateX(-50%);
       display: none;
       padding: 10px 14px;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.75);
+      border-radius: 10px;
+      background: rgba(0,0,0,0.78);
       color: #fff;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       cursor: pointer;
       user-select: none;
       border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(6px);
+      z-index: 9999;
     }
     #play-hint:active { transform: translateX(-50%) scale(0.98); }
     #preloader-text-title { cursor: pointer; }
+    /* Hide the default audio controls; we’re controlling it via JS */
+    audio { display: none; }
   </style>
 </head>
-
 <body>
   <canvas id="canvas"></canvas>
 
   <div id="preloader-text">
-    <div id="preloader-text-title" onclick="playSong()">mattparker</div>
+    <div id="preloader-text-title">mattparker</div>
   </div>
 
-  <!-- Fallback UI shown if autoplay is blocked -->
-  <div id="play-hint" role="button" aria-label="Play music">Tap to play</div>
+  <!-- Invisible audio element that we’ll try to autoplay -->
+  <audio id="bg-audio" preload="auto" playsinline crossorigin="anonymous" muted></audio>
+
+  <!-- Fallback UI if the browser blocks unmuted autoplay -->
+  <div id="play-hint" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
   <script src="./home/js/renderRing.js"></script>
-
   <script>
-    // --- Song selection (randomized queue) ---
+    // --- Playlist (randomized queue) ---
     const SONGS = [
-      // Use raw.githubusercontent.com (stable direct file host) instead of redirecting github.com/.../raw
       'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3'
-      // Add more songs here if you like, one per line
+      // Add more direct file URLs if you like:
       // 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/AnotherTrack.mp3'
     ];
-
     let queue = [...SONGS];
     function nextSong() {
       if (queue.length === 0) queue = [...SONGS];
       const i = Math.floor(Math.random() * queue.length);
-      // splice returns an array; take [0] to get the string URL
       return queue.splice(i, 1)[0];
     }
 
-    // --- Audio setup ---
-    const song = new Audio();
-    song.preload = 'auto';
-    song.crossOrigin = 'anonymous'; // helpful when hosting assets on raw.githubusercontent.com
-    // song.volume = 0.8; // optional
+    // --- Elements ---
+    const audioEl = document.getElementById('bg-audio');
+    const titleEl = document.getElementById('preloader-text-title');
+    const hintEl  = document.getElementById('play-hint');
 
-    const playHintEl = document.getElementById('play-hint');
+    function showHint() { hintEl.style.display = 'inline-block'; }
+    function hideHint() { hintEl.style.display = 'none'; }
 
-    function showPlayHint() {
-      if (playHintEl) playHintEl.style.display = 'inline-block';
+    // Gentle volume ramp
+    function fadeTo(target = 1, ms = 800) {
+      const start = audioEl.volume;
+      const delta = target - start;
+      if (delta === 0) return;
+      const steps = Math.max(1, Math.round(ms / 16));
+      let n = 0;
+      const t = setInterval(() => {
+        n++;
+        audioEl.volume = Math.min(1, Math.max(0, start + (delta * (n / steps))));
+        if (n >= steps) clearInterval(t);
+      }, 16);
     }
-    function hidePlayHint() {
-      if (playHintEl) playHintEl.style.display = 'none';
-    }
 
-    async function playSong() {
-      hidePlayHint();
-      const url = nextSong();
-      if (!url) return;
-      // Set source, then try to play
-      song.src = url;
+    async function tryPlay(unmute = false) {
+      if (!audioEl.src) audioEl.src = nextSong();
+      if (unmute) {
+        // Try to unmute and set a starting volume prior to play()
+        audioEl.muted = false;
+        audioEl.volume = Math.min(1, Math.max(0, audioEl.volume || 0.8));
+      }
       try {
-        await song.play();
+        await audioEl.play();
+        // If playback started while muted, attempt an immediate unmute.
+        if (audioEl.muted && unmute) {
+          audioEl.muted = false;
+        }
+        // If we’re now unmuted, fade in to avoid a pop.
+        if (!audioEl.muted) {
+          if (!audioEl.volume) audioEl.volume = 0.01;
+          fadeTo(0.9, 1000);
+          hideHint();
+        }
+        return true;
       } catch (err) {
-        // Autoplay blocked - show a visible control so the user can start playback
-        console.warn('Autoplay was blocked by the browser:', err);
-        showPlayHint();
+        return false;
       }
     }
 
-    // Try to autoplay on load; most browsers will block until a gesture,
-    // but this will succeed on platforms that allow it.
-    document.addEventListener('DOMContentLoaded', () => {
-      playSong();
+    async function initAutoplay() {
+      // 1) Start immediately, muted (this is allowed by all browsers)
+      audioEl.muted = true;
+      audioEl.volume = 0.0;
+      await tryPlay(false);
+
+      // 2) Attempt to unmute automatically. Some browsers will allow this
+      // based on prior media engagement; others will block until a gesture.
+      const success = await tryPlay(true);
+      if (!success || audioEl.muted) {
+        // Show a tiny, tasteful unmute nudge
+        showHint();
+      }
+    }
+
+    // On any user gesture, try to unmute and fade in
+    async function userUnmute() {
+      hideHint();
+      await tryPlay(true);
+      // Some browsers require an explicit resume on WebAudio; we’re not using
+      // a WebAudio graph here, but this covers future changes if you add one.
+      if (window.AudioContext) {
+        if (!window.__ctx) window.__ctx = new AudioContext();
+        if (window.__ctx.state === 'suspended') {
+          try { await window.__ctx.resume(); } catch {}
+        }
+      }
+    }
+
+    // Keep music going
+    audioEl.addEventListener('ended', () => {
+      audioEl.src = nextSong();
+      audioEl.currentTime = 0;
+      audioEl.play().catch(() => { /* if blocked, next gesture will resume */ });
     });
 
-    // If autoplay was blocked, clicking either the hint or the title will start playback
-    playHintEl.addEventListener('click', playSong);
+    // Wire up gesture-based unmute fallbacks
+    ['pointerdown','keydown'].forEach(evt =>
+      document.addEventListener(evt, userUnmute, { once: true, capture: true })
+    );
+    hintEl.addEventListener('click', userUnmute);
+    titleEl.addEventListener('click', userUnmute);
 
-    // Keep the music going
-    song.addEventListener('ended', playSong);
+    document.addEventListener('DOMContentLoaded', initAutoplay);
   </script>
-
 </body>
-
 </html>
