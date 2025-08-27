@@ -2,50 +2,110 @@
 <html>
 
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Home</title>
-   <link rel="icon" type="image/x-icon" href="./home/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="icon" type="image/x-icon" href="./home/favicon.ico">
 
-   <link rel="stylesheet" href="./home/css/normalize.min.css">
-   <link rel="stylesheet" href="./home/css/index.css">
+  <link rel="stylesheet" href="./home/css/normalize.min.css">
+  <link rel="stylesheet" href="./home/css/index.css">
 
-   <script src="./home/js/three.min.js"></script>
+  <script src="./home/js/three.min.js"></script>
+
+  <style>
+    /* Small helper so users can start audio if autoplay is blocked */
+    #play-hint {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+    }
+    #play-hint:active { transform: translateX(-50%) scale(0.98); }
+    #preloader-text-title { cursor: pointer; }
+  </style>
 </head>
 
 <body>
-   <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-   <div id="preloader-text">
-      <div id="preloader-text-title" onclick="playSong()">mattparker</div>
-   </div>
+  <div id="preloader-text">
+    <div id="preloader-text-title" onclick="playSong()">mattparker</div>
+  </div>
 
-   <script src="./home/js/renderRing.js"></script>
+  <!-- Fallback UI shown if autoplay is blocked -->
+  <div id="play-hint" role="button" aria-label="Play music">Tap to play</div>
 
-   <script>
-      const nextSong = (function() {
-        const songs = [
-          'https://github.com/SysAdminDoc/sysadmindoc.github.io/raw/refs/heads/main/songs/Honour.mp3',
-        ];
-        //this.instance = -1;
-        //return () => songs[++this.instance % songs.length];
-        // radomised
-        this.instance;
-        return function() {
-          if (!this.instance?.length) this.instance = songs.slice();
-          return instance.splice(Math.random() * this.instance.length | 0, 1);
-        }
-      }());
+  <script src="./home/js/renderRing.js"></script>
 
-      const song = new Audio();
+  <script>
+    // --- Song selection (randomized queue) ---
+    const SONGS = [
+      // Use raw.githubusercontent.com (stable direct file host) instead of redirecting github.com/.../raw
+      'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3'
+      // Add more songs here if you like, one per line
+      // 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/AnotherTrack.mp3'
+    ];
 
-      function playSong() {
-        const prefixSongPatch = https://github.com/SysAdminDoc/sysadmindoc.github.io/raw/refs/heads/master/songs/'; //./home/songs/';
-        song.src = prefixSongPatch + nextSong();
-        song.play();
+    let queue = [...SONGS];
+    function nextSong() {
+      if (queue.length === 0) queue = [...SONGS];
+      const i = Math.floor(Math.random() * queue.length);
+      // splice returns an array; take [0] to get the string URL
+      return queue.splice(i, 1)[0];
+    }
+
+    // --- Audio setup ---
+    const song = new Audio();
+    song.preload = 'auto';
+    song.crossOrigin = 'anonymous'; // helpful when hosting assets on raw.githubusercontent.com
+    // song.volume = 0.8; // optional
+
+    const playHintEl = document.getElementById('play-hint');
+
+    function showPlayHint() {
+      if (playHintEl) playHintEl.style.display = 'inline-block';
+    }
+    function hidePlayHint() {
+      if (playHintEl) playHintEl.style.display = 'none';
+    }
+
+    async function playSong() {
+      hidePlayHint();
+      const url = nextSong();
+      if (!url) return;
+      // Set source, then try to play
+      song.src = url;
+      try {
+        await song.play();
+      } catch (err) {
+        // Autoplay blocked - show a visible control so the user can start playback
+        console.warn('Autoplay was blocked by the browser:', err);
+        showPlayHint();
       }
-      song.addEventListener('ended', playSong);
-   </script>
+    }
+
+    // Try to autoplay on load; most browsers will block until a gesture,
+    // but this will succeed on platforms that allow it.
+    document.addEventListener('DOMContentLoaded', () => {
+      playSong();
+    });
+
+    // If autoplay was blocked, clicking either the hint or the title will start playback
+    playHintEl.addEventListener('click', playSong);
+
+    // Keep the music going
+    song.addEventListener('ended', playSong);
+  </script>
 
 </body>
 
