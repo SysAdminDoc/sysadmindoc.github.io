@@ -5,212 +5,216 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Coming Soon</title>
 
-  <!-- Your existing CSS and JS includes -->
-  <link rel="stylesheet" href="./home/css/normalize.min.css" />
-  <link rel="stylesheet" href="./home/css/index.css" />
-  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
-  <script src="./home/js/three.min.js"></script>
+  <!-- Import Montserrat (your font choice) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
 
   <style>
-    /* Import Montserrat per your spec */
-    @import url(https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap);
-
-    /* Minimal nudge for mobile to allow sound */
-    #unmute {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translateX(-50%);
-      display: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.78);
-      color: #fff;
+    /* ----- Base & Layers ----- */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #000; /* safety background behind video */
       font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
-      cursor: pointer;
-      user-select: none;
+      color: #fff;
+      overflow: hidden;
     }
-    #unmute:active { transform: translateX(-50%) scale(0.98); }
+    .layer { position: fixed; inset: 0; pointer-events: none; }
 
-    /* Layout */
-    #preloader-text {
+    /* ----- Background Video (tasteful, dimmed) ----- */
+    #bg-video-wrap { z-index: 0; }
+    #bg-video {
       position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;            /* fill screen nicely */
+      filter: saturate(105%);       /* subtle polish */
+      background: #000;             /* while loading */
+    }
+    /* Dark overlays to keep text readable and cinematic */
+    #bg-overlays::before, #bg-overlays::after {
+      content: ""; position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    /* Global dimmer */
+    #bg-overlays::before {
+      background: rgba(0,0,0,0.35);
+    }
+    /* Radial vignette for drama */
+    #bg-overlays::after {
+      background:
+        radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      mix-blend-mode: multiply;
+    }
+
+    /* ----- Optional canvas effect layer (your existing canvas) ----- */
+    #canvas { z-index: 1; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    /* ----- Centered Teaser Text with Minimal Glitch ----- */
+    #preloader-text {
+      z-index: 2;
       display: grid; place-items: center;
     }
-
-    /* Your requested font and sizing on the glitch phrase */
-    /* (Overrides the previous clamp so desktop isn't huge) */
     #preloader-text-title.glitch {
-      font-size: 24px;
-      font-weight: 100;
-      font-family: 'Montserrat', sans-serif;
-      color: #fff;
+      font-size: 24px;           /* your requested size */
+      font-weight: 100;          /* your requested weight */
+      text-transform: lowercase;
       letter-spacing: 0.08em;
       text-align: center;
-      text-transform: lowercase;
-      text-shadow: 0 0 10px rgba(127,92,255,0.40);
+      text-shadow: 0 0 10px rgba(127,92,255,0.4);
       position: relative;
+      pointer-events: auto;      /* allow click to unmute */
     }
-
-    /* Visible, tasteful glitch layers */
+    /* Tasteful visible glitch */
     #preloader-text-title.glitch::before,
     #preloader-text-title.glitch::after {
       content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      background: transparent;
-      overflow: hidden;
+      position: absolute; left: 0; top: 0; width: 100%;
+      background: transparent; overflow: hidden;
       clip: rect(0, 900px, 0, 0);
       pointer-events: none;
     }
-    /* Lavender ghost layer (top slices) */
+    /* Lavender ghost (top slices) */
     #preloader-text-title.glitch::before {
       color: rgba(183,139,255,0.85);
       animation: glitchTop 3.2s infinite linear alternate-reverse;
+      transform: translate(-1px,-1px);
     }
-    /* Purple ghost layer (bottom slices) */
+    /* Purple ghost (bottom slices) */
     #preloader-text-title.glitch::after {
       color: rgba(127,92,255,0.85);
       animation: glitchBottom 2.8s infinite linear alternate-reverse;
+      transform: translate(1px,1px);
     }
-
-    /* Keyframes tuned to be minimal but clearly visible */
     @keyframes glitchTop {
-      0%   { clip: rect(0, 9999px, 0, 0); transform: none; }
-      9%   { clip: rect(0, 9999px, 42%, 0); transform: translate(-2px, -2px); }
-      14%  { clip: rect(0, 9999px, 0, 0); transform: none; }
-      48%  { clip: rect(0, 9999px, 18%, 0); transform: translate(-1px, 1px); }
-      54%  { clip: rect(0, 9999px, 0, 0); transform: none; }
-      100% { clip: rect(0, 9999px, 0, 0); transform: none; }
+      0%   { clip: rect(0, 9999px, 0, 0); }
+      10%  { clip: rect(0, 9999px, 42%, 0); }
+      16%  { clip: rect(0, 9999px, 0, 0); }
+      48%  { clip: rect(0, 9999px, 18%, 0); }
+      54%  { clip: rect(0, 9999px, 0, 0); }
+      100% { clip: rect(0, 9999px, 0, 0); }
     }
     @keyframes glitchBottom {
-      0%   { clip: rect(0, 9999px, 0, 0); transform: none; }
-      12%  { clip: rect(62%, 9999px, 100%, 0); transform: translate(2px, 1px); }
-      20%  { clip: rect(0, 9999px, 0, 0); transform: none; }
-      56%  { clip: rect(74%, 9999px, 100%, 0); transform: translate(1px, -1px); }
-      64%  { clip: rect(0, 9999px, 0, 0); transform: none; }
-      100% { clip: rect(0, 9999px, 0, 0); transform: none; }
+      0%   { clip: rect(0, 9999px, 0, 0); }
+      14%  { clip: rect(62%, 9999px, 100%, 0); }
+      22%  { clip: rect(0, 9999px, 0, 0); }
+      56%  { clip: rect(74%, 9999px, 100%, 0); }
+      64%  { clip: rect(0, 9999px, 0, 0); }
+      100% { clip: rect(0, 9999px, 0, 0); }
     }
 
-    /* Hide native controls; JS controls playback */
+    /* ----- Audio Unmute Nudge ----- */
+    #unmute {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+      display: none; padding: 10px 14px; border-radius: 10px;
+      background: rgba(0,0,0,0.78); color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+      z-index: 3; cursor: pointer; user-select: none;
+      pointer-events: auto;
+    }
+    #unmute:active { transform: translateX(-50%) scale(0.98); }
+
     audio { display: none; }
-    body { margin: 0; background: #000; }
   </style>
 </head>
 <body>
-  <!-- Your canvas/bg effect -->
+
+  <!-- Background video layer -->
+  <div id="bg-video-wrap" class="layer" aria-hidden="true">
+    <video id="bg-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      disablepictureinpicture
+      aria-hidden="true"
+    >
+      <!-- Working sample video (royalty-free). Replace with your own when ready. -->
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+    </video>
+    <div id="bg-overlays"></div>
+  </div>
+
+  <!-- Your canvas effect (kept for future visuals) -->
   <canvas id="canvas"></canvas>
 
-  <div id="preloader-text">
-    <!-- Single phrase with minimal glitch effect -->
+  <!-- Teaser text -->
+  <div id="preloader-text" class="layer">
     <div id="preloader-text-title" class="glitch" data-text="coming soon">coming soon</div>
   </div>
 
-  <!-- Invisible audio element; muted+playsinline are critical for mobile -->
+  <!-- Background music: autoplay muted; tap to unmute -->
   <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
-
-  <!-- Tiny prompt shown only if unmuting is blocked until a gesture -->
   <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
-  <!-- Your renderer -->
-  <script src="./home/js/renderRing.js"></script>
+  <!-- If you have a ring/three effect script, you can include it here -->
+  <!-- <script src="./home/js/three.min.js"></script> -->
+  <!-- <script src="./home/js/renderRing.js"></script> -->
 
   <script>
-    // Direct raw file URL avoids GitHub HTML redirects
+    /* ===========================
+       Background Audio (unchanged behavior)
+    ============================ */
     const SONG_URL = 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3';
-
     const audio = document.getElementById('bg-audio');
     const unmute = document.getElementById('unmute');
     const title = document.getElementById('preloader-text-title');
 
-    // Gentle fade to avoid a pop when unmuting on mobile
+    function showUnmute(){ unmute.style.display = 'inline-block'; }
+    function hideUnmute(){ unmute.style.display = 'none'; }
+
     function fadeVolume(to = 0.9, ms = 800) {
       const from = audio.volume || 0.01;
-      const steps = Math.max(1, Math.round(ms / 16));
+      const steps = Math.max(1, Math.round(ms/16));
       let i = 0;
-      const id = setInterval(() => {
+      const id = setInterval(()=>{
         i++;
-        audio.volume = from + (to - from) * (i / steps);
+        audio.volume = from + (to - from)*(i/steps);
         if (i >= steps) clearInterval(id);
       }, 16);
     }
 
-    function showUnmute() { unmute.style.display = 'inline-block'; }
-    function hideUnmute() { unmute.style.display = 'none'; }
-
-    // Try to play; return true on success
     async function tryPlay(unmuteNow = false) {
       if (!audio.src) audio.src = SONG_URL;
-      if (unmuteNow) {
-        audio.muted = false;
-        audio.volume = Math.max(0.01, audio.volume || 0.01);
-      }
-      try {
-        await audio.play();
-        return true;
-      } catch {
-        return false;
-      }
+      if (unmuteNow) { audio.muted = false; audio.volume = Math.max(0.01, audio.volume || 0.01); }
+      try { await audio.play(); return true; } catch { return false; }
     }
 
-    async function init() {
-      // 1) Start immediately, muted, which is allowed on iOS and Android
-      audio.muted = true;
-      audio.volume = 0.0;
+    async function initAudio() {
+      audio.muted = true; audio.volume = 0.0;
       await tryPlay(false);
-
-      // 2) Attempt to unmute automatically. May succeed if user has prior engagement
       const ok = await tryPlay(true);
       if (ok && !audio.muted) {
         fadeVolume(0.9, 900);
       } else {
-        // Show a subtle nudge; first tap will unmute
         showUnmute();
       }
     }
 
-    // First gesture anywhere should unmute and fade in
-    async function userUnmute() {
+    async function onUserUnmute() {
       hideUnmute();
-      audio.muted = false;
-      audio.volume = Math.max(0.01, audio.volume || 0.01);
+      audio.muted = false; audio.volume = Math.max(0.01, audio.volume || 0.01);
       const ok = await tryPlay(true);
       if (ok) fadeVolume(0.9, 900);
-
-      // iOS: resume a WebAudio context if you add one later
-      if (window.AudioContext && !window.__ctx) {
-        try {
-          window.__ctx = new AudioContext();
-          if (window.__ctx.state === 'suspended') await window.__ctx.resume();
-        } catch {}
-      }
     }
 
-    // Keep music going if it ends
-    audio.addEventListener('ended', () => {
+    audio.addEventListener('ended', ()=>{
       audio.currentTime = 0;
-      audio.play().catch(() => { showUnmute(); });
+      audio.play().catch(showUnmute);
     });
 
-    // Mobile-friendly gesture events
-    ['pointerdown','touchstart','click','keydown'].forEach(evt => {
-      document.addEventListener(evt, userUnmute, { once: true, capture: true });
+    ['pointerdown','touchstart','click','keydown'].forEach(evt=>{
+      document.addEventListener(evt, onUserUnmute, { once:true, capture:true });
     });
-    unmute.addEventListener('click', userUnmute);
-    title.addEventListener('click', userUnmute);
+    unmute.addEventListener('click', onUserUnmute);
+    title.addEventListener('click', onUserUnmute);
 
-    // iOS sometimes pauses when tab becomes visible again; retry
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', ()=>{
       if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
     });
 
-    // Kick things off
-    document.addEventListener('DOMContentLoaded', init);
+    /* Kick off audio when ready */
+    document.addEventListener('DOMContentLoaded', initAudio);
   </script>
 </body>
 </html>
