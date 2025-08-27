@@ -25,11 +25,7 @@
    <script>
       const nextSong = (function() {
         const songs = [
-          'Jon Snow hip hop beatprod.Silent.mp3',
-          'Krosah - E_S Posthumus.m4a',
-          'Norven.mp3',
-          'Honour.mp3',
-          '「卵とベーコンとソーセージとパン!」「パムパムパムたまごパン!」.mp3',
+          'https://github.com/SysAdminDoc/sysadmindoc.github.io/raw/refs/heads/main/songs/Honour.mp3',
         ];
         //this.instance = -1;
         //return () => songs[++this.instance % songs.length];
@@ -44,7 +40,7 @@
       const song = new Audio();
 
       function playSong() {
-        const prefixSongPatch = https://github.com/raingart/raingart.github.io/raw/refs/heads/master/songs/'; //./home/songs/';
+        const prefixSongPatch = https://github.com/SysAdminDoc/sysadmindoc.github.io/raw/refs/heads/master/songs/'; //./home/songs/';
         song.src = prefixSongPatch + nextSong();
         song.play();
       }
