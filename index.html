@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <title>ATLAST | Coming Soon</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Coming Soon</title>
+  <meta name="theme-color" content="#000000" />
 
-  <!-- Your existing CSS and JS includes (kept) -->
-  <link rel="stylesheet" href="./home/css/normalize.min.css" />
-  <link rel="stylesheet" href="./home/css/index.css" />
-  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
-  <script src="./home/js/three.min.js"></script>
-
-  <!-- Montserrat font for the teaser text -->
+  <!-- Montserrat font -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
 
   <style>
     /* ----- Base & Layers ----- */
     html, body { height: 100%; }
-    body { margin: 0; background: #000; color: #fff; overflow: hidden; }
-
+    body {
+      margin: 0;
+      background: #000; /* safety background behind video */
+      color: #fff;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
     .layer { position: fixed; inset: 0; pointer-events: none; }
 
     /* ----- Background Trailer Video ----- */
@@ -26,41 +26,58 @@
     #bg-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      object-fit: cover;             /* fill screen nicely */
-      filter: saturate(105%);        /* subtle polish */
-      background: #000;              /* while loading */
+      object-fit: cover;            /* fill screen nicely */
+      filter: saturate(105%);       /* subtle polish */
+      background: #000;             /* while loading */
     }
-    /* Overlays to keep text readable */
+    /* Overlays to keep text readable and cinematic */
     #bg-overlays::before, #bg-overlays::after {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
+      content: ""; position: absolute; inset: 0;
+      pointer-events: none;
     }
     /* Global dimmer */
-    #bg-overlays::before { background: rgba(0,0,0,0.40); }
+    #bg-overlays::before { background: rgba(0,0,0,0.45); }
     /* Radial vignette for drama */
     #bg-overlays::after {
-      background: radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      background:
+        radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.60) 70%);
       mix-blend-mode: multiply;
     }
 
-    /* ----- Your original canvas ring effect (on top of video) ----- */
-    #canvas { z-index: 1; width: 100%; height: 100%; pointer-events: none; }
-
-    /* ----- Centered Teaser Text with Minimal Glitch ----- */
-    #preloader-text { z-index: 2; display: grid; place-items: center; }
-    #preloader-text-title.glitch {
-      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      font-size: 24px;      /* as requested */
-      font-weight: 100;     /* as requested */
+    /* ----- Centered Titles ----- */
+    #center { z-index: 2; display: grid; place-items: center; }
+    .title-wrap {
+      pointer-events: auto; /* allow click to unmute audio */
+      text-align: center;
+      padding: 6vmin 4vmin;
+    }
+    /* Theatrical top title */
+    .brand {
+      margin: 0 0 8px 0;
+      font-weight: 900;             /* big, bold, theatrical */
+      letter-spacing: 0.22em;       /* wide tracking for drama */
+      text-transform: uppercase;
+      line-height: 1.05;
+      /* Responsive but not crazy huge on desktop */
+      font-size: clamp(28px, 8vw, 64px);
+      text-shadow:
+        0 6px 32px rgba(0,0,0,0.45),
+        0 0 22px rgba(127,92,255,0.28);
+    }
+    /* Minimal glitch subtitle (your exact spec) */
+    .glitch {
+      position: relative;
+      margin: 2px 0 0 0;
+      font-size: 24px;              /* your requested size */
+      font-weight: 100;             /* your requested weight */
       text-transform: lowercase;
       letter-spacing: 0.08em;
-      text-align: center;
-      text-shadow: 0 0 10px rgba(127,92,255,0.40);
-      position: relative;
-      pointer-events: auto; /* allow click to unmute audio */
+      color: #fff;
+      text-shadow: 0 0 10px rgba(127,92,255,0.4);
     }
-    /* Tasteful visible glitch layers */
-    #preloader-text-title.glitch::before,
-    #preloader-text-title.glitch::after {
+    /* Visible, tasteful glitch layers */
+    .glitch::before,
+    .glitch::after {
       content: attr(data-text);
       position: absolute; left: 0; top: 0; width: 100%;
       background: transparent; overflow: hidden;
@@ -68,13 +85,13 @@
       pointer-events: none;
     }
     /* Lavender ghost (top slices) */
-    #preloader-text-title.glitch::before {
+    .glitch::before {
       color: rgba(183,139,255,0.85);
       animation: glitchTop 3.2s infinite linear alternate-reverse;
       transform: translate(-1px,-1px);
     }
     /* Purple ghost (bottom slices) */
-    #preloader-text-title.glitch::after {
+    .glitch::after {
       color: rgba(127,92,255,0.85);
       animation: glitchBottom 2.8s infinite linear alternate-reverse;
       transform: translate(1px,1px);
@@ -108,6 +125,7 @@
     }
     #unmute:active { transform: translateX(-50%) scale(0.98); }
 
+    /* Hide native controls; JS controls playback */
     audio { display: none; }
   </style>
 </head>
@@ -124,35 +142,32 @@
       disablepictureinpicture
       aria-hidden="true"
     >
-      <!-- Use the direct raw host for reliability -->
+      <!-- Direct raw host for reliability -->
       <source src="https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/trailer/ATLAST.mp4" type="video/mp4" />
     </video>
     <div id="bg-overlays"></div>
   </div>
 
-  <!-- Your original canvas effect stays on top of the video -->
-  <canvas id="canvas"></canvas>
-
-  <!-- Teaser text -->
-  <div id="preloader-text" class="layer">
-    <div id="preloader-text-title" class="glitch" data-text="coming soon">coming soon</div>
+  <!-- Centered titles -->
+  <div id="center" class="layer" role="main" aria-label="coming soon">
+    <div class="title-wrap">
+      <h1 class="brand">ATLAST</h1>
+      <div class="glitch" data-text="coming soon">coming soon</div>
+    </div>
   </div>
 
   <!-- Background music: autoplay muted; tap to unmute -->
   <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
   <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
-  <!-- Keep your ring/Three.js renderer -->
-  <script src="./home/js/renderRing.js"></script>
-
   <script>
     /* ===========================
-       Background Audio (unchanged behavior)
+       Background Audio
     ============================ */
     const SONG_URL = 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3';
     const audio = document.getElementById('bg-audio');
     const unmute = document.getElementById('unmute');
-    const title = document.getElementById('preloader-text-title');
+    const titleWrap = document.querySelector('.title-wrap');
 
     function showUnmute(){ unmute.style.display = 'inline-block'; }
     function hideUnmute(){ unmute.style.display = 'none'; }
@@ -178,8 +193,11 @@
       audio.muted = true; audio.volume = 0.0;
       await tryPlay(false);
       const ok = await tryPlay(true);
-      if (ok && !audio.muted) { fadeVolume(0.9, 900); }
-      else { showUnmute(); }
+      if (ok && !audio.muted) {
+        fadeVolume(0.9, 900);
+      } else {
+        showUnmute();
+      }
     }
 
     async function onUserUnmute() {
@@ -198,7 +216,7 @@
       document.addEventListener(evt, onUserUnmute, { once:true, capture:true });
     });
     unmute.addEventListener('click', onUserUnmute);
-    title.addEventListener('click', onUserUnmute);
+    titleWrap.addEventListener('click', onUserUnmute);
 
     document.addEventListener('visibilitychange', ()=>{
       if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
