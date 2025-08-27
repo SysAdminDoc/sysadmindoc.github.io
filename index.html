@@ -5,65 +5,60 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Coming Soon</title>
 
-  <!-- Import Montserrat (your font choice) -->
+  <!-- Your existing CSS and JS includes (kept) -->
+  <link rel="stylesheet" href="./home/css/normalize.min.css" />
+  <link rel="stylesheet" href="./home/css/index.css" />
+  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
+  <script src="./home/js/three.min.js"></script>
+
+  <!-- Montserrat font for the teaser text -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
 
   <style>
     /* ----- Base & Layers ----- */
     html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: #000; /* safety background behind video */
-      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color: #fff;
-      overflow: hidden;
-    }
+    body { margin: 0; background: #000; color: #fff; overflow: hidden; }
+
     .layer { position: fixed; inset: 0; pointer-events: none; }
 
-    /* ----- Background Video (tasteful, dimmed) ----- */
+    /* ----- Background Trailer Video ----- */
     #bg-video-wrap { z-index: 0; }
     #bg-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      object-fit: cover;            /* fill screen nicely */
-      filter: saturate(105%);       /* subtle polish */
-      background: #000;             /* while loading */
+      object-fit: cover;             /* fill screen nicely */
+      filter: saturate(105%);        /* subtle polish */
+      background: #000;              /* while loading */
     }
-    /* Dark overlays to keep text readable and cinematic */
+    /* Overlays to keep text readable */
     #bg-overlays::before, #bg-overlays::after {
-      content: ""; position: absolute; inset: 0;
-      pointer-events: none;
+      content: ""; position: absolute; inset: 0; pointer-events: none;
     }
     /* Global dimmer */
-    #bg-overlays::before {
-      background: rgba(0,0,0,0.35);
-    }
+    #bg-overlays::before { background: rgba(0,0,0,0.40); }
     /* Radial vignette for drama */
     #bg-overlays::after {
-      background:
-        radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      background: radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
       mix-blend-mode: multiply;
     }
 
-    /* ----- Optional canvas effect layer (your existing canvas) ----- */
-    #canvas { z-index: 1; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    /* ----- Your original canvas ring effect (on top of video) ----- */
+    #canvas { z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 
     /* ----- Centered Teaser Text with Minimal Glitch ----- */
-    #preloader-text {
-      z-index: 2;
-      display: grid; place-items: center;
-    }
+    #preloader-text { z-index: 2; display: grid; place-items: center; }
     #preloader-text-title.glitch {
-      font-size: 24px;           /* your requested size */
-      font-weight: 100;          /* your requested weight */
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-size: 24px;      /* as requested */
+      font-weight: 100;     /* as requested */
       text-transform: lowercase;
       letter-spacing: 0.08em;
       text-align: center;
-      text-shadow: 0 0 10px rgba(127,92,255,0.4);
+      text-shadow: 0 0 10px rgba(127,92,255,0.40);
       position: relative;
-      pointer-events: auto;      /* allow click to unmute */
+      pointer-events: auto; /* allow click to unmute audio */
     }
-    /* Tasteful visible glitch */
+    /* Tasteful visible glitch layers */
     #preloader-text-title.glitch::before,
     #preloader-text-title.glitch::after {
       content: attr(data-text);
@@ -118,7 +113,7 @@
 </head>
 <body>
 
-  <!-- Background video layer -->
+  <!-- Background trailer video (muted so it can autoplay) -->
   <div id="bg-video-wrap" class="layer" aria-hidden="true">
     <video id="bg-video"
       autoplay
@@ -129,13 +124,13 @@
       disablepictureinpicture
       aria-hidden="true"
     >
-      <!-- Working sample video (royalty-free). Replace with your own when ready. -->
-      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+      <!-- Use the direct raw host for reliability -->
+      <source src="https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/trailer/ATLAST.mp4" type="video/mp4" />
     </video>
     <div id="bg-overlays"></div>
   </div>
 
-  <!-- Your canvas effect (kept for future visuals) -->
+  <!-- Your original canvas effect stays on top of the video -->
   <canvas id="canvas"></canvas>
 
   <!-- Teaser text -->
@@ -147,9 +142,8 @@
   <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
   <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
-  <!-- If you have a ring/three effect script, you can include it here -->
-  <!-- <script src="./home/js/three.min.js"></script> -->
-  <!-- <script src="./home/js/renderRing.js"></script> -->
+  <!-- Keep your ring/Three.js renderer -->
+  <script src="./home/js/renderRing.js"></script>
 
   <script>
     /* ===========================
@@ -184,11 +178,8 @@
       audio.muted = true; audio.volume = 0.0;
       await tryPlay(false);
       const ok = await tryPlay(true);
-      if (ok && !audio.muted) {
-        fadeVolume(0.9, 900);
-      } else {
-        showUnmute();
-      }
+      if (ok && !audio.muted) { fadeVolume(0.9, 900); }
+      else { showUnmute(); }
     }
 
     async function onUserUnmute() {
@@ -213,7 +204,6 @@
       if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
     });
 
-    /* Kick off audio when ready */
     document.addEventListener('DOMContentLoaded', initAudio);
   </script>
 </body>
