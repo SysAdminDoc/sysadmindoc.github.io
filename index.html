@@ -2,187 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Coming Soon</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
+  <title>Coming Soon</title>
+
+  <!-- Your existing CSS and JS includes -->
+  <link rel="stylesheet" href="./home/css/normalize.min.css" />
+  <link rel="stylesheet" href="./home/css/index.css" />
+  <link rel="icon" type="image/x-icon" href="./home/favicon.ico" />
+  <script src="./home/js/three.min.js"></script>
 
   <style>
-    :root{
-      --bg:#000;
-      --fg:#e9e9f1;
-      --accent:#7f5cff;
-      --accent2:#b78bff;
-      --hint-bg: rgba(0,0,0,0.78);
-      --ring-size: min(68vmin, 720px);
-      --ring-thickness: 2.75vmin;
-      --text-min: 22px;
-      --text-pref: 4.2vw;
-      --text-max: 42px; /* smaller desktop cap */
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      overflow:hidden;
-    }
-
-    /* Layer stack */
-    .layer{
-      position:fixed; inset:0; pointer-events:none;
-    }
-    #embers, #noise { z-index: 0; }
-    #ring { z-index: 1; }
-    #center { z-index: 2; }
-    #unmute { z-index: 3; }
-
-    /* Subtle animated noise/mist */
-    #noise::before, #noise::after{
-      content:"";
-      position:absolute; inset:-20%;
-      background:
-        radial-gradient(120% 120% at 50% 50%, rgba(127,92,255,0.12) 0%, rgba(0,0,0,0.0) 60%),
-        radial-gradient(120% 120% at 50% 50%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 65%);
-      mix-blend-mode: screen;
-      filter: blur(20px) saturate(110%);
-      animation: drift 18s linear infinite;
-    }
-    #noise::after{
-      animation-duration: 26s;
-      transform: rotate(8deg) scale(1.1);
-      opacity: 0.7;
-    }
-    @keyframes drift {
-      0% { transform: translate(-4%, -3%) scale(1.1) rotate(0deg); }
-      50%{ transform: translate(4%, 3%) scale(1.12) rotate(180deg); }
-      100%{transform: translate(-4%, -3%) scale(1.1) rotate(360deg); }
-    }
-
-    /* Glowing ring built with pure CSS */
-    #ring{
-      display:grid; place-items:center;
-    }
-    .ring{
-      width: var(--ring-size); height: var(--ring-size);
-      border-radius:50%;
-      position:relative;
-      filter: drop-shadow(0 0 18px rgba(127,92,255,0.5));
-      animation: ringPulse 6s ease-in-out infinite;
-    }
-    /* Outer glow sweep */
-    .ring::before{
-      content:"";
-      position:absolute; inset:0;
-      border-radius:50%;
-      padding: var(--ring-thickness);
-      background:
-        conic-gradient(from 0deg,
-          rgba(127,92,255,0.0) 0deg,
-          rgba(127,92,255,0.65) 60deg,
-          rgba(183,139,255,0.75) 120deg,
-          rgba(127,92,255,0.0) 300deg
-        );
-      -webkit-mask:
-        radial-gradient(farthest-side, transparent calc(100% - var(--ring-thickness)), #000 calc(100% - var(--ring-thickness)));
-              mask:
-        radial-gradient(farthest-side, transparent calc(100% - var(--ring-thickness)), #000 calc(100% - var(--ring-thickness)));
-      animation: sweep 10s linear infinite;
-      filter: blur(2px) saturate(125%);
-    }
-    /* Inner soft core glow */
-    .ring::after{
-      content:"";
-      position:absolute; inset:12%;
-      border-radius:50%;
-      background:
-        radial-gradient(60% 60% at 50% 50%, rgba(127,92,255,0.18), rgba(0,0,0,0) 70%);
-      filter: blur(16px);
-    }
-    @keyframes sweep{
-      to{ transform: rotate(360deg); }
-    }
-    @keyframes ringPulse{
-      0%,100%{ transform: scale(1); filter: drop-shadow(0 0 14px rgba(127,92,255,0.40)); }
-      50%    { transform: scale(1.02); filter: drop-shadow(0 0 24px rgba(127,92,255,0.65)); }
-    }
-
-    /* Center content */
-    #center{
-      display:grid; place-items:center;
-      text-align:center;
-      padding: 3vmin;
-    }
-    #teaser{
-      pointer-events:auto; /* allow clicks to unmute */
-      line-height:1.15;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-      text-transform: none;
-      font-size: clamp(var(--text-min), var(--text-pref), var(--text-max));
-      text-shadow:
-        0 0 18px rgba(127,92,255,0.25),
-        0 0 40px rgba(127,92,255,0.12);
-      color: var(--fg);
-      max-width: 18ch;
-      margin: 0 auto;
-      user-select: none;
-      cursor: default;
-    }
-
-    /* Phrase crossfade */
-    .swap{
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 700ms ease, transform 700ms ease;
-      will-change: opacity, transform;
-    }
-    .swap.show{
-      opacity:1;
-      transform: translateY(0);
-    }
-
-    /* Glitch effect on text */
-    .glitch {
-      position: relative;
-      animation: glitchHue 1.2s ease-in-out;
-      text-shadow:
-        0.02em 0 0 rgba(183,139,255,0.65),
-       -0.02em -0.02em 0 rgba(127,92,255,0.55);
-    }
-    .glitch::before,
-    .glitch::after{
-      content: attr(data-text);
-      position:absolute; inset:0;
-      clip-path: inset(0 0 0 0);
-      overflow:hidden;
-      mix-blend-mode: screen;
-    }
-    .glitch::before{
-      left:0.02em; top:-0.01em; color: rgba(183,139,255,0.85);
-      animation: glitchSlice 650ms steps(2,end) 1;
-    }
-    .glitch::after{
-      left:-0.03em; top:0.01em; color: rgba(127,92,255,0.8);
-      animation: glitchSlice 650ms steps(2,end) 1 reverse;
-    }
-    @keyframes glitchSlice{
-      0%{ clip-path: inset(0 0 85% 0); }
-      20%{ clip-path: inset(0 0 20% 0); }
-      40%{ clip-path: inset(40% 0 40% 0); }
-      60%{ clip-path: inset(75% 0 0 0); }
-      80%{ clip-path: inset(10% 0 55% 0); }
-      100%{ clip-path: inset(0 0 0 0); }
-    }
-    @keyframes glitchHue{
-      0%{ filter: hue-rotate(0deg); }
-      50%{ filter: hue-rotate(12deg); }
-      100%{ filter: hue-rotate(0deg); }
-    }
-
-    /* Unmute hint */
-    #unmute{
+    /* Minimal nudge for mobile to allow sound */
+    #unmute {
       position: fixed;
       left: 50%;
       bottom: 24px;
@@ -190,291 +21,176 @@
       display: none;
       padding: 10px 14px;
       border-radius: 10px;
-      background: var(--hint-bg);
+      background: rgba(0,0,0,0.78);
       color: #fff;
-      font-family: inherit;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(6px);
+      z-index: 9999;
       cursor: pointer;
       user-select: none;
-      pointer-events:auto;
     }
-    #unmute:active{ transform: translateX(-50%) scale(0.98); }
+    #unmute:active { transform: translateX(-50%) scale(0.98); }
 
-    /* Cursor hidden on idle for suspense */
-    body.idle { cursor: none; }
+    /* Your hero text */
+    #preloader-text { position: absolute; inset: 0; display: grid; place-items: center; }
+    #preloader-text-title {
+      font-size: clamp(28px, 6vw, 64px);
+      color: #fff;
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+
+    /* Tasteful, minimal glitch: very small offsets, rare slices */
+    #preloader-text-title.glitch {
+      position: relative;
+      text-shadow: 0 0 14px rgba(127,92,255,0.18);
+    }
+    /* Subtle “ghost” layers */
+    #preloader-text-title.glitch::before,
+    #preloader-text-title.glitch::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      opacity: 0.4;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    /* Slight color offsets */
+    #preloader-text-title.glitch::before {
+      color: rgba(183,139,255,0.85);
+      transform: translate(0.02em, -0.01em);
+      clip-path: inset(0 0 0 0);
+      animation: glitchSlice 4.2s steps(2,end) infinite;
+    }
+    #preloader-text-title.glitch::after {
+      color: rgba(127,92,255,0.75);
+      transform: translate(-0.02em, 0.01em);
+      clip-path: inset(0 0 0 0);
+      animation: glitchSlice 4.2s steps(2,end) infinite reverse;
+    }
+    /* Mostly calm; brief, tiny slices at sparse keyframes */
+    @keyframes glitchSlice {
+      0%, 12%, 12.5%, 60%, 60.6%, 100% { clip-path: inset(0 0 0 0); }
+      12.2% { clip-path: inset(0 0 88% 0); }     /* quick top slice */
+      12.4% { clip-path: inset(42% 0 42% 0); }   /* mid slice */
+      60.2% { clip-path: inset(78% 0 0 0); }     /* bottom slice */
+      60.4% { clip-path: inset(10% 0 55% 0); }   /* another quick slice */
+    }
+
+    /* Hide native controls; JS controls playback */
+    audio { display: none; }
+    body { margin: 0; background: #000; }
   </style>
 </head>
 <body>
+  <!-- Your canvas/bg effect -->
+  <canvas id="canvas"></canvas>
 
-  <!-- Subtle animated noise/mist -->
-  <div id="noise" class="layer"></div>
-
-  <!-- Particle embers canvas -->
-  <canvas id="embers" class="layer"></canvas>
-
-  <!-- Glowing circle ring -->
-  <div id="ring" class="layer">
-    <div class="ring" aria-hidden="true"></div>
+  <div id="preloader-text">
+    <!-- Single phrase with minimal glitch effect -->
+    <div id="preloader-text-title" class="glitch" data-text="coming soon">coming soon</div>
   </div>
 
-  <!-- Center teaser text -->
-  <div id="center" class="layer" role="main" aria-label="coming soon">
-    <div id="teaser" class="swap show" data-text="Something is coming...">Something is coming...</div>
-  </div>
-
-  <!-- Invisible audio element for background music -->
+  <!-- Invisible audio element; muted+playsinline are critical for mobile -->
   <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
 
-  <!-- Unmute nudge if required by the browser -->
+  <!-- Tiny prompt shown only if unmuting is blocked until a gesture -->
   <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
 
+  <!-- Your renderer -->
+  <script src="./home/js/renderRing.js"></script>
+
   <script>
-    /* ===========================
-       CONFIG
-    ============================ */
-    const PHRASES = [
-      "Something is coming...",
-      "Prepare yourself.",
-      "The silence before the storm.",
-      "Not yet revealed.",
-      "Soon."
-    ];
-    const ROTATE_MS = 3600;     // time between phrase swaps
-    const GLITCH_CHANCE = 0.35; // chance to glitch on each phrase
-    const AUDIO_URL = "https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3";
+    // Direct raw file URL avoids GitHub HTML redirects
+    const SONG_URL = 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3';
 
-    /* ===========================
-       TEASER TEXT: rotate + glitch
-    ============================ */
-    const teaserEl = document.getElementById("teaser");
-    let phraseIndex = 0;
+    const audio = document.getElementById('bg-audio');
+    const unmute = document.getElementById('unmute');
+    const title = document.getElementById('preloader-text-title');
 
-    function setPhrase(text){
-      teaserEl.dataset.text = text;
-      teaserEl.textContent = text;
-    }
-
-    function swapPhrase(){
-      phraseIndex = (phraseIndex + 1) % PHRASES.length;
-      const next = PHRASES[phraseIndex];
-      teaserEl.classList.remove("show","glitch");
-      // small crossfade out
-      requestAnimationFrame(()=>{
-        setTimeout(()=>{
-          setPhrase(next);
-          // randomly trigger glitch
-          if (Math.random() < GLITCH_CHANCE) {
-            teaserEl.classList.add("glitch");
-            // remove glitch class after anim completes
-            setTimeout(()=> teaserEl.classList.remove("glitch"), 1200);
-          }
-          // crossfade in
-          requestAnimationFrame(()=> teaserEl.classList.add("show"));
-        }, 220);
-      });
-    }
-    setInterval(swapPhrase, ROTATE_MS);
-
-    /* ===========================
-       AUDIO: mobile friendly autoplay
-    ============================ */
-    const audio = document.getElementById("bg-audio");
-    const unmute = document.getElementById("unmute");
-
-    function showUnmute(){ unmute.style.display = "inline-block"; }
-    function hideUnmute(){ unmute.style.display = "none"; }
-
-    // Gentle volume ramp
-    function fadeVolume(to=0.9, ms=900){
+    // Gentle fade to avoid a pop when unmuting on mobile
+    function fadeVolume(to = 0.9, ms = 800) {
       const from = audio.volume || 0.01;
-      const steps = Math.max(1, Math.round(ms/16));
-      let i=0;
-      const id = setInterval(()=>{
+      const steps = Math.max(1, Math.round(ms / 16));
+      let i = 0;
+      const id = setInterval(() => {
         i++;
-        audio.volume = from + (to - from)*(i/steps);
-        if (i>=steps) clearInterval(id);
-      },16);
+        audio.volume = from + (to - from) * (i / steps);
+        if (i >= steps) clearInterval(id);
+      }, 16);
     }
 
-    async function tryPlay(unmuteNow=false){
-      if (!audio.src) audio.src = AUDIO_URL;
-      if (unmuteNow){
+    function showUnmute() { unmute.style.display = 'inline-block'; }
+    function hideUnmute() { unmute.style.display = 'none'; }
+
+    // Try to play; return true on success
+    async function tryPlay(unmuteNow = false) {
+      if (!audio.src) audio.src = SONG_URL;
+      if (unmuteNow) {
         audio.muted = false;
         audio.volume = Math.max(0.01, audio.volume || 0.01);
       }
-      try{
+      try {
         await audio.play();
         return true;
-      }catch{
+      } catch {
         return false;
       }
     }
 
-    async function initAudio(){
-      // start muted (allowed everywhere)
+    async function init() {
+      // 1) Start immediately, muted, which is allowed on iOS and Android
       audio.muted = true;
       audio.volume = 0.0;
       await tryPlay(false);
 
-      // attempt to unmute immediately
+      // 2) Attempt to unmute automatically. May succeed if user has prior engagement
       const ok = await tryPlay(true);
-      if (ok && !audio.muted){
+      if (ok && !audio.muted) {
         fadeVolume(0.9, 900);
-      }else{
+      } else {
+        // Show a subtle nudge; first tap will unmute
         showUnmute();
       }
     }
 
-    async function onUserUnmute(){
+    // First gesture anywhere should unmute and fade in
+    async function userUnmute() {
       hideUnmute();
       audio.muted = false;
       audio.volume = Math.max(0.01, audio.volume || 0.01);
       const ok = await tryPlay(true);
       if (ok) fadeVolume(0.9, 900);
+
+      // iOS: resume a WebAudio context if you add one later
+      if (window.AudioContext && !window.__ctx) {
+        try {
+          window.__ctx = new AudioContext();
+          if (window.__ctx.state === 'suspended') await window.__ctx.resume();
+        } catch {}
+      }
     }
 
-    // keep looping the same track for now
-    audio.addEventListener("ended", ()=>{
+    // Keep music going if it ends
+    audio.addEventListener('ended', () => {
       audio.currentTime = 0;
-      audio.play().catch(showUnmute);
+      audio.play().catch(() => { showUnmute(); });
     });
 
-    // gesture events for mobile
-    ["pointerdown","touchstart","click","keydown"].forEach(evt=>{
-      document.addEventListener(evt, onUserUnmute, { once:true, capture:true });
+    // Mobile-friendly gesture events
+    ['pointerdown','touchstart','click','keydown'].forEach(evt => {
+      document.addEventListener(evt, userUnmute, { once: true, capture: true });
     });
-    unmute.addEventListener("click", onUserUnmute);
-    teaserEl.addEventListener("click", onUserUnmute);
+    unmute.addEventListener('click', userUnmute);
+    title.addEventListener('click', userUnmute);
 
-    document.addEventListener("visibilitychange", ()=>{
-      if (!document.hidden && audio.paused){
-        tryPlay(!audio.muted);
-      }
-    });
-
-    /* ===========================
-       PARTICLE EMBERS: subtle and light
-    ============================ */
-    const embers = document.getElementById("embers");
-    const ctx = embers.getContext("2d");
-    let DPR = Math.min(2, window.devicePixelRatio || 1);
-
-    function resize(){
-      DPR = Math.min(2, window.devicePixelRatio || 1);
-      embers.width = Math.floor(innerWidth * DPR);
-      embers.height = Math.floor(innerHeight * DPR);
-    }
-    window.addEventListener("resize", resize, { passive:true });
-    resize();
-
-    const particles = [];
-    const MAX_PARTICLES = 120;
-    const POINTER_ADD = 10;
-
-    function addParticle(x, y, intense=false){
-      if (particles.length > MAX_PARTICLES) particles.shift();
-      const speed = intense ? 0.7 : 0.35;
-      particles.push({
-        x, y,
-        vx: (Math.random()-0.5)*speed,
-        vy: -Math.random()*speed - 0.1,
-        r: Math.random()*2 + 0.6,
-        life: 1,
-        hue: 270 + Math.random()*30 // purple range
-      });
-    }
-
-    let lastMove = Date.now();
-    function loop(){
-      const w = embers.width, h = embers.height;
-      ctx.clearRect(0,0,w,h);
-
-      // faint global vignette
-      const g = ctx.createRadialGradient(w*0.5, h*0.5, 0, w*0.5, h*0.5, Math.max(w,h)*0.55);
-      g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(1, "rgba(0,0,0,0.6)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0,0,w,h);
-
-      // particles
-      for (let i=particles.length-1; i>=0; i--){
-        const p = particles[i];
-        p.x += p.vx * DPR * 1.5;
-        p.y += p.vy * DPR * 1.5;
-        p.vy -= 0.002; // slight upward drift
-        p.life -= 0.012;
-        if (p.life <= 0) { particles.splice(i,1); continue; }
-
-        ctx.globalCompositeOperation = "lighter";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r*DPR, 0, Math.PI*2);
-        ctx.fillStyle = `hsla(${p.hue}, 80%, 70%, ${Math.max(0,p.life)*0.35})`;
-        ctx.fill();
-
-        // soft halo
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r*2.4*DPR, 0, Math.PI*2);
-        ctx.fillStyle = `hsla(${p.hue}, 90%, 65%, ${Math.max(0,p.life)*0.08})`;
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
-      }
-
-      // idle cursor vanish
-      if (Date.now() - lastMove > 1800) {
-        document.body.classList.add("idle");
-      } else {
-        document.body.classList.remove("idle");
-      }
-
-      requestAnimationFrame(loop);
-    }
-    loop();
-
-    // spawn soft ambient embers
-    setInterval(()=>{
-      addParticle(Math.random()*embers.width, embers.height - Math.random()*40 - 10, false);
-    }, 120);
-
-    // cursor sparks
-    window.addEventListener("pointermove", (e)=>{
-      lastMove = Date.now();
-      const rect = embers.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * DPR;
-      const y = (e.clientY - rect.top) * DPR;
-      for (let i=0;i<POINTER_ADD;i++) addParticle(x, y, true);
-    }, { passive:true });
-
-    /* ===========================
-       EASTER EGGS
-    ============================ */
-    // Secret keyboard trigger: typing S E C R E T shows a special phrase once
-    const SECRET = "SECRET";
-    let buffer = "";
-    window.addEventListener("keydown", (e)=>{
-      buffer = (buffer + (e.key || "")).toUpperCase().replace(/[^A-Z]/g,"").slice(-SECRET.length);
-      if (buffer.endsWith(SECRET)) {
-        setPhrase("You found it.");
-        teaserEl.classList.add("show","glitch");
-        setTimeout(()=> teaserEl.classList.remove("glitch"), 1400);
-      }
+    // iOS sometimes pauses when tab becomes visible again; retry
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
     });
 
-    // Console whisper for curious visitors
-    setTimeout(()=>{
-      try {
-        console.log("%cNot yet revealed.", "color:#b78bff; font-weight:700; font-size:14px");
-      }catch{}
-    }, 1400);
-
-    /* ===========================
-       INIT
-    ============================ */
-    window.addEventListener("DOMContentLoaded", ()=>{
-      initAudio();
-      // small entrance effect
-      teaserEl.classList.add("show");
-    });
+    // Kick things off
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
