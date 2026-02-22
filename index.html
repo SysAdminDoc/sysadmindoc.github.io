@@ -5,100 +5,182 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matt Parker — Systems Administrator & Builder</title>
     <meta name="description" content="Portfolio of Matt Parker — 87 open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#.">
-    <meta name="theme-color" content="#0d1117">
+    <meta name="theme-color" content="#0a0e17">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bgc:#13171e;--brd:#30363d;--brdb:#3d444d;--t1:#e6edf3;--t2:#8b949e;--t3:#6e7681;--blue:#58a6ff;--blued:rgba(88,166,255,.15);--grn:#3fb950;--grnd:rgba(63,185,80,.15);--org:#f78166;--orgd:rgba(247,129,102,.15);--yel:#d29922;--yeld:rgba(210,153,34,.15);--pur:#d2a8ff;--purd:rgba(210,168,255,.15);--red:#f85149;--redd:rgba(248,81,73,.15);--teal:#39d4ba;--teald:rgba(57,212,186,.15);--mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;--sans:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif}
+        :root{
+            --bg:#0a0e17;--bg2:#111827;--bg3:#1a2035;--bgc:rgba(17,24,39,.6);
+            --glass:rgba(17,24,39,.45);--glass-border:rgba(99,130,190,.12);--glass-hover:rgba(99,130,190,.2);
+            --brd:rgba(55,65,90,.5);--brdb:rgba(88,130,200,.3);
+            --t1:#e8edf5;--t2:#8b9cc0;--t3:#5a6a8a;
+            --blue:#58a6ff;--blued:rgba(88,166,255,.12);--blue-glow:rgba(88,166,255,.25);
+            --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
+            --org:#fb923c;--orgd:rgba(251,146,60,.12);
+            --yel:#facc15;--yeld:rgba(250,204,21,.12);
+            --pur:#c084fc;--purd:rgba(192,132,252,.12);
+            --red:#f87171;--redd:rgba(248,113,113,.12);
+            --teal:#2dd4bf;--teald:rgba(45,212,191,.12);
+            --mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;
+            --sans:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;
+        }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth;scrollbar-color:var(--brd) var(--bg)}
+        html{scroll-behavior:smooth;scrollbar-color:rgba(55,65,90,.5) var(--bg)}
         body{font-family:var(--sans);background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
-        ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--t3)}
-        #loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}#loader.hidden{opacity:0;visibility:hidden}
-        .lp{font-family:var(--mono);font-size:14px;color:var(--grn)}.lc{display:inline-block;width:8px;height:16px;background:var(--grn);margin-left:4px;animation:blink 1s step-end infinite}
-        .lbt{width:240px;height:3px;background:var(--bg3);border-radius:2px;margin-top:24px;overflow:hidden}.lb{width:0%;height:100%;background:var(--blue);border-radius:2px;transition:width .4s}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(55,65,90,.6);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(88,130,200,.4)}
+
+        /* Loader */
+        #loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+        #loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .lp{font-family:var(--mono);font-size:14px;color:var(--grn);letter-spacing:.05em}
+        .lc{display:inline-block;width:8px;height:16px;background:var(--grn);margin-left:4px;animation:blink 1s step-end infinite}
+        .lbt{width:260px;height:2px;background:var(--bg3);border-radius:2px;margin-top:24px;overflow:hidden;position:relative}
+        .lb{width:0%;height:100%;background:linear-gradient(90deg,var(--blue),var(--grn));border-radius:2px;transition:width .3s;box-shadow:0 0 12px var(--blue-glow)}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--brd);transition:transform .3s}nav.hid{transform:translateY(-100%)}
+
+        /* Particle canvas */
+        #particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+        /* Nav */
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,14,23,.7);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--glass-border);transition:transform .3s}
+        nav.hid{transform:translateY(-100%)}
         .ni{max-width:1200px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
-        .nl{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--grn);text-decoration:none}.nl span{color:var(--t2)}
-        .nk{display:flex;gap:8px}.nk a{font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 12px;border-radius:6px;transition:color .2s,background .2s}.nk a:hover,.nk a.active{color:var(--t1);background:var(--bg3)}
-        .ng{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 14px;border-radius:6px;border:1px solid var(--brd);transition:all .2s}.ng:hover{color:var(--t1);border-color:var(--brdb);background:var(--bg3)}.ng svg{width:16px;height:16px;fill:currentColor}
+        .nl{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--grn);text-decoration:none;text-shadow:0 0 20px var(--grn-glow)}.nl span{color:var(--t3)}
+        .nk{display:flex;gap:4px}.nk a{font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 12px;border-radius:6px;transition:all .25s}.nk a:hover,.nk a.active{color:var(--t1);background:rgba(88,130,200,.1)}
+        .ng{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 14px;border-radius:6px;border:1px solid var(--glass-border);transition:all .3s;background:var(--glass)}.ng:hover{color:var(--t1);border-color:var(--brdb);background:var(--glass-hover);box-shadow:0 0 20px rgba(88,166,255,.08)}.ng svg{width:16px;height:16px;fill:currentColor}
         .mt{display:none;background:none;border:none;cursor:pointer;color:var(--t2);padding:4px}.mt svg{width:24px;height:24px;stroke:currentColor;fill:none}
+
+        /* Hero */
         .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:80px 24px 60px}
-        .hbg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 40%,rgba(88,166,255,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 60%,rgba(63,185,80,.04) 0%,transparent 50%)}
-        .hgr{position:absolute;inset:0;background-image:linear-gradient(var(--brd) 1px,transparent 1px),linear-gradient(90deg,var(--brd) 1px,transparent 1px);background-size:60px 60px;opacity:.06;mask-image:radial-gradient(ellipse 70% 70% at 30% 50%,black,transparent);-webkit-mask-image:radial-gradient(ellipse 70% 70% at 30% 50%,black,transparent)}
+        .hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);opacity:.08;pointer-events:none;z-index:0}
+        .hero-glow.g1{background:var(--blue);top:-10%;left:10%}
+        .hero-glow.g2{background:var(--grn);bottom:0;right:5%}
+        .hero-glow.g3{background:var(--pur);top:40%;left:50%;width:400px;height:400px;opacity:.04}
         .hi{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
         .ht{max-width:560px}
-        .htag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--grn);background:var(--grnd);padding:6px 14px;border-radius:20px;margin-bottom:24px}
-        .htag .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
-        .hn{font-size:clamp(40px,6vw,64px);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:8px}.hn .a{color:var(--blue)}
+        .htag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--grn);background:var(--grnd);padding:6px 16px;border-radius:20px;margin-bottom:24px;border:1px solid rgba(74,222,128,.15);backdrop-filter:blur(8px)}
+        .htag .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn-glow);animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:.4;box-shadow:0 0 4px var(--grn-glow)}50%{opacity:1;box-shadow:0 0 16px var(--grn-glow)}}
+        .hn{font-size:clamp(42px,6vw,68px);font-weight:800;line-height:1.08;letter-spacing:-.04em;margin-bottom:8px}
+        .hn .a{background:linear-gradient(135deg,var(--blue),var(--pur));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .hr{font-family:var(--mono);font-size:clamp(14px,2vw,17px);color:var(--t2);margin-bottom:24px}
         .hd{font-size:17px;color:var(--t2);line-height:1.7;margin-bottom:36px;max-width:480px}
-        .hs{display:flex;gap:32px;margin-bottom:36px}.hsn{font-family:var(--mono);font-size:28px;font-weight:700}.hsl{font-size:13px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}
+        .hs{display:flex;gap:36px;margin-bottom:36px}
+        .hs-item{position:relative}
+        .hsn{font-family:var(--mono);font-size:32px;font-weight:700;background:linear-gradient(135deg,var(--t1),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hsn[data-live]{transition:opacity .3s}
+        .hsl{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
         .ha{display:flex;gap:12px;flex-wrap:wrap}
-        .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;padding:10px 20px;border-radius:8px;text-decoration:none;cursor:pointer;transition:all .2s;border:none}.btn svg{width:16px;height:16px}
-        .bp{background:var(--blue);color:var(--bg);font-weight:600}.bp:hover{background:#79bbff;transform:translateY(-1px)}
-        .bg{background:transparent;color:var(--t2);border:1px solid var(--brd)}.bg:hover{color:var(--t1);border-color:var(--brdb);background:var(--bg3)}
-        .term{background:var(--bg2);border:1px solid var(--brd);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3)}
-        .tb{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--brd)}
-        .td{width:10px;height:10px;border-radius:50%}.td.r{background:var(--red)}.td.y{background:var(--yel)}.td.g{background:var(--grn)}
+        .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;padding:11px 22px;border-radius:10px;text-decoration:none;cursor:pointer;transition:all .3s;border:none;position:relative;overflow:hidden}.btn svg{width:16px;height:16px}
+        .bp{background:linear-gradient(135deg,var(--blue),#818cf8);color:var(--bg);font-weight:600;box-shadow:0 4px 20px rgba(88,166,255,.25)}
+        .bp:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(88,166,255,.35)}
+        .bp::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);transform:translateX(-100%);transition:transform .6s}.bp:hover::after{transform:translateX(100%)}
+        .bg2{background:var(--glass);color:var(--t2);border:1px solid var(--glass-border);backdrop-filter:blur(8px)}
+        .bg2:hover{color:var(--t1);border-color:var(--brdb);box-shadow:0 4px 20px rgba(88,130,200,.1);transform:translateY(-2px)}
+
+        /* Terminal */
+        .term{background:var(--glass);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.4),0 0 1px rgba(255,255,255,.05) inset}
+        .tb{display:flex;align-items:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--glass-border)}
+        .td{width:10px;height:10px;border-radius:50%}.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
         .tt{flex:1;text-align:center;font-family:var(--mono);font-size:12px;color:var(--t3)}
         .tbd{padding:20px;font-family:var(--mono);font-size:13px;line-height:1.8;min-height:320px}
         .tl{opacity:0;animation:tfi .3s ease forwards}@keyframes tfi{to{opacity:1}}
         .tp{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}.ts{color:var(--grn)}
-        .tci{display:inline-block;width:8px;height:15px;background:var(--grn);vertical-align:text-bottom;animation:blink 1s step-end infinite}
-        section{padding:100px 24px}.si{max-width:1200px;margin:0 auto}.sh{margin-bottom:56px}
-        .sl{font-family:var(--mono);font-size:13px;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
-        .st{font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+        .tci{display:inline-block;width:8px;height:15px;background:var(--grn);vertical-align:text-bottom;animation:blink 1s step-end infinite;box-shadow:0 0 8px var(--grn-glow)}
+
+        /* Sections */
+        section{padding:100px 24px;position:relative;z-index:1}.si{max-width:1200px;margin:0 auto}.sh{margin-bottom:56px}
+        .sl{font-family:var(--mono);font-size:13px;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;text-shadow:0 0 20px var(--blue-glow)}
+        .st{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
         .sd{font-size:16px;color:var(--t2);max-width:560px}
-        .dv{height:1px;background:linear-gradient(90deg,transparent,var(--brd),transparent)}
+        .dv{height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);position:relative;z-index:1}
+
+        /* Glassmorphism Cards */
         .fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
-        .pc{background:var(--bgc);border:1px solid var(--brd);border-radius:12px;padding:24px;transition:all .25s;position:relative;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column}
-        .pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--grn));opacity:0;transition:opacity .25s}
-        .pc:hover{border-color:var(--brdb);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.2)}.pc:hover::before{opacity:1}
-        .ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-        .ci{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-family:var(--mono);font-weight:700}
-        .ci.ps{background:var(--blued);color:var(--blue)}.ci.py{background:var(--grnd);color:var(--grn)}.ci.js{background:var(--yeld);color:var(--yel)}.ci.ext{background:var(--purd);color:var(--pur)}.ci.kt{background:var(--teald);color:var(--teal)}.ci.cs{background:var(--redd);color:var(--red)}
-        .cs2{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--yel)}.cs2 svg{width:14px;height:14px;fill:var(--yel)}
+        .pc{background:var(--glass);backdrop-filter:blur(12px) saturate(1.2);-webkit-backdrop-filter:blur(12px) saturate(1.2);border:1px solid var(--glass-border);border-radius:16px;padding:28px;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column}
+        .pc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(88,166,255,.4),rgba(192,132,252,.4),transparent);opacity:0;transition:opacity .4s}
+        .pc::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 180deg at 50% 50%,transparent 0deg,rgba(88,166,255,.03) 60deg,transparent 120deg,rgba(192,132,252,.03) 240deg,transparent 360deg);animation:shimmerRotate 8s linear infinite;pointer-events:none;opacity:0;transition:opacity .4s}
+        @keyframes shimmerRotate{to{transform:rotate(360deg)}}
+        .pc:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
+        .pc:hover::before{opacity:1}.pc:hover::after{opacity:1}
+        .ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+        .ci{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-family:var(--mono);font-weight:700;backdrop-filter:blur(4px)}
+        .ci.ps{background:var(--blued);color:var(--blue);box-shadow:0 0 12px rgba(88,166,255,.1)}.ci.py{background:var(--grnd);color:var(--grn);box-shadow:0 0 12px rgba(74,222,128,.1)}.ci.js{background:var(--yeld);color:var(--yel)}.ci.ext{background:var(--purd);color:var(--pur);box-shadow:0 0 12px rgba(192,132,252,.1)}.ci.kt{background:var(--teald);color:var(--teal);box-shadow:0 0 12px rgba(45,212,191,.1)}.ci.cs{background:var(--redd);color:var(--red)}
+        .cs2{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:13px;color:var(--yel);text-shadow:0 0 8px rgba(250,204,21,.2)}.cs2 svg{width:14px;height:14px;fill:var(--yel);filter:drop-shadow(0 0 3px rgba(250,204,21,.3))}
         .cn{font-family:var(--mono);font-size:16px;font-weight:600;margin-bottom:8px}.cde{font-size:14px;color:var(--t2);line-height:1.5;flex:1;margin-bottom:16px}
-        .cta{display:flex;flex-wrap:wrap;gap:6px}.ctg{font-family:var(--mono);font-size:11px;color:var(--t3);background:var(--bg3);padding:3px 10px;border-radius:12px}
-        .lb2{font-family:var(--mono);font-size:11px;color:var(--grn);background:var(--grnd);padding:2px 8px;border-radius:10px;white-space:nowrap}
+        .cta{display:flex;flex-wrap:wrap;gap:6px}.ctg{font-family:var(--mono);font-size:11px;color:var(--t3);background:rgba(255,255,255,.04);padding:4px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.04)}
+
+        /* Live badge */
+        .lb2{font-family:var(--mono);font-size:11px;color:var(--grn);background:var(--grnd);padding:3px 10px;border-radius:10px;white-space:nowrap;border:1px solid rgba(74,222,128,.15);text-shadow:0 0 8px var(--grn-glow)}
+
+        /* Live Apps */
         .lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-        .lc2{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:10px;background:var(--bgc);border:1px solid var(--brd);text-decoration:none;color:inherit;transition:all .2s;position:relative;overflow:hidden}
-        .lc2::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grn);opacity:0;transition:opacity .2s}
-        .lc2:hover{border-color:var(--brdb);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.2)}.lc2:hover::before{opacity:1}
+        .lc2{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);text-decoration:none;color:inherit;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+        .lc2::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--grn-glow),transparent);opacity:0;transition:opacity .3s}
+        .lc2:hover{border-color:rgba(74,222,128,.2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 30px rgba(74,222,128,.05)}.lc2:hover::before{opacity:1}
         .lct{display:flex;align-items:center;justify-content:space-between}.lcn{font-family:var(--mono);font-size:15px;font-weight:600}.lcd{font-size:13px;color:var(--t2);line-height:1.4}
-        .cf{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
-        .fb{font-family:var(--mono);font-size:13px;color:var(--t2);background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:8px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-        .fb:hover{color:var(--t1);border-color:var(--brdb)}.fb.act{color:var(--blue);border-color:var(--blue);background:var(--blued)}
-        .fc{font-size:11px;background:var(--bg3);padding:1px 6px;border-radius:8px}.fb.act .fc{background:rgba(88,166,255,.2)}
-        .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
-        .ca{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:10px;background:var(--bg2);border:1px solid transparent;text-decoration:none;color:inherit;transition:all .2s}
-        .ca:hover{border-color:var(--brd);background:var(--bgc)}.ca.hid{display:none}
-        .cdo{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-        .cdo.ps{background:var(--blue)}.cdo.py{background:var(--grn)}.cdo.web{background:var(--org)}.cdo.ext{background:var(--pur)}.cdo.sec{background:var(--yel)}.cdo.media{background:var(--red)}.cdo.kt{background:var(--teal)}.cdo.cs{background:#f85149}.cdo.guide{background:var(--t3)}.cdo.fork{background:#6e7681}
+
+        /* Catalog */
+        .catalog-controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+        .search-wrap{position:relative;flex:1;min-width:240px;max-width:400px}
+        .search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--t3);fill:none;pointer-events:none}
+        .search-input{width:100%;font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px 10px 40px;outline:none;transition:all .3s}
+        .search-input::placeholder{color:var(--t3)}
+        .search-input:focus{border-color:var(--brdb);box-shadow:0 0 20px rgba(88,166,255,.08)}
+        .sort-select{font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px;outline:none;cursor:pointer;transition:all .3s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235a6a8a'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+        .sort-select:focus{border-color:var(--brdb)}
+        .sort-select option{background:var(--bg2);color:var(--t1)}
+        .cf{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+        .fb{font-family:var(--mono);font-size:13px;color:var(--t2);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:8px 16px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px}
+        .fb:hover{color:var(--t1);border-color:var(--brdb);box-shadow:0 0 15px rgba(88,130,200,.06)}
+        .fb.act{color:var(--blue);border-color:rgba(88,166,255,.3);background:var(--blued);box-shadow:0 0 20px rgba(88,166,255,.08)}
+        .fc{font-size:11px;background:rgba(255,255,255,.06);padding:1px 7px;border-radius:8px}.fb.act .fc{background:rgba(88,166,255,.2)}
+        .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
+        .ca{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid transparent;text-decoration:none;color:inherit;transition:all .3s}
+        .ca:hover{border-color:var(--glass-border);box-shadow:0 4px 20px rgba(0,0,0,.15)}
+        .ca.hid{display:none}
+        .cdo{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+        .cdo.ps{background:var(--blue);color:var(--blue)}.cdo.py{background:var(--grn);color:var(--grn)}.cdo.web{background:var(--org);color:var(--org)}.cdo.ext{background:var(--pur);color:var(--pur)}.cdo.sec{background:var(--yel);color:var(--yel)}.cdo.media{background:var(--red);color:var(--red)}.cdo.kt{background:var(--teal);color:var(--teal)}.cdo.cs{background:#f87171;color:#f87171}.cdo.guide{background:var(--t3);color:var(--t3)}.cdo.fork{background:#6e7681;color:#6e7681}
         .cna{font-family:var(--mono);font-size:14px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .cds{font-size:13px;color:var(--t3);flex:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .ca-stars{font-family:var(--mono);font-size:12px;color:var(--yel);display:flex;align-items:center;gap:3px;flex-shrink:0;min-width:30px;text-shadow:0 0 6px rgba(250,204,21,.2)}
+        .ca-stars svg{width:11px;height:11px;fill:var(--yel)}
+        .no-results{text-align:center;padding:60px 20px;font-family:var(--mono);color:var(--t3);font-size:14px;display:none}
+
+        /* Skills */
         .skg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
-        .skc{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:20px;text-align:center;transition:all .2s}.skc:hover{border-color:var(--brdb);transform:translateY(-1px)}
+        .skc{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;padding:22px;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1)}.skc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
         .ski{font-size:28px;margin-bottom:8px;font-family:var(--mono);font-weight:700}.skn{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:4px}.sks{font-size:12px;color:var(--t3)}
+
+        /* About */
         .ac{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
         .atp{font-size:16px;color:var(--t2);line-height:1.8;margin-bottom:20px}.atp strong{color:var(--t1)}
         .atb{padding:20px;font-family:var(--mono);font-size:13px;line-height:2}
-        footer{border-top:1px solid var(--brd);padding:40px 24px}
+
+        /* Footer */
+        footer{border-top:1px solid var(--glass-border);padding:40px 24px;position:relative;z-index:1}
         .fi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
         .ft{font-family:var(--mono);font-size:13px;color:var(--t3)}.fl{display:flex;gap:16px}.fl a{color:var(--t3);text-decoration:none;font-family:var(--mono);font-size:13px;transition:color .2s}.fl a:hover{color:var(--t1)}
-        .rv{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}.rv.vis{opacity:1;transform:translateY(0)}
-        .s1{transition-delay:.05s}.s2{transition-delay:.1s}.s3{transition-delay:.15s}.s4{transition-delay:.2s}.s5{transition-delay:.25s}.s6{transition-delay:.3s}
+
+        /* Reveal animations */
+        .rv{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}.rv.vis{opacity:1;transform:translateY(0)}
+        .s1{transition-delay:.06s}.s2{transition-delay:.12s}.s3{transition-delay:.18s}.s4{transition-delay:.24s}.s5{transition-delay:.3s}.s6{transition-delay:.36s}
+
+        /* Card entrance */
+        .card-enter{opacity:0;transform:translateY(30px) scale(.97);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
+        .card-enter.vis{opacity:1;transform:translateY(0) scale(1)}
+
+        /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}}
-        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(13,17,23,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--brd);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:20px}.hsn{font-size:22px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{display:none}.lg{grid-template-columns:1fr 1fr}}
+        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{display:none}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
+<canvas id="particles"></canvas>
 <nav id="nav"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
     <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#about">About</a></div>
@@ -108,37 +190,38 @@
     </div>
 </div></nav>
 
-<section class="hero" id="hero"><div class="hbg"></div><div class="hgr"></div><div class="hi">
-    <div class="ht">
-        <div class="htag"><span class="dot"></span> Available for collaboration</div>
-        <h1 class="hn">Matt <span class="a">Parker</span></h1>
-        <p class="hr">Sr. Systems Administrator &amp; Builder</p>
-        <p class="hd">I build the tools I wish existed. Zero-config utilities, browser enhancements, desktop and mobile applications, and automation scripts &mdash; all open source, all ready to run.</p>
-        <div class="hs">
-            <div><div class="hsn">87</div><div class="hsl">Repositories</div></div>
-            <div><div class="hsn">7</div><div class="hsl">Languages</div></div>
-            <div><div class="hsn">12</div><div class="hsl">Live Apps</div></div>
+<section class="hero" id="hero">
+    <div class="hero-glow g1"></div><div class="hero-glow g2"></div><div class="hero-glow g3"></div>
+    <div class="hi">
+        <div class="ht">
+            <div class="htag"><span class="dot"></span> Available for collaboration</div>
+            <h1 class="hn">Matt <span class="a">Parker</span></h1>
+            <p class="hr">Sr. Systems Administrator &amp; Builder</p>
+            <p class="hd">I build the tools I wish existed. Zero-config utilities, browser enhancements, desktop and mobile applications, and automation scripts &mdash; all open source, all ready to run.</p>
+            <div class="hs">
+                <div class="hs-item"><div class="hsn" id="statRepos" data-live>--</div><div class="hsl">Repositories</div></div>
+                <div class="hs-item"><div class="hsn" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
+                <div class="hs-item"><div class="hsn">12</div><div class="hsl">Live Apps</div></div>
+            </div>
+            <div class="ha">
+                <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
+                <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
+            </div>
         </div>
-        <div class="ha">
-            <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
-            <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
-        </div>
+        <div class="term"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div></div>
     </div>
-    <div class="term"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div></div>
-</div></section>
-
+</section>
 <div class="dv"></div>
 
-<!-- Featured Projects -->
 <section id="featured"><div class="si">
-    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked highlights from 87 repositories.</p></div>
-    <div class="fg">
-        <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="pc rv s1"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 15</div></div><div class="cn">win11-nvme-driver-patcher</div><div class="cde">GUI to enable Windows Server 2025 NVMe driver on Windows 11 &mdash; ~80% IOPS improvement on modern SSDs.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">WPF</span><span class="ctg">Driver</span></div></a>
-        <a href="https://github.com/SysAdminDoc/EspressoMonkey" target="_blank" rel="noopener" class="pc rv s2"><div class="ct"><div class="ci ext">JS</div><div class="cs2"></div></div><div class="cn">EspressoMonkey</div><div class="cde">Manifest V3 userscript manager &mdash; modern, lightweight, and feature-rich alternative to legacy extensions.</div><div class="cta"><span class="ctg">JavaScript</span><span class="ctg">MV3</span><span class="ctg">Chrome</span></div></a>
-        <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="pc rv s3"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 6</div></div><div class="cn">Network_Security_Auditor</div><div class="cde">67 automated checks across 8 security domains with MITRE ATT&amp;CK mapping and multi-tier compliance reports.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">Security</span><span class="ctg">MITRE</span></div></a>
-        <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="pc rv s4"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 5</div></div><div class="cn">LibreSpot</div><div class="cde">Spotify customization &mdash; automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">Spotify</span><span class="ctg">Themes</span></div></a>
-        <a href="https://github.com/SysAdminDoc/HostShield" target="_blank" rel="noopener" class="pc rv s5"><div class="ct"><div class="ci kt">Kt</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 3</div></div><div class="cn">HostShield</div><div class="cde">AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.</div><div class="cta"><span class="ctg">Kotlin</span><span class="ctg">Android</span><span class="ctg">Ad Blocker</span></div></a>
-        <a href="https://github.com/SysAdminDoc/YouTube-Kit" target="_blank" rel="noopener" class="pc rv s6"><div class="ct"><div class="ci ext">JS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 2</div></div><div class="cn">YouTube-Kit</div><div class="cde">Ultimate YouTube customization userscript &mdash; UI overhaul, ad removal, playback control, and dozens of QoL tweaks.</div><div class="cta"><span class="ctg">Userscript</span><span class="ctg">YouTube</span><span class="ctg">Tampermonkey</span></div></a>
+    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked highlights &mdash; star counts live from GitHub.</p></div>
+    <div class="fg" id="featuredGrid">
+        <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="pc card-enter" data-repo="win11-nvme-driver-patcher"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">win11-nvme-driver-patcher</div><div class="cde">GUI to enable Windows Server 2025 NVMe driver on Windows 11 &mdash; ~80% IOPS improvement on modern SSDs.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">WPF</span><span class="ctg">Driver</span></div></a>
+        <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="pc card-enter" data-repo="Network_Security_Auditor"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">Network_Security_Auditor</div><div class="cde">67 automated checks across 8 security domains with MITRE ATT&amp;CK mapping and multi-tier compliance reports.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">Security</span><span class="ctg">MITRE</span></div></a>
+        <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="pc card-enter" data-repo="LibreSpot"><div class="ct"><div class="ci ps">PS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">LibreSpot</div><div class="cde">Spotify customization &mdash; automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</div><div class="cta"><span class="ctg">PowerShell</span><span class="ctg">Spotify</span><span class="ctg">Themes</span></div></a>
+        <a href="https://github.com/SysAdminDoc/HostShield" target="_blank" rel="noopener" class="pc card-enter" data-repo="HostShield"><div class="ct"><div class="ci kt">Kt</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">HostShield</div><div class="cde">AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.</div><div class="cta"><span class="ctg">Kotlin</span><span class="ctg">Android</span><span class="ctg">Ad Blocker</span></div></a>
+        <a href="https://github.com/SysAdminDoc/EspressoMonkey" target="_blank" rel="noopener" class="pc card-enter" data-repo="EspressoMonkey"><div class="ct"><div class="ci ext">JS</div><div class="cs2"></div></div><div class="cn">EspressoMonkey</div><div class="cde">Manifest V3 userscript manager &mdash; modern, lightweight, and feature-rich alternative to legacy extensions.</div><div class="cta"><span class="ctg">JavaScript</span><span class="ctg">MV3</span><span class="ctg">Chrome</span></div></a>
+        <a href="https://github.com/SysAdminDoc/YouTube-Kit" target="_blank" rel="noopener" class="pc card-enter" data-repo="YouTube-Kit"><div class="ct"><div class="ci ext">JS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">YouTube-Kit</div><div class="cde">Ultimate YouTube customization userscript &mdash; UI overhaul, ad removal, playback control, and dozens of QoL tweaks.</div><div class="cta"><span class="ctg">Userscript</span><span class="ctg">YouTube</span><span class="ctg">Tampermonkey</span></div></a>
     </div>
 </div></section>
 <div class="dv"></div>
@@ -146,26 +229,40 @@
 <section id="live"><div class="si">
     <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Try in Your Browser</h2><p class="sd">No install, no signup &mdash; click and go.</p></div>
     <div class="lg">
-        <a href="https://sysadmindoc.github.io/StormviewRadar/" target="_blank" rel="noopener" class="lc2 rv s1"><div class="lct"><div class="lcn">StormviewRadar</div><span class="lb2">LIVE</span></div><div class="lcd">Open source weather radar viewer</div></a>
-        <a href="https://sysadmindoc.github.io/SkyTrack/" target="_blank" rel="noopener" class="lc2 rv s2"><div class="lct"><div class="lcn">SkyTrack</div><span class="lb2">LIVE</span></div><div class="lcd">Real-time aircraft tracker</div></a>
-        <a href="https://sysadmindoc.github.io/SPECTRE/" target="_blank" rel="noopener" class="lc2 rv s3"><div class="lct"><div class="lcn">SPECTRE</div><span class="lb2">LIVE</span></div><div class="lcd">Intelligence aggregator &mdash; OSINT data feeds</div></a>
-        <a href="https://sysadmindoc.github.io/CoolSites/" target="_blank" rel="noopener" class="lc2 rv s4"><div class="lct"><div class="lcn">CoolSites</div><span class="lb2">LIVE</span></div><div class="lcd">470+ curated free tools &amp; open source projects</div></a>
-        <a href="https://sysadmindoc.github.io/Multistreamer/" target="_blank" rel="noopener" class="lc2 rv s5"><div class="lct"><div class="lcn">Multistreamer</div><span class="lb2">LIVE</span></div><div class="lcd">Multi-video streaming viewer with chat</div></a>
-        <a href="https://sysadmindoc.github.io/BookmarkVault/" target="_blank" rel="noopener" class="lc2 rv s6"><div class="lct"><div class="lcn">BookmarkVault</div><span class="lb2">LIVE</span></div><div class="lcd">Bookmark management web app</div></a>
-        <a href="https://sysadmindoc.github.io/ImageForge/" target="_blank" rel="noopener" class="lc2 rv s1"><div class="lct"><div class="lcn">ImageForge</div><span class="lb2">LIVE</span></div><div class="lcd">Open source image converter</div></a>
-        <a href="https://sysadmindoc.github.io/Openshop/" target="_blank" rel="noopener" class="lc2 rv s2"><div class="lct"><div class="lcn">Openshop</div><span class="lb2">LIVE</span></div><div class="lcd">Browser-based image editor with layers &amp; filters</div></a>
-        <a href="https://sysadmindoc.github.io/Text-Filter-Editor/" target="_blank" rel="noopener" class="lc2 rv s3"><div class="lct"><div class="lcn">Text-Filter-Editor</div><span class="lb2">LIVE</span></div><div class="lcd">Text filtering and processing tool</div></a>
-        <a href="https://sysadmindoc.github.io/DeGoogler/" target="_blank" rel="noopener" class="lc2 rv s4"><div class="lct"><div class="lcn">DeGoogler</div><span class="lb2">LIVE</span></div><div class="lcd">Migration toolkit for leaving Google services</div></a>
-        <a href="https://sysadmindoc.github.io/SearchHub/" target="_blank" rel="noopener" class="lc2 rv s5"><div class="lct"><div class="lcn">SearchHub</div><span class="lb2">LIVE</span></div><div class="lcd">538 engines across 29 categories</div></a>
-        <a href="https://sysadmindoc.github.io/UserScriptHunt/" target="_blank" rel="noopener" class="lc2 rv s6"><div class="lct"><div class="lcn">UserScriptHunt</div><span class="lb2">LIVE</span></div><div class="lcd">Unified userscript search engine</div></a>
+        <a href="https://sysadmindoc.github.io/StormviewRadar/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">StormviewRadar</div><span class="lb2">LIVE</span></div><div class="lcd">Open source weather radar viewer</div></a>
+        <a href="https://sysadmindoc.github.io/SkyTrack/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">SkyTrack</div><span class="lb2">LIVE</span></div><div class="lcd">Real-time aircraft tracker</div></a>
+        <a href="https://sysadmindoc.github.io/SPECTRE/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">SPECTRE</div><span class="lb2">LIVE</span></div><div class="lcd">Intelligence aggregator &mdash; OSINT data feeds</div></a>
+        <a href="https://sysadmindoc.github.io/CoolSites/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">CoolSites</div><span class="lb2">LIVE</span></div><div class="lcd">470+ curated free tools &amp; open source projects</div></a>
+        <a href="https://sysadmindoc.github.io/Multistreamer/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">Multistreamer</div><span class="lb2">LIVE</span></div><div class="lcd">Multi-video streaming viewer with chat</div></a>
+        <a href="https://sysadmindoc.github.io/BookmarkVault/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">BookmarkVault</div><span class="lb2">LIVE</span></div><div class="lcd">Bookmark management web app</div></a>
+        <a href="https://sysadmindoc.github.io/ImageForge/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">ImageForge</div><span class="lb2">LIVE</span></div><div class="lcd">Open source image converter</div></a>
+        <a href="https://sysadmindoc.github.io/Openshop/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">Openshop</div><span class="lb2">LIVE</span></div><div class="lcd">Browser-based image editor with layers &amp; filters</div></a>
+        <a href="https://sysadmindoc.github.io/Text-Filter-Editor/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">Text-Filter-Editor</div><span class="lb2">LIVE</span></div><div class="lcd">Text filtering and processing tool</div></a>
+        <a href="https://sysadmindoc.github.io/DeGoogler/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">DeGoogler</div><span class="lb2">LIVE</span></div><div class="lcd">Migration toolkit for leaving Google services</div></a>
+        <a href="https://sysadmindoc.github.io/SearchHub/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">SearchHub</div><span class="lb2">LIVE</span></div><div class="lcd">538 engines across 29 categories</div></a>
+        <a href="https://sysadmindoc.github.io/UserScriptHunt/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">UserScriptHunt</div><span class="lb2">LIVE</span></div><div class="lcd">Unified userscript search engine</div></a>
     </div>
 </div></section>
 <div class="dv"></div>
+
 <!-- Full Catalog -->
 <section id="catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All Repositories</h2><p class="sd">The full collection &mdash; every project, every language.</p></div>
-    <div class="cf rv">
-        <button class="fb act" data-filter="all">All <span class="fc">87</span></button>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All Repositories</h2><p class="sd">The full collection &mdash; search, filter, sort. Star counts pulled live.</p></div>
+    <div class="catalog-controls rv">
+        <div class="search-wrap">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search repositories..." autocomplete="off">
+        </div>
+        <select class="sort-select" id="sortSelect">
+            <option value="default">Default order</option>
+            <option value="stars">Most stars</option>
+            <option value="name">A-Z</option>
+            <option value="name-desc">Z-A</option>
+            <option value="recent">Recently updated</option>
+        </select>
+    </div>
+    <div class="cf rv" id="filterBtns">
+        <button class="fb act" data-filter="all">All <span class="fc" id="countAll">87</span></button>
         <button class="fb" data-filter="ps">PowerShell <span class="fc">13</span></button>
         <button class="fb" data-filter="py">Python <span class="fc">24</span></button>
         <button class="fb" data-filter="web">Web Apps <span class="fc">13</span></button>
@@ -180,117 +277,118 @@
     </div>
     <div class="cg" id="catalogGrid">
         <!-- PowerShell (13) -->
-        <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">win11-nvme-driver-patcher</span><span class="cds">NVMe driver patcher for Win11</span></a>
-        <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">LibreSpot</span><span class="cds">Spotify customization suite</span></a>
-        <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">Network_Security_Auditor</span><span class="cds">67 automated security checks</span></a>
-        <a href="https://github.com/SysAdminDoc/Wingetter" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">Wingetter</span><span class="cds">Bulk install via Winget GUI</span></a>
-        <a href="https://github.com/SysAdminDoc/Start-Menu-Organizer" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">Start-Menu-Organizer</span><span class="cds">Clean &amp; reorganize Start Menu</span></a>
-        <a href="https://github.com/SysAdminDoc/PathForge" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">PathForge</span><span class="cds">Filesystem repair &amp; path management</span></a>
-        <a href="https://github.com/SysAdminDoc/MonitorControl" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">MonitorControl</span><span class="cds">DDC/CI monitor control GUI</span></a>
-        <a href="https://github.com/SysAdminDoc/PfblockerngManager" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">PfblockerngManager</span><span class="cds">pfBlockerNG GUI manager</span></a>
-        <a href="https://github.com/SysAdminDoc/npp-sc-scanner" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">npp-sc-scanner</span><span class="cds">Notepad++ supply chain scanner</span></a>
-        <a href="https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">JDownloader-2-Ultimate-Manager</span><span class="cds">JDownloader 2 automation</span></a>
-        <a href="https://github.com/SysAdminDoc/YTYT-Downloader" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">YTYT-Downloader</span><span class="cds">YouTube to VLC / yt-dlp</span></a>
-        <a href="https://github.com/SysAdminDoc/ThankYouJeffrey" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">ThankYouJeffrey</span><span class="cds">Tribute to Jeffrey Snover</span></a>
-        <a href="https://github.com/SysAdminDoc/EXTRACTORX" target="_blank" rel="noopener" class="ca" data-f="ps"><span class="cdo ps"></span><span class="cna">EXTRACTORX</span><span class="cds">Bulk archive extraction tool</span></a>
+        <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="win11-nvme-driver-patcher" data-name="win11-nvme-driver-patcher" data-desc="NVMe driver patcher for Win11"><span class="cdo ps"></span><span class="cna">win11-nvme-driver-patcher</span><span class="cds">NVMe driver patcher for Win11</span><span class="ca-stars" data-repo="win11-nvme-driver-patcher"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
+        <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="LibreSpot" data-name="LibreSpot" data-desc="Spotify customization suite"><span class="cdo ps"></span><span class="cna">LibreSpot</span><span class="cds">Spotify customization suite</span><span class="ca-stars" data-repo="LibreSpot"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
+        <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="Network_Security_Auditor" data-name="Network_Security_Auditor" data-desc="67 automated security checks"><span class="cdo ps"></span><span class="cna">Network_Security_Auditor</span><span class="cds">67 automated security checks</span><span class="ca-stars" data-repo="Network_Security_Auditor"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
+        <a href="https://github.com/SysAdminDoc/Wingetter" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="Wingetter" data-name="Wingetter" data-desc="Bulk install via Winget GUI"><span class="cdo ps"></span><span class="cna">Wingetter</span><span class="cds">Bulk install via Winget GUI</span><span class="ca-stars" data-repo="Wingetter"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
+        <a href="https://github.com/SysAdminDoc/Start-Menu-Organizer" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="Start-Menu-Organizer" data-name="Start-Menu-Organizer" data-desc="Clean and reorganize Start Menu"><span class="cdo ps"></span><span class="cna">Start-Menu-Organizer</span><span class="cds">Clean &amp; reorganize Start Menu</span></a>
+        <a href="https://github.com/SysAdminDoc/PathForge" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="PathForge" data-name="PathForge" data-desc="Filesystem repair and path management"><span class="cdo ps"></span><span class="cna">PathForge</span><span class="cds">Filesystem repair &amp; path management</span></a>
+        <a href="https://github.com/SysAdminDoc/MonitorControl" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="MonitorControl" data-name="MonitorControl" data-desc="DDC/CI monitor control GUI"><span class="cdo ps"></span><span class="cna">MonitorControl</span><span class="cds">DDC/CI monitor control GUI</span></a>
+        <a href="https://github.com/SysAdminDoc/PfblockerngManager" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="PfblockerngManager" data-name="PfblockerngManager" data-desc="pfBlockerNG GUI manager"><span class="cdo ps"></span><span class="cna">PfblockerngManager</span><span class="cds">pfBlockerNG GUI manager</span></a>
+        <a href="https://github.com/SysAdminDoc/npp-sc-scanner" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="npp-sc-scanner" data-name="npp-sc-scanner" data-desc="Notepad++ supply chain scanner"><span class="cdo ps"></span><span class="cna">npp-sc-scanner</span><span class="cds">Notepad++ supply chain scanner</span></a>
+        <a href="https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="JDownloader-2-Ultimate-Manager" data-name="JDownloader-2-Ultimate-Manager" data-desc="JDownloader 2 automation"><span class="cdo ps"></span><span class="cna">JDownloader-2-Ultimate-Manager</span><span class="cds">JDownloader 2 automation</span></a>
+        <a href="https://github.com/SysAdminDoc/YTYT-Downloader" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="YTYT-Downloader" data-name="YTYT-Downloader" data-desc="YouTube to VLC or yt-dlp"><span class="cdo ps"></span><span class="cna">YTYT-Downloader</span><span class="cds">YouTube to VLC / yt-dlp</span></a>
+        <a href="https://github.com/SysAdminDoc/ThankYouJeffrey" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="ThankYouJeffrey" data-name="ThankYouJeffrey" data-desc="Tribute to Jeffrey Snover"><span class="cdo ps"></span><span class="cna">ThankYouJeffrey</span><span class="cds">Tribute to Jeffrey Snover</span></a>
+        <a href="https://github.com/SysAdminDoc/EXTRACTORX" target="_blank" rel="noopener" class="ca" data-f="ps" data-repo="EXTRACTORX" data-name="EXTRACTORX" data-desc="Bulk archive extraction tool"><span class="cdo ps"></span><span class="cna">EXTRACTORX</span><span class="cds">Bulk archive extraction tool</span></a>
         <!-- Python (24) -->
-        <a href="https://github.com/SysAdminDoc/PyWall" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">PyWall</span><span class="cds">Firewall manager &amp; network monitor</span></a>
-        <a href="https://github.com/SysAdminDoc/PyShop" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">PyShop</span><span class="cds">Open source Photoshop alternative</span></a>
-        <a href="https://github.com/SysAdminDoc/SwiftShot" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">SwiftShot</span><span class="cds">Greenshot-inspired screenshot tool</span></a>
-        <a href="https://github.com/SysAdminDoc/Flux" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">Flux</span><span class="cds">Privacy-focused BitTorrent client</span></a>
-        <a href="https://github.com/SysAdminDoc/GitForge" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">GitForge</span><span class="cds">GitHub repo manager GUI</span></a>
-        <a href="https://github.com/SysAdminDoc/UniversalCompiler" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">UniversalCompiler</span><span class="cds">Script-to-EXE compiler</span></a>
-        <a href="https://github.com/SysAdminDoc/OpenCut" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">OpenCut</span><span class="cds">AI-powered video editing</span></a>
-        <a href="https://github.com/SysAdminDoc/bypassnroGen" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">bypassnroGen</span><span class="cds">Win11 OOBE bypass generator</span></a>
-        <a href="https://github.com/SysAdminDoc/MSStoreHelper" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">MSStoreHelper</span><span class="cds">MS Store apps without the Store</span></a>
-        <a href="https://github.com/SysAdminDoc/Qwen3-TTS-Studio" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">Qwen3-TTS-Studio</span><span class="cds">AI voice generator</span></a>
-        <a href="https://github.com/SysAdminDoc/AppList" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">AppList</span><span class="cds">Installed app cataloger</span></a>
-        <a href="https://github.com/SysAdminDoc/PillSleepTracker" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">PillSleepTracker</span><span class="cds">Medication &amp; sleep tracker widget</span></a>
-        <a href="https://github.com/SysAdminDoc/Mattpad" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">Mattpad</span><span class="cds">Minimal notepad</span></a>
-        <a href="https://github.com/SysAdminDoc/HostsFileGet" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">HostsFileGet</span><span class="cds">Hosts file manager GUI</span></a>
-        <a href="https://github.com/SysAdminDoc/Bookmark-Organizer-Pro" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">Bookmark-Organizer-Pro</span><span class="cds">AI-powered bookmark categorizer</span></a>
-        <a href="https://github.com/SysAdminDoc/QR-Code-Generator-Pro" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">QR-Code-Generator-Pro</span><span class="cds">98 visual style presets</span></a>
-        <a href="https://github.com/SysAdminDoc/uBlock-Stylus-Converter" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">uBlock-Stylus-Converter</span><span class="cds">uBlock to Stylus CSS converter</span></a>
-        <a href="https://github.com/SysAdminDoc/KeepSyncNotes" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">KeepSyncNotes</span><span class="cds">Google Keep importer</span></a>
-        <a href="https://github.com/SysAdminDoc/PDFedit" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">PDFedit</span><span class="cds">Simple PDF editor</span></a>
-        <a href="https://github.com/SysAdminDoc/CSV_Power_Tool" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">CSV_Power_Tool</span><span class="cds">Bulk CSV processing</span></a>
-        <a href="https://github.com/SysAdminDoc/HostsGuard" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">HostsGuard</span><span class="cds">Real-time network privacy manager</span></a>
-        <a href="https://github.com/SysAdminDoc/AI-Model-Compass" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">AI-Model-Compass</span><span class="cds">Discover &amp; run local AI models</span></a>
-        <a href="https://github.com/SysAdminDoc/DICOM-PACS-Migrator" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">DICOM-PACS-Migrator</span><span class="cds">Bulk DICOM C-STORE migration</span></a>
-        <a href="https://github.com/SysAdminDoc/Stock-Video-Collector" target="_blank" rel="noopener" class="ca" data-f="py"><span class="cdo py"></span><span class="cna">Stock-Video-Collector</span><span class="cds">Stock video collector</span></a>
+        <a href="https://github.com/SysAdminDoc/PyWall" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="PyWall" data-name="PyWall" data-desc="Firewall manager and network monitor"><span class="cdo py"></span><span class="cna">PyWall</span><span class="cds">Firewall manager &amp; network monitor</span></a>
+        <a href="https://github.com/SysAdminDoc/PyShop" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="PyShop" data-name="PyShop" data-desc="Open source Photoshop alternative"><span class="cdo py"></span><span class="cna">PyShop</span><span class="cds">Open source Photoshop alternative</span></a>
+        <a href="https://github.com/SysAdminDoc/SwiftShot" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="SwiftShot" data-name="SwiftShot" data-desc="Greenshot-inspired screenshot tool"><span class="cdo py"></span><span class="cna">SwiftShot</span><span class="cds">Greenshot-inspired screenshot tool</span></a>
+        <a href="https://github.com/SysAdminDoc/Flux" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="Flux" data-name="Flux" data-desc="Privacy-focused BitTorrent client"><span class="cdo py"></span><span class="cna">Flux</span><span class="cds">Privacy-focused BitTorrent client</span></a>
+        <a href="https://github.com/SysAdminDoc/GitForge" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="GitForge" data-name="GitForge" data-desc="GitHub repo manager GUI"><span class="cdo py"></span><span class="cna">GitForge</span><span class="cds">GitHub repo manager GUI</span></a>
+        <a href="https://github.com/SysAdminDoc/UniversalCompiler" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="UniversalCompiler" data-name="UniversalCompiler" data-desc="Script-to-EXE compiler"><span class="cdo py"></span><span class="cna">UniversalCompiler</span><span class="cds">Script-to-EXE compiler</span></a>
+        <a href="https://github.com/SysAdminDoc/OpenCut" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="OpenCut" data-name="OpenCut" data-desc="AI-powered video editing"><span class="cdo py"></span><span class="cna">OpenCut</span><span class="cds">AI-powered video editing</span></a>
+        <a href="https://github.com/SysAdminDoc/bypassnroGen" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="bypassnroGen" data-name="bypassnroGen" data-desc="Win11 OOBE bypass generator"><span class="cdo py"></span><span class="cna">bypassnroGen</span><span class="cds">Win11 OOBE bypass generator</span></a>
+        <a href="https://github.com/SysAdminDoc/MSStoreHelper" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="MSStoreHelper" data-name="MSStoreHelper" data-desc="MS Store apps without the Store"><span class="cdo py"></span><span class="cna">MSStoreHelper</span><span class="cds">MS Store apps without the Store</span></a>
+        <a href="https://github.com/SysAdminDoc/Qwen3-TTS-Studio" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="Qwen3-TTS-Studio" data-name="Qwen3-TTS-Studio" data-desc="AI voice generator"><span class="cdo py"></span><span class="cna">Qwen3-TTS-Studio</span><span class="cds">AI voice generator</span></a>
+        <a href="https://github.com/SysAdminDoc/AppList" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="AppList" data-name="AppList" data-desc="Installed app cataloger"><span class="cdo py"></span><span class="cna">AppList</span><span class="cds">Installed app cataloger</span></a>
+        <a href="https://github.com/SysAdminDoc/PillSleepTracker" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="PillSleepTracker" data-name="PillSleepTracker" data-desc="Medication and sleep tracker widget"><span class="cdo py"></span><span class="cna">PillSleepTracker</span><span class="cds">Medication &amp; sleep tracker widget</span></a>
+        <a href="https://github.com/SysAdminDoc/Mattpad" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="Mattpad" data-name="Mattpad" data-desc="Minimal notepad"><span class="cdo py"></span><span class="cna">Mattpad</span><span class="cds">Minimal notepad</span></a>
+        <a href="https://github.com/SysAdminDoc/HostsFileGet" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="HostsFileGet" data-name="HostsFileGet" data-desc="Hosts file manager GUI"><span class="cdo py"></span><span class="cna">HostsFileGet</span><span class="cds">Hosts file manager GUI</span></a>
+        <a href="https://github.com/SysAdminDoc/Bookmark-Organizer-Pro" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="Bookmark-Organizer-Pro" data-name="Bookmark-Organizer-Pro" data-desc="AI-powered bookmark categorizer"><span class="cdo py"></span><span class="cna">Bookmark-Organizer-Pro</span><span class="cds">AI-powered bookmark categorizer</span></a>
+        <a href="https://github.com/SysAdminDoc/QR-Code-Generator-Pro" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="QR-Code-Generator-Pro" data-name="QR-Code-Generator-Pro" data-desc="98 visual style presets"><span class="cdo py"></span><span class="cna">QR-Code-Generator-Pro</span><span class="cds">98 visual style presets</span></a>
+        <a href="https://github.com/SysAdminDoc/uBlock-Stylus-Converter" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="uBlock-Stylus-Converter" data-name="uBlock-Stylus-Converter" data-desc="uBlock to Stylus CSS converter"><span class="cdo py"></span><span class="cna">uBlock-Stylus-Converter</span><span class="cds">uBlock to Stylus CSS converter</span></a>
+        <a href="https://github.com/SysAdminDoc/KeepSyncNotes" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="KeepSyncNotes" data-name="KeepSyncNotes" data-desc="Google Keep importer"><span class="cdo py"></span><span class="cna">KeepSyncNotes</span><span class="cds">Google Keep importer</span></a>
+        <a href="https://github.com/SysAdminDoc/PDFedit" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="PDFedit" data-name="PDFedit" data-desc="Simple PDF editor"><span class="cdo py"></span><span class="cna">PDFedit</span><span class="cds">Simple PDF editor</span></a>
+        <a href="https://github.com/SysAdminDoc/CSV_Power_Tool" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="CSV_Power_Tool" data-name="CSV_Power_Tool" data-desc="Bulk CSV processing"><span class="cdo py"></span><span class="cna">CSV_Power_Tool</span><span class="cds">Bulk CSV processing</span></a>
+        <a href="https://github.com/SysAdminDoc/HostsGuard" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="HostsGuard" data-name="HostsGuard" data-desc="Real-time network privacy manager"><span class="cdo py"></span><span class="cna">HostsGuard</span><span class="cds">Real-time network privacy manager</span></a>
+        <a href="https://github.com/SysAdminDoc/AI-Model-Compass" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="AI-Model-Compass" data-name="AI-Model-Compass" data-desc="Discover and run local AI models"><span class="cdo py"></span><span class="cna">AI-Model-Compass</span><span class="cds">Discover &amp; run local AI models</span></a>
+        <a href="https://github.com/SysAdminDoc/DICOM-PACS-Migrator" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="DICOM-PACS-Migrator" data-name="DICOM-PACS-Migrator" data-desc="Bulk DICOM C-STORE migration"><span class="cdo py"></span><span class="cna">DICOM-PACS-Migrator</span><span class="cds">Bulk DICOM C-STORE migration</span></a>
+        <a href="https://github.com/SysAdminDoc/Stock-Video-Collector" target="_blank" rel="noopener" class="ca" data-f="py" data-repo="Stock-Video-Collector" data-name="Stock-Video-Collector" data-desc="Stock video collector"><span class="cdo py"></span><span class="cna">Stock-Video-Collector</span><span class="cds">Stock video collector</span></a>
         <!-- Web Apps (13) -->
-        <a href="https://sysadmindoc.github.io/StormviewRadar/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">StormviewRadar</span><span class="cds">Weather radar viewer</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/SkyTrack/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">SkyTrack</span><span class="cds">Aircraft tracker</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/SPECTRE/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">SPECTRE</span><span class="cds">Intelligence aggregator</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/CoolSites/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">CoolSites</span><span class="cds">470+ curated tools</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/Multistreamer/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">Multistreamer</span><span class="cds">Multi-video viewer</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/BookmarkVault/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">BookmarkVault</span><span class="cds">Bookmark manager</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/ImageForge/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">ImageForge</span><span class="cds">Image converter</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/Openshop/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">Openshop</span><span class="cds">Browser image editor</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/Text-Filter-Editor/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">Text-Filter-Editor</span><span class="cds">Text filter editor</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/DeGoogler/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">DeGoogler</span><span class="cds">Google services migration toolkit</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/SearchHub/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">SearchHub</span><span class="cds">538 engines, 29 categories</span><span class="lb2">LIVE</span></a>
-        <a href="https://sysadmindoc.github.io/UserScriptHunt/" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">UserScriptHunt</span><span class="cds">Unified userscript search</span><span class="lb2">LIVE</span></a>
-        <a href="https://github.com/SysAdminDoc/RadAtlas" target="_blank" rel="noopener" class="ca" data-f="web"><span class="cdo web"></span><span class="cna">RadAtlas</span><span class="cds">Prototyping</span></a>
-        <!-- Extensions (16) -->
-        <a href="https://github.com/SysAdminDoc/YouTube-Kit" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">YouTube-Kit</span><span class="cds">YouTube customization suite</span></a>
-        <a href="https://github.com/SysAdminDoc/EspressoMonkey" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">EspressoMonkey</span><span class="cds">MV3 userscript manager</span></a>
-        <a href="https://github.com/SysAdminDoc/Reddit-Enhancement-Continued" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">Reddit-Enhancement-Continued</span><span class="cds">old.reddit.com enhancement suite</span></a>
-        <a href="https://github.com/SysAdminDoc/Doordash-Enhanced" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">Doordash-Enhanced</span><span class="cds">DoorDash dark mode &amp; features</span></a>
-        <a href="https://github.com/SysAdminDoc/DarkModer" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">DarkModer</span><span class="cds">Dark Reader as a userscript</span></a>
-        <a href="https://github.com/SysAdminDoc/Chapterizer" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">Chapterizer</span><span class="cds">Auto-generate YouTube chapters</span></a>
-        <a href="https://github.com/SysAdminDoc/GeminiBuddy" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">GeminiBuddy</span><span class="cds">Gemini productivity features</span></a>
-        <a href="https://github.com/SysAdminDoc/RumbleX" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">RumbleX</span><span class="cds">Rumble.com enhancement</span></a>
-        <a href="https://github.com/SysAdminDoc/DiggSuite" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">DiggSuite</span><span class="cds">Digg multi-theme UI</span></a>
-        <a href="https://github.com/SysAdminDoc/gSearchTweaks" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">gSearchTweaks</span><span class="cds">Google toolbar additions</span></a>
-        <a href="https://github.com/SysAdminDoc/ScrollJumper" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">ScrollJumper</span><span class="cds">Right-click scrollbar jump</span></a>
-        <a href="https://github.com/SysAdminDoc/HNCC" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">HNCC</span><span class="cds">HN collapsible comments</span></a>
-        <a href="https://github.com/SysAdminDoc/StyleCraft" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">StyleCraft</span><span class="cds">CSS style editor &amp; manager</span></a>
-        <a href="https://github.com/SysAdminDoc/UserScript-Finder" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">UserScript-Finder</span><span class="cds">Discover userscripts for any site</span></a>
-        <a href="https://github.com/SysAdminDoc/YoutubeAdblock" target="_blank" rel="noopener" class="ca" data-f="ext"><span class="cdo ext"></span><span class="cna">YoutubeAdblock</span><span class="cds">Undetectable YouTube ad blocker</span></a>
+        <a href="https://sysadmindoc.github.io/StormviewRadar/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="StormviewRadar" data-name="StormviewRadar" data-desc="Weather radar viewer"><span class="cdo web"></span><span class="cna">StormviewRadar</span><span class="cds">Weather radar viewer</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/SkyTrack/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="SkyTrack" data-name="SkyTrack" data-desc="Aircraft tracker"><span class="cdo web"></span><span class="cna">SkyTrack</span><span class="cds">Aircraft tracker</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/SPECTRE/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="SPECTRE" data-name="SPECTRE" data-desc="Intelligence aggregator"><span class="cdo web"></span><span class="cna">SPECTRE</span><span class="cds">Intelligence aggregator</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/CoolSites/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="CoolSites" data-name="CoolSites" data-desc="470+ curated tools"><span class="cdo web"></span><span class="cna">CoolSites</span><span class="cds">470+ curated tools</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/Multistreamer/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="Multistreamer" data-name="Multistreamer" data-desc="Multi-video viewer"><span class="cdo web"></span><span class="cna">Multistreamer</span><span class="cds">Multi-video viewer</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/BookmarkVault/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="BookmarkVault" data-name="BookmarkVault" data-desc="Bookmark manager"><span class="cdo web"></span><span class="cna">BookmarkVault</span><span class="cds">Bookmark manager</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/ImageForge/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="ImageForge" data-name="ImageForge" data-desc="Image converter"><span class="cdo web"></span><span class="cna">ImageForge</span><span class="cds">Image converter</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/Openshop/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="Openshop" data-name="Openshop" data-desc="Browser image editor"><span class="cdo web"></span><span class="cna">Openshop</span><span class="cds">Browser image editor</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/Text-Filter-Editor/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="Text-Filter-Editor" data-name="Text-Filter-Editor" data-desc="Text filter editor"><span class="cdo web"></span><span class="cna">Text-Filter-Editor</span><span class="cds">Text filter editor</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/DeGoogler/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="DeGoogler" data-name="DeGoogler" data-desc="Google services migration toolkit"><span class="cdo web"></span><span class="cna">DeGoogler</span><span class="cds">Google services migration toolkit</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/SearchHub/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="SearchHub" data-name="SearchHub" data-desc="538 engines, 29 categories"><span class="cdo web"></span><span class="cna">SearchHub</span><span class="cds">538 engines, 29 categories</span><span class="lb2">LIVE</span></a>
+        <a href="https://sysadmindoc.github.io/UserScriptHunt/" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="UserScriptHunt" data-name="UserScriptHunt" data-desc="Unified userscript search"><span class="cdo web"></span><span class="cna">UserScriptHunt</span><span class="cds">Unified userscript search</span><span class="lb2">LIVE</span></a>
+        <a href="https://github.com/SysAdminDoc/RadAtlas" target="_blank" rel="noopener" class="ca" data-f="web" data-repo="RadAtlas" data-name="RadAtlas" data-desc="Prototyping"><span class="cdo web"></span><span class="cna">RadAtlas</span><span class="cds">Prototyping</span></a>
+        <!-- Extensions (15) -->
+        <a href="https://github.com/SysAdminDoc/YouTube-Kit" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="YouTube-Kit" data-name="YouTube-Kit" data-desc="YouTube customization suite"><span class="cdo ext"></span><span class="cna">YouTube-Kit</span><span class="cds">YouTube customization suite</span><span class="ca-stars" data-repo="YouTube-Kit"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
+        <a href="https://github.com/SysAdminDoc/EspressoMonkey" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="EspressoMonkey" data-name="EspressoMonkey" data-desc="MV3 userscript manager"><span class="cdo ext"></span><span class="cna">EspressoMonkey</span><span class="cds">MV3 userscript manager</span></a>
+        <a href="https://github.com/SysAdminDoc/Reddit-Enhancement-Continued" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="Reddit-Enhancement-Continued" data-name="Reddit-Enhancement-Continued" data-desc="old.reddit.com enhancement suite"><span class="cdo ext"></span><span class="cna">Reddit-Enhancement-Continued</span><span class="cds">old.reddit.com enhancement suite</span></a>
+        <a href="https://github.com/SysAdminDoc/Doordash-Enhanced" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="Doordash-Enhanced" data-name="Doordash-Enhanced" data-desc="DoorDash dark mode and features"><span class="cdo ext"></span><span class="cna">Doordash-Enhanced</span><span class="cds">DoorDash dark mode &amp; features</span></a>
+        <a href="https://github.com/SysAdminDoc/DarkModer" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="DarkModer" data-name="DarkModer" data-desc="Dark Reader as a userscript"><span class="cdo ext"></span><span class="cna">DarkModer</span><span class="cds">Dark Reader as a userscript</span></a>
+        <a href="https://github.com/SysAdminDoc/Chapterizer" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="Chapterizer" data-name="Chapterizer" data-desc="Auto-generate YouTube chapters"><span class="cdo ext"></span><span class="cna">Chapterizer</span><span class="cds">Auto-generate YouTube chapters</span></a>
+        <a href="https://github.com/SysAdminDoc/GeminiBuddy" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="GeminiBuddy" data-name="GeminiBuddy" data-desc="Gemini productivity features"><span class="cdo ext"></span><span class="cna">GeminiBuddy</span><span class="cds">Gemini productivity features</span></a>
+        <a href="https://github.com/SysAdminDoc/RumbleX" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="RumbleX" data-name="RumbleX" data-desc="Rumble.com enhancement"><span class="cdo ext"></span><span class="cna">RumbleX</span><span class="cds">Rumble.com enhancement</span></a>
+        <a href="https://github.com/SysAdminDoc/DiggSuite" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="DiggSuite" data-name="DiggSuite" data-desc="Digg multi-theme UI"><span class="cdo ext"></span><span class="cna">DiggSuite</span><span class="cds">Digg multi-theme UI</span></a>
+        <a href="https://github.com/SysAdminDoc/gSearchTweaks" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="gSearchTweaks" data-name="gSearchTweaks" data-desc="Google toolbar additions"><span class="cdo ext"></span><span class="cna">gSearchTweaks</span><span class="cds">Google toolbar additions</span></a>
+        <a href="https://github.com/SysAdminDoc/ScrollJumper" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="ScrollJumper" data-name="ScrollJumper" data-desc="Right-click scrollbar jump"><span class="cdo ext"></span><span class="cna">ScrollJumper</span><span class="cds">Right-click scrollbar jump</span></a>
+        <a href="https://github.com/SysAdminDoc/HNCC" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="HNCC" data-name="HNCC" data-desc="HN collapsible comments"><span class="cdo ext"></span><span class="cna">HNCC</span><span class="cds">HN collapsible comments</span></a>
+        <a href="https://github.com/SysAdminDoc/StyleCraft" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="StyleCraft" data-name="StyleCraft" data-desc="CSS style editor and manager"><span class="cdo ext"></span><span class="cna">StyleCraft</span><span class="cds">CSS style editor &amp; manager</span></a>
+        <a href="https://github.com/SysAdminDoc/UserScript-Finder" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="UserScript-Finder" data-name="UserScript-Finder" data-desc="Discover userscripts for any site"><span class="cdo ext"></span><span class="cna">UserScript-Finder</span><span class="cds">Discover userscripts for any site</span></a>
+        <a href="https://github.com/SysAdminDoc/YoutubeAdblock" target="_blank" rel="noopener" class="ca" data-f="ext" data-repo="YoutubeAdblock" data-name="YoutubeAdblock" data-desc="Undetectable YouTube ad blocker"><span class="cdo ext"></span><span class="cna">YoutubeAdblock</span><span class="cds">Undetectable YouTube ad blocker</span></a>
         <!-- Android (5) -->
-        <a href="https://github.com/SysAdminDoc/FreeVibe" target="_blank" rel="noopener" class="ca" data-f="kt"><span class="cdo kt"></span><span class="cna">FreeVibe</span><span class="cds">Wallpapers, ringtones &amp; personalization</span></a>
-        <a href="https://github.com/SysAdminDoc/ZeusWatch" target="_blank" rel="noopener" class="ca" data-f="kt"><span class="cdo kt"></span><span class="cna">ZeusWatch</span><span class="cds">AMOLED weather app</span></a>
-        <a href="https://github.com/SysAdminDoc/AlarmClockXtreme" target="_blank" rel="noopener" class="ca" data-f="kt"><span class="cdo kt"></span><span class="cna">AlarmClockXtreme</span><span class="cds">Feature-rich alarm clock</span></a>
-        <a href="https://github.com/SysAdminDoc/Lawnchair-Lite" target="_blank" rel="noopener" class="ca" data-f="kt"><span class="cdo kt"></span><span class="cna">Lawnchair-Lite</span><span class="cds">Lightweight launcher with 5 dark themes</span></a>
-        <a href="https://github.com/SysAdminDoc/HostShield" target="_blank" rel="noopener" class="ca" data-f="kt"><span class="cdo kt"></span><span class="cna">HostShield</span><span class="cds">Hosts-based ad blocker</span></a>
+        <a href="https://github.com/SysAdminDoc/FreeVibe" target="_blank" rel="noopener" class="ca" data-f="kt" data-repo="FreeVibe" data-name="FreeVibe" data-desc="Wallpapers ringtones and personalization"><span class="cdo kt"></span><span class="cna">FreeVibe</span><span class="cds">Wallpapers, ringtones &amp; personalization</span></a>
+        <a href="https://github.com/SysAdminDoc/ZeusWatch" target="_blank" rel="noopener" class="ca" data-f="kt" data-repo="ZeusWatch" data-name="ZeusWatch" data-desc="AMOLED weather app"><span class="cdo kt"></span><span class="cna">ZeusWatch</span><span class="cds">AMOLED weather app</span></a>
+        <a href="https://github.com/SysAdminDoc/AlarmClockXtreme" target="_blank" rel="noopener" class="ca" data-f="kt" data-repo="AlarmClockXtreme" data-name="AlarmClockXtreme" data-desc="Feature-rich alarm clock"><span class="cdo kt"></span><span class="cna">AlarmClockXtreme</span><span class="cds">Feature-rich alarm clock</span></a>
+        <a href="https://github.com/SysAdminDoc/Lawnchair-Lite" target="_blank" rel="noopener" class="ca" data-f="kt" data-repo="Lawnchair-Lite" data-name="Lawnchair-Lite" data-desc="Lightweight launcher with 5 dark themes"><span class="cdo kt"></span><span class="cna">Lawnchair-Lite</span><span class="cds">Lightweight launcher with 5 dark themes</span></a>
+        <a href="https://github.com/SysAdminDoc/HostShield" target="_blank" rel="noopener" class="ca" data-f="kt" data-repo="HostShield" data-name="HostShield" data-desc="Hosts-based ad blocker"><span class="cdo kt"></span><span class="cna">HostShield</span><span class="cds">Hosts-based ad blocker</span><span class="ca-stars" data-repo="HostShield"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg><span class="live-star">--</span></span></a>
         <!-- Security (4) -->
-        <a href="https://github.com/SysAdminDoc/pfSenseSuite" target="_blank" rel="noopener" class="ca" data-f="sec"><span class="cdo sec"></span><span class="cna">pfSenseSuite</span><span class="cds">pfSense scripts &amp; customizations</span></a>
-        <a href="https://github.com/SysAdminDoc/NextDNSPanel" target="_blank" rel="noopener" class="ca" data-f="sec"><span class="cdo sec"></span><span class="cna">NextDNSPanel</span><span class="cds">NextDNS tools &amp; enhancements</span></a>
-        <a href="https://github.com/SysAdminDoc/BetterNext" target="_blank" rel="noopener" class="ca" data-f="sec"><span class="cdo sec"></span><span class="cna">BetterNext</span><span class="cds">Enhanced NextDNS panel</span></a>
-        <a href="https://github.com/SysAdminDoc/ESET" target="_blank" rel="noopener" class="ca" data-f="sec"><span class="cdo sec"></span><span class="cna">ESET</span><span class="cds">ESET port &amp; address lists</span></a>
+        <a href="https://github.com/SysAdminDoc/pfSenseSuite" target="_blank" rel="noopener" class="ca" data-f="sec" data-repo="pfSenseSuite" data-name="pfSenseSuite" data-desc="pfSense scripts and customizations"><span class="cdo sec"></span><span class="cna">pfSenseSuite</span><span class="cds">pfSense scripts &amp; customizations</span></a>
+        <a href="https://github.com/SysAdminDoc/NextDNSPanel" target="_blank" rel="noopener" class="ca" data-f="sec" data-repo="NextDNSPanel" data-name="NextDNSPanel" data-desc="NextDNS tools and enhancements"><span class="cdo sec"></span><span class="cna">NextDNSPanel</span><span class="cds">NextDNS tools &amp; enhancements</span></a>
+        <a href="https://github.com/SysAdminDoc/BetterNext" target="_blank" rel="noopener" class="ca" data-f="sec" data-repo="BetterNext" data-name="BetterNext" data-desc="Enhanced NextDNS panel"><span class="cdo sec"></span><span class="cna">BetterNext</span><span class="cds">Enhanced NextDNS panel</span></a>
+        <a href="https://github.com/SysAdminDoc/ESET" target="_blank" rel="noopener" class="ca" data-f="sec" data-repo="ESET" data-name="ESET" data-desc="ESET port and address lists"><span class="cdo sec"></span><span class="cna">ESET</span><span class="cds">ESET port &amp; address lists</span></a>
         <!-- Media (5) -->
-        <a href="https://github.com/SysAdminDoc/VideoCrush" target="_blank" rel="noopener" class="ca" data-f="media"><span class="cdo media"></span><span class="cna">VideoCrush</span><span class="cds">Video compression</span></a>
-        <a href="https://github.com/SysAdminDoc/yt_livestream_downloader" target="_blank" rel="noopener" class="ca" data-f="media"><span class="cdo media"></span><span class="cna">yt_livestream_downloader</span><span class="cds">Live stream downloader</span></a>
-        <a href="https://github.com/SysAdminDoc/MediaForge" target="_blank" rel="noopener" class="ca" data-f="media"><span class="cdo media"></span><span class="cna">MediaForge</span><span class="cds">Multi-format converter</span></a>
-        <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="ca" data-f="media"><span class="cdo media"></span><span class="cna">VideoSubtitleRemover</span><span class="cds">Hardcoded subtitle removal</span></a>
-        <a href="https://github.com/SysAdminDoc/MediaDL" target="_blank" rel="noopener" class="ca" data-f="media"><span class="cdo media"></span><span class="cna">MediaDL</span><span class="cds">Media downloader</span></a>
+        <a href="https://github.com/SysAdminDoc/VideoCrush" target="_blank" rel="noopener" class="ca" data-f="media" data-repo="VideoCrush" data-name="VideoCrush" data-desc="Video compression"><span class="cdo media"></span><span class="cna">VideoCrush</span><span class="cds">Video compression</span></a>
+        <a href="https://github.com/SysAdminDoc/yt_livestream_downloader" target="_blank" rel="noopener" class="ca" data-f="media" data-repo="yt_livestream_downloader" data-name="yt_livestream_downloader" data-desc="Live stream downloader"><span class="cdo media"></span><span class="cna">yt_livestream_downloader</span><span class="cds">Live stream downloader</span></a>
+        <a href="https://github.com/SysAdminDoc/MediaForge" target="_blank" rel="noopener" class="ca" data-f="media" data-repo="MediaForge" data-name="MediaForge" data-desc="Multi-format converter"><span class="cdo media"></span><span class="cna">MediaForge</span><span class="cds">Multi-format converter</span></a>
+        <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="ca" data-f="media" data-repo="VideoSubtitleRemover" data-name="VideoSubtitleRemover" data-desc="Hardcoded subtitle removal"><span class="cdo media"></span><span class="cna">VideoSubtitleRemover</span><span class="cds">Hardcoded subtitle removal</span></a>
+        <a href="https://github.com/SysAdminDoc/MediaDL" target="_blank" rel="noopener" class="ca" data-f="media" data-repo="MediaDL" data-name="MediaDL" data-desc="Media downloader"><span class="cdo media"></span><span class="cna">MediaDL</span><span class="cds">Media downloader</span></a>
         <!-- Desktop (2) -->
-        <a href="https://github.com/SysAdminDoc/DeepPurge" target="_blank" rel="noopener" class="ca" data-f="cs"><span class="cdo cs"></span><span class="cna">DeepPurge</span><span class="cds">Thorough Windows uninstaller</span></a>
-        <a href="https://github.com/SysAdminDoc/UniversalConverterX" target="_blank" rel="noopener" class="ca" data-f="cs"><span class="cdo cs"></span><span class="cna">UniversalConverterX</span><span class="cds">1000+ format file converter</span></a>
+        <a href="https://github.com/SysAdminDoc/DeepPurge" target="_blank" rel="noopener" class="ca" data-f="cs" data-repo="DeepPurge" data-name="DeepPurge" data-desc="Thorough Windows uninstaller"><span class="cdo cs"></span><span class="cna">DeepPurge</span><span class="cds">Thorough Windows uninstaller</span></a>
+        <a href="https://github.com/SysAdminDoc/UniversalConverterX" target="_blank" rel="noopener" class="ca" data-f="cs" data-repo="UniversalConverterX" data-name="UniversalConverterX" data-desc="1000+ format file converter"><span class="cdo cs"></span><span class="cna">UniversalConverterX</span><span class="cds">1000+ format file converter</span></a>
         <!-- Guides (2) -->
-        <a href="https://github.com/SysAdminDoc/AI_Realism" target="_blank" rel="noopener" class="ca" data-f="guide"><span class="cdo guide"></span><span class="cna">AI_Realism</span><span class="cds">AI video generation guide</span></a>
-        <a href="https://github.com/SysAdminDoc/sysadmindoc.github.io" target="_blank" rel="noopener" class="ca" data-f="guide"><span class="cdo guide"></span><span class="cna">sysadmindoc.github.io</span><span class="cds">ATLAST &mdash; VEO sci-fi thriller</span></a>
+        <a href="https://github.com/SysAdminDoc/AI_Realism" target="_blank" rel="noopener" class="ca" data-f="guide" data-repo="AI_Realism" data-name="AI_Realism" data-desc="AI video generation guide"><span class="cdo guide"></span><span class="cna">AI_Realism</span><span class="cds">AI video generation guide</span></a>
+        <a href="https://github.com/SysAdminDoc/sysadmindoc.github.io" target="_blank" rel="noopener" class="ca" data-f="guide" data-repo="sysadmindoc.github.io" data-name="sysadmindoc.github.io" data-desc="ATLAST VEO sci-fi thriller"><span class="cdo guide"></span><span class="cna">sysadmindoc.github.io</span><span class="cds">ATLAST &mdash; VEO sci-fi thriller</span></a>
         <!-- Forked (3) -->
-        <a href="https://github.com/SysAdminDoc/LTSC-MicrosoftStore" target="_blank" rel="noopener" class="ca" data-f="fork"><span class="cdo fork"></span><span class="cna">LTSC-MicrosoftStore</span><span class="cds">Win11 24H2 LTSC Store installer</span></a>
-        <a href="https://github.com/SysAdminDoc/RcloneBrowser" target="_blank" rel="noopener" class="ca" data-f="fork"><span class="cdo fork"></span><span class="cna">RcloneBrowser</span><span class="cds">Cross-platform GUI for rclone</span></a>
-        <a href="https://github.com/SysAdminDoc/TabExplorer" target="_blank" rel="noopener" class="ca" data-f="fork"><span class="cdo fork"></span><span class="cna">TabExplorer</span><span class="cds">Tabbed file manager for Windows</span></a>
+        <a href="https://github.com/SysAdminDoc/LTSC-MicrosoftStore" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="LTSC-MicrosoftStore" data-name="LTSC-MicrosoftStore" data-desc="Win11 24H2 LTSC Store installer"><span class="cdo fork"></span><span class="cna">LTSC-MicrosoftStore</span><span class="cds">Win11 24H2 LTSC Store installer</span></a>
+        <a href="https://github.com/SysAdminDoc/RcloneBrowser" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="RcloneBrowser" data-name="RcloneBrowser" data-desc="Cross-platform GUI for rclone"><span class="cdo fork"></span><span class="cna">RcloneBrowser</span><span class="cds">Cross-platform GUI for rclone</span></a>
+        <a href="https://github.com/SysAdminDoc/TabExplorer" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="TabExplorer" data-name="TabExplorer" data-desc="Tabbed file manager for Windows"><span class="cdo fork"></span><span class="cna">TabExplorer</span><span class="cds">Tabbed file manager for Windows</span></a>
         <!-- Other (1) -->
-        <a href="https://github.com/SysAdminDoc/DuplicateFF" target="_blank" rel="noopener" class="ca" data-f="other"><span class="cdo guide"></span><span class="cna">DuplicateFF</span><span class="cds">Duplicate file finder</span></a>
+        <a href="https://github.com/SysAdminDoc/DuplicateFF" target="_blank" rel="noopener" class="ca" data-f="other" data-repo="DuplicateFF" data-name="DuplicateFF" data-desc="Duplicate file finder"><span class="cdo guide"></span><span class="cna">DuplicateFF</span><span class="cds">Duplicate file finder</span></a>
     </div>
+    <div class="no-results" id="noResults">No repositories match your search.</div>
 </div></section>
 <div class="dv"></div>
 <!-- Stack -->
 <section id="skills"><div class="si">
     <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2></div>
     <div class="skg">
-        <div class="skc rv s1"><div class="ski" style="color:var(--blue)">PS</div><div class="skn">PowerShell</div><div class="sks">WPF, Automation</div></div>
-        <div class="skc rv s2"><div class="ski" style="color:var(--grn)">Py</div><div class="skn">Python</div><div class="sks">PyQt6, CLI Tools</div></div>
-        <div class="skc rv s3"><div class="ski" style="color:var(--yel)">JS</div><div class="skn">JavaScript</div><div class="sks">Userscripts, Web Apps</div></div>
-        <div class="skc rv s4"><div class="ski" style="color:var(--teal)">Kt</div><div class="skn">Kotlin</div><div class="sks">Android Apps</div></div>
-        <div class="skc rv s5"><div class="ski" style="color:var(--pur)">C#</div><div class="skn">C#</div><div class="sks">WinForms, .NET</div></div>
-        <div class="skc rv s6"><div class="ski" style="color:var(--org)">&lt;/&gt;</div><div class="skn">HTML / CSS</div><div class="sks">Single-file Apps</div></div>
-        <div class="skc rv s1"><div class="ski" style="color:var(--red)">pfS</div><div class="skn">pfSense</div><div class="sks">Firewall, DNS</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--blue)">PS</div><div class="skn">PowerShell</div><div class="sks">WPF, Automation</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--grn)">Py</div><div class="skn">Python</div><div class="sks">PyQt6, CLI Tools</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--yel)">JS</div><div class="skn">JavaScript</div><div class="sks">Userscripts, Web Apps</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--teal)">Kt</div><div class="skn">Kotlin</div><div class="sks">Android Apps</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--pur)">C#</div><div class="skn">C#</div><div class="sks">WinForms, .NET</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--org)">&lt;/&gt;</div><div class="skn">HTML / CSS</div><div class="sks">Single-file Apps</div></div>
+        <div class="skc card-enter"><div class="ski" style="color:var(--red)">pfS</div><div class="skn">pfSense</div><div class="sks">Firewall, DNS</div></div>
     </div>
 </div></section>
 <div class="dv"></div>
@@ -301,7 +399,7 @@
     <div class="ac">
         <div class="rv">
             <p class="atp">I'm a <strong>Senior Systems Administrator</strong> by day &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
-            <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong>87 public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
+            <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong>87+ public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
             <p class="atp">Everything I ship follows the same philosophy: <strong>zero configuration, dark theme, works on first launch.</strong> No setup wizards, no dependency hunts. If it takes more than one step to run, I haven't finished building it yet.</p>
         </div>
         <div class="term rv s2">
@@ -315,7 +413,7 @@
                 <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"JavaScript"</span><span class="tcm">,</span> <span class="ts">"Kotlin"</span><span class="tcm">,</span> <span class="ts">"C#"</span></div>
                 <div>&nbsp;&nbsp;<span class="tcm">],</span></div>
                 <div>&nbsp;&nbsp;<span class="tk">"philosophy"</span><span class="tcm">:</span> <span class="ts">"Zero config. Dark theme."</span><span class="tcm">,</span></div>
-                <div>&nbsp;&nbsp;<span class="tk">"repos"</span><span class="tcm">:</span> <span class="tv">87</span><span class="tcm">,</span></div>
+                <div>&nbsp;&nbsp;<span class="tk">"repos"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">87</span><span class="tcm">,</span></div>
                 <div>&nbsp;&nbsp;<span class="tk">"available"</span><span class="tcm">:</span> <span class="tv">true</span></div>
                 <div><span class="tcm">}</span></div>
             </div>
@@ -326,20 +424,153 @@
 <footer><div class="fi"><div class="ft">Matt Parker &mdash; SysAdminDoc</div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div></div></footer>
 
 <script>
-const lb=document.getElementById('loaderBar');let p=0;const li=setInterval(()=>{p+=Math.random()*30+10;if(p>100)p=100;lb.style.width=p+'%';if(p>=100){clearInterval(li);setTimeout(()=>document.getElementById('loader').classList.add('hidden'),300);setTimeout(()=>document.getElementById('loader').remove(),800)}},150);
+/* ===== PARTICLE CONSTELLATION SYSTEM ===== */
+(function(){
+    const c=document.getElementById('particles'),ctx=c.getContext('2d');
+    let w,h,particles=[],mouse={x:-1000,y:-1000},raf;
+    const CFG={count:80,speed:.3,size:1.5,connectDist:140,mouseDist:180,color:[88,166,255],mouseColor:[74,222,128]};
+    function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+    function init(){resize();particles=[];for(let i=0;i<CFG.count;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*CFG.speed,vy:(Math.random()-.5)*CFG.speed,s:Math.random()*CFG.size+.5,a:Math.random()*.5+.2})}
+    function draw(){ctx.clearRect(0,0,w,h);
+        for(let i=0;i<particles.length;i++){const p=particles[i];
+            p.x+=p.vx;p.y+=p.vy;
+            if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+            ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+            ctx.fillStyle=`rgba(${CFG.color[0]},${CFG.color[1]},${CFG.color[2]},${p.a})`;ctx.fill();
+            // Constellation lines between nearby particles
+            for(let j=i+1;j<particles.length;j++){const q=particles[j];
+                const dx=p.x-q.x,dy=p.y-q.y,dist=Math.sqrt(dx*dx+dy*dy);
+                if(dist<CFG.connectDist){const alpha=(1-dist/CFG.connectDist)*.15;
+                    ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+                    ctx.strokeStyle=`rgba(${CFG.color[0]},${CFG.color[1]},${CFG.color[2]},${alpha})`;ctx.lineWidth=.5;ctx.stroke()}}
+            // Mouse constellation
+            const mdx=p.x-mouse.x,mdy=p.y-mouse.y,md=Math.sqrt(mdx*mdx+mdy*mdy);
+            if(md<CFG.mouseDist){const ma=(1-md/CFG.mouseDist)*.4;
+                ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouse.x,mouse.y);
+                ctx.strokeStyle=`rgba(${CFG.mouseColor[0]},${CFG.mouseColor[1]},${CFG.mouseColor[2]},${ma})`;ctx.lineWidth=.8;ctx.stroke();
+                // Gentle push
+                p.vx+=mdx/md*.01;p.vy+=mdy/md*.01}
+            // Dampen velocity
+            p.vx*=.999;p.vy*=.999;const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(spd<.1){p.vx=(Math.random()-.5)*CFG.speed;p.vy=(Math.random()-.5)*CFG.speed}}
+        raf=requestAnimationFrame(draw)}
+    window.addEventListener('resize',()=>{resize()});
+    document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+    document.addEventListener('mouseleave',()=>{mouse.x=-1000;mouse.y=-1000});
+    init();draw()
+})();
 
-const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'repos',val:'87',vc:'tv'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Zero config. Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
-const tb=document.getElementById('termBody');let ti=0;function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}else if(l.key){d.innerHTML='<span class="tk">'+l.key+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'">'+l.val+'</span>'}else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+l.text+'</span>'}tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40)}setTimeout(rt,600);
+/* ===== LOADER ===== */
+const lb=document.getElementById('loaderBar');let lp=0;
+const li=setInterval(()=>{lp+=Math.random()*25+15;if(lp>100)lp=100;lb.style.width=lp+'%';if(lp>=100){clearInterval(li);setTimeout(()=>document.getElementById('loader').classList.add('hidden'),300);setTimeout(()=>document.getElementById('loader').remove(),900)}},120);
 
-let ls=0;const nv=document.getElementById('nav');window.addEventListener('scroll',()=>{const c=window.scrollY;if(c>ls&&c>100)nv.classList.add('hid');else nv.classList.remove('hid');ls=c},{passive:true});
+/* ===== TERMINAL TYPING ===== */
+const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'repos',val:'...',vc:'tv',id:'termRepos'},{key:'stars',val:'...',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Zero config. Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
+const tb=document.getElementById('termBody');let ti=0;
+function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';
+    if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
+    else if(l.key){const idAttr=l.id?' id="'+l.id+'"':'';d.innerHTML='<span class="tk">'+l.key+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'"'+idAttr+'>'+l.val+'</span>'}
+    else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+l.text+'</span>'}
+    tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40)}
+setTimeout(rt,700);
 
-const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -60% 0px'});secs.forEach(s=>so.observe(s));
+/* ===== LIVE GITHUB API ===== */
+let ghData={};
+async function fetchGitHub(){
+    try{
+        const r=await fetch('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated');
+        if(!r.ok)return;
+        const repos=await r.json();
+        let totalStars=0,repoCount=0;
+        repos.forEach(repo=>{
+            ghData[repo.name]={stars:repo.stargazers_count,updated:repo.updated_at};
+            totalStars+=repo.stargazers_count;
+            if(!repo.fork)repoCount++;
+        });
+        // Update hero stats
+        const sr=document.getElementById('statRepos');if(sr)sr.textContent=repos.length;
+        const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
+        // Update terminal
+        const tr=document.getElementById('termRepos');if(tr)tr.textContent=repos.length;
+        const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
+        // Update about
+        const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repos.length;
+        // Update all live star displays
+        document.querySelectorAll('.live-star').forEach(el=>{
+            const card=el.closest('[data-repo]');
+            if(card&&ghData[card.dataset.repo]){
+                const s=ghData[card.dataset.repo].stars;
+                el.textContent=s>0?s:'';
+                if(s===0){const p=el.closest('.cs2')||el.closest('.ca-stars');if(p)p.style.display='none'}}});
+        // Store update times for sorting
+        document.querySelectorAll('.ca[data-repo]').forEach(el=>{
+            if(ghData[el.dataset.repo]){
+                el.dataset.stars=ghData[el.dataset.repo].stars;
+                el.dataset.updated=ghData[el.dataset.repo].updated}});
+    }catch(e){
+        // Fallback - show static counts
+        document.getElementById('statRepos').textContent='87';
+        document.getElementById('statStars').textContent='~30';
+    }
+}
+fetchGitHub();
 
-document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});document.querySelectorAll('.nk a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'))});
+/* ===== NAV ===== */
+let ls=0;const nv=document.getElementById('nav');
+window.addEventListener('scroll',()=>{const c=window.scrollY;if(c>ls&&c>100)nv.classList.add('hid');else nv.classList.remove('hid');ls=c},{passive:true});
+const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');
+const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -60% 0px'});
+secs.forEach(s=>so.observe(s));
+document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
+document.querySelectorAll('.nk a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'))});
 
-const rvs=document.querySelectorAll('.rv');const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('vis');ro.unobserve(el.target)}})},{threshold:.1});rvs.forEach(el=>ro.observe(el));
+/* ===== SCROLL REVEAL + STAGGERED CARD ENTRANCE ===== */
+const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('vis');ro.unobserve(el.target)}})},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+// Card entrance with stagger
+const co=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting);
+    visible.forEach((e,i)=>{setTimeout(()=>{e.target.classList.add('vis');co.unobserve(e.target)},i*60)})
+},{threshold:.05});
+document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
 
-document.querySelectorAll('.fb').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.fb').forEach(x=>x.classList.remove('act'));b.classList.add('act');const f=b.dataset.filter;document.querySelectorAll('.ca').forEach(i=>{i.classList.toggle('hid',f!=='all'&&i.dataset.f!==f)})})});
+/* ===== CATALOG: FILTER + SEARCH + SORT ===== */
+const grid=document.getElementById('catalogGrid');
+const allItems=Array.from(grid.querySelectorAll('.ca'));
+let currentFilter='all';
+let currentSearch='';
+
+function applyFilters(){
+    const q=currentSearch.toLowerCase();
+    let visible=0;
+    allItems.forEach(item=>{
+        const matchFilter=currentFilter==='all'||item.dataset.f===currentFilter;
+        const matchSearch=!q||item.dataset.name.toLowerCase().includes(q)||item.dataset.desc.toLowerCase().includes(q);
+        const show=matchFilter&&matchSearch;
+        item.classList.toggle('hid',!show);
+        if(show)visible++;
+    });
+    document.getElementById('noResults').style.display=visible===0?'block':'none';
+}
+
+function sortCatalog(method){
+    const items=Array.from(grid.querySelectorAll('.ca'));
+    items.sort((a,b)=>{
+        if(method==='stars')return(parseInt(b.dataset.stars)||0)-(parseInt(a.dataset.stars)||0);
+        if(method==='name')return a.dataset.name.localeCompare(b.dataset.name);
+        if(method==='name-desc')return b.dataset.name.localeCompare(a.dataset.name);
+        if(method==='recent')return(b.dataset.updated||'').localeCompare(a.dataset.updated||'');
+        return 0;
+    });
+    items.forEach(item=>grid.appendChild(item));
+}
+
+document.querySelectorAll('.fb').forEach(b=>{b.addEventListener('click',()=>{
+    document.querySelectorAll('.fb').forEach(x=>x.classList.remove('act'));b.classList.add('act');
+    currentFilter=b.dataset.filter;applyFilters()})});
+
+document.getElementById('searchInput').addEventListener('input',e=>{currentSearch=e.target.value;applyFilters()});
+
+document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(e.target.value);applyFilters()});
 </script>
 </body>
 </html>
