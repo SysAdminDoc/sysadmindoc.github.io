@@ -1,228 +1,1060 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>ATLAST | Coming Soon</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matt Parker — Systems Administrator & Builder</title>
+    <meta name="description" content="Portfolio of Matt Parker — Systems Administrator, Automation Engineer, and open-source builder. 84+ public repositories spanning PowerShell, Python, JavaScript, and C#.">
+    <meta name="theme-color" content="#0d1117">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #13171e;
+            --border: #30363d;
+            --border-bright: #3d444d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-tertiary: #6e7681;
+            --accent: #58a6ff;
+            --accent-dim: rgba(88, 166, 255, 0.15);
+            --green: #3fb950;
+            --green-dim: rgba(63, 185, 80, 0.15);
+            --orange: #f78166;
+            --orange-dim: rgba(247, 129, 102, 0.15);
+            --yellow: #d29922;
+            --yellow-dim: rgba(210, 153, 34, 0.15);
+            --purple: #d2a8ff;
+            --purple-dim: rgba(210, 168, 255, 0.15);
+            --red: #f85149;
+            --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-  <!-- Montserrat font -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap" rel="stylesheet">
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <style>
-    /* ----- Base & Layers ----- */
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: #000; /* safety background behind video */
-      color: #fff;
-      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      overflow: hidden;
-    }
-    .layer { position: fixed; inset: 0; pointer-events: none; }
+        html { scroll-behavior: smooth; scrollbar-color: var(--border) var(--bg-primary); }
 
-    /* ----- Background Trailer Video ----- */
-    #bg-video-wrap { z-index: 0; }
-    #bg-video {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;            /* fill screen nicely */
-      filter: saturate(105%);       /* subtle polish */
-      background: #000;             /* while loading */
-    }
-    /* Overlays to keep text readable and cinematic */
-    #bg-overlays::before, #bg-overlays::after {
-      content: ""; position: absolute; inset: 0;
-      pointer-events: none;
-    }
-    /* Global dimmer */
-    #bg-overlays::before { background: rgba(0,0,0,0.45); }
-    /* Radial vignette for drama */
-    #bg-overlays::after {
-      background:
-        radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.60) 70%);
-      mix-blend-mode: multiply;
-    }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    /* ----- Centered Titles ----- */
-    #center { z-index: 2; display: grid; place-items: center; }
-    .title-wrap {
-      pointer-events: auto; /* allow click to unmute audio */
-      text-align: center;
-      padding: 6vmin 4vmin;
-    }
-    /* Theatrical top title */
-    .brand {
-      margin: 0 0 8px 0;
-      font-weight: 900;             /* big, bold, theatrical */
-      letter-spacing: 0.22em;       /* wide tracking for drama */
-      text-transform: uppercase;
-      line-height: 1.05;
-      /* Responsive but not crazy huge on desktop */
-      font-size: clamp(28px, 8vw, 64px);
-      text-shadow:
-        0 6px 32px rgba(0,0,0,0.45),
-        0 0 22px rgba(127,92,255,0.28);
-    }
-    /* Minimal glitch subtitle (your exact spec) */
-    .glitch {
-      position: relative;
-      margin: 2px 0 0 0;
-      font-size: 24px;              /* your requested size */
-      font-weight: 100;             /* your requested weight */
-      text-transform: lowercase;
-      letter-spacing: 0.08em;
-      color: #fff;
-      text-shadow: 0 0 10px rgba(127,92,255,0.4);
-    }
-    /* Visible, tasteful glitch layers */
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute; left: 0; top: 0; width: 100%;
-      background: transparent; overflow: hidden;
-      clip: rect(0, 900px, 0, 0);
-      pointer-events: none;
-    }
-    /* Lavender ghost (top slices) */
-    .glitch::before {
-      color: rgba(183,139,255,0.85);
-      animation: glitchTop 3.2s infinite linear alternate-reverse;
-      transform: translate(-1px,-1px);
-    }
-    /* Purple ghost (bottom slices) */
-    .glitch::after {
-      color: rgba(127,92,255,0.85);
-      animation: glitchBottom 2.8s infinite linear alternate-reverse;
-      transform: translate(1px,1px);
-    }
-    @keyframes glitchTop {
-      0%   { clip: rect(0, 9999px, 0, 0); }
-      10%  { clip: rect(0, 9999px, 42%, 0); }
-      16%  { clip: rect(0, 9999px, 0, 0); }
-      48%  { clip: rect(0, 9999px, 18%, 0); }
-      54%  { clip: rect(0, 9999px, 0, 0); }
-      100% { clip: rect(0, 9999px, 0, 0); }
-    }
-    @keyframes glitchBottom {
-      0%   { clip: rect(0, 9999px, 0, 0); }
-      14%  { clip: rect(62%, 9999px, 100%, 0); }
-      22%  { clip: rect(0, 9999px, 0, 0); }
-      56%  { clip: rect(74%, 9999px, 100%, 0); }
-      64%  { clip: rect(0, 9999px, 0, 0); }
-      100% { clip: rect(0, 9999px, 0, 0); }
-    }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
-    /* ----- Audio Unmute Nudge ----- */
-    #unmute {
-      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
-      display: none; padding: 10px 14px; border-radius: 10px;
-      background: rgba(0,0,0,0.78); color: #fff;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(6px);
-      z-index: 3; cursor: pointer; user-select: none;
-      pointer-events: auto;
-    }
-    #unmute:active { transform: translateX(-50%) scale(0.98); }
+        /* ======================== LOADER ======================== */
+        #loader {
+            position: fixed; inset: 0; z-index: 99999;
+            background: var(--bg-primary);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-prompt {
+            font-family: var(--font-mono);
+            font-size: 14px; color: var(--green);
+        }
+        .loader-cursor {
+            display: inline-block; width: 8px; height: 16px;
+            background: var(--green); margin-left: 4px;
+            animation: blink 1s step-end infinite;
+        }
+        .loader-bar-track {
+            width: 240px; height: 3px; background: var(--bg-tertiary);
+            border-radius: 2px; margin-top: 24px; overflow: hidden;
+        }
+        .loader-bar {
+            width: 0%; height: 100%; background: var(--accent);
+            border-radius: 2px; transition: width 0.4s ease;
+        }
 
-    /* Hide native controls; JS controls playback */
-    audio { display: none; }
-  </style>
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ======================== NAV ======================== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+        nav.nav-hidden { transform: translateY(-100%); }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 24px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-mono); font-weight: 600;
+            font-size: 15px; color: var(--green);
+            text-decoration: none;
+        }
+        .nav-logo span { color: var(--text-secondary); }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a {
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-secondary); text-decoration: none;
+            padding: 6px 12px; border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary); background: var(--bg-tertiary);
+        }
+        .nav-github {
+            display: flex; align-items: center; gap: 6px;
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-secondary); text-decoration: none;
+            padding: 6px 14px; border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .nav-github:hover { color: var(--text-primary); border-color: var(--border-bright); background: var(--bg-tertiary); }
+        .nav-github svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .nav-mobile-toggle {
+            display: none; background: none; border: none; cursor: pointer;
+            color: var(--text-secondary); padding: 4px;
+        }
+        .nav-mobile-toggle svg { width: 24px; height: 24px; stroke: currentColor; fill: none; }
+
+        /* ======================== HERO ======================== */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center;
+            position: relative; overflow: hidden;
+            padding: 80px 24px 60px;
+        }
+        .hero-bg {
+            position: absolute; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 40%, rgba(88, 166, 255, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 60%, rgba(63, 185, 80, 0.04) 0%, transparent 50%);
+        }
+        .hero-grid {
+            position: absolute; inset: 0; z-index: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.06;
+            mask-image: radial-gradient(ellipse 70% 70% at 30% 50%, black, transparent);
+            -webkit-mask-image: radial-gradient(ellipse 70% 70% at 30% 50%, black, transparent);
+        }
+
+        .hero-inner {
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 80px; align-items: center;
+            position: relative; z-index: 1;
+        }
+        .hero-text { max-width: 560px; }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--green); background: var(--green-dim);
+            padding: 6px 14px; border-radius: 20px;
+            margin-bottom: 24px;
+        }
+        .hero-tag .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        .hero-name {
+            font-size: clamp(40px, 6vw, 64px); font-weight: 800;
+            line-height: 1.1; letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+        .hero-name .accent { color: var(--accent); }
+        .hero-role {
+            font-family: var(--font-mono); font-size: clamp(14px, 2vw, 17px);
+            color: var(--text-secondary); margin-bottom: 24px;
+            font-weight: 400;
+        }
+        .hero-desc {
+            font-size: 17px; color: var(--text-secondary);
+            line-height: 1.7; margin-bottom: 36px; max-width: 480px;
+        }
+        .hero-stats {
+            display: flex; gap: 32px; margin-bottom: 36px;
+        }
+        .hero-stat-num {
+            font-family: var(--font-mono); font-size: 28px;
+            font-weight: 700; color: var(--text-primary);
+        }
+        .hero-stat-label {
+            font-size: 13px; color: var(--text-tertiary);
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono); font-size: 14px;
+            padding: 10px 20px; border-radius: 8px;
+            text-decoration: none; cursor: pointer;
+            transition: all 0.2s ease; border: none;
+        }
+        .btn-primary {
+            background: var(--accent); color: var(--bg-primary); font-weight: 600;
+        }
+        .btn-primary:hover { background: #79bbff; transform: translateY(-1px); }
+        .btn-ghost {
+            background: transparent; color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { color: var(--text-primary); border-color: var(--border-bright); background: var(--bg-tertiary); }
+        .btn svg { width: 16px; height: 16px; }
+
+        /* Hero terminal */
+        .hero-terminal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 80px rgba(88,166,255,0.03);
+        }
+        .term-bar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+        .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .term-dot.r { background: var(--red); }
+        .term-dot.y { background: var(--yellow); }
+        .term-dot.g { background: var(--green); }
+        .term-title {
+            flex: 1; text-align: center;
+            font-family: var(--font-mono); font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        .term-body {
+            padding: 20px; font-family: var(--font-mono);
+            font-size: 13px; line-height: 1.8;
+            min-height: 320px;
+        }
+        .term-line { opacity: 0; animation: termFadeIn 0.3s ease forwards; }
+        .term-prompt { color: var(--green); }
+        .term-path { color: var(--accent); }
+        .term-cmd { color: var(--text-primary); }
+        .term-comment { color: var(--text-tertiary); }
+        .term-key { color: var(--purple); }
+        .term-val { color: var(--orange); }
+        .term-str { color: var(--green); }
+        .term-cursor-inline {
+            display: inline-block; width: 8px; height: 15px;
+            background: var(--green); vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes termFadeIn { to { opacity: 1; } }
+
+        /* ======================== SECTION SHARED ======================== */
+        section { padding: 100px 24px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-header { margin-bottom: 56px; }
+        .section-label {
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--accent); text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px); font-weight: 700;
+            letter-spacing: -0.02em; margin-bottom: 12px;
+        }
+        .section-desc {
+            font-size: 16px; color: var(--text-secondary);
+            max-width: 560px;
+        }
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ======================== FEATURED ======================== */
+        .featured-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 16px;
+        }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px;
+            transition: all 0.25s ease;
+            position: relative; overflow: hidden;
+            text-decoration: none; color: inherit;
+            display: flex; flex-direction: column;
+        }
+        .project-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            opacity: 0; transition: opacity 0.25s;
+        }
+        .project-card:hover {
+            border-color: var(--border-bright);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .project-card:hover::before { opacity: 1; }
+        .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .card-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .card-icon.ps { background: var(--accent-dim); color: var(--accent); }
+        .card-icon.py { background: var(--green-dim); color: var(--green); }
+        .card-icon.web { background: var(--orange-dim); color: var(--orange); }
+        .card-icon.ext { background: var(--purple-dim); color: var(--purple); }
+        .card-icon.sec { background: var(--yellow-dim); color: var(--yellow); }
+        .card-icon.cs { background: rgba(248, 81, 73, 0.15); color: var(--red); }
+
+        .card-stars {
+            display: flex; align-items: center; gap: 4px;
+            font-family: var(--font-mono); font-size: 12px;
+            color: var(--yellow);
+        }
+        .card-stars svg { width: 14px; height: 14px; fill: var(--yellow); }
+        .card-name {
+            font-family: var(--font-mono); font-size: 16px;
+            font-weight: 600; margin-bottom: 8px; color: var(--text-primary);
+        }
+        .card-desc {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.5; flex: 1; margin-bottom: 16px;
+        }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .card-tag {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-tertiary); background: var(--bg-tertiary);
+            padding: 3px 10px; border-radius: 12px;
+        }
+        .card-install {
+            margin-top: 14px; padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--text-tertiary); word-break: break-all;
+            cursor: pointer; position: relative;
+        }
+        .card-install:hover { color: var(--text-secondary); }
+        .card-install .copy-hint {
+            position: absolute; right: 0; top: 14px;
+            font-size: 10px; color: var(--accent);
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .card-install:hover .copy-hint { opacity: 1; }
+
+        /* ======================== CATALOG ======================== */
+        .catalog-filters {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 32px;
+        }
+        .filter-btn {
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-secondary); background: var(--bg-secondary);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 16px; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .filter-btn:hover { color: var(--text-primary); border-color: var(--border-bright); }
+        .filter-btn.active {
+            color: var(--accent); border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .filter-count {
+            font-size: 11px; background: var(--bg-tertiary);
+            padding: 1px 6px; border-radius: 8px;
+        }
+        .filter-btn.active .filter-count { background: rgba(88,166,255,0.2); }
+
+        .catalog-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 12px;
+        }
+        .catalog-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px; border-radius: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid transparent;
+            text-decoration: none; color: inherit;
+            transition: all 0.2s;
+        }
+        .catalog-item:hover {
+            border-color: var(--border);
+            background: var(--bg-card);
+        }
+        .catalog-item.hidden { display: none; }
+        .catalog-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        }
+        .catalog-dot.ps { background: var(--accent); }
+        .catalog-dot.py { background: var(--green); }
+        .catalog-dot.web { background: var(--orange); }
+        .catalog-dot.ext { background: var(--purple); }
+        .catalog-dot.sec { background: var(--yellow); }
+        .catalog-dot.media { background: var(--red); }
+        .catalog-dot.cs { background: #f85149; }
+        .catalog-dot.guide { background: var(--text-tertiary); }
+        .catalog-name {
+            font-family: var(--font-mono); font-size: 14px;
+            font-weight: 500; color: var(--text-primary);
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .catalog-desc {
+            font-size: 13px; color: var(--text-tertiary);
+            flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .catalog-live {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--green); background: var(--green-dim);
+            padding: 2px 8px; border-radius: 10px;
+            text-decoration: none; white-space: nowrap;
+        }
+
+        /* ======================== SKILLS ======================== */
+        .skills-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .skill-card {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; padding: 20px; text-align: center;
+            transition: all 0.2s;
+        }
+        .skill-card:hover { border-color: var(--border-bright); transform: translateY(-1px); }
+        .skill-icon { font-size: 28px; margin-bottom: 8px; }
+        .skill-name {
+            font-family: var(--font-mono); font-size: 13px;
+            font-weight: 600; color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .skill-sub {
+            font-size: 12px; color: var(--text-tertiary);
+        }
+
+        /* ======================== ABOUT ======================== */
+        .about-content {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+            align-items: start;
+        }
+        .about-text p {
+            font-size: 16px; color: var(--text-secondary);
+            line-height: 1.8; margin-bottom: 20px;
+        }
+        .about-text strong { color: var(--text-primary); }
+        .about-terminal {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden;
+        }
+        .about-term-body {
+            padding: 20px; font-family: var(--font-mono);
+            font-size: 13px; line-height: 2;
+        }
+
+        /* ======================== FOOTER ======================== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+        }
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .footer-text {
+            font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-tertiary);
+        }
+        .footer-links { display: flex; gap: 16px; }
+        .footer-links a {
+            color: var(--text-tertiary); text-decoration: none;
+            font-family: var(--font-mono); font-size: 13px;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ======================== ANIMATIONS ======================== */
+        .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .stagger-1 { transition-delay: 0.05s; }
+        .stagger-2 { transition-delay: 0.1s; }
+        .stagger-3 { transition-delay: 0.15s; }
+        .stagger-4 { transition-delay: 0.2s; }
+        .stagger-5 { transition-delay: 0.25s; }
+        .stagger-6 { transition-delay: 0.3s; }
+
+        /* ======================== TOAST ======================== */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg-secondary); color: var(--text-primary);
+            font-family: var(--font-mono); font-size: 13px;
+            padding: 10px 20px; border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            opacity: 0; transition: all 0.3s; z-index: 9999;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ======================== RESPONSIVE ======================== */
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+            .hero-terminal { max-width: 500px; }
+            .about-content { grid-template-columns: 1fr; }
+            .featured-grid { grid-template-columns: 1fr; }
+            .catalog-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            section { padding: 60px 16px; }
+            .nav-links { display: none; }
+            .nav-mobile-toggle { display: block; }
+            .nav-links.open {
+                display: flex; flex-direction: column;
+                position: absolute; top: 56px; left: 0; right: 0;
+                background: rgba(13, 17, 23, 0.95);
+                backdrop-filter: blur(16px);
+                border-bottom: 1px solid var(--border);
+                padding: 12px;
+            }
+            .hero { padding: 100px 16px 40px; min-height: auto; }
+            .hero-stats { gap: 20px; }
+            .hero-stat-num { font-size: 22px; }
+            .skills-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+            .catalog-desc { display: none; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Background trailer video (muted so it can autoplay) -->
-  <div id="bg-video-wrap" class="layer" aria-hidden="true">
-    <video id="bg-video"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      disablepictureinpicture
-      aria-hidden="true"
-    >
-      <!-- Direct raw host for reliability -->
-      <source src="https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/trailer/ATLAST.mp4" type="video/mp4" />
-    </video>
-    <div id="bg-overlays"></div>
-  </div>
+<!-- Loader -->
+<div id="loader">
+    <div class="loader-prompt">initializing portfolio<span class="loader-cursor"></span></div>
+    <div class="loader-bar-track"><div class="loader-bar" id="loaderBar"></div></div>
+</div>
 
-  <!-- Centered titles -->
-  <div id="center" class="layer" role="main" aria-label="coming soon">
-    <div class="title-wrap">
-      <h1 class="brand">ATLAST</h1>
-      <div class="glitch" data-text="coming soon">coming soon</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Navigation -->
+<nav id="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">matt<span>@</span>sysadmin<span>:~$</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="#featured">Projects</a>
+            <a href="#catalog">Catalog</a>
+            <a href="#skills">Stack</a>
+            <a href="#about">About</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="nav-github">
+                <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub
+            </a>
+            <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
+                <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
     </div>
-  </div>
+</nav>
 
-  <!-- Background music: autoplay muted; tap to unmute -->
-  <audio id="bg-audio" preload="auto" autoplay muted playsinline crossorigin="anonymous"></audio>
-  <div id="unmute" role="button" aria-label="Unmute audio">Tap to unmute</div>
+<!-- Hero -->
+<section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="hero-tag"><span class="dot"></span> Available for collaboration</div>
+            <h1 class="hero-name">Matt <span class="accent">Parker</span></h1>
+            <p class="hero-role">Sr. Systems Administrator & Builder</p>
+            <p class="hero-desc">
+                I build the tools I wish existed. Zero-config utilities, browser enhancements, desktop applications, and automation scripts — all open source, all ready to run.
+            </p>
+            <div class="hero-stats">
+                <div>
+                    <div class="hero-stat-num">84+</div>
+                    <div class="hero-stat-label">Repositories</div>
+                </div>
+                <div>
+                    <div class="hero-stat-num">6</div>
+                    <div class="hero-stat-label">Languages</div>
+                </div>
+                <div>
+                    <div class="hero-stat-num">9</div>
+                    <div class="hero-stat-label">Live Apps</div>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <a href="#featured" class="btn btn-primary">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>
+                    View Projects
+                </a>
+                <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn btn-ghost">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    GitHub Profile
+                </a>
+            </div>
+        </div>
+        <div class="hero-terminal">
+            <div class="term-bar">
+                <span class="term-dot r"></span>
+                <span class="term-dot y"></span>
+                <span class="term-dot g"></span>
+                <span class="term-title">matt@sysadmin: ~/portfolio</span>
+            </div>
+            <div class="term-body" id="termBody"></div>
+        </div>
+    </div>
+</section>
 
-  <script>
-    /* ===========================
-       Background Audio
-    ============================ */
-    const SONG_URL = 'https://raw.githubusercontent.com/SysAdminDoc/sysadmindoc.github.io/main/songs/Honour.mp3';
-    const audio = document.getElementById('bg-audio');
-    const unmute = document.getElementById('unmute');
-    const titleWrap = document.querySelector('.title-wrap');
+<div class="section-divider"></div>
 
-    function showUnmute(){ unmute.style.display = 'inline-block'; }
-    function hideUnmute(){ unmute.style.display = 'none'; }
+<!-- Featured Projects -->
+<section id="featured">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <div class="section-label">// Featured</div>
+            <h2 class="section-title">Top Projects</h2>
+            <p class="section-desc">Handpicked highlights from 84+ repositories — the ones people keep coming back to.</p>
+        </div>
+        <div class="featured-grid">
+            <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="project-card reveal stagger-1">
+                <div class="card-top">
+                    <div class="card-icon ps">PS</div>
+                    <div class="card-stars"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 12</div>
+                </div>
+                <div class="card-name">win11-nvme-driver-patcher</div>
+                <div class="card-desc">GUI to enable Windows Server 2025 NVMe driver on Windows 11 — fixes performance issues on modern SSDs.</div>
+                <div class="card-tags">
+                    <span class="card-tag">PowerShell</span>
+                    <span class="card-tag">WPF</span>
+                    <span class="card-tag">Driver</span>
+                </div>
+            </a>
+            <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="project-card reveal stagger-2">
+                <div class="card-top">
+                    <div class="card-icon ps">PS</div>
+                    <div class="card-stars"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 5</div>
+                </div>
+                <div class="card-name">Network_Security_Auditor</div>
+                <div class="card-desc">67 automated checks across 8 security domains with MITRE ATT&CK mapping. Enterprise-grade network auditing.</div>
+                <div class="card-tags">
+                    <span class="card-tag">PowerShell</span>
+                    <span class="card-tag">Security</span>
+                    <span class="card-tag">MITRE</span>
+                </div>
+            </a>
+            <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="project-card reveal stagger-3">
+                <div class="card-top">
+                    <div class="card-icon ps">PS</div>
+                    <div class="card-stars"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 5</div>
+                </div>
+                <div class="card-name">LibreSpot</div>
+                <div class="card-desc">Spotify customization — automates Spicetify installation, applies themes, manages extensions. One command.</div>
+                <div class="card-tags">
+                    <span class="card-tag">PowerShell</span>
+                    <span class="card-tag">Spotify</span>
+                    <span class="card-tag">Themes</span>
+                </div>
+            </a>
+            <a href="https://github.com/SysAdminDoc/YTKit" target="_blank" rel="noopener" class="project-card reveal stagger-4">
+                <div class="card-top">
+                    <div class="card-icon ext">JS</div>
+                    <div class="card-stars"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> 2</div>
+                </div>
+                <div class="card-name">YTKit</div>
+                <div class="card-desc">Ultimate YouTube customization userscript — UI overhaul, ad removal, playback control, and dozens of quality-of-life tweaks.</div>
+                <div class="card-tags">
+                    <span class="card-tag">Userscript</span>
+                    <span class="card-tag">YouTube</span>
+                    <span class="card-tag">Tampermonkey</span>
+                </div>
+            </a>
+            <a href="https://github.com/SysAdminDoc/PyWall" target="_blank" rel="noopener" class="project-card reveal stagger-5">
+                <div class="card-top">
+                    <div class="card-icon py">Py</div>
+                </div>
+                <div class="card-name">PyWall</div>
+                <div class="card-desc">Real-time Windows Firewall manager and network monitor. PyQt6 desktop app with dark theme and live traffic analysis.</div>
+                <div class="card-tags">
+                    <span class="card-tag">Python</span>
+                    <span class="card-tag">PyQt6</span>
+                    <span class="card-tag">Firewall</span>
+                </div>
+            </a>
+            <a href="https://sysadmindoc.github.io/SPECTRE/" target="_blank" rel="noopener" class="project-card reveal stagger-6">
+                <div class="card-top">
+                    <div class="card-icon web">WEB</div>
+                    <span class="catalog-live">LIVE</span>
+                </div>
+                <div class="card-name">SPECTRE</div>
+                <div class="card-desc">Intelligence aggregator platform — OSINT data feeds consolidated into a single operational dashboard.</div>
+                <div class="card-tags">
+                    <span class="card-tag">HTML/JS</span>
+                    <span class="card-tag">OSINT</span>
+                    <span class="card-tag">Dashboard</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
 
-    function fadeVolume(to = 0.9, ms = 800) {
-      const from = audio.volume || 0.01;
-      const steps = Math.max(1, Math.round(ms/16));
-      let i = 0;
-      const id = setInterval(()=>{
-        i++;
-        audio.volume = from + (to - from)*(i/steps);
-        if (i >= steps) clearInterval(id);
-      }, 16);
+<div class="section-divider"></div>
+
+<!-- Live Web Apps -->
+<section id="live" style="padding-top: 60px; padding-bottom: 60px;">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <div class="section-label">// Live</div>
+            <h2 class="section-title">Try in Your Browser</h2>
+            <p class="section-desc">No install, no signup — click and go.</p>
+        </div>
+        <div class="featured-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+            <a href="https://sysadmindoc.github.io/Openshop/" target="_blank" rel="noopener" class="project-card reveal stagger-1" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">Openshop</div>
+                <div class="card-desc">Browser-based image editor — layers, AI tools, PSD import</div>
+            </a>
+            <a href="https://sysadmindoc.github.io/StormviewRadar/" target="_blank" rel="noopener" class="project-card reveal stagger-2" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">StormviewRadar</div>
+                <div class="card-desc">Open source weather radar viewer</div>
+            </a>
+            <a href="https://sysadmindoc.github.io/SkyTrack/" target="_blank" rel="noopener" class="project-card reveal stagger-3" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">SkyTrack</div>
+                <div class="card-desc">Real-time aircraft tracker</div>
+            </a>
+            <a href="https://sysadmindoc.github.io/CoolSites/" target="_blank" rel="noopener" class="project-card reveal stagger-4" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">CoolSites</div>
+                <div class="card-desc">470+ curated free tools and open source projects</div>
+            </a>
+            <a href="https://sysadmindoc.github.io/Multistreamer/" target="_blank" rel="noopener" class="project-card reveal stagger-5" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">Multistreamer</div>
+                <div class="card-desc">Multi-video streaming viewer with chat</div>
+            </a>
+            <a href="https://sysadmindoc.github.io/ImageForge/" target="_blank" rel="noopener" class="project-card reveal stagger-6" style="padding: 18px;">
+                <div class="card-top"><div class="card-icon web">WEB</div><span class="catalog-live">LIVE</span></div>
+                <div class="card-name">ImageForge</div>
+                <div class="card-desc">Open source image converter</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Full Catalog -->
+<section id="catalog">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <div class="section-label">// Catalog</div>
+            <h2 class="section-title">All Repositories</h2>
+            <p class="section-desc">The full collection. Filter by category to find what you need.</p>
+        </div>
+        <div class="catalog-filters reveal">
+            <button class="filter-btn active" data-filter="all">All <span class="filter-count">70</span></button>
+            <button class="filter-btn" data-filter="ps">PowerShell <span class="filter-count">12</span></button>
+            <button class="filter-btn" data-filter="py">Python <span class="filter-count">21</span></button>
+            <button class="filter-btn" data-filter="web">Web Apps <span class="filter-count">9</span></button>
+            <button class="filter-btn" data-filter="ext">Extensions <span class="filter-count">16</span></button>
+            <button class="filter-btn" data-filter="sec">Security <span class="filter-count">4</span></button>
+            <button class="filter-btn" data-filter="media">Media <span class="filter-count">4</span></button>
+            <button class="filter-btn" data-filter="cs">Desktop <span class="filter-count">2</span></button>
+            <button class="filter-btn" data-filter="guide">Guides <span class="filter-count">2</span></button>
+        </div>
+        <div class="catalog-grid" id="catalogGrid">
+            <!-- PowerShell -->
+            <a href="https://github.com/SysAdminDoc/win11-nvme-driver-patcher" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">win11-nvme-driver-patcher</span><span class="catalog-desc">NVMe driver patcher for Win11</span></a>
+            <a href="https://github.com/SysAdminDoc/LibreSpot" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">LibreSpot</span><span class="catalog-desc">Spotify customization</span></a>
+            <a href="https://github.com/SysAdminDoc/Network_Security_Auditor" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">Network_Security_Auditor</span><span class="catalog-desc">67 automated security checks</span></a>
+            <a href="https://github.com/SysAdminDoc/Wingetter" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">Wingetter</span><span class="catalog-desc">Bulk install via Winget</span></a>
+            <a href="https://github.com/SysAdminDoc/Start-Menu-Organizer" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">Start-Menu-Organizer</span><span class="catalog-desc">Clean & reorganize Start Menu</span></a>
+            <a href="https://github.com/SysAdminDoc/PathForge" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">PathForge</span><span class="catalog-desc">Filesystem repair & path management</span></a>
+            <a href="https://github.com/SysAdminDoc/MonitorControl" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">MonitorControl</span><span class="catalog-desc">DDC/CI monitor control</span></a>
+            <a href="https://github.com/SysAdminDoc/PfblockerngManager" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">PfblockerngManager</span><span class="catalog-desc">pfBlockerNG GUI manager</span></a>
+            <a href="https://github.com/SysAdminDoc/npp-sc-scanner" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">npp-sc-scanner</span><span class="catalog-desc">Notepad++ supply chain scanner</span></a>
+            <a href="https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">JDownloader-2-Ultimate-Manager</span><span class="catalog-desc">JDownloader 2 automation</span></a>
+            <a href="https://github.com/SysAdminDoc/YTYT-Downloader" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">YTYT-Downloader</span><span class="catalog-desc">YouTube to VLC / yt-dlp</span></a>
+            <a href="https://github.com/SysAdminDoc/ThankYouJeffrey" target="_blank" rel="noopener" class="catalog-item" data-cat="ps"><span class="catalog-dot ps"></span><span class="catalog-name">ThankYouJeffrey</span><span class="catalog-desc">Tribute to Jeffrey Snover</span></a>
+            <!-- Python -->
+            <a href="https://github.com/SysAdminDoc/PyWall" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">PyWall</span><span class="catalog-desc">Firewall manager & network monitor</span></a>
+            <a href="https://github.com/SysAdminDoc/HostsGuard" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">HostsGuard</span><span class="catalog-desc">Network privacy manager</span></a>
+            <a href="https://github.com/SysAdminDoc/PyShop" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">PyShop</span><span class="catalog-desc">Open source Photoshop alternative</span></a>
+            <a href="https://github.com/SysAdminDoc/SwiftShot" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">SwiftShot</span><span class="catalog-desc">Greenshot-inspired screenshot tool</span></a>
+            <a href="https://github.com/SysAdminDoc/Flux" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">Flux</span><span class="catalog-desc">Privacy-focused BitTorrent client</span></a>
+            <a href="https://github.com/SysAdminDoc/GitForge" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">GitForge</span><span class="catalog-desc">GitHub repo manager</span></a>
+            <a href="https://github.com/SysAdminDoc/UniversalCompiler" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">UniversalCompiler</span><span class="catalog-desc">Script-to-EXE compiler</span></a>
+            <a href="https://github.com/SysAdminDoc/OpenCut" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">OpenCut</span><span class="catalog-desc">Premiere Pro automation</span></a>
+            <a href="https://github.com/SysAdminDoc/bypassnroGen" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">bypassnroGen</span><span class="catalog-desc">Win11 OOBE bypass generator</span></a>
+            <a href="https://github.com/SysAdminDoc/MSStoreHelper" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">MSStoreHelper</span><span class="catalog-desc">MS Store apps without the Store</span></a>
+            <a href="https://github.com/SysAdminDoc/Qwen3-TTS-Studio" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">Qwen3-TTS-Studio</span><span class="catalog-desc">AI voice generator</span></a>
+            <a href="https://github.com/SysAdminDoc/AppList" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">AppList</span><span class="catalog-desc">Installed app cataloger</span></a>
+            <a href="https://github.com/SysAdminDoc/PillSleepTracker" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">PillSleepTracker</span><span class="catalog-desc">Medication & sleep tracker</span></a>
+            <a href="https://github.com/SysAdminDoc/Mattpad" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">Mattpad</span><span class="catalog-desc">Minimal notepad</span></a>
+            <a href="https://github.com/SysAdminDoc/HostsFileGet" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">HostsFileGet</span><span class="catalog-desc">Hosts file manager GUI</span></a>
+            <a href="https://github.com/SysAdminDoc/Bookmark-Organizer-Pro" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">Bookmark-Organizer-Pro</span><span class="catalog-desc">AI bookmark categorizer</span></a>
+            <a href="https://github.com/SysAdminDoc/QR-Code-Generator-Pro" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">QR-Code-Generator-Pro</span><span class="catalog-desc">98 visual style presets</span></a>
+            <a href="https://github.com/SysAdminDoc/uBlock-Stylus-Converter" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">uBlock-Stylus-Converter</span><span class="catalog-desc">uBlock to Stylus CSS converter</span></a>
+            <a href="https://github.com/SysAdminDoc/KeepSyncNotes" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">KeepSyncNotes</span><span class="catalog-desc">Google Keep importer</span></a>
+            <a href="https://github.com/SysAdminDoc/PDFedit" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">PDFedit</span><span class="catalog-desc">Simple PDF editor</span></a>
+            <a href="https://github.com/SysAdminDoc/CSV_Power_Tool" target="_blank" rel="noopener" class="catalog-item" data-cat="py"><span class="catalog-dot py"></span><span class="catalog-name">CSV_Power_Tool</span><span class="catalog-desc">Bulk CSV processing</span></a>
+            <!-- Web -->
+            <a href="https://github.com/SysAdminDoc/Openshop" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">Openshop</span><span class="catalog-desc">Browser image editor</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/StormviewRadar" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">StormviewRadar</span><span class="catalog-desc">Weather radar viewer</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/SkyTrack" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">SkyTrack</span><span class="catalog-desc">Aircraft tracker</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/SPECTRE" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">SPECTRE</span><span class="catalog-desc">Intelligence aggregator</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/CoolSites" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">CoolSites</span><span class="catalog-desc">470+ curated tools</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/Multistreamer" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">Multistreamer</span><span class="catalog-desc">Multi-video viewer</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/ImageForge" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">ImageForge</span><span class="catalog-desc">Image converter</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/BookmarkVault" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">BookmarkVault</span><span class="catalog-desc">Bookmark manager</span><span class="catalog-live">LIVE</span></a>
+            <a href="https://github.com/SysAdminDoc/Text-Filter-Editor" target="_blank" rel="noopener" class="catalog-item" data-cat="web"><span class="catalog-dot web"></span><span class="catalog-name">Text-Filter-Editor</span><span class="catalog-desc">Text filter editor</span><span class="catalog-live">LIVE</span></a>
+            <!-- Extensions -->
+            <a href="https://github.com/SysAdminDoc/YTKit" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">YTKit</span><span class="catalog-desc">YouTube customization</span></a>
+            <a href="https://github.com/SysAdminDoc/YoutubeAdblock" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">YoutubeAdblock</span><span class="catalog-desc">Undetectable YT ad blocker</span></a>
+            <a href="https://github.com/SysAdminDoc/MediaDL" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">MediaDL</span><span class="catalog-desc">Media downloader</span></a>
+            <a href="https://github.com/SysAdminDoc/StyleCraft" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">StyleCraft</span><span class="catalog-desc">CSS style editor extension</span></a>
+            <a href="https://github.com/SysAdminDoc/UserScript-Finder" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">UserScript-Finder</span><span class="catalog-desc">Discover userscripts for any site</span></a>
+            <a href="https://github.com/SysAdminDoc/EspressoMonkey" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">EspressoMonkey</span><span class="catalog-desc">MV3 userscript manager</span></a>
+            <a href="https://github.com/SysAdminDoc/Reddit-Enhancement-Continued" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">Reddit-Enhancement-Continued</span><span class="catalog-desc">old.reddit.com suite</span></a>
+            <a href="https://github.com/SysAdminDoc/Doordash-Enhanced" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">Doordash-Enhanced</span><span class="catalog-desc">DoorDash dark mode & features</span></a>
+            <a href="https://github.com/SysAdminDoc/DarkModer" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">DarkModer</span><span class="catalog-desc">Dark Reader userscript</span></a>
+            <a href="https://github.com/SysAdminDoc/GeminiBuddy" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">GeminiBuddy</span><span class="catalog-desc">Gemini productivity features</span></a>
+            <a href="https://github.com/SysAdminDoc/RumbleX" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">RumbleX</span><span class="catalog-desc">Rumble.com enhancement</span></a>
+            <a href="https://github.com/SysAdminDoc/DiggSuite" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">DiggSuite</span><span class="catalog-desc">Digg multi-theme UI</span></a>
+            <a href="https://github.com/SysAdminDoc/BetterNext" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">BetterNext</span><span class="catalog-desc">Enhanced NextDNS panel</span></a>
+            <a href="https://github.com/SysAdminDoc/gSearchTweaks" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">gSearchTweaks</span><span class="catalog-desc">Google toolbar additions</span></a>
+            <a href="https://github.com/SysAdminDoc/ScrollJumper" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">ScrollJumper</span><span class="catalog-desc">Right-click scrollbar jump</span></a>
+            <a href="https://github.com/SysAdminDoc/HNCC" target="_blank" rel="noopener" class="catalog-item" data-cat="ext"><span class="catalog-dot ext"></span><span class="catalog-name">HNCC</span><span class="catalog-desc">HN collapsible comments</span></a>
+            <!-- Security -->
+            <a href="https://github.com/SysAdminDoc/HOSTShield" target="_blank" rel="noopener" class="catalog-item" data-cat="sec"><span class="catalog-dot sec"></span><span class="catalog-name">HOSTShield</span><span class="catalog-desc">Categorized hosts files</span></a>
+            <a href="https://github.com/SysAdminDoc/pfSenseSuite" target="_blank" rel="noopener" class="catalog-item" data-cat="sec"><span class="catalog-dot sec"></span><span class="catalog-name">pfSenseSuite</span><span class="catalog-desc">pfSense toolkit</span></a>
+            <a href="https://github.com/SysAdminDoc/NextDNSPanel" target="_blank" rel="noopener" class="catalog-item" data-cat="sec"><span class="catalog-dot sec"></span><span class="catalog-name">NextDNSPanel</span><span class="catalog-desc">NextDNS enhancements</span></a>
+            <a href="https://github.com/SysAdminDoc/ESET" target="_blank" rel="noopener" class="catalog-item" data-cat="sec"><span class="catalog-dot sec"></span><span class="catalog-name">ESET</span><span class="catalog-desc">ESET port & address lists</span></a>
+            <!-- Media -->
+            <a href="https://github.com/SysAdminDoc/VideoCrush" target="_blank" rel="noopener" class="catalog-item" data-cat="media"><span class="catalog-dot media"></span><span class="catalog-name">VideoCrush</span><span class="catalog-desc">Video compression</span></a>
+            <a href="https://github.com/SysAdminDoc/yt_livestream_downloader" target="_blank" rel="noopener" class="catalog-item" data-cat="media"><span class="catalog-dot media"></span><span class="catalog-name">yt_livestream_downloader</span><span class="catalog-desc">Live stream downloader</span></a>
+            <a href="https://github.com/SysAdminDoc/MediaForge" target="_blank" rel="noopener" class="catalog-item" data-cat="media"><span class="catalog-dot media"></span><span class="catalog-name">MediaForge</span><span class="catalog-desc">Multi-format converter</span></a>
+            <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="catalog-item" data-cat="media"><span class="catalog-dot media"></span><span class="catalog-name">VideoSubtitleRemover</span><span class="catalog-desc">Hardcoded subtitle removal</span></a>
+            <!-- Desktop -->
+            <a href="https://github.com/SysAdminDoc/DeepPurge" target="_blank" rel="noopener" class="catalog-item" data-cat="cs"><span class="catalog-dot cs"></span><span class="catalog-name">DeepPurge</span><span class="catalog-desc">Thorough Windows uninstaller</span></a>
+            <a href="https://github.com/SysAdminDoc/UniversalConverterX" target="_blank" rel="noopener" class="catalog-item" data-cat="cs"><span class="catalog-dot cs"></span><span class="catalog-name">UniversalConverterX</span><span class="catalog-desc">1000+ format converter</span></a>
+            <!-- Guides -->
+            <a href="https://github.com/SysAdminDoc/AI_Realism" target="_blank" rel="noopener" class="catalog-item" data-cat="guide"><span class="catalog-dot guide"></span><span class="catalog-name">AI_Realism</span><span class="catalog-desc">AI video generation guide</span></a>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Skills -->
+<section id="skills">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <div class="section-label">// Stack</div>
+            <h2 class="section-title">Languages & Tools</h2>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card reveal stagger-1"><div class="skill-icon" style="color:var(--accent);">PS</div><div class="skill-name">PowerShell</div><div class="skill-sub">WPF, Automation</div></div>
+            <div class="skill-card reveal stagger-2"><div class="skill-icon" style="color:var(--green);">Py</div><div class="skill-name">Python</div><div class="skill-sub">PyQt6, CLI Tools</div></div>
+            <div class="skill-card reveal stagger-3"><div class="skill-icon" style="color:var(--yellow);">JS</div><div class="skill-name">JavaScript</div><div class="skill-sub">Userscripts, Web Apps</div></div>
+            <div class="skill-card reveal stagger-4"><div class="skill-icon" style="color:var(--purple);">C#</div><div class="skill-name">C#</div><div class="skill-sub">WinForms, .NET</div></div>
+            <div class="skill-card reveal stagger-5"><div class="skill-icon" style="color:var(--orange);">&lt;/&gt;</div><div class="skill-name">HTML / CSS</div><div class="skill-sub">Single-file Apps</div></div>
+            <div class="skill-card reveal stagger-6"><div class="skill-icon" style="color:var(--red);">pfS</div><div class="skill-name">pfSense</div><div class="skill-sub">Firewall, DNS</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- About -->
+<section id="about">
+    <div class="section-inner">
+        <div class="section-header reveal">
+            <div class="section-label">// About</div>
+            <h2 class="section-title">Who I Am</h2>
+        </div>
+        <div class="about-content">
+            <div class="about-text reveal">
+                <p>I'm a <strong>Senior Systems Administrator</strong> by day — provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
+                <p>After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong>84+ public repositories</strong> across PowerShell, Python, JavaScript, and C#.</p>
+                <p>Everything I ship follows the same philosophy: <strong>zero configuration, dark theme, works on first launch.</strong> No setup wizards, no dependency hunts. If it takes more than one step to run, I haven't finished building it yet.</p>
+            </div>
+            <div class="about-terminal reveal stagger-2">
+                <div class="term-bar">
+                    <span class="term-dot r"></span>
+                    <span class="term-dot y"></span>
+                    <span class="term-dot g"></span>
+                    <span class="term-title">about.json</span>
+                </div>
+                <div class="about-term-body">
+                    <div><span class="term-comment">{</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"role"</span><span class="term-comment">:</span> <span class="term-str">"Sr. Systems Administrator"</span><span class="term-comment">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"focus"</span><span class="term-comment">:</span> <span class="term-str">"Automation & Open Source"</span><span class="term-comment">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"languages"</span><span class="term-comment">:</span> <span class="term-comment">[</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="term-str">"PowerShell"</span><span class="term-comment">,</span> <span class="term-str">"Python"</span><span class="term-comment">,</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="term-str">"JavaScript"</span><span class="term-comment">,</span> <span class="term-str">"C#"</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-comment">],</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"philosophy"</span><span class="term-comment">:</span> <span class="term-str">"Zero config. Dark theme."</span><span class="term-comment">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"repos"</span><span class="term-comment">:</span> <span class="term-val">84</span><span class="term-comment">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="term-key">"available"</span><span class="term-comment">:</span> <span class="term-val">true</span></div>
+                    <div><span class="term-comment">}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-text">Matt Parker &mdash; SysAdminDoc</div>
+        <div class="footer-links">
+            <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ======================== LOADER ========================
+const loaderBar = document.getElementById('loaderBar');
+let progress = 0;
+const loaderInterval = setInterval(() => {
+    progress += Math.random() * 30 + 10;
+    if (progress > 100) progress = 100;
+    loaderBar.style.width = progress + '%';
+    if (progress >= 100) {
+        clearInterval(loaderInterval);
+        setTimeout(() => document.getElementById('loader').classList.add('hidden'), 300);
+        setTimeout(() => document.getElementById('loader').remove(), 800);
     }
+}, 150);
 
-    async function tryPlay(unmuteNow = false) {
-      if (!audio.src) audio.src = SONG_URL;
-      if (unmuteNow) { audio.muted = false; audio.volume = Math.max(0.01, audio.volume || 0.01); }
-      try { await audio.play(); return true; } catch { return false; }
+// ======================== TERMINAL TYPING ========================
+const termLines = [
+    { prompt: true, path: '~/portfolio', cmd: 'cat profile.yml' },
+    { text: '' },
+    { key: 'name', val: 'Matt Parker' },
+    { key: 'role', val: 'Sr. Systems Administrator' },
+    { key: 'repos', val: '84+', valColor: 'term-val' },
+    { key: 'langs', val: 'PS1, Python, JS, C#' },
+    { key: 'theme', val: 'always dark' },
+    { text: '' },
+    { prompt: true, path: '~/portfolio', cmd: 'echo $PHILOSOPHY' },
+    { text: 'Zero config. Download it, launch it, done.', color: 'term-str' },
+    { text: '' },
+    { prompt: true, path: '~/portfolio', cmd: '', cursor: true },
+];
+
+const termBody = document.getElementById('termBody');
+let lineIdx = 0;
+function renderTermLine() {
+    if (lineIdx >= termLines.length) return;
+    const l = termLines[lineIdx];
+    const div = document.createElement('div');
+    div.classList.add('term-line');
+    div.style.animationDelay = (lineIdx * 0.08) + 's';
+
+    if (l.prompt) {
+        div.innerHTML = `<span class="term-prompt">matt@sysadmin</span><span class="term-comment">:</span><span class="term-path">${l.path}</span><span class="term-comment">$ </span><span class="term-cmd">${l.cmd}</span>${l.cursor ? '<span class="term-cursor-inline"></span>' : ''}`;
+    } else if (l.key) {
+        div.innerHTML = `<span class="term-key">${l.key}</span><span class="term-comment">: </span><span class="${l.valColor || 'term-str'}">${l.val}</span>`;
+    } else if (l.text !== undefined) {
+        if (l.text === '') { div.innerHTML = '&nbsp;'; }
+        else { div.innerHTML = `<span class="${l.color || 'term-cmd'}">${l.text}</span>`; }
     }
-
-    async function initAudio() {
-      audio.muted = true; audio.volume = 0.0;
-      await tryPlay(false);
-      const ok = await tryPlay(true);
-      if (ok && !audio.muted) {
-        fadeVolume(0.9, 900);
-      } else {
-        showUnmute();
-      }
+    termBody.appendChild(div);
+    lineIdx++;
+    if (lineIdx < termLines.length) {
+        setTimeout(renderTermLine, 80 + Math.random() * 40);
     }
+}
+setTimeout(renderTermLine, 600);
 
-    async function onUserUnmute() {
-      hideUnmute();
-      audio.muted = false; audio.volume = Math.max(0.01, audio.volume || 0.01);
-      const ok = await tryPlay(true);
-      if (ok) fadeVolume(0.9, 900);
-    }
+// ======================== NAV ========================
+let lastScroll = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+    const current = window.scrollY;
+    if (current > lastScroll && current > 100) nav.classList.add('nav-hidden');
+    else nav.classList.remove('nav-hidden');
+    lastScroll = current;
+}, { passive: true });
 
-    audio.addEventListener('ended', ()=>{
-      audio.currentTime = 0;
-      audio.play().catch(showUnmute);
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            navLinks.forEach(a => a.classList.remove('active'));
+            const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+            if (active) active.classList.add('active');
+        }
     });
+}, { rootMargin: '-40% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
 
-    ['pointerdown','touchstart','click','keydown'].forEach(evt=>{
-      document.addEventListener(evt, onUserUnmute, { once:true, capture:true });
+// Mobile toggle
+document.getElementById('mobileToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+
+// ======================== SCROLL REVEAL ========================
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.1 });
+reveals.forEach(el => revealObserver.observe(el));
+
+// ======================== CATALOG FILTER ========================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.catalog-item').forEach(item => {
+            item.classList.toggle('hidden', filter !== 'all' && item.dataset.cat !== filter);
+        });
     });
-    unmute.addEventListener('click', onUserUnmute);
-    titleWrap.addEventListener('click', onUserUnmute);
+});
 
-    document.addEventListener('visibilitychange', ()=>{
-      if (!document.hidden && audio.paused) { tryPlay(!audio.muted); }
+// ======================== TOAST ========================
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Copy install commands
+document.querySelectorAll('.card-install').forEach(el => {
+    el.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        navigator.clipboard.writeText(el.dataset.cmd || el.textContent.trim());
+        showToast('Copied to clipboard');
     });
-
-    document.addEventListener('DOMContentLoaded', initAudio);
-  </script>
+});
+</script>
 </body>
 </html>
