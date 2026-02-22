@@ -164,12 +164,6 @@
         .video-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
         .video-card:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
         .video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
-        .video-thumb img,.video-thumb video{width:100%;height:100%;object-fit:cover}
-        .video-placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--t3)}
-        .video-placeholder svg{width:48px;height:48px;stroke:var(--t3);fill:none;opacity:.4}
-        .video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);opacity:0;transition:opacity .3s;cursor:pointer}
-        .video-card:hover .video-play{opacity:1}
-        .video-play svg{width:56px;height:56px;fill:white;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
         .video-info{padding:20px}
         .video-title{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
         .video-desc{font-size:13px;color:var(--t2);line-height:1.5}
@@ -475,32 +469,24 @@
     <h3 style="font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px" class="rv">Aerial Footage</h3>
     <div class="video-grid" style="margin-bottom:60px">
         <div class="video-card card-enter">
-            <div class="video-thumb">
-                <div class="video-placeholder">
-                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
-                </div>
-                <!-- Replace with: <video src="drone-beach-1.mp4" muted loop poster="thumb1.jpg"></video> -->
-            </div>
-            <div class="video-info"><div class="video-title">Beach Sunset Flight</div><div class="video-desc">Aerial coastline footage at golden hour</div></div>
+            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/ARnfJXAF1og" title="Venice, Florida 9PM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-info"><div class="video-title">Venice, Florida 9PM</div><div class="video-desc">Night flight over Venice &mdash; December 2021</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb">
-                <div class="video-placeholder">
-                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
-                </div>
-            </div>
-            <div class="video-info"><div class="video-title">Coastal Flyover</div><div class="video-desc">High-altitude panoramic drone run</div></div>
+            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/waOMwX39NOg" title="Venice Beach, Florida Morning" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-info"><div class="video-title">Venice Beach, Florida</div><div class="video-desc">Morning aerial flight &mdash; June 2023</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb">
-                <div class="video-placeholder">
-                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
-                </div>
-            </div>
-            <div class="video-info"><div class="video-title">Wave Patterns</div><div class="video-desc">Low-altitude ocean tracking shot</div></div>
+            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/xnpOENxAx-k" title="Manasota Beach, Florida" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-info"><div class="video-title">Manasota Beach, Florida</div><div class="video-desc">Coastal drone footage over Manasota Key</div></div>
+        </div>
+        <div class="video-card card-enter">
+            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/PnlsSqa8DtQ" title="Venice, Florida Jetty" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-info"><div class="video-title">Venice Jetty</div><div class="video-desc">Aerial view of the Venice, Florida jetty</div></div>
+        </div>
+        <div class="video-card card-enter">
+            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/FVroPKvYgKQ" title="Nokomis Beach, Florida" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-info"><div class="video-title">Nokomis Beach, Florida</div><div class="video-desc">Drone flight over Nokomis Beach</div></div>
         </div>
     </div>
 
