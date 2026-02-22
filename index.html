@@ -159,6 +159,52 @@
         .atp{font-size:16px;color:var(--t2);line-height:1.8;margin-bottom:20px}.atp strong{color:var(--t1)}
         .atb{padding:20px;font-family:var(--mono);font-size:13px;line-height:2}
 
+        /* Beyond Code - Video */
+        .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
+        .video-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
+        .video-card:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
+        .video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .video-thumb img,.video-thumb video{width:100%;height:100%;object-fit:cover}
+        .video-placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--t3)}
+        .video-placeholder svg{width:48px;height:48px;stroke:var(--t3);fill:none;opacity:.4}
+        .video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);opacity:0;transition:opacity .3s;cursor:pointer}
+        .video-card:hover .video-play{opacity:1}
+        .video-play svg{width:56px;height:56px;fill:white;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+        .video-info{padding:20px}
+        .video-title{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
+        .video-desc{font-size:13px;color:var(--t2);line-height:1.5}
+
+        /* Music */
+        .music-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+        .music-hero{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;padding:32px;display:flex;gap:28px;align-items:center;position:relative}
+        .music-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(29,185,84,.3),transparent)}
+        .music-art{width:140px;height:140px;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative}
+        .music-art img{width:100%;height:100%;object-fit:cover}
+        .music-art-glow{position:absolute;inset:-20%;filter:blur(40px);opacity:.25;z-index:-1}
+        .music-art-glow img{width:100%;height:100%;object-fit:cover}
+        .music-details h3{font-family:var(--mono);font-size:22px;font-weight:700;margin-bottom:4px}
+        .music-details .music-sub{font-size:14px;color:var(--t2);margin-bottom:12px}
+        .music-stat{display:flex;gap:20px;margin-bottom:16px}
+        .music-stat-item{font-family:var(--mono);font-size:13px;color:var(--t3)}
+        .music-stat-item span{color:var(--t1);font-weight:600}
+        .spotify-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;padding:10px 20px;border-radius:50px;text-decoration:none;background:#1DB954;color:#fff;font-weight:600;transition:all .3s;border:none;cursor:pointer}
+        .spotify-btn:hover{background:#1ed760;transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,185,84,.3)}
+        .spotify-btn svg{width:18px;height:18px;fill:currentColor}
+        .album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+        .album-card{background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:all .4s cubic-bezier(.16,1,.3,1);display:block}
+        .album-card:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+        .album-art{aspect-ratio:1;overflow:hidden;position:relative}
+        .album-art img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.album-card:hover .album-art img{transform:scale(1.05)}
+        .album-art-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+        .album-card:hover .album-art-overlay{opacity:1}
+        .album-art-overlay svg{width:40px;height:40px;fill:#1DB954;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+        .album-info{padding:12px 14px}
+        .album-name{font-family:var(--mono);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .album-year{font-size:12px;color:var(--t3)}
+        .spotify-embed-wrap{border-radius:16px;overflow:hidden;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+        @media(max-width:900px){.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}}
+        @media(max-width:640px){.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+
         /* Footer */
         footer{border-top:1px solid var(--glass-border);padding:40px 24px;position:relative;z-index:1}
         .fi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
@@ -183,7 +229,7 @@
 <canvas id="particles"></canvas>
 <nav id="nav"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-    <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#about">About</a></div>
+    <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#beyond">Beyond Code</a><a href="#about">About</a></div>
     <div style="display:flex;align-items:center;gap:12px">
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
         <button class="mt" id="mobileToggle" aria-label="Menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
@@ -421,7 +467,105 @@
     </div>
 </div></section>
 
-<footer><div class="fi"><div class="ft">Matt Parker &mdash; SysAdminDoc</div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div></div></footer>
+<!-- Beyond Code -->
+<section id="beyond"><div class="si">
+    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage, original music, and everything outside the terminal.</p></div>
+
+    <!-- Drone Videos -->
+    <h3 style="font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px" class="rv">Aerial Footage</h3>
+    <div class="video-grid" style="margin-bottom:60px">
+        <div class="video-card card-enter">
+            <div class="video-thumb">
+                <div class="video-placeholder">
+                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
+                </div>
+                <!-- Replace with: <video src="drone-beach-1.mp4" muted loop poster="thumb1.jpg"></video> -->
+            </div>
+            <div class="video-info"><div class="video-title">Beach Sunset Flight</div><div class="video-desc">Aerial coastline footage at golden hour</div></div>
+        </div>
+        <div class="video-card card-enter">
+            <div class="video-thumb">
+                <div class="video-placeholder">
+                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
+                </div>
+            </div>
+            <div class="video-info"><div class="video-title">Coastal Flyover</div><div class="video-desc">High-altitude panoramic drone run</div></div>
+        </div>
+        <div class="video-card card-enter">
+            <div class="video-thumb">
+                <div class="video-placeholder">
+                    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    <span style="font-family:var(--mono);font-size:12px">Video coming soon</span>
+                </div>
+            </div>
+            <div class="video-info"><div class="video-title">Wave Patterns</div><div class="video-desc">Low-altitude ocean tracking shot</div></div>
+        </div>
+    </div>
+
+    <!-- Music -->
+    <h3 style="font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px" class="rv">Original Music</h3>
+    <div class="music-layout">
+        <div>
+            <div class="music-hero card-enter">
+                <div class="music-art">
+                    <div class="music-art-glow"><img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt=""></div>
+                    <img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="Slunder">
+                </div>
+                <div class="music-details">
+                    <h3>Slunder</h3>
+                    <div class="music-sub">Synthesizing art and intellect into a personal soundtrack.</div>
+                    <div class="music-stat">
+                        <div class="music-stat-item"><span>451</span> monthly listeners</div>
+                    </div>
+                    <a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener" class="spotify-btn"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>Listen on Spotify</a>
+                </div>
+            </div>
+            <div style="margin-top:20px">
+                <div class="album-grid">
+                    <a href="https://open.spotify.com/album/7xHMgXflIR9qRtjU39Q80t" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e02e042810ddecccc2339656b49" alt="Push The Button" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Push The Button</div><div class="album-year">2026</div></div>
+                    </a>
+                    <a href="https://open.spotify.com/album/7KlKXiga7kHUOgC8LeyKH4" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e027c428d22537bec2ed4af94d8" alt="Game Over" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Game Over</div><div class="album-year">2026</div></div>
+                    </a>
+                    <a href="https://open.spotify.com/album/3NQ019Wd8fjtSCCQcK1WDH" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e02f8ef4af6c2f7c3c8f592ebcb" alt="Saltwater in My Veins" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Saltwater in My Veins</div><div class="album-year">2025</div></div>
+                    </a>
+                    <a href="https://open.spotify.com/album/66iCBrYX5vrYn7LvPd2P5d" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e029d375d3a3ad769fda8e2af93" alt="Unmasked" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Unmasked</div><div class="album-year">2025</div></div>
+                    </a>
+                    <a href="https://open.spotify.com/album/39NZL7jH79wznqPBvr7Fwt" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e026ed0117b585d98248228e17c" alt="Apocalypse" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Apocalypse</div><div class="album-year">2025</div></div>
+                    </a>
+                    <a href="https://open.spotify.com/album/2FsIqZY3LW1pTCjEb7URJk" target="_blank" rel="noopener" class="album-card card-enter">
+                        <div class="album-art"><img src="https://i.scdn.co/image/ab67616d00001e0234b30d89e374047ef7ecd730" alt="Thanks for Giving Up" loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="album-info"><div class="album-name">Thanks for Giving Up</div><div class="album-year">2025</div></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="spotify-embed-wrap card-enter">
+                <iframe style="border-radius:16px;border:none" src="https://open.spotify.com/embed/artist/48Fd3yL6KvxtZO0MOPZYHW?utm_source=generator&theme=0" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+            <div style="margin-top:16px">
+                <div class="spotify-embed-wrap card-enter">
+                    <iframe style="border-radius:16px;border:none" src="https://open.spotify.com/embed/album/3NQ019Wd8fjtSCCQcK1WDH?utm_source=generator&theme=0" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div></section>
+<div class="dv"></div>
+
+<footer><div class="fi"><div class="ft">Matt Parker &mdash; SysAdminDoc</div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a><a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener">Spotify</a></div></div></footer>
 
 <script>
 /* ===== PARTICLE CONSTELLATION SYSTEM ===== */
