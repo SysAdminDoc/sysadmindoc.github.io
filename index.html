@@ -260,9 +260,42 @@
         /* Animated Counter */
         .counter-animate{display:inline-block}
 
+        /* Philosophy / What Drives Me */
+        .pg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+        .prc{background:var(--glass);backdrop-filter:blur(12px) saturate(1.2);-webkit-backdrop-filter:blur(12px) saturate(1.2);border:1px solid var(--glass-border);border-radius:16px;padding:32px;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+        .prc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
+        .pri{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+        .pri svg{width:24px;height:24px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+        .prt{font-family:var(--mono);font-size:16px;font-weight:600;margin-bottom:8px}
+        .prd{font-size:14px;color:var(--t2);line-height:1.7}
+
+        /* Journey Timeline */
+        .jw{position:relative;padding-left:44px;max-width:720px}
+        .jw::before{content:'';position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--blue),var(--grn),var(--pur),var(--org),var(--teal));border-radius:2px;opacity:.3}
+        .ji{position:relative;padding-bottom:36px}
+        .ji:last-child{padding-bottom:0}
+        .jd{position:absolute;left:-37px;top:5px;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);z-index:1}
+        .ji:nth-child(1) .jd{background:var(--blue);box-shadow:0 0 12px var(--blue-glow)}
+        .ji:nth-child(2) .jd{background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+        .ji:nth-child(3) .jd{background:var(--pur);box-shadow:0 0 12px rgba(192,132,252,.25)}
+        .ji:nth-child(4) .jd{background:var(--org);box-shadow:0 0 12px rgba(251,146,60,.25)}
+        .ji:nth-child(5) .jd{background:var(--teal);box-shadow:0 0 12px rgba(45,212,191,.25)}
+        .jt{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
+        .jdesc{font-size:14px;color:var(--t2);line-height:1.7}
+
+        /* Connect */
+        .connect-msg{text-align:center;max-width:520px;margin:0 auto 40px;font-size:16px;color:var(--t2);line-height:1.7}
+        .cng{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;max-width:600px;margin:0 auto}
+        .cnc{display:flex;align-items:center;gap:16px;padding:22px 36px;border-radius:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);text-decoration:none;color:inherit;transition:all .4s cubic-bezier(.16,1,.3,1);min-width:220px}
+        .cnc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+        .cnc svg{width:28px;height:28px;flex-shrink:0}
+        .cnc-info{display:flex;flex-direction:column}
+        .cnc-name{font-family:var(--mono);font-size:15px;font-weight:600}
+        .cnc-handle{font-size:13px;color:var(--t2)}
+
         /* Responsive */
-        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}}
-        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
+        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
     </style>
 </head>
@@ -273,7 +306,7 @@
 <div class="cursor-glow" id="cursorGlow"></div>
 <nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-    <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#beyond">Beyond Code</a><a href="#about">About</a><div class="nav-indicator" id="navIndicator"></div></div>
+    <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#about">About</a><a href="#beyond">Beyond Code</a><a href="#connect">Connect</a><div class="nav-indicator" id="navIndicator"></div></div>
     <div style="display:flex;align-items:center;gap:12px">
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng" aria-label="GitHub Profile"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
         <button class="mt" id="mobileToggle" aria-label="Toggle navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
@@ -510,6 +543,68 @@
         </div>
     </div>
 </div></section>
+<div class="dv"></div>
+
+<!-- What Drives Me -->
+<section id="philosophy"><div class="si">
+    <div class="sh rv"><div class="sl">// Philosophy</div><h2 class="st">What Drives Me</h2><p class="sd">The principles behind every project I ship.</p></div>
+    <div class="pg">
+        <div class="prc card-enter">
+            <div class="pri" style="background:var(--blued)"><svg viewBox="0 0 24 24" stroke="var(--blue)"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <h3 class="prt">Zero Configuration</h3>
+            <p class="prd">Download it, launch it, done. Every tool auto-installs its own dependencies, auto-configures prerequisites, and works on first run. No setup wizards, no README scavenger hunts.</p>
+        </div>
+        <div class="prc card-enter">
+            <div class="pri" style="background:var(--grnd)"><svg viewBox="0 0 24 24" stroke="var(--grn)"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+            <h3 class="prt">Build What's Missing</h3>
+            <p class="prd">When I can't find the right tool, I build it. What starts as a fix for a personal annoyance usually turns into a full-featured project that solves the problem for everyone.</p>
+        </div>
+        <div class="prc card-enter">
+            <div class="pri" style="background:var(--purd)"><svg viewBox="0 0 24 24" stroke="var(--pur)"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+            <h3 class="prt">Always Dark</h3>
+            <p class="prd">Every interface ships with a premium dark theme. Deep palettes, glassmorphism, polished UI. I build tools I want to stare at for hours &mdash; and that means dark mode, always.</p>
+        </div>
+        <div class="prc card-enter">
+            <div class="pri" style="background:var(--orgd)"><svg viewBox="0 0 24 24" stroke="var(--org)"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+            <h3 class="prt">Open by Default</h3>
+            <p class="prd">Everything I build is public. <span id="philRepos">90</span>+ repositories and growing. I believe the best tools are free, transparent, and built to work for anyone in any environment.</p>
+        </div>
+    </div>
+</div></section>
+<div class="dv"></div>
+
+<!-- The Journey -->
+<section id="journey"><div class="si">
+    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How I Got Here</h2><p class="sd">Every project started with a problem nobody else was solving.</p></div>
+    <div class="jw">
+        <div class="ji rv">
+            <div class="jd"></div>
+            <h3 class="jt">Healthcare IT &amp; Systems Administration</h3>
+            <p class="jdesc">Started in the deep end &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running across healthcare facilities. Learned that the best way to survive complex environments is to automate everything you can.</p>
+        </div>
+        <div class="ji rv">
+            <div class="jd"></div>
+            <h3 class="jt">PowerShell &amp; Windows Automation</h3>
+            <p class="jdesc">Built comprehensive Windows tools to solve real problems &mdash; NVMe driver patchers, network security auditors, Start Menu organizers, bulk installers. WPF interfaces that look and feel like premium software.</p>
+        </div>
+        <div class="ji rv">
+            <div class="jd"></div>
+            <h3 class="jt">Python &amp; Desktop Applications</h3>
+            <p class="jdesc">Expanded into PyQt6 desktop apps &mdash; screenshot tools, firewall managers, image editors, PDF tools, and more. Every one bootstraps its own dependencies and launches with zero setup.</p>
+        </div>
+        <div class="ji rv">
+            <div class="jd"></div>
+            <h3 class="jt">Web Apps &amp; Live Deployments</h3>
+            <p class="jdesc">Launched 12+ web applications on GitHub Pages &mdash; weather radar, flight tracking, OSINT aggregation, search engines. No backend required, no signup needed. Click a link and it just works.</p>
+        </div>
+        <div class="ji rv">
+            <div class="jd"></div>
+            <h3 class="jt">Full Stack &amp; Beyond</h3>
+            <p class="jdesc">Grew to <span id="journeyRepos">90</span>+ open source repos across five languages. Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes. If there's a platform, I've probably shipped something on it.</p>
+        </div>
+    </div>
+</div></section>
+<div class="dv"></div>
 
 <!-- Beyond Code -->
 <section id="beyond"><div class="si">
@@ -585,6 +680,23 @@
                 <iframe style="border-radius:16px;border:none" src="https://open.spotify.com/embed/artist/48Fd3yL6KvxtZO0MOPZYHW?utm_source=generator&theme=0" width="100%" height="352" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
         </div>
+    </div>
+</div></section>
+<div class="dv"></div>
+
+<!-- Connect -->
+<section id="connect"><div class="si">
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Let's Build Something</h2></div>
+    <p class="connect-msg rv">I'm always open to collaboration, interesting problems, and new opportunities. The best way to reach me is through GitHub &mdash; open an issue, start a discussion, or just say hello.</p>
+    <div class="cng">
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="cnc card-enter">
+            <svg viewBox="0 0 16 16" fill="var(--t1)"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <div class="cnc-info"><span class="cnc-name">GitHub</span><span class="cnc-handle">@SysAdminDoc</span></div>
+        </a>
+        <a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener" class="cnc card-enter">
+            <svg viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            <div class="cnc-info"><span class="cnc-name">Spotify</span><span class="cnc-handle">Slunder</span></div>
+        </a>
     </div>
 </div></section>
 <div class="dv"></div>
@@ -697,6 +809,9 @@ function applyGitHubData(repoCount,totalStars){
     // About
     const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repoCount;
     const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
+    // Philosophy & Journey
+    const pr=document.getElementById('philRepos');if(pr)pr.textContent=repoCount;
+    const jr=document.getElementById('journeyRepos');if(jr)jr.textContent=repoCount;
     // Live apps count
     const liveApps=document.querySelectorAll('#live .lc2').length;
     const sl=document.getElementById('statLive');if(sl)sl.textContent=liveApps;
