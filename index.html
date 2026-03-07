@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matt Parker — Systems Administrator & Builder</title>
-    <meta name="description" content="Portfolio of Matt Parker — 87 open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#.">
+    <meta name="description" content="Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#.">
     <meta name="theme-color" content="#0a0e17">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Matt Parker — Systems Administrator & Builder">
+    <meta property="og:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#. Zero config, dark theme, works on first launch.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sysadmindoc.github.io">
+    <meta property="og:site_name" content="Matt Parker Portfolio">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Matt Parker — Systems Administrator & Builder">
+    <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#. Zero config, dark theme, works on first launch.">
+    <!-- Canonical -->
+    <link rel="canonical" href="https://sysadmindoc.github.io/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +27,7 @@
             --bg:#0a0e17;--bg2:#111827;--bg3:#1a2035;--bgc:rgba(17,24,39,.6);
             --glass:rgba(17,24,39,.45);--glass-border:rgba(99,130,190,.12);--glass-hover:rgba(99,130,190,.2);
             --brd:rgba(55,65,90,.5);--brdb:rgba(88,130,200,.3);
-            --t1:#e8edf5;--t2:#8b9cc0;--t3:#5a6a8a;
+            --t1:#e8edf5;--t2:#8b9cc0;--t3:#7080a0;
             --blue:#58a6ff;--blued:rgba(88,166,255,.12);--blue-glow:rgba(88,166,255,.25);
             --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
             --org:#fb923c;--orgd:rgba(251,146,60,.12);
@@ -30,6 +42,10 @@
         html{scroll-behavior:smooth;scrollbar-color:rgba(55,65,90,.5) var(--bg)}
         body{font-family:var(--sans);background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(55,65,90,.6);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(88,130,200,.4)}
+
+        /* Skip to content */
+        .skip-link{position:absolute;top:-100%;left:50%;transform:translateX(-50%);background:var(--blue);color:var(--bg);padding:8px 20px;border-radius:0 0 8px 8px;font-family:var(--mono);font-size:13px;text-decoration:none;z-index:100000;transition:top .2s}
+        .skip-link:focus{top:0}
 
         /* Loader */
         #loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
@@ -129,7 +145,7 @@
         .search-input{width:100%;font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px 10px 40px;outline:none;transition:all .3s}
         .search-input::placeholder{color:var(--t3)}
         .search-input:focus{border-color:var(--brdb);box-shadow:0 0 20px rgba(88,166,255,.08)}
-        .sort-select{font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px;outline:none;cursor:pointer;transition:all .3s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235a6a8a'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+        .sort-select{font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px;outline:none;cursor:pointer;transition:all .3s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237080a0'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
         .sort-select:focus{border-color:var(--brdb)}
         .sort-select option{background:var(--bg2);color:var(--t1)}
         .cf{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
@@ -142,7 +158,7 @@
         .ca:hover{border-color:var(--glass-border);box-shadow:0 4px 20px rgba(0,0,0,.15)}
         .ca.hid{display:none}
         .cdo{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
-        .cdo.ps{background:var(--blue);color:var(--blue)}.cdo.py{background:var(--grn);color:var(--grn)}.cdo.web{background:var(--org);color:var(--org)}.cdo.ext{background:var(--pur);color:var(--pur)}.cdo.sec{background:var(--yel);color:var(--yel)}.cdo.media{background:var(--red);color:var(--red)}.cdo.kt{background:var(--teal);color:var(--teal)}.cdo.cs{background:#f87171;color:#f87171}.cdo.guide{background:var(--t3);color:var(--t3)}.cdo.fork{background:#6e7681;color:#6e7681}
+        .cdo.ps{background:var(--blue);color:var(--blue)}.cdo.py{background:var(--grn);color:var(--grn)}.cdo.web{background:var(--org);color:var(--org)}.cdo.ext{background:var(--pur);color:var(--pur)}.cdo.sec{background:var(--yel);color:var(--yel)}.cdo.media{background:var(--red);color:var(--red)}.cdo.kt{background:var(--teal);color:var(--teal)}.cdo.cs{background:#f87171;color:#f87171}.cdo.guide{background:var(--t3);color:var(--t3)}.cdo.fork{background:#6e7681;color:#6e7681}.cdo.other{background:var(--org);color:var(--org)}
         .cna{font-family:var(--mono);font-size:14px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .cds{font-size:13px;color:var(--t3);flex:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .ca-stars{font-family:var(--mono);font-size:12px;color:var(--yel);display:flex;align-items:center;gap:3px;flex-shrink:0;min-width:30px;text-shadow:0 0 6px rgba(250,204,21,.2)}
@@ -163,10 +179,15 @@
         .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
         .video-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
         .video-card:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
-        .video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+        .video-thumb img{width:100%;height:100%;object-fit:cover;transition:opacity .3s}
+        .video-thumb .play-btn{position:absolute;width:64px;height:64px;background:rgba(255,0,0,.85);border-radius:12px;display:flex;align-items:center;justify-content:center;transition:transform .3s,background .3s;pointer-events:none}
+        .video-thumb:hover .play-btn{transform:scale(1.1);background:rgba(255,0,0,1)}
+        .play-btn svg{width:28px;height:28px;fill:#fff;margin-left:3px}
         .video-info{padding:20px}
         .video-title{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
         .video-desc{font-size:13px;color:var(--t2);line-height:1.5}
+        .beyond-subtitle{font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px}
 
         /* Music */
         .music-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
@@ -196,8 +217,12 @@
         .album-name{font-family:var(--mono);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .album-year{font-size:12px;color:var(--t3)}
         .spotify-embed-wrap{border-radius:16px;overflow:hidden;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-        @media(max-width:900px){.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}}
-        @media(max-width:640px){.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+
+        /* Back to top */
+        .btt{position:fixed;bottom:32px;right:32px;z-index:999;width:44px;height:44px;border-radius:12px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;opacity:0;visibility:hidden;transform:translateY(10px)}
+        .btt.show{opacity:1;visibility:visible;transform:translateY(0)}
+        .btt:hover{color:var(--t1);border-color:var(--brdb);box-shadow:0 4px 20px rgba(88,130,200,.15);transform:translateY(-2px)}
+        .btt svg{width:20px;height:20px;stroke:currentColor;fill:none}
 
         /* Footer */
         footer{border-top:1px solid var(--glass-border);padding:40px 24px;position:relative;z-index:1}
@@ -213,20 +238,21 @@
         .card-enter.vis{opacity:1;transform:translateY(0) scale(1)}
 
         /* Responsive */
-        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}}
-        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{display:none}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}}
+        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}}
+        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
+<a href="#hero" class="skip-link">Skip to content</a>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
 <canvas id="particles"></canvas>
-<nav id="nav"><div class="ni">
+<nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
     <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#beyond">Beyond Code</a><a href="#about">About</a></div>
     <div style="display:flex;align-items:center;gap:12px">
-        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
-        <button class="mt" id="mobileToggle" aria-label="Menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng" aria-label="GitHub Profile"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+        <button class="mt" id="mobileToggle" aria-label="Toggle navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
 </div></nav>
 
@@ -241,14 +267,14 @@
             <div class="hs">
                 <div class="hs-item"><div class="hsn" id="statRepos" data-live>--</div><div class="hsl">Repositories</div></div>
                 <div class="hs-item"><div class="hsn" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
-                <div class="hs-item"><div class="hsn">12</div><div class="hsl">Live Apps</div></div>
+                <div class="hs-item"><div class="hsn" id="statLive">12</div><div class="hsl">Live Apps</div></div>
             </div>
             <div class="ha">
                 <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
                 <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
             </div>
         </div>
-        <div class="term"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div></div>
+        <div class="term" role="img" aria-label="Decorative terminal showing profile information"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div></div>
     </div>
 </section>
 <div class="dv"></div>
@@ -291,9 +317,9 @@
     <div class="catalog-controls rv">
         <div class="search-wrap">
             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search repositories..." autocomplete="off">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search repositories..." autocomplete="off" aria-label="Search repositories">
         </div>
-        <select class="sort-select" id="sortSelect">
+        <select class="sort-select" id="sortSelect" aria-label="Sort repositories">
             <option value="default">Default order</option>
             <option value="stars">Most stars</option>
             <option value="name">A-Z</option>
@@ -301,19 +327,19 @@
             <option value="recent">Recently updated</option>
         </select>
     </div>
-    <div class="cf rv" id="filterBtns">
-        <button class="fb act" data-filter="all">All <span class="fc" id="countAll">87</span></button>
-        <button class="fb" data-filter="ps">PowerShell <span class="fc">13</span></button>
-        <button class="fb" data-filter="py">Python <span class="fc">24</span></button>
-        <button class="fb" data-filter="web">Web Apps <span class="fc">13</span></button>
-        <button class="fb" data-filter="ext">Extensions <span class="fc">15</span></button>
-        <button class="fb" data-filter="kt">Android <span class="fc">5</span></button>
-        <button class="fb" data-filter="sec">Security <span class="fc">4</span></button>
-        <button class="fb" data-filter="media">Media <span class="fc">5</span></button>
-        <button class="fb" data-filter="cs">Desktop <span class="fc">2</span></button>
-        <button class="fb" data-filter="guide">Guides <span class="fc">2</span></button>
-        <button class="fb" data-filter="fork">Forked <span class="fc">3</span></button>
-        <button class="fb" data-filter="other">Other <span class="fc">1</span></button>
+    <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
+        <button class="fb act" data-filter="all">All <span class="fc" id="countAll">--</span></button>
+        <button class="fb" data-filter="ps">PowerShell <span class="fc" data-cat="ps">13</span></button>
+        <button class="fb" data-filter="py">Python <span class="fc" data-cat="py">24</span></button>
+        <button class="fb" data-filter="web">Web Apps <span class="fc" data-cat="web">13</span></button>
+        <button class="fb" data-filter="ext">Extensions <span class="fc" data-cat="ext">15</span></button>
+        <button class="fb" data-filter="kt">Android <span class="fc" data-cat="kt">5</span></button>
+        <button class="fb" data-filter="sec">Security <span class="fc" data-cat="sec">4</span></button>
+        <button class="fb" data-filter="media">Media <span class="fc" data-cat="media">5</span></button>
+        <button class="fb" data-filter="cs">Desktop <span class="fc" data-cat="cs">2</span></button>
+        <button class="fb" data-filter="guide">Guides <span class="fc" data-cat="guide">2</span></button>
+        <button class="fb" data-filter="fork">Forked <span class="fc" data-cat="fork">3</span></button>
+        <button class="fb" data-filter="other">Other <span class="fc" data-cat="other">1</span></button>
     </div>
     <div class="cg" id="catalogGrid">
         <!-- PowerShell (13) -->
@@ -407,13 +433,13 @@
         <a href="https://github.com/SysAdminDoc/UniversalConverterX" target="_blank" rel="noopener" class="ca" data-f="cs" data-repo="UniversalConverterX" data-name="UniversalConverterX" data-desc="1000+ format file converter"><span class="cdo cs"></span><span class="cna">UniversalConverterX</span><span class="cds">1000+ format file converter</span></a>
         <!-- Guides (2) -->
         <a href="https://github.com/SysAdminDoc/AI_Realism" target="_blank" rel="noopener" class="ca" data-f="guide" data-repo="AI_Realism" data-name="AI_Realism" data-desc="AI video generation guide"><span class="cdo guide"></span><span class="cna">AI_Realism</span><span class="cds">AI video generation guide</span></a>
-        <a href="https://github.com/SysAdminDoc/sysadmindoc.github.io" target="_blank" rel="noopener" class="ca" data-f="guide" data-repo="sysadmindoc.github.io" data-name="sysadmindoc.github.io" data-desc="ATLAST VEO sci-fi thriller"><span class="cdo guide"></span><span class="cna">sysadmindoc.github.io</span><span class="cds">ATLAST &mdash; VEO sci-fi thriller</span></a>
+        <a href="https://github.com/SysAdminDoc/sysadmindoc.github.io" target="_blank" rel="noopener" class="ca" data-f="guide" data-repo="sysadmindoc.github.io" data-name="sysadmindoc.github.io" data-desc="Portfolio and project showcase"><span class="cdo guide"></span><span class="cna">sysadmindoc.github.io</span><span class="cds">Portfolio &amp; project showcase</span></a>
         <!-- Forked (3) -->
         <a href="https://github.com/SysAdminDoc/LTSC-MicrosoftStore" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="LTSC-MicrosoftStore" data-name="LTSC-MicrosoftStore" data-desc="Win11 24H2 LTSC Store installer"><span class="cdo fork"></span><span class="cna">LTSC-MicrosoftStore</span><span class="cds">Win11 24H2 LTSC Store installer</span></a>
         <a href="https://github.com/SysAdminDoc/RcloneBrowser" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="RcloneBrowser" data-name="RcloneBrowser" data-desc="Cross-platform GUI for rclone"><span class="cdo fork"></span><span class="cna">RcloneBrowser</span><span class="cds">Cross-platform GUI for rclone</span></a>
         <a href="https://github.com/SysAdminDoc/TabExplorer" target="_blank" rel="noopener" class="ca" data-f="fork" data-repo="TabExplorer" data-name="TabExplorer" data-desc="Tabbed file manager for Windows"><span class="cdo fork"></span><span class="cna">TabExplorer</span><span class="cds">Tabbed file manager for Windows</span></a>
         <!-- Other (1) -->
-        <a href="https://github.com/SysAdminDoc/DuplicateFF" target="_blank" rel="noopener" class="ca" data-f="other" data-repo="DuplicateFF" data-name="DuplicateFF" data-desc="Duplicate file finder"><span class="cdo guide"></span><span class="cna">DuplicateFF</span><span class="cds">Duplicate file finder</span></a>
+        <a href="https://github.com/SysAdminDoc/DuplicateFF" target="_blank" rel="noopener" class="ca" data-f="other" data-repo="DuplicateFF" data-name="DuplicateFF" data-desc="Duplicate file finder"><span class="cdo other"></span><span class="cna">DuplicateFF</span><span class="cds">Duplicate file finder</span></a>
     </div>
     <div class="no-results" id="noResults">No repositories match your search.</div>
 </div></section>
@@ -439,7 +465,7 @@
     <div class="ac">
         <div class="rv">
             <p class="atp">I'm a <strong>Senior Systems Administrator</strong> by day &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
-            <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong>87+ public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
+            <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong id="aboutReposText">87+</strong> <strong>public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
             <p class="atp">Everything I ship follows the same philosophy: <strong>zero configuration, dark theme, works on first launch.</strong> No setup wizards, no dependency hunts. If it takes more than one step to run, I haven't finished building it yet.</p>
         </div>
         <div class="term rv s2">
@@ -466,32 +492,32 @@
     <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage, original music, and everything outside the terminal.</p></div>
 
     <!-- Drone Videos -->
-    <h3 style="font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px" class="rv">Aerial Footage</h3>
+    <h3 class="beyond-subtitle rv">Aerial Footage</h3>
     <div class="video-grid" style="margin-bottom:60px">
         <div class="video-card card-enter">
-            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/ARnfJXAF1og" title="Venice, Florida 9PM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-thumb" data-yt="ARnfJXAF1og"><img src="https://img.youtube.com/vi/ARnfJXAF1og/hqdefault.jpg" alt="Venice, Florida 9PM" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Venice, Florida 9PM</div><div class="video-desc">Night flight over Venice &mdash; December 2021</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/waOMwX39NOg" title="Venice Beach, Florida Morning" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-thumb" data-yt="waOMwX39NOg"><img src="https://img.youtube.com/vi/waOMwX39NOg/hqdefault.jpg" alt="Venice Beach, Florida Morning" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Venice Beach, Florida</div><div class="video-desc">Morning aerial flight &mdash; June 2023</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/xnpOENxAx-k" title="Manasota Beach, Florida" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-thumb" data-yt="xnpOENxAx-k"><img src="https://img.youtube.com/vi/xnpOENxAx-k/hqdefault.jpg" alt="Manasota Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Manasota Beach, Florida</div><div class="video-desc">Coastal drone footage over Manasota Key</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/PnlsSqa8DtQ" title="Venice, Florida Jetty" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-thumb" data-yt="PnlsSqa8DtQ"><img src="https://img.youtube.com/vi/PnlsSqa8DtQ/hqdefault.jpg" alt="Venice, Florida Jetty" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Venice Jetty</div><div class="video-desc">Aerial view of the Venice, Florida jetty</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb"><iframe src="https://www.youtube.com/embed/FVroPKvYgKQ" title="Nokomis Beach, Florida" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe></div>
+            <div class="video-thumb" data-yt="FVroPKvYgKQ"><img src="https://img.youtube.com/vi/FVroPKvYgKQ/hqdefault.jpg" alt="Nokomis Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Nokomis Beach, Florida</div><div class="video-desc">Drone flight over Nokomis Beach</div></div>
         </div>
     </div>
 
     <!-- Music -->
-    <h3 style="font-family:var(--mono);font-size:16px;color:var(--t2);margin-bottom:20px" class="rv">Music &mdash; Made with Suno</h3>
+    <h3 class="beyond-subtitle rv">Music &mdash; Made with Suno</h3>
     <div class="music-layout">
         <div>
             <div class="music-hero card-enter">
@@ -502,9 +528,6 @@
                 <div class="music-details">
                     <h3>Slunder</h3>
                     <div class="music-sub">Synthesizing art and intellect into a personal soundtrack.</div>
-                    <div class="music-stat">
-                        <div class="music-stat-item"><span>451</span> monthly listeners</div>
-                    </div>
                     <a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener" class="spotify-btn"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>Listen on Spotify</a>
                 </div>
             </div>
@@ -551,14 +574,18 @@
 </div></section>
 <div class="dv"></div>
 
-<footer><div class="fi"><div class="ft">Matt Parker &mdash; SysAdminDoc</div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a><a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener">Spotify</a></div></div></footer>
+<footer><div class="fi"><div class="ft" id="footerText"></div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a><a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener">Spotify</a></div></div></footer>
+
+<!-- Back to top -->
+<button class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
 
 <script>
 /* ===== PARTICLE CONSTELLATION SYSTEM ===== */
 (function(){
     const c=document.getElementById('particles'),ctx=c.getContext('2d');
     let w,h,particles=[],mouse={x:-1000,y:-1000},raf;
-    const CFG={count:80,speed:.3,size:1.5,connectDist:140,mouseDist:180,color:[88,166,255],mouseColor:[74,222,128]};
+    const isMobile=innerWidth<768;
+    const CFG={count:isMobile?30:80,speed:.3,size:1.5,connectDist:isMobile?100:140,mouseDist:180,color:[88,166,255],mouseColor:[74,222,128]};
     function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
     function init(){resize();particles=[];for(let i=0;i<CFG.count;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*CFG.speed,vy:(Math.random()-.5)*CFG.speed,s:Math.random()*CFG.size+.5,a:Math.random()*.5+.2})}
     function draw(){ctx.clearRect(0,0,w,h);
@@ -567,25 +594,23 @@
             if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
             ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
             ctx.fillStyle=`rgba(${CFG.color[0]},${CFG.color[1]},${CFG.color[2]},${p.a})`;ctx.fill();
-            // Constellation lines between nearby particles
             for(let j=i+1;j<particles.length;j++){const q=particles[j];
                 const dx=p.x-q.x,dy=p.y-q.y,dist=Math.sqrt(dx*dx+dy*dy);
                 if(dist<CFG.connectDist){const alpha=(1-dist/CFG.connectDist)*.15;
                     ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
                     ctx.strokeStyle=`rgba(${CFG.color[0]},${CFG.color[1]},${CFG.color[2]},${alpha})`;ctx.lineWidth=.5;ctx.stroke()}}
-            // Mouse constellation
-            const mdx=p.x-mouse.x,mdy=p.y-mouse.y,md=Math.sqrt(mdx*mdx+mdy*mdy);
-            if(md<CFG.mouseDist){const ma=(1-md/CFG.mouseDist)*.4;
-                ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouse.x,mouse.y);
-                ctx.strokeStyle=`rgba(${CFG.mouseColor[0]},${CFG.mouseColor[1]},${CFG.mouseColor[2]},${ma})`;ctx.lineWidth=.8;ctx.stroke();
-                // Gentle push
-                p.vx+=mdx/md*.01;p.vy+=mdy/md*.01}
-            // Dampen velocity
+            if(!isMobile){
+                const mdx=p.x-mouse.x,mdy=p.y-mouse.y,md=Math.sqrt(mdx*mdx+mdy*mdy);
+                if(md<CFG.mouseDist){const ma=(1-md/CFG.mouseDist)*.4;
+                    ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouse.x,mouse.y);
+                    ctx.strokeStyle=`rgba(${CFG.mouseColor[0]},${CFG.mouseColor[1]},${CFG.mouseColor[2]},${ma})`;ctx.lineWidth=.8;ctx.stroke();
+                    p.vx+=mdx/md*.01;p.vy+=mdy/md*.01}}
             p.vx*=.999;p.vy*=.999;const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(spd<.1){p.vx=(Math.random()-.5)*CFG.speed;p.vy=(Math.random()-.5)*CFG.speed}}
         raf=requestAnimationFrame(draw)}
     window.addEventListener('resize',()=>{resize()});
-    document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
-    document.addEventListener('mouseleave',()=>{mouse.x=-1000;mouse.y=-1000});
+    if(!isMobile){
+        document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+        document.addEventListener('mouseleave',()=>{mouse.x=-1000;mouse.y=-1000})}
     init();draw()
 })();
 
@@ -603,45 +628,100 @@ function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElem
     tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40)}
 setTimeout(rt,700);
 
-/* ===== LIVE GITHUB API ===== */
+/* ===== DYNAMIC FOOTER YEAR ===== */
+document.getElementById('footerText').textContent='\u00A9 '+new Date().getFullYear()+' Matt Parker \u2014 SysAdminDoc';
+
+/* ===== LIVE GITHUB API WITH CACHING & PAGINATION ===== */
 let ghData={};
+async function fetchAllRepos(){
+    let allRepos=[];
+    let page=1;
+    while(true){
+        const r=await fetch('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page);
+        if(!r.ok)throw new Error('API error');
+        const repos=await r.json();
+        if(repos.length===0)break;
+        allRepos=allRepos.concat(repos);
+        if(repos.length<100)break;
+        page++;
+    }
+    return allRepos;
+}
+
 async function fetchGitHub(){
     try{
-        const r=await fetch('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated');
-        if(!r.ok)return;
-        const repos=await r.json();
-        let totalStars=0,repoCount=0;
+        const repos=await fetchAllRepos();
+        let totalStars=0;
         repos.forEach(repo=>{
             ghData[repo.name]={stars:repo.stargazers_count,updated:repo.updated_at};
             totalStars+=repo.stargazers_count;
-            if(!repo.fork)repoCount++;
         });
-        // Update hero stats
-        const sr=document.getElementById('statRepos');if(sr)sr.textContent=repos.length;
-        const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
-        // Update terminal
-        const tr=document.getElementById('termRepos');if(tr)tr.textContent=repos.length;
-        const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
-        // Update about
-        const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repos.length;
-        // Update all live star displays
-        document.querySelectorAll('.live-star').forEach(el=>{
-            const card=el.closest('[data-repo]');
-            if(card&&ghData[card.dataset.repo]){
-                const s=ghData[card.dataset.repo].stars;
-                el.textContent=s>0?s:'';
-                if(s===0){const p=el.closest('.cs2')||el.closest('.ca-stars');if(p)p.style.display='none'}}});
-        // Store update times for sorting
-        document.querySelectorAll('.ca[data-repo]').forEach(el=>{
-            if(ghData[el.dataset.repo]){
-                el.dataset.stars=ghData[el.dataset.repo].stars;
-                el.dataset.updated=ghData[el.dataset.repo].updated}});
+        // Cache successful response
+        localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:repos.length,stars:totalStars,ts:Date.now()}));
+        applyGitHubData(repos.length,totalStars);
     }catch(e){
-        // Fallback - show static counts
-        document.getElementById('statRepos').textContent='87';
-        document.getElementById('statStars').textContent='~30';
+        // Try cached data
+        const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
+        if(cached&&cached.data){
+            ghData=cached.data;
+            applyGitHubData(cached.total,cached.stars);
+        }else{
+            document.getElementById('statRepos').textContent='87';
+            document.getElementById('statStars').textContent='--';
+        }
     }
 }
+
+function applyGitHubData(repoCount,totalStars){
+    // Hero stats
+    const sr=document.getElementById('statRepos');if(sr)sr.textContent=repoCount;
+    const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
+    // Terminal
+    const tr=document.getElementById('termRepos');if(tr)tr.textContent=repoCount;
+    const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
+    // About
+    const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repoCount;
+    const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
+    // Live apps count
+    const liveApps=document.querySelectorAll('#live .lc2').length;
+    const sl=document.getElementById('statLive');if(sl)sl.textContent=liveApps;
+    // Update all live star displays
+    document.querySelectorAll('.live-star').forEach(el=>{
+        const card=el.closest('[data-repo]');
+        if(card&&ghData[card.dataset.repo]){
+            const s=ghData[card.dataset.repo].stars;
+            el.textContent=s>0?s:'';
+            if(s===0){const p=el.closest('.cs2')||el.closest('.ca-stars');if(p)p.style.display='none'}}});
+    // Store update times for sorting
+    document.querySelectorAll('.ca[data-repo]').forEach(el=>{
+        if(ghData[el.dataset.repo]){
+            el.dataset.stars=ghData[el.dataset.repo].stars;
+            el.dataset.updated=ghData[el.dataset.repo].updated}});
+    // Update "All" filter count
+    const countAll=document.getElementById('countAll');
+    if(countAll){
+        const totalCatalog=document.querySelectorAll('#catalogGrid .ca').length;
+        countAll.textContent=totalCatalog;
+    }
+    // Update category filter counts dynamically
+    updateFilterCounts();
+}
+
+function updateFilterCounts(){
+    const allItems=Array.from(document.querySelectorAll('#catalogGrid .ca'));
+    const counts={};
+    allItems.forEach(item=>{
+        const cat=item.dataset.f;
+        counts[cat]=(counts[cat]||0)+1;
+    });
+    document.querySelectorAll('.fc[data-cat]').forEach(el=>{
+        const cat=el.dataset.cat;
+        if(counts[cat]!==undefined)el.textContent=counts[cat];
+    });
+    const countAll=document.getElementById('countAll');
+    if(countAll)countAll.textContent=allItems.length;
+}
+
 fetchGitHub();
 
 /* ===== NAV ===== */
@@ -652,16 +732,43 @@ const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.f
 secs.forEach(s=>so.observe(s));
 document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
 document.querySelectorAll('.nk a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'))});
+// Close mobile menu on outside click
+document.addEventListener('click',e=>{
+    const nav=document.getElementById('navLinks');
+    if(nav.classList.contains('open')&&!e.target.closest('.nk')&&!e.target.closest('.mt'))
+        nav.classList.remove('open');
+});
+
+/* ===== BACK TO TOP ===== */
+const bttBtn=document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{bttBtn.classList.toggle('show',window.scrollY>600)},{passive:true});
+bttBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'})});
 
 /* ===== SCROLL REVEAL + STAGGERED CARD ENTRANCE ===== */
 const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('vis');ro.unobserve(el.target)}})},{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
-// Card entrance with stagger
 const co=new IntersectionObserver(entries=>{
     const visible=entries.filter(e=>e.isIntersecting);
     visible.forEach((e,i)=>{setTimeout(()=>{e.target.classList.add('vis');co.unobserve(e.target)},i*60)})
 },{threshold:.05});
 document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
+
+/* ===== YOUTUBE CLICK-TO-PLAY ===== */
+document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
+    thumb.addEventListener('click',function(){
+        const id=this.dataset.yt;
+        const iframe=document.createElement('iframe');
+        iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
+        iframe.title=this.querySelector('img').alt;
+        iframe.frameBorder='0';
+        iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen=true;
+        iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
+        this.innerHTML='';
+        this.appendChild(iframe);
+        this.style.cursor='default';
+    });
+});
 
 /* ===== CATALOG: FILTER + SEARCH + SORT ===== */
 const grid=document.getElementById('catalogGrid');
@@ -701,6 +808,9 @@ document.querySelectorAll('.fb').forEach(b=>{b.addEventListener('click',()=>{
 document.getElementById('searchInput').addEventListener('input',e=>{currentSearch=e.target.value;applyFilters()});
 
 document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(e.target.value);applyFilters()});
+
+// Initialize filter counts on load
+updateFilterCounts();
 </script>
 </body>
 </html>
