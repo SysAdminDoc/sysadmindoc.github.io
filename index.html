@@ -246,10 +246,6 @@
         /* Cursor Glow */
         .cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(88,166,255,.07) 0%,rgba(192,132,252,.03) 40%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s}.cursor-glow.active{opacity:1}
 
-        /* Noise/Grain Overlay */
-        .grain-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.03;mix-blend-mode:overlay}
-        .grain-overlay canvas{width:100%;height:100%}
-
         /* Nav Sliding Indicator */
         .nav-indicator{position:absolute;height:30px;background:rgba(88,130,200,.1);border:1px solid rgba(88,166,255,.15);border-radius:6px;transition:all .35s cubic-bezier(.16,1,.3,1);pointer-events:none;opacity:0;box-shadow:0 0 15px rgba(88,166,255,.06);top:50%;transform:translateY(-50%)}
         .nav-indicator.vis{opacity:1}
@@ -274,7 +270,6 @@
 <a href="#hero" class="skip-link">Skip to content</a>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
 <canvas id="particles"></canvas>
-<div class="grain-overlay" id="grainOverlay"><canvas id="grainCanvas"></canvas></div>
 <div class="cursor-glow" id="cursorGlow"></div>
 <nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
@@ -948,32 +943,6 @@ if(!isMobile){
         scrambleElement(h1,'Matt ',800);
         scrambleElement(spans[0],'Parker',1000);
     },600);
-})();
-
-/* ===== THEME ENHANCEMENT 6: NOISE/GRAIN OVERLAY ===== */
-(function(){
-    const gc=document.getElementById('grainCanvas');
-    if(!gc)return;
-    const gctx=gc.getContext('2d');
-    gc.width=128;gc.height=128;
-    function renderGrain(){
-        const imageData=gctx.createImageData(128,128);
-        const data=imageData.data;
-        for(let i=0;i<data.length;i+=4){
-            const v=Math.random()*255;
-            data[i]=data[i+1]=data[i+2]=v;
-            data[i+3]=255;
-        }
-        gctx.putImageData(imageData,0,0);
-    }
-    let grainFrame=0;
-    function animateGrain(){
-        grainFrame++;
-        if(grainFrame%3===0)renderGrain();
-        requestAnimationFrame(animateGrain);
-    }
-    renderGrain();
-    animateGrain();
 })();
 
 /* ===== THEME ENHANCEMENT 7: HOLOGRAPHIC SHIMMER ===== */
