@@ -251,8 +251,8 @@
         .nav-indicator.vis{opacity:1}
 
         /* Shooting Stars */
-        .shooting-star{position:fixed;pointer-events:none;z-index:0;width:80px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.6),transparent);border-radius:1px;will-change:transform;opacity:0}
-        .shooting-star::before{content:'';position:absolute;left:0;top:-1px;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px 2px rgba(88,166,255,.5),0 0 12px 4px rgba(88,166,255,.2)}
+        .shooting-star{position:fixed;pointer-events:none;z-index:0;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.5),rgba(88,166,255,.15) 40%,transparent);border-radius:1px;will-change:transform;opacity:0}
+        .shooting-star::before{content:'';position:absolute;left:0;top:-1px;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 4px 1px rgba(88,166,255,.4),0 0 10px 3px rgba(88,166,255,.15)}
 
         /* Floating Code Snippets */
         .floating-code{position:fixed;font-family:var(--mono);font-size:13px;color:rgba(88,166,255,.045);pointer-events:none;z-index:0;white-space:nowrap;will-change:transform}
@@ -1132,38 +1132,45 @@ if(!isMobile){
         const star=document.createElement('div');
         star.className='shooting-star';
         document.body.appendChild(star);
-        const startX=Math.random()*window.innerWidth;
-        const startY=Math.random()*window.innerHeight*.6;
-        const angle=25+Math.random()*20;
+        // Random angle between 15-55 degrees, varied directions
+        const goRight=Math.random()>.3;
+        const angle=15+Math.random()*40;
         const rad=angle*Math.PI/180;
-        const speed=12+Math.random()*8;
-        const dist=300+Math.random()*400;
-        const duration=dist/speed*16;
+        // Start off-screen
+        const startX=goRight?-150:window.innerWidth+150;
+        const startY=Math.random()*window.innerHeight*.5-100;
+        const dirX=goRight?1:-1;
+        // Slower speed, longer travel
+        const speed=2+Math.random()*3;
+        const totalDist=500+Math.random()*600;
+        const duration=totalDist/speed*16;
+        // Longer trail
+        star.style.width=(120+Math.random()*100)+'px';
         star.style.left=startX+'px';
         star.style.top=startY+'px';
-        star.style.transform='rotate('+angle+'deg)';
-        star.style.width=(60+Math.random()*60)+'px';
-        let start=null;
+        star.style.transform='rotate('+(goRight?1:-1)*angle+'deg)'+(goRight?'':' scaleX(-1)');
+        let startTime=null;
         function animate(ts){
-            if(!start)start=ts;
-            const elapsed=ts-start;
+            if(!startTime)startTime=ts;
+            const elapsed=ts-startTime;
             const progress=elapsed/duration;
             if(progress>=1){star.remove();return;}
-            const x=startX+Math.cos(rad)*speed*(elapsed/16);
-            const y=startY+Math.sin(rad)*speed*(elapsed/16);
-            const fade=progress<.1?progress*10:progress>.6?Math.max(0,(1-progress)/.4):1;
+            const traveled=speed*(elapsed/16);
+            const x=startX+dirX*Math.cos(rad)*traveled;
+            const y=startY+Math.sin(rad)*traveled;
+            const fade=progress<.15?progress/0.15:progress>.5?Math.max(0,(1-progress)/.5):1;
             star.style.left=x+'px';
             star.style.top=y+'px';
-            star.style.opacity=fade*.7;
+            star.style.opacity=fade*.55;
             requestAnimationFrame(animate);
         }
         requestAnimationFrame(animate);
     }
     function scheduleNext(){
-        const delay=3000+Math.random()*8000;
+        const delay=4000+Math.random()*12000;
         setTimeout(()=>{launchStar();scheduleNext()},delay);
     }
-    setTimeout(()=>{scheduleNext()},2000);
+    setTimeout(scheduleNext,3000);
 })();
 
 /* ===== THEME ENHANCEMENT 10: STAGGERED HERO ENTRANCE ===== */
