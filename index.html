@@ -297,9 +297,48 @@
         .cnc-name{font-family:var(--mono);font-size:15px;font-weight:600}
         .cnc-handle{font-size:13px;color:var(--t2)}
 
+        /* Custom Cursor */
+        .cc-dot{position:fixed;width:8px;height:8px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .15s,height .15s,opacity .2s;box-shadow:0 0 10px var(--blue-glow);mix-blend-mode:screen}
+        .cc-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(88,166,255,.25);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .25s cubic-bezier(.16,1,.3,1),height .25s cubic-bezier(.16,1,.3,1),border-color .2s}
+        .cc-dot.hovering{width:12px;height:12px}.cc-ring.hovering{width:50px;height:50px;border-color:rgba(88,166,255,.4)}
+        body.custom-cursor,body.custom-cursor *{cursor:none !important}
+
+        /* Aurora */
+        .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.04}
+        .aurora-band{position:absolute;width:200%;height:40%;border-radius:50%;filter:blur(100px);will-change:transform}
+        .ab1{background:linear-gradient(90deg,transparent,var(--blue),var(--pur),transparent);top:-15%;left:-50%;animation:aurora1 25s ease-in-out infinite alternate}
+        .ab2{background:linear-gradient(90deg,transparent,var(--grn),var(--teal),transparent);top:20%;left:-30%;animation:aurora2 30s ease-in-out infinite alternate;opacity:.6}
+        .ab3{background:linear-gradient(90deg,transparent,var(--pur),var(--blue),transparent);top:50%;left:-40%;animation:aurora3 22s ease-in-out infinite alternate;opacity:.4}
+        @keyframes aurora1{0%{transform:translateX(0) rotate(-3deg)}100%{transform:translateX(30%) rotate(3deg)}}
+        @keyframes aurora2{0%{transform:translateX(0) rotate(2deg)}100%{transform:translateX(-20%) rotate(-4deg)}}
+        @keyframes aurora3{0%{transform:translateX(10%) rotate(1deg)}100%{transform:translateX(-15%) rotate(-2deg)}}
+
+        /* Interactive Terminal */
+        .term-input-line{display:flex;align-items:center;font-family:var(--mono);font-size:13px;margin-top:2px}
+        .term-input{background:none;border:none;color:var(--t1);font-family:var(--mono);font-size:13px;flex:1;outline:none;caret-color:var(--grn);padding:0;width:0}
+        .term-hint{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;padding:8px;opacity:0;transition:opacity .5s}.term.interactive .term-hint{opacity:1}
+        .term-output{color:var(--t2);font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap}
+        .term-output .cmd-name{color:var(--grn)}.term-output .cmd-desc{color:var(--t2)}.term-output .cmd-val{color:var(--org)}
+
+        /* Card Spotlight */
+        .card-spotlight{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;z-index:0}
+
+        /* Heatmap */
+        .heatmap-wrap{margin-top:40px}
+        .heatmap-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+        .heatmap-label{font-family:var(--mono);font-size:13px;color:var(--t3)}
+        .heatmap-grid{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px}
+        .hm-week{display:flex;flex-direction:column;gap:3px}
+        .hm-cell{width:11px;height:11px;border-radius:2px;background:rgba(255,255,255,.04);position:relative}
+        .hm-cell.l1{background:rgba(88,166,255,.15)}.hm-cell.l2{background:rgba(88,166,255,.3)}.hm-cell.l3{background:rgba(88,166,255,.5)}.hm-cell.l4{background:rgba(88,166,255,.75)}
+
+        /* Last Active */
+        .last-active{font-family:var(--mono);font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;margin-top:12px}
+        .la-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn-glow);animation:pulse 2s ease-in-out infinite}
+
         /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
-        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}}
+        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}.cc-dot,.cc-ring{display:none}.hm-cell{width:9px;height:9px}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
     </style>
 </head>
@@ -307,6 +346,8 @@
 <a href="#hero" class="skip-link">Skip to content</a>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
 <canvas id="particles"></canvas>
+<div class="aurora"><div class="aurora-band ab1"></div><div class="aurora-band ab2"></div><div class="aurora-band ab3"></div></div>
+<div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
 <nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
@@ -330,12 +371,13 @@
                 <div class="hs-item"><div class="hsn" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
                 <div class="hs-item"><div class="hsn" id="statLive">12</div><div class="hsl">Live Apps</div></div>
             </div>
+            <div class="last-active" id="lastActive"><span class="la-dot"></span> <span id="lastActiveText">Checking activity...</span></div>
             <div class="ha">
                 <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
                 <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
             </div>
         </div>
-        <div class="term" role="img" aria-label="Decorative terminal showing profile information"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div></div>
+        <div class="term" id="heroTerm" role="img" aria-label="Interactive terminal"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
     </div>
 </section>
 <div class="dv"></div>
@@ -546,6 +588,10 @@
             </div>
         </div>
     </div>
+    <div class="heatmap-wrap rv" id="heatmapWrap">
+        <div class="heatmap-title"><span class="heatmap-label">Recent GitHub Activity</span><span class="heatmap-label" id="heatmapCount"></span></div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+    </div>
 </div></section>
 <div class="dv"></div>
 
@@ -752,7 +798,7 @@ function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElem
     if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
     else if(l.key){const idAttr=l.id?' id="'+l.id+'"':'';d.innerHTML='<span class="tk">'+l.key+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'"'+idAttr+'>'+l.val+'</span>'}
     else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+l.text+'</span>'}
-    tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40)}
+    tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40);else if(typeof onTermReady==='function')setTimeout(onTermReady,1500)}
 setTimeout(rt,700);
 
 /* ===== DYNAMIC FOOTER YEAR ===== */
@@ -1171,7 +1217,7 @@ if(!isMobile){
 
 /* ===== THEME ENHANCEMENT 10: STAGGERED HERO ENTRANCE ===== */
 (function(){
-    const heroEls=['.htag','.hn','.hr','.hd','.hs','.ha','.term'];
+    const heroEls=['.htag','.hn','.hr','.hd','.hs','.last-active','.ha','.term'];
     heroEls.forEach((sel,i)=>{
         const el=document.querySelector('.hero '+sel);
         if(el){
@@ -1193,6 +1239,292 @@ if(!isMobile){
         }
     },100);
 })();
+
+/* ===== CUSTOM CURSOR ===== */
+if(!isMobile){
+    const dot=document.getElementById('ccDot'),ring=document.getElementById('ccRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.body.classList.add('custom-cursor');
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+    function trackRing(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(trackRing)}
+    trackRing();
+    document.addEventListener('mouseover',e=>{
+        const t=e.target.closest('a,button,input,select,.pc,.lc2,.skc,.video-card,.album-card,.ca,.cnc,.fb,.btn,.prc');
+        if(t){dot.classList.add('hovering');ring.classList.add('hovering')}else{dot.classList.remove('hovering');ring.classList.remove('hovering')}
+    });
+    document.addEventListener('mouseleave',()=>{dot.style.opacity='0';ring.style.opacity='0'});
+    document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opacity='1'});
+}
+
+/* ===== MAGNETIC BUTTONS ===== */
+if(!isMobile){
+    document.querySelectorAll('.btn').forEach(btn=>{
+        btn.addEventListener('mousemove',e=>{
+            const r=btn.getBoundingClientRect();
+            const x=(e.clientX-r.left-r.width/2)*.2;
+            const y=(e.clientY-r.top-r.height/2)*.2;
+            btn.style.transform=`translate(${x}px,${y}px)`;
+        });
+        btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
+    });
+}
+
+/* ===== CARD SPOTLIGHT EFFECT ===== */
+if(!isMobile){
+    document.querySelectorAll('.pc,.lc2,.skc,.prc').forEach(card=>{
+        card.style.position='relative';
+        const spot=document.createElement('div');
+        spot.className='card-spotlight';
+        card.appendChild(spot);
+        card.addEventListener('mousemove',e=>{
+            const r=card.getBoundingClientRect();
+            const x=e.clientX-r.left;
+            const y=e.clientY-r.top;
+            spot.style.background=`radial-gradient(circle 200px at ${x}px ${y}px,rgba(88,166,255,.07),transparent)`;
+            spot.style.opacity='1';
+        });
+        card.addEventListener('mouseleave',()=>{spot.style.opacity='0'});
+    });
+}
+
+/* ===== PARALLAX DEPTH ===== */
+if(!isMobile){
+    const glows=document.querySelectorAll('.hero-glow');
+    window.addEventListener('scroll',()=>{
+        const s=window.scrollY;
+        glows.forEach((g,i)=>{g.style.transform=`translateY(${s*(0.12+i*0.04)}px)`});
+    },{passive:true});
+}
+
+/* ===== TIME-AWARE GREETING ===== */
+(function(){
+    const hr=new Date().getHours();
+    let greeting,glow;
+    if(hr>=5&&hr<12){greeting='Good morning';glow='warm-morning'}
+    else if(hr>=12&&hr<17){greeting='Good afternoon';glow='warm-afternoon'}
+    else if(hr>=17&&hr<21){greeting='Good evening';glow='warm-evening'}
+    else{greeting='Night owl mode';glow='night'}
+    const sub=document.querySelector('.hr');
+    if(sub)sub.innerHTML=greeting+'. <span style="color:var(--t2)">Sr. Systems Administrator &amp; Builder</span>';
+    if(hr>=19||hr<6){
+        document.documentElement.style.setProperty('--blue-glow','rgba(130,100,255,.25)');
+        const aurora=document.querySelector('.aurora');
+        if(aurora)aurora.style.opacity='.06';
+    }
+})();
+
+/* ===== INTERACTIVE TERMINAL ===== */
+const pageLoadTime=Date.now();
+function onTermReady(){
+    const term=document.getElementById('heroTerm');
+    const tbody=document.getElementById('termBody');
+    const hint=document.getElementById('termHint');
+    if(!term||!tbody)return;
+    term.classList.add('interactive');
+    term.removeAttribute('role');
+    let active=false;
+    let inputLine=null;
+    let inputEl=null;
+    const commands={
+        help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Repository stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
+        whoami:()=>'<span class="cmd-val">Matt Parker</span> - Sr. Systems Administrator & Builder\nHealthcare IT | Medical Imaging | Open Source\nPhilosophy: Zero config. Dark theme. Works on first launch.',
+        skills:()=>'<span class="cmd-name">PowerShell</span>  WPF, Automation\n<span class="cmd-name">Python</span>      PyQt6, CLI Tools\n<span class="cmd-name">JavaScript</span>  Userscripts, Web Apps\n<span class="cmd-name">Kotlin</span>      Android Apps\n<span class="cmd-name">C#</span>          WinForms, .NET\n<span class="cmd-name">HTML/CSS</span>    Single-file Apps',
+        repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public repositories\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
+        ls:()=>'<span class="cmd-name">win11-nvme-driver-patcher</span>  NVMe driver patcher\n<span class="cmd-name">Network_Security_Auditor</span>   67 security checks\n<span class="cmd-name">LibreSpot</span>                  Spotify customization\n<span class="cmd-name">HostShield</span>                 Android ad blocker\n<span class="cmd-name">EspressoMonkey</span>             MV3 userscript manager\n<span class="cmd-name">YouTube-Kit</span>                YouTube customization',
+        uptime:()=>{const d=Date.now()-pageLoadTime;const m=Math.floor(d/60000);const s=Math.floor((d%60000)/1000);return'Page uptime: <span class="cmd-val">'+m+'m '+s+'s</span>'},
+        date:()=>'<span class="cmd-val">'+new Date().toLocaleString()+'</span>',
+        neofetch:()=>'<span class="cmd-name">matt@sysadmin</span>\n--------------\n<span class="cmd-name">OS:</span>        <span class="cmd-val">Portfolio v3.0</span>\n<span class="cmd-name">Host:</span>      <span class="cmd-val">GitHub Pages</span>\n<span class="cmd-name">Shell:</span>     <span class="cmd-val">HTML/CSS/JS</span>\n<span class="cmd-name">Theme:</span>     <span class="cmd-val">Deep Dark Glassmorphism</span>\n<span class="cmd-name">Repos:</span>     <span class="cmd-val">'+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+'</span>\n<span class="cmd-name">Stars:</span>     <span class="cmd-val">'+(document.getElementById('statStars')?document.getElementById('statStars').textContent:'--')+'</span>\n<span class="cmd-name">Uptime:</span>    <span class="cmd-val">Always on</span>',
+        clear:()=>'__CLEAR__',
+        cd:()=>'Nowhere to go \u2014 this is a single-page portfolio ;)',
+        sudo:()=>'Nice try.',
+        'rm':()=>'Absolutely not.',
+        exit:()=>'There is no escape.',
+        cat:()=>'Try <span class="cmd-name">neofetch</span> or <span class="cmd-name">whoami</span> instead.',
+        pwd:()=>'/home/matt/portfolio',
+        git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' repos'
+    };
+    function addPrompt(){
+        inputLine=document.createElement('div');
+        inputLine.className='term-input-line';
+        inputLine.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">~/portfolio</span><span class="tcm">$ </span>';
+        inputEl=document.createElement('input');
+        inputEl.type='text';
+        inputEl.className='term-input';
+        inputEl.setAttribute('autocomplete','off');
+        inputEl.setAttribute('spellcheck','false');
+        inputLine.appendChild(inputEl);
+        tbody.appendChild(inputLine);
+        inputEl.focus();
+        inputEl.addEventListener('keydown',e=>{
+            if(e.key==='Enter'){
+                const cmd=inputEl.value.trim();
+                inputEl.disabled=true;
+                if(cmd){
+                    const parts=cmd.split(/\s+/);
+                    const base=parts[0].toLowerCase();
+                    const handler=commands[base];
+                    let output;
+                    if(base==='echo'){output='<span class="cmd-val">'+parts.slice(1).join(' ')+'</span>'}
+                    else if(handler){output=typeof handler==='function'?handler():handler}
+                    else{output='command not found: <span class="cmd-val">'+base+'</span>. Type <span class="cmd-name">help</span> for commands.'}
+                    if(output==='__CLEAR__'){tbody.innerHTML='';addPrompt();return}
+                    const outDiv=document.createElement('div');
+                    outDiv.className='term-output';
+                    outDiv.innerHTML=output;
+                    tbody.appendChild(outDiv);
+                }
+                tbody.scrollTop=tbody.scrollHeight;
+                addPrompt();
+            }
+        });
+    }
+    function activate(){
+        if(active)return;active=true;
+        const cursor=tbody.querySelector('.tci');
+        if(cursor)cursor.remove();
+        hint.style.display='none';
+        tbody.style.maxHeight='400px';
+        tbody.style.overflowY='auto';
+        addPrompt();
+    }
+    term.addEventListener('click',activate);
+    document.addEventListener('keydown',e=>{
+        if(!active&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&e.key.length===1){
+            const focused=document.activeElement;
+            if(focused&&(focused.tagName==='INPUT'||focused.tagName==='TEXTAREA'||focused.tagName==='SELECT'))return;
+            activate();
+            if(inputEl)inputEl.value=e.key;
+        }
+    });
+}
+
+/* ===== EASTER EGG - KONAMI CODE ===== */
+(function(){
+    const code=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let pos=0;
+    document.addEventListener('keydown',e=>{
+        if(e.key===code[pos]){pos++;if(pos===code.length){pos=0;triggerEasterEgg()}}else{pos=0}
+    });
+    function triggerEasterEgg(){
+        const overlay=document.createElement('div');
+        overlay.style.cssText='position:fixed;inset:0;z-index:100000;pointer-events:none;overflow:hidden';
+        document.body.appendChild(overlay);
+        const chars='abcdefghijklmnopqrstuvwxyz0123456789@#$%&*<>/\\|{}[]';
+        const cols=Math.floor(window.innerWidth/14);
+        for(let i=0;i<cols;i++){
+            const col=document.createElement('div');
+            col.style.cssText='position:absolute;top:-100%;left:'+i*14+'px;font-family:var(--mono);font-size:13px;color:var(--grn);text-shadow:0 0 8px var(--grn-glow);line-height:1.2;writing-mode:vertical-lr;white-space:nowrap;animation:matrixFall '+(2+Math.random()*3)+'s linear '+(Math.random()*2)+'s forwards';
+            let str='';for(let j=0;j<60;j++)str+=chars[Math.floor(Math.random()*chars.length)];
+            col.textContent=str;
+            overlay.appendChild(col);
+        }
+        const style=document.createElement('style');
+        style.textContent='@keyframes matrixFall{0%{transform:translateY(0);opacity:.8}100%{transform:translateY('+(window.innerHeight+200)+'px);opacity:0}}';
+        document.head.appendChild(style);
+        setTimeout(()=>{overlay.remove();style.remove()},6000);
+    }
+})();
+
+/* ===== ANIMATED SEARCH PLACEHOLDER ===== */
+(function(){
+    const input=document.getElementById('searchInput');
+    if(!input)return;
+    const phrases=['firewall','YouTube','screenshot','dark theme','Android','Spotify','NVMe','image editor','bookmark','OSINT'];
+    let pi=0,ci=0,deleting=false;
+    const base='Search repositories...';
+    function typeSearch(){
+        if(!document.activeElement||document.activeElement!==input){
+            const word=phrases[pi];
+            if(!deleting){
+                ci++;
+                input.placeholder='Try "'+word.substring(0,ci)+'"';
+                if(ci>=word.length){deleting=true;setTimeout(typeSearch,1800);return}
+            }else{
+                ci--;
+                input.placeholder=ci>0?'Try "'+word.substring(0,ci)+'"':base;
+                if(ci<=0){deleting=false;pi=(pi+1)%phrases.length;setTimeout(typeSearch,600);return}
+            }
+        }
+        setTimeout(typeSearch,deleting?40:100);
+    }
+    setTimeout(typeSearch,3000);
+    input.addEventListener('focus',()=>{input.placeholder=base});
+    input.addEventListener('blur',()=>{if(!input.value)input.placeholder=base});
+})();
+
+/* ===== GITHUB ACTIVITY HEATMAP ===== */
+async function fetchHeatmap(){
+    try{
+        let allEvents=[];
+        for(let p=1;p<=3;p++){
+            const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=100&page='+p);
+            if(!r.ok)break;
+            const events=await r.json();
+            if(events.length===0)break;
+            allEvents=allEvents.concat(events);
+            if(events.length<100)break;
+        }
+        if(allEvents.length===0)return;
+        const counts={};
+        allEvents.forEach(e=>{
+            const day=e.created_at.substring(0,10);
+            counts[day]=(counts[day]||0)+1;
+        });
+        const grid=document.getElementById('heatmapGrid');
+        const countEl=document.getElementById('heatmapCount');
+        if(!grid)return;
+        const today=new Date();
+        const weeks=12;
+        const startDate=new Date(today);
+        startDate.setDate(startDate.getDate()-(weeks*7-1)-startDate.getDay());
+        let totalEvents=0;
+        for(let w=0;w<weeks;w++){
+            const weekDiv=document.createElement('div');
+            weekDiv.className='hm-week';
+            for(let d=0;d<7;d++){
+                const date=new Date(startDate);
+                date.setDate(startDate.getDate()+w*7+d);
+                if(date>today){const empty=document.createElement('div');empty.className='hm-cell';empty.style.visibility='hidden';weekDiv.appendChild(empty);continue}
+                const key=date.toISOString().substring(0,10);
+                const count=counts[key]||0;
+                totalEvents+=count;
+                const cell=document.createElement('div');
+                cell.className='hm-cell'+(count>=8?' l4':count>=5?' l3':count>=2?' l2':count>=1?' l1':'');
+                cell.title=key+': '+count+' event'+(count!==1?'s':'');
+                weekDiv.appendChild(cell);
+            }
+            grid.appendChild(weekDiv);
+        }
+        if(countEl)countEl.textContent=totalEvents+' events in '+weeks+' weeks';
+    }catch(e){}
+}
+fetchHeatmap();
+
+/* ===== LAST ACTIVE TIMESTAMP ===== */
+async function fetchLastActive(){
+    try{
+        const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=1');
+        if(!r.ok)return;
+        const events=await r.json();
+        if(events.length===0)return;
+        const last=new Date(events[0].created_at);
+        const now=new Date();
+        const diff=now-last;
+        const mins=Math.floor(diff/60000);
+        const hrs=Math.floor(diff/3600000);
+        const days=Math.floor(diff/86400000);
+        let text;
+        if(mins<60)text='Active '+mins+' minute'+(mins!==1?'s':'')+' ago';
+        else if(hrs<24)text='Active '+hrs+' hour'+(hrs!==1?'s':'')+' ago';
+        else text='Active '+days+' day'+(days!==1?'s':'')+' ago';
+        const el=document.getElementById('lastActiveText');
+        if(el)el.textContent=text;
+    }catch(e){
+        const el=document.getElementById('lastActiveText');
+        if(el)el.textContent='Building something right now, probably';
+    }
+}
+fetchLastActive();
 </script>
 </body>
 </html>
