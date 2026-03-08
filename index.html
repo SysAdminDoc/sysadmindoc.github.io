@@ -70,7 +70,7 @@
 
         /* Hero */
         .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:80px 24px 60px}
-        .hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);opacity:.08;pointer-events:none;z-index:0}
+        .hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;opacity:.06;pointer-events:none;z-index:0}
         .hero-glow.g1{background:var(--blue);top:-10%;left:10%}
         .hero-glow.g2{background:var(--grn);bottom:0;right:5%}
         .hero-glow.g3{background:var(--pur);top:40%;left:50%;width:400px;height:400px;opacity:.04}
@@ -239,8 +239,7 @@
         /* 3D Card Tilt */
         .fg,.lg,.skg,.video-grid{perspective:1200px}
 
-        /* Cursor Glow */
-        .cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(88,166,255,.07) 0%,rgba(192,132,252,.03) 40%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s}.cursor-glow.active{opacity:1}
+        /* Cursor Glow removed for performance */
 
         /* Nav Sliding Indicator */
         .nav-indicator{position:absolute;height:30px;background:rgba(88,130,200,.1);border:1px solid rgba(88,166,255,.15);border-radius:6px;transition:all .35s cubic-bezier(.16,1,.3,1);pointer-events:none;opacity:0;box-shadow:0 0 15px rgba(88,166,255,.06);top:50%;transform:translateY(-50%)}
@@ -250,8 +249,6 @@
         .shooting-star{position:fixed;pointer-events:none;z-index:0;height:1px;background:linear-gradient(90deg,transparent,rgba(88,166,255,.15) 60%,rgba(255,255,255,.5));border-radius:1px;will-change:transform;opacity:0}
         .shooting-star::before{content:'';position:absolute;right:0;top:-1px;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 4px 1px rgba(88,166,255,.4),0 0 10px 3px rgba(88,166,255,.15)}
 
-        /* Floating Code Snippets */
-        .floating-code{position:fixed;font-family:var(--mono);font-size:13px;color:rgba(88,166,255,.045);pointer-events:none;z-index:0;white-space:nowrap;will-change:transform}
 
         /* Hero Entrance */
         .hero-anim{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
@@ -299,15 +296,7 @@
         .cc-dot.hovering{width:12px;height:12px}.cc-ring.hovering{width:50px;height:50px;border-color:rgba(88,166,255,.4)}
         body.custom-cursor{cursor:none}body.custom-cursor a,body.custom-cursor button,body.custom-cursor input,body.custom-cursor select{cursor:none}
 
-        /* Aurora */
-        .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.04}
-        .aurora-band{position:absolute;width:200%;height:40%;border-radius:50%;filter:blur(100px);will-change:transform}
-        .ab1{background:linear-gradient(90deg,transparent,var(--blue),var(--pur),transparent);top:-15%;left:-50%;animation:aurora1 25s ease-in-out infinite alternate}
-        .ab2{background:linear-gradient(90deg,transparent,var(--grn),var(--teal),transparent);top:20%;left:-30%;animation:aurora2 30s ease-in-out infinite alternate;opacity:.6}
-        .ab3{background:linear-gradient(90deg,transparent,var(--pur),var(--blue),transparent);top:50%;left:-40%;animation:aurora3 22s ease-in-out infinite alternate;opacity:.4}
-        @keyframes aurora1{0%{transform:translateX(0) rotate(-3deg)}100%{transform:translateX(30%) rotate(3deg)}}
-        @keyframes aurora2{0%{transform:translateX(0) rotate(2deg)}100%{transform:translateX(-20%) rotate(-4deg)}}
-        @keyframes aurora3{0%{transform:translateX(10%) rotate(1deg)}100%{transform:translateX(-15%) rotate(-2deg)}}
+        /* Aurora removed for performance */
 
         /* Interactive Terminal */
         .term-input-line{display:flex;align-items:center;font-family:var(--mono);font-size:13px;margin-top:2px}
@@ -316,8 +305,6 @@
         .term-output{color:var(--t2);font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap}
         .term-output .cmd-name{color:var(--grn)}.term-output .cmd-desc{color:var(--t2)}.term-output .cmd-val{color:var(--org)}
 
-        /* Card Spotlight */
-        .card-spotlight{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;z-index:0}
 
         /* Heatmap */
         .heatmap-wrap{margin-top:40px}
@@ -342,9 +329,7 @@
 <a href="#hero" class="skip-link">Skip to content</a>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
 <canvas id="particles"></canvas>
-<div class="aurora"><div class="aurora-band ab1"></div><div class="aurora-band ab2"></div><div class="aurora-band ab3"></div></div>
 <div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>
-<div class="cursor-glow" id="cursorGlow"></div>
 <nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
     <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#about">About</a><a href="#beyond">Beyond Code</a><a href="#connect">Connect</a><div class="nav-indicator" id="navIndicator"></div></div>
@@ -766,7 +751,7 @@ if(!isMobile){
 (function(){
     const c=document.getElementById('particles'),ctx=c.getContext('2d');
     let w,h,particles=[];
-    const CFG={count:isMobile?25:60,speed:.3,size:1.5,connectDist:isMobile?100:140,connectDist2:0,mouseDist:180,mouseDist2:0,color:[88,166,255],mouseColor:[74,222,128]};
+    const CFG={count:isMobile?20:40,speed:.3,size:1.5,connectDist:isMobile?100:140,connectDist2:0,mouseDist:180,mouseDist2:0,color:[88,166,255],mouseColor:[74,222,128]};
     CFG.connectDist2=CFG.connectDist*CFG.connectDist;
     CFG.mouseDist2=CFG.mouseDist*CFG.mouseDist;
     function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
@@ -1054,12 +1039,7 @@ applyGitHubData=function(repoCount,totalStars){
 /* ===== THEME ENHANCEMENT 3: ANIMATED GRADIENT DIVIDERS ===== */
 /* Handled via CSS .dv::after animation */
 
-/* ===== THEME ENHANCEMENT 4: CURSOR GLOW ===== */
-if(!isMobile){
-    const glow=document.getElementById('cursorGlow');
-    mouseFns.push(m=>{glow.style.left=m.x+'px';glow.style.top=m.y+'px';if(!glow.classList.contains('active'))glow.classList.add('active')});
-    document.addEventListener('mouseleave',()=>glow.classList.remove('active'));
-}
+/* ===== CURSOR GLOW removed for performance ===== */
 
 /* ===== THEME ENHANCEMENT 5: TEXT SCRAMBLE ON HERO NAME ===== */
 (function(){
@@ -1144,38 +1124,7 @@ if(!isMobile){
     });
 })();
 
-/* ===== THEME ENHANCEMENT 9: FLOATING CODE SNIPPETS ===== */
-if(!isMobile){
-    const snippets=['const','let','=>','=>{}','()=>','import','export','async','await','function','return','if(true)','[]','.map()','Promise','{...}','null','===','||','&&','try{}','catch','class','new','this','/* */','//'];
-    function createFloater(){
-        const el=document.createElement('span');
-        el.className='floating-code';
-        el.textContent=snippets[Math.floor(Math.random()*snippets.length)];
-        el.style.left=Math.random()*90+5+'%';
-        el.style.fontSize=(10+Math.random()*6)+'px';
-        const dur=20+Math.random()*25;
-        el.style.animationDuration=dur+'s';
-        el.style.opacity='0';
-        document.body.appendChild(el);
-        let y=window.innerHeight+50;
-        const speed=.3+Math.random()*.4;
-        const sway=Math.random()*30;
-        const swaySpeed=.001+Math.random()*.002;
-        const startTime=performance.now();
-        function animate(now){
-            const elapsed=now-startTime;
-            y-=speed;
-            const x=Math.sin(elapsed*swaySpeed)*sway;
-            el.style.transform=`translate(${x}px,${y}px)`;
-            const progress=1-(y+50)/(window.innerHeight+100);
-            el.style.opacity=progress<.1?progress*10:progress>.9?(1-progress)*10:.045;
-            if(y<-60){el.remove();return;}
-            requestAnimationFrame(animate);
-        }
-        requestAnimationFrame(animate);
-    }
-    setTimeout(()=>{setInterval(createFloater,4000);createFloater()},3000);
-}
+/* ===== FLOATING CODE SNIPPETS removed for performance ===== */
 
 /* ===== SHOOTING STARS ===== */
 (function(){
@@ -1281,38 +1230,9 @@ if(!isMobile){
     });
 }
 
-/* ===== CARD SPOTLIGHT EFFECT ===== */
-if(!isMobile){
-    const spotMap=new WeakMap();
-    document.querySelectorAll('.pc,.lc2,.skc,.prc').forEach(card=>{
-        card.style.position='relative';
-        const spot=document.createElement('div');
-        spot.className='card-spotlight';
-        card.appendChild(spot);
-        spotMap.set(card,spot);
-        card.addEventListener('mouseleave',()=>{spot.style.opacity='0'});
-    });
-    mouseFns.push(m=>{
-        const card=document.elementFromPoint(m.x,m.y);
-        if(!card)return;
-        const target=card.closest('.pc,.lc2,.skc,.prc');
-        if(!target)return;
-        const spot=spotMap.get(target);
-        if(!spot)return;
-        const r=target.getBoundingClientRect();
-        spot.style.background=`radial-gradient(circle 200px at ${m.x-r.left}px ${m.y-r.top}px,rgba(88,166,255,.07),transparent)`;
-        spot.style.opacity='1';
-    });
-}
+/* ===== CARD SPOTLIGHT removed for performance ===== */
 
-/* ===== PARALLAX DEPTH ===== */
-if(!isMobile){
-    const glows=document.querySelectorAll('.hero-glow');
-    window.addEventListener('scroll',()=>{
-        const s=window.scrollY;
-        glows.forEach((g,i)=>{g.style.transform=`translateY(${s*(0.12+i*0.04)}px)`});
-    },{passive:true});
-}
+/* ===== PARALLAX DEPTH removed for performance ===== */
 
 /* ===== TIME-AWARE GREETING ===== */
 (function(){
@@ -1326,8 +1246,6 @@ if(!isMobile){
     if(sub)sub.innerHTML=greeting+'. <span style="color:var(--t2)">Sr. Systems Administrator &amp; Builder</span>';
     if(hr>=19||hr<6){
         document.documentElement.style.setProperty('--blue-glow','rgba(130,100,255,.25)');
-        const aurora=document.querySelector('.aurora');
-        if(aurora)aurora.style.opacity='.06';
     }
 })();
 
