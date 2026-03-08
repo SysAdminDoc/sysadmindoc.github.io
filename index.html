@@ -891,8 +891,7 @@ function updateFilterCounts(){
 fetchGitHub();
 
 /* ===== NAV ===== */
-let ls=0;const nv=document.getElementById('nav');
-window.addEventListener('scroll',()=>{const c=window.scrollY;if(c>ls&&c>100)nv.classList.add('hid');else nv.classList.remove('hid');ls=c},{passive:true});
+const nv=document.getElementById('nav');
 const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');
 const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -60% 0px'});
 secs.forEach(s=>so.observe(s));
