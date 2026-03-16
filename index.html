@@ -27,11 +27,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++."},{"@type":"Person","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Systems Administrator","knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging"],"sameAs":["https://github.com/SysAdminDoc","https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW"]}]}</script>
     <style>
         :root{
             --bg:#0a0e17;--bg2:#111827;--bg3:#1a2035;--bgc:rgba(17,24,39,.6);
             --glass:rgba(17,24,39,.45);--glass-border:rgba(99,130,190,.12);--glass-hover:rgba(99,130,190,.2);
-            --brd:rgba(55,65,90,.5);--brdb:rgba(88,130,200,.3);
+            --brdb:rgba(88,130,200,.3);
             --t1:#e8edf5;--t2:#8b9cc0;--t3:#7080a0;
             --blue:#58a6ff;--blued:rgba(88,166,255,.12);--blue-glow:rgba(88,166,255,.25);
             --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
@@ -123,6 +124,7 @@
         /* Glassmorphism Cards */
         .fg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
         .pc.bento-hero{grid-column:1/-1}
+        .fg .pc:last-child:not(.bento-hero){grid-column:1/-1}
         .pc{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:16px;padding:28px;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column}
         .pc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(88,166,255,.4),rgba(192,132,252,.4),transparent);opacity:0;transition:opacity .4s}
         .pc:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
@@ -177,7 +179,7 @@
         /* Skills */
         .skg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
         .skc{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:14px;padding:22px;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1)}.skc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
-        .ski{font-size:28px;margin-bottom:8px;font-family:var(--mono);font-weight:700}.skn{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:4px}.sks{font-size:12px;color:var(--t3)}
+        .skn{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:4px}.sks{font-size:12px;color:var(--t3)}
 
         /* Skill Rings */
         .sk-ring{width:72px;height:72px;margin:0 auto 10px;position:relative}
@@ -191,6 +193,12 @@
         /* Hero Avatar */
         .hero-avatar{width:56px;height:56px;border-radius:50%;border:2px solid var(--glass-border);box-shadow:0 0 20px rgba(88,166,255,.12);display:none;opacity:0;transition:opacity .5s;margin-bottom:16px}
         .hero-avatar.loaded{display:block;opacity:1}
+
+        /* Loading Skeletons */
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        .shimmer-load{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;border-radius:4px;color:transparent!important}
+        .shimmer-load *{color:transparent!important}
+        .hsn.shimmer-load{min-width:40px;min-height:32px}
 
         /* Live App Thumbnails */
         .lc2-thumb{height:90px;margin:-20px -20px 10px;border-radius:13px 13px 0 0;overflow:hidden;background:var(--bg3)}
@@ -344,7 +352,7 @@
 
         /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
-        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}.cc-dot,.cc-ring{display:none}}
+        @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}.cc-dot,.cc-ring{display:none}.lc2-thumb{height:60px}.shooting-star{display:none!important}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
     </style>
 </head>
@@ -372,8 +380,8 @@
             <p class="hr">Sr. Systems Administrator &amp; Builder</p>
             <p class="hd">I build the tools I wish existed. Zero-config utilities, browser enhancements, desktop and mobile applications, and automation scripts &mdash; all open source, all ready to run.</p>
             <div class="hs">
-                <div class="hs-item"><div class="hsn" id="statRepos" data-live>--</div><div class="hsl">Repositories</div></div>
-                <div class="hs-item"><div class="hsn" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
+                <div class="hs-item"><div class="hsn shimmer-load" id="statRepos" data-live>--</div><div class="hsl">Repositories</div></div>
+                <div class="hs-item"><div class="hsn shimmer-load" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
                 <div class="hs-item"><div class="hsn" id="statLive">13</div><div class="hsl">Live Apps</div></div>
             </div>
             <div class="last-active" id="lastActive"><span class="la-dot"></span> <span id="lastActiveText">Checking activity...</span></div>
@@ -705,19 +713,19 @@
     <h3 class="beyond-subtitle rv">Aerial Footage</h3>
     <div class="video-grid" style="margin-bottom:60px">
         <div class="video-card card-enter">
-            <div class="video-thumb" data-yt="waOMwX39NOg"><img src="https://img.youtube.com/vi/waOMwX39NOg/hqdefault.jpg" alt="Venice Beach, Florida Morning" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+            <div class="video-thumb" data-yt="waOMwX39NOg" tabindex="0" role="button" aria-label="Play Venice Beach, Florida video"><img src="https://img.youtube.com/vi/waOMwX39NOg/maxresdefault.jpg" onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt="Venice Beach, Florida Morning" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Venice Beach, Florida</div><div class="video-desc">Morning aerial flight &mdash; June 2023</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb" data-yt="xnpOENxAx-k"><img src="https://img.youtube.com/vi/xnpOENxAx-k/hqdefault.jpg" alt="Manasota Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+            <div class="video-thumb" data-yt="xnpOENxAx-k" tabindex="0" role="button" aria-label="Play Manasota Beach, Florida video"><img src="https://img.youtube.com/vi/xnpOENxAx-k/maxresdefault.jpg" onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt="Manasota Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Manasota Beach, Florida</div><div class="video-desc">Coastal drone footage over Manasota Key</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb" data-yt="PnlsSqa8DtQ"><img src="https://img.youtube.com/vi/PnlsSqa8DtQ/hqdefault.jpg" alt="Venice, Florida Jetty" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+            <div class="video-thumb" data-yt="PnlsSqa8DtQ" tabindex="0" role="button" aria-label="Play Venice Jetty video"><img src="https://img.youtube.com/vi/PnlsSqa8DtQ/maxresdefault.jpg" onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt="Venice, Florida Jetty" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Venice Jetty</div><div class="video-desc">Aerial view of the Venice, Florida jetty</div></div>
         </div>
         <div class="video-card card-enter">
-            <div class="video-thumb" data-yt="FVroPKvYgKQ"><img src="https://img.youtube.com/vi/FVroPKvYgKQ/hqdefault.jpg" alt="Nokomis Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+            <div class="video-thumb" data-yt="FVroPKvYgKQ" tabindex="0" role="button" aria-label="Play Nokomis Beach, Florida video"><img src="https://img.youtube.com/vi/FVroPKvYgKQ/maxresdefault.jpg" onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt="Nokomis Beach, Florida" loading="lazy"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             <div class="video-info"><div class="video-title">Nokomis Beach, Florida</div><div class="video-desc">Drone flight over Nokomis Beach</div></div>
         </div>
     </div>
@@ -941,6 +949,14 @@ function applyGitHubData(repoCount,totalStars){
     }
     // Update category filter counts dynamically
     updateFilterCounts();
+    // Remove shimmer loading state
+    document.querySelectorAll('.shimmer-load').forEach(el=>el.classList.remove('shimmer-load'));
+    // Counter animation
+    if(typeof observeCounters==='function')setTimeout(observeCounters,100);
+    // Starred repos glow
+    document.querySelectorAll('.ca[data-repo]').forEach(el=>{
+        if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
+    });
 }
 
 function updateFilterCounts(){
@@ -990,15 +1006,24 @@ document.addEventListener('click',e=>{
         nav.classList.remove('open');
 });
 
-/* ===== SCROLL PROGRESS BAR ===== */
+/* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN ===== */
 const scrollProg=document.getElementById('scrollProgress');
+let lastScrollY=0;
 
 /* ===== BACK TO TOP ===== */
 const bttBtn=document.getElementById('backToTop');
 window.addEventListener('scroll',()=>{
-    bttBtn.classList.toggle('show',window.scrollY>600);
+    const sy=window.scrollY;
+    bttBtn.classList.toggle('show',sy>600);
     const max=document.documentElement.scrollHeight-innerHeight;
-    scrollProg.style.width=(max>0?(scrollY/max)*100:0)+'%';
+    scrollProg.style.width=(max>0?(sy/max)*100:0)+'%';
+    // Nav hide on scroll down, show on scroll up
+    const navEl=document.getElementById('nav');
+    if(sy>120){
+        if(sy>lastScrollY+5)navEl.classList.add('hid');
+        else if(sy<lastScrollY-5)navEl.classList.remove('hid');
+    }else{navEl.classList.remove('hid')}
+    lastScrollY=sy;
 },{passive:true});
 bttBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'})});
 
@@ -1011,21 +1036,25 @@ const co=new IntersectionObserver(entries=>{
 },{threshold:.05});
 document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
 
-/* ===== YOUTUBE CLICK-TO-PLAY ===== */
+/* ===== YOUTUBE CLICK-TO-PLAY (keyboard accessible) ===== */
+function playVideo(thumb){
+    const id=thumb.dataset.yt;
+    const iframe=document.createElement('iframe');
+    iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
+    iframe.title=thumb.querySelector('img')?.alt||'Video';
+    iframe.frameBorder='0';
+    iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen=true;
+    iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
+    thumb.innerHTML='';
+    thumb.appendChild(iframe);
+    thumb.style.cursor='default';
+    thumb.removeAttribute('tabindex');
+    thumb.removeAttribute('role');
+}
 document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
-    thumb.addEventListener('click',function(){
-        const id=this.dataset.yt;
-        const iframe=document.createElement('iframe');
-        iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
-        iframe.title=this.querySelector('img').alt;
-        iframe.frameBorder='0';
-        iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        iframe.allowFullscreen=true;
-        iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
-        this.innerHTML='';
-        this.appendChild(iframe);
-        this.style.cursor='default';
-    });
+    thumb.addEventListener('click',function(){playVideo(this)});
+    thumb.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();playVideo(this)}});
 });
 
 /* ===== LAZY-LOAD SPOTIFY EMBED ===== */
@@ -1136,11 +1165,7 @@ function observeCounters(){
         if(el.textContent!=='--')counterObserver.observe(el);
     });
 }
-const origApply=applyGitHubData;
-applyGitHubData=function(repoCount,totalStars){
-    origApply(repoCount,totalStars);
-    setTimeout(observeCounters,100);
-};
+/* Counter observation wired into applyGitHubData directly */
 
 /* ===== THEME ENHANCEMENT 3: ANIMATED GRADIENT DIVIDERS ===== */
 /* Handled via CSS .dv::after animation */
@@ -1197,10 +1222,7 @@ applyGitHubData=function(repoCount,totalStars){
     },600);
 })();
 
-/* ===== THEME ENHANCEMENT 7: HOLOGRAPHIC SHIMMER ===== */
-/* Handled via CSS .pc::after rainbow conic-gradient */
-
-/* ===== THEME ENHANCEMENT 8: ANIMATED SLIDING NAV INDICATOR ===== */
+/* ===== ANIMATED SLIDING NAV INDICATOR ===== */
 (function(){
     const indicator=document.getElementById('navIndicator');
     const navLinksContainer=document.getElementById('navLinks');
@@ -1230,10 +1252,9 @@ applyGitHubData=function(repoCount,totalStars){
     });
 })();
 
-/* ===== FLOATING CODE SNIPPETS removed for performance ===== */
-
-/* ===== SHOOTING STARS ===== */
+/* ===== SHOOTING STARS (desktop only) ===== */
 (function(){
+    if(isMobile)return;
     function launchStar(){
         const star=document.createElement('div');
         star.className='shooting-star';
@@ -1497,12 +1518,19 @@ function onTermReady(){
     input.addEventListener('blur',()=>{if(!input.value)input.placeholder=base});
 })();
 
-/* ===== GITHUB LAST ACTIVE ===== */
+/* ===== GITHUB LAST ACTIVE (cached 30 min) ===== */
 async function fetchLastActive(){
+    const CACHE_KEY='gh_events_cache';const TTL=1800000;
     try{
-        const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=10');
-        if(!r.ok)return;
-        const events=await r.json();
+        const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+        let events;
+        if(cached&&Date.now()-cached.ts<TTL){events=cached.data}
+        else{
+            const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=10');
+            if(!r.ok)return;
+            events=await r.json();
+            localStorage.setItem(CACHE_KEY,JSON.stringify({data:events,ts:Date.now()}));
+        }
         if(events.length>0){
             const last=new Date(events[0].created_at);
             const now=new Date();
@@ -1516,7 +1544,6 @@ async function fetchLastActive(){
             else text='Active '+days+' day'+(days!==1?'s':'')+' ago';
             const el=document.getElementById('lastActiveText');
             if(el)el.textContent=text;
-            // Now Building status
             const push=events.find(e=>e.type==='PushEvent');
             if(push){
                 const repo=push.repo.name.split('/')[1];
@@ -1531,11 +1558,23 @@ async function fetchLastActive(){
 }
 fetchLastActive();
 
-/* ===== HERO AVATAR ===== */
-fetch('https://api.github.com/users/SysAdminDoc').then(r=>r.json()).then(d=>{
+/* ===== HERO AVATAR (cached 30 min) ===== */
+(function(){
+    const CACHE_KEY='gh_avatar_cache';const TTL=1800000;
+    const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
     const av=document.getElementById('heroAvatar');
-    if(av&&d.avatar_url){av.src=d.avatar_url;requestAnimationFrame(()=>av.classList.add('loaded'))}
-}).catch(()=>{});
+    if(!av)return;
+    function showAvatar(url){if(url){av.src=url;requestAnimationFrame(()=>av.classList.add('loaded'))}}
+    if(cached&&Date.now()-cached.ts<TTL&&cached.url){showAvatar(cached.url)}
+    else{
+        fetch('https://api.github.com/users/SysAdminDoc').then(r=>r.json()).then(d=>{
+            if(d.avatar_url){
+                localStorage.setItem(CACHE_KEY,JSON.stringify({url:d.avatar_url,ts:Date.now()}));
+                showAvatar(d.avatar_url);
+            }
+        }).catch(()=>{});
+    }
+})();
 
 /* ===== SKILL RING ANIMATION ===== */
 (function(){
@@ -1575,14 +1614,7 @@ fetch('https://api.github.com/users/SysAdminDoc').then(r=>r.json()).then(d=>{
     });
 })();
 
-/* ===== STARRED CATALOG GLOW ===== */
-const origApply2=applyGitHubData;
-applyGitHubData=function(repoCount,totalStars){
-    origApply2(repoCount,totalStars);
-    document.querySelectorAll('.ca[data-repo]').forEach(el=>{
-        if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
-    });
-};
+/* Starred catalog glow wired into applyGitHubData directly */
 </script>
 </body>
 </html>
