@@ -4,23 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matt Parker — Systems Administrator & Builder</title>
-    <meta name="description" content="Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#.">
+    <meta name="description" content="Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.">
     <meta name="theme-color" content="#0a0e17">
     <!-- Open Graph -->
     <meta property="og:title" content="Matt Parker — Systems Administrator & Builder">
-    <meta property="og:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#. Zero config, dark theme, works on first launch.">
+    <meta property="og:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sysadmindoc.github.io">
     <meta property="og:site_name" content="Matt Parker Portfolio">
+    <meta property="og:image" content="https://sysadmindoc.github.io/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://sysadmindoc.github.io/og.png">
     <meta name="twitter:title" content="Matt Parker — Systems Administrator & Builder">
-    <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, and C#. Zero config, dark theme, works on first launch.">
+    <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch.">
     <!-- Canonical -->
     <link rel="canonical" href="https://sysadmindoc.github.io/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root{
@@ -126,6 +131,9 @@
 
         /* Live badge */
         .lb2{font-family:var(--mono);font-size:11px;color:var(--grn);background:var(--grnd);padding:3px 10px;border-radius:10px;white-space:nowrap;border:1px solid rgba(74,222,128,.15);text-shadow:0 0 8px var(--grn-glow)}
+        .lb2 .status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;vertical-align:middle;background:var(--t3);opacity:.5}
+        .lb2 .status-dot.up{background:var(--grn);box-shadow:0 0 6px var(--grn-glow);opacity:1;animation:pulse 2s ease-in-out infinite}
+        .lb2 .status-dot.down{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,.25);opacity:1}
 
         /* Live Apps */
         .lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
@@ -325,7 +333,7 @@
 <a href="#hero" class="skip-link">Skip to content</a>
 <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
 <canvas id="particles"></canvas>
-<div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>
+<script>if(innerWidth>=768){document.write('<div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>')}</script>
 <nav id="nav" aria-label="Main navigation"><div class="ni">
     <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
     <div class="nk" id="navLinks"><a href="#featured">Projects</a><a href="#live">Live Apps</a><a href="#catalog">Catalog</a><a href="#skills">Stack</a><a href="#about">About</a><a href="#beyond">Beyond Code</a><a href="#connect">Connect</a><div class="nav-indicator" id="navIndicator"></div></div>
@@ -353,7 +361,7 @@
                 <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
             </div>
         </div>
-        <div class="term" id="heroTerm" role="img" aria-label="Interactive terminal"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
+        <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
     </div>
 </section>
 <div class="dv"></div>
@@ -742,8 +750,7 @@
             </div>
         </div>
         <div>
-            <div class="spotify-embed-wrap card-enter">
-                <iframe style="border-radius:16px;border:none" src="https://open.spotify.com/embed/artist/48Fd3yL6KvxtZO0MOPZYHW?utm_source=generator&theme=0" width="100%" height="740" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="spotify-embed-wrap card-enter" id="spotifyWrap" data-src="https://open.spotify.com/embed/artist/48Fd3yL6KvxtZO0MOPZYHW?utm_source=generator&theme=0" style="min-height:740px">
             </div>
         </div>
     </div>
@@ -898,11 +905,17 @@ function applyGitHubData(repoCount,totalStars){
             const s=ghData[card.dataset.repo].stars;
             el.textContent=s>0?s:'';
             if(s===0){const p=el.closest('.cs2')||el.closest('.ca-stars');if(p)p.style.display='none'}}});
-    // Store update times for sorting
+    // Store update times for sorting + inject catalog star badges
     document.querySelectorAll('.ca[data-repo]').forEach(el=>{
         if(ghData[el.dataset.repo]){
-            el.dataset.stars=ghData[el.dataset.repo].stars;
-            el.dataset.updated=ghData[el.dataset.repo].updated}});
+            const s=ghData[el.dataset.repo].stars;
+            el.dataset.stars=s;
+            el.dataset.updated=ghData[el.dataset.repo].updated;
+            if(s>0&&!el.querySelector('.ca-stars')){
+                const badge=document.createElement('span');
+                badge.className='ca-stars';
+                badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>'+s;
+                el.appendChild(badge)}}});
     // Update "All" filter count
     const countAll=document.getElementById('countAll');
     if(countAll){
@@ -929,6 +942,22 @@ function updateFilterCounts(){
 }
 
 fetchGitHub();
+
+/* ===== LIVE APP STATUS CHECKS ===== */
+(function(){
+    document.querySelectorAll('#live .lc2').forEach(card=>{
+        const url=card.href;
+        if(!url)return;
+        const badge=card.querySelector('.lb2');
+        if(!badge)return;
+        const dot=document.createElement('span');
+        dot.className='status-dot';
+        badge.prepend(dot);
+        fetch(url,{method:'HEAD',cache:'no-cache'}).then(r=>{
+            dot.classList.add(r.ok?'up':'down');
+        }).catch(()=>dot.classList.add('down'));
+    });
+})();
 
 /* ===== NAV ===== */
 const nv=document.getElementById('nav');
@@ -974,6 +1003,25 @@ document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
         this.style.cursor='default';
     });
 });
+
+/* ===== LAZY-LOAD SPOTIFY EMBED ===== */
+(function(){
+    const wrap=document.getElementById('spotifyWrap');
+    if(!wrap||!wrap.dataset.src)return;
+    const io=new IntersectionObserver(entries=>{
+        if(!entries[0].isIntersecting)return;
+        io.disconnect();
+        const iframe=document.createElement('iframe');
+        iframe.src=wrap.dataset.src;
+        iframe.style.cssText='border-radius:16px;border:none';
+        iframe.width='100%';iframe.height='740';
+        iframe.allowFullscreen=true;
+        iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        iframe.loading='lazy';
+        wrap.appendChild(iframe);
+    },{rootMargin:'200px'});
+    io.observe(wrap);
+})();
 
 /* ===== CATALOG: FILTER + SEARCH + SORT ===== */
 const grid=document.getElementById('catalogGrid');
@@ -1291,14 +1339,15 @@ function onTermReady(){
     const hint=document.getElementById('termHint');
     if(!term||!tbody)return;
     term.classList.add('interactive');
-    term.removeAttribute('role');
+    term.setAttribute('role','application');
+    term.setAttribute('aria-roledescription','interactive terminal');
     let active=false;
     let inputLine=null;
     let inputEl=null;
     const commands={
         help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Repository stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
         whoami:()=>'<span class="cmd-val">Matt Parker</span> - Sr. Systems Administrator & Builder\nHealthcare IT | Medical Imaging | Open Source\nPhilosophy: Zero config. Dark theme. Works on first launch.',
-        skills:()=>'<span class="cmd-name">PowerShell</span>  WPF, Automation\n<span class="cmd-name">Python</span>      PyQt6, CLI Tools\n<span class="cmd-name">JavaScript</span>  Userscripts, Web Apps\n<span class="cmd-name">Kotlin</span>      Android Apps\n<span class="cmd-name">C#</span>          WinForms, .NET\n<span class="cmd-name">HTML/CSS</span>    Single-file Apps',
+        skills:()=>'<span class="cmd-name">PowerShell</span>  WPF, Automation\n<span class="cmd-name">Python</span>      PyQt6, CLI Tools\n<span class="cmd-name">JavaScript</span>  Userscripts, Web Apps\n<span class="cmd-name">Kotlin</span>      Android Apps\n<span class="cmd-name">C#</span>          WinForms, .NET\n<span class="cmd-name">C++</span>         Desktop Apps\n<span class="cmd-name">HTML/CSS</span>    Single-file Apps',
         repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public repositories\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
         ls:()=>'<span class="cmd-name">win11-nvme-driver-patcher</span>  NVMe driver patcher\n<span class="cmd-name">Network_Security_Auditor</span>   67 security checks\n<span class="cmd-name">LibreSpot</span>                  Spotify customization\n<span class="cmd-name">HostShield</span>                 Android ad blocker\n<span class="cmd-name">ScriptVault</span>                MV3 userscript manager\n<span class="cmd-name">YouTube-Kit</span>                YouTube customization',
         uptime:()=>{const d=Date.now()-pageLoadTime;const m=Math.floor(d/60000);const s=Math.floor((d%60000)/1000);return'Page uptime: <span class="cmd-val">'+m+'m '+s+'s</span>'},
@@ -1322,6 +1371,7 @@ function onTermReady(){
         inputEl.className='term-input';
         inputEl.setAttribute('autocomplete','off');
         inputEl.setAttribute('spellcheck','false');
+        inputEl.setAttribute('aria-label','Terminal command input');
         inputLine.appendChild(inputEl);
         tbody.appendChild(inputLine);
         inputEl.focus();
@@ -1358,6 +1408,7 @@ function onTermReady(){
         addPrompt();
     }
     term.addEventListener('click',activate);
+    term.addEventListener('keydown',e=>{if(e.key==='Enter'&&!active)activate()});
     document.addEventListener('keydown',e=>{
         if(!active&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&e.key.length===1){
             const focused=document.activeElement;
