@@ -178,7 +178,7 @@
 
         /* Skills */
         .skg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
-        .skc{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:14px;padding:22px;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1)}.skc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
+        .skc{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:14px;padding:22px;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}.skc:hover{border-color:var(--brdb);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
         .skn{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:4px}.sks{font-size:12px;color:var(--t3)}
 
         /* Skill Rings */
@@ -216,7 +216,7 @@
 
         /* Beyond Code - Video */
         .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
-        .video-card{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
+        .video-card{background:rgba(17,24,39,.65);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative}
         .video-card:hover{border-color:var(--brdb);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.3),0 0 40px rgba(88,166,255,.06)}
         .video-thumb{position:relative;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
         .video-thumb img{width:100%;height:100%;object-fit:cover;transition:opacity .3s}
@@ -350,6 +350,43 @@
         .last-active{font-family:var(--mono);font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;margin-top:12px}
         .la-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn-glow);animation:pulse 2s ease-in-out infinite}
 
+        /* Film Grain */
+        body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+        /* Card Spotlight */
+        .pc::after,.lc2::after,.skc::after,.video-card::after,.prc::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(350px circle at var(--spot-x,50%) var(--spot-y,50%),rgba(88,166,255,.07),transparent 60%);opacity:var(--spot-opacity,0);transition:opacity .3s;pointer-events:none;z-index:0}
+
+        /* Language Donut */
+        .lang-donut-wrap{margin-top:48px;display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+        .lang-donut{position:relative;width:180px;height:180px;flex-shrink:0}
+        .lang-donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+        .lang-donut circle{fill:none;stroke-width:20;transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)}
+        .lang-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .lang-donut-center .donut-total{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--t1)}
+        .lang-donut-center .donut-label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+        .lang-legend{display:flex;flex-direction:column;gap:8px}
+        .lang-legend-item{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--t2)}
+        .lang-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+        .lang-legend-pct{color:var(--t3);margin-left:auto;min-width:35px;text-align:right}
+
+        /* Commit Freshness */
+        .pc-fresh{font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:auto;padding-top:10px}
+
+        /* Copy Toast */
+        .copy-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--grn);color:var(--bg);font-family:var(--mono);font-size:13px;padding:8px 20px;border-radius:8px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:10000;box-shadow:0 4px 20px rgba(74,222,128,.3)}
+        .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+        /* Terminal Copy Hover */
+        .term-output{position:relative;cursor:pointer;padding:2px 4px;margin:-2px -4px;border-radius:4px;transition:background .2s}
+        .term-output:hover{background:rgba(255,255,255,.03)}
+
+        /* Streak Badge */
+        .streak-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:12px;color:var(--org);margin-left:12px}
+        .streak-badge svg{width:12px;height:12px;fill:var(--org)}
+
+        /* prefers-reduced-motion */
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.shooting-star,.cc-dot,.cc-ring{display:none!important}#particles{opacity:0!important}body::after{display:none!important}.hero-anim{opacity:1!important;transform:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}}
+
         /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
         @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:56px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.btt{bottom:20px;right:20px;width:40px;height:40px}.music-hero{flex-direction:column;text-align:center}.music-stat{justify-content:center}.album-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.cng{flex-direction:column;align-items:center}.cc-dot,.cc-ring{display:none}.lc2-thumb{height:60px}.shooting-star{display:none!important}}
@@ -384,7 +421,7 @@
                 <div class="hs-item"><div class="hsn shimmer-load" id="statStars" data-live>--</div><div class="hsl">Stars</div></div>
                 <div class="hs-item"><div class="hsn" id="statLive">13</div><div class="hsl">Live Apps</div></div>
             </div>
-            <div class="last-active" id="lastActive"><span class="la-dot"></span> <span id="lastActiveText">Checking activity...</span></div>
+            <div class="last-active" id="lastActive"><span class="la-dot"></span> <span id="lastActiveText">Checking activity...</span><span id="streakBadge"></span></div>
             <div class="ha">
                 <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
                 <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
@@ -612,6 +649,7 @@
         <div class="skc card-enter"><div class="sk-ring" style="--ring-target:31"><svg viewBox="0 0 76 76"><circle class="ring-bg" cx="38" cy="38" r="32.5"/><circle class="ring-fg" cx="38" cy="38" r="32.5" stroke="var(--org)"/></svg><div class="sk-ring-label" style="color:var(--org)">&lt;/&gt;</div></div><div class="skn">HTML / CSS</div><div class="sks">Single-file Apps</div></div>
         <div class="skc card-enter"><div class="sk-ring" style="--ring-target:92"><svg viewBox="0 0 76 76"><circle class="ring-bg" cx="38" cy="38" r="32.5"/><circle class="ring-fg" cx="38" cy="38" r="32.5" stroke="var(--org)"/></svg><div class="sk-ring-label" style="color:var(--org)">pfS</div></div><div class="skn">pfSense</div><div class="sks">Firewall, DNS</div></div>
     </div>
+    <div class="lang-donut-wrap rv" id="langDonut"></div>
 </div></section>
 <div class="dv"></div>
 
@@ -846,12 +884,16 @@ if(!isMobile){
         if(!document.hidden)requestAnimationFrame(draw)}
     window.addEventListener('resize',resize);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(draw)});
-    init();draw()
+    (window.requestIdleCallback||(cb=>setTimeout(cb,80)))(()=>{init();draw()})
 })();
 
 /* ===== LOADER ===== */
 const lb=document.getElementById('loaderBar');let lp=0;
 const li=setInterval(()=>{lp+=Math.random()*25+15;if(lp>100)lp=100;lb.style.width=lp+'%';if(lp>=100){clearInterval(li);setTimeout(()=>document.getElementById('loader').classList.add('hidden'),300);setTimeout(()=>document.getElementById('loader').remove(),900)}},120);
+
+/* ===== COPY TOAST ===== */
+const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';document.body.appendChild(copyToast);
+function showCopyToast(){copyToast.classList.add('show');setTimeout(()=>copyToast.classList.remove('show'),1500)}
 
 /* ===== TERMINAL TYPING ===== */
 const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'repos',val:'...',vc:'tv',id:'termRepos'},{key:'stars',val:'...',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Zero config. Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
@@ -887,19 +929,22 @@ async function fetchGitHub(){
     try{
         const repos=await fetchAllRepos();
         let totalStars=0;
+        const langCount={};
         repos.forEach(repo=>{
             ghData[repo.name]={stars:repo.stargazers_count,updated:repo.updated_at};
             totalStars+=repo.stargazers_count;
+            const l=repo.language||'Other';
+            langCount[l]=(langCount[l]||0)+1;
         });
         // Cache successful response
-        localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:repos.length,stars:totalStars,ts:Date.now()}));
-        applyGitHubData(repos.length,totalStars);
+        localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:repos.length,stars:totalStars,langs:langCount,ts:Date.now()}));
+        applyGitHubData(repos.length,totalStars,langCount);
     }catch(e){
         // Try cached data
         const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
         if(cached&&cached.data){
             ghData=cached.data;
-            applyGitHubData(cached.total,cached.stars);
+            applyGitHubData(cached.total,cached.stars,cached.langs||null);
         }else{
             document.getElementById('statRepos').textContent='134';
             document.getElementById('statStars').textContent='--';
@@ -907,7 +952,7 @@ async function fetchGitHub(){
     }
 }
 
-function applyGitHubData(repoCount,totalStars){
+function applyGitHubData(repoCount,totalStars,langCount){
     // Hero stats
     const sr=document.getElementById('statRepos');if(sr)sr.textContent=repoCount;
     const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
@@ -957,6 +1002,25 @@ function applyGitHubData(repoCount,totalStars){
     document.querySelectorAll('.ca[data-repo]').forEach(el=>{
         if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
     });
+    // Commit freshness on featured cards
+    document.querySelectorAll('#featuredGrid .pc[data-repo]').forEach(card=>{
+        if(ghData[card.dataset.repo]&&!card.querySelector('.pc-fresh')){
+            const updated=new Date(ghData[card.dataset.repo].updated);
+            const days=Math.floor((Date.now()-updated)/86400000);
+            let text;
+            if(days===0)text='Updated today';
+            else if(days===1)text='Updated yesterday';
+            else if(days<30)text='Updated '+days+'d ago';
+            else if(days<365)text='Updated '+Math.floor(days/30)+'mo ago';
+            else text='Updated '+Math.floor(days/365)+'y ago';
+            const badge=document.createElement('div');
+            badge.className='pc-fresh';
+            badge.textContent=text;
+            card.appendChild(badge);
+        }
+    });
+    // Language donut
+    if(langCount)renderLangDonut(langCount,repoCount);
 }
 
 function updateFilterCounts(){
@@ -972,6 +1036,39 @@ function updateFilterCounts(){
     });
     const countAll=document.getElementById('countAll');
     if(countAll)countAll.textContent=allItems.length;
+}
+
+function renderLangDonut(langCount,repoCount){
+    const wrap=document.getElementById('langDonut');
+    if(!wrap||!langCount||wrap.dataset.rendered)return;
+    wrap.dataset.rendered='1';
+    const sorted=Object.entries(langCount).sort((a,b)=>b[1]-a[1]);
+    const top=sorted.slice(0,7);
+    const otherCount=sorted.slice(7).reduce((s,e)=>s+e[1],0);
+    if(otherCount>0)top.push(['Other',otherCount]);
+    const total=repoCount;
+    const colors={'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0'};
+    const radius=70;
+    const circ=2*Math.PI*radius;
+    const gap=2;
+    let circles='';
+    let offset=0;
+    top.forEach(function(entry){
+        var lang=entry[0],count=entry[1];
+        var pct=count/total;
+        var arcLen=Math.max(pct*circ-gap,0);
+        var color=colors[lang]||'#7080a0';
+        circles+='<circle cx="90" cy="90" r="'+radius+'" stroke="'+color+'" stroke-dasharray="'+arcLen.toFixed(1)+' '+(circ-arcLen).toFixed(1)+'" stroke-dashoffset="'+(-offset).toFixed(1)+'" opacity=".85"/>';
+        offset+=pct*circ;
+    });
+    let legend='';
+    top.forEach(function(entry){
+        var lang=entry[0],count=entry[1];
+        var color=colors[lang]||'#7080a0';
+        var pct=Math.round(count/total*100);
+        legend+='<div class="lang-legend-item"><span class="lang-legend-dot" style="background:'+color+'"></span>'+lang+'<span class="lang-legend-pct">'+pct+'%</span></div>';
+    });
+    wrap.innerHTML='<div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">repos</div></div></div><div class="lang-legend">'+legend+'</div>';
 }
 
 fetchGitHub();
@@ -995,7 +1092,7 @@ fetchGitHub();
 /* ===== NAV ===== */
 const nv=document.getElementById('nav');
 const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');
-const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -60% 0px'});
+const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState)history.replaceState(null,null,'#'+en.target.id)}})},{rootMargin:'-40% 0px -60% 0px'});
 secs.forEach(s=>so.observe(s));
 document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
 document.querySelectorAll('.nk a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'))});
@@ -1035,6 +1132,12 @@ const co=new IntersectionObserver(entries=>{
     visible.forEach((e,i)=>{setTimeout(()=>{e.target.classList.add('vis');co.unobserve(e.target)},i*60)})
 },{threshold:.05});
 document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
+
+/* ===== TYPEWRITER SECTION HEADINGS ===== */
+if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    const twObs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(!en.isIntersecting)return;twObs.unobserve(en.target);const sl=en.target.querySelector('.sl');if(!sl||sl.dataset.tw)return;sl.dataset.tw='1';const full=sl.textContent;sl.textContent='';sl.style.minWidth=sl.offsetWidth+'px';let i=0;(function type(){if(i<=full.length){sl.textContent=full.slice(0,i)+(i<full.length?'|':'');i++;setTimeout(type,55)}})()})},{threshold:.3});
+    document.querySelectorAll('.sh.rv').forEach(el=>twObs.observe(el));
+}
 
 /* ===== YOUTUBE CLICK-TO-PLAY (keyboard accessible) ===== */
 function playVideo(thumb){
@@ -1357,7 +1460,13 @@ if(!isMobile){
     });
 }
 
-/* ===== CARD SPOTLIGHT removed for performance ===== */
+/* ===== CARD SPOTLIGHT (lightweight radial gradient) ===== */
+if(!isMobile){
+    let spotCard=null;
+    document.addEventListener('mouseover',e=>{const c=e.target.closest('.pc,.lc2,.skc,.video-card,.prc');if(c)spotCard=c});
+    document.addEventListener('mouseout',e=>{const c=e.target.closest('.pc,.lc2,.skc,.video-card,.prc');if(c&&c===spotCard){c.style.setProperty('--spot-opacity','0');spotCard=null}});
+    mouseFns.push(m=>{if(!spotCard)return;const r=spotCard.getBoundingClientRect();spotCard.style.setProperty('--spot-x',(m.x-r.left)+'px');spotCard.style.setProperty('--spot-y',(m.y-r.top)+'px');spotCard.style.setProperty('--spot-opacity','1')});
+}
 
 /* ===== PARALLAX DEPTH removed for performance ===== */
 
@@ -1443,6 +1552,14 @@ function onTermReady(){
             }
         });
     }
+    // Click-to-copy terminal output
+    tbody.addEventListener('click',function(e){
+        const output=e.target.closest('.term-output');
+        if(!output)return;
+        const text=output.textContent.trim();
+        if(!text)return;
+        navigator.clipboard.writeText(text).then(showCopyToast).catch(function(){});
+    });
     function activate(){
         if(active)return;active=true;
         const cursor=tbody.querySelector('.tci');
@@ -1526,7 +1643,7 @@ async function fetchLastActive(){
         let events;
         if(cached&&Date.now()-cached.ts<TTL){events=cached.data}
         else{
-            const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=10');
+            const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=100');
             if(!r.ok)return;
             events=await r.json();
             localStorage.setItem(CACHE_KEY,JSON.stringify({data:events,ts:Date.now()}));
@@ -1549,6 +1666,19 @@ async function fetchLastActive(){
                 const repo=push.repo.name.split('/')[1];
                 const tag=document.getElementById('heroTag');
                 if(tag)tag.innerHTML='<span class="dot"></span> Now building: <strong style="color:var(--t1)">'+repo+'</strong>';
+            }
+            // Compute commit streak from events
+            const daySet=new Set();
+            events.forEach(function(ev){var d=new Date(ev.created_at);daySet.add(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate())});
+            var streak=0,started=false;
+            for(var i=0;i<90;i++){
+                var sd=new Date(now);sd.setDate(sd.getDate()-i);
+                if(daySet.has(sd.getFullYear()+'-'+(sd.getMonth()+1)+'-'+sd.getDate())){started=true;streak++}
+                else if(started)break;
+            }
+            var badge=document.getElementById('streakBadge');
+            if(badge&&streak>=2){
+                badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M9.533.753V1.91c0 .033.013.065.036.09.082.09.122.21.122.34 0 .263-.199.488-.462.522C7.592 3.08 6.307 4.271 5.8 5.82c-.053.162-.098.327-.137.494a5.937 5.937 0 00-.14 1.278c0 .157.004.313.014.468.016.285.054.572.116.86.045.218.103.432.174.641C6.473 11.336 8.133 12.688 10.1 12.688c.57 0 1.138-.122 1.657-.361.14-.065.28-.14.413-.224a4.39 4.39 0 001.053-.907c.069-.083.164-.116.247-.08.09.04.14.14.12.237a6.063 6.063 0 01-.63 1.897c-.29.484-.65.92-1.07 1.297-.42.377-.9.685-1.42.91a4.93 4.93 0 01-1.83.344c-1.172 0-2.2-.442-2.983-1.172-.783-.73-1.343-1.754-1.609-2.96A9.2 9.2 0 013.8 10.6c0-2.9 1.356-5.513 3.465-7.168a.283.283 0 01.17-.058c.155 0 .273.127.273.283v.02c0 .058-.017.112-.047.158-.487.72-.806 1.57-.922 2.48a.267.267 0 00.082.238.246.246 0 00.24.044C8.494 6.12 9.54 5.05 9.99 3.69a6.57 6.57 0 00.275-1.592c.013-.22.02-.44.02-.662 0-.257-.01-.512-.03-.764a.282.282 0 01.278-.3z"/></svg> '+streak+'-day streak';
             }
         }
     }catch(e){
