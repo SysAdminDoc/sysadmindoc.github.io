@@ -25,6 +25,11 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://api.github.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.github.com">
+    <link rel="dns-prefetch" href="https://i.scdn.co">
+    <link rel="dns-prefetch" href="https://opengraph.githubassets.com">
+    <link rel="manifest" href="manifest.json">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++."},{"@type":"Person","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Systems Administrator","knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging"],"sameAs":["https://github.com/SysAdminDoc","https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW"]}]}</script>
@@ -384,8 +389,65 @@
         .streak-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:12px;color:var(--org);margin-left:12px}
         .streak-badge svg{width:12px;height:12px;fill:var(--org)}
 
+        /* Animated Conic-Gradient Card Borders */
+        @property --border-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+        @keyframes borderSpin{to{--border-angle:360deg}}
+        .pc:hover::before,.lc2:hover::before{
+            opacity:1;background:conic-gradient(from var(--border-angle),transparent 40%,var(--blue),var(--pur),var(--teal),var(--grn),transparent 60%);
+            inset:-1px;height:auto;border-radius:inherit;z-index:-1;
+            animation:borderSpin 3s linear infinite;filter:blur(1.5px)
+        }
+        .pc:hover,.lc2:hover{border-color:transparent}
+
+        /* Animated Avatar Gradient Ring */
+        .hero-avatar.loaded{border:2px solid transparent;background-origin:border-box;background-clip:padding-box,border-box;background-image:linear-gradient(var(--bg),var(--bg)),conic-gradient(from var(--border-angle),var(--blue),var(--pur),var(--teal),var(--grn),var(--blue));animation:borderSpin 4s linear infinite}
+
+        /* Button Ripple */
+        .btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);transform:scale(0);animation:rippleOut .6s ease-out forwards;pointer-events:none}
+        @keyframes rippleOut{to{transform:scale(4);opacity:0}}
+
+        /* Color-Tinted Section Backgrounds */
+        #featured::before{background:radial-gradient(ellipse at 30% 20%,rgba(88,166,255,.04) 0%,transparent 60%)!important}
+        #live::before{background:radial-gradient(ellipse at 70% 30%,rgba(74,222,128,.04) 0%,transparent 60%)!important}
+        #catalog::before{background:radial-gradient(ellipse at 50% 50%,rgba(88,130,200,.03) 0%,transparent 60%)!important}
+        #skills::before{background:radial-gradient(ellipse at 40% 40%,rgba(45,212,191,.04) 0%,transparent 60%)!important}
+        #about::before{background:radial-gradient(ellipse at 60% 40%,rgba(88,166,255,.03) 0%,transparent 60%)!important}
+        #philosophy::before{background:radial-gradient(ellipse at 30% 50%,rgba(192,132,252,.04) 0%,transparent 60%)!important}
+        #journey::before{background:radial-gradient(ellipse at 50% 30%,rgba(251,146,60,.03) 0%,transparent 60%)!important}
+        #beyond::before{background:radial-gradient(ellipse at 60% 30%,rgba(251,146,60,.04) 0%,transparent 60%)!important}
+        #connect::before{background:radial-gradient(ellipse at 50% 30%,rgba(88,166,255,.03) 0%,transparent 60%)!important}
+
+        /* Animated SVG Wave Dividers */
+        .dv{height:40px;background:none;border:none;overflow:visible}
+        .dv svg{width:100%;height:40px;display:block}
+        .dv::after{display:none}
+        .wave-path{fill:none;stroke:var(--glass-border);stroke-width:.5;opacity:.6}
+        .wave-glow{fill:none;stroke-width:.8;opacity:.35}
+
+        /* Recently Pushed Ribbon */
+        .push-ribbon{overflow:hidden;padding:12px 0;position:relative;z-index:1;border-bottom:1px solid var(--glass-border)}
+        .push-ribbon-inner{display:flex;gap:24px;animation:ribbonScroll 30s linear infinite;width:max-content}
+        .push-ribbon:hover .push-ribbon-inner{animation-play-state:paused}
+        .push-chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--t2);white-space:nowrap;padding:6px 16px;border-radius:20px;background:var(--glass);border:1px solid var(--glass-border);transition:all .3s;text-decoration:none}
+        .push-chip:hover{color:var(--t1);border-color:var(--brdb);background:var(--glass-hover)}
+        .push-chip svg{width:12px;height:12px;fill:var(--grn);flex-shrink:0}
+        .push-chip .push-time{color:var(--t3);font-size:11px}
+        @keyframes ribbonScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+        /* Scroll Milestone Celebration */
+        .milestone-burst{position:fixed;top:2px;pointer-events:none;z-index:1002}
+        .milestone-particle{position:absolute;width:4px;height:4px;border-radius:50%;opacity:1;animation:mBurst .8s cubic-bezier(.16,1,.3,1) forwards}
+        @keyframes mBurst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx,20px),var(--dy,-30px)) scale(0);opacity:0}}
+
+        /* Footer Build Ticker */
+        .footer-ticker-wrap{overflow:hidden;border-top:1px solid var(--glass-border);padding:10px 0}
+        .footer-ticker{display:flex;gap:32px;animation:tickerScroll 25s linear infinite;width:max-content;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em;text-transform:uppercase}
+        .footer-ticker span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+        .footer-ticker .ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--t3);opacity:.5}
+        @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
         /* prefers-reduced-motion */
-        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.shooting-star,.cc-dot,.cc-ring{display:none!important}#particles{opacity:0!important}body::after{display:none!important}.hero-anim{opacity:1!important;transform:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.shooting-star,.cc-dot,.cc-ring{display:none!important}#particles{opacity:0!important}body::after{display:none!important}.hero-anim{opacity:1!important;transform:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}.push-ribbon-inner,.footer-ticker{animation:none!important}.milestone-burst{display:none!important}}
 
         /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.music-layout{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
@@ -430,7 +492,11 @@
         <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
     </div>
 </section>
-<div class="dv"></div>
+<!-- SVG Gradient Defs (shared) -->
+<svg style="position:absolute;width:0;height:0"><defs><linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--blue)" stop-opacity="0"/><stop offset="30%" stop-color="var(--blue)"/><stop offset="50%" stop-color="var(--pur)"/><stop offset="70%" stop-color="var(--teal)"/><stop offset="100%" stop-color="var(--teal)" stop-opacity="0"/></linearGradient></defs></svg>
+<!-- Recently Pushed Ribbon -->
+<div class="push-ribbon" id="pushRibbon" style="display:none"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <section id="featured"><div class="si">
     <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked highlights &mdash; star counts live from GitHub.</p></div>
@@ -443,7 +509,7 @@
         <a href="https://github.com/SysAdminDoc/YouTube-Kit" target="_blank" rel="noopener" class="pc card-enter" data-repo="YouTube-Kit"><div class="ct"><div class="ci ext">JS</div><div class="cs2"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg> <span class="live-star">--</span></div></div><div class="cn">YouTube-Kit</div><div class="cde">Ultimate YouTube customization userscript &mdash; UI overhaul, ad removal, playback control, and dozens of QoL tweaks.</div><div class="cta"><span class="ctg">Userscript</span><span class="ctg">YouTube</span><span class="ctg">Tampermonkey</span></div></a>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 <!-- Live Web Apps -->
 <section id="live"><div class="si">
     <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Try in Your Browser</h2><p class="sd">No install, no signup &mdash; click and go.</p></div>
@@ -463,7 +529,7 @@
         <a href="https://sysadmindoc.github.io/UserScriptHunt/" target="_blank" rel="noopener" class="lc2 card-enter"><div class="lct"><div class="lcn">UserScriptHunt</div><span class="lb2">LIVE</span></div><div class="lcd">Unified userscript search engine</div></a>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- Full Catalog -->
 <section id="catalog"><div class="si">
@@ -635,7 +701,7 @@
     </div>
     <div class="no-results" id="noResults">No repositories match your search.</div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 <!-- Stack -->
 <section id="skills"><div class="si">
     <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2></div>
@@ -651,7 +717,7 @@
     </div>
     <div class="lang-donut-wrap rv" id="langDonut"></div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- About -->
 <section id="about"><div class="si">
@@ -680,7 +746,7 @@
         </div>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- What Drives Me -->
 <section id="philosophy"><div class="si">
@@ -708,7 +774,7 @@
         </div>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- The Journey -->
 <section id="journey"><div class="si">
@@ -741,7 +807,7 @@
         </div>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- Beyond Code -->
 <section id="beyond"><div class="si">
@@ -818,7 +884,7 @@
         </div>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
 <!-- Connect -->
 <section id="connect"><div class="si">
@@ -831,9 +897,9 @@
         </a>
     </div>
 </div></section>
-<div class="dv"></div>
+<div class="dv"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path class="wave-path" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path><path class="wave-glow" stroke="url(#waveGrad)" d="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 35,300 20 T600 20 T900 20 T1200 20;M0 20 Q150 5,300 20 T600 20 T900 20 T1200 20"/></path></svg></div>
 
-<footer><div class="fi"><div class="ft" id="footerText"></div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div></div></footer>
+<footer><div class="fi"><div class="ft" id="footerText"></div><div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div></div><div class="footer-ticker-wrap"><div class="footer-ticker" id="footerTicker"></div></div></footer>
 
 <!-- Back to top -->
 <button class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
@@ -907,6 +973,29 @@ setTimeout(rt,700);
 
 /* ===== DYNAMIC FOOTER YEAR ===== */
 document.getElementById('footerText').textContent='\u00A9 '+new Date().getFullYear()+' Matt Parker \u2014 SysAdminDoc';
+
+/* ===== FOOTER BUILD TICKER ===== */
+(function(){
+    const t=document.getElementById('footerTicker');if(!t)return;
+    const items=['HTML / CSS / JS','GitHub Pages','GitHub API','Zero Dependencies','No Frameworks','Dark Theme Always','Single File','Handcrafted'];
+    const html=items.map(s=>'<span><span class="ticker-dot"></span>'+s+'</span>').join('');
+    t.innerHTML=html+html;
+})();
+
+/* ===== BUTTON RIPPLE ===== */
+document.addEventListener('click',function(e){
+    const btn=e.target.closest('.btn');
+    if(!btn)return;
+    const r=btn.getBoundingClientRect();
+    const ripple=document.createElement('span');
+    ripple.className='ripple';
+    const size=Math.max(r.width,r.height);
+    ripple.style.width=ripple.style.height=size+'px';
+    ripple.style.left=(e.clientX-r.left-size/2)+'px';
+    ripple.style.top=(e.clientY-r.top-size/2)+'px';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend',function(){ripple.remove()});
+});
 
 /* ===== LIVE GITHUB API WITH CACHING & PAGINATION ===== */
 let ghData={};
@@ -1103,9 +1192,33 @@ document.addEventListener('click',e=>{
         nav.classList.remove('open');
 });
 
-/* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN ===== */
+/* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN + MILESTONE ===== */
 const scrollProg=document.getElementById('scrollProgress');
 let lastScrollY=0;
+const milestoneHit={25:false,50:false,75:false,100:false};
+function spawnMilestoneBurst(pct){
+    const colors=['var(--blue)','var(--grn)','var(--pur)','var(--teal)','var(--org)','var(--yel)'];
+    const x=scrollProg.getBoundingClientRect().width*(pct/100);
+    const burst=document.createElement('div');
+    burst.className='milestone-burst';
+    burst.style.left=x+'px';
+    for(let i=0;i<12;i++){
+        const p=document.createElement('div');
+        p.className='milestone-particle';
+        const angle=Math.random()*Math.PI*2;
+        const dist=30+Math.random()*50;
+        const dx=Math.cos(angle)*dist;
+        const dy=Math.sin(angle)*dist;
+        p.style.background=colors[i%colors.length];
+        p.style.left='0px';p.style.top='0px';
+        p.style.animationDuration=(.5+Math.random()*.4)+'s';
+        p.style.setProperty('--dx',dx+'px');
+        p.style.setProperty('--dy',dy+'px');
+        burst.appendChild(p);
+    }
+    document.body.appendChild(burst);
+    setTimeout(()=>burst.remove(),1200);
+}
 
 /* ===== BACK TO TOP ===== */
 const bttBtn=document.getElementById('backToTop');
@@ -1113,7 +1226,10 @@ window.addEventListener('scroll',()=>{
     const sy=window.scrollY;
     bttBtn.classList.toggle('show',sy>600);
     const max=document.documentElement.scrollHeight-innerHeight;
-    scrollProg.style.width=(max>0?(sy/max)*100:0)+'%';
+    const pct=max>0?(sy/max)*100:0;
+    scrollProg.style.width=pct+'%';
+    // Milestone celebrations
+    [25,50,75,100].forEach(m=>{if(pct>=m&&!milestoneHit[m]){milestoneHit[m]=true;spawnMilestoneBurst(m)}});
     // Nav hide on scroll down, show on scroll up
     const navEl=document.getElementById('nav');
     if(sy>120){
@@ -1680,6 +1796,29 @@ async function fetchLastActive(){
             if(badge&&streak>=2){
                 badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M9.533.753V1.91c0 .033.013.065.036.09.082.09.122.21.122.34 0 .263-.199.488-.462.522C7.592 3.08 6.307 4.271 5.8 5.82c-.053.162-.098.327-.137.494a5.937 5.937 0 00-.14 1.278c0 .157.004.313.014.468.016.285.054.572.116.86.045.218.103.432.174.641C6.473 11.336 8.133 12.688 10.1 12.688c.57 0 1.138-.122 1.657-.361.14-.065.28-.14.413-.224a4.39 4.39 0 001.053-.907c.069-.083.164-.116.247-.08.09.04.14.14.12.237a6.063 6.063 0 01-.63 1.897c-.29.484-.65.92-1.07 1.297-.42.377-.9.685-1.42.91a4.93 4.93 0 01-1.83.344c-1.172 0-2.2-.442-2.983-1.172-.783-.73-1.343-1.754-1.609-2.96A9.2 9.2 0 013.8 10.6c0-2.9 1.356-5.513 3.465-7.168a.283.283 0 01.17-.058c.155 0 .273.127.273.283v.02c0 .058-.017.112-.047.158-.487.72-.806 1.57-.922 2.48a.267.267 0 00.082.238.246.246 0 00.24.044C8.494 6.12 9.54 5.05 9.99 3.69a6.57 6.57 0 00.275-1.592c.013-.22.02-.44.02-.662 0-.257-.01-.512-.03-.764a.282.282 0 01.278-.3z"/></svg> '+streak+'-day streak';
             }
+            // Recently Pushed Ribbon
+            var ribbon=document.getElementById('pushRibbon');
+            if(ribbon){
+                var pushEvents=events.filter(function(ev){return ev.type==='PushEvent'});
+                var seen={};var chips=[];
+                pushEvents.forEach(function(ev){
+                    var repo=ev.repo.name.split('/')[1];
+                    if(seen[repo])return;seen[repo]=1;
+                    if(chips.length>=8)return;
+                    var d=new Date(ev.created_at);
+                    var ago=Math.floor((now-d)/60000);
+                    var timeStr;
+                    if(ago<60)timeStr=ago+'m ago';
+                    else if(ago<1440)timeStr=Math.floor(ago/60)+'h ago';
+                    else timeStr=Math.floor(ago/1440)+'d ago';
+                    chips.push('<a href="https://github.com/SysAdminDoc/'+repo+'" target="_blank" rel="noopener" class="push-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4"/></svg>'+repo+'<span class="push-time">'+timeStr+'</span></a>');
+                });
+                if(chips.length>0){
+                    var html=chips.join('');
+                    ribbon.innerHTML='<div class="push-ribbon-inner">'+html+html+'</div>';
+                    ribbon.style.display='';
+                }
+            }
         }
     }catch(e){
         const el=document.getElementById('lastActiveText');
@@ -1745,6 +1884,9 @@ fetchLastActive();
 })();
 
 /* Starred catalog glow wired into applyGitHubData directly */
+
+/* ===== PWA SERVICE WORKER ===== */
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
 </script>
 </body>
 </html>
