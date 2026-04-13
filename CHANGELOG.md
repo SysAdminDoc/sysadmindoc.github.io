@@ -2,6 +2,14 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.2.0] - 2026-04-13
+
+- Removed: 11 private/archived repos from catalog (bypassnro, Start-Menu-Manager, Mavenwinutil, uScriptStash, DiggSuite, gSearchTweaks, ScrollJumper, HNCC, DarkReaderLocal, NextDNSPanel, NeonNote)
+- Added: Astra-Deck (featured + catalog), Discrub, StreamKeep, GifText to catalog
+- Added: 13 missing live web apps (NukeMap, GifStudio, ClipForge, ConvertFlow, IconForge, Base64Converter, ImageXpert, MHTMLens, LogLens, CronScope, NATO_PHONETIC_TRAINING, RadAtlas, ChanPrep)
+- Changed: Live Apps count 13 to 26
+- Changed: Updated all category filter counts
+
 ## [v0.1.0] - %Y->- (HEAD -> main, origin/main, origin/HEAD)
 
 - Added: Add DuplicateFF to portfolio catalog (unarchived)
