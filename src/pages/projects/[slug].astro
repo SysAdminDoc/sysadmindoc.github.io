@@ -153,6 +153,36 @@ const techChips = Array.from(new Set([
   categoryLabel[category] ?? null,
   ...tags,
 ].filter(Boolean))) as string[];
+const lastTouchedAt = metaMap[slug]?.updatedAt ?? metaMap[slug]?.pushedAt ?? null;
+const latestRelease = projectReleases[0] ?? null;
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const projectFacts = [
+  {
+    label: 'Delivery',
+    value: isLive ? 'Runs live' : 'Source-first',
+    detail: isLive ? 'Launches in the browser with no install wall.' : 'Browse code, README, and release notes on GitHub.',
+  },
+  {
+    label: 'Primary stack',
+    value: language ?? (categoryLabel[category] ?? 'Other'),
+    detail: language && categoryLabel[category] && language !== categoryLabel[category]
+      ? `${categoryLabel[category]} category`
+      : 'Catalog classification',
+  },
+  {
+    label: 'Freshness',
+    value: lastTouchedAt ? compactUtcDate.format(new Date(lastTouchedAt)) : 'Unavailable',
+    detail: lastTouchedAt ? `Updated ${compactUtcDate.format(new Date(lastTouchedAt))}` : 'GitHub metadata unavailable',
+    rel: lastTouchedAt,
+  },
+  {
+    label: 'Latest release',
+    value: latestRelease?.tag ?? 'No tag yet',
+    detail: latestRelease?.publishedAt
+      ? `Published ${compactUtcDate.format(new Date(latestRelease.publishedAt))}`
+      : 'README is the clearest project overview right now.',
+  },
+];
 
 // Related: same category, excluding self + archived. Ranked by stars then freshness.
 const related = catalog
@@ -167,7 +197,6 @@ const related = catalog
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
-const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 <Base title={title} description={desc} ogImage={ogImage}>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -182,7 +211,7 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
         <a href="/#about">About</a>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
         <a href="/" class="ng" aria-label="Home">← Home</a>
         <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -220,14 +249,32 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
             <span class="project-stars"><StarSvg /> {starCount}</span>
           )}
         </div>
+        <div class="project-overview" aria-label="Project snapshot">
+          {projectFacts.map((fact) => (
+            <div class="project-fact">
+              <div class="project-fact-label">{fact.label}</div>
+              {fact.rel ? (
+                <div class="project-fact-value"><time datetime={fact.rel} data-rel={fact.rel}>{fact.value}</time></div>
+              ) : (
+                <div class="project-fact-value">{fact.value}</div>
+              )}
+              <div class="project-fact-detail">{fact.detail}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
     <Divider />
 
     {/* Preview: live screenshot (if captured) or OG card */}
     <div class="si">
-      <div class="project-readme-wrap">
-        <h2 class="project-section-title">{hasScreenshot ? 'Live Preview' : 'Preview'}</h2>
+      <div class="project-readme-wrap project-panel">
+        <div class="project-section-head">
+          <div>
+            <h2 class="project-section-title">{hasScreenshot ? 'Live Preview' : 'Preview'}</h2>
+            <p class="project-section-copy">{hasScreenshot && isLive ? 'Captured from the deployed app so you can judge the real product surface before opening it.' : 'Using the generated project card until a live capture is available.'}</p>
+          </div>
+        </div>
         {hasScreenshot && isLive ? (
           <a href={liveUrl} target="_blank" rel="noopener" class="project-shot-link">
             <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" />
@@ -245,8 +292,13 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
 
     {readmeHtml && (
       <div class="si">
-        <div class="project-readme-wrap">
-          <h2 class="project-section-title">README</h2>
+        <div class="project-readme-wrap project-panel">
+          <div class="project-section-head">
+            <div>
+              <h2 class="project-section-title">README</h2>
+              <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p>
+            </div>
+          </div>
           <article class="project-readme" set:html={readmeHtml}></article>
           <p class="project-readme-hint" style="margin-top:24px">
             Read on GitHub → <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>
@@ -258,8 +310,13 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
 
     {projectReleases.length > 0 && (
       <div class="si">
-        <div class="project-readme-wrap">
-          <h2 class="project-section-title">Recent Releases</h2>
+        <div class="project-readme-wrap project-panel">
+          <div class="project-section-head">
+            <div>
+              <h2 class="project-section-title">Recent Releases</h2>
+              <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this repo.</p>
+            </div>
+          </div>
           <ul class="project-releases">
             {projectReleases.map((r) => (
               <li class="project-release">
@@ -278,7 +335,13 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
 
     {related.length > 0 && (
       <div class="si">
-        <h2 class="project-section-title">Related Projects</h2>
+        <div class="project-readme-wrap project-panel">
+          <div class="project-section-head">
+            <div>
+              <h2 class="project-section-title">Related Projects</h2>
+              <p class="project-section-copy">More work from the same lane, ranked by stars first and then by how recently it moved.</p>
+            </div>
+          </div>
         <div class="cg" style="margin-top:24px">
           {related.map((r) => (
             <a href={`/projects/${r.repo}/`} class="ca">
@@ -287,6 +350,7 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
               <span class="cds" set:html={r.desc}></span>
             </a>
           ))}
+        </div>
         </div>
       </div>
     )}
@@ -314,10 +378,18 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
   .project-desc{font-size:clamp(16px,1.5vw,20px);color:var(--t2);line-height:1.6;margin-bottom:24px;max-width:700px}
   .project-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
   .project-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .project-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
+  .project-fact{padding:18px 18px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));box-shadow:0 18px 42px rgba(0,0,0,.16)}
+  .project-fact-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+  .project-fact-value{font-family:var(--mono);font-size:18px;color:var(--t1);line-height:1.2;margin-bottom:8px}
+  .project-fact-detail{font-size:13px;color:var(--t2);line-height:1.6}
   .project-stars{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:14px;color:var(--yel);padding:8px 14px;border:1px solid rgba(250,204,21,.3);border-radius:8px;background:var(--yeld)}
   .project-stars svg{width:14px;height:14px;fill:currentColor}
-  .project-section-title{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);margin-bottom:16px}
+  .project-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+  .project-section-title{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);margin-bottom:8px}
+  .project-section-copy{max-width:58ch;color:var(--t3);font-size:14px;line-height:1.7}
   .project-readme-wrap{max-width:1000px;margin:0 auto}
+  .project-panel{padding:30px;border-radius:28px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));box-shadow:0 24px 60px rgba(0,0,0,.22)}
   .project-readme-hint{color:var(--t3);font-size:14px;margin-bottom:20px}
   .project-link{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
   .project-link:hover{border-color:var(--grn)}
@@ -357,4 +429,12 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
   .project-release-tag:hover{text-decoration:underline}
   .project-release-date{font-family:var(--mono);font-size:12px;color:var(--t3)}
   .project-release-body{margin:8px 0 0;color:var(--t2);font-size:14px;line-height:1.6}
+  @media(max-width:980px){
+    .project-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media(max-width:640px){
+    .project-overview{grid-template-columns:1fr}
+    .project-panel{padding:22px;border-radius:22px}
+    .project-section-copy{font-size:13px}
+  }
 </style>
