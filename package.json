@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
@@ -9,11 +9,14 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch-stars": "node scripts/fetch-stars.mjs"
+    "fetch-stars": "node scripts/fetch-stars.mjs",
+    "capture-screenshots": "node scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.1.0"
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^5.1.0",
+    "satori": "^0.26.0"
   },
   "devDependencies": {
     "lightningcss": "^1.32.0",

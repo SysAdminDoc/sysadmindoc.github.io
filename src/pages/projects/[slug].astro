@@ -3,6 +3,9 @@ import Base from '../../layouts/Base.astro';
 import Divider from '../../components/Divider.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { featured, liveApps, catalog } from '../../data/projects';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 
 export async function getStaticPaths() {
   // One page per unique repo across featured + liveApps + catalog
@@ -45,14 +48,20 @@ try {
 } catch {}
 const starCount = stars[slug] ?? 0;
 
+// Check if a captured screenshot exists (committed via `npm run capture-screenshots`)
+const publicDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'public');
+const screenshotPath = join(publicDir, 'screenshots', `${slug}.jpg`);
+const hasScreenshot = existsSync(screenshotPath);
+
 // Related: same category, excluding self
 const related = catalog
   .filter((c) => c.category === category && c.repo !== slug)
   .slice(0, 6);
 
 const title = `${name} — Matt Parker`;
+const ogImage = `/og/${slug}.png`;
 ---
-<Base title={title} description={desc}>
+<Base title={title} description={desc} ogImage={ogImage}>
   <a href="#main" class="skip-link">Skip to content</a>
 
   <nav id="nav" aria-label="Main navigation">
@@ -105,19 +114,21 @@ const title = `${name} — Matt Parker`;
     </div>
     <Divider />
 
-    {/* README preview via GitHub */}
+    {/* Preview: live screenshot (if captured) or OG card */}
     <div class="si">
       <div class="project-readme-wrap">
-        <h2 class="project-section-title">README</h2>
+        <h2 class="project-section-title">{hasScreenshot ? 'Live Preview' : 'Preview'}</h2>
+        {hasScreenshot && isLive ? (
+          <a href={liveUrl} target="_blank" rel="noopener" class="project-shot-link">
+            <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" loading="lazy" />
+            <span class="project-shot-badge">Open live →</span>
+          </a>
+        ) : (
+          <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" loading="lazy" />
+        )}
         <p class="project-readme-hint">
-          Live README and source available at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.
+          Source, releases, and README at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.
         </p>
-        <iframe
-          src={`https://opengraph.githubassets.com/1/SysAdminDoc/${slug}`}
-          class="project-preview-iframe"
-          loading="lazy"
-          title={`${name} preview`}
-        ></iframe>
       </div>
     </div>
     <Divider />
@@ -167,5 +178,10 @@ const title = `${name} — Matt Parker`;
   .project-readme-hint{color:var(--t3);font-size:14px;margin-bottom:20px}
   .project-link{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
   .project-link:hover{border-color:var(--grn)}
-  .project-preview-iframe{width:100%;max-width:600px;aspect-ratio:1200/628;border:1px solid var(--glass-border);border-radius:12px;background:var(--bg2);display:block;margin:0 auto}
+  .project-shot-link{display:block;position:relative;max-width:960px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid var(--glass-border);background:var(--bg2);box-shadow:0 24px 60px rgba(0,0,0,.4);transition:transform .25s ease-out,box-shadow .25s}
+  .project-shot-link:hover{transform:translateY(-4px);box-shadow:0 30px 80px rgba(88,166,255,.15)}
+  .project-shot{display:block;width:100%;height:auto;aspect-ratio:16/10}
+  .project-shot-badge{position:absolute;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;background:rgba(10,14,23,.85);color:var(--grn);font-family:var(--mono);font-size:13px;border:1px solid rgba(74,222,128,.3);backdrop-filter:blur(8px);opacity:0;transition:opacity .2s}
+  .project-shot-link:hover .project-shot-badge{opacity:1}
+  .project-og{display:block;max-width:800px;width:100%;height:auto;border-radius:12px;border:1px solid var(--glass-border);margin:0 auto}
 </style>
