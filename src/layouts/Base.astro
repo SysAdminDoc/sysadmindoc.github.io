@@ -38,7 +38,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch." />
 
   <link rel="canonical" href={canonical} />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://api.github.com" crossorigin />
@@ -46,8 +48,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <link rel="dns-prefetch" href="https://i.scdn.co" />
   <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
   <link rel="manifest" href="/manifest.json" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  {/* Async, non-blocking font loading — saves ~300ms FCP vs default stylesheet */}
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
 
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',

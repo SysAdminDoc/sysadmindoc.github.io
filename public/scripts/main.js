@@ -1,3 +1,9 @@
+/* ===== SAFE DOM HELPERS (XSS-safe repo/text injection) ===== */
+function safeText(s){return String(s==null?'':s)}
+function escapeHTML(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
+// Only allow alphanumeric, dash, underscore, dot in repo slugs (GitHub's own rules)
+function safeRepo(s){return String(s==null?'':s).replace(/[^A-Za-z0-9._-]/g,'')}
+
 /* ===== SHARED MOUSE STATE (single mousemove dispatcher) ===== */
 const isMobile=innerWidth<768;
 const mouseState={x:-1000,y:-1000,moved:false};
@@ -108,8 +114,30 @@ async function fetchAllRepos(){
 }
 
 async function fetchGitHub(){
+    // If stats are already baked into the DOM (build-time), don't flash cached values.
+    // Still fetch fresh data (for live-star updates, freshness badges, language donut, etc.)
+    // but only update the aggregate hero stats if the new value differs from what's rendered.
+    const baked={
+        repos:parseInt((document.getElementById('statRepos')||{}).textContent,10),
+        stars:parseInt((document.getElementById('statStars')||{}).textContent,10)
+    };
+    const hasBaked=!isNaN(baked.repos)&&!isNaN(baked.stars);
+
+    // Try cached data ONLY if nothing is baked in (progressive enhancement)
+    if(!hasBaked){
+        try{
+            const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
+            if(cached&&cached.data){
+                ghData=cached.data;
+                applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate:false});
+            }
+        }catch(e){/* corrupted cache — ignore */}
+    }
+
     try{
-        const repos=await fetchAllRepos();
+        const allRepos=await fetchAllRepos();
+        // Match build-time filter: only public, non-fork, non-archived
+        const repos=allRepos.filter(r=>!r.fork&&!r.archived&&!r.private);
         let totalStars=0;
         const langCount={};
         repos.forEach(repo=>{
@@ -118,35 +146,40 @@ async function fetchGitHub(){
             const l=repo.language||'Other';
             langCount[l]=(langCount[l]||0)+1;
         });
-        // Cache successful response
-        localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:repos.length,stars:totalStars,langs:langCount,ts:Date.now()}));
-        applyGitHubData(repos.length,totalStars,langCount);
+        const count=repos.length;
+        try{localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:count,stars:totalStars,langs:langCount,ts:Date.now()}))}catch(e){}
+        // Only update aggregates if new data actually differs (prevents useless repaint)
+        const skipAggregate=hasBaked&&baked.repos===count&&baked.stars===totalStars;
+        applyGitHubData(count,totalStars,langCount,{skipAggregate});
     }catch(e){
-        // Try cached data
-        const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
-        if(cached&&cached.data){
-            ghData=cached.data;
-            applyGitHubData(cached.total,cached.stars,cached.langs||null);
-        }else{
-            document.getElementById('statRepos').textContent='134';
-            document.getElementById('statStars').textContent='--';
+        // If API fails and nothing was baked, try cache fallback once more
+        if(!hasBaked){
+            try{
+                const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
+                if(cached&&cached.data){ghData=cached.data;applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate:false});return}
+            }catch(err){}
+            const sr=document.getElementById('statRepos');if(sr&&sr.textContent==='--')sr.textContent='134';
         }
+        // Build-time stars are still there; silently no-op for aggregate.
     }
 }
 
-function applyGitHubData(repoCount,totalStars,langCount){
-    // Hero stats
-    const sr=document.getElementById('statRepos');if(sr)sr.textContent=repoCount;
-    const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
-    // Terminal
-    const tr=document.getElementById('termRepos');if(tr)tr.textContent=repoCount;
-    const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
-    // About
-    const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repoCount;
-    const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
-    // Philosophy & Journey
-    const pr=document.getElementById('philRepos');if(pr)pr.textContent=repoCount;
-    const jr=document.getElementById('journeyRepos');if(jr)jr.textContent=repoCount;
+function applyGitHubData(repoCount,totalStars,langCount,opts){
+    opts=opts||{};
+    // Hero stats — skip if build-time value is identical (prevents flicker)
+    if(!opts.skipAggregate){
+        const sr=document.getElementById('statRepos');if(sr)sr.textContent=repoCount;
+        const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
+        // Terminal
+        const tr=document.getElementById('termRepos');if(tr)tr.textContent=repoCount;
+        const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
+        // About
+        const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repoCount;
+        const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
+        // Philosophy & Journey
+        const pr=document.getElementById('philRepos');if(pr)pr.textContent=repoCount;
+        const jr=document.getElementById('journeyRepos');if(jr)jr.textContent=repoCount;
+    }
     // Live apps count
     const liveApps=document.querySelectorAll('#live .lc2').length;
     const sl=document.getElementById('statLive');if(sl)sl.textContent=liveApps;
@@ -224,10 +257,13 @@ function renderLangDonut(langCount,repoCount){
     const wrap=document.getElementById('langDonut');
     if(!wrap||!langCount||wrap.dataset.rendered)return;
     wrap.dataset.rendered='1';
-    const sorted=Object.entries(langCount).sort((a,b)=>b[1]-a[1]);
-    const top=sorted.slice(0,7);
-    const otherCount=sorted.slice(7).reduce((s,e)=>s+e[1],0);
-    if(otherCount>0)top.push(['Other',otherCount]);
+    // Dedupe: 'Other' comes from both `||'Other'` fallback AND from tail rollup.
+    // Split named languages from the fallback bucket first, then pack the rest into "Other".
+    const fallback=langCount['Other']||0;
+    const named=Object.entries(langCount).filter(([k])=>k!=='Other').sort((a,b)=>b[1]-a[1]);
+    const top=named.slice(0,7);
+    const tailCount=named.slice(7).reduce((s,e)=>s+e[1],0)+fallback;
+    if(tailCount>0)top.push(['Other',tailCount]);
     const total=repoCount;
     const colors={'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0'};
     const radius=70;
@@ -394,17 +430,44 @@ const allItems=Array.from(grid.querySelectorAll('.ca'));
 let currentFilter='all';
 let currentSearch='';
 
+function highlight(node,q){
+    // Clear any previous highlight then rewrap matched substring in <mark>
+    const txt=node.dataset.originalText||(node.dataset.originalText=node.textContent);
+    if(!q){node.textContent=txt;return}
+    const idx=txt.toLowerCase().indexOf(q);
+    if(idx<0){node.textContent=txt;return}
+    node.textContent='';
+    node.appendChild(document.createTextNode(txt.slice(0,idx)));
+    const mark=document.createElement('mark');
+    mark.textContent=txt.slice(idx,idx+q.length);
+    node.appendChild(mark);
+    node.appendChild(document.createTextNode(txt.slice(idx+q.length)));
+}
+
 function applyFilters(){
-    const q=currentSearch.toLowerCase();
+    const q=currentSearch.toLowerCase().trim();
     let visible=0;
     allItems.forEach(item=>{
         const matchFilter=currentFilter==='all'||item.dataset.f===currentFilter;
         const matchSearch=!q||item.dataset.name.toLowerCase().includes(q)||item.dataset.desc.toLowerCase().includes(q);
         const show=matchFilter&&matchSearch;
         item.classList.toggle('hid',!show);
-        if(show)visible++;
+        if(show){
+            visible++;
+            const nameEl=item.querySelector('.cna');
+            const descEl=item.querySelector('.cds');
+            if(nameEl)highlight(nameEl,q);
+            if(descEl)highlight(descEl,q);
+        }
     });
-    document.getElementById('noResults').style.display=visible===0?'block':'none';
+    const nr=document.getElementById('noResults');if(nr)nr.style.display=visible===0?'block':'none';
+    // Sync filter state to URL for shareability
+    try{
+        const url=new URL(location.href);
+        if(currentFilter&&currentFilter!=='all')url.searchParams.set('cat',currentFilter);else url.searchParams.delete('cat');
+        if(q)url.searchParams.set('q',currentSearch);else url.searchParams.delete('q');
+        history.replaceState(null,'',url.pathname+(url.search?url.search:'')+url.hash);
+    }catch(e){}
 }
 
 function sortCatalog(method){
@@ -419,13 +482,36 @@ function sortCatalog(method){
     items.forEach(item=>grid.appendChild(item));
 }
 
-document.querySelectorAll('.fb').forEach(b=>{b.addEventListener('click',()=>{
-    document.querySelectorAll('.fb').forEach(x=>x.classList.remove('act'));b.classList.add('act');
-    currentFilter=b.dataset.filter;applyFilters()})});
+document.querySelectorAll('.fb').forEach(b=>{
+    // a11y: filter buttons should expose pressed state for screen readers
+    b.setAttribute('aria-pressed',b.classList.contains('act')?'true':'false');
+    b.addEventListener('click',()=>{
+        document.querySelectorAll('.fb').forEach(x=>{x.classList.remove('act');x.setAttribute('aria-pressed','false')});
+        b.classList.add('act');b.setAttribute('aria-pressed','true');
+        currentFilter=b.dataset.filter;applyFilters();
+    });
+});
 
 document.getElementById('searchInput').addEventListener('input',e=>{currentSearch=e.target.value;applyFilters()});
 
 document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(e.target.value);applyFilters()});
+
+// Hydrate filter/search state from URL on load
+(function hydrateFromUrl(){
+    try{
+        const params=new URLSearchParams(location.search);
+        const cat=params.get('cat');
+        const q=params.get('q');
+        if(cat){
+            const btn=document.querySelector('.fb[data-filter="'+cat.replace(/[^a-z0-9]/gi,'')+'"]');
+            if(btn)btn.click();
+        }
+        if(q){
+            const input=document.getElementById('searchInput');
+            if(input){input.value=q;currentSearch=q;applyFilters()}
+        }
+    }catch(e){}
+})();
 
 // Initialize filter counts on load
 updateFilterCounts();
@@ -747,9 +833,9 @@ function onTermReady(){
                     const base=parts[0].toLowerCase();
                     const handler=commands[base];
                     let output;
-                    if(base==='echo'){output='<span class="cmd-val">'+parts.slice(1).join(' ')+'</span>'}
+                    if(base==='echo'){output='<span class="cmd-val">'+escapeHTML(parts.slice(1).join(' '))+'</span>'}
                     else if(handler){output=typeof handler==='function'?handler():handler}
-                    else{output='command not found: <span class="cmd-val">'+base+'</span>. Type <span class="cmd-name">help</span> for commands.'}
+                    else{output='command not found: <span class="cmd-val">'+escapeHTML(base)+'</span>. Type <span class="cmd-name">help</span> for commands.'}
                     if(output==='__CLEAR__'){tbody.innerHTML='';addPrompt();return}
                     const outDiv=document.createElement('div');
                     outDiv.className='term-output';
@@ -872,9 +958,17 @@ async function fetchLastActive(){
             if(el)el.textContent=text;
             const push=events.find(e=>e.type==='PushEvent');
             if(push){
-                const repo=push.repo.name.split('/')[1];
+                const repo=safeRepo(push.repo.name.split('/')[1]);
                 const tag=document.getElementById('heroTag');
-                if(tag)tag.innerHTML='<span class="dot"></span> Now building: <strong style="color:var(--t1)">'+repo+'</strong>';
+                if(tag&&repo){
+                    tag.textContent='';
+                    const dot=document.createElement('span');dot.className='dot';
+                    const strong=document.createElement('strong');
+                    strong.style.color='var(--t1)';strong.textContent=repo;
+                    tag.appendChild(dot);
+                    tag.appendChild(document.createTextNode(' Now building: '));
+                    tag.appendChild(strong);
+                }
             }
             // Compute commit streak from events
             const daySet=new Set();
@@ -904,11 +998,13 @@ async function fetchLastActive(){
                     if(ago<60)timeStr=ago+'m ago';
                     else if(ago<1440)timeStr=Math.floor(ago/60)+'h ago';
                     else timeStr=Math.floor(ago/1440)+'d ago';
-                    chips.push('<a href="https://github.com/SysAdminDoc/'+repo+'" target="_blank" rel="noopener" class="push-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4"/></svg>'+repo+'<span class="push-time">'+timeStr+'</span></a>');
+                    var srepo=safeRepo(repo);if(!srepo)return;
+                    chips.push('<a href="https://github.com/SysAdminDoc/'+srepo+'" target="_blank" rel="noopener" class="push-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4"/></svg>'+escapeHTML(srepo)+'<span class="push-time">'+escapeHTML(timeStr)+'</span></a>');
                 });
                 if(chips.length>0){
                     var html=chips.join('');
-                    ribbon.innerHTML='<div class="push-ribbon-inner">'+html+html+'</div>';
+                    // First copy visible; second copy aria-hidden (marquee loop continuity)
+                    ribbon.innerHTML='<div class="push-ribbon-inner">'+html+'<div aria-hidden="true" style="display:contents">'+html+'</div></div>';
                     ribbon.style.display='';
                 }
             }
@@ -940,15 +1036,20 @@ fetchLastActive();
 
 /* ===== SKILL RING ANIMATION ===== */
 (function(){
+    const rings=document.querySelectorAll('.sk-ring');
+    if(!rings.length)return;
+    let drawn=0;
     const ringObs=new IntersectionObserver(entries=>{
         entries.forEach(e=>{
             if(e.isIntersecting){
                 e.target.classList.add('drawn');
                 ringObs.unobserve(e.target);
+                drawn++;
+                if(drawn>=rings.length)ringObs.disconnect();
             }
         });
     },{threshold:.3});
-    document.querySelectorAll('.sk-ring').forEach(r=>ringObs.observe(r));
+    rings.forEach(r=>ringObs.observe(r));
 })();
 
 /* ===== LIVE APP THUMBNAILS ===== */
@@ -963,13 +1064,18 @@ fetchLastActive();
     },{rootMargin:'200px'});
     document.querySelectorAll('#live .lc2').forEach(card=>{
         const url=card.href;
-        const repo=(url.split('sysadmindoc.github.io/')[1]||'').replace(/\/$/,'');
+        const repo=safeRepo((url.split('sysadmindoc.github.io/')[1]||'').replace(/\/.*$/,''));
         if(!repo)return;
         const thumb=document.createElement('div');
         thumb.className='lc2-thumb';
+        thumb.setAttribute('aria-hidden','true');// decorative
+        // explicit dimensions to prevent CLS
+        thumb.style.aspectRatio='1200/628';
         const img=document.createElement('img');
-        img.alt=repo+' preview';
+        img.alt='';img.loading='lazy';img.decoding='async';
+        img.width=1200;img.height=628;
         img.dataset.src='https://opengraph.githubassets.com/1/SysAdminDoc/'+repo;
+        img.onerror=function(){thumb.classList.add('thumb-fallback');img.remove()};
         thumb.appendChild(img);
         card.insertBefore(thumb,card.firstChild);
         thumbObs.observe(thumb);

@@ -12,9 +12,7 @@ const classes = ['pc', 'card-enter'];
 if (project.bento === 'hero') classes.push('bento-hero');
 ---
 <a
-  href={`https://github.com/SysAdminDoc/${project.repo}`}
-  target="_blank"
-  rel="noopener"
+  href={`/projects/${project.repo}/`}
   class={classes.join(' ')}
   data-repo={project.repo}
 >
