@@ -50,7 +50,7 @@ const repos = healthcareIT.repos.map((slug) => {
       </div>
 
       <div class="hcit-stats rv">
-        <div class="hcit-stat"><div class="hcit-stat-num">4</div><div class="hcit-stat-label">Tools shipped</div></div>
+        <div class="hcit-stat"><div class="hcit-stat-num">{repos.length}</div><div class="hcit-stat-label">Tools shipped</div></div>
         <div class="hcit-stat"><div class="hcit-stat-num">64k+</div><div class="hcit-stat-label">Studies migrated in production</div></div>
         <div class="hcit-stat"><div class="hcit-stat-num">DICOM · PACS · DR</div><div class="hcit-stat-label">Domains covered</div></div>
       </div>
@@ -61,18 +61,18 @@ const repos = healthcareIT.repos.map((slug) => {
       <h2 class="hcit-h2">The toolkit</h2>
       <div class="hcit-grid">
         {repos.map((r) => (
-          <a href={`/projects/${r.slug}/`} class="hcit-card card-enter">
+          <article class="hcit-card card-enter">
             <div class="hcit-card-head">
               <span class="hcit-card-tag">DICOM</span>
               {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
             </div>
-            <h3 class="hcit-card-name">{r.name}</h3>
+            <h3 class="hcit-card-name"><a href={`/projects/${r.slug}/`} class="hcit-card-link">{r.name}</a></h3>
             <p class="hcit-card-desc" set:html={r.desc}></p>
             <div class="hcit-card-actions">
-              <span class="hcit-card-cta">Read more →</span>
-              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live" onclick="event.stopPropagation()">Live demo →</a>}
+              <a href={`/projects/${r.slug}/`} class="hcit-card-cta">Read more →</a>
+              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Live demo →</a>}
             </div>
-          </a>
+          </article>
         ))}
       </div>
     </div>
@@ -106,18 +106,21 @@ const repos = healthcareIT.repos.map((slug) => {
   .hcit-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:8px}
   .hcit-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
   .hcit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
-  .hcit-card{display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--glass-border);border-radius:14px;background:var(--glass);text-decoration:none;color:var(--t1);transition:all .25s}
+  .hcit-card{display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--glass-border);border-radius:14px;background:var(--glass);color:var(--t1);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
   .hcit-card:hover{border-color:var(--grn);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
   .hcit-card-head{display:flex;align-items:center;justify-content:space-between}
   .hcit-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--grn);padding:3px 8px;border:1px solid rgba(74,222,128,.3);border-radius:4px}
   .hcit-card-stars{font-family:var(--mono);font-size:12px;color:var(--yel);display:inline-flex;align-items:center;gap:4px}
   .hcit-card-stars svg{width:12px;height:12px;fill:currentColor}
   .hcit-card-name{font-family:var(--mono);font-size:18px;font-weight:600;margin:0}
+  .hcit-card-link{color:var(--t1);text-decoration:none}
+  .hcit-card-link:hover{color:var(--grn)}
   .hcit-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0;flex:1}
-  .hcit-card-actions{display:flex;gap:14px;align-items:center;font-family:var(--mono);font-size:13px;margin-top:4px}
-  .hcit-card-cta{color:var(--grn)}
+  .hcit-card-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:13px;margin-top:4px}
+  .hcit-card-cta{color:var(--grn);text-decoration:none}
   .hcit-card-live{color:var(--blue);text-decoration:none}
   .hcit-card-live:hover{text-decoration:underline}
+  .hcit-card-link:focus-visible,.hcit-card-cta:focus-visible,.hcit-card-live:focus-visible{outline:2px solid var(--grn);outline-offset:3px;border-radius:6px}
   .hcit-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
   .hcit-why p{margin-bottom:18px}
   .hcit-why strong{color:var(--t1);font-weight:600}
