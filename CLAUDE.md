@@ -1,4 +1,4 @@
-# sysadmindoc.github.io v0.2.0
+# sysadmindoc.github.io v0.2.1
 
 ## Overview
 Personal portfolio and project showcase site hosted on GitHub Pages.
@@ -19,7 +19,7 @@ No build step — just push index.html. GitHub Pages serves it automatically.
 ## Architecture
 - **Hero**: Animated terminal, live repo/star counts from GitHub API, last-active indicator
 - **Featured Projects**: Hardcoded bento grid with live star counts via data-repo attributes
-- **Live Apps**: 26 GitHub Pages apps with LIVE badges and status checks
+- **Live Apps**: 23 GitHub Pages apps with LIVE badges and status checks
 - **Catalog**: Full repo listing with search, sort, category filters. Entries are hardcoded HTML. Stars fetched live from API (paginated, cached).
 - **Skills**: Animated ring charts
 - **About**: Bio + terminal
@@ -39,5 +39,5 @@ Categories: ps, py, web, ext, kt, sec, media, cs, guide, fork, other
 - File is ~200KB — read with offset/limit, never try to read all at once
 
 ## Status
-- Version: v0.2.0
-- Last updated: 2026-04-13
+- Version: v0.2.1
+- Last updated: 2026-04-14
