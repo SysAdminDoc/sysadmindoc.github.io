@@ -10,6 +10,18 @@ export interface Featured {
   bento?: 'hero' | 'normal';
 }
 
+export interface GreatestHit {
+  repo: string;
+  name: string;
+  why: string; // one-sentence *why it matters*, not what it is
+  tag: string; // short tag like "Windows" | "Android" | "Healthcare IT"
+}
+
+export interface ManifestoRule {
+  word: string; // one word e.g. "Turnkey"
+  rule: string; // short sentence
+}
+
 export interface LiveApp {
   slug: string;
   name: string;

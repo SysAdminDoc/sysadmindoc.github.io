@@ -41,20 +41,63 @@ async function fetchAllRepos() {
 
 const repos = await fetchAllRepos();
 const stars = {};
+const meta = {};
 let totalRepos = 0;
 let totalStars = 0;
 let lastPushedAt = null;
 let lastPushedRepo = null;
+let latestRelease = null;
 
 for (const r of repos) {
   if (r.fork || r.archived || r.private) continue;
   stars[r.name] = r.stargazers_count;
+  meta[r.name] = {
+    stars: r.stargazers_count,
+    pushedAt: r.pushed_at,
+    updatedAt: r.updated_at,
+    language: r.language || null,
+  };
   totalRepos += 1;
   totalStars += r.stargazers_count;
   if (!lastPushedAt || new Date(r.pushed_at) > new Date(lastPushedAt)) {
     lastPushedAt = r.pushed_at;
     lastPushedRepo = r.name;
   }
+}
+
+// Compute commit streak across the user's public event stream (last 90 days)
+let streak = 0;
+try {
+  const res = await fetch(`https://api.github.com/users/${USER}/events/public?per_page=100`, { headers });
+  if (res.ok) {
+    const events = await res.json();
+    const days = new Set();
+    for (const ev of events) {
+      if (ev.type === 'PushEvent') {
+        const d = new Date(ev.created_at);
+        days.add(`${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`);
+      }
+    }
+    const today = new Date();
+    for (let i = 0; i < 90; i++) {
+      const d = new Date(today);
+      d.setUTCDate(d.getUTCDate() - i);
+      const key = `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
+      if (days.has(key)) streak += 1;
+      else if (streak > 0) break;
+    }
+    // Latest release (if any) — use the first PushEvent tag-shaped ref
+    const release = events.find(e => e.type === 'ReleaseEvent' || (e.type === 'CreateEvent' && e.payload?.ref_type === 'tag'));
+    if (release) {
+      latestRelease = {
+        repo: release.repo.name.split('/')[1],
+        tag: release.payload?.release?.tag_name || release.payload?.ref || null,
+        at: release.created_at,
+      };
+    }
+  }
+} catch (e) {
+  console.warn('events fetch failed:', e.message);
 }
 
 mkdirSync(join(root, 'src', 'data'), { recursive: true });
@@ -67,9 +110,15 @@ const stats = {
   totalStars,
   lastPushedAt,
   lastPushedRepo,
+  streak,
+  latestRelease,
   fetchedAt: new Date().toISOString(),
 };
 writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
 
+const metaPath = join(root, 'src', 'data', '_meta.json');
+writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n');
+
 console.log(`Wrote ${outPath}: ${totalRepos} public repos, ${totalStars} stars total.`);
-console.log(`Wrote ${statsPath}: last push ${lastPushedRepo} at ${lastPushedAt}`);
+console.log(`Wrote ${statsPath}: last push ${lastPushedRepo} at ${lastPushedAt}, streak ${streak}d`);
+console.log(`Wrote ${metaPath}: ${Object.keys(meta).length} repo metadata entries`);

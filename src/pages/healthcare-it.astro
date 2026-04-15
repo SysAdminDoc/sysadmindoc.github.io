@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import StarSvg from '../components/StarSvg.astro';
+import { healthcareIT } from '../data/curated';
+import { catalog, featured, liveApps } from '../data/projects';
+
+let stars: Record<string, number> = {};
+try { const mod = await import('../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
+
+const repos = healthcareIT.repos.map((slug) => {
+  const f = featured.find((p) => p.repo === slug);
+  const c = catalog.find((x) => x.repo === slug);
+  const l = liveApps.find((a) => a.slug === slug);
+  return {
+    slug,
+    name: f?.name ?? c?.name ?? l?.name ?? slug,
+    desc: f?.desc ?? c?.desc ?? l?.desc ?? '',
+    stars: stars[slug] ?? 0,
+    liveUrl: l?.url,
+  };
+});
+---
+<Base
+  title="Healthcare IT — Matt Parker"
+  description="Tools I've built specifically for healthcare facilities running medical imaging systems: PACS migration, X-ray acquisition, technique charts, generator specs."
+  ogImage="/og.png"
+>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <nav id="nav" aria-label="Main navigation">
+    <div class="ni">
+      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <div class="nk">
+        <a href="/#greatest-hits">Hits</a>
+        <a href="/#featured">Projects</a>
+        <a href="/#catalog">Catalog</a>
+        <a href="/now/">Now</a>
+        <a href="/#about">About</a>
+      </div>
+      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+    </div>
+  </nav>
+
+  <main id="main" class="hcit-page">
+    <div class="si" style="padding-top:100px">
+      <div class="sh rv">
+        <div class="sl">// Track</div>
+        <h1 class="st hcit-title">Healthcare IT</h1>
+        <p class="sd hcit-intro">{healthcareIT.intro}</p>
+      </div>
+
+      <div class="hcit-stats rv">
+        <div class="hcit-stat"><div class="hcit-stat-num">4</div><div class="hcit-stat-label">Tools shipped</div></div>
+        <div class="hcit-stat"><div class="hcit-stat-num">64k+</div><div class="hcit-stat-label">Studies migrated in production</div></div>
+        <div class="hcit-stat"><div class="hcit-stat-num">DICOM · PACS · DR</div><div class="hcit-stat-label">Domains covered</div></div>
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si">
+      <h2 class="hcit-h2">The toolkit</h2>
+      <div class="hcit-grid">
+        {repos.map((r) => (
+          <a href={`/projects/${r.slug}/`} class="hcit-card card-enter">
+            <div class="hcit-card-head">
+              <span class="hcit-card-tag">DICOM</span>
+              {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
+            </div>
+            <h3 class="hcit-card-name">{r.name}</h3>
+            <p class="hcit-card-desc" set:html={r.desc}></p>
+            <div class="hcit-card-actions">
+              <span class="hcit-card-cta">Read more →</span>
+              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live" onclick="event.stopPropagation()">Live demo →</a>}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si">
+      <h2 class="hcit-h2">Why this track exists</h2>
+      <div class="hcit-why rv">
+        <p>Healthcare IT is where I learned that the best tool isn't the one with the most features — it's the one that <strong>doesn't fail at 2 AM when a radiologist needs a study back from the archive</strong>.</p>
+        <p>Every project here comes from the same pattern: a vendor tool broke, licensing expired, a workflow was manual for no reason, or nobody had built the obvious thing. So I built it. Small enough to audit, open enough to fork, boring enough to just work.</p>
+        <p>If you run medical imaging infrastructure and find something missing, <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="now-inline-link">open an issue</a>.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi">
+      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .hcit-page{min-height:calc(100vh - 200px)}
+  .hcit-title{font-size:clamp(44px,6vw,72px)!important;background:linear-gradient(120deg,var(--t1),var(--grn));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hcit-intro{font-size:18px!important;max-width:720px}
+  .hcit-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px;max-width:900px}
+  .hcit-stat{padding:24px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass);text-align:center}
+  .hcit-stat-num{font-family:var(--mono);font-size:32px;font-weight:700;color:var(--grn);text-shadow:0 0 20px var(--grn-glow)}
+  .hcit-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:8px}
+  .hcit-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
+  .hcit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
+  .hcit-card{display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--glass-border);border-radius:14px;background:var(--glass);text-decoration:none;color:var(--t1);transition:all .25s}
+  .hcit-card:hover{border-color:var(--grn);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+  .hcit-card-head{display:flex;align-items:center;justify-content:space-between}
+  .hcit-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--grn);padding:3px 8px;border:1px solid rgba(74,222,128,.3);border-radius:4px}
+  .hcit-card-stars{font-family:var(--mono);font-size:12px;color:var(--yel);display:inline-flex;align-items:center;gap:4px}
+  .hcit-card-stars svg{width:12px;height:12px;fill:currentColor}
+  .hcit-card-name{font-family:var(--mono);font-size:18px;font-weight:600;margin:0}
+  .hcit-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0;flex:1}
+  .hcit-card-actions{display:flex;gap:14px;align-items:center;font-family:var(--mono);font-size:13px;margin-top:4px}
+  .hcit-card-cta{color:var(--grn)}
+  .hcit-card-live{color:var(--blue);text-decoration:none}
+  .hcit-card-live:hover{text-decoration:underline}
+  .hcit-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
+  .hcit-why p{margin-bottom:18px}
+  .hcit-why strong{color:var(--t1);font-weight:600}
+</style>

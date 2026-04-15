@@ -1,0 +1,41 @@
+---
+import { manifesto } from '../data/curated';
+---
+<section id="manifesto" aria-label="Building principles">
+  <div class="si">
+    <div class="sh rv">
+      <div class="sl">// Rules</div>
+      <h2 class="st">Every project, same seven rules</h2>
+    </div>
+    <ol class="manifesto">
+      {manifesto.map((r, i) => (
+        <li class="manifesto-item card-enter">
+          <span class="manifesto-num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="manifesto-word">{r.word}</span>
+          <span class="manifesto-rule">{r.rule}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .manifesto{
+    list-style:none;padding:0;margin:0;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;
+    max-width:1100px;margin:0 auto;
+  }
+  .manifesto-item{
+    display:grid;grid-template-columns:auto auto 1fr;align-items:baseline;gap:12px;
+    padding:18px 22px;border:1px solid var(--glass-border);border-radius:10px;
+    background:var(--glass);transition:border-color .25s,background .25s,transform .25s;
+  }
+  .manifesto-item:hover{border-color:var(--brdb);background:var(--glass-hover);transform:translateY(-2px)}
+  .manifesto-num{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.1em}
+  .manifesto-word{font-family:var(--mono);font-weight:700;color:var(--grn);font-size:15px;text-shadow:0 0 16px var(--grn-glow)}
+  .manifesto-rule{color:var(--t2);font-size:14px;line-height:1.5}
+  @media(max-width:640px){
+    .manifesto{grid-template-columns:1fr}
+    .manifesto-item{padding:14px 18px}
+  }
+</style>
