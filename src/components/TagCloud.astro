@@ -1,0 +1,61 @@
+---
+import { catalog } from '../data/projects';
+
+// Count repos per category
+const counts: Record<string, number> = {};
+for (const c of catalog) counts[c.category] = (counts[c.category] ?? 0) + 1;
+
+const labels: Record<string, string> = {
+  ps: 'PowerShell', py: 'Python', web: 'Web Apps', ext: 'Extensions',
+  kt: 'Android', sec: 'Security', media: 'Media', cs: 'Desktop',
+  guide: 'Guides', fork: 'Forks', other: 'Other',
+};
+
+const entries = Object.entries(counts)
+  .sort((a, b) => b[1] - a[1]);
+
+const max = Math.max(...entries.map(([, n]) => n));
+const min = Math.min(...entries.map(([, n]) => n));
+const scale = (n: number) => {
+  if (max === min) return 1;
+  return 0.6 + (0.9 * (n - min)) / (max - min); // 0.6 → 1.5 em
+};
+---
+<section id="volume" aria-label="Repository volume by category">
+  <div class="si">
+    <div class="sh rv">
+      <div class="sl">// Volume</div>
+      <h2 class="st">Where the work lives</h2>
+      <p class="sd">Size = how many repos in each bucket. No categories with zero entries.</p>
+    </div>
+    <div class="tag-cloud rv">
+      {entries.map(([key, n]) => (
+        <a
+          href={`/?cat=${key}#catalog`}
+          class="tag-cloud-tag"
+          data-cat={key}
+          style={`font-size:${scale(n)}em`}
+          aria-label={`${labels[key] ?? key}: ${n} repositories`}
+        >
+          <span class={`cdo ${key}`}></span>
+          <span class="tag-cloud-label">{labels[key] ?? key}</span>
+          <span class="tag-cloud-count">{n}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:14px 22px;justify-content:center;align-items:baseline;max-width:900px;margin:0 auto;padding:24px 0}
+  .tag-cloud-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--t2);text-decoration:none;
+    padding:6px 14px;border-radius:999px;border:1px solid transparent;
+    transition:all .2s ease-out;line-height:1;
+  }
+  .tag-cloud-tag:hover{color:var(--t1);border-color:var(--glass-border);background:var(--glass-hover)}
+  .tag-cloud-label{font-family:var(--mono);font-weight:600}
+  .tag-cloud-count{font-family:var(--mono);font-size:.7em;color:var(--t3);padding:2px 7px;background:var(--bg3);border-radius:999px;line-height:1.4}
+  .tag-cloud-tag:hover .tag-cloud-count{color:var(--t1);background:var(--glass-border)}
+</style>

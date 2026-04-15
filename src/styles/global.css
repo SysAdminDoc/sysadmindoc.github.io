@@ -502,3 +502,14 @@ html[data-theme="light"] .cmdk{background:#fff}
 .fl{display:flex;gap:16px}
 .fl a{color:var(--t2);text-decoration:none;font-family:var(--mono);font-size:12px;transition:color .2s}
 .fl a:hover{color:var(--grn)}
+
+/* ===== v0.6.0: age badges, sections ===== */
+.ca-age{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:999px;line-height:1.4;letter-spacing:.03em}
+.ca-age.age-hot{color:var(--grn);background:var(--grnd);border:1px solid rgba(74,222,128,.3)}
+.ca-age.age-warm{color:var(--blue);background:var(--blued);border:1px solid rgba(88,166,255,.25)}
+.ca-age.age-cool{color:var(--t2);background:var(--bg3);border:1px solid var(--glass-border)}
+.ca-age.age-stale{color:var(--t3);background:transparent;border:1px dashed var(--glass-border)}
+
+/* Greatest hits section spacing parity */
+#greatest-hits,#manifesto,#volume{padding:80px 24px}
+#greatest-hits{padding-top:60px}

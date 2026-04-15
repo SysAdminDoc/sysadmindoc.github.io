@@ -1,0 +1,62 @@
+---
+import { greatestHits } from '../data/curated';
+import StarSvg from './StarSvg.astro';
+
+let stars: Record<string, number> = {};
+try {
+  const mod = await import('../data/_stars.json');
+  stars = (mod.default ?? mod) as Record<string, number>;
+} catch {}
+---
+<section id="greatest-hits" aria-label="Greatest hits">
+  <div class="si">
+    <div class="sh rv">
+      <div class="sl">// Greatest Hits</div>
+      <h2 class="st">The ones that matter most</h2>
+      <p class="sd">Eight out of 143. The through-line of my work — why each exists, not what it does.</p>
+    </div>
+    <div class="gh-grid">
+      {greatestHits.map((hit, i) => (
+        <a href={`/projects/${hit.repo}/`} class="gh-card card-enter" data-repo={hit.repo}>
+          <div class="gh-head">
+            <span class="gh-rank">★ {String(i + 1).padStart(2, '0')}</span>
+            <span class="gh-tag">{hit.tag}</span>
+            {stars[hit.repo] ? (
+              <span class="gh-stars"><StarSvg /> {stars[hit.repo]}</span>
+            ) : null}
+          </div>
+          <h3 class="gh-name">{hit.name}</h3>
+          <p class="gh-why">{hit.why}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gh-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;max-width:1200px;margin:0 auto}
+  .gh-card{
+    display:flex;flex-direction:column;gap:12px;
+    padding:24px;border:1px solid var(--glass-border);border-radius:14px;
+    background:linear-gradient(165deg,var(--glass),var(--bgc));
+    text-decoration:none;transition:all .3s ease-out;position:relative;overflow:hidden;
+  }
+  .gh-card::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at top right,var(--grn-glow),transparent 60%);
+    opacity:0;transition:opacity .3s;
+  }
+  .gh-card:hover{border-color:var(--grn);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+  .gh-card:hover::before{opacity:.18}
+  .gh-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .gh-rank{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--yel);font-weight:700}
+  .gh-tag{font-family:var(--mono);font-size:10px;color:var(--t2);padding:3px 8px;border:1px solid var(--glass-border);border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+  .gh-stars{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--yel)}
+  .gh-stars svg{width:12px;height:12px;fill:currentColor}
+  .gh-name{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--t1);word-break:break-word;line-height:1.3}
+  .gh-why{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
+  @media(max-width:640px){
+    .gh-grid{grid-template-columns:1fr}
+    .gh-card{padding:18px}
+  }
+</style>

@@ -15,4 +15,5 @@ Thumbs.db
 .idea/
 src/data/_stars.json
 src/data/_stats.json
+src/data/_meta.json
 _extracted.json

@@ -5,8 +5,33 @@ import StarSvg from './StarSvg.astro';
 export interface Props {
   entry: CatalogEntry;
   stars?: number;
+  pushedAt?: string;
 }
-const { entry, stars } = Astro.props;
+const { entry, stars, pushedAt } = Astro.props;
+
+// Relative age → short badge string. Only show if data is present.
+function relAge(iso?: string): string | null {
+  if (!iso) return null;
+  const ms = Date.now() - new Date(iso).getTime();
+  const days = Math.floor(ms / 86400000);
+  if (days <= 0) return 'today';
+  if (days === 1) return '1d';
+  if (days < 30) return `${days}d`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo`;
+  const years = Math.floor(days / 365);
+  return `${years}y`;
+}
+function freshnessClass(iso?: string): string {
+  if (!iso) return '';
+  const days = (Date.now() - new Date(iso).getTime()) / 86400000;
+  if (days < 14) return 'age-hot';
+  if (days < 90) return 'age-warm';
+  if (days < 365) return 'age-cool';
+  return 'age-stale';
+}
+const age = relAge(pushedAt);
+const ageClass = freshnessClass(pushedAt);
 ---
 <a
   href={entry.url}
@@ -17,10 +42,14 @@ const { entry, stars } = Astro.props;
   data-repo={entry.repo}
   data-name={entry.name}
   data-desc={entry.desc}
+  data-pushed={pushedAt ?? ''}
 >
   <span class={`cdo ${entry.category}`}></span>
   <span class="cna">{entry.name}</span>
   <span class="cds" set:html={entry.desc}></span>
+  {age && (
+    <span class={`ca-age ${ageClass}`} title={pushedAt ? `Last pushed ${new Date(pushedAt).toLocaleDateString()}` : ''}>{age}</span>
+  )}
   <span class="ca-stars" data-repo={entry.repo}>
     <StarSvg />
     <span class="live-star">{stars ?? '--'}</span>

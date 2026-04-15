@@ -6,17 +6,9 @@ Living plan for [sysadmindoc.github.io](https://sysadmindoc.github.io/). Ordered
 
 ---
 
-## Next up — v0.6.0 candidate (Tier A + high-value B)
+## Next up — v0.7.0 (see below)
 
-Shippable in a single session. Every item here is personality or signal, not redundant capability.
-
-- [ ] **Manifesto block** on home (~`S`) — 7-line condensation of `CLAUDE.md` Universal Rules: *Turnkey · Single-file · Dark by default · No confirms · Async · Versioned · Zero-config*. Inspired by rauno.me, paco.me. *Personality lightning bolt under the hero.*
-- [ ] **★ Greatest Hits** row (~`S`) — 6–8 curated repos above Featured. One sentence each on *why* (impact, story, use-case), not *what* (code details). Inspired by jvns.ca, leerob.io.
-- [ ] **Tag cloud with weights** (~`S`) — "PowerShell 27 · Python 37 · Android 10 · …" visual weight tells a story alongside filters. Inspired by simonwillison.net.
-- [ ] **Honest counts in CTAs** (~`S`) — "See all 143 repos" instead of "View more". Inspired by rsms.me.
-- [ ] **Last-updated age badges** on catalog cards (~`M`) — "updated 3d ago" vs "updated 14mo ago". Data already available via `_stars.json`. Inspired by fasterthanli.me.
-- [ ] **`/now` page** (~`M`) — current focus, what's shipping this week, what's blocked. A living doc, not a dead bio. Inspired by paco.me, maggieappleton.com.
-- [ ] **Healthcare-IT track** (~`M`) — named arc grouping PACS/DICOM/X-ray/medical-imaging work (DICOM-PACS-Migrator, XRayAcquisition, RadAtlas). This is the moat vs other sysadmin portfolios. Landing at `/healthcare-it/`. Inspired by maggie's patterns.
+> v0.6.0 shipped — all Tier A items and the two highest-impact Tier B items (/now, /healthcare-it) are now live. See [ROADMAP-COMPLETED.md](ROADMAP-COMPLETED.md).
 
 ## v0.7.0 — data depth
 
@@ -62,19 +54,7 @@ Not planned unless context changes. Revisit only if the portfolio's purpose shif
 
 ## Shipped
 
-Chronological, most recent first. Links to releases.
-
-- **[v0.5.1](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.5.1)** — Fix theme FOUC, revert aggressive mobile catalog changes
-- **[v0.5.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.5.0)** — 139 per-project OG cards (satori), 23 live-app screenshots (Playwright), vim `g<letter>` nav, footer freshness badge, manifest icon fix
-- **[v0.4.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.4.0)** — Audit-driven polish: XSS fixes, WCAG, Ctrl+K command palette, light theme toggle, per-project pages, RSS, real favicon, URL-persisted filters, search highlighting, font preload, CLS fixes, SW fix
-- **[v0.3.1](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.3.1)** — Auto-updating stats at build time
-- **[v0.3.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.3.0)** — Astro 5 migration, data-driven content, CI/CD with daily star cron
-- **[v0.2.1](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.2.1)** — Live section synced to canonical 23-app list
-- v0.2.0 — Live-apps expansion, catalog cleanup
-- v0.1.0 — Initial single-file HTML portfolio
-
----
-
+> Moved to ROADMAP-COMPLETED.md.
 ## Methodology
 
 Ideas enter the roadmap only if they pass three filters:
