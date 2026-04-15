@@ -35,7 +35,6 @@ export const liveApps: LiveApp[] = [
   { slug: "DeGoogler", name: "DeGoogler", url: "https://sysadmindoc.github.io/DeGoogler/", desc: "Migration toolkit for leaving Google services" },
   { slug: "UserScriptHunt", name: "UserScriptHunt", url: "https://sysadmindoc.github.io/UserScriptHunt/", desc: "Unified userscript search engine" },
   { slug: "SearchHub", name: "SearchHub", url: "https://sysadmindoc.github.io/SearchHub/", desc: "538 engines across 29 categories" },
-  { slug: "ChanPrep", name: "ChanPrep", url: "https://sysadmindoc.github.io/ChanPrep/", desc: "4chan image &amp; video prep" },
   { slug: "NATO_PHONETIC_TRAINING", name: "NATO_PHONETIC_TRAINING", url: "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/", desc: "NATO phonetic alphabet trainer" },
   { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" }
 ];
@@ -108,7 +107,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "NukeMap", name: "NukeMap", url: "https://github.com/SysAdminDoc/NukeMap", category: "web", desc: "Nuclear weapon effects simulator" },
   { repo: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/", category: "web", desc: "Military & VIP aircraft tracker" },
   { repo: "GifStudio", name: "GifStudio", url: "https://github.com/SysAdminDoc/GifStudio", category: "web", desc: "Browser-based GIF studio" },
-  { repo: "ChanPrep", name: "ChanPrep", url: "https://github.com/SysAdminDoc/ChanPrep", category: "web", desc: "4chan image & video prep" },
   { repo: "NATO_PHONETIC_TRAINING", name: "NATO_PHONETIC_TRAINING", url: "https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING", category: "web", desc: "NATO phonetic alphabet trainer" },
   { repo: "CronScope", name: "CronScope", url: "https://github.com/SysAdminDoc/CronScope", category: "web", desc: "Cron expression simulator" },
   { repo: "MHTMLens", name: "MHTMLens", url: "https://github.com/SysAdminDoc/MHTMLens", category: "web", desc: "MHTML forensics toolkit" },
