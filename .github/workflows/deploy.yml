@@ -32,6 +32,8 @@ jobs:
         run: npm run fetch-stars
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Astro checks
+        run: npm run check
       - name: Build Astro site
         run: npm run build
       - name: Upload Pages artifact

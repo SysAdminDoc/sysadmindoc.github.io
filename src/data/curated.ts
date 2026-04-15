@@ -1,6 +1,7 @@
 // Hand-curated lists that don't fit the auto-extracted projects.ts model.
 // Edit these directly to reshape the story the portfolio tells.
 import type { GreatestHit, ManifestoRule } from './types';
+import { fallbackRepoCount } from './derived';
 
 /**
  * Greatest Hits — ~8 repos I'd staple to my résumé.
@@ -98,10 +99,10 @@ export const now = {
     'NovaCut v3.20 — shipping final competitor-inspired features, tightening Media3 1.9.2 integration',
     'project-nomad-desktop — Situation Room v6.24 polish (108 cards, 435 feeds)',
     'StreamKeep — Wave 3 features, plugin SDK stabilization',
-    'This portfolio — turning 143 repos into something visitors actually read',
+    `This portfolio — turning ${fallbackRepoCount} repos into something visitors actually read`,
   ],
   thinking: [
-    'How to make 143 repos legible without flattening them into a spreadsheet',
+    `How to make ${fallbackRepoCount} repos legible without flattening them into a spreadsheet`,
     'Whether the "single-file when possible" rule still holds at scale',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],

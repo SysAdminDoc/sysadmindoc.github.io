@@ -10,6 +10,19 @@ export interface Props {
   index?: number;
 }
 const { entry, stars, pushedAt, updatedAt, index = 0 } = Astro.props;
+const categoryLabels: Record<string, string> = {
+  ps: 'PowerShell',
+  py: 'Python',
+  web: 'Web Apps',
+  ext: 'Extensions',
+  kt: 'Android',
+  sec: 'Security',
+  media: 'Media',
+  cs: 'Desktop',
+  guide: 'Guides',
+  fork: 'Forks',
+  other: 'Other',
+};
 
 // Relative age → short badge string. Only show if data is present.
 function relAge(iso?: string): string | null {
@@ -45,6 +58,7 @@ const pushedDateLabel = pushedAt
   data-repo={entry.repo}
   data-name={entry.name}
   data-desc={entry.desc}
+  data-terms={`${entry.repo} ${entry.category} ${categoryLabels[entry.category] ?? entry.category}${entry.live ? ' live browser' : ''}`}
   data-stars={stars ?? 0}
   data-pushed={pushedAt ?? ''}
   data-updated={updatedAt ?? pushedAt ?? ''}
@@ -53,8 +67,15 @@ const pushedDateLabel = pushedAt
   <span class={`cdo ${entry.category}`}></span>
   <span class="cna">{entry.name}</span>
   <span class="cds" set:html={entry.desc}></span>
-  {age && (
-    <span class={`ca-age ${ageClass}`} title={pushedDateLabel ? `Last pushed ${pushedDateLabel}` : ''}>{age}</span>
+  {age && pushedAt && (
+    <time
+      class={`ca-age ${ageClass}`}
+      datetime={pushedAt}
+      data-rel-short={pushedAt}
+      title={pushedDateLabel ? `Last pushed ${pushedDateLabel}` : ''}
+    >
+      {age}
+    </time>
   )}
   <span class="ca-stars" data-repo={entry.repo}>
     <StarSvg />

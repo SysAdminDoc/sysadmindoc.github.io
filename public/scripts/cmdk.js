@@ -17,6 +17,27 @@
   let previousFocus = null;
   let previousBodyOverflow = '';
   let previousHtmlOverflow = '';
+  const prefersReducedMotion = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sectionHints = {
+    '#featured': 'Flagship builds with the sharpest product and systems thinking.',
+    '#live': 'Launch-ready browser apps with no setup wall.',
+    '#catalog': 'Every public repo, filterable by language and domain.',
+    '#skills': 'Languages, tooling, and where the work clusters.',
+    '#about': 'Background, operating style, and what drives the work.',
+    '#philosophy': 'The product standards behind every repo.',
+    '#journey': 'How the portfolio expanded across platforms.',
+    '#beyond': 'Drone work, music, and the rest of the creative output.',
+    '#connect': 'Best ways to collaborate and what to bring.',
+    '#hero': 'Portfolio overview, live stats, and the interactive shell.',
+  };
+  function isTextEntryTarget(el) {
+    return !!el && (
+      el.tagName === 'INPUT' ||
+      el.tagName === 'TEXTAREA' ||
+      el.tagName === 'SELECT' ||
+      el.isContentEditable
+    );
+  }
 
   // Simple subsequence fuzzy match with score = inverse index of first char
   function fuzzy(query, text) {
@@ -48,16 +69,25 @@
     });
     // Projects
     data.allProjects.forEach(p => {
-      const score = Math.max(fuzzy(q, p.name), fuzzy(q, p.desc) * 0.5);
+      const termScores = [
+        fuzzy(q, p.name),
+        fuzzy(q, p.slug) * 0.95,
+        fuzzy(q, p.desc) * 0.5,
+        fuzzy(q, p.categoryLabel || p.category || '') * 0.8,
+      ];
+      if (Array.isArray(p.searchTerms)) {
+        p.searchTerms.forEach(term => termScores.push(fuzzy(q, term) * 0.75));
+      }
+      const score = Math.max(...termScores);
       if (score > 0) results.push({ kind: 'project', score, ...p });
     });
     results.sort((a, b) => b.score - a.score);
     const top = results.slice(0, 30);
     items = top;
-    selected = 0;
     if (top.length === 0) {
+      selected = 0;
       input.setAttribute('aria-activedescendant', '');
-      list.innerHTML = '<div class="cmdk-empty">No matches. Try a different term.</div>';
+      list.innerHTML = '<div class="cmdk-empty">No matches yet. Try a project name, category, or section.</div>';
       return;
     }
     const rows = [];
@@ -71,16 +101,25 @@
         featured: '#4ade80', live: '#facc15', catalog: '#58a6ff'
       })[r.type] || '#7080a0';
       const badge = r.kind === 'project' ? r.type.toUpperCase() : 'SECTION';
+      const subtitle = r.kind === 'section'
+        ? sectionHints[r.hash] || 'Jump to this section.'
+        : r.desc || ((r.categoryLabel || r.category) ? (r.categoryLabel || r.category) + ' project' : 'Open the project detail page.');
+      const safeSubtitle = escapeHtml(subtitle);
       rows.push(
         '<a class="cmdk-item" id="cmdk-option-' + i + '" data-idx="' + i + '" role="option" aria-selected="' + (i === 0 ? 'true' : 'false') + '" href="' + (r.kind === 'section' ? r.hash : r.url) + '">'
-        + '<span class="cmdk-dot" style="background:' + dotColor + '"></span>'
+        + '<span class="cmdk-dot" style="background:' + dotColor + ';color:' + dotColor + '"></span>'
+        + '<span class="cmdk-copy">'
+        + '<span class="cmdk-title-row">'
         + '<span class="cmdk-title">' + escapeHtml(r.label || r.name) + '</span>'
         + '<span class="cmdk-badge">' + badge + '</span>'
+        + '</span>'
+        + '<span class="cmdk-subtitle">' + safeSubtitle + '</span>'
+        + '</span>'
         + '</a>'
       );
     });
     list.innerHTML = rows.join('');
-    input.setAttribute('aria-activedescendant', top.length ? 'cmdk-option-0' : '');
+    setSelected(0);
   }
 
   function escapeHtml(s) {
@@ -97,6 +136,21 @@
     return [input, ...list.querySelectorAll('.cmdk-item')];
   }
 
+  function setSelected(nextIndex) {
+    const nodes = list.querySelectorAll('.cmdk-item');
+    if (!nodes.length) {
+      selected = 0;
+      input.setAttribute('aria-activedescendant', '');
+      return;
+    }
+    nodes[selected]?.setAttribute('aria-selected', 'false');
+    selected = (nextIndex + nodes.length) % nodes.length;
+    const target = nodes[selected];
+    if (!target) return;
+    target.setAttribute('aria-selected', 'true');
+    input.setAttribute('aria-activedescendant', target.id || '');
+  }
+
   function open() {
     if (backdrop.classList.contains('open')) return;
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -105,6 +159,7 @@
     backdrop.classList.add('open');
     input.value = '';
     render('');
+    list.scrollTop = 0;
     setTimeout(() => input.focus(), 20);
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
@@ -127,11 +182,8 @@
   function updateSelection(delta) {
     const nodes = list.querySelectorAll('.cmdk-item');
     if (!nodes.length) return;
-    nodes[selected]?.setAttribute('aria-selected', 'false');
-    selected = (selected + delta + nodes.length) % nodes.length;
+    setSelected(selected + delta);
     const target = nodes[selected];
-    target.setAttribute('aria-selected', 'true');
-    if (target.id) input.setAttribute('aria-activedescendant', target.id);
     target.scrollIntoView({ block: 'nearest' });
   }
 
@@ -143,7 +195,7 @@
     }
     if (e.key === '/' && !backdrop.classList.contains('open')) {
       const focused = document.activeElement;
-      if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) return;
+      if (focused && isTextEntryTarget(focused)) return;
       e.preventDefault();
       open();
     }
@@ -173,7 +225,7 @@
   document.addEventListener('keydown', e => {
     if (backdrop.classList.contains('open')) return;
     const focused = document.activeElement;
-    if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA' || focused.tagName === 'SELECT')) return;
+    if (focused && isTextEntryTarget(focused)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
 
     if (!chordActive && e.key === 'g') {
@@ -191,7 +243,7 @@
         e.preventDefault();
         const el = document.querySelector(target);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
           showHint('→ ' + target);
         }
       }
@@ -238,7 +290,7 @@
           window.open(target.href, '_blank', 'noopener');
         } else if (href.startsWith('#')) {
           const section = document.querySelector(href);
-          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (section) section.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
           else location.hash = href;
         } else {
           window.location.assign(href);
@@ -248,11 +300,24 @@
     }
   });
   list.addEventListener('click', e => {
-    const item = e.target.closest('.cmdk-item');
+    const item = e.target instanceof Element ? e.target.closest('.cmdk-item') : null;
     if (!item) return;
-    if (item.id) input.setAttribute('aria-activedescendant', item.id);
+    const idx = Number(item.getAttribute('data-idx'));
+    if (!Number.isNaN(idx)) setSelected(idx);
     const href = item.getAttribute('href') || '';
     if (href.startsWith('#')) setTimeout(() => close({ restoreFocus: false }), 50);
     else close({ restoreFocus: false });
+  });
+  list.addEventListener('mouseover', e => {
+    const item = e.target instanceof Element ? e.target.closest('.cmdk-item') : null;
+    if (!item) return;
+    const idx = Number(item.getAttribute('data-idx'));
+    if (!Number.isNaN(idx) && idx !== selected) setSelected(idx);
+  });
+  list.addEventListener('focusin', e => {
+    const item = e.target instanceof Element ? e.target.closest('.cmdk-item') : null;
+    if (!item) return;
+    const idx = Number(item.getAttribute('data-idx'));
+    if (!Number.isNaN(idx)) setSelected(idx);
   });
 })();

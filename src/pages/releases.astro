@@ -36,6 +36,8 @@ const monthLabelFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', ye
 const releaseDayFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T00:00:00Z`));
+const trackedRepos = new Set(releases.map((release) => release.repo)).size;
+const latestMonth = monthKeys[0] ? monthLabel(monthKeys[0]) : null;
 ---
 <Base title="Releases — Matt Parker" description="Chronological stream of releases across every active repo.">
   <a href="#main" class="skip-link">Skip to content</a>
@@ -45,12 +47,13 @@ const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T0
       <div class="nk" id="navLinks">
         <a href="/#greatest-hits">Hits</a>
         <a href="/#featured">Projects</a>
+        <a href="/#live">Live</a>
         <a href="/#catalog">Catalog</a>
         <a href="/releases/" class="active" aria-current="page">Releases</a>
         <a href="/now/">Now</a>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
         <a href="/" class="ng">← Home</a>
         <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -63,33 +66,63 @@ const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T0
         <div class="sl">// Releases</div>
         <h1 class="st rel-title">Everything shipped, most recent first</h1>
         <p class="sd">
-          Auto-aggregated from the GitHub Releases API across my 40 most-recently-pushed repos.
+          Release notes pulled from GitHub across the freshest repos in the portfolio.
           {releases.length > 0 && <> <strong>{releases.length}</strong> releases indexed.</>}
           {stats.fetchedAt && <> Last refresh <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{compactUtcDate.format(new Date(stats.fetchedAt))}</time>.</>}
         </p>
       </div>
 
+      {releases.length > 0 && (
+        <div class="rel-overview rv">
+          <div class="rel-overview-card">
+            <div class="rel-overview-label">Releases Indexed</div>
+            <div class="rel-overview-value">{releases.length}</div>
+            <div class="rel-overview-copy">Cached from the most recently active repos.</div>
+          </div>
+          <div class="rel-overview-card">
+            <div class="rel-overview-label">Repos Covered</div>
+            <div class="rel-overview-value">{trackedRepos}</div>
+            <div class="rel-overview-copy">Unique projects with release history in this stream.</div>
+          </div>
+          <div class="rel-overview-card">
+            <div class="rel-overview-label">Latest Window</div>
+            <div class="rel-overview-value">{latestMonth ?? 'Waiting'}</div>
+            <div class="rel-overview-copy">{latestMonth ? 'Most recent month represented in the feed.' : 'A fresh sync will populate the timeline.'}</div>
+          </div>
+        </div>
+      )}
+      <div class="rel-actions rv">
+        <a href="/rss.xml" class="btn bp">Open RSS Feed</a>
+        <a href="/#catalog" class="btn bg2">Browse Full Catalog</a>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="rel-action-link">GitHub Profile</a>
+      </div>
+
       {releases.length === 0 && (
         <div class="rel-empty">
-          No releases indexed yet. Run <code>npm run fetch-stars</code> with a <code>GITHUB_TOKEN</code> to populate.
+          Release history is not cached yet. This stream appears automatically after the next GitHub data refresh.
         </div>
       )}
 
       {monthKeys.map((key) => (
         <section class="rel-month rv">
-          <h2 class="rel-month-label">{monthLabel(key)}</h2>
-          <ul class="rel-list">
-            {byMonth[key].map((r) => (
-              <li class="rel-item">
-                <div class="rel-head">
-                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="rel-repo">{r.repo}</a>
-                  <a href={r.url} target="_blank" rel="noopener" class="rel-tag">{r.tag}</a>
-                  <time class="rel-date" datetime={r.publishedAt}>{releaseDayFormatter.format(new Date(r.publishedAt))}</time>
-                </div>
-                {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
-              </li>
-            ))}
-          </ul>
+          <div class="rel-month-shell">
+            <div class="rel-month-head">
+              <h2 class="rel-month-label">{monthLabel(key)}</h2>
+              <div class="rel-month-count">{byMonth[key].length} release{byMonth[key].length !== 1 ? 's' : ''}</div>
+            </div>
+            <ul class="rel-list">
+              {byMonth[key].map((r) => (
+                <li class="rel-item">
+                  <div class="rel-head">
+                    <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="rel-repo">{r.repo}</a>
+                    <a href={r.url} target="_blank" rel="noopener" class="rel-tag">{r.tag}</a>
+                    <time class="rel-date" datetime={r.publishedAt}>{releaseDayFormatter.format(new Date(r.publishedAt))}</time>
+                  </div>
+                  {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       ))}
     </div>
@@ -106,14 +139,24 @@ const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T0
 <style is:global>
   .rel-page{min-height:calc(100vh - 200px)}
   .rel-title{font-size:clamp(32px,4.5vw,52px)!important}
-  .rel-empty{max-width:720px;margin:40px auto;padding:24px;border:1px dashed var(--glass-border);border-radius:10px;color:var(--t3);text-align:center;font-family:var(--mono);font-size:13px}
-  .rel-empty code{background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--grn)}
+  .rel-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:34px;max-width:980px}
+  .rel-overview-card{padding:22px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16)}
+  .rel-overview-label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+  .rel-overview-value{font-family:var(--mono);font-size:28px;color:var(--t1);line-height:1.15;margin-bottom:8px}
+  .rel-overview-copy{color:var(--t2);font-size:14px;line-height:1.65}
+  .rel-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .rel-action-link{font-family:var(--mono);font-size:12px;color:var(--t2);text-decoration:none;padding:10px 0;transition:color .2s ease,transform .2s ease}
+  .rel-action-link:hover{color:var(--t1);transform:translateX(2px)}
+  .rel-empty{max-width:720px;margin:40px auto;padding:28px;border:1px dashed rgba(255,255,255,.12);border-radius:22px;color:var(--t2);text-align:center;font-size:14px;line-height:1.7;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015))}
   .rel-month{max-width:860px;margin:56px auto 0;position:relative;padding:0;overflow:visible}
   .rel-month::before{display:none}
-  .rel-month-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
+  .rel-month-shell{padding:26px;border:1px solid rgba(255,255,255,.08);border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16)}
+  .rel-month-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+  .rel-month-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--t3);margin:0}
+  .rel-month-count{font-family:var(--mono);font-size:11px;color:var(--t2);padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03)}
   .rel-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
-  .rel-item{padding:16px 18px;border:1px solid transparent;border-radius:8px;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
-  .rel-item:hover{background:var(--glass);border-color:var(--glass-border)}
+  .rel-item{padding:18px;border:1px solid transparent;border-radius:16px;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+  .rel-item:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08);box-shadow:0 14px 28px rgba(0,0,0,.14)}
   .rel-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .rel-repo{font-family:var(--mono);font-weight:600;color:var(--t1);text-decoration:none;font-size:15px}
   .rel-repo:hover{color:var(--grn)}
@@ -122,6 +165,10 @@ const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T0
   .rel-date{font-family:var(--mono);font-size:12px;color:var(--t3);margin-left:auto}
   .rel-body{color:var(--t2);font-size:14px;line-height:1.6;margin:8px 0 0;padding-left:0}
   @media(max-width:640px){
+    .rel-overview{grid-template-columns:1fr}
+    .rel-actions{align-items:stretch}
+    .rel-action-link{padding:0}
+    .rel-month-shell{padding:20px}
     .rel-date{margin-left:0;width:100%;order:3}
     .rel-head{gap:8px}
   }
