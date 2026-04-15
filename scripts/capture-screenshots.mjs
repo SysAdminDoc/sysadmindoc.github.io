@@ -55,8 +55,9 @@ const ctx = await browser.newContext({
 
 let ok = 0;
 let fail = 0;
+const CONCURRENCY = 4;
 
-for (const { slug, url } of entries) {
+async function captureOne({ slug, url }) {
   const out = join(outDir, `${slug}.jpg`);
   const page = await ctx.newPage();
   try {
@@ -94,6 +95,17 @@ for (const { slug, url } of entries) {
     await page.close().catch(() => {});
   }
 }
+
+// Process entries with bounded concurrency for ~4x faster capture
+let cursor = 0;
+async function worker() {
+  while (cursor < entries.length) {
+    const index = cursor;
+    cursor += 1;
+    await captureOne(entries[index]);
+  }
+}
+await Promise.all(Array.from({ length: Math.min(CONCURRENCY, entries.length) }, worker));
 
 await browser.close();
 console.log(`\nDone: ${ok} captured, ${fail} failed.`);
