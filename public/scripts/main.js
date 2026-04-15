@@ -1068,14 +1068,17 @@ fetchLastActive();
         if(!repo)return;
         const thumb=document.createElement('div');
         thumb.className='lc2-thumb';
-        thumb.setAttribute('aria-hidden','true');// decorative
-        // explicit dimensions to prevent CLS
-        thumb.style.aspectRatio='1200/628';
+        thumb.setAttribute('aria-hidden','true');
+        thumb.style.aspectRatio='16/10';
         const img=document.createElement('img');
         img.alt='';img.loading='lazy';img.decoding='async';
-        img.width=1200;img.height=628;
-        img.dataset.src='https://opengraph.githubassets.com/1/SysAdminDoc/'+repo;
-        img.onerror=function(){thumb.classList.add('thumb-fallback');img.remove()};
+        img.width=1280;img.height=800;
+        // Prefer locally-captured screenshot; fall back to opengraph image if missing.
+        img.dataset.src='/screenshots/'+repo+'.jpg';
+        img.onerror=function(){
+            img.onerror=function(){thumb.classList.add('thumb-fallback');img.remove()};
+            img.src='https://opengraph.githubassets.com/1/SysAdminDoc/'+repo;
+        };
         thumb.appendChild(img);
         card.insertBefore(thumb,card.firstChild);
         thumbObs.observe(thumb);

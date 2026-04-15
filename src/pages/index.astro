@@ -291,8 +291,18 @@ const filterButtons = [
 
   <footer>
     <div class="fi">
-      <div class="ft" id="footerText"></div>
-      <div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      <div class="ft" id="footerText">
+        {stats.fetchedAt && (
+          <span class="footer-freshness" title={`Stats fetched from GitHub API at ${stats.fetchedAt}`}>
+            <span class="footer-freshness-dot"></span>
+            Stats refreshed <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{new Date(stats.fetchedAt).toISOString().slice(0, 10)}</time>
+          </span>
+        )}
+      </div>
+      <div class="fl">
+        <a href="/rss.xml">RSS</a>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
     <div class="footer-ticker-wrap"><div class="footer-ticker" id="footerTicker"></div></div>
   </footer>
