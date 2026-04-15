@@ -125,6 +125,11 @@ if (rawMd && rawMd.trim().length > 0) {
         nextAttribs.target = '_blank';
         return { tagName, attribs: nextAttribs };
       },
+      input: (tagName, attribs) => {
+        // Only allow GFM task-list checkboxes; force disabled to prevent interaction
+        if (attribs.type !== 'checkbox') return { tagName: '', attribs: {} };
+        return { tagName, attribs: { type: 'checkbox', disabled: '', ...(attribs.checked != null ? { checked: '' } : {}) } };
+      },
     },
   });
 }

@@ -122,8 +122,9 @@
     setSelected(0);
   }
 
+  const _escMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    return String(s).replace(/[&<>"']/g, c => _escMap[c]);
   }
 
   function setExpanded(isOpen) {
@@ -144,7 +145,7 @@
       return;
     }
     nodes[selected]?.setAttribute('aria-selected', 'false');
-    selected = (nextIndex + nodes.length) % nodes.length;
+    selected = ((nextIndex % nodes.length) + nodes.length) % nodes.length;
     const target = nodes[selected];
     if (!target) return;
     target.setAttribute('aria-selected', 'true');
