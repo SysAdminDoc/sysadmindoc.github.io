@@ -1,0 +1,15 @@
+---
+import type { LiveApp } from '../data/types';
+
+export interface Props {
+  app: LiveApp;
+}
+const { app } = Astro.props;
+---
+<a href={app.url} target="_blank" rel="noopener" class="lc2 card-enter">
+  <div class="lct">
+    <div class="lcn">{app.name}</div>
+    <span class="lb2">LIVE</span>
+  </div>
+  <div class="lcd" set:html={app.desc}></div>
+</a>

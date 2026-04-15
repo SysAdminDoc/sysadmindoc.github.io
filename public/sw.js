@@ -1,5 +1,5 @@
-const CACHE='portfolio-v1';
-const PRECACHE=['/','index.html'];
+const CACHE='portfolio-v3';
+const PRECACHE=['/'];
 
 self.addEventListener('install',e=>{
     e.waitUntil(caches.open(CACHE).then(c=>c.addAll(PRECACHE)).then(()=>self.skipWaiting()));

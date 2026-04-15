@@ -1,8 +1,17 @@
 node_modules/
 dist/
+.astro/
 *.crx
 *.pem
 *.zip
 *.bak
 .env
+.env.local
+.env.*.local
 *.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+src/data/_stars.json
+_extracted.json

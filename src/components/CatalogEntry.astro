@@ -1,0 +1,29 @@
+---
+import type { CatalogEntry } from '../data/types';
+import StarSvg from './StarSvg.astro';
+
+export interface Props {
+  entry: CatalogEntry;
+  stars?: number;
+}
+const { entry, stars } = Astro.props;
+---
+<a
+  href={entry.url}
+  target="_blank"
+  rel="noopener"
+  class="ca"
+  data-f={entry.category}
+  data-repo={entry.repo}
+  data-name={entry.name}
+  data-desc={entry.desc}
+>
+  <span class={`cdo ${entry.category}`}></span>
+  <span class="cna">{entry.name}</span>
+  <span class="cds" set:html={entry.desc}></span>
+  <span class="ca-stars" data-repo={entry.repo}>
+    <StarSvg />
+    <span class="live-star">{stars ?? '--'}</span>
+  </span>
+  {entry.live && <span class="lb2">LIVE</span>}
+</a>
