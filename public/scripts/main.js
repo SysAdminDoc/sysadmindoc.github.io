@@ -3,6 +3,18 @@ function safeText(s){return String(s==null?'':s)}
 function escapeHTML(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
 // Only allow alphanumeric, dash, underscore, dot in repo slugs (GitHub's own rules)
 function safeRepo(s){return String(s==null?'':s).replace(/[^A-Za-z0-9._-]/g,'')}
+const GITHUB_CACHE_KEY='gh_cache';
+const GITHUB_CACHE_TTL=1800000;
+const LIVE_STATUS_CACHE_KEY='live_status_cache';
+const LIVE_STATUS_CACHE_TTL=900000;
+function readJsonCache(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
+function writeJsonCache(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
+function isFreshCache(entry,ttl){return !!entry&&typeof entry.ts==='number'&&Date.now()-entry.ts<ttl}
+function scheduleIdle(fn,timeout){
+    const delay=typeof timeout==='number'?timeout:1200;
+    if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout:delay});return}
+    setTimeout(fn,Math.min(delay,1000));
+}
 
 /* ===== SHARED MOUSE STATE (single mousemove dispatcher) ===== */
 const isMobile=innerWidth<768;
@@ -71,7 +83,8 @@ function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElem
 setTimeout(rt,700);
 
 /* ===== DYNAMIC FOOTER YEAR ===== */
-document.getElementById('footerText').textContent='\u00A9 '+new Date().getFullYear()+' Matt Parker \u2014 SysAdminDoc';
+const footerYear=document.getElementById('footerYear');
+if(footerYear)footerYear.textContent=new Date().getFullYear();
 
 /* ===== FOOTER BUILD TICKER ===== */
 (function(){
@@ -122,16 +135,14 @@ async function fetchGitHub(){
         stars:parseInt((document.getElementById('statStars')||{}).textContent,10)
     };
     const hasBaked=!isNaN(baked.repos)&&!isNaN(baked.stars);
-
-    // Try cached data ONLY if nothing is baked in (progressive enhancement)
-    if(!hasBaked){
-        try{
-            const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
-            if(cached&&cached.data){
-                ghData=cached.data;
-                applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate:false});
-            }
-        }catch(e){/* corrupted cache — ignore */}
+    const cached=readJsonCache(GITHUB_CACHE_KEY);
+    if(cached&&cached.data){
+        ghData=cached.data;
+        const skipAggregate=hasBaked&&baked.repos===cached.total&&baked.stars===cached.stars;
+        applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate});
+        if(isFreshCache(cached,GITHUB_CACHE_TTL)||navigator.onLine===false)return;
+    }else if(navigator.onLine===false){
+        return;
     }
 
     try{
@@ -147,17 +158,13 @@ async function fetchGitHub(){
             langCount[l]=(langCount[l]||0)+1;
         });
         const count=repos.length;
-        try{localStorage.setItem('gh_cache',JSON.stringify({data:ghData,total:count,stars:totalStars,langs:langCount,ts:Date.now()}))}catch(e){}
+        writeJsonCache(GITHUB_CACHE_KEY,{data:ghData,total:count,stars:totalStars,langs:langCount,ts:Date.now()});
         // Only update aggregates if new data actually differs (prevents useless repaint)
         const skipAggregate=hasBaked&&baked.repos===count&&baked.stars===totalStars;
         applyGitHubData(count,totalStars,langCount,{skipAggregate});
     }catch(e){
         // If API fails and nothing was baked, try cache fallback once more
-        if(!hasBaked){
-            try{
-                const cached=JSON.parse(localStorage.getItem('gh_cache')||'null');
-                if(cached&&cached.data){ghData=cached.data;applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate:false});return}
-            }catch(err){}
+        if(!cached&&!hasBaked){
             const sr=document.getElementById('statRepos');if(sr&&sr.textContent==='--')sr.textContent='134';
         }
         // Build-time stars are still there; silently no-op for aggregate.
@@ -219,7 +226,7 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
     });
     // Commit freshness on featured cards
     document.querySelectorAll('#featuredGrid .pc[data-repo]').forEach(card=>{
-        if(ghData[card.dataset.repo]&&!card.querySelector('.pc-fresh')){
+        if(ghData[card.dataset.repo]){
             const updated=new Date(ghData[card.dataset.repo].updated);
             const days=Math.floor((Date.now()-updated)/86400000);
             let text;
@@ -228,10 +235,10 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
             else if(days<30)text='Updated '+days+'d ago';
             else if(days<365)text='Updated '+Math.floor(days/30)+'mo ago';
             else text='Updated '+Math.floor(days/365)+'y ago';
-            const badge=document.createElement('div');
+            const badge=card.querySelector('.pc-fresh')||document.createElement('div');
             badge.className='pc-fresh';
             badge.textContent=text;
-            card.appendChild(badge);
+            if(!badge.parentNode)card.appendChild(badge);
         }
     });
     // Language donut
@@ -255,8 +262,7 @@ function updateFilterCounts(){
 
 function renderLangDonut(langCount,repoCount){
     const wrap=document.getElementById('langDonut');
-    if(!wrap||!langCount||wrap.dataset.rendered)return;
-    wrap.dataset.rendered='1';
+    if(!wrap||!langCount)return;
     // Dedupe: 'Other' comes from both `||'Other'` fallback AND from tail rollup.
     // Split named languages from the fallback bucket first, then pack the rest into "Other".
     const fallback=langCount['Other']||0;
@@ -289,10 +295,12 @@ function renderLangDonut(langCount,repoCount){
     wrap.innerHTML='<div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">repos</div></div></div><div class="lang-legend">'+legend+'</div>';
 }
 
-fetchGitHub();
+scheduleIdle(fetchGitHub,1200);
 
 /* ===== LIVE APP STATUS CHECKS ===== */
 (function(){
+    const cachedStatuses=readJsonCache(LIVE_STATUS_CACHE_KEY)||{};
+    const queue=[];
     document.querySelectorAll('#live .lc2').forEach(card=>{
         const url=card.href;
         if(!url)return;
@@ -301,10 +309,31 @@ fetchGitHub();
         const dot=document.createElement('span');
         dot.className='status-dot';
         badge.prepend(dot);
-        fetch(url,{method:'HEAD',cache:'no-cache'}).then(r=>{
-            dot.classList.add(r.ok?'up':'down');
-        }).catch(()=>dot.classList.add('down'));
+        if(isFreshCache(cachedStatuses[url],LIVE_STATUS_CACHE_TTL)){
+            dot.classList.add(cachedStatuses[url].up?'up':'down');
+            return;
+        }
+        queue.push({url,dot});
     });
+    if(!queue.length||navigator.onLine===false)return;
+    function runNext(){
+        const item=queue.shift();
+        if(!item)return;
+        const controller=typeof AbortController==='function'?new AbortController():null;
+        const timer=controller?setTimeout(()=>controller.abort(),5000):0;
+        fetch(item.url,{mode:'no-cors',cache:'no-cache',signal:controller?controller.signal:void 0}).then(()=>{
+            item.dot.classList.add('up');
+            cachedStatuses[item.url]={up:true,ts:Date.now()};
+        }).catch(()=>{
+            item.dot.classList.add('down');
+            cachedStatuses[item.url]={up:false,ts:Date.now()};
+        }).finally(()=>{
+            if(timer)clearTimeout(timer);
+            writeJsonCache(LIVE_STATUS_CACHE_KEY,cachedStatuses);
+            setTimeout(runNext,150);
+        });
+    }
+    scheduleIdle(runNext,1800);
 })();
 
 /* ===== NAV ===== */
@@ -414,6 +443,7 @@ document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
         io.disconnect();
         const iframe=document.createElement('iframe');
         iframe.src=wrap.dataset.src;
+        iframe.title='Slunder Spotify profile';
         iframe.style.cssText='border-radius:16px;border:none';
         iframe.width='100%';iframe.height='740';
         iframe.allowFullscreen=true;
@@ -909,7 +939,7 @@ function onTermReady(){
     if(!input)return;
     const phrases=['firewall','YouTube','screenshot','dark theme','Android','Spotify','NVMe','image editor','bookmark','OSINT'];
     let pi=0,ci=0,deleting=false;
-    const base='Search repositories...';
+    const base='Search repositories…';
     function typeSearch(){
         if(!document.activeElement||document.activeElement!==input){
             const word=phrases[pi];
@@ -1014,7 +1044,7 @@ async function fetchLastActive(){
         if(el)el.textContent='Building something right now, probably';
     }
 }
-fetchLastActive();
+scheduleIdle(fetchLastActive,1600);
 
 /* ===== HERO AVATAR (cached 30 min) ===== */
 (function(){
@@ -1088,4 +1118,4 @@ fetchLastActive();
 /* Starred catalog glow wired into applyGitHubData directly */
 
 /* ===== PWA SERVICE WORKER ===== */
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
