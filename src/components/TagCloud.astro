@@ -16,6 +16,12 @@ const entries = Object.entries(counts)
 const lead = entries[0];
 const runnerUps = entries.slice(1, 3).map(([key]) => labels[key] ?? key);
 const leadLabel = lead ? labels[lead[0]] ?? lead[0] : '';
+const quickPicks = entries.slice(0, 3).map(([key, count]) => ({
+  key,
+  count,
+  label: labels[key] ?? key,
+}));
+const totalRepos = catalog.length;
 
 const max = Math.max(...entries.map(([, n]) => n));
 const min = Math.min(...entries.map(([, n]) => n));
@@ -29,16 +35,32 @@ const scale = (n: number) => {
     <div class="sh rv">
       <div class="sl">// Volume</div>
       <h2 class="st">Where the work lives</h2>
-      <p class="sd">Size = how many repos in each bucket. No categories with zero entries.</p>
+      <p class="sd">The archive clusters around a few heavy lanes. Open any category to jump straight into a filtered catalog view.</p>
     </div>
     <div class="tag-cloud-frame rv">
       {lead && (
         <div class="tag-cloud-summary">
           <span class="tag-cloud-summary-label">Repository footprint</span>
-          <p>
-            <strong>{leadLabel}</strong> leads the catalog by volume
-            {runnerUps.length ? `, with ${runnerUps.join(' and ')} close behind.` : '.'}
-          </p>
+          <div class="tag-cloud-summary-copy">
+            <p>
+              <strong>{leadLabel}</strong> anchors the archive with <strong>{lead[1]}</strong> repositories
+              {runnerUps.length ? `, with ${runnerUps.join(' and ')} close behind.` : '.'}
+            </p>
+            {quickPicks.length > 0 && (
+              <div class="tag-cloud-actions" aria-label="Jump to top categories">
+                {quickPicks.map((pick) => (
+                  <a href={`/?cat=${pick.key}#catalog`} class="tag-cloud-action">
+                    <span>{pick.label}</span>
+                    <span>{pick.count}</span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+          <div class="tag-cloud-summary-metric" aria-hidden="true">
+            <span class="tag-cloud-summary-value">{totalRepos}</span>
+            <span class="tag-cloud-summary-caption">repos in the public archive</span>
+          </div>
         </div>
       )}
       <div class="tag-cloud">
@@ -72,7 +94,7 @@ const scale = (n: number) => {
   }
   .tag-cloud-summary{
     display:grid;
-    grid-template-columns:160px minmax(0,1fr);
+    grid-template-columns:160px minmax(0,1fr) auto;
     gap:18px;
     align-items:start;
     margin-bottom:22px;
@@ -94,7 +116,63 @@ const scale = (n: number) => {
     line-height:1.75;
     max-width:52ch;
   }
+  .tag-cloud-summary-copy{
+    display:grid;
+    gap:14px;
+  }
   .tag-cloud-summary strong{color:var(--t1)}
+  .tag-cloud-summary-metric{
+    display:grid;
+    gap:4px;
+    justify-items:end;
+    text-align:right;
+    min-width:138px;
+  }
+  .tag-cloud-summary-value{
+    font-family:var(--mono);
+    font-size:clamp(26px,4vw,40px);
+    line-height:1;
+    color:var(--t1);
+  }
+  .tag-cloud-summary-caption{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--t3);
+  }
+  .tag-cloud-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .tag-cloud-action{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.03);
+    color:var(--t2);
+    text-decoration:none;
+    font-family:var(--mono);
+    font-size:12px;
+    transition:color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,transform .2s ease-out;
+  }
+  .tag-cloud-action span:last-child{
+    color:var(--t1);
+    padding:2px 7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.05);
+  }
+  .tag-cloud-action:hover{
+    color:var(--t1);
+    border-color:rgba(255,255,255,.16);
+    background:var(--glass-hover);
+    transform:translateY(-1px);
+  }
+  .tag-cloud-action:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
   .tag-cloud{display:flex;flex-wrap:wrap;gap:14px 18px;justify-content:flex-start;align-items:baseline;max-width:none;margin:0;padding:0}
   .tag-cloud-tag{
     display:inline-flex;align-items:center;gap:8px;
@@ -109,9 +187,14 @@ const scale = (n: number) => {
   .tag-cloud-label{font-family:var(--mono);font-weight:600}
   .tag-cloud-count{font-family:var(--mono);font-size:.7em;color:var(--t3);padding:2px 7px;background:var(--bg3);border-radius:999px;line-height:1.4}
   .tag-cloud-tag:hover .tag-cloud-count{color:var(--t1);background:var(--glass-border)}
+  @media(max-width:900px){
+    .tag-cloud-summary{grid-template-columns:1fr}
+    .tag-cloud-summary-metric{justify-items:start;text-align:left;min-width:0}
+  }
   @media(max-width:640px){
     .tag-cloud-frame{padding:20px}
     .tag-cloud-summary{grid-template-columns:1fr;gap:10px}
+    .tag-cloud-summary-metric{justify-items:start;text-align:left;min-width:0}
     .tag-cloud-summary p{font-size:15px}
   }
 </style>

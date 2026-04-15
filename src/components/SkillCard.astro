@@ -25,11 +25,30 @@ const extra = slug ? { href: `/lang/${slug}/` } : {};
   </div>
   <div class="skn">{skill.name}</div>
   <div class="sks">{skill.sub}</div>
-  {slug && <div class="skc-more">View all →</div>}
+  <div class="skc-foot">
+    <span class="skc-meta">{slug ? 'Language Track' : 'Core Tooling'}</span>
+    {slug ? <div class="skc-more">Open the Lane →</div> : <div class="skc-more static">Reference Only</div>}
+  </div>
 </Tag>
 
 <style>
   a.skc{text-decoration:none;color:inherit}
-  .skc-more{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.05em;margin-top:6px;opacity:0;transition:opacity .2s}
-  a.skc:hover .skc-more{opacity:1;color:var(--grn)}
+  .skc-foot{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .skc-meta{color:var(--t3)}
+  .skc-more{color:var(--t1);transition:color .2s ease-out,transform .2s ease-out}
+  .skc-more.static{color:var(--t3)}
+  a.skc:hover .skc-more,
+  a.skc:focus-visible .skc-more{color:var(--grn);transform:translateX(2px)}
 </style>

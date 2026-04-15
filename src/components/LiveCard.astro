@@ -5,6 +5,10 @@ export interface Props {
   app: LiveApp;
 }
 const { app } = Astro.props;
+let liveHost = app.url;
+try {
+  liveHost = new URL(app.url).hostname.replace(/^www\./, '');
+} catch {}
 ---
 <a href={app.url} target="_blank" rel="noopener" class="lc2 card-enter">
   <div class="lct">
@@ -12,4 +16,8 @@ const { app } = Astro.props;
     <span class="lb2">LIVE</span>
   </div>
   <div class="lcd" set:html={app.desc}></div>
+  <div class="lc2-foot" aria-hidden="true">
+    <span class="lc2-origin">{liveHost}</span>
+    <span class="lc2-cta">Launch live</span>
+  </div>
 </a>

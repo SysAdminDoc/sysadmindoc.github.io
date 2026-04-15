@@ -28,6 +28,10 @@ try {
           </div>
           <h3 class="gh-name">{hit.name}</h3>
           <p class="gh-why">{hit.why}</p>
+          <div class="gh-foot">
+            <span class="gh-foot-label">{i === 0 ? 'Lead case study' : 'Project brief'}</span>
+            <span class="gh-foot-cta">{i === 0 ? 'Open flagship project' : 'Open the build story'}</span>
+          </div>
         </a>
       ))}
     </div>
@@ -91,6 +95,33 @@ try {
   .gh-stars svg{width:12px;height:12px;fill:currentColor}
   .gh-name{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--t1);word-break:break-word;line-height:1.15;max-width:18ch}
   .gh-why{color:var(--t2);font-size:15px;line-height:1.7;margin:0;max-width:42ch}
+  .gh-foot{
+    margin-top:auto;
+    padding-top:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    border-top:1px solid rgba(255,255,255,.08);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .gh-foot-label{color:var(--t3)}
+  .gh-foot-cta{
+    color:var(--t1);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .gh-foot-cta::after{
+    content:'→';
+    color:var(--blue);
+    transition:transform .2s ease-out;
+  }
+  .gh-card:hover .gh-foot-cta::after,
+  .gh-card:focus-visible .gh-foot-cta::after{transform:translateX(3px)}
   .gh-card-primary .gh-name{font-size:clamp(30px,4.4vw,42px);max-width:12ch;letter-spacing:-.05em}
   .gh-card-primary .gh-why{font-size:16px;max-width:58ch}
   @media(max-width:980px){
@@ -102,5 +133,6 @@ try {
     .gh-card,.gh-card-primary{grid-column:auto;min-height:auto;padding:22px}
     .gh-card-primary .gh-name{font-size:28px}
     .gh-head{gap:8px}
+    .gh-foot{align-items:flex-start;flex-direction:column}
   }
 </style>

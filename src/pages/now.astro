@@ -2,10 +2,11 @@
 import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import { now } from '../data/curated';
+import { fallbackRepoCount } from '../data/derived';
 
 let stats = {
-  totalRepos: 143,
-  totalStars: 97,
+  totalRepos: fallbackRepoCount,
+  totalStars: 0,
   lastPushedAt: null as string | null,
   lastPushedRepo: null as string | null,
   streak: 0,
@@ -15,6 +16,32 @@ let stats = {
 try { const mod = await import('../data/_stats.json'); stats = { ...stats, ...(mod.default ?? mod) }; } catch {}
 const utcDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const nowSections = [
+  {
+    title: 'Building',
+    note: 'The work getting active engineering time right now.',
+    kind: 'list',
+    items: now.building,
+  },
+  {
+    title: 'Thinking About',
+    note: 'Ideas, tradeoffs, and product questions still being shaped.',
+    kind: 'list',
+    items: now.thinking,
+  },
+  {
+    title: 'Listening',
+    note: 'What is setting the mood for the work outside the code editor.',
+    kind: 'text',
+    text: now.listening,
+  },
+  {
+    title: 'Deliberately Not Working On',
+    note: 'The constraints I am keeping in place to protect focus.',
+    kind: 'text',
+    text: now.notWorkingOn,
+  },
+] as const;
 ---
 <Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on.">
   <a href="#main" class="skip-link">Skip to content</a>
@@ -26,11 +53,11 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
         <a href="/#featured">Projects</a>
         <a href="/#live">Live</a>
         <a href="/#catalog">Catalog</a>
+        <a href="/releases/">Releases</a>
         <a href="/now/" class="active" aria-current="page">Now</a>
-        <a href="/#about">About</a>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
         <a href="/" class="ng">← Home</a>
         <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -75,33 +102,32 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
           <span class="now-pulse-value">{stats.totalRepos} · {stats.totalStars}</span>
         </div>
       </div>
+      <div class="now-actions rv">
+        <a href="/releases/" class="btn bp">Browse Releases</a>
+        <a href="/#catalog" class="btn bg2">Open Full Catalog</a>
+        <a href="/healthcare-it/" class="now-action-link">Healthcare IT Track</a>
+      </div>
     </div>
     <Divider />
 
     <div class="si">
-      <section class="now-section rv">
-        <h2 class="now-h2">Building</h2>
-        <ul class="now-list">
-          {now.building.map((line) => <li class="now-li">{line}</li>)}
-        </ul>
-      </section>
-
-      <section class="now-section rv">
-        <h2 class="now-h2">Thinking about</h2>
-        <ul class="now-list">
-          {now.thinking.map((line) => <li class="now-li">{line}</li>)}
-        </ul>
-      </section>
-
-      <section class="now-section rv">
-        <h2 class="now-h2">Listening</h2>
-        <p class="now-p">{now.listening}</p>
-      </section>
-
-      <section class="now-section rv">
-        <h2 class="now-h2">Deliberately not working on</h2>
-        <p class="now-p">{now.notWorkingOn}</p>
-      </section>
+      <div class="now-grid">
+        {nowSections.map((section) => (
+          <section class="now-section rv">
+            <div class="now-section-head">
+              <h2 class="now-h2">{section.title}</h2>
+              <p class="now-section-copy">{section.note}</p>
+            </div>
+            {section.kind === 'list' ? (
+              <ul class="now-list">
+                {section.items.map((line) => <li class="now-li">{line}</li>)}
+              </ul>
+            ) : (
+              <p class="now-p">{section.text}</p>
+            )}
+          </section>
+        ))}
+      </div>
     </div>
   </main>
 
@@ -114,21 +140,32 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
 </Base>
 
 <style is:global>
-  .now-page{min-height:calc(100vh - 200px);max-width:900px;margin:0 auto}
+  .now-page{min-height:calc(100vh - 200px);max-width:980px;margin:0 auto}
   .now-title{font-size:clamp(36px,5vw,56px)!important}
   .now-inline-link{color:var(--grn);text-decoration:none;border-bottom:1px dashed var(--glass-border)}
   .now-inline-link:hover{border-bottom-color:var(--grn)}
-  .now-pulse{display:flex;flex-wrap:wrap;gap:18px;margin-top:32px;padding:20px 24px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass)}
+  .now-pulse{display:flex;flex-wrap:wrap;gap:18px;margin-top:32px;padding:22px 24px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16)}
   .now-pulse-item{display:flex;align-items:center;gap:10px}
   .now-pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn-glow);animation:freshPulse 2s ease-in-out infinite}
   .now-pulse-label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--t3);text-transform:uppercase}
   .now-pulse-value{font-family:var(--mono);font-size:14px;color:var(--t1)}
   .now-pulse-sub{color:var(--t3);font-size:12px}
-  .now-section{margin-top:56px;padding:0;overflow:visible}
+  .now-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .now-action-link{font-family:var(--mono);font-size:12px;color:var(--t2);text-decoration:none;padding:10px 0;transition:color .2s ease,transform .2s ease}
+  .now-action-link:hover{color:var(--t1);transform:translateX(2px)}
+  .now-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:56px}
+  .now-section{margin-top:0;padding:28px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16);overflow:visible}
   .now-section::before{display:none}
-  .now-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
+  .now-section-head{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .now-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin:0}
+  .now-section-copy{color:var(--t3);font-size:14px;line-height:1.65;max-width:36ch}
   .now-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
   .now-li{padding-left:24px;position:relative;color:var(--t1);line-height:1.65;font-size:17px}
   .now-li::before{content:'▸';position:absolute;left:0;top:0;color:var(--grn)}
-  .now-p{color:var(--t2);font-size:17px;line-height:1.7}
+  .now-p{color:var(--t2);font-size:17px;line-height:1.7;margin:0}
+  @media(max-width:760px){
+    .now-grid{grid-template-columns:1fr}
+    .now-actions{align-items:stretch}
+    .now-action-link{padding:0}
+  }
 </style>
