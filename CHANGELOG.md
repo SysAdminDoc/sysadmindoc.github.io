@@ -2,6 +2,14 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.2.1] - 2026-04-14
+
+- Changed: Live Apps section reduced to canonical 23-app list, reordered to match portfolio priority
+- Removed: NukeMap, MHTMLens, LogLens, CronScope from live showcase (still reachable via catalog)
+- Added: GeneratorSpecs to live showcase
+- Fixed: VIPTrack link now points to `/?filter=vip` default view
+- Changed: statLive hero count 26 to 23
+
 ## [v0.2.0] - 2026-04-13
 
 - Removed: 11 private/archived repos from catalog (bypassnro, Start-Menu-Manager, Mavenwinutil, uScriptStash, DiggSuite, gSearchTweaks, ScrollJumper, HNCC, DarkReaderLocal, NextDNSPanel, NeonNote)
