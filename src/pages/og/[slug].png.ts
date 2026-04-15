@@ -54,7 +54,15 @@ export async function getStaticPaths() {
 }
 
 function decodeEntities(s: string) {
-  return s.replace(/&mdash;/g, '—').replace(/&amp;/g, '&').replace(/&[a-z]+;/gi, ' ');
+  return s
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&[a-z]+;/gi, ' ');
 }
 
 export async function GET({ params }: APIContext) {
