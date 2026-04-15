@@ -69,7 +69,7 @@ const lb=document.getElementById('loaderBar');let lp=0;
 const li=setInterval(()=>{lp+=Math.random()*25+15;if(lp>100)lp=100;lb.style.width=lp+'%';if(lp>=100){clearInterval(li);setTimeout(()=>document.getElementById('loader').classList.add('hidden'),300);setTimeout(()=>document.getElementById('loader').remove(),900)}},120);
 
 /* ===== COPY TOAST ===== */
-const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';document.body.appendChild(copyToast);
+const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
 function showCopyToast(){copyToast.classList.add('show');setTimeout(()=>copyToast.classList.remove('show'),1500)}
 
 /* ===== TERMINAL TYPING ===== */
@@ -290,7 +290,7 @@ function renderLangDonut(langCount,repoCount){
         var lang=entry[0],count=entry[1];
         var color=colors[lang]||'#7080a0';
         var pct=Math.round(count/total*100);
-        legend+='<div class="lang-legend-item"><span class="lang-legend-dot" style="background:'+color+'"></span>'+lang+'<span class="lang-legend-pct">'+pct+'%</span></div>';
+        legend+='<div class="lang-legend-item"><span class="lang-legend-dot" style="background:'+color+'"></span>'+escapeHTML(lang)+'<span class="lang-legend-pct">'+pct+'%</span></div>';
     });
     wrap.innerHTML='<div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">repos</div></div></div><div class="lang-legend">'+legend+'</div>';
 }
@@ -313,7 +313,11 @@ scheduleIdle(fetchGitHub,1200);
             dot.classList.add(cachedStatuses[url].up?'up':'down');
             return;
         }
-        queue.push({url,dot});
+        try{
+            const target=new URL(url,location.href);
+            if(target.origin!==location.origin)return;
+            queue.push({url:target.toString(),dot});
+        }catch(e){}
     });
     if(!queue.length||navigator.onLine===false)return;
     function runNext(){
@@ -321,9 +325,10 @@ scheduleIdle(fetchGitHub,1200);
         if(!item)return;
         const controller=typeof AbortController==='function'?new AbortController():null;
         const timer=controller?setTimeout(()=>controller.abort(),5000):0;
-        fetch(item.url,{mode:'no-cors',cache:'no-cache',signal:controller?controller.signal:void 0}).then(()=>{
-            item.dot.classList.add('up');
-            cachedStatuses[item.url]={up:true,ts:Date.now()};
+        fetch(item.url,{method:'HEAD',cache:'no-cache',credentials:'same-origin',redirect:'follow',signal:controller?controller.signal:void 0}).then(response=>{
+            const isUp=response.ok;
+            item.dot.classList.add(isUp?'up':'down');
+            cachedStatuses[item.url]={up:isUp,ts:Date.now()};
         }).catch(()=>{
             item.dot.classList.add('down');
             cachedStatuses[item.url]={up:false,ts:Date.now()};
@@ -337,18 +342,9 @@ scheduleIdle(fetchGitHub,1200);
 })();
 
 /* ===== NAV ===== */
-const nv=document.getElementById('nav');
 const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');
-const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState)history.replaceState(null,null,'#'+en.target.id)}})},{rootMargin:'-40% 0px -60% 0px'});
+const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
 secs.forEach(s=>so.observe(s));
-document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
-document.querySelectorAll('.nk a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'))});
-// Close mobile menu on outside click
-document.addEventListener('click',e=>{
-    const nav=document.getElementById('navLinks');
-    if(nav.classList.contains('open')&&!e.target.closest('.nk')&&!e.target.closest('.mt'))
-        nav.classList.remove('open');
-});
 
 /* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN + MILESTONE ===== */
 const scrollProg=document.getElementById('scrollProgress');
@@ -391,7 +387,7 @@ window.addEventListener('scroll',()=>{
     // Nav hide on scroll down, show on scroll up
     const navEl=document.getElementById('nav');
     if(sy>120){
-        if(sy>lastScrollY+5)navEl.classList.add('hid');
+        if(sy>lastScrollY+5){navEl.classList.add('hid');const _nl=document.getElementById('navLinks');const _mt=document.getElementById('mobileToggle');if(_nl&&_nl.classList.contains('open')){_nl.classList.remove('open');if(_mt)_mt.setAttribute('aria-expanded','false')}}
         else if(sy<lastScrollY-5)navEl.classList.remove('hid');
     }else{navEl.classList.remove('hid')}
     lastScrollY=sy;
@@ -409,29 +405,29 @@ document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
 
 /* ===== TYPEWRITER SECTION HEADINGS ===== */
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
-    const twObs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(!en.isIntersecting)return;twObs.unobserve(en.target);const sl=en.target.querySelector('.sl');if(!sl||sl.dataset.tw)return;sl.dataset.tw='1';const full=sl.textContent;sl.textContent='';sl.style.minWidth=sl.offsetWidth+'px';let i=0;(function type(){if(i<=full.length){sl.textContent=full.slice(0,i)+(i<full.length?'|':'');i++;setTimeout(type,55)}})()})},{threshold:.3});
+    const twObs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(!en.isIntersecting)return;twObs.unobserve(en.target);const sl=en.target.querySelector('.sl');if(!sl||sl.dataset.tw)return;sl.dataset.tw='1';const full=sl.textContent;const width=sl.offsetWidth;sl.style.minWidth=width+'px';sl.textContent='';let i=0;(function type(){if(i<=full.length){sl.textContent=full.slice(0,i)+(i<full.length?'|':'');i++;setTimeout(type,55)}})()})},{threshold:.3});
     document.querySelectorAll('.sh.rv').forEach(el=>twObs.observe(el));
 }
 
 /* ===== YOUTUBE CLICK-TO-PLAY (keyboard accessible) ===== */
-function playVideo(thumb){
-    const id=thumb.dataset.yt;
+function playVideo(trigger){
+    const id=trigger.dataset.yt;
+    if(!id)return;
+    const frameWrap=document.createElement('div');
+    frameWrap.className='video-thumb video-thumb-playing';
+    frameWrap.dataset.yt=id;
     const iframe=document.createElement('iframe');
     iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1';
-    iframe.title=thumb.querySelector('img')?.alt||'Video';
+    iframe.title=trigger.querySelector('img')?.alt||'Video';
     iframe.frameBorder='0';
     iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     iframe.allowFullscreen=true;
     iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
-    thumb.innerHTML='';
-    thumb.appendChild(iframe);
-    thumb.style.cursor='default';
-    thumb.removeAttribute('tabindex');
-    thumb.removeAttribute('role');
+    frameWrap.appendChild(iframe);
+    trigger.replaceWith(frameWrap);
 }
 document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
     thumb.addEventListener('click',function(){playVideo(this)});
-    thumb.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();playVideo(this)}});
 });
 
 /* ===== LAZY-LOAD SPOTIFY EMBED ===== */
@@ -459,6 +455,7 @@ const grid=document.getElementById('catalogGrid');
 const allItems=Array.from(grid.querySelectorAll('.ca'));
 let currentFilter='all';
 let currentSearch='';
+let currentSort='default';
 
 function highlight(node,q){
     // Clear any previous highlight then rewrap matched substring in <mark>
@@ -496,6 +493,7 @@ function applyFilters(){
         const url=new URL(location.href);
         if(currentFilter&&currentFilter!=='all')url.searchParams.set('cat',currentFilter);else url.searchParams.delete('cat');
         if(q)url.searchParams.set('q',currentSearch);else url.searchParams.delete('q');
+        if(currentSort&&currentSort!=='default')url.searchParams.set('sort',currentSort);else url.searchParams.delete('sort');
         history.replaceState(null,'',url.pathname+(url.search?url.search:'')+url.hash);
     }catch(e){}
 }
@@ -503,6 +501,7 @@ function applyFilters(){
 function sortCatalog(method){
     const items=Array.from(grid.querySelectorAll('.ca'));
     items.sort((a,b)=>{
+        if(method==='default')return(parseInt(a.dataset.index,10)||0)-(parseInt(b.dataset.index,10)||0);
         if(method==='stars')return(parseInt(b.dataset.stars)||0)-(parseInt(a.dataset.stars)||0);
         if(method==='name')return a.dataset.name.localeCompare(b.dataset.name);
         if(method==='name-desc')return b.dataset.name.localeCompare(a.dataset.name);
@@ -524,7 +523,7 @@ document.querySelectorAll('.fb').forEach(b=>{
 
 document.getElementById('searchInput').addEventListener('input',e=>{currentSearch=e.target.value;applyFilters()});
 
-document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(e.target.value);applyFilters()});
+document.getElementById('sortSelect').addEventListener('change',e=>{currentSort=e.target.value;sortCatalog(currentSort);applyFilters()});
 
 // Hydrate filter/search state from URL on load
 (function hydrateFromUrl(){
@@ -532,6 +531,7 @@ document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(
         const params=new URLSearchParams(location.search);
         const cat=params.get('cat');
         const q=params.get('q');
+        const sort=params.get('sort');
         if(cat){
             const btn=document.querySelector('.fb[data-filter="'+cat.replace(/[^a-z0-9]/gi,'')+'"]');
             if(btn)btn.click();
@@ -539,6 +539,14 @@ document.getElementById('sortSelect').addEventListener('change',e=>{sortCatalog(
         if(q){
             const input=document.getElementById('searchInput');
             if(input){input.value=q;currentSearch=q;applyFilters()}
+        }
+        if(sort){
+            const select=document.getElementById('sortSelect');
+            if(select&&Array.from(select.options).some(option=>option.value===sort)){
+                select.value=sort;
+                currentSort=sort;
+                sortCatalog(sort);
+            }
         }
     }catch(e){}
 })();
@@ -756,21 +764,23 @@ function observeCounters(){
 /* ===== CUSTOM CURSOR ===== */
 if(!isMobile){
     const dot=document.getElementById('ccDot'),ring=document.getElementById('ccRing');
-    let rx=0,ry=0,ringRunning=false;
-    document.body.classList.add('custom-cursor');
-    mouseFns.push(m=>{dot.style.left=m.x+'px';dot.style.top=m.y+'px';if(!ringRunning){ringRunning=true;trackRing()}});
-    function trackRing(){
-        rx+=(mouseState.x-rx)*.15;ry+=(mouseState.y-ry)*.15;
-        ring.style.left=rx+'px';ring.style.top=ry+'px';
-        if(Math.abs(mouseState.x-rx)>.5||Math.abs(mouseState.y-ry)>.5)requestAnimationFrame(trackRing);
-        else ringRunning=false;
+    if(dot&&ring){
+        let rx=0,ry=0,ringRunning=false;
+        document.body.classList.add('custom-cursor');
+        mouseFns.push(m=>{dot.style.left=m.x+'px';dot.style.top=m.y+'px';dot.style.opacity='1';ring.style.opacity='1';if(!ringRunning){ringRunning=true;trackRing()}});
+        function trackRing(){
+            rx+=(mouseState.x-rx)*.15;ry+=(mouseState.y-ry)*.15;
+            ring.style.left=rx+'px';ring.style.top=ry+'px';
+            if(Math.abs(mouseState.x-rx)>.5||Math.abs(mouseState.y-ry)>.5)requestAnimationFrame(trackRing);
+            else ringRunning=false;
+        }
+        document.addEventListener('mouseover',e=>{
+            const t=e.target.closest('a,button,input,select,.pc,.lc2,.skc,.video-card,.album-card,.ca,.cnc,.fb,.btn,.prc');
+            if(t){dot.classList.add('hovering');ring.classList.add('hovering')}else{dot.classList.remove('hovering');ring.classList.remove('hovering')}
+        });
+        document.addEventListener('mouseleave',()=>{dot.style.opacity='0';ring.style.opacity='0'});
+        document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opacity='1'});
     }
-    document.addEventListener('mouseover',e=>{
-        const t=e.target.closest('a,button,input,select,.pc,.lc2,.skc,.video-card,.album-card,.ca,.cnc,.fb,.btn,.prc');
-        if(t){dot.classList.add('hovering');ring.classList.add('hovering')}else{dot.classList.remove('hovering');ring.classList.remove('hovering')}
-    });
-    document.addEventListener('mouseleave',()=>{dot.style.opacity='0';ring.style.opacity='0'});
-    document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opacity='1'});
 }
 
 /* ===== MAGNETIC BUTTONS ===== */
@@ -812,6 +822,10 @@ if(!isMobile){
 
 /* ===== INTERACTIVE TERMINAL ===== */
 const pageLoadTime=Date.now();
+const terminalDateFormatter=new Intl.DateTimeFormat(undefined,{
+    dateStyle:'medium',
+    timeStyle:'short'
+});
 function onTermReady(){
     const term=document.getElementById('heroTerm');
     const tbody=document.getElementById('termBody');
@@ -830,7 +844,7 @@ function onTermReady(){
         repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public repositories\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
         ls:()=>'<span class="cmd-name">win11-nvme-driver-patcher</span>  NVMe driver patcher\n<span class="cmd-name">project-nomad-desktop</span>      Offline survival command center\n<span class="cmd-name">Astra-Deck</span>                 YouTube enhancement extension\n<span class="cmd-name">LibreSpot</span>                  Spotify customization\n<span class="cmd-name">Network_Security_Auditor</span>   67 security checks\n<span class="cmd-name">OpenCut</span>                    AI video editing for Premiere',
         uptime:()=>{const d=Date.now()-pageLoadTime;const m=Math.floor(d/60000);const s=Math.floor((d%60000)/1000);return'Page uptime: <span class="cmd-val">'+m+'m '+s+'s</span>'},
-        date:()=>'<span class="cmd-val">'+new Date().toLocaleString()+'</span>',
+        date:()=>'<span class="cmd-val">'+terminalDateFormatter.format(new Date())+'</span>',
         neofetch:()=>'<span class="cmd-name">matt@sysadmin</span>\n--------------\n<span class="cmd-name">OS:</span>        <span class="cmd-val">Portfolio v3.0</span>\n<span class="cmd-name">Host:</span>      <span class="cmd-val">GitHub Pages</span>\n<span class="cmd-name">Shell:</span>     <span class="cmd-val">HTML/CSS/JS</span>\n<span class="cmd-name">Theme:</span>     <span class="cmd-val">Deep Dark Glassmorphism</span>\n<span class="cmd-name">Repos:</span>     <span class="cmd-val">'+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+'</span>\n<span class="cmd-name">Stars:</span>     <span class="cmd-val">'+(document.getElementById('statStars')?document.getElementById('statStars').textContent:'--')+'</span>\n<span class="cmd-name">Uptime:</span>    <span class="cmd-val">Always on</span>',
         clear:()=>'__CLEAR__',
         cd:()=>'Nowhere to go \u2014 this is a single-page portfolio ;)',
@@ -839,7 +853,8 @@ function onTermReady(){
         exit:()=>'There is no escape.',
         cat:()=>'Try <span class="cmd-name">neofetch</span> or <span class="cmd-name">whoami</span> instead.',
         pwd:()=>'/home/matt/portfolio',
-        git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' repos'
+        git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' repos',
+        open:()=>{const pn=parts.slice(1).join(' ');if(!pn)return'Usage: open &lt;project-name&gt;';const slug=pn.replace(/\s+/g,'-');setTimeout(()=>window.location.assign('/projects/'+slug+'/'),350);return'\u2192 /projects/<span class="cmd-val">'+escapeHTML(slug)+'/</span>'}
     };
     function addPrompt(){
         inputLine=document.createElement('div');
@@ -963,14 +978,16 @@ function onTermReady(){
 /* ===== GITHUB LAST ACTIVE (cached 30 min) ===== */
 async function fetchLastActive(){
     const CACHE_KEY='gh_events_cache';const TTL=1800000;
+    const wrap=document.getElementById('lastActive');
     try{
         const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
         let events;
-        if(cached&&Date.now()-cached.ts<TTL){events=cached.data}
+        if(cached&&Date.now()-cached.ts<TTL&&Array.isArray(cached.data)){events=cached.data}
         else{
             const r=await fetch('https://api.github.com/users/SysAdminDoc/events?per_page=100');
-            if(!r.ok)return;
+            if(!r.ok)throw new Error('GitHub events unavailable');
             events=await r.json();
+            if(!Array.isArray(events))throw new Error('Unexpected GitHub events payload');
             localStorage.setItem(CACHE_KEY,JSON.stringify({data:events,ts:Date.now()}));
         }
         if(events.length>0){
@@ -986,6 +1003,7 @@ async function fetchLastActive(){
             else text='Active '+days+' day'+(days!==1?'s':'')+' ago';
             const el=document.getElementById('lastActiveText');
             if(el)el.textContent=text;
+            if(wrap)wrap.hidden=false;
             const push=events.find(e=>e.type==='PushEvent');
             if(push){
                 const repo=safeRepo(push.repo.name.split('/')[1]);
@@ -1042,6 +1060,7 @@ async function fetchLastActive(){
     }catch(e){
         const el=document.getElementById('lastActiveText');
         if(el)el.textContent='Building something right now, probably';
+        if(wrap)wrap.hidden=false;
     }
 }
 scheduleIdle(fetchLastActive,1600);
@@ -1054,8 +1073,11 @@ scheduleIdle(fetchLastActive,1600);
     if(!av)return;
     function showAvatar(url){if(url){av.src=url;requestAnimationFrame(()=>av.classList.add('loaded'))}}
     if(cached&&Date.now()-cached.ts<TTL&&cached.url){showAvatar(cached.url)}
-    else{
-        fetch('https://api.github.com/users/SysAdminDoc').then(r=>r.json()).then(d=>{
+    else if(navigator.onLine!==false){
+        fetch('https://api.github.com/users/SysAdminDoc').then(r=>{
+            if(!r.ok)throw new Error('GitHub profile unavailable');
+            return r.json();
+        }).then(d=>{
             if(d.avatar_url){
                 localStorage.setItem(CACHE_KEY,JSON.stringify({url:d.avatar_url,ts:Date.now()}));
                 showAvatar(d.avatar_url);

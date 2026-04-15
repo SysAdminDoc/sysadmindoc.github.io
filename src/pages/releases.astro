@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Divider from '../components/Divider.astro';
+import { featured, liveApps, catalog } from '../data/projects';
 
 let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
 try {
@@ -11,28 +11,49 @@ try {
 let stats: { fetchedAt?: string | null } = {};
 try { const m = await import('../data/_stats.json'); stats = m.default ?? m; } catch {}
 
+const detailRepos = new Set([
+  ...featured.map((project) => project.repo),
+  ...liveApps.map((app) => app.slug),
+  ...catalog.map((entry) => entry.repo),
+]);
+const releasesWithLinks = releases.map((release) => {
+  const hasDetailPage = detailRepos.has(release.repo);
+  return {
+    ...release,
+    detailUrl: hasDetailPage ? `/projects/${release.repo}/` : `https://github.com/SysAdminDoc/${release.repo}`,
+    hasDetailPage,
+  };
+});
+
 // Group by year-month for a chronological feel
-const byMonth: Record<string, typeof releases> = {};
-for (const r of releases) {
+const byMonth: Record<string, typeof releasesWithLinks> = {};
+for (const r of releasesWithLinks) {
   const key = r.publishedAt.slice(0, 7); // YYYY-MM
   (byMonth[key] = byMonth[key] || []).push(r);
 }
 const monthKeys = Object.keys(byMonth).sort((a, b) => b.localeCompare(a));
-const monthLabel = (k: string) => new Date(k + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+const monthLabelFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const releaseDayFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T00:00:00Z`));
 ---
 <Base title="Releases — Matt Parker" description="Chronological stream of releases across every active repo.">
   <a href="#main" class="skip-link">Skip to content</a>
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
       <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk">
+      <div class="nk" id="navLinks">
         <a href="/#greatest-hits">Hits</a>
         <a href="/#featured">Projects</a>
         <a href="/#catalog">Catalog</a>
-        <a href="/releases/" class="active">Releases</a>
+        <a href="/releases/" class="active" aria-current="page">Releases</a>
         <a href="/now/">Now</a>
       </div>
-      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <a href="/" class="ng">← Home</a>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
     </div>
   </nav>
 
@@ -44,7 +65,7 @@ const monthLabel = (k: string) => new Date(k + '-01').toLocaleDateString('en-US'
         <p class="sd">
           Auto-aggregated from the GitHub Releases API across my 40 most-recently-pushed repos.
           {releases.length > 0 && <> <strong>{releases.length}</strong> releases indexed.</>}
-          {stats.fetchedAt && <> Last refresh <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{new Date(stats.fetchedAt).toISOString().slice(0, 10)}</time>.</>}
+          {stats.fetchedAt && <> Last refresh <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{compactUtcDate.format(new Date(stats.fetchedAt))}</time>.</>}
         </p>
       </div>
 
@@ -61,9 +82,9 @@ const monthLabel = (k: string) => new Date(k + '-01').toLocaleDateString('en-US'
             {byMonth[key].map((r) => (
               <li class="rel-item">
                 <div class="rel-head">
-                  <a href={`/projects/${r.repo}/`} class="rel-repo">{r.repo}</a>
+                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="rel-repo">{r.repo}</a>
                   <a href={r.url} target="_blank" rel="noopener" class="rel-tag">{r.tag}</a>
-                  <time class="rel-date" datetime={r.publishedAt}>{new Date(r.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</time>
+                  <time class="rel-date" datetime={r.publishedAt}>{releaseDayFormatter.format(new Date(r.publishedAt))}</time>
                 </div>
                 {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
               </li>
@@ -87,10 +108,11 @@ const monthLabel = (k: string) => new Date(k + '-01').toLocaleDateString('en-US'
   .rel-title{font-size:clamp(32px,4.5vw,52px)!important}
   .rel-empty{max-width:720px;margin:40px auto;padding:24px;border:1px dashed var(--glass-border);border-radius:10px;color:var(--t3);text-align:center;font-family:var(--mono);font-size:13px}
   .rel-empty code{background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--grn)}
-  .rel-month{max-width:860px;margin:56px auto 0;position:relative}
+  .rel-month{max-width:860px;margin:56px auto 0;position:relative;padding:0;overflow:visible}
+  .rel-month::before{display:none}
   .rel-month-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
   .rel-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
-  .rel-item{padding:16px 18px;border:1px solid transparent;border-radius:8px;transition:all .2s}
+  .rel-item{padding:16px 18px;border:1px solid transparent;border-radius:8px;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
   .rel-item:hover{background:var(--glass);border-color:var(--glass-border)}
   .rel-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .rel-repo{font-family:var(--mono);font-weight:600;color:var(--t1);text-decoration:none;font-size:15px}

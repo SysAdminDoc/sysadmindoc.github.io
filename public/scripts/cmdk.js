@@ -6,13 +6,17 @@
   if (!data) return;
 
   const backdrop = document.getElementById('cmdk');
+  const panel = backdrop?.querySelector('.cmdk');
   const input = document.getElementById('cmdkInput');
   const list = document.getElementById('cmdkList');
   const toggleBtn = document.getElementById('cmdkToggle');
-  if (!backdrop || !input || !list) return;
+  if (!backdrop || !panel || !input || !list) return;
 
   let selected = 0;
   let items = [];
+  let previousFocus = null;
+  let previousBodyOverflow = '';
+  let previousHtmlOverflow = '';
 
   // Simple subsequence fuzzy match with score = inverse index of first char
   function fuzzy(query, text) {
@@ -52,6 +56,7 @@
     items = top;
     selected = 0;
     if (top.length === 0) {
+      input.setAttribute('aria-activedescendant', '');
       list.innerHTML = '<div class="cmdk-empty">No matches. Try a different term.</div>';
       return;
     }
@@ -67,7 +72,7 @@
       })[r.type] || '#7080a0';
       const badge = r.kind === 'project' ? r.type.toUpperCase() : 'SECTION';
       rows.push(
-        '<a class="cmdk-item" data-idx="' + i + '" role="option" aria-selected="' + (i === 0 ? 'true' : 'false') + '" href="' + (r.kind === 'section' ? r.hash : r.url) + '"' + (r.kind === 'project' ? ' target="_blank" rel="noopener"' : '') + '>'
+        '<a class="cmdk-item" id="cmdk-option-' + i + '" data-idx="' + i + '" role="option" aria-selected="' + (i === 0 ? 'true' : 'false') + '" href="' + (r.kind === 'section' ? r.hash : r.url) + '">'
         + '<span class="cmdk-dot" style="background:' + dotColor + '"></span>'
         + '<span class="cmdk-title">' + escapeHtml(r.label || r.name) + '</span>'
         + '<span class="cmdk-badge">' + badge + '</span>'
@@ -75,22 +80,48 @@
       );
     });
     list.innerHTML = rows.join('');
+    input.setAttribute('aria-activedescendant', top.length ? 'cmdk-option-0' : '');
   }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   }
 
+  function setExpanded(isOpen) {
+    toggleBtn?.setAttribute('aria-expanded', String(isOpen));
+    input.setAttribute('aria-expanded', String(isOpen));
+    backdrop.setAttribute('aria-hidden', String(!isOpen));
+  }
+
+  function getFocusableElements() {
+    return [input, ...list.querySelectorAll('.cmdk-item')];
+  }
+
   function open() {
+    if (backdrop.classList.contains('open')) return;
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    previousBodyOverflow = document.body.style.overflow;
+    previousHtmlOverflow = document.documentElement.style.overflow;
     backdrop.classList.add('open');
     input.value = '';
     render('');
     setTimeout(() => input.focus(), 20);
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    setExpanded(true);
   }
-  function close() {
+  function close(options = {}) {
+    if (!backdrop.classList.contains('open')) return;
+    const restoreFocus = options.restoreFocus !== false;
     backdrop.classList.remove('open');
-    document.body.style.overflow = '';
+    document.body.style.overflow = previousBodyOverflow;
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    input.setAttribute('aria-activedescendant', '');
+    setExpanded(false);
+    if (restoreFocus && previousFocus && typeof previousFocus.focus === 'function') {
+      previousFocus.focus();
+    }
+    previousFocus = null;
   }
 
   function updateSelection(delta) {
@@ -100,6 +131,7 @@
     selected = (selected + delta + nodes.length) % nodes.length;
     const target = nodes[selected];
     target.setAttribute('aria-selected', 'true');
+    if (target.id) input.setAttribute('aria-activedescendant', target.id);
     target.scrollIntoView({ block: 'nearest' });
   }
 
@@ -166,8 +198,30 @@
     }
   });
 
-  toggleBtn?.addEventListener('click', open);
+  toggleBtn?.addEventListener('click', () => {
+    backdrop.classList.contains('open') ? close() : open();
+  });
   backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  backdrop.addEventListener('keydown', e => {
+    if (!backdrop.classList.contains('open')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusableElements().filter(el => el && typeof el.focus === 'function');
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
 
   input.addEventListener('input', e => render(e.target.value));
   input.addEventListener('keydown', e => {
@@ -178,15 +232,27 @@
       e.preventDefault();
       const target = list.querySelectorAll('.cmdk-item')[selected];
       if (target) {
-        if (target.target === '_blank') window.open(target.href, '_blank', 'noopener');
-        else location.hash = target.getAttribute('href');
-        close();
+        const href = target.getAttribute('href');
+        if (!href) return;
+        if (target.target === '_blank') {
+          window.open(target.href, '_blank', 'noopener');
+        } else if (href.startsWith('#')) {
+          const section = document.querySelector(href);
+          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          else location.hash = href;
+        } else {
+          window.location.assign(href);
+        }
+        close({ restoreFocus: false });
       }
     }
   });
   list.addEventListener('click', e => {
     const item = e.target.closest('.cmdk-item');
-    if (item && !item.target) setTimeout(close, 50);
-    else if (item) close();
+    if (!item) return;
+    if (item.id) input.setAttribute('aria-activedescendant', item.id);
+    const href = item.getAttribute('href') || '';
+    if (href.startsWith('#')) setTimeout(() => close({ restoreFocus: false }), 50);
+    else close({ restoreFocus: false });
   });
 })();

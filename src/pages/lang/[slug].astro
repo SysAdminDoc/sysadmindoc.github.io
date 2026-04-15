@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Divider from '../../components/Divider.astro';
 import StarSvg from '../../components/StarSvg.astro';
-import { catalog, featured, skills } from '../../data/projects';
+import { catalog, featured } from '../../data/projects';
 
 import { LANGS } from './_langs';
 
@@ -40,20 +40,25 @@ const mostRecent = repos
 
 const title = `${lang.label} — ${repos.length} repos by Matt Parker`;
 const description = `Everything I've shipped in ${lang.label}. ${repos.length} public repos, ${totalStars} stars.`;
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 <Base title={title} description={description}>
   <a href="#main" class="skip-link">Skip to content</a>
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
       <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk">
+      <div class="nk" id="navLinks">
         <a href="/#greatest-hits">Hits</a>
         <a href="/#featured">Projects</a>
         <a href="/#catalog">Catalog</a>
         <a href="/releases/">Releases</a>
         <a href="/now/">Now</a>
       </div>
-      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <a href="/" class="ng">← Home</a>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
     </div>
   </nav>
 
@@ -71,7 +76,7 @@ const description = `Everything I've shipped in ${lang.label}. ${repos.length} p
         {mostRecent?.pushedAt && (
           <div class="lang-stat">
             <div class="lang-stat-num lang-stat-num-sm" style={`color:var(${lang.accent})`}>{mostRecent.repo}</div>
-            <div class="lang-stat-label">Last pushed · <time datetime={mostRecent.pushedAt} data-rel={mostRecent.pushedAt}>{new Date(mostRecent.pushedAt).toISOString().slice(0,10)}</time></div>
+            <div class="lang-stat-label">Last pushed · <time datetime={mostRecent.pushedAt} data-rel={mostRecent.pushedAt}>{compactUtcDate.format(new Date(mostRecent.pushedAt))}</time></div>
           </div>
         )}
       </div>
@@ -120,7 +125,7 @@ const description = `Everything I've shipped in ${lang.label}. ${repos.length} p
   .lang-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
   .lang-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:24px;max-width:1200px;margin-left:auto;margin-right:auto}
   .lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;max-width:1200px;margin:0 auto}
-  .lang-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 20px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass);text-decoration:none;color:var(--t1);transition:all .2s}
+  .lang-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 20px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass);text-decoration:none;color:var(--t1);transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease,transform .2s ease}
   .lang-card:hover{border-color:var(--accent);transform:translateY(-2px)}
   .lang-card-head{display:flex;align-items:center;gap:8px}
   .lang-card-featured{color:var(--yel);font-size:14px}

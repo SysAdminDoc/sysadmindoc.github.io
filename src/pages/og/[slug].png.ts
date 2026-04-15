@@ -160,7 +160,7 @@ export async function GET({ params }: APIContext) {
 
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
 
-  return new Response(png, {
+  return new Response(new Uint8Array(png), {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',

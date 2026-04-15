@@ -12,12 +12,15 @@ const repos = healthcareIT.repos.map((slug) => {
   const f = featured.find((p) => p.repo === slug);
   const c = catalog.find((x) => x.repo === slug);
   const l = liveApps.find((a) => a.slug === slug);
+  const hasDetailPage = !!(f || c || l);
   return {
     slug,
     name: f?.name ?? c?.name ?? l?.name ?? slug,
-    desc: f?.desc ?? c?.desc ?? l?.desc ?? '',
+    desc: f?.desc ?? c?.desc ?? l?.desc ?? 'Project details live on GitHub.',
     stars: stars[slug] ?? 0,
     liveUrl: l?.url,
+    detailUrl: hasDetailPage ? `/projects/${slug}/` : `https://github.com/SysAdminDoc/${slug}`,
+    hasDetailPage,
   };
 });
 ---
@@ -30,14 +33,18 @@ const repos = healthcareIT.repos.map((slug) => {
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
       <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk">
+      <div class="nk" id="navLinks">
         <a href="/#greatest-hits">Hits</a>
         <a href="/#featured">Projects</a>
         <a href="/#catalog">Catalog</a>
         <a href="/now/">Now</a>
         <a href="/#about">About</a>
       </div>
-      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <a href="/" class="ng">← Home</a>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
     </div>
   </nav>
 
@@ -66,10 +73,10 @@ const repos = healthcareIT.repos.map((slug) => {
               <span class="hcit-card-tag">DICOM</span>
               {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
             </div>
-            <h3 class="hcit-card-name"><a href={`/projects/${r.slug}/`} class="hcit-card-link">{r.name}</a></h3>
+            <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
             <p class="hcit-card-desc" set:html={r.desc}></p>
             <div class="hcit-card-actions">
-              <a href={`/projects/${r.slug}/`} class="hcit-card-cta">Read more →</a>
+              <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Read more →' : 'View repo →'}</a>
               {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Live demo →</a>}
             </div>
           </article>

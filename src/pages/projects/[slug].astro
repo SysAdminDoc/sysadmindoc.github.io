@@ -67,6 +67,8 @@ if (rawMd && rawMd.trim().length > 0) {
   // Rewrite relative links/images to point at GitHub raw so assets resolve.
   const rawBase = `https://raw.githubusercontent.com/SysAdminDoc/${slug}/HEAD/`;
   const blobBase = `https://github.com/SysAdminDoc/${slug}/blob/HEAD/`;
+  const escapeAttr = (value: string) =>
+    String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   marked.use({
     gfm: true,
     breaks: false,
@@ -74,11 +76,19 @@ if (rawMd && rawMd.trim().length > 0) {
       image(token: any) {
         const href = /^https?:|^data:|^\/\//.test(token.href) ? token.href : rawBase + token.href.replace(/^\.?\//, '');
         const alt = token.text ?? '';
-        return `<img src="${href}" alt="${alt}" loading="lazy" />`;
+        return `<img src="${escapeAttr(href)}" alt="${escapeAttr(alt)}" loading="lazy" decoding="async" />`;
       },
       link(token: any) {
         const href = /^https?:|^mailto:|^#/.test(token.href) ? token.href : blobBase + token.href.replace(/^\.?\//, '');
-        return `<a href="${href}" rel="noopener nofollow" target="_blank">${token.text}</a>`;
+        const safeHref = escapeAttr(href);
+        const safeText = token.text ?? safeHref;
+        if (href.startsWith('#')) {
+          return `<a href="${safeHref}">${safeText}</a>`;
+        }
+        if (href.startsWith('mailto:')) {
+          return `<a href="${safeHref}" rel="nofollow">${safeText}</a>`;
+        }
+        return `<a href="${safeHref}" rel="noopener nofollow" target="_blank">${safeText}</a>`;
       },
     },
   });
@@ -98,7 +108,23 @@ if (rawMd && rawMd.trim().length > 0) {
     },
     allowedSchemes: ['http', 'https', 'mailto', 'data'],
     transformTags: {
-      a: sanitizeHtml.simpleTransform('a', { rel: 'noopener nofollow', target: '_blank' }, true),
+      a: (tagName, attribs) => {
+        const href = attribs.href ?? '';
+        const nextAttribs = { ...attribs };
+        if (href.startsWith('#')) {
+          delete nextAttribs.rel;
+          delete nextAttribs.target;
+          return { tagName, attribs: nextAttribs };
+        }
+        if (href.startsWith('mailto:')) {
+          nextAttribs.rel = 'nofollow';
+          delete nextAttribs.target;
+          return { tagName, attribs: nextAttribs };
+        }
+        nextAttribs.rel = 'noopener nofollow';
+        nextAttribs.target = '_blank';
+        return { tagName, attribs: nextAttribs };
+      },
     },
   });
 }
@@ -141,6 +167,7 @@ const related = catalog
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 <Base title={title} description={desc} ogImage={ogImage}>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -148,14 +175,16 @@ const ogImage = `/og/${slug}.png`;
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
       <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk">
+      <div class="nk" id="navLinks">
         <a href="/#featured">Projects</a>
         <a href="/#live">Live Apps</a>
         <a href="/#catalog">Catalog</a>
         <a href="/#about">About</a>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
         <a href="/" class="ng" aria-label="Home">← Home</a>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
     </div>
   </nav>
@@ -201,11 +230,11 @@ const ogImage = `/og/${slug}.png`;
         <h2 class="project-section-title">{hasScreenshot ? 'Live Preview' : 'Preview'}</h2>
         {hasScreenshot && isLive ? (
           <a href={liveUrl} target="_blank" rel="noopener" class="project-shot-link">
-            <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" loading="lazy" />
+            <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" />
             <span class="project-shot-badge">Open live →</span>
           </a>
         ) : (
-          <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" loading="lazy" />
+          <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" />
         )}
         <p class="project-readme-hint">
           Source at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.
@@ -236,7 +265,7 @@ const ogImage = `/og/${slug}.png`;
               <li class="project-release">
                 <a href={r.url} target="_blank" rel="noopener" class="project-release-tag">{r.tag}</a>
                 <time class="project-release-date" datetime={r.publishedAt}>
-                  {new Date(r.publishedAt).toISOString().slice(0, 10)}
+                  {compactUtcDate.format(new Date(r.publishedAt))}
                 </time>
                 {r.bodyFirst && <p class="project-release-body">{r.bodyFirst}</p>}
               </li>
@@ -300,6 +329,7 @@ const ogImage = `/og/${slug}.png`;
   .project-og{display:block;max-width:800px;width:100%;height:auto;border-radius:12px;border:1px solid var(--glass-border);margin:0 auto}
   .project-readme{color:var(--t2);line-height:1.7;font-size:16px;max-width:860px;margin:0 auto;word-wrap:break-word}
   .project-readme h1,.project-readme h2,.project-readme h3,.project-readme h4{color:var(--t1);font-family:var(--mono);margin:32px 0 14px;line-height:1.3}
+  .project-readme h1[id],.project-readme h2[id],.project-readme h3[id],.project-readme h4[id],.project-readme h5[id],.project-readme h6[id]{scroll-margin-top:96px}
   .project-readme h1{font-size:28px;border-bottom:1px solid var(--glass-border);padding-bottom:10px}
   .project-readme h2{font-size:22px;border-bottom:1px solid var(--glass-border);padding-bottom:8px}
   .project-readme h3{font-size:18px}

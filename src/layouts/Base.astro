@@ -24,11 +24,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="color-scheme" content="dark light" />
-  <meta name="theme-color" content="#0a0e17" />
+  <meta name="theme-color" content="#050913" />
   <meta name="generator" content={Astro.generator} />
 
   <meta property="og:title" content={title} />
-  <meta property="og:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Dark theme, works on first launch." />
+  <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Matt Parker Portfolio" />
@@ -39,27 +39,32 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content={ogImageUrl} />
   <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Dark theme, works on first launch." />
+  <meta name="twitter:description" content={description} />
 
   <link rel="canonical" href={canonical} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://api.github.com" crossorigin />
+  <link rel="preconnect" href="https://i.scdn.co" crossorigin />
   <link rel="dns-prefetch" href="https://api.github.com" />
   <link rel="dns-prefetch" href="https://i.scdn.co" />
+  <link rel="dns-prefetch" href="https://img.youtube.com" />
+  <link rel="dns-prefetch" href="https://www.youtube.com" />
   <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
   <link rel="manifest" href="/manifest.json" />
   {/* Async, non-blocking font loading — saves ~300ms FCP vs default stylesheet */}
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <link id="fontStylesheet" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
+  <script is:inline>var f=document.getElementById('fontStylesheet');if(f){f.addEventListener('load',function(){this.setAttribute('rel','stylesheet')},{once:true})}</script>
 
   {/* Theme init must run BEFORE first paint to avoid FOUC. Inline, sync, tiny. */}
-  <script is:inline>try{var t=localStorage.getItem('theme-pref');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+  <script is:inline>try{var t=localStorage.getItem('theme-pref');var isLight=t==='light';document.documentElement.dataset.theme=isLight?'light':'dark';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',isLight?'#f5f1e8':'#050913')}catch(e){document.documentElement.dataset.theme='dark'}</script>
 
-  <script type="application/ld+json" set:html={JSON.stringify({
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
       { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },

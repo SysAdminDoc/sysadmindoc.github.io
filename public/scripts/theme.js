@@ -25,8 +25,9 @@
   function apply(theme) {
     root.dataset.theme = theme;
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    if (themeColorMeta) themeColorMeta.setAttribute('content', theme === 'dark' ? '#0a0e17' : '#f7f8fc');
+    if (themeColorMeta) themeColorMeta.setAttribute('content', theme === 'dark' ? '#050913' : '#f5f1e8');
     if (btn) {
+      btn.setAttribute('aria-pressed', String(theme === 'light'));
       btn.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
       btn.setAttribute('title', `Switch to ${nextTheme} theme`);
       btn.innerHTML = theme === 'dark'
@@ -47,5 +48,39 @@
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     apply(next);
     try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+
+/* Shared mobile nav toggle for homepage + secondary routes */
+(function(){
+  const mobileToggle = document.getElementById('mobileToggle');
+  const navLinks = document.getElementById('navLinks');
+  if(!mobileToggle || !navLinks) return;
+
+  function setMobileNav(open){
+    navLinks.classList.toggle('open', open);
+    mobileToggle.setAttribute('aria-expanded', String(open));
+  }
+
+  setMobileNav(false);
+
+  mobileToggle.addEventListener('click', () => {
+    setMobileNav(!navLinks.classList.contains('open'));
+  });
+
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => setMobileNav(false));
+  });
+
+  document.addEventListener('click', e => {
+    const target = e.target;
+    if(!(target instanceof Element)) return;
+    if(navLinks.classList.contains('open') && !target.closest('#navLinks') && !target.closest('#mobileToggle')){
+      setMobileNav(false);
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && navLinks.classList.contains('open')) setMobileNav(false);
   });
 })();
