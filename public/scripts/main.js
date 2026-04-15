@@ -126,7 +126,7 @@ function showCopyToast(){clearTimeout(copyToastTimer);copyToast.classList.add('s
 /* ===== TERMINAL TYPING ===== */
 const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'repos',val:'…',vc:'tv',id:'termRepos'},{key:'stars',val:'…',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
 const tb=document.getElementById('termBody');let ti=0;
-function rt(){if(ti>=tl.length)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';
+function rt(){if(ti>=tl.length||!tb)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';
     if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
     else if(l.key){const idAttr=l.id?' id="'+l.id+'"':'';d.innerHTML='<span class="tk">'+l.key+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'"'+idAttr+'>'+l.val+'</span>'}
     else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+l.text+'</span>'}
@@ -169,8 +169,7 @@ document.addEventListener('click',function(e){
 let ghData={};
 async function fetchAllRepos(){
     let allRepos=[];
-    let page=1;
-    while(true){
+    for(let page=1;page<=10;page++){
         const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page,void 0,10000);
         if(!r.ok)throw new Error('GitHub API error: '+r.status);
         const repos=await r.json();
@@ -178,7 +177,6 @@ async function fetchAllRepos(){
         if(repos.length===0)break;
         allRepos=allRepos.concat(repos);
         if(repos.length<100)break;
-        page++;
     }
     return allRepos;
 }
@@ -418,6 +416,7 @@ const scrollProg=document.getElementById('scrollProgress');
 let lastScrollY=0;
 const milestoneHit={25:false,50:false,75:false,100:false};
 function spawnMilestoneBurst(pct){
+    if(!scrollProg)return;
     const colors=['var(--blue)','var(--grn)','var(--pur)','var(--teal)','var(--org)','var(--yel)'];
     const x=scrollProg.getBoundingClientRect().width*(pct/100);
     const burst=document.createElement('div');
@@ -526,7 +525,7 @@ document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
 
 /* ===== CATALOG: FILTER + SEARCH + SORT ===== */
 const grid=document.getElementById('catalogGrid');
-const allItems=Array.from(grid.querySelectorAll('.ca'));
+const allItems=grid?Array.from(grid.querySelectorAll('.ca')):[];
 let currentFilter='all';
 let currentSearch='';
 let currentSort='default';
@@ -628,6 +627,7 @@ function applyFilters(){
 }
 
 function sortCatalog(method){
+    if(!grid)return;
     const items=Array.from(grid.querySelectorAll('.ca'));
     items.sort((a,b)=>{
         if(method==='default')return(parseInt(a.dataset.index,10)||0)-(parseInt(b.dataset.index,10)||0);
@@ -1088,7 +1088,7 @@ function onTermReady(){
         if(active)return;active=true;
         const cursor=tbody.querySelector('.tci');
         if(cursor)cursor.remove();
-        hint.style.display='none';
+        if(hint)hint.style.display='none';
         tbody.style.maxHeight='400px';
         tbody.style.overflowY='auto';
         addPrompt();
