@@ -1,5 +1,5 @@
-const CACHE='portfolio-v5';
-const PRECACHE=['/'];
+const CACHE='portfolio-v7';
+const PRECACHE=['/','/manifest.json','/favicon.svg','/apple-touch-icon.png','/icon-192.png','/icon-512.png','/rss.xml'];
 
 self.addEventListener('install',e=>{
     e.waitUntil(caches.open(CACHE).then(c=>c.addAll(PRECACHE)).then(()=>self.skipWaiting()));
@@ -12,6 +12,22 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
     if(e.request.method!=='GET')return;
     const url=new URL(e.request.url);
+    const sameOrigin=url.origin===self.location.origin;
+    const isNavigation=e.request.mode==='navigate'||(e.request.headers.get('accept')||'').includes('text/html');
+    if(isNavigation&&sameOrigin){
+        e.respondWith(
+            fetch(e.request).then(response=>{
+                if(response.ok){
+                    const clone=response.clone();
+                    caches.open(CACHE).then(c=>c.put(e.request,clone));
+                }
+                return response;
+            }).catch(async()=>{
+                return (await caches.match(e.request))||(await caches.match('/'));
+            })
+        );
+        return;
+    }
     // Network-first for API/image calls (do NOT return undefined — that leaves the
     // fetchevent unhandled but still "respondWith has not been called" in some browsers).
     // Explicitly handing off to fetch() is correct.
@@ -22,7 +38,7 @@ self.addEventListener('fetch',e=>{
     e.respondWith(
         caches.match(e.request).then(cached=>{
             const fetchPromise=fetch(e.request).then(response=>{
-                if(response.ok){
+                if(response.ok&&sameOrigin){
                     const clone=response.clone();
                     caches.open(CACHE).then(c=>c.put(e.request,clone));
                 }
