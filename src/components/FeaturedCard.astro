@@ -1,0 +1,30 @@
+---
+import type { Featured } from '../data/types';
+import StarSvg from './StarSvg.astro';
+
+export interface Props {
+  project: Featured;
+  stars?: number;
+}
+
+const { project, stars } = Astro.props;
+const classes = ['pc', 'card-enter'];
+if (project.bento === 'hero') classes.push('bento-hero');
+---
+<a
+  href={`https://github.com/SysAdminDoc/${project.repo}`}
+  target="_blank"
+  rel="noopener"
+  class={classes.join(' ')}
+  data-repo={project.repo}
+>
+  <div class="ct">
+    <div class={`ci ${project.lang}`}>{project.langLabel}</div>
+    <div class="cs2"><StarSvg /> <span class="live-star">{stars ?? '--'}</span></div>
+  </div>
+  <div class="cn">{project.name}</div>
+  <div class="cde" set:html={project.desc}></div>
+  <div class="cta">
+    {project.tags.map((t) => <span class="ctg">{t}</span>)}
+  </div>
+</a>
