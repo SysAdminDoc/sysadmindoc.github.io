@@ -2,6 +2,52 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.4.0] - 2026-04-14
+
+**Audit-driven polish pass. 22 findings addressed across security, accessibility, UX, perf, and capabilities.**
+
+**Security / accessibility**
+- XSS: repo names from GitHub API activity feed no longer `innerHTML`-injected
+- XSS: terminal `echo` output now escaped
+- Focus indicators now visible across all interactive elements (WCAG 2.4.7)
+- Skip link slides into view on focus (WCAG 2.4.1)
+- Filter buttons expose `aria-pressed` for screen readers
+- Activity ticker duplicate DOM marked `aria-hidden` to prevent double-announcement
+
+**UX / behavior**
+- **Command palette** (Ctrl/Cmd+K or `/`): fuzzy search across all projects, jump to sections, keyboard-navigable
+- **Light theme toggle**: persists to localStorage, respects `prefers-color-scheme`
+- **URL-persisted filter state**: `?cat=py&q=nvme` is shareable and hydrates on reload
+- **Catalog search highlights** matched substrings with `<mark>`
+- Build-time stats flicker fixed: client-side update skipped when baked value matches
+- Terminal logo fixed (was `href="#"` jumping to top on body click)
+- Mobile: push-chip ticker no longer overflows viewport
+- Mobile: catalog now 2-column at 640px
+- Mobile: hero meta row wraps cleanly at 375px
+
+**Performance**
+- Google Fonts made non-render-blocking via `preload`+`onload` swap (saves ~300ms FCP)
+- LIVE preview images specify `width`/`height` to prevent CLS
+- LIVE preview fallback gradient when opengraph.githubassets.com 429s
+- `content-visibility:auto` on catalog (below-the-fold paint skip)
+- Service worker properly hands off api.github.com to fetch (was returning undefined)
+- Skill ring `IntersectionObserver` now `disconnect()`s when done
+
+**New capabilities**
+- **Per-project pages** (`/projects/<slug>`): 138 static pages, one per repo, with category, tags, GitHub link, live-demo link, star count, related projects
+- **RSS feed** at `/rss.xml` for featured + live apps
+- **Real favicon** (animated cursor SVG)
+- Language donut de-dupes "Other" bucket (was showing twice)
+
+**Misc**
+- sw.js cache version bumped to `portfolio-v4`
+
+## [v0.3.1] - 2026-04-14
+
+- Auto-update all stats at build time — totalRepos, totalStars now injected from `_stats.json`
+- Hero `statRepos`/`statStars`, about section, philosophy, journey all use live counts
+- Removed hardcoded `134` sentinels
+
 ## [v0.3.0] - 2026-04-14
 
 **Major: Astro 5 migration**

@@ -50,7 +50,7 @@ const filterButtons = [
 
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
-      <a href="#" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <a href="#hero" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
       <div class="nk" id="navLinks">
         <a href="#featured">Projects</a>
         <a href="#live">Live Apps</a>
@@ -61,7 +61,9 @@ const filterButtons = [
         <a href="#connect">Connect</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button class="theme-toggle" id="cmdkToggle" aria-label="Open command palette (Ctrl+K)" title="Search (Ctrl+K)"><svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng" aria-label="GitHub Profile"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
         <button class="mt" id="mobileToggle" aria-label="Toggle navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -297,5 +299,23 @@ const filterButtons = [
 
   <button class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
 
+  {/* Command palette — Ctrl/Cmd+K or click search */}
+  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmdk">
+      <div class="cmdk-input-row">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a project, category, or section..." autocomplete="off" spellcheck="false" />
+        <span class="cmdk-kbd">Esc</span>
+      </div>
+      <div class="cmdk-list" id="cmdkList" role="listbox"></div>
+    </div>
+  </div>
+
+  {/* Data bridge for command palette + search (injected at build) */}
+  <script is:inline define:vars={{ allProjects: [...featured.map(p => ({ slug: p.repo, name: p.name, desc: p.desc.replace(/&[a-z]+;/gi,' '), type: 'featured', url: `https://github.com/SysAdminDoc/${p.repo}` })), ...liveApps.map(a => ({ slug: a.slug, name: a.name, desc: a.desc.replace(/&[a-z]+;/gi,' '), type: 'live', url: a.url })), ...catalog.map(c => ({ slug: c.repo, name: c.name, desc: c.desc.replace(/&[a-z]+;/gi,' '), type: 'catalog', url: c.url, category: c.category }))], sections: [{ id: 'featured', label: 'Featured' }, { id: 'live', label: 'Live Apps' }, { id: 'catalog', label: 'Catalog' }, { id: 'skills', label: 'Stack' }, { id: 'about', label: 'About' }, { id: 'philosophy', label: 'Philosophy' }, { id: 'journey', label: 'Journey' }, { id: 'beyond', label: 'Beyond Code' }, { id: 'connect', label: 'Connect' }] }}>
+    window.__PORTFOLIO_DATA = { allProjects, sections };
+  </script>
   <script src="/scripts/main.js" is:inline></script>
+  <script src="/scripts/cmdk.js" is:inline></script>
+  <script src="/scripts/theme.js" is:inline></script>
 </Base>
