@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Matt Parker — Systems Administrator & Builder',
+  description = 'Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#0a0e17" />
+  <meta name="generator" content={Astro.generator} />
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:site_name" content="Matt Parker Portfolio" />
+  <meta property="og:image" content="https://sysadmindoc.github.io/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sysadmindoc.github.io/og.png" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch." />
+
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://api.github.com" crossorigin />
+  <link rel="dns-prefetch" href="https://api.github.com" />
+  <link rel="dns-prefetch" href="https://i.scdn.co" />
+  <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },
+      { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc', jobTitle: 'Senior Systems Administrator', knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging'], sameAs: ['https://github.com/SysAdminDoc','https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW'] }
+    ]
+  })} />
+</head>
+<body>
+  <slot />
+</body>
+</html>
