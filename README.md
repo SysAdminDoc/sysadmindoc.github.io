@@ -64,6 +64,10 @@ scripts/
 legacy.html           # backup of pre-Astro single-file site
 ```
 
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for planned work — Tier A/B/C ideas, tech debt, and already-shipped releases.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
