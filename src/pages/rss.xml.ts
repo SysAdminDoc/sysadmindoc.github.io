@@ -62,7 +62,7 @@ ${items
       <description>${escapeXml(i.desc)}</description>
       <category>${escapeXml(i.cat)}</category>
       <pubDate>${escapeXml(i.pubDate)}</pubDate>
-      <guid isPermaLink="false">${escapeXml(i.link)}</guid>
+      <guid isPermaLink="true">${escapeXml(i.link)}</guid>
     </item>`
   )
   .join('\n')}
