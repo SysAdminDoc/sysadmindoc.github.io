@@ -1,0 +1,16 @@
+---
+import type { Skill } from '../data/types';
+export interface Props { skill: Skill; }
+const { skill } = Astro.props;
+---
+<div class="skc card-enter">
+  <div class="sk-ring" style={`--ring-target:${skill.ringTarget}`}>
+    <svg viewBox="0 0 76 76">
+      <circle class="ring-bg" cx="38" cy="38" r="32.5" />
+      <circle class="ring-fg" cx="38" cy="38" r="32.5" stroke={`var(${skill.color})`} />
+    </svg>
+    <div class="sk-ring-label" style={`color:var(${skill.color})`} set:html={skill.code}></div>
+  </div>
+  <div class="skn">{skill.name}</div>
+  <div class="sks">{skill.sub}</div>
+</div>
