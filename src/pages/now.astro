@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import { now } from '../data/curated';
+
+let stats = {
+  totalRepos: 143,
+  totalStars: 97,
+  lastPushedAt: null as string | null,
+  lastPushedRepo: null as string | null,
+  streak: 0,
+  latestRelease: null as { repo: string; tag: string | null; at: string } | null,
+  fetchedAt: null as string | null,
+};
+try { const mod = await import('../data/_stats.json'); stats = { ...stats, ...(mod.default ?? mod) }; } catch {}
+
+const pushedAgo = stats.lastPushedAt
+  ? (() => {
+      const h = Math.floor((Date.now() - new Date(stats.lastPushedAt).getTime()) / 3600000);
+      if (h < 1) return 'just now';
+      if (h < 24) return `${h}h ago`;
+      const d = Math.floor(h / 24);
+      if (d < 30) return `${d}d ago`;
+      return `${Math.floor(d / 30)}mo ago`;
+    })()
+  : null;
+---
+<Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on.">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <nav id="nav" aria-label="Main navigation">
+    <div class="ni">
+      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <div class="nk">
+        <a href="/#greatest-hits">Hits</a>
+        <a href="/#featured">Projects</a>
+        <a href="/#live">Live</a>
+        <a href="/#catalog">Catalog</a>
+        <a href="/now/" class="active">Now</a>
+        <a href="/#about">About</a>
+      </div>
+      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+    </div>
+  </nav>
+
+  <main id="main" class="now-page">
+    <div class="si" style="padding-top:100px">
+      <div class="sh rv">
+        <div class="sl">// Now</div>
+        <h1 class="st now-title">What I'm doing right now</h1>
+        <p class="sd">
+          Inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener" class="now-inline-link">Derek Sivers' /now page</a>.
+          Updated <time datetime={now.updated}>{new Date(now.updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>.
+        </p>
+      </div>
+
+      {/* Live activity snapshot */}
+      <div class="now-pulse rv">
+        <div class="now-pulse-item">
+          <span class="now-pulse-dot"></span>
+          <span class="now-pulse-label">Location</span>
+          <span class="now-pulse-value">{now.location}</span>
+        </div>
+        {pushedAgo && (
+          <div class="now-pulse-item">
+            <span class="now-pulse-dot"></span>
+            <span class="now-pulse-label">Last push</span>
+            <span class="now-pulse-value">{pushedAgo} <span class="now-pulse-sub">to {stats.lastPushedRepo}</span></span>
+          </div>
+        )}
+        {stats.streak > 0 && (
+          <div class="now-pulse-item">
+            <span class="now-pulse-dot"></span>
+            <span class="now-pulse-label">Streak</span>
+            <span class="now-pulse-value">{stats.streak}d</span>
+          </div>
+        )}
+        <div class="now-pulse-item">
+          <span class="now-pulse-dot"></span>
+          <span class="now-pulse-label">Repos · Stars</span>
+          <span class="now-pulse-value">{stats.totalRepos} · {stats.totalStars}</span>
+        </div>
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si">
+      <section class="now-section rv">
+        <h2 class="now-h2">Building</h2>
+        <ul class="now-list">
+          {now.building.map((line) => <li class="now-li">{line}</li>)}
+        </ul>
+      </section>
+
+      <section class="now-section rv">
+        <h2 class="now-h2">Thinking about</h2>
+        <ul class="now-list">
+          {now.thinking.map((line) => <li class="now-li">{line}</li>)}
+        </ul>
+      </section>
+
+      <section class="now-section rv">
+        <h2 class="now-h2">Listening</h2>
+        <p class="now-p">{now.listening}</p>
+      </section>
+
+      <section class="now-section rv">
+        <h2 class="now-h2">Deliberately not working on</h2>
+        <p class="now-p">{now.notWorkingOn}</p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi">
+      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .now-page{min-height:calc(100vh - 200px);max-width:900px;margin:0 auto}
+  .now-title{font-size:clamp(36px,5vw,56px)!important}
+  .now-inline-link{color:var(--grn);text-decoration:none;border-bottom:1px dashed var(--glass-border)}
+  .now-inline-link:hover{border-bottom-color:var(--grn)}
+  .now-pulse{display:flex;flex-wrap:wrap;gap:18px;margin-top:32px;padding:20px 24px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass)}
+  .now-pulse-item{display:flex;align-items:center;gap:10px}
+  .now-pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn-glow);animation:freshPulse 2s ease-in-out infinite}
+  .now-pulse-label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--t3);text-transform:uppercase}
+  .now-pulse-value{font-family:var(--mono);font-size:14px;color:var(--t1)}
+  .now-pulse-sub{color:var(--t3);font-size:12px}
+  .now-section{margin-top:56px}
+  .now-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
+  .now-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+  .now-li{padding-left:24px;position:relative;color:var(--t1);line-height:1.65;font-size:17px}
+  .now-li::before{content:'▸';position:absolute;left:0;top:0;color:var(--grn)}
+  .now-p{color:var(--t2);font-size:17px;line-height:1.7}
+</style>

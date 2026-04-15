@@ -5,25 +5,35 @@ import FeaturedCard from '../components/FeaturedCard.astro';
 import LiveCard from '../components/LiveCard.astro';
 import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
+import Manifesto from '../components/Manifesto.astro';
+import GreatestHits from '../components/GreatestHits.astro';
+import TagCloud from '../components/TagCloud.astro';
 import { featured, liveApps, catalog, skills } from '../data/projects';
 
-// Build-time: load cached star counts + aggregate stats (scripts/fetch-stars.mjs).
+// Build-time: load cached star counts + aggregate stats + per-repo metadata (fetch-stars.mjs).
 let stars: Record<string, number> = {};
+let meta: Record<string, { stars: number; pushedAt: string; updatedAt: string; language: string | null }> = {};
 let stats = {
   totalRepos: 134,
   totalStars: 0,
   lastPushedAt: null as string | null,
   lastPushedRepo: null as string | null,
+  streak: 0,
+  latestRelease: null as { repo: string; tag: string | null; at: string } | null,
   fetchedAt: null as string | null,
 };
 try {
   const mod = await import('../data/_stars.json');
   stars = (mod.default ?? mod) as Record<string, number>;
-} catch { /* no cache yet */ }
+} catch {}
 try {
   const mod = await import('../data/_stats.json');
   stats = { ...stats, ...(mod.default ?? mod) };
-} catch { /* no cache yet */ }
+} catch {}
+try {
+  const mod = await import('../data/_meta.json');
+  meta = (mod.default ?? mod) as typeof meta;
+} catch {}
 
 // Derive category counts from catalog data (fixes hardcoded-count gotcha)
 const catCounts: Record<string, number> = {};
@@ -52,13 +62,13 @@ const filterButtons = [
     <div class="ni">
       <a href="#hero" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
       <div class="nk" id="navLinks">
+        <a href="#greatest-hits">Hits</a>
         <a href="#featured">Projects</a>
-        <a href="#live">Live Apps</a>
+        <a href="#live">Live</a>
         <a href="#catalog">Catalog</a>
-        <a href="#skills">Stack</a>
+        <a href="/now/">Now</a>
         <a href="#about">About</a>
-        <a href="#beyond">Beyond Code</a>
-        <a href="#connect">Connect</a>
+        <a href="#beyond">Beyond</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
@@ -98,8 +108,14 @@ const filterButtons = [
   <div class="push-ribbon" id="pushRibbon" style="display:none"></div>
   <Divider />
 
+  <Manifesto />
+  <Divider />
+
+  <GreatestHits />
+  <Divider />
+
   <section id="featured"><div class="si">
-    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked highlights &mdash; star counts live from GitHub.</p></div>
+    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Nine more handpicked highlights &mdash; star counts baked in at build.</p></div>
     <div class="fg" id="featuredGrid">
       {featured.map((p) => <FeaturedCard project={p} stars={stars[p.repo]} />)}
     </div>
@@ -114,8 +130,11 @@ const filterButtons = [
   </div></section>
   <Divider />
 
+  <TagCloud />
+  <Divider />
+
   <section id="catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All Repositories</h2><p class="sd">The full collection &mdash; search, filter, sort. Star counts pulled live.</p></div>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All {catalogTotal} repositories</h2><p class="sd">Every public repo. Search, filter, sort. Age badges show freshness at a glance.</p></div>
     <div class="catalog-controls rv">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -136,7 +155,7 @@ const filterButtons = [
       ))}
     </div>
     <div class="cg" id="catalogGrid">
-      {catalog.map((entry) => <CatalogEntry entry={entry} stars={stars[entry.repo]} />)}
+      {catalog.map((entry) => <CatalogEntry entry={entry} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} />)}
     </div>
   </div></section>
   <Divider />
