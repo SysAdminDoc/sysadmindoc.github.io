@@ -6,6 +6,8 @@ import { featured, liveApps, catalog } from '../../data/projects';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 
 export async function getStaticPaths() {
   // One page per unique repo across featured + liveApps + catalog
@@ -53,10 +55,89 @@ const publicDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..'
 const screenshotPath = join(publicDir, 'screenshots', `${slug}.jpg`);
 const hasScreenshot = existsSync(screenshotPath);
 
-// Related: same category, excluding self
+// README: rendered from markdown cached at build time by scripts/fetch-stars.mjs
+let readmes: Record<string, string> = {};
+try {
+  const mod = await import('../../data/_readmes.json');
+  readmes = (mod.default ?? mod) as Record<string, string>;
+} catch {}
+let readmeHtml: string | null = null;
+const rawMd = readmes[slug];
+if (rawMd && rawMd.trim().length > 0) {
+  // Rewrite relative links/images to point at GitHub raw so assets resolve.
+  const rawBase = `https://raw.githubusercontent.com/SysAdminDoc/${slug}/HEAD/`;
+  const blobBase = `https://github.com/SysAdminDoc/${slug}/blob/HEAD/`;
+  marked.use({
+    gfm: true,
+    breaks: false,
+    renderer: {
+      image(token: any) {
+        const href = /^https?:|^data:|^\/\//.test(token.href) ? token.href : rawBase + token.href.replace(/^\.?\//, '');
+        const alt = token.text ?? '';
+        return `<img src="${href}" alt="${alt}" loading="lazy" />`;
+      },
+      link(token: any) {
+        const href = /^https?:|^mailto:|^#/.test(token.href) ? token.href : blobBase + token.href.replace(/^\.?\//, '');
+        return `<a href="${href}" rel="noopener nofollow" target="_blank">${token.text}</a>`;
+      },
+    },
+  });
+  const rendered = await marked.parse(rawMd);
+  readmeHtml = sanitizeHtml(rendered as string, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'picture', 'source', 'details', 'summary', 'kbd', 'del', 'input']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ['src', 'alt', 'title', 'width', 'height', 'loading', 'align'],
+      a: ['href', 'name', 'target', 'rel', 'id'],
+      code: ['class'],
+      span: ['class'],
+      div: ['class', 'align'],
+      h1: ['id'], h2: ['id'], h3: ['id'], h4: ['id'], h5: ['id'], h6: ['id'],
+      input: ['type', 'checked', 'disabled'],
+      source: ['srcset', 'media', 'type'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto', 'data'],
+    transformTags: {
+      a: sanitizeHtml.simpleTransform('a', { rel: 'noopener nofollow', target: '_blank' }, true),
+    },
+  });
+}
+
+// Per-project releases (from cached _releases.json)
+let allReleases: Array<{ repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }> = [];
+try {
+  const mod = await import('../../data/_releases.json');
+  allReleases = (mod.default ?? mod) as any;
+} catch {}
+const projectReleases = allReleases.filter((r) => r.repo === slug).slice(0, 5);
+
+// Tech-stack chips — derived from repo language (_meta.json) plus catalog category.
+let metaMap: Record<string, { stars: number; pushedAt: string; updatedAt: string; language: string | null }> = {};
+try {
+  const mod = await import('../../data/_meta.json');
+  metaMap = (mod.default ?? mod) as any;
+} catch {}
+const language = metaMap[slug]?.language ?? null;
+const categoryLabel: Record<string, string> = {
+  ps: 'PowerShell', py: 'Python', web: 'Web', ext: 'Extension', kt: 'Android',
+  sec: 'Security', media: 'Media', cs: 'Desktop', guide: 'Guide', fork: 'Fork', other: 'Other',
+};
+const techChips = Array.from(new Set([
+  language,
+  categoryLabel[category] ?? null,
+  ...tags,
+].filter(Boolean))) as string[];
+
+// Related: same category, excluding self + archived. Ranked by stars then freshness.
 const related = catalog
   .filter((c) => c.category === category && c.repo !== slug)
-  .slice(0, 6);
+  .map((c) => ({
+    ...c,
+    _stars: stars[c.repo] ?? 0,
+    _pushed: metaMap[c.repo]?.pushedAt ?? '0',
+  }))
+  .sort((a, b) => (b._stars - a._stars) || (new Date(b._pushed).getTime() - new Date(a._pushed).getTime()))
+  .slice(0, 4);
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
@@ -90,9 +171,9 @@ const ogImage = `/og/${slug}.png`;
         </div>
         <h1 class="project-title">{name}</h1>
         <p class="project-desc" set:html={desc}></p>
-        {tags.length > 0 && (
+        {techChips.length > 0 && (
           <div class="project-tags">
-            {tags.map((t) => <span class="ctg">{t}</span>)}
+            {techChips.map((t) => <span class="ctg">{t}</span>)}
           </div>
         )}
         <div class="project-actions">
@@ -127,11 +208,44 @@ const ogImage = `/og/${slug}.png`;
           <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" loading="lazy" />
         )}
         <p class="project-readme-hint">
-          Source, releases, and README at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.
+          Source at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.
         </p>
       </div>
     </div>
     <Divider />
+
+    {readmeHtml && (
+      <div class="si">
+        <div class="project-readme-wrap">
+          <h2 class="project-section-title">README</h2>
+          <article class="project-readme" set:html={readmeHtml}></article>
+          <p class="project-readme-hint" style="margin-top:24px">
+            Read on GitHub → <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>
+          </p>
+        </div>
+      </div>
+    )}
+    {readmeHtml && <Divider />}
+
+    {projectReleases.length > 0 && (
+      <div class="si">
+        <div class="project-readme-wrap">
+          <h2 class="project-section-title">Recent Releases</h2>
+          <ul class="project-releases">
+            {projectReleases.map((r) => (
+              <li class="project-release">
+                <a href={r.url} target="_blank" rel="noopener" class="project-release-tag">{r.tag}</a>
+                <time class="project-release-date" datetime={r.publishedAt}>
+                  {new Date(r.publishedAt).toISOString().slice(0, 10)}
+                </time>
+                {r.bodyFirst && <p class="project-release-body">{r.bodyFirst}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )}
+    {projectReleases.length > 0 && <Divider />}
 
     {related.length > 0 && (
       <div class="si">
@@ -184,4 +298,33 @@ const ogImage = `/og/${slug}.png`;
   .project-shot-badge{position:absolute;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;background:rgba(10,14,23,.85);color:var(--grn);font-family:var(--mono);font-size:13px;border:1px solid rgba(74,222,128,.3);backdrop-filter:blur(8px);opacity:0;transition:opacity .2s}
   .project-shot-link:hover .project-shot-badge{opacity:1}
   .project-og{display:block;max-width:800px;width:100%;height:auto;border-radius:12px;border:1px solid var(--glass-border);margin:0 auto}
+  .project-readme{color:var(--t2);line-height:1.7;font-size:16px;max-width:860px;margin:0 auto;word-wrap:break-word}
+  .project-readme h1,.project-readme h2,.project-readme h3,.project-readme h4{color:var(--t1);font-family:var(--mono);margin:32px 0 14px;line-height:1.3}
+  .project-readme h1{font-size:28px;border-bottom:1px solid var(--glass-border);padding-bottom:10px}
+  .project-readme h2{font-size:22px;border-bottom:1px solid var(--glass-border);padding-bottom:8px}
+  .project-readme h3{font-size:18px}
+  .project-readme h4{font-size:16px;color:var(--t2)}
+  .project-readme p{margin:0 0 16px}
+  .project-readme a{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+  .project-readme a:hover{border-color:var(--grn)}
+  .project-readme ul,.project-readme ol{padding-left:24px;margin:0 0 16px}
+  .project-readme li{margin:6px 0}
+  .project-readme code{font-family:var(--mono);font-size:13px;background:var(--bg2);padding:2px 6px;border-radius:4px;border:1px solid var(--glass-border)}
+  .project-readme pre{background:var(--bg2);border:1px solid var(--glass-border);border-radius:10px;padding:16px;overflow-x:auto;font-size:13px;line-height:1.5;margin:0 0 16px}
+  .project-readme pre code{background:transparent;border:0;padding:0;font-size:13px}
+  .project-readme blockquote{border-left:3px solid var(--grn);padding:4px 16px;margin:0 0 16px;color:var(--t3);background:var(--bg2);border-radius:0 8px 8px 0}
+  .project-readme img{max-width:100%;height:auto;border-radius:8px;margin:8px 0}
+  .project-readme table{border-collapse:collapse;margin:0 0 16px;display:block;overflow-x:auto}
+  .project-readme th,.project-readme td{border:1px solid var(--glass-border);padding:8px 12px;text-align:left}
+  .project-readme th{background:var(--bg2);font-family:var(--mono);font-size:13px}
+  .project-readme hr{border:0;border-top:1px solid var(--glass-border);margin:24px 0}
+  .project-readme details{background:var(--bg2);border:1px solid var(--glass-border);border-radius:8px;padding:12px 16px;margin:0 0 16px}
+  .project-readme summary{cursor:pointer;color:var(--t1);font-weight:600}
+  .project-releases{list-style:none;padding:0;margin:0;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  .project-release{padding:16px 20px;border:1px solid var(--glass-border);border-radius:10px;background:var(--bg2);transition:border-color .2s}
+  .project-release:hover{border-color:rgba(88,166,255,.35)}
+  .project-release-tag{font-family:var(--mono);font-size:14px;color:var(--grn);font-weight:600;text-decoration:none;margin-right:12px}
+  .project-release-tag:hover{text-decoration:underline}
+  .project-release-date{font-family:var(--mono);font-size:12px;color:var(--t3)}
+  .project-release-body{margin:8px 0 0;color:var(--t2);font-size:14px;line-height:1.6}
 </style>

@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
@@ -16,6 +16,8 @@
     "@astrojs/sitemap": "^3.2.1",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.1.0",
+    "marked": "^18.0.0",
+    "sanitize-html": "^2.17.2",
     "satori": "^0.26.0"
   },
   "devDependencies": {
