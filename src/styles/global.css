@@ -513,3 +513,12 @@ html[data-theme="light"] .cmdk{background:#fff}
 /* Greatest hits section spacing parity */
 #greatest-hits,#manifesto,#volume{padding:80px 24px}
 #greatest-hits{padding-top:60px}
+
+/* Hero pulse widget (v0.7.0 — replaces runtime last-active) */
+.hero-pulse{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:18px 0;font-family:var(--mono);font-size:12px}
+.hero-pulse .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn-glow);animation:freshPulse 2s ease-in-out infinite;flex-shrink:0}
+.hero-pulse .pulse-item{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--glass-border);border-radius:999px;text-decoration:none;color:var(--t2);transition:all .2s}
+.hero-pulse .pulse-item:hover{color:var(--t1);border-color:var(--brdb);background:var(--glass-hover)}
+.hero-pulse .pulse-k{color:var(--t3);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.hero-pulse .pulse-v{color:var(--t1);font-size:12px}
+.hero-pulse .pulse-sub{color:var(--grn);font-weight:600;margin-left:4px}

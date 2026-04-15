@@ -2,6 +2,25 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.7.0] - 2026-04-15
+
+**Data depth. Tier B from ROADMAP.**
+
+New pages
+- **`/releases`** — chronological stream of 71 releases across 40 most-recently-pushed repos, grouped by month. Each entry shows tag, date, first 3 lines of release notes. Auto-refreshed on the daily cron.
+- **`/lang/<slug>`** — 7 per-language landing pages (PowerShell, Python, JavaScript, Web Apps, Kotlin/Android, C#/Desktop, Security). Intro copy explaining my *approach* in that ecosystem, stats, and every repo in that category sorted by featured → stars → freshness.
+- Skill ring cards on the homepage now link to the matching `/lang/<slug>/` page.
+
+Hero pulse widget
+- Replaced the runtime "Active N days ago" text with a static **build-time pulse row**: streak · latest release · last push. Each item is a link (→ /now, → the release on GitHub, → the last-pushed repo). No API calls needed on page load.
+
+Data layer
+- `scripts/fetch-stars.mjs` now hits `/repos/<owner>/<repo>/releases` for the 40 most-recently-pushed repos, writes `_releases.json` with tag, timestamp, URL, and a 220-char slice of release notes.
+- CI's daily cron will refresh releases automatically alongside stars.
+
+Navigation
+- Added Releases link to primary nav; dropped Beyond (still reachable via scroll anchor).
+
 ## [v0.6.0] - 2026-04-14
 
 **Narrative polish: shape the story, don't just list projects. Tier A + key Tier B from [ROADMAP.md](ROADMAP.md).**

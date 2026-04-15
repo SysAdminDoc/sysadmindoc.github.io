@@ -10,14 +10,13 @@ Living plan for [sysadmindoc.github.io](https://sysadmindoc.github.io/). Ordered
 
 > v0.6.0 shipped — all Tier A items and the two highest-impact Tier B items (/now, /healthcare-it) are now live. See [ROADMAP-COMPLETED.md](ROADMAP-COMPLETED.md).
 
-## v0.7.0 — data depth
+## Next up — v0.8.0 (see below)
 
-Bigger ideas that need plumbing.
+> v0.7.0 shipped — Living-data widget, /releases, per-language landing pages. `/til` deferred (no content source yet).
 
-- [ ] **Living-data widget** in hero (~`M`) — latest commit SHA, latest release tag, 90-day streak count. Pulled fresh at build via an extended `fetch-stars.mjs`. Signals "actively shipping". Inspired by leerob.io's last-listened pattern.
-- [ ] **`/releases` stream** (~`M`) — auto-generated from GitHub Releases API, chronological across all repos. "Last 30 releases across every repo." Inspired by simonwillison.net.
-- [ ] **`/til` stream** (~`L`) — markdown-backed Today-I-Learned notes. Tag-indexed. New content stream separate from projects. Inspired by simonwillison.net.
-- [ ] **Per-language landing pages** (`/powershell`, `/python`, `/kotlin`, `/cs`, `/js`, `/cpp`) (~`L`) — topic hubs with intro + curated repos + related TILs. Inspired by jvns.ca category pages.
+### Deferred from v0.7.0
+
+- [ ] **`/til` stream** (~`L`) — markdown-backed Today-I-Learned notes. Needs a content source; the pipeline is trivial once there's material to index. Inspired by simonwillison.net.
 
 ## v0.8.0 — creative depth
 
