@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
     "fetch-stars": "node scripts/fetch-stars.mjs",
@@ -21,6 +22,8 @@
     "satori": "^0.26.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@types/sanitize-html": "^2.16.1",
     "lightningcss": "^1.32.0",
     "typescript": "^5.7.2"
   }

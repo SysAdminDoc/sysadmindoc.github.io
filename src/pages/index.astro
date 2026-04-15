@@ -69,12 +69,46 @@ const heroTopCategories = Object.entries(catCounts)
     count,
   }));
 const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${count}`).join(' / ');
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const heroReleaseDate = compactUtcDate;
+const cmdkProjectMap = new Map<string, { slug: string; name: string; desc: string; type: 'featured' | 'live' | 'catalog'; url: string; category?: string }>();
+const normalizeCmdkDesc = (value: string) => value.replace(/&[a-z]+;/gi, ' ');
+for (const project of catalog) {
+  cmdkProjectMap.set(project.repo, {
+    slug: project.repo,
+    name: project.name,
+    desc: normalizeCmdkDesc(project.desc),
+    type: 'catalog',
+    url: `/projects/${project.repo}/`,
+    category: project.category,
+  });
+}
+for (const app of liveApps) {
+  cmdkProjectMap.set(app.slug, {
+    slug: app.slug,
+    name: app.name,
+    desc: normalizeCmdkDesc(app.desc),
+    type: 'live',
+    url: `/projects/${app.slug}/`,
+  });
+}
+for (const project of featured) {
+  cmdkProjectMap.set(project.repo, {
+    slug: project.repo,
+    name: project.name,
+    desc: normalizeCmdkDesc(project.desc),
+    type: 'featured',
+    url: `/projects/${project.repo}/`,
+  });
+}
+const cmdkProjects = Array.from(cmdkProjectMap.values());
 ---
 <Base>
   <a href="#main" class="skip-link">Skip to content</a>
   <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
   <canvas id="particles"></canvas>
-  <script is:inline>if(innerWidth>=768){document.write('<div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>')}</script>
+  <div class="cc-dot" id="ccDot" aria-hidden="true"></div>
+  <div class="cc-ring" id="ccRing" aria-hidden="true"></div>
 
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
@@ -90,10 +124,10 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <button class="theme-toggle" id="cmdkToggle" aria-label="Open command palette (Ctrl+K)" title="Search (Ctrl+K)"><svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <button type="button" class="theme-toggle" id="cmdkToggle" aria-label="Open command palette (Ctrl or Cmd + K)" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Search (Ctrl/Cmd + K)"><svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng" aria-label="GitHub Profile"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
-        <button class="mt" id="mobileToggle" aria-label="Toggle navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
     </div>
   </nav>
@@ -105,7 +139,7 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
     <div class="hi">
       <div class="ht">
         <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
-        <img class="hero-avatar" id="heroAvatar" src="" alt="Matt Parker" width="56" height="56" decoding="async">
+        <img class="hero-avatar" id="heroAvatar" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Matt Parker" width="56" height="56" decoding="async">
         <div class="htag" id="heroTag"><span class="dot"></span> Available for collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <p class="hr">Senior systems administrator building open source tools for the work I do every day.</p>
@@ -125,7 +159,7 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
             </a>
           )}
           {latestRelease && (
-            <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${new Date(latestRelease.publishedAt).toLocaleDateString()}`}>
+            <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${heroReleaseDate.format(new Date(latestRelease.publishedAt))}`}>
               <span class="pulse-k">latest</span>
               <span class="pulse-v">{latestRelease.repo} <span class="pulse-sub">{latestRelease.tag}</span></span>
             </a>
@@ -133,11 +167,11 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
           {stats.lastPushedRepo && stats.lastPushedAt && (
             <a href={`https://github.com/SysAdminDoc/${stats.lastPushedRepo}`} target="_blank" rel="noopener" class="pulse-item" title={`Last push ${stats.lastPushedAt}`}>
               <span class="pulse-k">pushed</span>
-              <span class="pulse-v" data-rel={stats.lastPushedAt}>{new Date(stats.lastPushedAt).toISOString().slice(0,10)}</span>
+              <span class="pulse-v" data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</span>
             </a>
           )}
         </div>
-        <div class="last-active" id="lastActive" hidden><span class="la-dot"></span> <span id="lastActiveText"></span><span id="streakBadge"></span></div>
+        <div class="last-active" id="lastActive" hidden role="status" aria-live="polite"><span class="la-dot"></span> <span id="lastActiveText"></span><span id="streakBadge"></span></div>
         <div class="ha">
           <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Explore the Portfolio</a>
           <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
@@ -216,7 +250,7 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
     <div class="catalog-controls rv">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="search-input" id="searchInput" placeholder="Search repositories…" autocomplete="off" aria-label="Search repositories">
+        <input type="search" class="search-input" id="searchInput" name="repository-search" placeholder="Search repositories…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search repositories">
       </div>
       <select class="sort-select" id="sortSelect" aria-label="Sort repositories">
         <option value="default">Default order</option>
@@ -227,14 +261,15 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
       </select>
     </div>
     <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
-      <button class="fb act" data-filter="all">All <span class="fc" id="countAll">{catalogTotal}</span></button>
+      <button type="button" class="fb act" data-filter="all">All <span class="fc" id="countAll">{catalogTotal}</span></button>
       {filterButtons.map((f) => (
-        <button class="fb" data-filter={f.key}>{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
+        <button type="button" class="fb" data-filter={f.key}>{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
       ))}
     </div>
     <div class="cg" id="catalogGrid">
-      {catalog.map((entry) => <CatalogEntry entry={entry} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} />)}
+      {catalog.map((entry, index) => <CatalogEntry entry={entry} index={index} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt} />)}
     </div>
+    <div class="no-results" id="noResults" role="status" aria-live="polite">No repositories match that search yet. Try a different term or filter.</div>
   </div></section>
   <Divider />
 
@@ -325,10 +360,10 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
         {id:'FVroPKvYgKQ', title:'Nokomis Beach, Florida', desc:'Drone flight over Nokomis Beach'},
       ].map((v) => (
         <div class="video-card card-enter">
-          <div class="video-thumb" data-yt={v.id} tabindex="0" role="button" aria-label={`Play ${v.title} video`}>
-            <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt={v.title} loading="lazy" decoding="async" width="1280" height="720">
+          <button type="button" class="video-thumb" data-yt={v.id} aria-label={`Play ${v.title} video`}>
+            <img src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`} alt={v.title} loading="lazy" decoding="async" width="1280" height="720">
             <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          </div>
+          </button>
           <div class="video-info"><div class="video-title">{v.title}</div><div class="video-desc">{v.desc}</div></div>
         </div>
       ))}
@@ -397,7 +432,7 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
         {stats.fetchedAt && (
           <span class="footer-freshness" title={`Stats fetched from GitHub API at ${stats.fetchedAt}`}>
             <span class="footer-freshness-dot"></span>
-            Stats refreshed <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{new Date(stats.fetchedAt).toISOString().slice(0, 10)}</time>
+            Stats refreshed <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{compactUtcDate.format(new Date(stats.fetchedAt))}</time>
           </span>
         )}
       </div>
@@ -409,22 +444,22 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
     <div class="footer-ticker-wrap"><div class="footer-ticker" id="footerTicker"></div></div>
   </footer>
 
-  <button class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+  <button type="button" class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
 
   {/* Command palette — Ctrl/Cmd+K or click search */}
-  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
     <div class="cmdk">
       <div class="cmdk-input-row">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a project, category, or section…" autocomplete="off" spellcheck="false" />
+        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Jump to a project, category, or section…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, categories, and sections" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
         <span class="cmdk-kbd">Esc</span>
       </div>
-      <div class="cmdk-list" id="cmdkList" role="listbox"></div>
+      <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div>
     </div>
   </div>
 
   {/* Data bridge for command palette + search (injected at build) */}
-  <script is:inline define:vars={{ allProjects: [...featured.map(p => ({ slug: p.repo, name: p.name, desc: p.desc.replace(/&[a-z]+;/gi,' '), type: 'featured', url: `https://github.com/SysAdminDoc/${p.repo}` })), ...liveApps.map(a => ({ slug: a.slug, name: a.name, desc: a.desc.replace(/&[a-z]+;/gi,' '), type: 'live', url: a.url })), ...catalog.map(c => ({ slug: c.repo, name: c.name, desc: c.desc.replace(/&[a-z]+;/gi,' '), type: 'catalog', url: c.url, category: c.category }))], sections: [{ id: 'featured', label: 'Featured' }, { id: 'live', label: 'Live Apps' }, { id: 'catalog', label: 'Catalog' }, { id: 'skills', label: 'Stack' }, { id: 'about', label: 'About' }, { id: 'philosophy', label: 'Philosophy' }, { id: 'journey', label: 'Journey' }, { id: 'beyond', label: 'Beyond Code' }, { id: 'connect', label: 'Connect' }] }}>
+  <script is:inline define:vars={{ allProjects: cmdkProjects, sections: [{ id: 'featured', label: 'Featured' }, { id: 'live', label: 'Live Apps' }, { id: 'catalog', label: 'Catalog' }, { id: 'skills', label: 'Stack' }, { id: 'about', label: 'About' }, { id: 'philosophy', label: 'Philosophy' }, { id: 'journey', label: 'Journey' }, { id: 'beyond', label: 'Beyond Code' }, { id: 'connect', label: 'Connect' }] }}>
     window.__PORTFOLIO_DATA = { allProjects, sections };
   </script>
   <script src="/scripts/main.js" is:inline></script>

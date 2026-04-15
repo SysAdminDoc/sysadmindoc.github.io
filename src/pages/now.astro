@@ -13,32 +13,27 @@ let stats = {
   fetchedAt: null as string | null,
 };
 try { const mod = await import('../data/_stats.json'); stats = { ...stats, ...(mod.default ?? mod) }; } catch {}
-
-const pushedAgo = stats.lastPushedAt
-  ? (() => {
-      const h = Math.floor((Date.now() - new Date(stats.lastPushedAt).getTime()) / 3600000);
-      if (h < 1) return 'just now';
-      if (h < 24) return `${h}h ago`;
-      const d = Math.floor(h / 24);
-      if (d < 30) return `${d}d ago`;
-      return `${Math.floor(d / 30)}mo ago`;
-    })()
-  : null;
+const utcDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 <Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on.">
   <a href="#main" class="skip-link">Skip to content</a>
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
       <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk">
+      <div class="nk" id="navLinks">
         <a href="/#greatest-hits">Hits</a>
         <a href="/#featured">Projects</a>
         <a href="/#live">Live</a>
         <a href="/#catalog">Catalog</a>
-        <a href="/now/" class="active">Now</a>
+        <a href="/now/" class="active" aria-current="page">Now</a>
         <a href="/#about">About</a>
       </div>
-      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+        <a href="/" class="ng">← Home</a>
+        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
     </div>
   </nav>
 
@@ -49,7 +44,7 @@ const pushedAgo = stats.lastPushedAt
         <h1 class="st now-title">What I'm doing right now</h1>
         <p class="sd">
           Inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener" class="now-inline-link">Derek Sivers' /now page</a>.
-          Updated <time datetime={now.updated}>{new Date(now.updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>.
+          Updated <time datetime={now.updated}>{utcDate.format(new Date(`${now.updated}T00:00:00Z`))}</time>.
         </p>
       </div>
 
@@ -60,11 +55,11 @@ const pushedAgo = stats.lastPushedAt
           <span class="now-pulse-label">Location</span>
           <span class="now-pulse-value">{now.location}</span>
         </div>
-        {pushedAgo && (
+        {stats.lastPushedAt && (
           <div class="now-pulse-item">
             <span class="now-pulse-dot"></span>
             <span class="now-pulse-label">Last push</span>
-            <span class="now-pulse-value">{pushedAgo} <span class="now-pulse-sub">to {stats.lastPushedRepo}</span></span>
+            <span class="now-pulse-value"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time> <span class="now-pulse-sub">to {stats.lastPushedRepo}</span></span>
           </div>
         )}
         {stats.streak > 0 && (
@@ -129,7 +124,8 @@ const pushedAgo = stats.lastPushedAt
   .now-pulse-label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--t3);text-transform:uppercase}
   .now-pulse-value{font-family:var(--mono);font-size:14px;color:var(--t1)}
   .now-pulse-sub{color:var(--t3);font-size:12px}
-  .now-section{margin-top:56px}
+  .now-section{margin-top:56px;padding:0;overflow:visible}
+  .now-section::before{display:none}
   .now-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
   .now-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
   .now-li{padding-left:24px;position:relative;color:var(--t1);line-height:1.65;font-size:17px}
