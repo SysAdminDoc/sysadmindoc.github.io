@@ -13,6 +13,9 @@ const labels: Record<string, string> = {
 
 const entries = Object.entries(counts)
   .sort((a, b) => b[1] - a[1]);
+const lead = entries[0];
+const runnerUps = entries.slice(1, 3).map(([key]) => labels[key] ?? key);
+const leadLabel = lead ? labels[lead[0]] ?? lead[0] : '';
 
 const max = Math.max(...entries.map(([, n]) => n));
 const min = Math.min(...entries.map(([, n]) => n));
@@ -28,34 +31,87 @@ const scale = (n: number) => {
       <h2 class="st">Where the work lives</h2>
       <p class="sd">Size = how many repos in each bucket. No categories with zero entries.</p>
     </div>
-    <div class="tag-cloud rv">
-      {entries.map(([key, n]) => (
-        <a
-          href={`/?cat=${key}#catalog`}
-          class="tag-cloud-tag"
-          data-cat={key}
-          style={`font-size:${scale(n)}em`}
-          aria-label={`${labels[key] ?? key}: ${n} repositories`}
-        >
-          <span class={`cdo ${key}`}></span>
-          <span class="tag-cloud-label">{labels[key] ?? key}</span>
-          <span class="tag-cloud-count">{n}</span>
-        </a>
-      ))}
+    <div class="tag-cloud-frame rv">
+      {lead && (
+        <div class="tag-cloud-summary">
+          <span class="tag-cloud-summary-label">Repository footprint</span>
+          <p>
+            <strong>{leadLabel}</strong> leads the catalog by volume
+            {runnerUps.length ? `, with ${runnerUps.join(' and ')} close behind.` : '.'}
+          </p>
+        </div>
+      )}
+      <div class="tag-cloud">
+        {entries.map(([key, n]) => (
+          <a
+            href={`/?cat=${key}#catalog`}
+            class="tag-cloud-tag"
+            data-cat={key}
+            style={`font-size:${scale(n)}em`}
+            aria-label={`${labels[key] ?? key}: ${n} repositories`}
+          >
+            <span class={`cdo ${key}`}></span>
+            <span class="tag-cloud-label">{labels[key] ?? key}</span>
+            <span class="tag-cloud-count">{n}</span>
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .tag-cloud{display:flex;flex-wrap:wrap;gap:14px 22px;justify-content:center;align-items:baseline;max-width:900px;margin:0 auto;padding:24px 0}
+  .tag-cloud-frame{
+    max-width:1100px;
+    margin:0 auto;
+    padding:28px;
+    border-radius:28px;
+    border:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    box-shadow:0 18px 42px rgba(0,0,0,.18);
+  }
+  .tag-cloud-summary{
+    display:grid;
+    grid-template-columns:160px minmax(0,1fr);
+    gap:18px;
+    align-items:start;
+    margin-bottom:22px;
+    padding-bottom:18px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .tag-cloud-summary-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--org);
+    padding-top:4px;
+  }
+  .tag-cloud-summary p{
+    margin:0;
+    color:var(--t2);
+    font-size:16px;
+    line-height:1.75;
+    max-width:52ch;
+  }
+  .tag-cloud-summary strong{color:var(--t1)}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:14px 18px;justify-content:flex-start;align-items:baseline;max-width:none;margin:0;padding:0}
   .tag-cloud-tag{
     display:inline-flex;align-items:center;gap:8px;
     color:var(--t2);text-decoration:none;
-    padding:6px 14px;border-radius:999px;border:1px solid transparent;
-    transition:all .2s ease-out;line-height:1;
+    padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.03);
+    line-height:1;
+    transition:color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,transform .2s ease-out;
   }
-  .tag-cloud-tag:hover{color:var(--t1);border-color:var(--glass-border);background:var(--glass-hover)}
+  .tag-cloud-tag:hover{color:var(--t1);border-color:rgba(255,255,255,.16);background:var(--glass-hover);transform:translateY(-2px)}
+  .tag-cloud-tag:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
   .tag-cloud-label{font-family:var(--mono);font-weight:600}
   .tag-cloud-count{font-family:var(--mono);font-size:.7em;color:var(--t3);padding:2px 7px;background:var(--bg3);border-radius:999px;line-height:1.4}
   .tag-cloud-tag:hover .tag-cloud-count{color:var(--t1);background:var(--glass-border)}
+  @media(max-width:640px){
+    .tag-cloud-frame{padding:20px}
+    .tag-cloud-summary{grid-template-columns:1fr;gap:10px}
+    .tag-cloud-summary p{font-size:15px}
+  }
 </style>

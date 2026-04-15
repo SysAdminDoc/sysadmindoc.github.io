@@ -1,5 +1,6 @@
 ---
 import { greatestHits } from '../data/curated';
+import { catalog } from '../data/projects';
 import StarSvg from './StarSvg.astro';
 
 let stars: Record<string, number> = {};
@@ -13,11 +14,11 @@ try {
     <div class="sh rv">
       <div class="sl">// Greatest Hits</div>
       <h2 class="st">The ones that matter most</h2>
-      <p class="sd">Eight out of 143. The through-line of my work — why each exists, not what it does.</p>
+      <p class="sd">{greatestHits.length} out of {catalog.length}. The through-line of my work — why each exists, not what it does.</p>
     </div>
     <div class="gh-grid">
       {greatestHits.map((hit, i) => (
-        <a href={`/projects/${hit.repo}/`} class="gh-card card-enter" data-repo={hit.repo}>
+        <a href={`/projects/${hit.repo}/`} class={`gh-card card-enter${i === 0 ? ' gh-card-primary' : ''}`} data-repo={hit.repo}>
           <div class="gh-head">
             <span class="gh-rank">★ {String(i + 1).padStart(2, '0')}</span>
             <span class="gh-tag">{hit.tag}</span>
@@ -34,29 +35,72 @@ try {
 </section>
 
 <style>
-  .gh-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;max-width:1200px;margin:0 auto}
+  .gh-grid{
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    gap:18px;
+    max-width:1200px;
+    margin:0 auto;
+  }
   .gh-card{
-    display:flex;flex-direction:column;gap:12px;
-    padding:24px;border:1px solid var(--glass-border);border-radius:14px;
-    background:linear-gradient(165deg,var(--glass),var(--bgc));
-    text-decoration:none;transition:all .3s ease-out;position:relative;overflow:hidden;
+    grid-column:span 4;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    gap:14px;
+    min-height:250px;
+    padding:28px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+    background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+    text-decoration:none;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 18px 42px rgba(0,0,0,.18);
+    transition:border-color .3s ease-out,transform .3s ease-out,box-shadow .3s ease-out,background .3s ease-out;
   }
   .gh-card::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(ellipse at top right,var(--grn-glow),transparent 60%);
-    opacity:0;transition:opacity .3s;
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(circle at top right, rgba(124,184,255,.22), transparent 34%),
+      radial-gradient(circle at bottom left, rgba(198,156,255,.14), transparent 30%);
+    opacity:.9;
   }
-  .gh-card:hover{border-color:var(--grn);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
-  .gh-card:hover::before{opacity:.18}
+  .gh-card::after{
+    content:'';
+    position:absolute;
+    inset:1px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.04);
+    pointer-events:none;
+  }
+  .gh-card:hover{border-color:rgba(255,255,255,.14);transform:translateY(-5px);box-shadow:0 26px 58px rgba(0,0,0,.25)}
+  .gh-card:focus-visible{outline:2px solid var(--grn);outline-offset:3px;box-shadow:0 0 0 4px rgba(74,222,128,.15)}
+  .gh-card-primary{
+    grid-column:span 12;
+    min-height:340px;
+    padding:36px;
+  }
   .gh-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .gh-rank{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--yel);font-weight:700}
-  .gh-tag{font-family:var(--mono);font-size:10px;color:var(--t2);padding:3px 8px;border:1px solid var(--glass-border);border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+  .gh-rank{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--org);font-weight:700}
+  .gh-tag{font-family:var(--mono);font-size:10px;color:var(--t2);padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.03)}
   .gh-stars{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--yel)}
   .gh-stars svg{width:12px;height:12px;fill:currentColor}
-  .gh-name{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--t1);word-break:break-word;line-height:1.3}
-  .gh-why{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
+  .gh-name{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--t1);word-break:break-word;line-height:1.15;max-width:18ch}
+  .gh-why{color:var(--t2);font-size:15px;line-height:1.7;margin:0;max-width:42ch}
+  .gh-card-primary .gh-name{font-size:clamp(30px,4.4vw,42px);max-width:12ch;letter-spacing:-.05em}
+  .gh-card-primary .gh-why{font-size:16px;max-width:58ch}
+  @media(max-width:980px){
+    .gh-card{grid-column:span 6}
+    .gh-card-primary{grid-column:span 12}
+  }
   @media(max-width:640px){
     .gh-grid{grid-template-columns:1fr}
-    .gh-card{padding:18px}
+    .gh-card,.gh-card-primary{grid-column:auto;min-height:auto;padding:22px}
+    .gh-card-primary .gh-name{font-size:28px}
+    .gh-head{gap:8px}
   }
 </style>

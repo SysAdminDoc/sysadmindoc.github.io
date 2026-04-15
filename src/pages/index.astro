@@ -58,9 +58,21 @@ const filterButtons = [
   { key: 'cs', label: 'Desktop' },
   { key: 'guide', label: 'Guides' },
 ];
+const filterLabelByKey = Object.fromEntries(filterButtons.map((button) => [button.key, button.label]));
+const heroSignatureProjects = featured.slice(0, 3);
+const heroLaunchApps = liveApps.slice(0, 4);
+const heroTopCategories = Object.entries(catCounts)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 3)
+  .map(([key, count]) => ({
+    key,
+    label: filterLabelByKey[key] ?? key,
+    count,
+  }));
+const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${count}`).join(' / ');
 ---
 <Base>
-  <a href="#hero" class="skip-link">Skip to content</a>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
   <canvas id="particles"></canvas>
   <script is:inline>if(innerWidth>=768){document.write('<div class="cc-dot" id="ccDot"></div><div class="cc-ring" id="ccRing"></div>')}</script>
@@ -88,14 +100,18 @@ const filterButtons = [
   </nav>
   <div class="scroll-progress" id="scrollProgress"></div>
 
+  <main id="main">
   <section class="hero" id="hero">
+    <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <img class="hero-avatar" id="heroAvatar" src="" alt="Matt Parker">
+        <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
+        <img class="hero-avatar" id="heroAvatar" src="" alt="Matt Parker" width="56" height="56" decoding="async">
         <div class="htag" id="heroTag"><span class="dot"></span> Available for collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
-        <p class="hr">Sr. Systems Administrator &amp; Builder</p>
-        <p class="hd">I build the tools I wish existed. Zero-config utilities, browser enhancements, desktop and mobile applications, and automation scripts &mdash; all open source, all ready to run.</p>
+        <p class="hr">Senior systems administrator, toolsmith, and design-minded operator.</p>
+        <p class="hd">I turn messy Windows, web, healthcare, and browser workflows into polished utilities that launch fast, work offline, and feel like finished products from day one.</p>
+        <p class="hero-domain-list">Operating across {heroDomainText}.</p>
         <div class="hs">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Repositories</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -124,11 +140,49 @@ const filterButtons = [
         </div>
         <div class="last-active" id="lastActive" hidden><span class="la-dot"></span> <span id="lastActiveText"></span><span id="streakBadge"></span></div>
         <div class="ha">
-          <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>View Projects</a>
+          <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Explore the Portfolio</a>
           <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
         </div>
       </div>
-      <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
+      <div class="hero-stage" aria-label="Portfolio highlights">
+        <div class="hero-stage-head">
+          <div>
+            <div class="hero-stage-kicker">Signature builds</div>
+            <h2 class="hero-stage-title">A portfolio that behaves like a toolkit.</h2>
+          </div>
+          <a href="#greatest-hits" class="hero-stage-link">See greatest hits</a>
+        </div>
+        <div class="hero-reel">
+          {heroSignatureProjects.map((project, index) => (
+            <a href={`/projects/${project.repo}/`} class="hero-reel-item">
+              <span class="hero-reel-index">{String(index + 1).padStart(2, '0')}</span>
+              <span class="hero-reel-copy">
+                <span class="hero-reel-name">{project.name}</span>
+                <span class="hero-reel-meta">{project.tags.join(' / ')}</span>
+              </span>
+              <span class={`hero-reel-lang ${project.lang}`}>{project.langLabel}</span>
+            </a>
+          ))}
+        </div>
+        <div class="hero-terminal-shell">
+          <div class="hero-terminal-meta">
+            <div class="hero-terminal-copy">
+              <span class="hero-terminal-kicker">Interactive shell</span>
+              <span class="hero-terminal-note">Type `help`, `ls`, or `open LibreSpot`.</span>
+            </div>
+            <span class="hero-terminal-badge">Live portfolio</span>
+          </div>
+          <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
+        </div>
+        <div class="hero-flightpath">
+          <span class="hero-flightpath-label">Launch instantly</span>
+          <div class="hero-flightpath-items">
+            {heroLaunchApps.map((app) => (
+              <a href={app.url} target="_blank" rel="noopener">{app.name}</a>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -143,7 +197,7 @@ const filterButtons = [
   <Divider />
 
   <section id="featured"><div class="si">
-    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Nine more handpicked highlights &mdash; star counts baked in at build.</p></div>
+    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked work where systems depth, strong UI, and practical utility all meet.</p></div>
     <div class="fg" id="featuredGrid">
       {featured.map((p) => <FeaturedCard project={p} stars={stars[p.repo]} />)}
     </div>
@@ -151,7 +205,7 @@ const filterButtons = [
   <Divider />
 
   <section id="live"><div class="si">
-    <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Try in Your Browser</h2><p class="sd">No install, no signup &mdash; click and go.</p></div>
+    <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Try in Your Browser</h2><p class="sd">Fast, direct launches with no signup wall, no install friction, and no setup ceremony.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
     </div>
@@ -166,7 +220,7 @@ const filterButtons = [
     <div class="catalog-controls rv">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="search-input" id="searchInput" placeholder="Search repositories..." autocomplete="off" aria-label="Search repositories">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search repositories…" autocomplete="off" aria-label="Search repositories">
       </div>
       <select class="sort-select" id="sortSelect" aria-label="Sort repositories">
         <option value="default">Default order</option>
@@ -200,12 +254,12 @@ const filterButtons = [
   <section id="about"><div class="si">
     <div class="sh rv"><div class="sl">// About</div><h2 class="st">Who I Am</h2></div>
     <div class="ac">
-      <div class="rv">
+      <div class="about-copy rv">
         <p class="atp">I'm a <strong>Senior Systems Administrator</strong> by day &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
         <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
         <p class="atp">Everything I ship follows the same philosophy: <strong>zero configuration, dark theme, works on first launch.</strong> No setup wizards, no dependency hunts. If it takes more than one step to run, I haven't finished building it yet.</p>
       </div>
-      <div class="term rv s2">
+      <div class="term rv s2 about-terminal">
         <div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">about.json</span></div>
         <div class="atb">
           <div><span class="tcm">&#123;</span></div>
@@ -277,7 +331,7 @@ const filterButtons = [
       ].map((v) => (
         <div class="video-card card-enter">
           <div class="video-thumb" data-yt={v.id} tabindex="0" role="button" aria-label={`Play ${v.title} video`}>
-            <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt={v.title} loading="lazy">
+            <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} onerror="this.src=this.src.replace('maxresdefault','hqdefault')" alt={v.title} loading="lazy" decoding="async" width="1280" height="720">
             <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
           </div>
           <div class="video-info"><div class="video-title">{v.title}</div><div class="video-desc">{v.desc}</div></div>
@@ -290,8 +344,8 @@ const filterButtons = [
       <div>
         <div class="music-hero card-enter">
           <div class="music-art">
-            <div class="music-art-glow"><img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt=""></div>
-            <img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="Slunder">
+            <div class="music-art-glow"><img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="" loading="lazy" decoding="async" width="640" height="640"></div>
+            <img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="Slunder" loading="lazy" decoding="async" width="640" height="640">
           </div>
           <div class="music-details">
             <h3>Slunder</h3>
@@ -310,7 +364,7 @@ const filterButtons = [
               {id:'2FsIqZY3LW1pTCjEb7URJk', art:'ab67616d00001e0234b30d89e374047ef7ecd730', name:'Thanks for Giving Up', year:2025},
             ].map((a) => (
               <a href={`https://open.spotify.com/album/${a.id}`} target="_blank" rel="noopener" class="album-card card-enter">
-                <div class="album-art"><img src={`https://i.scdn.co/image/${a.art}`} alt={a.name} loading="lazy"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                <div class="album-art"><img src={`https://i.scdn.co/image/${a.art}`} alt={a.name} loading="lazy" decoding="async" width="640" height="640"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
                 <div class="album-info"><div class="album-name">{a.name}</div><div class="album-year">{a.year}</div></div>
               </a>
             ))}
@@ -326,7 +380,11 @@ const filterButtons = [
 
   <section id="connect"><div class="si">
     <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Let's Build Something</h2></div>
-    <p class="connect-msg rv">I'm always open to collaboration, interesting problems, and new opportunities. The best way to reach me is through GitHub &mdash; open an issue, start a discussion, or just say hello.</p>
+    <p class="connect-msg rv">I'm open to sharp problems, thoughtful collaborations, and the kind of tooling work that makes complicated systems feel effortless.</p>
+    <div class="connect-notes rv" aria-label="Best collaboration fit">
+      <div class="connect-note"><span class="connect-note-label">Best fit</span> Automation, internal tools, browser products, and UX cleanup for complex workflows.</div>
+      <div class="connect-note"><span class="connect-note-label">Start with</span> A GitHub issue, a rough idea, or the repetitive process you want gone.</div>
+    </div>
     <div class="cng">
       <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="cnc card-enter">
         <svg viewBox="0 0 16 16" fill="var(--t1)"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -335,10 +393,12 @@ const filterButtons = [
     </div>
   </div></section>
   <Divider />
+  </main>
 
   <footer>
     <div class="fi">
       <div class="ft" id="footerText">
+        <span class="footer-year">© <span id="footerYear">{new Date().getFullYear()}</span> Matt Parker — SysAdminDoc</span>
         {stats.fetchedAt && (
           <span class="footer-freshness" title={`Stats fetched from GitHub API at ${stats.fetchedAt}`}>
             <span class="footer-freshness-dot"></span>
@@ -361,7 +421,7 @@ const filterButtons = [
     <div class="cmdk">
       <div class="cmdk-input-row">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a project, category, or section..." autocomplete="off" spellcheck="false" />
+        <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a project, category, or section…" autocomplete="off" spellcheck="false" />
         <span class="cmdk-kbd">Esc</span>
       </div>
       <div class="cmdk-list" id="cmdkList" role="listbox"></div>
@@ -374,5 +434,4 @@ const filterButtons = [
   </script>
   <script src="/scripts/main.js" is:inline></script>
   <script src="/scripts/cmdk.js" is:inline></script>
-  <script src="/scripts/theme.js" is:inline></script>
 </Base>

@@ -21,21 +21,52 @@ import { manifesto } from '../data/curated';
 
 <style>
   .manifesto{
-    list-style:none;padding:0;margin:0;
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;
-    max-width:1100px;margin:0 auto;
+    list-style:none;
+    padding:0;
+    margin:0 auto;
+    max-width:1180px;
+    border-top:1px solid rgba(255,255,255,.08);
+    border-bottom:1px solid rgba(255,255,255,.08);
   }
   .manifesto-item{
-    display:grid;grid-template-columns:auto auto 1fr;align-items:baseline;gap:12px;
-    padding:18px 22px;border:1px solid var(--glass-border);border-radius:10px;
-    background:var(--glass);transition:border-color .25s,background .25s,transform .25s;
+    display:grid;
+    grid-template-columns:56px minmax(130px,180px) minmax(0,1fr);
+    gap:18px;
+    align-items:baseline;
+    padding:22px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    transition:transform .25s ease-out;
   }
-  .manifesto-item:hover{border-color:var(--brdb);background:var(--glass-hover);transform:translateY(-2px)}
-  .manifesto-num{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.1em}
-  .manifesto-word{font-family:var(--mono);font-weight:700;color:var(--grn);font-size:15px;text-shadow:0 0 16px var(--grn-glow)}
-  .manifesto-rule{color:var(--t2);font-size:14px;line-height:1.5}
+  .manifesto-item:last-child{border-bottom:0}
+  .manifesto-item:hover{transform:translateX(4px)}
+  .manifesto-num{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--t3);
+    letter-spacing:.14em;
+    padding-top:4px;
+  }
+  .manifesto-word{
+    font-family:var(--mono);
+    font-weight:700;
+    color:var(--org);
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+  }
+  .manifesto-rule{
+    color:var(--t1);
+    font-size:16px;
+    line-height:1.8;
+    max-width:42ch;
+  }
   @media(max-width:640px){
-    .manifesto{grid-template-columns:1fr}
-    .manifesto-item{padding:14px 18px}
+    .manifesto-item{
+      grid-template-columns:42px 1fr;
+      gap:10px 14px;
+      padding:18px 0;
+    }
+    .manifesto-word,.manifesto-rule{grid-column:2}
+    .manifesto-rule{font-size:15px}
   }
 </style>
