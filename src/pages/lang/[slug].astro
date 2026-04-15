@@ -1,0 +1,132 @@
+---
+import Base from '../../layouts/Base.astro';
+import Divider from '../../components/Divider.astro';
+import StarSvg from '../../components/StarSvg.astro';
+import { catalog, featured, skills } from '../../data/projects';
+
+import { LANGS } from './_langs';
+
+export function getStaticPaths() {
+  return Object.keys(LANGS).map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const lang = LANGS[slug!]!;
+
+let stars: Record<string, number> = {};
+try { const mod = await import('../../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
+let meta: Record<string, { pushedAt?: string }> = {};
+try { const mod = await import('../../data/_meta.json'); meta = (mod.default ?? mod) as typeof meta; } catch {}
+
+const repos = catalog
+  .filter((c) => c.category === lang.category)
+  .map((c) => ({
+    ...c,
+    stars: stars[c.repo] ?? 0,
+    pushedAt: meta[c.repo]?.pushedAt,
+    featured: !!featured.find((f) => f.repo === c.repo),
+  }))
+  .sort((a, b) => {
+    // Featured first, then by stars desc, then by freshness
+    if (a.featured !== b.featured) return a.featured ? -1 : 1;
+    if (a.stars !== b.stars) return b.stars - a.stars;
+    return (b.pushedAt || '').localeCompare(a.pushedAt || '');
+  });
+
+const totalStars = repos.reduce((a, b) => a + b.stars, 0);
+const mostRecent = repos
+  .filter((r) => r.pushedAt)
+  .sort((a, b) => (b.pushedAt || '').localeCompare(a.pushedAt || ''))[0];
+
+const title = `${lang.label} — ${repos.length} repos by Matt Parker`;
+const description = `Everything I've shipped in ${lang.label}. ${repos.length} public repos, ${totalStars} stars.`;
+---
+<Base title={title} description={description}>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <nav id="nav" aria-label="Main navigation">
+    <div class="ni">
+      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <div class="nk">
+        <a href="/#greatest-hits">Hits</a>
+        <a href="/#featured">Projects</a>
+        <a href="/#catalog">Catalog</a>
+        <a href="/releases/">Releases</a>
+        <a href="/now/">Now</a>
+      </div>
+      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+    </div>
+  </nav>
+
+  <main id="main" class="lang-page">
+    <div class="si" style="padding-top:100px">
+      <div class="sh rv">
+        <div class="sl">// Stack · {lang.label}</div>
+        <h1 class="lang-title" style={`--accent:var(${lang.accent})`}>{lang.label}</h1>
+        <p class="lang-intro">{lang.intro}</p>
+      </div>
+
+      <div class="lang-stats rv">
+        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{repos.length}</div><div class="lang-stat-label">Public repos</div></div>
+        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{totalStars}</div><div class="lang-stat-label">Stars across repos</div></div>
+        {mostRecent?.pushedAt && (
+          <div class="lang-stat">
+            <div class="lang-stat-num lang-stat-num-sm" style={`color:var(${lang.accent})`}>{mostRecent.repo}</div>
+            <div class="lang-stat-label">Last pushed · <time datetime={mostRecent.pushedAt} data-rel={mostRecent.pushedAt}>{new Date(mostRecent.pushedAt).toISOString().slice(0,10)}</time></div>
+          </div>
+        )}
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si">
+      <h2 class="lang-h2">Every repo</h2>
+      <div class="lang-grid">
+        {repos.map((r) => (
+          <a href={`/projects/${r.repo}/`} class="lang-card card-enter" style={`--accent:var(${lang.accent})`}>
+            <div class="lang-card-head">
+              {r.featured && <span class="lang-card-featured">★</span>}
+              <h3 class="lang-card-name">{r.name}</h3>
+              {r.stars > 0 && <span class="lang-card-stars"><StarSvg /> {r.stars}</span>}
+            </div>
+            <p class="lang-card-desc" set:html={r.desc}></p>
+            {r.live && <span class="lang-card-live">LIVE</span>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi">
+      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
+      <div class="fl">
+        {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 4).map(([s, l]) => (
+          <a href={`/lang/${s}/`}>{l.label}</a>
+        ))}
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .lang-page{min-height:calc(100vh - 200px)}
+  .lang-title{font-family:var(--mono);font-size:clamp(48px,8vw,96px);font-weight:700;margin:8px 0 20px;background:linear-gradient(120deg,var(--t1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.02}
+  .lang-intro{font-size:clamp(16px,1.4vw,19px);color:var(--t2);line-height:1.7;max-width:720px;margin:0}
+  .lang-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:40px;max-width:900px}
+  .lang-stat{padding:20px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass);text-align:center}
+  .lang-stat-num{font-family:var(--mono);font-size:32px;font-weight:700}
+  .lang-stat-num-sm{font-size:14px;font-weight:600;word-break:break-word}
+  .lang-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
+  .lang-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:24px;max-width:1200px;margin-left:auto;margin-right:auto}
+  .lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;max-width:1200px;margin:0 auto}
+  .lang-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 20px;border:1px solid var(--glass-border);border-radius:10px;background:var(--glass);text-decoration:none;color:var(--t1);transition:all .2s}
+  .lang-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .lang-card-head{display:flex;align-items:center;gap:8px}
+  .lang-card-featured{color:var(--yel);font-size:14px}
+  .lang-card-name{font-family:var(--mono);font-size:15px;font-weight:600;margin:0;word-break:break-word;flex:1}
+  .lang-card-stars{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:11px;color:var(--yel)}
+  .lang-card-stars svg{width:11px;height:11px;fill:currentColor}
+  .lang-card-desc{color:var(--t2);font-size:13px;line-height:1.5;margin:0}
+  .lang-card-live{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:9px;color:var(--grn);padding:2px 6px;border:1px solid rgba(74,222,128,.3);border-radius:3px;background:var(--grnd);letter-spacing:.08em}
+</style>

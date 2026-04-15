@@ -16,5 +16,6 @@ Thumbs.db
 src/data/_stars.json
 src/data/_stats.json
 src/data/_meta.json
+src/data/_releases.json
 _extracted.json
 CLAUDE.md

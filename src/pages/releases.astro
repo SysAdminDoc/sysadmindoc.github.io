@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+
+let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
+try {
+  const mod = await import('../data/_releases.json');
+  releases = (mod.default ?? mod) as typeof releases;
+} catch {}
+
+let stats: { fetchedAt?: string | null } = {};
+try { const m = await import('../data/_stats.json'); stats = m.default ?? m; } catch {}
+
+// Group by year-month for a chronological feel
+const byMonth: Record<string, typeof releases> = {};
+for (const r of releases) {
+  const key = r.publishedAt.slice(0, 7); // YYYY-MM
+  (byMonth[key] = byMonth[key] || []).push(r);
+}
+const monthKeys = Object.keys(byMonth).sort((a, b) => b.localeCompare(a));
+const monthLabel = (k: string) => new Date(k + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+---
+<Base title="Releases — Matt Parker" description="Chronological stream of releases across every active repo.">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <nav id="nav" aria-label="Main navigation">
+    <div class="ni">
+      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <div class="nk">
+        <a href="/#greatest-hits">Hits</a>
+        <a href="/#featured">Projects</a>
+        <a href="/#catalog">Catalog</a>
+        <a href="/releases/" class="active">Releases</a>
+        <a href="/now/">Now</a>
+      </div>
+      <div style="display:flex;gap:8px"><a href="/" class="ng">← Home</a></div>
+    </div>
+  </nav>
+
+  <main id="main" class="rel-page">
+    <div class="si" style="padding-top:100px">
+      <div class="sh rv">
+        <div class="sl">// Releases</div>
+        <h1 class="st rel-title">Everything shipped, most recent first</h1>
+        <p class="sd">
+          Auto-aggregated from the GitHub Releases API across my 40 most-recently-pushed repos.
+          {releases.length > 0 && <> <strong>{releases.length}</strong> releases indexed.</>}
+          {stats.fetchedAt && <> Last refresh <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{new Date(stats.fetchedAt).toISOString().slice(0, 10)}</time>.</>}
+        </p>
+      </div>
+
+      {releases.length === 0 && (
+        <div class="rel-empty">
+          No releases indexed yet. Run <code>npm run fetch-stars</code> with a <code>GITHUB_TOKEN</code> to populate.
+        </div>
+      )}
+
+      {monthKeys.map((key) => (
+        <section class="rel-month rv">
+          <h2 class="rel-month-label">{monthLabel(key)}</h2>
+          <ul class="rel-list">
+            {byMonth[key].map((r) => (
+              <li class="rel-item">
+                <div class="rel-head">
+                  <a href={`/projects/${r.repo}/`} class="rel-repo">{r.repo}</a>
+                  <a href={r.url} target="_blank" rel="noopener" class="rel-tag">{r.tag}</a>
+                  <time class="rel-date" datetime={r.publishedAt}>{new Date(r.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</time>
+                </div>
+                {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi">
+      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .rel-page{min-height:calc(100vh - 200px)}
+  .rel-title{font-size:clamp(32px,4.5vw,52px)!important}
+  .rel-empty{max-width:720px;margin:40px auto;padding:24px;border:1px dashed var(--glass-border);border-radius:10px;color:var(--t3);text-align:center;font-family:var(--mono);font-size:13px}
+  .rel-empty code{background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--grn)}
+  .rel-month{max-width:860px;margin:56px auto 0;position:relative}
+  .rel-month-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--t3);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--glass-border)}
+  .rel-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+  .rel-item{padding:16px 18px;border:1px solid transparent;border-radius:8px;transition:all .2s}
+  .rel-item:hover{background:var(--glass);border-color:var(--glass-border)}
+  .rel-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .rel-repo{font-family:var(--mono);font-weight:600;color:var(--t1);text-decoration:none;font-size:15px}
+  .rel-repo:hover{color:var(--grn)}
+  .rel-tag{font-family:var(--mono);font-size:12px;color:var(--grn);padding:2px 9px;border:1px solid rgba(74,222,128,.3);border-radius:4px;text-decoration:none;background:var(--grnd)}
+  .rel-tag:hover{background:rgba(74,222,128,.2)}
+  .rel-date{font-family:var(--mono);font-size:12px;color:var(--t3);margin-left:auto}
+  .rel-body{color:var(--t2);font-size:14px;line-height:1.6;margin:8px 0 0;padding-left:0}
+  @media(max-width:640px){
+    .rel-date{margin-left:0;width:100%;order:3}
+    .rel-head{gap:8px}
+  }
+</style>

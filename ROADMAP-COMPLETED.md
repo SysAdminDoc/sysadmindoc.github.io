@@ -4,6 +4,7 @@
 
 Chronological, most recent first. Links to releases.
 
+- **[v0.7.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.7.0)** — Data depth: /releases chronological stream (71 releases), 7 per-language landing pages (/lang/*), hero pulse widget (streak/latest release/last push), skill-ring cards linking to language pages
 - **[v0.6.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.6.0)** — Narrative polish: ★ Greatest Hits, Manifesto block, Tag Cloud with weights, /now page, /healthcare-it track, catalog age badges, honest counts, curated.ts content layer
 - **[v0.5.1](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.5.1)** — Fix theme FOUC, revert aggressive mobile catalog changes
 - **[v0.5.0](https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.5.0)** — 139 per-project OG cards (satori), 23 live-app screenshots (Playwright), vim `g<letter>` nav, footer freshness badge, manifest icon fix

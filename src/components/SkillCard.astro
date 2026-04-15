@@ -2,8 +2,20 @@
 import type { Skill } from '../data/types';
 export interface Props { skill: Skill; }
 const { skill } = Astro.props;
+
+// Map skill name → per-language landing page slug (only those with pages)
+const langMap: Record<string, string> = {
+  'PowerShell': 'powershell',
+  'Python': 'python',
+  'JavaScript': 'javascript',
+  'Kotlin': 'kotlin',
+  'C#': 'cs',
+};
+const slug = langMap[skill.name];
+const Tag = slug ? 'a' : 'div';
+const extra = slug ? { href: `/lang/${slug}/` } : {};
 ---
-<div class="skc card-enter">
+<Tag class="skc card-enter" {...extra}>
   <div class="sk-ring" style={`--ring-target:${skill.ringTarget}`}>
     <svg viewBox="0 0 76 76">
       <circle class="ring-bg" cx="38" cy="38" r="32.5" />
@@ -13,4 +25,11 @@ const { skill } = Astro.props;
   </div>
   <div class="skn">{skill.name}</div>
   <div class="sks">{skill.sub}</div>
-</div>
+  {slug && <div class="skc-more">View all →</div>}
+</Tag>
+
+<style>
+  a.skc{text-decoration:none;color:inherit}
+  .skc-more{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.05em;margin-top:6px;opacity:0;transition:opacity .2s}
+  a.skc:hover .skc-more{opacity:1;color:var(--grn)}
+</style>
