@@ -442,13 +442,10 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 .lc2-thumb.thumb-fallback{background:linear-gradient(135deg,var(--blued),var(--purd));position:relative}
 .lc2-thumb.thumb-fallback::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(88,166,255,.2),transparent 60%),radial-gradient(circle at 70% 70%,rgba(192,132,252,.2),transparent 60%)}
 
-/* Catalog on small screens — 2 columns instead of 1 for more density */
+/* Catalog mobile tightening — keep full-width cards but tighten spacing */
 @media(max-width:640px){
-  .cg{grid-template-columns:1fr 1fr;gap:8px}
-  .ca{padding:10px 12px}
-  .cds{display:none}
+  .ca{padding:12px 14px}
 }
-@media(max-width:380px){.cg{grid-template-columns:1fr}}
 
 /* Hero meta row wrap on 375px */
 @media(max-width:480px){
@@ -456,8 +453,7 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
   .htag{flex-wrap:wrap;justify-content:center}
 }
 
-/* content-visibility for catalog — skip paint below the fold */
-.cg{content-visibility:auto;contain-intrinsic-size:auto 1200px}
+/* content-visibility removed — can cause blank flashes on some browsers */
 
 /* Command palette */
 .cmdk-backdrop{position:fixed;inset:0;z-index:99998;background:rgba(10,14,23,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;padding-top:15vh}

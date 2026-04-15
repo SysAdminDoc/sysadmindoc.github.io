@@ -31,9 +31,11 @@
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
   }
 
+  // Always default to dark. Only honor explicit opt-in via toggle (persisted in localStorage).
+  // Respecting prefers-color-scheme would flip users with OS light mode into our
+  // incomplete light palette on first paint — visibly broken.
   const saved = localStorage.getItem(KEY);
-  const initial = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-  apply(initial);
+  apply(saved === 'light' ? 'light' : 'dark');
 
   btn.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
