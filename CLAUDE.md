@@ -1,4 +1,4 @@
-# sysadmindoc.github.io v0.4.0
+# sysadmindoc.github.io v0.5.0
 
 ## Overview
 Personal portfolio and project showcase site, deployed to GitHub Pages.
@@ -66,6 +66,7 @@ Category filter counts, statLive, and stat badges all auto-compute from the data
 - `legacy.html` is the pre-migration single-file reference. Do not delete until v3 is battle-tested in production
 
 ## Version History
+- **v0.5.0** (2026-04-14) — Per-project OG cards (satori), 23 live-app screenshots (Playwright), vim-style `g<letter>` section nav, footer freshness badge + RSS link, manifest icons.
 - **v0.4.0** (2026-04-14) — Audit-driven polish: XSS fixes, WCAG compliance, Ctrl+K command palette, light theme, per-project pages (138 static routes), RSS feed, real favicon, URL-persisted filters, search highlighting, font preload, CLS fixes, SW bug fix.
 - **v0.3.1** (2026-04-14) — Auto-updating stats at build time
 - **v0.3.0** (2026-04-14) — Astro 5 migration. Data-driven content, componentized, build-time star fetching, CI/CD, daily star refresh. Single-file HTML preserved as legacy.html.

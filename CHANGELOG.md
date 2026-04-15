@@ -2,6 +2,19 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.5.0] - 2026-04-14
+
+**Rich media + power-user polish.**
+
+- **Per-project OG cards** — 139 unique 1200×630 PNGs generated at build via [satori](https://github.com/vercel/satori) + [@resvg/resvg-js](https://github.com/yisibl/resvg-js). Each card shows project name, description, category badge, FEATURED/LIVE flags, and a subtle category-themed gradient. Served at `/og/<slug>.png` and wired into `og:image` / `twitter:image` on every project page.
+- **Live app screenshots** — 23 real screenshots captured at 1280×800 via [scripts/capture-screenshots.mjs](scripts/capture-screenshots.mjs). Used as:
+  - The hero preview on each `/projects/<slug>/` page (with live-open hover badge)
+  - The LIVE card thumbnail on the homepage (replaces rate-limited opengraph.githubassets.com)
+- **Vim-style keyboard nav** — press `g` followed by `f`/`l`/`c`/`s`/`a`/`p`/`j`/`b`/`n` to jump to Featured / Live / Catalog / Skills / About / Philosophy / Journey / Beyond / Connect. Live hint overlay. Existing `Ctrl+K` and `/` still work.
+- **Footer freshness badge** — "Stats refreshed N days ago" with pulsing green dot, derived from `_stats.fetchedAt` (auto-refreshed by the daily CI cron).
+- **Footer RSS link** — prominent link to `/rss.xml` added.
+- **Manifest.json** — icons now reference `/favicon.svg` instead of the old data-URI.
+
 ## [v0.4.0] - 2026-04-14
 
 **Audit-driven polish pass. 22 findings addressed across security, accessibility, UX, perf, and capabilities.**

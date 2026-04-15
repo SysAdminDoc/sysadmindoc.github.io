@@ -4,12 +4,15 @@ import '../styles/global.css';
 export interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = 'Matt Parker — Systems Administrator & Builder',
   description = 'Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+  ogImage = '/og.png',
 } = Astro.props;
+const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 ---
@@ -28,12 +31,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Matt Parker Portfolio" />
-  <meta property="og:image" content="https://sysadmindoc.github.io/og.png" />
+  <meta property="og:image" content={ogImageUrl} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://sysadmindoc.github.io/og.png" />
+  <meta name="twitter:image" content={ogImageUrl} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content="Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++. Zero config, dark theme, works on first launch." />
 
