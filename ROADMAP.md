@@ -10,9 +10,9 @@ Living plan for [sysadmindoc.github.io](https://sysadmindoc.github.io/). Ordered
 
 > v0.6.0 shipped — all Tier A items and the two highest-impact Tier B items (/now, /healthcare-it) are now live. See [ROADMAP-COMPLETED.md](ROADMAP-COMPLETED.md).
 
-## Next up — v0.8.0 (see below)
+## Next up — v0.9.0 (see below)
 
-> v0.7.0 shipped — Living-data widget, /releases, per-language landing pages. `/til` deferred (no content source yet).
+> v0.8.0 shipped — Project detail pages now render each repo's README at build time, show the 5 most recent releases inline, display inferred tech-stack chips, and rank related projects by stars × freshness. `/til` still deferred.
 
 ### Deferred from v0.7.0
 
@@ -36,7 +36,7 @@ Living plan for [sysadmindoc.github.io](https://sysadmindoc.github.io/). Ordered
 - [ ] **sw.js**: after major content changes, old users may need `Clear site data`. Consider a visible "Site updated — reload" toast when new SW activates.
 - [ ] **Content collections** — current data layer is a TS array. Astro's content collections with Zod schema would catch typos and dupes at build time.
 - [ ] **Dead-code lint in CI** — stylelint for unused CSS selectors, knip for unused JS exports.
-- [ ] **Per-project release feed embed** — on `/projects/<slug>/`, show the latest 3 releases from the GitHub API at build time.
+- [x] ~~**Per-project release feed embed** — on `/projects/<slug>/`, show the latest 3 releases from the GitHub API at build time.~~ (v0.8.0, up to 5)
 - [ ] **Activity ticker** — currently runtime-fetched from `/events/public`; could be baked in at build.
 
 ## Rejected / parked
