@@ -167,3 +167,38 @@ allReleases.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 const releasesPath = join(root, 'src', 'data', '_releases.json');
 writeFileSync(releasesPath, JSON.stringify(allReleases.slice(0, 60), null, 2) + '\n');
 console.log(`Wrote ${releasesPath}: ${allReleases.length} releases from ${releasesFetched} repos (${releasesFailed} failed).`);
+
+// -------- READMEs: fetch for every public non-fork repo --------
+// Cached to src/data/_readmes.json keyed by repo name. Stored as raw markdown;
+// rendered + sanitized at Astro build time.
+const readmes = {};
+let readmeOk = 0;
+let readmeMiss = 0;
+const liveRepos = repos.filter((r) => !r.fork && !r.archived && !r.private);
+
+// Concurrency-limited fetches (8 at a time) to keep CI under 60s.
+const CONCURRENCY = 8;
+let cursor = 0;
+async function worker() {
+  while (cursor < liveRepos.length) {
+    const i = cursor++;
+    const r = liveRepos[i];
+    try {
+      const rr = await fetch(`https://api.github.com/repos/${USER}/${r.name}/readme`, {
+        headers: { ...headers, Accept: 'application/vnd.github.raw' },
+      });
+      if (!rr.ok) { readmeMiss += 1; continue; }
+      const md = await rr.text();
+      // Strip anything above 120KB of markdown — avoids rare absurd READMEs inflating bundle.
+      readmes[r.name] = md.length > 120_000 ? md.slice(0, 120_000) + '\n\n…' : md;
+      readmeOk += 1;
+    } catch {
+      readmeMiss += 1;
+    }
+  }
+}
+await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
+const readmesPath = join(root, 'src', 'data', '_readmes.json');
+writeFileSync(readmesPath, JSON.stringify(readmes) + '\n');
+console.log(`Wrote ${readmesPath}: ${readmeOk} READMEs cached (${readmeMiss} missing).`);
