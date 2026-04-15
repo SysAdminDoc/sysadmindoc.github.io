@@ -1,6 +1,5 @@
         :root{
             /* Shared tokens not redefined in v0.9.0 */
-            --bgc:rgba(17,24,39,.6);
             --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
             --yel:#facc15;--yeld:rgba(250,204,21,.12);
             --red:#f87171;--redd:rgba(248,113,113,.12);

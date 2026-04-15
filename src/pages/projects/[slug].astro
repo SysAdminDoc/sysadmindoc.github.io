@@ -97,7 +97,7 @@ if (rawMd && rawMd.trim().length > 0) {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'picture', 'source', 'details', 'summary', 'kbd', 'del', 'input']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt', 'title', 'width', 'height', 'loading', 'align'],
+      img: ['src', 'alt', 'title', 'width', 'height', 'loading', 'decoding', 'align'],
       a: ['href', 'name', 'target', 'rel', 'id'],
       code: ['class'],
       span: ['class'],
