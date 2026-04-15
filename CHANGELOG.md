@@ -2,6 +2,21 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.3.0] - 2026-04-14
+
+**Major: Astro 5 migration**
+
+- Migrated single-file HTML (~1916 lines, 200KB) to Astro 5 static site
+- Data layer: all projects now live in `src/data/projects.ts` — single source of truth
+- Componentized: FeaturedCard, LiveCard, CatalogEntry, SkillCard, Divider, StarSvg
+- Build-time GitHub API: star counts baked into static HTML (no runtime rate limits)
+- GitHub Actions CI/CD: auto-deploy on push + daily cron to refresh stars
+- Category filter counts, statLive, and stat badges now auto-compute from data
+- Preserved `legacy.html` as full backup of pre-Astro single-file site
+- CSS extracted to `src/styles/global.css`, JS to `public/scripts/main.js`
+- sw.js cache version bumped to `portfolio-v3`
+- All paths updated, Lighthouse-friendly output with Astro `compressHTML`
+
 ## [v0.2.1] - 2026-04-14
 
 - Changed: Live Apps section reduced to canonical 23-app list, reordered to match portfolio priority
