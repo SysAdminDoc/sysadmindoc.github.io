@@ -103,7 +103,7 @@
     target.scrollIntoView({ block: 'nearest' });
   }
 
-  // Global hotkey
+  // Global hotkey: Ctrl/Cmd+K toggle, / open, Esc close
   document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
@@ -114,6 +114,55 @@
       if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) return;
       e.preventDefault();
       open();
+    }
+  });
+
+  // Vim-style chord navigation: g<letter> jumps to section
+  const chordMap = {
+    f: '#featured', l: '#live', c: '#catalog', s: '#skills',
+    a: '#about', p: '#philosophy', j: '#journey', b: '#beyond',
+    n: '#connect', h: '#hero', t: '#hero'
+  };
+  let chordTimer = null;
+  let chordActive = false;
+  function showHint(msg) {
+    let hint = document.getElementById('chordHint');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.id = 'chordHint';
+      hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--glass-border);color:var(--t1);padding:10px 16px;border-radius:10px;font-family:var(--mono);font-size:13px;z-index:99997;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+      document.body.appendChild(hint);
+    }
+    hint.textContent = msg;
+    hint.style.opacity = '1';
+    clearTimeout(hint._t);
+    hint._t = setTimeout(() => { hint.style.opacity = '0'; }, 1200);
+  }
+  document.addEventListener('keydown', e => {
+    if (backdrop.classList.contains('open')) return;
+    const focused = document.activeElement;
+    if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA' || focused.tagName === 'SELECT')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (!chordActive && e.key === 'g') {
+      chordActive = true;
+      showHint('g → section (f/l/c/s/a/p/j/b/n)');
+      clearTimeout(chordTimer);
+      chordTimer = setTimeout(() => { chordActive = false; }, 1500);
+      return;
+    }
+    if (chordActive) {
+      const target = chordMap[e.key.toLowerCase()];
+      chordActive = false;
+      clearTimeout(chordTimer);
+      if (target) {
+        e.preventDefault();
+        const el = document.querySelector(target);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          showHint('→ ' + target);
+        }
+      }
     }
   });
 

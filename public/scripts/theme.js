@@ -1,3 +1,19 @@
+/* Relative time rendering for footer freshness + any [data-rel] */
+(function(){
+  const rel=document.querySelectorAll('[data-rel]');
+  if(!rel.length)return;
+  const rtf=new Intl.RelativeTimeFormat('en',{numeric:'auto'});
+  const units=[['year',31536000],['month',2592000],['day',86400],['hour',3600],['minute',60]];
+  rel.forEach(el=>{
+    const d=new Date(el.dataset.rel);
+    const diff=(d-Date.now())/1000;
+    for(const [u,s] of units){
+      if(Math.abs(diff)>=s){el.textContent=rtf.format(Math.round(diff/s),u);return}
+    }
+    el.textContent=rtf.format(Math.round(diff/60),'minute');
+  });
+})();
+
 /* Theme toggle — dark (default) vs light.
  * Persists to localStorage. Respects prefers-color-scheme only on first visit. */
 (function () {
