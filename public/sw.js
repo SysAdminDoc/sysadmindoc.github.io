@@ -1,5 +1,6 @@
-const CACHE = 'portfolio-v8';
+const CACHE = 'portfolio-v9';
 const PRECACHE = ['/', '/manifest.json', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/rss.xml'];
+const FETCH_TIMEOUT = 10000;
 
 function offlineResponse(status = 503, statusText = 'Offline') {
     return new Response(statusText, {
@@ -7,6 +8,14 @@ function offlineResponse(status = 503, statusText = 'Offline') {
         statusText,
         headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
     });
+}
+
+function timedFetch(request, timeoutMs) {
+    if (typeof AbortController === 'undefined') return fetch(request);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs || FETCH_TIMEOUT);
+    return fetch(request instanceof Request ? new Request(request, { signal: controller.signal }) : request, { signal: controller.signal })
+        .finally(() => clearTimeout(timer));
 }
 
 async function cachedOrOffline(request, fallbackPath) {
@@ -37,11 +46,11 @@ self.addEventListener('fetch', (e) => {
 
     if (isNavigation && sameOrigin) {
         e.respondWith(
-            fetch(e.request)
+            timedFetch(e.request)
                 .then((response) => {
                     if (response.ok) {
                         const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone));
+                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
                     }
                     return response;
                 })
@@ -50,18 +59,30 @@ self.addEventListener('fetch', (e) => {
         return;
     }
 
+    // Cross-origin API/CDN: network-first with cache fallback.
+    // Cache successful responses so offline fallback actually works.
     if (url.hostname === 'api.github.com' || url.hostname === 'i.scdn.co' || url.hostname === 'opengraph.githubassets.com') {
-        e.respondWith(fetch(e.request).catch(() => cachedOrOffline(e.request)));
+        e.respondWith(
+            timedFetch(e.request)
+                .then((response) => {
+                    if (response.ok) {
+                        const clone = response.clone();
+                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
+                    }
+                    return response;
+                })
+                .catch(() => cachedOrOffline(e.request))
+        );
         return;
     }
 
     e.respondWith(
         caches.match(e.request).then((cached) => {
-            const fetchPromise = fetch(e.request)
+            const fetchPromise = timedFetch(e.request)
                 .then((response) => {
                     if (response.ok && sameOrigin) {
                         const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone));
+                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
                     }
                     return response;
                 })
