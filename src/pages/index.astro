@@ -5,7 +5,6 @@ import FeaturedCard from '../components/FeaturedCard.astro';
 import LiveCard from '../components/LiveCard.astro';
 import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
-import Manifesto from '../components/Manifesto.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import TagCloud from '../components/TagCloud.astro';
 import { featured, liveApps, catalog, skills } from '../data/projects';
@@ -188,9 +187,6 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
 
   <svg style="position:absolute;width:0;height:0"><defs><linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--blue)" stop-opacity="0"/><stop offset="30%" stop-color="var(--blue)"/><stop offset="50%" stop-color="var(--pur)"/><stop offset="70%" stop-color="var(--teal)"/><stop offset="100%" stop-color="var(--teal)" stop-opacity="0"/></linearGradient></defs></svg>
   <div class="push-ribbon" id="pushRibbon" style="display:none"></div>
-  <Divider />
-
-  <Manifesto />
   <Divider />
 
   <GreatestHits />
