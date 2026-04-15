@@ -83,7 +83,8 @@ async function fetchText(url, options, context) {
 
 function getUtcDayKey(value) {
   const date = new Date(value);
-  return `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`;
+  if (Number.isNaN(date.getTime())) return '';
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 }
 
 async function fetchAllRepos() {
