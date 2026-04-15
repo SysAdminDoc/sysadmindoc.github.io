@@ -2,6 +2,30 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.8.0] - 2026-04-15
+
+**Project pages get real content. ROADMAP priority #1.**
+
+README rendering
+- Every project detail page now renders the repo's actual `README.md` — fetched at build time, parsed with `marked` (GFM), sanitized with `sanitize-html`. Relative links and images rewritten to resolve against `raw.githubusercontent.com`.
+- Graceful fallback: pages without a cached README drop the section cleanly (no empty shell).
+- Bundle bounded — any README >120KB is truncated to prevent pathological cases from inflating the build.
+
+Per-project releases
+- Up to 5 recent releases rendered inline per page — tag, date, notes excerpt. Sourced from the existing `_releases.json` cache.
+
+Tech stack chips
+- Header chip row now shows inferred stack: repo's primary language (from `_meta.json`) + human-readable category + existing tag list, deduped.
+
+Related projects — ranked
+- "Related" now sorts by stars → push freshness (not first-6-of-category). Clamped to 4, archived excluded via catalog curation.
+
+Data layer
+- `scripts/fetch-stars.mjs` extended to fetch `/readme` for every public non-fork repo with 8-way concurrency. Writes `src/data/_readmes.json` (gitignored, regenerated in CI). Daily cron picks up README edits automatically.
+
+Styles
+- New prose styles for markdown content: headers, code blocks, tables, blockquotes, details/summary. Matches the Catppuccin dark palette already in use.
+
 ## [v0.7.0] - 2026-04-15
 
 **Data depth. Tier B from ROADMAP.**
