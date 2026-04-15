@@ -41,9 +41,19 @@ async function fetchAllRepos() {
 
 const repos = await fetchAllRepos();
 const stars = {};
+let totalRepos = 0;
+let totalStars = 0;
+let lastPushedAt = null;
+let lastPushedRepo = null;
+
 for (const r of repos) {
-  if (!r.fork && !r.archived && !r.private) {
-    stars[r.name] = r.stargazers_count;
+  if (r.fork || r.archived || r.private) continue;
+  stars[r.name] = r.stargazers_count;
+  totalRepos += 1;
+  totalStars += r.stargazers_count;
+  if (!lastPushedAt || new Date(r.pushed_at) > new Date(lastPushedAt)) {
+    lastPushedAt = r.pushed_at;
+    lastPushedRepo = r.name;
   }
 }
 
@@ -51,5 +61,15 @@ mkdirSync(join(root, 'src', 'data'), { recursive: true });
 const outPath = join(root, 'src', 'data', '_stars.json');
 writeFileSync(outPath, JSON.stringify(stars, null, 2) + '\n');
 
-const total = Object.values(stars).reduce((a, b) => a + b, 0);
-console.log(`Wrote ${outPath}: ${Object.keys(stars).length} repos, ${total} stars total.`);
+const statsPath = join(root, 'src', 'data', '_stats.json');
+const stats = {
+  totalRepos,
+  totalStars,
+  lastPushedAt,
+  lastPushedRepo,
+  fetchedAt: new Date().toISOString(),
+};
+writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
+
+console.log(`Wrote ${outPath}: ${totalRepos} public repos, ${totalStars} stars total.`);
+console.log(`Wrote ${statsPath}: last push ${lastPushedRepo} at ${lastPushedAt}`);
