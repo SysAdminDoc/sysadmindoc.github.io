@@ -1690,8 +1690,7 @@ html[data-theme="light"] .ca:hover{
 }
 .about-signal,
 .about-link,
-.philosophy-intro,
-.footer-shortcut{
+.philosophy-intro{
   border-radius:24px;
   border:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
@@ -1705,8 +1704,7 @@ html[data-theme="light"] .ca:hover{
 .about-signal-label,
 .about-link-label,
 .philosophy-kicker,
-.prf-label,
-.footer-actions-kicker{
+.prf-label{
   font-family:var(--mono);
   font-size:11px;
   letter-spacing:.14em;
@@ -1714,8 +1712,7 @@ html[data-theme="light"] .ca:hover{
 }
 .about-signal-label,
 .about-link-label,
-.philosophy-kicker,
-.footer-actions-kicker{
+.philosophy-kicker{
   color:var(--org);
 }
 .about-signal-value{
@@ -1725,8 +1722,7 @@ html[data-theme="light"] .ca:hover{
   color:var(--t1);
 }
 .about-signal-meta,
-.about-link-meta,
-.footer-shortcut-meta{
+.about-link-meta{
   margin:0;
   color:var(--t2);
   font-size:14px;
@@ -1755,8 +1751,7 @@ html[data-theme="light"] .ca:hover{
   background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
   transform:translateY(-2px);
 }
-.about-link:focus-visible,
-.footer-shortcut:focus-visible{
+.about-link:focus-visible{
   outline:2px solid var(--grn);
   outline-offset:4px;
 }
@@ -1861,51 +1856,6 @@ footer{
   font-size:15px;
   line-height:1.75;
 }
-.footer-actions{
-  display:grid;
-  gap:16px;
-  justify-items:end;
-  margin-left:auto;
-  max-width:680px;
-}
-.footer-actions-head{
-  display:grid;
-  gap:6px;
-  justify-items:end;
-  text-align:right;
-}
-.footer-actions-copy{
-  max-width:34ch;
-  margin:0;
-  color:var(--t2);
-  font-size:14px;
-  line-height:1.7;
-}
-.footer-shortcuts{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-}
-.footer-shortcut{
-  min-width:0;
-  padding:16px 18px;
-  text-decoration:none;
-  color:inherit;
-  display:grid;
-  gap:8px;
-  transition:border-color .2s ease-out,background-color .2s ease-out,box-shadow .2s ease-out,transform .2s ease-out;
-}
-.footer-shortcut:hover,
-.footer-shortcut:focus-visible{
-  border-color:rgba(255,255,255,.16);
-  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
-  transform:translateY(-2px);
-}
-.footer-shortcut-label{
-  font-family:var(--mono);
-  font-size:13px;
-  color:var(--t1);
-}
 .fl{
   justify-content:flex-end;
   flex-wrap:wrap;
@@ -1913,9 +1863,6 @@ footer{
 @media(max-width:1100px){
   .about-signals{
     grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-  .footer-shortcuts{
-    grid-template-columns:1fr;
   }
 }
 @media(max-width:900px){
@@ -1929,16 +1876,6 @@ footer{
   .fl{
     justify-content:flex-start;
   }
-  .footer-actions,
-  .footer-actions-head{
-    justify-items:start;
-  }
-  .footer-actions{
-    margin-left:0;
-  }
-  .footer-actions-head{
-    text-align:left;
-  }
   .page-footer-shell{
     gap:20px;
   }
@@ -1949,12 +1886,10 @@ footer{
   }
   .about-signal,
   .about-link,
-  .philosophy-intro,
-  .footer-shortcut{
+  .philosophy-intro{
     border-radius:22px;
   }
-  .about-link,
-  .footer-shortcut{
+  .about-link{
     padding:16px 18px;
   }
   #philosophy .prc{
@@ -2215,8 +2150,7 @@ html[data-theme="light"] nav{
 .beyond-card,
 .about-signal,
 .about-link,
-.philosophy-intro,
-.footer-shortcut{
+.philosophy-intro{
   background:var(--surface-1);
   border-color:var(--border-soft);
   box-shadow:var(--shadow-soft);
@@ -2560,9 +2494,6 @@ html[data-theme="light"] .fb{
 }
 .page-footer-shell .footer-brand{
   max-width:44ch;
-}
-.page-footer-shell .footer-actions{
-  max-width:720px;
 }
 .route-interior footer{
   padding-top:36px;

@@ -37,11 +37,6 @@ const cmdkSections = [
   { label: 'Projects', href: '#clinical-projects', desc: 'Healthcare IT projects shaped by imaging, migration, and support workflows.', badge: 'ARCHIVE' },
   { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
 ];
-const footerShortcuts = [
-  { href: '/#catalog', label: 'Full Archive', meta: 'Step out of the clinical lane and scan the broader project catalog.' },
-  { href: '/releases/', label: 'Release Stream', meta: 'Track what is actively shipping across the rest of the portfolio.' },
-  { href: '/now/', label: 'Current Focus', meta: 'See what is getting active refinement and engineering time right now.' },
-] as const;
 ---
 <Base
   title="Healthcare IT — Matt Parker"
@@ -122,21 +117,7 @@ const footerShortcuts = [
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">These tools sit inside a wider portfolio of operational software, browser products, and systems-first utility work shaped by real environments.</p>
       </div>
-      <nav class="footer-actions" aria-label="Continue exploring">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Continue Exploring</span>
-          <p class="footer-actions-copy">Use the clinical track for context, then move outward into the release stream and full archive for the broader product picture.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut">
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
-      </nav>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </footer>
 </Base>

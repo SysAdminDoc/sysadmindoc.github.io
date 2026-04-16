@@ -249,15 +249,6 @@ const related = catalog
   }))
   .sort((a, b) => (b._stars - a._stars) || (new Date(b._pushed).getTime() - new Date(a._pushed).getTime()))
   .slice(0, 4);
-const footerShortcuts = [
-  relatedTrack
-    ? { href: relatedTrack.href, label: relatedTrack.label, meta: 'Return to the lane that gives this project its clearest adjacent context.', external: false }
-    : { href: '/#catalog', label: 'Full Archive', meta: 'Step back into the broader catalog and compare this project against the rest.', external: false },
-  { href: '/releases/', label: 'Release Stream', meta: 'Track what is still shipping across this project and the surrounding portfolio.', external: false },
-  liveUrl
-    ? { href: liveUrl, label: 'Live Build', meta: 'Open the browser version directly and judge the experience in context.', external: true }
-    : { href: 'https://github.com/SysAdminDoc', label: 'GitHub Workspace', meta: 'Browse the wider source archive, issues, and project history.', external: true },
-] as const;
 const cmdkSections = [
   { label: 'Overview', href: '#project-overview', desc: 'Project snapshot, delivery details, and primary actions.', badge: 'PROJECT' },
   { label: hasScreenshot ? 'Live Preview' : 'Preview', href: '#project-preview', desc: hasScreenshot && isLive ? 'Captured product surface from the live build.' : 'Generated fallback card until a live capture is available.', badge: 'VISUAL' },
@@ -494,21 +485,7 @@ const ogImage = `/og/${slug}.png`;
         </div>
         <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p>
       </div>
-      <nav class="footer-actions" aria-label="Continue exploring">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Continue Exploring</span>
-          <p class="footer-actions-copy">Move outward from the detail page into the lane, the shipping history, or the live product surface depending on what kind of context you need next.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut" target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
-      </nav>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </footer>
 

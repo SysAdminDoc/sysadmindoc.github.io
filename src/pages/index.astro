@@ -218,11 +218,6 @@ const albums = [
 const earliestAlbumYear = Math.min(...albums.map((album) => album.year));
 const latestAlbumYear = Math.max(...albums.map((album) => album.year));
 const latestAlbumName = albums.find((album) => album.year === latestAlbumYear)?.name ?? albums[0]?.name ?? 'Latest release';
-const footerShortcuts = [
-  { href: '#featured', label: 'Featured', meta: 'Start with the strongest builds first.' },
-  { href: '/releases/', label: 'Releases', meta: 'See what moved across the portfolio recently.' },
-  { href: '/now/', label: 'Now', meta: 'Open the current build queue and focus areas.' },
-] as const;
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
@@ -670,24 +665,10 @@ const cmdkSections = [
         </div>
         <p class="footer-summary">Open source automation, browser tools, and dark-mode-first utilities shaped by real operational work instead of demo-only ideas.</p>
       </div>
-      <nav class="footer-actions" aria-label="Footer shortcuts">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Best Next Stop</span>
-          <p class="footer-actions-copy">Pick the view that matches how you want to browse the work.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut">
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl">
-          <a href="/rss.xml">RSS</a>
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
-        </div>
-      </nav>
+      <div class="fl">
+        <a href="/rss.xml">RSS</a>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
   </footer>
 
