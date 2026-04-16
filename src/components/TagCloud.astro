@@ -1,7 +1,7 @@
 ---
 import { catalog } from '../data/projects';
 
-// Count repos per category
+// Count public projects per category
 const counts: Record<string, number> = {};
 for (const c of catalog) counts[c.category] = (counts[c.category] ?? 0) + 1;
 
@@ -21,7 +21,7 @@ const quickPicks = entries.slice(0, 3).map(([key, count]) => ({
   count,
   label: labels[key] ?? key,
 }));
-const totalRepos = catalog.length;
+const totalProjects = catalog.length;
 
 const max = Math.max(...entries.map(([, n]) => n));
 const min = Math.min(...entries.map(([, n]) => n));
@@ -30,7 +30,7 @@ const scale = (n: number) => {
   return 0.6 + (0.9 * (n - min)) / (max - min); // 0.6 → 1.5 em
 };
 ---
-<section id="volume" aria-label="Repository volume by category">
+<section id="volume" aria-label="Project volume by category">
   <div class="si">
     <div class="sh rv">
       <div class="sl">// Volume</div>
@@ -40,12 +40,12 @@ const scale = (n: number) => {
     <div class="tag-cloud-frame rv">
       {lead && (
         <div class="tag-cloud-summary">
-          <span class="tag-cloud-summary-label">Repository footprint</span>
-          <div class="tag-cloud-summary-copy">
-            <p>
-              <strong>{leadLabel}</strong> anchors the archive with <strong>{lead[1]}</strong> repositories
+          <span class="tag-cloud-summary-label">Project footprint</span>
+        <div class="tag-cloud-summary-copy">
+          <p>
+              <strong>{leadLabel}</strong> anchors the archive with <strong>{lead[1]}</strong> projects
               {runnerUps.length ? `, with ${runnerUps.join(' and ')} close behind.` : '.'}
-            </p>
+          </p>
             {quickPicks.length > 0 && (
               <div class="tag-cloud-actions" aria-label="Jump to top categories">
                 {quickPicks.map((pick) => (
@@ -58,8 +58,8 @@ const scale = (n: number) => {
             )}
           </div>
           <div class="tag-cloud-summary-metric" aria-hidden="true">
-            <span class="tag-cloud-summary-value">{totalRepos}</span>
-            <span class="tag-cloud-summary-caption">repos in the public archive</span>
+            <span class="tag-cloud-summary-value">{totalProjects}</span>
+            <span class="tag-cloud-summary-caption">projects in the public archive</span>
           </div>
         </div>
       )}
@@ -70,7 +70,7 @@ const scale = (n: number) => {
             class="tag-cloud-tag"
             data-cat={key}
             style={`font-size:${scale(n)}em`}
-            aria-label={`${labels[key] ?? key}: ${n} repositories`}
+            aria-label={`${labels[key] ?? key}: ${n} projects`}
           >
             <span class={`cdo ${key}`}></span>
             <span class="tag-cloud-label">{labels[key] ?? key}</span>
@@ -101,14 +101,14 @@ const scale = (n: number) => {
     padding-bottom:18px;
     border-bottom:1px solid rgba(255,255,255,.08);
   }
-  .tag-cloud-summary-label{
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:.16em;
-    text-transform:uppercase;
-    color:var(--org);
-    padding-top:4px;
-  }
+    .tag-cloud-summary-label{
+      font-family:var(--mono);
+      font-size:11px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:var(--org);
+      padding-top:4px;
+    }
   .tag-cloud-summary p{
     margin:0;
     color:var(--t2);

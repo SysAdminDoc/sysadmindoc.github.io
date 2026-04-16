@@ -50,36 +50,53 @@ const ageClass = freshnessClass(pushedAt);
 const pushedDateLabel = pushedAt
   ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(pushedAt))
   : '';
+const categoryLabel = categoryLabels[entry.category] ?? entry.category;
+const descText = String(entry.desc ?? '').replace(/<[^>]+>/g, '').trim();
+const ariaParts = [
+  entry.name,
+  categoryLabel,
+  entry.live ? 'live build available' : null,
+  pushedDateLabel ? `last updated ${pushedDateLabel}` : null,
+  descText || null,
+].filter(Boolean);
 ---
 <a
   href={`/projects/${entry.repo}/`}
   class="ca"
+  aria-label={ariaParts.join('. ')}
   data-f={entry.category}
   data-repo={entry.repo}
   data-name={entry.name}
   data-desc={entry.desc}
-  data-terms={`${entry.repo} ${entry.category} ${categoryLabels[entry.category] ?? entry.category}${entry.live ? ' live browser' : ''}`}
+  data-terms={`${entry.repo} ${entry.category} ${categoryLabel} ${entry.live ? ' live browser' : ''}`}
   data-stars={stars ?? 0}
   data-pushed={pushedAt ?? ''}
   data-updated={updatedAt ?? pushedAt ?? ''}
   data-index={index}
 >
   <span class={`cdo ${entry.category}`}></span>
-  <span class="cna">{entry.name}</span>
-  <span class="cds" set:html={entry.desc}></span>
-  {age && pushedAt && (
-    <time
-      class={`ca-age ${ageClass}`}
-      datetime={pushedAt}
-      data-rel-short={pushedAt}
-      title={pushedDateLabel ? `Last pushed ${pushedDateLabel}` : ''}
-    >
-      {age}
-    </time>
-  )}
-  <span class="ca-stars" data-repo={entry.repo}>
-    <StarSvg />
-    <span class="live-star">{stars ?? '--'}</span>
+  <span class="ca-copy">
+    <span class="cna">
+      <span class="cna-label">{entry.name}</span>
+      <span class="ca-kind">{categoryLabel}</span>
+    </span>
+    <span class="cds" set:html={entry.desc}></span>
   </span>
-  {entry.live && <span class="lb2">LIVE</span>}
+  <span class="ca-side">
+    {age && pushedAt && (
+      <time
+        class={`ca-age ${ageClass}`}
+        datetime={pushedAt}
+        data-rel-short={pushedAt}
+        title={pushedDateLabel ? `Last pushed ${pushedDateLabel}` : ''}
+      >
+        {age}
+      </time>
+    )}
+    <span class="ca-stars" data-repo={entry.repo}>
+      <StarSvg />
+      <span class="live-star">{stars ?? '--'}</span>
+    </span>
+    {entry.live && <span class="lb2">LIVE</span>}
+  </span>
 </a>

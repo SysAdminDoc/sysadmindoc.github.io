@@ -1,8 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { now } from '../data/curated';
 import { fallbackRepoCount } from '../data/derived';
+import { featured, liveApps, catalog } from '../data/projects';
 
 let stats = {
   totalRepos: fallbackRepoCount,
@@ -14,69 +17,75 @@ let stats = {
   fetchedAt: null as string | null,
 };
 try { const mod = await import('../data/_stats.json'); stats = { ...stats, ...(mod.default ?? mod) }; } catch {}
+const projectNameMap = new Map<string, string>();
+featured.forEach((project) => projectNameMap.set(project.repo, project.name));
+liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
+catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
+const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.lastPushedRepo) ?? stats.lastPushedRepo : null;
 const utcDate = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const nowSections = [
   {
+    id: 'now-building',
     title: 'Building',
     note: 'The work getting active engineering time right now.',
     kind: 'list',
     items: now.building,
   },
   {
+    id: 'now-thinking',
     title: 'Thinking About',
     note: 'Ideas, tradeoffs, and product questions still being shaped.',
     kind: 'list',
     items: now.thinking,
   },
   {
+    id: 'now-listening',
     title: 'Listening',
     note: 'What is setting the mood for the work outside the code editor.',
     kind: 'text',
     text: now.listening,
   },
   {
+    id: 'now-not-working-on',
     title: 'Deliberately Not Working On',
     note: 'The constraints I am keeping in place to protect focus.',
     kind: 'text',
     text: now.notWorkingOn,
   },
 ] as const;
+const cmdkSections = [
+  { label: 'Overview', href: '#now-overview', desc: 'Current-focus snapshot, live pulse, and the fastest route into adjacent pages.', badge: 'NOW' },
+  ...nowSections.map((section) => ({
+    label: section.title,
+    href: `#${section.id}`,
+    desc: section.note,
+    badge: 'SECTION',
+  })),
+];
+const footerShortcuts = [
+  { href: '/releases/', label: 'Release Stream', meta: 'See what is moving across the archive beyond the short-term focus list.' },
+  { href: '/healthcare-it/', label: 'Healthcare Track', meta: 'The operational context and imaging systems that shape the work.' },
+  { href: '/#catalog', label: 'Full Archive', meta: 'Browse the entire public catalog once you have the current context.' },
+] as const;
 ---
-<Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on.">
+<Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on." cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
-  <nav id="nav" aria-label="Main navigation">
-    <div class="ni">
-      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk" id="navLinks">
-        <a href="/#greatest-hits">Hits</a>
-        <a href="/#featured">Projects</a>
-        <a href="/#live">Live</a>
-        <a href="/#catalog">Catalog</a>
-        <a href="/releases/">Releases</a>
-        <a href="/now/" class="active" aria-current="page">Now</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <a href="/" class="ng">← Home</a>
-        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      </div>
-    </div>
-  </nav>
+  <InteriorNav active="now" contextLabel="Current focus" contextTone="green" />
 
   <main id="main" class="now-page">
-    <div class="si" style="padding-top:100px">
+    <div class="si page-shell" id="now-overview">
       <div class="sh rv">
         <div class="sl">// Now</div>
-        <h1 class="st now-title">What I'm doing right now</h1>
+        <h1 class="st now-title">Current focus</h1>
         <p class="sd">
-          Inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener" class="now-inline-link">Derek Sivers' /now page</a>.
-          Updated <time datetime={now.updated}>{utcDate.format(new Date(`${now.updated}T00:00:00Z`))}</time>.
+          A working snapshot inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener" class="now-inline-link page-inline-link">Derek Sivers' /now page</a>.
+          Updated <time datetime={now.updated}>{utcDate.format(new Date(`${now.updated}T00:00:00Z`))}</time> so the signals stay current.
         </p>
       </div>
 
       {/* Live activity snapshot */}
-      <div class="now-pulse rv">
+      <div class="now-pulse page-panel rv">
         <div class="now-pulse-item">
           <span class="now-pulse-dot"></span>
           <span class="now-pulse-label">Location</span>
@@ -86,7 +95,7 @@ const nowSections = [
           <div class="now-pulse-item">
             <span class="now-pulse-dot"></span>
             <span class="now-pulse-label">Last push</span>
-            <span class="now-pulse-value"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time> <span class="now-pulse-sub">to {stats.lastPushedRepo}</span></span>
+            <span class="now-pulse-value"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time>{lastPushedProjectName && <span class="now-pulse-sub">to {lastPushedProjectName}</span>}</span>
           </div>
         )}
         {stats.streak > 0 && (
@@ -98,22 +107,23 @@ const nowSections = [
         )}
         <div class="now-pulse-item">
           <span class="now-pulse-dot"></span>
-          <span class="now-pulse-label">Repos · Stars</span>
+          <span class="now-pulse-label">Projects · Stars</span>
           <span class="now-pulse-value">{stats.totalRepos} · {stats.totalStars}</span>
         </div>
       </div>
-      <div class="now-actions rv">
-        <a href="/releases/" class="btn bp">Browse Releases</a>
-        <a href="/#catalog" class="btn bg2">Open Full Catalog</a>
-        <a href="/healthcare-it/" class="now-action-link">Healthcare IT Track</a>
+      <div class="now-actions page-actions rv">
+        <a href="/releases/" class="btn bp">Open release stream</a>
+        <a href="/#catalog" class="btn bg2">Open full archive</a>
+        <a href="/healthcare-it/" class="now-action-link page-action-link">Open healthcare track</a>
       </div>
+      <SectionJumpNav items={cmdkSections} />
     </div>
     <Divider />
 
     <div class="si">
       <div class="now-grid">
         {nowSections.map((section) => (
-          <section class="now-section rv">
+          <section class="now-section rv" id={section.id}>
             <div class="now-section-head">
               <h2 class="now-h2">{section.title}</h2>
               <p class="now-section-copy">{section.note}</p>
@@ -132,29 +142,45 @@ const nowSections = [
   </main>
 
   <footer>
-    <div class="fi">
-      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
-      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">The /now page is the short-range signal. The release stream and full archive show what is already shipped, maintained, and still earning attention.</p>
+      </div>
+      <nav class="footer-actions" aria-label="Continue exploring">
+        <div class="footer-actions-head">
+          <span class="footer-actions-kicker">Continue Exploring</span>
+          <p class="footer-actions-copy">Use this page to understand current momentum, then open the routes that add long-term context and shipped examples.</p>
+        </div>
+        <div class="footer-shortcuts">
+          {footerShortcuts.map((link) => (
+            <a href={link.href} class="footer-shortcut">
+              <span class="footer-shortcut-label">{link.label}</span>
+              <span class="footer-shortcut-meta">{link.meta}</span>
+            </a>
+          ))}
+        </div>
+        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      </nav>
     </div>
   </footer>
 </Base>
 
 <style is:global>
-  .now-page{min-height:calc(100vh - 200px);max-width:980px;margin:0 auto}
+  .now-page{min-height:calc(100vh - 200px)}
   .now-title{font-size:clamp(36px,5vw,56px)!important}
   .now-inline-link{color:var(--grn);text-decoration:none;border-bottom:1px dashed var(--glass-border)}
   .now-inline-link:hover{border-bottom-color:var(--grn)}
-  .now-pulse{display:flex;flex-wrap:wrap;gap:18px;margin-top:32px;padding:22px 24px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16)}
+  .now-pulse{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px}
   .now-pulse-item{display:flex;align-items:center;gap:10px}
   .now-pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn-glow);animation:freshPulse 2s ease-in-out infinite}
   .now-pulse-label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--t3);text-transform:uppercase}
   .now-pulse-value{font-family:var(--mono);font-size:14px;color:var(--t1)}
   .now-pulse-sub{color:var(--t3);font-size:12px}
-  .now-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
-  .now-action-link{font-family:var(--mono);font-size:12px;color:var(--t2);text-decoration:none;padding:10px 0;transition:color .2s ease,transform .2s ease}
-  .now-action-link:hover{color:var(--t1);transform:translateX(2px)}
+  .now-actions{margin-top:22px}
+  .now-action-link{padding:0}
   .now-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:56px}
-  .now-section{margin-top:0;padding:28px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 20px 48px rgba(0,0,0,.16);overflow:visible}
+  .now-section{margin-top:0;padding:30px;border:1px solid var(--border-soft);border-radius:28px;background:var(--surface-1);box-shadow:var(--shadow-soft);overflow:visible}
   .now-section::before{display:none}
   .now-section-head{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
   .now-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin:0}
@@ -165,7 +191,5 @@ const nowSections = [
   .now-p{color:var(--t2);font-size:17px;line-height:1.7;margin:0}
   @media(max-width:760px){
     .now-grid{grid-template-columns:1fr}
-    .now-actions{align-items:stretch}
-    .now-action-link{padding:0}
   }
 </style>
