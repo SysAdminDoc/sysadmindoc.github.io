@@ -2,6 +2,37 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.9.0] - 2026-04-16
+
+**Portfolio now reflects the real résumé — role, employer, tenure, career history.**
+
+Career section (new)
+- New `#career` section between About and Philosophy: three cards (Maven Imaging, ThinkTV, Dayton Technology Group) with role, period, location, summary, highlights, and stack chips.
+- Current role card accented green; prior roles accented blue.
+- Added to primary nav and command palette (`Career`).
+- Source of truth: `careerRoles` array in `src/pages/index.astro`.
+
+Bio refresh
+- Hero tagline now leads with "Senior Technical Support Manager & systems administrator with 15+ years" instead of the generic "Senior systems administrator" line.
+- Hero signals: Current role (Sr. Tech Support Mgr at Maven Imaging) + Tenure (15+ years) replace the more abstract operational descriptors.
+- About copy names the current employer, the ThinkTV / MSP tenure, and calls out which side projects became production tools.
+- `about.json` terminal panel adds `employer`, `location`, and `experience_years` keys.
+
+SEO / structured data
+- `Base.astro` default title → "Matt Parker — Senior Technical Support Manager & Builder".
+- Description expanded with 15+ years + medical imaging (DICOM/PACS) context.
+- JSON-LD `Person` now carries `jobTitle: Senior Technical Support Manager`, `worksFor: Maven Imaging`, `address: Sarasota, FL`, expanded `knowsAbout` (DICOM, PACS, Active Directory, Hyper-V, Cisco, HIPAA), and `sameAs` now includes LinkedIn.
+
+Healthcare track
+- `healthcareIT.intro` rewritten to name Maven Imaging directly and list the specific PACS/DR work (OpalRad → Candelis, RADinfo cloud, DR panels, DICOM routing, VPN).
+
+/now
+- Location updated Florida, USA → Sarasota, FL to match current residence.
+- `updated` stamp refreshed to 2026-04-16.
+
+Housekeeping
+- `.gitignore`: added `resume/`, `*.docx`, `*.doc`, `*.pdf` patterns to keep personal résumé files from ever reaching the public repo.
+
 ## [v0.8.0] - 2026-04-15
 
 **Project pages get real content. ROADMAP priority #1.**

@@ -3288,3 +3288,37 @@ html[data-theme="light"] .scroll-progress{
     min-height:44px;
   }
 }
+
+/* Career Timeline — 15+ yrs of work history */
+#career{position:relative}
+.career-signals{display:flex;flex-wrap:wrap;gap:14px;max-width:1080px;margin:28px auto 0;padding:0 20px;justify-content:center}
+.career-signal{display:flex;flex-direction:column;gap:4px;padding:12px 18px;border:1px solid var(--border-soft);border-radius:14px;background:var(--surface-1);min-width:160px}
+.career-signal-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase}
+.career-signal-value{font-family:var(--mono);font-size:14px;color:var(--t1);font-weight:600}
+.career-timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;max-width:1180px;margin:48px auto 0;padding:0 20px}
+.career-card{display:flex;flex-direction:column;gap:12px;padding:28px;border:1px solid var(--border-soft);border-radius:26px;background:var(--surface-1);box-shadow:var(--shadow-soft);transition:border-color .25s,transform .25s,box-shadow .25s}
+.career-card:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.22)}
+.career-current{border-color:rgba(74,222,128,.28)}
+.career-current:hover{border-color:rgba(74,222,128,.45)}
+.career-previous:hover{border-color:var(--blue)}
+.career-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.career-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--grn);padding:3px 8px;border:1px solid rgba(74,222,128,.3);border-radius:4px;text-transform:uppercase}
+.career-previous .career-card-tag{color:var(--blue);border-color:rgba(59,130,246,.3)}
+.career-card-period{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.05em}
+.career-card-role{font-size:20px;font-weight:600;margin:2px 0 0;color:var(--t1);line-height:1.25}
+.career-card-company{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--t2)}
+.career-card-company-name{color:var(--t1);font-weight:500}
+.career-card-company-sep{color:var(--t3)}
+.career-card-location{color:var(--t3)}
+.career-card-summary{color:var(--t2);font-size:14px;line-height:1.65;margin:4px 0 0}
+.career-card-highlights{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.career-card-highlights li{position:relative;padding-left:18px;color:var(--t2);font-size:13.5px;line-height:1.55}
+.career-card-highlights li::before{content:'▸';position:absolute;left:0;top:0;color:var(--grn)}
+.career-previous .career-card-highlights li::before{color:var(--blue)}
+.career-card-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding-top:14px;border-top:1px dashed var(--border-soft)}
+.career-stack-chip{font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--t3);padding:3px 8px;border:1px solid var(--border-soft);border-radius:4px;background:var(--surface-2,rgba(255,255,255,.02))}
+@media(max-width:760px){
+  .career-timeline{grid-template-columns:1fr;gap:16px}
+  .career-card{padding:22px}
+  .career-card-role{font-size:18px}
+}
