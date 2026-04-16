@@ -41,10 +41,40 @@ const liveCount = repos.filter((repo) => repo.live).length;
 const mostRecent = repos
   .filter((r) => r.pushedAt)
   .sort((a, b) => (b.pushedAt || '').localeCompare(a.pushedAt || ''))[0];
+const laneHeroProjects = repos.slice(0, 3).map((repo) => {
+  const featureStory = featured.find((item) => item.repo === repo.repo);
+  const summary = featureStory
+    ? featureStory.tags
+        .filter((tag) => tag.toLowerCase() !== lang.label.toLowerCase())
+        .slice(0, 2)
+        .join(' / ')
+    : repo.desc;
+  return {
+    ...repo,
+    summary: summary || repo.desc,
+  };
+});
 
 const title = `${lang.label} — ${repos.length} projects by Matt Parker`;
 const description = `Everything I've shipped in ${lang.label}. ${repos.length} public projects, ${totalStars} stars.`;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const laneHeroSignals = [
+  {
+    label: 'Strongest proof',
+    value: laneHeroProjects[0]?.name ?? `${lang.label} archive`,
+    meta: laneHeroProjects[0]?.live ? 'Project page plus live demo' : 'Project page and source context',
+  },
+  {
+    label: 'Current rhythm',
+    value: mostRecent?.pushedAt ? compactUtcDate.format(new Date(mostRecent.pushedAt)) : 'Archive-backed',
+    meta: mostRecent ? `Latest push: ${mostRecent.name}` : `Public ${lang.label} work, kept visible`,
+  },
+  {
+    label: 'Public footprint',
+    value: `${repos.length} projects / ${totalStars} stars`,
+    meta: `${featuredCount} featured and ${liveCount} browser-ready builds`,
+  },
+] as const;
 const cmdkSections = [
   { label: 'Overview', href: '#lane-overview', desc: `${lang.label} lane summary, stats, and the clearest next routes.`, badge: 'LANE' },
   { label: 'Projects in This Lane', href: '#lane-projects', desc: `Browse the public ${lang.label} projects collected in this stack view.`, badge: 'ARCHIVE' },
@@ -56,10 +86,40 @@ const cmdkSections = [
 
   <main id="main" class="lang-page">
     <div class="si page-shell" id="lane-overview">
-      <div class="sh rv">
-        <div class="sl">// Stack · {lang.label}</div>
-        <h1 class="lang-title" style={`--accent:var(${lang.accent})`}>{lang.label}</h1>
-        <p class="lang-intro">{lang.intro}</p>
+      <div class="sh rv" style={`--accent:var(${lang.accent})`}>
+        <div class="lang-hero-copy">
+          <div class="sl">// Stack · {lang.label}</div>
+          <h1 class="lang-title">{lang.label}</h1>
+          <p class="lang-intro">{lang.intro}</p>
+        </div>
+        {laneHeroProjects.length > 0 && (
+          <aside class="lang-hero-aside" aria-label={`${lang.label} lane proof points`}>
+            <div class="lang-hero-surface">
+              <div class="lang-hero-kicker">Representative builds</div>
+              <div class="lang-hero-list">
+                {laneHeroProjects.map((repo, index) => (
+                  <a href={`/projects/${repo.repo}/`} class="lang-hero-item">
+                    <span class="lang-hero-item-index">{String(index + 1).padStart(2, '0')}</span>
+                    <span class="lang-hero-item-copy">
+                      <strong class="lang-hero-item-name">{repo.name}</strong>
+                      <span class="lang-hero-item-meta">{repo.summary}</span>
+                    </span>
+                    {repo.live && <span class="lang-hero-item-live">Live</span>}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div class="lang-hero-signals" aria-label={`${lang.label} lane signals`}>
+              {laneHeroSignals.map((signal) => (
+                <div class="lang-hero-signal">
+                  <span class="lang-hero-signal-label">{signal.label}</span>
+                  <strong class="lang-hero-signal-value">{signal.value}</strong>
+                  <span class="lang-hero-signal-meta">{signal.meta}</span>
+                </div>
+              ))}
+            </div>
+          </aside>
+        )}
       </div>
 
       <div class="lang-stats page-stat-grid rv">
@@ -136,6 +196,25 @@ const cmdkSections = [
 
 <style is:global>
   .lang-page{min-height:calc(100vh - 200px)}
+  .lang-page .page-shell > .sh{grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:start}
+  .lang-hero-copy{display:grid;align-content:start;gap:18px}
+  .lang-hero-aside{display:grid;gap:14px;align-content:start}
+  .lang-hero-surface,.lang-hero-signal{border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));box-shadow:0 18px 40px rgba(0,0,0,.12)}
+  .lang-hero-surface{padding:24px;border-radius:28px}
+  .lang-hero-kicker,.lang-hero-signal-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .lang-hero-kicker{margin-bottom:14px}
+  .lang-hero-list{display:grid;gap:10px}
+  .lang-hero-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border:1px solid rgba(255,255,255,.06);border-radius:18px;background:rgba(255,255,255,.024);text-decoration:none;color:inherit;transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease,transform .2s ease}
+  .lang-hero-item:hover,.lang-hero-item:focus-visible{border-color:var(--accent);background:rgba(255,255,255,.04);box-shadow:0 18px 36px rgba(0,0,0,.14);transform:translateY(-2px)}
+  .lang-hero-item-index{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--t3)}
+  .lang-hero-item-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .lang-hero-item-name{font-family:var(--mono);font-size:14px;color:var(--t1)}
+  .lang-hero-item-meta{font-size:12px;line-height:1.55;color:var(--t2)}
+  .lang-hero-item-live{padding:5px 8px;border-radius:999px;background:var(--grnd);color:var(--grn);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  .lang-hero-signals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .lang-hero-signal{display:grid;gap:8px;padding:16px 18px;border-radius:22px}
+  .lang-hero-signal-value{font-family:var(--mono);font-size:13px;line-height:1.4;color:var(--t1)}
+  .lang-hero-signal-meta{font-size:12px;line-height:1.55;color:var(--t2)}
   .lang-title{font-family:var(--mono);font-size:clamp(48px,8vw,96px);font-weight:700;margin:8px 0 20px;background:linear-gradient(120deg,var(--t1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.02}
   .lang-intro{font-size:clamp(16px,1.4vw,19px);color:var(--t2);line-height:1.7;max-width:720px;margin:0}
   .lang-stats{gap:16px;margin-top:32px;max-width:1100px}
@@ -166,7 +245,15 @@ const cmdkSections = [
   .lang-card-cta{color:var(--t1);display:inline-flex;align-items:center;gap:8px;flex-shrink:0}
   .lang-card-cta::after{content:'→';color:var(--accent);transition:transform .2s ease-out}
   .lang-card:hover .lang-card-cta::after,.lang-card:focus-visible .lang-card-cta::after{transform:translateX(3px)}
+  @media(max-width:1100px){
+    .lang-page .page-shell > .sh{grid-template-columns:1fr}
+    .lang-hero-signals{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  }
   @media(max-width:640px){
+    .lang-hero-surface{padding:20px}
+    .lang-hero-item{grid-template-columns:auto 1fr}
+    .lang-hero-item-live{grid-column:2;justify-self:start}
+    .lang-hero-signals{grid-template-columns:1fr}
     .lang-card-foot{flex-direction:column;align-items:flex-start}
   }
 </style>

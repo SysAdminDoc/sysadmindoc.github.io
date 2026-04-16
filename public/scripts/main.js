@@ -401,15 +401,6 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 if(bttBtn)bttBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:prefersReducedMotion?'auto':'smooth'})});
 
-/* ===== SCROLL REVEAL + STAGGERED CARD ENTRANCE ===== */
-const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('vis');ro.unobserve(el.target)}})},{threshold:.08});
-document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
-const co=new IntersectionObserver(entries=>{
-    const visible=entries.filter(e=>e.isIntersecting);
-    visible.forEach((e,i)=>{setTimeout(()=>{e.target.classList.add('vis');co.unobserve(e.target)},i*60)})
-},{threshold:.05});
-document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
-
 /* ===== YOUTUBE CLICK-TO-PLAY (keyboard accessible) ===== */
 function playVideo(trigger){
     const id=trigger.dataset.yt;
