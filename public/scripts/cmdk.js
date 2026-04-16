@@ -350,6 +350,8 @@
       hint = document.createElement('div');
       hint.id = 'chordHint';
       hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--glass-border);color:var(--t1);padding:10px 16px;border-radius:10px;font-family:var(--mono);font-size:13px;z-index:99997;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+      hint.setAttribute('role', 'status');
+      hint.setAttribute('aria-live', 'polite');
       document.body.appendChild(hint);
     }
     hint.textContent = message;
