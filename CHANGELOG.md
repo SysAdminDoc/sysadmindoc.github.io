@@ -2,6 +2,32 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.12.0] - 2026-04-16
+
+**Close the gap between GitHub repos and site catalog — every public project now has a dedicated page.**
+
+Audit
+- Diffed `src/data/projects.ts` against `src/data/_meta.json` (the daily-cron GitHub snapshot). 143 public repos in the cache, 138 were in the catalog. 6 unreferenced: 4 real projects + 2 intentional skips.
+
+Added to catalog
+- `AmazonEnhanced` (ext) — Chrome MV3 Amazon cleanup, 20 locales.
+- `ChanPrep` (web, live) — in-browser file compressor + converter for 4chan boards, with Catbox upload.
+- `DuplicateFF` (guide) — archived reference architecture for a duplicate-file finder.
+- `Scripts` (ps) — grab-bag of PowerShell + userscripts.
+
+Added to liveApps
+- `ChanPrep` — live GitHub Pages build at `sysadmindoc.github.io/ChanPrep/` (200 OK).
+
+Skipped (intentional)
+- `SysAdminDoc` — the profile-README repo (no product content).
+- `null` — empty placeholder repo, not a project.
+
+Note: `GeneratorSpecs` is now 404 on the GitHub API (repo private/removed) but the live page at `sysadmindoc.github.io/GeneratorSpecs/` still serves. Kept in the catalog + Healthcare IT track because the working live app is the actual artifact.
+
+Result
+- 153 pages built (was 149). Every catalog/liveApp/featured entry resolves to its own `/projects/<slug>/` detail page via the existing `getStaticPaths()` in `src/pages/projects/[slug].astro`.
+- `fallbackRepoCount` auto-derives from the arrays, so hero + about stats update without manual edits.
+
 ## [v0.11.2] - 2026-04-16
 
 **Correction: the thing dominating the top of project pages was the README outline sidebar, not README Quick Start content.**
