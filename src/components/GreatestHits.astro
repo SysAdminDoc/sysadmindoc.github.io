@@ -13,8 +13,8 @@ try {
   <div class="si">
     <div class="sh rv">
       <div class="sl">// Greatest Hits</div>
-      <h2 class="st">The ones that matter most</h2>
-      <p class="sd">{greatestHits.length} out of {catalog.length}. The through-line of my work — why each exists, not what it does.</p>
+      <h2 class="st">The shortest path through the portfolio</h2>
+      <p class="sd">{greatestHits.length} out of {catalog.length}. Start here if you want the through-line fast: why each build exists, what kind of problem it was meant to absorb, and where the strongest craft shows up.</p>
     </div>
     <div class="gh-grid">
       {greatestHits.map((hit, i) => (
@@ -54,13 +54,13 @@ try {
     gap:14px;
     min-height:250px;
     padding:28px;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:24px;
-    background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+    border:1px solid var(--border-soft);
+    border-radius:28px;
+    background:var(--surface-1);
     text-decoration:none;
     position:relative;
     overflow:hidden;
-    box-shadow:0 18px 42px rgba(0,0,0,.18);
+    box-shadow:var(--shadow-soft);
     transition:border-color .3s ease-out,transform .3s ease-out,box-shadow .3s ease-out,background .3s ease-out;
   }
   .gh-card::before{
@@ -77,16 +77,18 @@ try {
     content:'';
     position:absolute;
     inset:1px;
-    border-radius:22px;
+    border-radius:26px;
     border:1px solid rgba(255,255,255,.04);
     pointer-events:none;
   }
-  .gh-card:hover{border-color:rgba(255,255,255,.14);transform:translateY(-5px);box-shadow:0 26px 58px rgba(0,0,0,.25)}
+  .gh-card:hover{border-color:rgba(255,255,255,.14);transform:translateY(-5px);box-shadow:0 28px 62px rgba(0,0,0,.24)}
   .gh-card:focus-visible{outline:2px solid var(--grn);outline-offset:3px;box-shadow:0 0 0 4px rgba(74,222,128,.15)}
   .gh-card-primary{
     grid-column:span 12;
     min-height:340px;
     padding:36px;
+    background:var(--surface-strong);
+    box-shadow:var(--shadow-strong);
   }
   .gh-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .gh-rank{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--org);font-weight:700}

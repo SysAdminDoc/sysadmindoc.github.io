@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
 import StarSvg from '../components/StarSvg.astro';
 import { healthcareIT } from '../data/curated';
 import { catalog, featured, liveApps } from '../data/projects';
@@ -12,77 +14,91 @@ const repos = healthcareIT.repos.map((slug) => {
   const f = featured.find((p) => p.repo === slug);
   const c = catalog.find((x) => x.repo === slug);
   const l = liveApps.find((a) => a.slug === slug);
+  const clinicalLane: Record<string, string> = {
+    'DICOM-PACS-Migrator': 'Migration',
+    XRayAcquisition: 'Acquisition',
+    RadAtlas: 'Technique charts',
+    GeneratorSpecs: 'Generator data',
+  };
   const hasDetailPage = !!(f || c || l);
   return {
     slug,
     name: f?.name ?? c?.name ?? l?.name ?? slug,
     desc: f?.desc ?? c?.desc ?? l?.desc ?? 'Project details live on GitHub.',
     stars: stars[slug] ?? 0,
+    lane: clinicalLane[slug] ?? 'Healthcare IT',
     liveUrl: l?.url,
     detailUrl: hasDetailPage ? `/projects/${slug}/` : `https://github.com/SysAdminDoc/${slug}`,
     hasDetailPage,
   };
 });
+const cmdkSections = [
+  { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
+  { label: 'Projects', href: '#clinical-projects', desc: 'Healthcare IT projects shaped by imaging, migration, and support workflows.', badge: 'ARCHIVE' },
+  { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
+];
+const footerShortcuts = [
+  { href: '/#catalog', label: 'Full Archive', meta: 'Step out of the clinical lane and scan the broader project catalog.' },
+  { href: '/releases/', label: 'Release Stream', meta: 'Track what is actively shipping across the rest of the portfolio.' },
+  { href: '/now/', label: 'Current Focus', meta: 'See what is getting active refinement and engineering time right now.' },
+] as const;
 ---
 <Base
   title="Healthcare IT — Matt Parker"
   description="Tools I've built specifically for healthcare facilities running medical imaging systems: PACS migration, X-ray acquisition, technique charts, generator specs."
   ogImage="/og.png"
+  cmdkSections={cmdkSections}
 >
   <a href="#main" class="skip-link">Skip to content</a>
-  <nav id="nav" aria-label="Main navigation">
-    <div class="ni">
-      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk" id="navLinks">
-        <a href="/#greatest-hits">Hits</a>
-        <a href="/#featured">Projects</a>
-        <a href="/#live">Live</a>
-        <a href="/#catalog">Catalog</a>
-        <a href="/releases/">Releases</a>
-        <a href="/now/">Now</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <a href="/" class="ng">← Home</a>
-        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      </div>
-    </div>
-  </nav>
+  <InteriorNav contextLabel="Healthcare IT track" contextTone="amber" />
 
   <main id="main" class="hcit-page">
-    <div class="si" style="padding-top:100px">
+    <div class="si page-shell" id="track-overview">
       <div class="sh rv">
         <div class="sl">// Track</div>
         <h1 class="st hcit-title">Healthcare IT</h1>
         <p class="sd hcit-intro">{healthcareIT.intro}</p>
       </div>
 
-      <div class="hcit-stats rv">
-        <div class="hcit-stat"><div class="hcit-stat-num">{repos.length}</div><div class="hcit-stat-label">Tools shipped</div></div>
-        <div class="hcit-stat"><div class="hcit-stat-num">64k+</div><div class="hcit-stat-label">Studies migrated in production</div></div>
-        <div class="hcit-stat"><div class="hcit-stat-num">DICOM · PACS · DR</div><div class="hcit-stat-label">Domains covered</div></div>
+      <div class="hcit-stats page-stat-grid rv">
+        <div class="hcit-stat page-stat">
+          <div class="hcit-stat-num page-stat-value">{repos.length}</div>
+          <div class="hcit-stat-label page-stat-label">Tools shipped</div>
+          <div class="page-stat-copy">Purpose-built utilities shaped by real imaging and support workflows.</div>
+        </div>
+        <div class="hcit-stat page-stat">
+          <div class="hcit-stat-num page-stat-value">64k+</div>
+          <div class="hcit-stat-label page-stat-label">Studies migrated</div>
+          <div class="page-stat-copy">Production migrations completed without relying on brittle vendor tooling.</div>
+        </div>
+        <div class="hcit-stat page-stat">
+          <div class="hcit-stat-num page-stat-value">DICOM · PACS · DR</div>
+          <div class="hcit-stat-label page-stat-label">Domains covered</div>
+          <div class="page-stat-copy">Clinical imaging workflows, data movement, and everyday operational reliability.</div>
+        </div>
       </div>
-      <div class="hcit-actions rv">
-        <a href="/#catalog" class="btn bp">Browse Full Catalog</a>
-        <a href="/releases/" class="btn bg2">Open Release Stream</a>
+      <div class="hcit-actions page-actions rv">
+        <a href="/#catalog" class="btn bp">Open full archive</a>
+        <a href="/releases/" class="btn bg2">Open release stream</a>
       </div>
+      <SectionJumpNav items={cmdkSections} />
     </div>
     <Divider />
 
-    <div class="si">
-      <h2 class="hcit-h2">The toolkit</h2>
+    <div class="si" id="clinical-projects">
+      <h2 class="hcit-h2">Projects in this track</h2>
       <div class="hcit-grid">
         {repos.map((r) => (
           <article class="hcit-card card-enter">
             <div class="hcit-card-head">
-              <span class="hcit-card-tag">DICOM</span>
+              <span class="hcit-card-tag">{r.lane}</span>
               {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
             </div>
             <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
             <p class="hcit-card-desc" set:html={r.desc}></p>
             <div class="hcit-card-actions">
-              <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Read more →' : 'View repo →'}</a>
-              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Live demo →</a>}
+              <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open source →'}</a>
+              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Open live demo →</a>}
             </div>
           </article>
         ))}
@@ -90,20 +106,37 @@ const repos = healthcareIT.repos.map((slug) => {
     </div>
     <Divider />
 
-    <div class="si">
+    <div class="si" id="track-context">
       <h2 class="hcit-h2">Why this track exists</h2>
       <div class="hcit-why rv">
         <p>Healthcare IT is where I learned that the best tool isn't the one with the most features — it's the one that <strong>doesn't fail at 2 AM when a radiologist needs a study back from the archive</strong>.</p>
         <p>Every project here comes from the same pattern: a vendor tool broke, licensing expired, a workflow was manual for no reason, or nobody had built the obvious thing. So I built it. Small enough to audit, open enough to fork, boring enough to just work.</p>
-        <p>If you run medical imaging infrastructure and find something missing, <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="now-inline-link">open an issue</a>.</p>
+        <p>If you run medical imaging infrastructure and find something missing, <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="page-inline-link">open an issue</a>.</p>
       </div>
     </div>
   </main>
 
   <footer>
-    <div class="fi">
-      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
-      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">These tools sit inside a wider portfolio of operational software, browser products, and systems-first utility work shaped by real environments.</p>
+      </div>
+      <nav class="footer-actions" aria-label="Continue exploring">
+        <div class="footer-actions-head">
+          <span class="footer-actions-kicker">Continue Exploring</span>
+          <p class="footer-actions-copy">Use the clinical track for context, then move outward into the release stream and full archive for the broader product picture.</p>
+        </div>
+        <div class="footer-shortcuts">
+          {footerShortcuts.map((link) => (
+            <a href={link.href} class="footer-shortcut">
+              <span class="footer-shortcut-label">{link.label}</span>
+              <span class="footer-shortcut-meta">{link.meta}</span>
+            </a>
+          ))}
+        </div>
+        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      </nav>
     </div>
   </footer>
 </Base>
@@ -112,15 +145,14 @@ const repos = healthcareIT.repos.map((slug) => {
   .hcit-page{min-height:calc(100vh - 200px)}
   .hcit-title{font-size:clamp(44px,6vw,72px)!important;background:linear-gradient(120deg,var(--t1),var(--grn));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .hcit-intro{font-size:18px!important;max-width:720px}
-  .hcit-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px;max-width:900px}
-  .hcit-stat{padding:24px;border:1px solid var(--glass-border);border-radius:12px;background:var(--glass);text-align:center}
-  .hcit-stat-num{font-family:var(--mono);font-size:32px;font-weight:700;color:var(--grn);text-shadow:0 0 20px var(--grn-glow)}
-  .hcit-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:8px}
-  .hcit-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .hcit-stats{margin-top:32px;max-width:1080px}
+  .hcit-stat{min-height:100%}
+  .hcit-stat-num{color:var(--grn);text-shadow:0 0 20px var(--grn-glow)}
+  .hcit-actions{margin-top:22px}
   .hcit-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
   .hcit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
-  .hcit-card{display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--glass-border);border-radius:14px;background:var(--glass);color:var(--t1);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
-  .hcit-card:hover{border-color:var(--grn);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+  .hcit-card{display:flex;flex-direction:column;gap:10px;padding:26px;border:1px solid var(--border-soft);border-radius:26px;background:var(--surface-1);color:var(--t1);box-shadow:var(--shadow-soft);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
+  .hcit-card:hover{border-color:rgba(74,222,128,.22);transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.22)}
   .hcit-card-head{display:flex;align-items:center;justify-content:space-between}
   .hcit-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--grn);padding:3px 8px;border:1px solid rgba(74,222,128,.3);border-radius:4px}
   .hcit-card-stars{font-family:var(--mono);font-size:12px;color:var(--yel);display:inline-flex;align-items:center;gap:4px}
@@ -137,7 +169,4 @@ const repos = healthcareIT.repos.map((slug) => {
   .hcit-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
   .hcit-why p{margin-bottom:18px}
   .hcit-why strong{color:var(--t1);font-weight:600}
-  @media(max-width:640px){
-    .hcit-actions{align-items:stretch}
-  }
 </style>

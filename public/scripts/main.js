@@ -25,23 +25,6 @@ function fetchWithTimeout(resource,options,timeoutMs){
 }
 const prefersReducedMotion=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function getClosestTarget(target,selector){return target instanceof Element?target.closest(selector):null}
-function getUtcDayKey(value){
-    const d=new Date(value);
-    if(Number.isNaN(d.getTime()))return'';
-    return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0');
-}
-function formatActivityAge(value,now){
-    const date=value instanceof Date?value:new Date(value);
-    if(Number.isNaN(date.getTime()))return'';
-    const diff=Math.max(0,now.getTime()-date.getTime());
-    const mins=Math.floor(diff/60000);
-    const hrs=Math.floor(diff/3600000);
-    const days=Math.floor(diff/86400000);
-    if(mins<1)return'Active just now';
-    if(mins<60)return'Active '+mins+' minute'+(mins!==1?'s':'')+' ago';
-    if(hrs<24)return'Active '+hrs+' hour'+(hrs!==1?'s':'')+' ago';
-    return'Active '+days+' day'+(days!==1?'s':'')+' ago';
-}
 function getFallbackRepoCount(){
     const injected=window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects)?window.__PORTFOLIO_DATA.allProjects.length:0;
     if(injected>0)return injected;
@@ -61,15 +44,12 @@ function isTextEntryTarget(el){
     );
 }
 
-/* ===== SHARED MOUSE STATE (single mousemove dispatcher) ===== */
+/* ===== SHARED MOUSE STATE ===== */
 const isMobile=innerWidth<768;
 const mouseState={x:-1000,y:-1000,moved:false};
-const mouseFns=[];
 if(!isMobile){
-    let mouseRaf=0;
     document.addEventListener('mousemove',e=>{
         mouseState.x=e.clientX;mouseState.y=e.clientY;mouseState.moved=true;
-        if(!mouseRaf){mouseRaf=requestAnimationFrame(()=>{mouseFns.forEach(fn=>fn(mouseState));mouseRaf=0})}
     },{passive:true});
     document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
 }
@@ -81,7 +61,7 @@ if(!isMobile){
     const ctx=c.getContext('2d');
     if(!ctx)return;
     let w,h,particles=[],particleFrame=0;
-    const CFG={count:isMobile?20:40,speed:.3,size:1.5,connectDist:isMobile?100:140,connectDist2:0,mouseDist:180,mouseDist2:0,color:[88,166,255],mouseColor:[74,222,128]};
+    const CFG={count:isMobile?10:24,speed:.18,size:1.2,connectDist:isMobile?84:118,connectDist2:0,mouseDist:150,mouseDist2:0,color:[88,166,255],mouseColor:[74,222,128]};
     CFG.connectDist2=CFG.connectDist*CFG.connectDist;
     CFG.mouseDist2=CFG.mouseDist*CFG.mouseDist;
     function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
@@ -114,17 +94,13 @@ if(!isMobile){
     (window.requestIdleCallback||(cb=>setTimeout(cb,80)))(()=>{init();start()})
 })();
 
-/* ===== LOADER ===== */
-const lb=document.getElementById('loaderBar');let lp=0;
-if(lb){const li=setInterval(()=>{lp+=Math.random()*25+15;if(lp>100)lp=100;lb.style.width=lp+'%';if(lp>=100){clearInterval(li);const loader=document.getElementById('loader');if(loader){setTimeout(()=>loader.classList.add('hidden'),300);setTimeout(()=>loader.remove(),900)}}},120);}
-
 /* ===== COPY TOAST ===== */
 const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
 let copyToastTimer=0;
 function showCopyToast(){clearTimeout(copyToastTimer);copyToast.classList.add('show');copyToastTimer=setTimeout(()=>copyToast.classList.remove('show'),1500)}
 
 /* ===== TERMINAL TYPING ===== */
-const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'repos',val:'…',vc:'tv',id:'termRepos'},{key:'stars',val:'…',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
+const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'projects',val:'…',vc:'tv',id:'termRepos'},{key:'stars',val:'…',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
 const tb=document.getElementById('termBody');let ti=0;
 function rt(){if(ti>=tl.length||!tb)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';
     if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
@@ -142,18 +118,10 @@ if(prefersReducedMotion){
 const footerYear=document.getElementById('footerYear');
 if(footerYear)footerYear.textContent=new Date().getFullYear();
 
-/* ===== FOOTER BUILD TICKER ===== */
-(function(){
-    const t=document.getElementById('footerTicker');if(!t)return;
-    const items=['HTML / CSS / JS','GitHub Pages','GitHub API','Zero Dependencies','No Frameworks','Dark Theme Always','Single File','Handcrafted'];
-    const html=items.map(s=>'<span><span class="ticker-dot"></span>'+s+'</span>').join('');
-    t.innerHTML=html+html;
-})();
-
 /* ===== BUTTON RIPPLE ===== */
 document.addEventListener('click',function(e){
-    const btn=getClosestTarget(e.target,'.btn');
-    if(!btn)return;
+    const btn=getClosestTarget(e.target,'.btn[data-ripple]');
+    if(!btn||prefersReducedMotion)return;
     const r=btn.getBoundingClientRect();
     const ripple=document.createElement('span');
     ripple.className='ripple';
@@ -279,8 +247,6 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
     updateFilterCounts();
     // Remove shimmer loading state
     document.querySelectorAll('.shimmer-load').forEach(el=>el.classList.remove('shimmer-load'));
-    // Counter animation
-    if(typeof observeCounters==='function')setTimeout(observeCounters,100);
     // Starred repos glow
     document.querySelectorAll('.ca[data-repo]').forEach(el=>{
         if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
@@ -357,7 +323,7 @@ function renderLangDonut(langCount,repoCount){
     const lead=top[0];
     const leadLang=lead?lead[0]:'Mixed';
     const leadPct=lead?Math.round(lead[1]/total*100):0;
-    wrap.innerHTML='<div class="lang-donut-panel"><div class="lang-donut-head"><div class="lang-donut-kicker">Repo Mix</div><p class="lang-donut-copy">'+escapeHTML(leadLang)+' leads the public archive at '+leadPct+'% of repos, with the rest spread across desktop, web, and Android tooling.</p></div><div class="lang-donut-shell"><div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">repos</div></div></div><div class="lang-legend">'+legend+'</div></div></div>';
+    wrap.innerHTML='<div class="lang-donut-panel"><div class="lang-donut-head"><div class="lang-donut-kicker">Project Mix</div><p class="lang-donut-copy">'+escapeHTML(leadLang)+' leads the public archive at '+leadPct+'% of projects, with the rest spread across desktop, web, and Android tooling.</p></div><div class="lang-donut-shell"><div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">projects</div></div></div><div class="lang-legend">'+legend+'</div></div></div>';
 }
 
 scheduleIdle(fetchGitHub,1200);
@@ -411,34 +377,9 @@ const secs=document.querySelectorAll('section[id]');const nla=document.querySele
 const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
 secs.forEach(s=>so.observe(s));
 
-/* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN + MILESTONE ===== */
+/* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN ===== */
 const scrollProg=document.getElementById('scrollProgress');
 let lastScrollY=0;
-const milestoneHit={25:false,50:false,75:false,100:false};
-function spawnMilestoneBurst(pct){
-    if(!scrollProg)return;
-    const colors=['var(--blue)','var(--grn)','var(--pur)','var(--teal)','var(--org)','var(--yel)'];
-    const x=scrollProg.getBoundingClientRect().width*(pct/100);
-    const burst=document.createElement('div');
-    burst.className='milestone-burst';
-    burst.style.left=x+'px';
-    for(let i=0;i<12;i++){
-        const p=document.createElement('div');
-        p.className='milestone-particle';
-        const angle=Math.random()*Math.PI*2;
-        const dist=30+Math.random()*50;
-        const dx=Math.cos(angle)*dist;
-        const dy=Math.sin(angle)*dist;
-        p.style.background=colors[i%colors.length];
-        p.style.left='0px';p.style.top='0px';
-        p.style.animationDuration=(.5+Math.random()*.4)+'s';
-        p.style.setProperty('--dx',dx+'px');
-        p.style.setProperty('--dy',dy+'px');
-        burst.appendChild(p);
-    }
-    document.body.appendChild(burst);
-    setTimeout(()=>burst.remove(),1200);
-}
 
 /* ===== BACK TO TOP ===== */
 const bttBtn=document.getElementById('backToTop');
@@ -449,8 +390,6 @@ window.addEventListener('scroll',()=>{
     const max=document.documentElement.scrollHeight-innerHeight;
     const pct=max>0?(sy/max)*100:0;
     if(scrollProg)scrollProg.style.width=pct+'%';
-    // Milestone celebrations
-    if(scrollProg)[25,50,75,100].forEach(m=>{if(pct>=m&&!milestoneHit[m]){milestoneHit[m]=true;spawnMilestoneBurst(m)}});
     // Nav hide on scroll down, show on scroll up
     if(navEl){
         if(sy>120){
@@ -470,12 +409,6 @@ const co=new IntersectionObserver(entries=>{
     visible.forEach((e,i)=>{setTimeout(()=>{e.target.classList.add('vis');co.unobserve(e.target)},i*60)})
 },{threshold:.05});
 document.querySelectorAll('.card-enter').forEach(el=>co.observe(el));
-
-/* ===== TYPEWRITER SECTION HEADINGS ===== */
-if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
-    const twObs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(!en.isIntersecting)return;twObs.unobserve(en.target);const sl=en.target.querySelector('.sl');if(!sl||sl.dataset.tw)return;sl.dataset.tw='1';const full=sl.textContent;const width=sl.offsetWidth;sl.style.minWidth=width+'px';sl.textContent='';let i=0;(function type(){if(i<=full.length){sl.textContent=full.slice(0,i)+(i<full.length?'|':'');i++;setTimeout(type,55)}})()})},{threshold:.3});
-    document.querySelectorAll('.sh.rv').forEach(el=>twObs.observe(el));
-}
 
 /* ===== YOUTUBE CLICK-TO-PLAY (keyboard accessible) ===== */
 function playVideo(trigger){
@@ -547,11 +480,11 @@ function getSortLabel(value){
 
 function updateCatalogFeedback(visible){
     const q=currentSearch.trim();
-    const filterLabel=filterLabels[currentFilter]||'All repositories';
+    const filterLabel=filterLabels[currentFilter]||'All projects';
     const sortLabel=getSortLabel(currentSort);
     const parts=[];
     if(currentFilter==='all'&&!q){
-        parts.push('Showing '+visible+' of '+allItems.length+' repositories');
+        parts.push('Showing '+visible+' of '+allItems.length+' projects');
     }else{
         parts.push('Showing '+visible+' result'+(visible!==1?'s':''));
         if(currentFilter!=='all')parts.push('in '+filterLabel);
@@ -696,108 +629,6 @@ if(_sortEl)_sortEl.addEventListener('change',e=>{currentSort=e.target.value;sort
 updateFilterCounts();
 updateCatalogFeedback(allItems.length);
 
-/* ===== THEME ENHANCEMENT 1: 3D CARD TILT ON HOVER ===== */
-if(!isMobile&&!prefersReducedMotion){
-    let tiltCard=null;
-    document.addEventListener('mouseover',e=>{
-        const c=getClosestTarget(e.target,'.pc,.lc2,.skc,.video-card');
-        if(c&&c!==tiltCard)tiltCard=c;
-    });
-    document.addEventListener('mouseout',e=>{
-        const c=getClosestTarget(e.target,'.pc,.lc2,.skc,.video-card');
-        if(c&&c===tiltCard){c.style.transform='';c.style.transition='transform .4s cubic-bezier(.16,1,.3,1)';tiltCard=null}
-    });
-    mouseFns.push(m=>{
-        if(!tiltCard)return;
-        const rect=tiltCard.getBoundingClientRect();
-        const x=(m.x-rect.left)/rect.width-.5;
-        const y=(m.y-rect.top)/rect.height-.5;
-        tiltCard.style.transform=`translateY(-4px) perspective(800px) rotateY(${x*8}deg) rotateX(${-y*8}deg)`;
-        tiltCard.style.transition='transform .1s ease-out';
-    });
-}
-
-/* ===== THEME ENHANCEMENT 2: ANIMATED COUNTERS ===== */
-const counterObserver=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-        if(!entry.isIntersecting)return;
-        const el=entry.target;
-        counterObserver.unobserve(el);
-        const target=parseInt(el.textContent);
-        if(isNaN(target)||target<=0)return;
-        const duration=1200;
-        const start=performance.now();
-        el.classList.add('counter-animate');
-        function tick(now){
-            const elapsed=now-start;
-            const progress=Math.min(elapsed/duration,1);
-            const eased=1-Math.pow(1-progress,3);
-            el.textContent=Math.round(target*eased);
-            if(progress<1)requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-    });
-},{threshold:.5});
-function observeCounters(){
-    if(prefersReducedMotion)return;
-    document.querySelectorAll('.hsn[data-live]').forEach(el=>{
-        if(el.textContent!=='--')counterObserver.observe(el);
-    });
-}
-/* Counter observation wired into applyGitHubData directly */
-
-/* ===== THEME ENHANCEMENT 3: ANIMATED GRADIENT DIVIDERS ===== */
-/* Handled via CSS .dv::after animation */
-
-/* ===== CURSOR GLOW removed for performance ===== */
-
-/* ===== THEME ENHANCEMENT 5: TEXT SCRAMBLE ON HERO NAME ===== */
-(function(){
-    if(prefersReducedMotion)return;
-    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
-    const h1=document.querySelector('.hn');
-    if(!h1)return;
-    const spans=h1.querySelectorAll('span');
-    function scrambleElement(textNode,text,delay){
-        const parent=textNode.nodeType===3?textNode.parentNode:textNode;
-        const isSpan=parent.classList&&parent.classList.contains('a');
-        let frame=0;
-        const totalFrames=25;
-        function step(){
-            let out='';
-            for(let i=0;i<text.length;i++){
-                if(frame-delay/40>i*1.2)out+=text[i];
-                else out+=chars[Math.floor(Math.random()*chars.length)];
-            }
-            if(isSpan)parent.textContent=out;
-            else{
-                const walker=document.createTreeWalker(h1,NodeFilter.SHOW_TEXT);
-                let node;
-                while(node=walker.nextNode()){
-                    if(node.parentNode===h1){node.textContent=out;break;}
-                }
-            }
-            frame++;
-            if(frame<totalFrames+text.length)requestAnimationFrame(step);
-            else{
-                if(isSpan)parent.textContent=text;
-                else{
-                    const walker=document.createTreeWalker(h1,NodeFilter.SHOW_TEXT);
-                    let node;
-                    while(node=walker.nextNode()){
-                        if(node.parentNode===h1){node.textContent=text;break;}
-                    }
-                }
-            }
-        }
-        setTimeout(step,delay);
-    }
-    setTimeout(()=>{
-        scrambleElement(h1,'Matt ',800);
-        scrambleElement(spans[0],'Parker',1000);
-    },600);
-})();
-
 /* ===== ANIMATED SLIDING NAV INDICATOR ===== */
 (function(){
     const indicator=document.getElementById('navIndicator');
@@ -826,143 +657,6 @@ function observeCounters(){
     document.querySelectorAll('.nk a').forEach(a=>{
         navMO.observe(a,{attributes:true,attributeFilter:['class']});
     });
-})();
-
-/* ===== SHOOTING STARS (desktop only) ===== */
-(function(){
-    if(isMobile||prefersReducedMotion)return;
-    let starTimer=0;
-    function clearStarTimer(){if(starTimer){clearTimeout(starTimer);starTimer=0}}
-    function launchStar(){
-        const star=document.createElement('div');
-        star.className='shooting-star';
-        document.body.appendChild(star);
-        // Random angle between 15-55 degrees, varied directions
-        const goRight=Math.random()>.3;
-        const angle=15+Math.random()*40;
-        const rad=angle*Math.PI/180;
-        // Start off-screen
-        const startX=goRight?-150:window.innerWidth+150;
-        const startY=Math.random()*window.innerHeight*.5-100;
-        const dirX=goRight?1:-1;
-        // Slower speed, longer travel
-        const speed=2+Math.random()*3;
-        const totalDist=500+Math.random()*600;
-        const duration=totalDist/speed*16;
-        // Longer trail
-        star.style.width=(120+Math.random()*100)+'px';
-        star.style.left=startX+'px';
-        star.style.top=startY+'px';
-        star.style.transform='rotate('+(goRight?1:-1)*angle+'deg)'+(goRight?'':' scaleX(-1)');
-        let startTime=null;
-        function animate(ts){
-            if(!startTime)startTime=ts;
-            const elapsed=ts-startTime;
-            const progress=elapsed/duration;
-            if(progress>=1){star.remove();return;}
-            const traveled=speed*(elapsed/16);
-            const x=startX+dirX*Math.cos(rad)*traveled;
-            const y=startY+Math.sin(rad)*traveled;
-            const fade=progress<.15?progress/0.15:progress>.5?Math.max(0,(1-progress)/.5):1;
-            star.style.left=x+'px';
-            star.style.top=y+'px';
-            star.style.opacity=fade*.55;
-            requestAnimationFrame(animate);
-        }
-        requestAnimationFrame(animate);
-    }
-    function scheduleNext(){
-        clearStarTimer();
-        if(document.hidden)return;
-        const delay=4000+Math.random()*12000;
-        starTimer=setTimeout(()=>{starTimer=0;if(document.hidden)return;launchStar();scheduleNext()},delay);
-    }
-    document.addEventListener('visibilitychange',()=>{if(document.hidden){clearStarTimer();return;}scheduleNext()});
-    starTimer=setTimeout(()=>{starTimer=0;if(document.hidden)return;launchStar();scheduleNext()},5000);
-})();
-
-/* ===== THEME ENHANCEMENT 10: STAGGERED HERO ENTRANCE ===== */
-(function(){
-    const heroEls=['.hero-avatar','.htag','.hn','.hr','.hd','.hs','.last-active','.ha','.term'];
-    heroEls.forEach((sel,i)=>{
-        const el=document.querySelector('.hero '+sel);
-        if(el){
-            el.classList.add('hero-anim');
-            el.style.transitionDelay=(i*120)+'ms';
-        }
-    });
-    function triggerHeroEntrance(){
-        heroEls.forEach(sel=>{
-            const el=document.querySelector('.hero '+sel);
-            if(el)el.classList.add('entered');
-        });
-    }
-    const loaderCheck=setInterval(()=>{
-        const loader=document.getElementById('loader');
-        if(!loader||loader.classList.contains('hidden')){
-            clearInterval(loaderCheck);
-            setTimeout(triggerHeroEntrance,200);
-        }
-    },100);
-})();
-
-/* ===== CUSTOM CURSOR ===== */
-if(!isMobile&&!prefersReducedMotion){
-    const dot=document.getElementById('ccDot'),ring=document.getElementById('ccRing');
-    if(dot&&ring){
-        let rx=0,ry=0,ringRunning=false;
-        document.body.classList.add('custom-cursor');
-        mouseFns.push(m=>{dot.style.left=m.x+'px';dot.style.top=m.y+'px';dot.style.opacity='1';ring.style.opacity='1';if(!ringRunning){ringRunning=true;trackRing()}});
-        function trackRing(){
-            rx+=(mouseState.x-rx)*.15;ry+=(mouseState.y-ry)*.15;
-            ring.style.left=rx+'px';ring.style.top=ry+'px';
-            if(Math.abs(mouseState.x-rx)>.5||Math.abs(mouseState.y-ry)>.5)requestAnimationFrame(trackRing);
-            else ringRunning=false;
-        }
-        document.addEventListener('mouseover',e=>{
-            const t=getClosestTarget(e.target,'a,button,input,select,.pc,.lc2,.skc,.video-card,.album-card,.ca,.cnc,.fb,.btn,.prc');
-            if(t){dot.classList.add('hovering');ring.classList.add('hovering')}else{dot.classList.remove('hovering');ring.classList.remove('hovering')}
-        });
-        document.addEventListener('mouseleave',()=>{dot.style.opacity='0';ring.style.opacity='0'});
-        document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opacity='1'});
-    }
-}
-
-/* ===== MAGNETIC BUTTONS ===== */
-if(!isMobile&&!prefersReducedMotion){
-    let magBtn=null;
-    document.addEventListener('mouseover',e=>{const b=getClosestTarget(e.target,'.btn');if(b)magBtn=b});
-    document.addEventListener('mouseout',e=>{const b=getClosestTarget(e.target,'.btn');if(b&&b===magBtn){b.style.transform='';magBtn=null}});
-    mouseFns.push(m=>{
-        if(!magBtn)return;
-        const r=magBtn.getBoundingClientRect();
-        magBtn.style.transform=`translate(${(m.x-r.left-r.width/2)*.2}px,${(m.y-r.top-r.height/2)*.2}px)`;
-    });
-}
-
-/* ===== CARD SPOTLIGHT (lightweight radial gradient) ===== */
-if(!isMobile&&!prefersReducedMotion){
-    let spotCard=null;
-    document.addEventListener('mouseover',e=>{const c=getClosestTarget(e.target,'.pc,.lc2,.skc,.video-card,.prc');if(c)spotCard=c});
-    document.addEventListener('mouseout',e=>{const c=getClosestTarget(e.target,'.pc,.lc2,.skc,.video-card,.prc');if(c&&c===spotCard){c.style.setProperty('--spot-opacity','0');spotCard=null}});
-    mouseFns.push(m=>{if(!spotCard)return;const r=spotCard.getBoundingClientRect();spotCard.style.setProperty('--spot-x',(m.x-r.left)+'px');spotCard.style.setProperty('--spot-y',(m.y-r.top)+'px');spotCard.style.setProperty('--spot-opacity','1')});
-}
-
-/* ===== PARALLAX DEPTH removed for performance ===== */
-
-/* ===== TIME-AWARE GREETING ===== */
-(function(){
-    const hr=new Date().getHours();
-    let greeting,glow;
-    if(hr>=5&&hr<12){greeting='Good morning';glow='warm-morning'}
-    else if(hr>=12&&hr<17){greeting='Good afternoon';glow='warm-afternoon'}
-    else if(hr>=17&&hr<21){greeting='Good evening';glow='warm-evening'}
-    else{greeting='Night owl mode';glow='night'}
-    const sub=document.querySelector('.hr');
-    if(sub)sub.innerHTML=greeting+'. <span style="color:var(--t2)">Sr. Systems Administrator &amp; Builder</span>';
-    if(hr>=19||hr<6){
-        document.documentElement.style.setProperty('--blue-glow','rgba(130,100,255,.25)');
-    }
 })();
 
 /* ===== INTERACTIVE TERMINAL ===== */
@@ -1009,22 +703,22 @@ function onTermReady(){
         return exact.concat(partial).slice(0,3);
     }
     const commands={
-        help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Repository stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
+        help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Project stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">open</span>      Open a project page\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
         whoami:()=>'<span class="cmd-val">Matt Parker</span> - Sr. Systems Administrator & Builder\nHealthcare IT | Medical Imaging | Open Source\nPhilosophy: Dark theme. Works on first launch.',
         skills:()=>'<span class="cmd-name">PowerShell</span>  WPF, Automation\n<span class="cmd-name">Python</span>      PyQt6, CLI Tools\n<span class="cmd-name">JavaScript</span>  Userscripts, Web Apps\n<span class="cmd-name">Kotlin</span>      Android Apps\n<span class="cmd-name">C#</span>          WinForms, .NET\n<span class="cmd-name">C++</span>         Desktop Apps\n<span class="cmd-name">HTML/CSS</span>    Single-file Apps',
-        repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public repositories\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
+        repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public projects\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
         ls:()=>'<span class="cmd-name">win11-nvme-driver-patcher</span>  NVMe driver patcher\n<span class="cmd-name">project-nomad-desktop</span>      Offline survival command center\n<span class="cmd-name">Astra-Deck</span>                 YouTube enhancement extension\n<span class="cmd-name">LibreSpot</span>                  Spotify customization\n<span class="cmd-name">Network_Security_Auditor</span>   67 security checks\n<span class="cmd-name">OpenCut</span>                    AI video editing for Premiere',
         uptime:()=>{const d=Date.now()-pageLoadTime;const m=Math.floor(d/60000);const s=Math.floor((d%60000)/1000);return'Page uptime: <span class="cmd-val">'+m+'m '+s+'s</span>'},
         date:()=>'<span class="cmd-val">'+terminalDateFormatter.format(new Date())+'</span>',
-        neofetch:()=>'<span class="cmd-name">matt@sysadmin</span>\n--------------\n<span class="cmd-name">OS:</span>        <span class="cmd-val">Portfolio v3.0</span>\n<span class="cmd-name">Host:</span>      <span class="cmd-val">GitHub Pages</span>\n<span class="cmd-name">Shell:</span>     <span class="cmd-val">HTML/CSS/JS</span>\n<span class="cmd-name">Theme:</span>     <span class="cmd-val">Deep Dark Glassmorphism</span>\n<span class="cmd-name">Repos:</span>     <span class="cmd-val">'+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+'</span>\n<span class="cmd-name">Stars:</span>     <span class="cmd-val">'+(document.getElementById('statStars')?document.getElementById('statStars').textContent:'--')+'</span>\n<span class="cmd-name">Uptime:</span>    <span class="cmd-val">Always on</span>',
+        neofetch:()=>'<span class="cmd-name">matt@sysadmin</span>\n--------------\n<span class="cmd-name">OS:</span>        <span class="cmd-val">Portfolio v3.0</span>\n<span class="cmd-name">Host:</span>      <span class="cmd-val">GitHub Pages</span>\n<span class="cmd-name">Shell:</span>     <span class="cmd-val">HTML/CSS/JS</span>\n<span class="cmd-name">Theme:</span>     <span class="cmd-val">Dark by default, light available</span>\n<span class="cmd-name">Projects:</span>  <span class="cmd-val">'+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+'</span>\n<span class="cmd-name">Stars:</span>     <span class="cmd-val">'+(document.getElementById('statStars')?document.getElementById('statStars').textContent:'--')+'</span>\n<span class="cmd-name">Uptime:</span>    <span class="cmd-val">Always on</span>',
         clear:()=>'__CLEAR__',
-        cd:()=>'Nowhere to go \u2014 this is a single-page portfolio ;)',
-        sudo:()=>'Nice try.',
-        'rm':()=>'Absolutely not.',
-        exit:()=>'There is no escape.',
-        cat:()=>'Try <span class="cmd-name">neofetch</span> or <span class="cmd-name">whoami</span> instead.',
+        cd:()=>'There is only one workspace here.',
+        sudo:()=>'No elevated mode in the browser.',
+        'rm':()=>'Disabled.',
+        exit:()=>'Use the navigation to keep exploring.',
+        cat:()=>'Try <span class="cmd-name">neofetch</span>, <span class="cmd-name">whoami</span>, or <span class="cmd-name">open</span> &lt;project-name&gt;.',
         pwd:()=>'/home/matt/portfolio',
-        git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' repos',
+        git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' projects',
         open:(args)=>{
             const query=Array.isArray(args)?args.join(' ').trim():'';
             if(!query)return'Usage: open &lt;project-name&gt;';
@@ -1131,130 +825,6 @@ function onTermReady(){
         setTimeout(()=>{overlay.remove();style.remove()},6000);
     }
 })();
-
-/* ===== ANIMATED SEARCH PLACEHOLDER ===== */
-(function(){
-    const input=document.getElementById('searchInput');
-    if(!input||prefersReducedMotion)return;
-    const phrases=['firewall','YouTube','screenshot','dark theme','Android','Spotify','NVMe','image editor','bookmark','OSINT'];
-    let pi=0,ci=0,deleting=false;
-    let timer=0;
-    const base='Search repositories…';
-    function queue(nextDelay){clearTimeout(timer);timer=setTimeout(typeSearch,nextDelay)}
-    function typeSearch(){
-        if(document.hidden){queue(1200);return;}
-        if(!document.activeElement||document.activeElement!==input){
-            const word=phrases[pi];
-            if(!deleting){
-                ci++;
-                input.placeholder='Try "'+word.substring(0,ci)+'"';
-                if(ci>=word.length){deleting=true;queue(1800);return}
-            }else{
-                ci--;
-                input.placeholder=ci>0?'Try "'+word.substring(0,ci)+'"':base;
-                if(ci<=0){deleting=false;pi=(pi+1)%phrases.length;queue(600);return}
-            }
-        }
-        queue(deleting?40:100);
-    }
-    queue(3000);
-    input.addEventListener('focus',()=>{clearTimeout(timer);input.placeholder=base});
-    input.addEventListener('blur',()=>{if(!input.value){input.placeholder=base;queue(1200)}});
-    document.addEventListener('visibilitychange',()=>{
-        if(document.hidden){clearTimeout(timer);return;}
-        if(document.activeElement!==input&&!input.value)queue(1200);
-    });
-})();
-
-/* ===== GITHUB LAST ACTIVE (cached 30 min) ===== */
-async function fetchLastActive(){
-    const CACHE_KEY='gh_events_cache';const TTL=1800000;
-    const wrap=document.getElementById('lastActive');
-    try{
-        const cached=readJsonCache(CACHE_KEY);
-        let events;
-        if(cached&&Date.now()-cached.ts<TTL&&Array.isArray(cached.data)){events=cached.data}
-        else{
-            const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/events/public?per_page=100',void 0,10000);
-            if(!r.ok)throw new Error('GitHub events unavailable');
-            events=await r.json();
-            if(!Array.isArray(events))throw new Error('Unexpected GitHub events payload');
-            writeJsonCache(CACHE_KEY,{data:events,ts:Date.now()});
-        }
-        if(!events.length)throw new Error('No GitHub events available');
-        const pushEvents=events.filter(e=>e&&e.type==='PushEvent'&&e.created_at);
-        const lastEvent=events.find(ev=>ev&&ev.created_at);
-        if(!lastEvent)throw new Error('No usable GitHub events available');
-        const last=new Date(lastEvent.created_at);
-        if(Number.isNaN(last.getTime()))throw new Error('Invalid GitHub event timestamp');
-        const now=new Date();
-        const el=document.getElementById('lastActiveText');
-        if(el)el.textContent=formatActivityAge(last,now);
-        if(wrap)wrap.hidden=false;
-        const push=pushEvents[0];
-        if(push){
-            const repoName=push.repo&&typeof push.repo.name==='string'?push.repo.name.split('/')[1]:'';
-            const repo=safeRepo(repoName);
-            const tag=document.getElementById('heroTag');
-            if(tag&&repo){
-                tag.textContent='';
-                const dot=document.createElement('span');dot.className='dot';
-                const strong=document.createElement('strong');
-                strong.style.color='var(--t1)';strong.textContent=repo;
-                tag.appendChild(dot);
-                tag.appendChild(document.createTextNode(' Now building: '));
-                tag.appendChild(strong);
-            }
-        }
-        // Compute commit streak from events
-        const daySet=new Set();
-        pushEvents.forEach(function(ev){
-            const key=getUtcDayKey(ev.created_at);
-            if(key)daySet.add(key);
-        });
-        var streak=0,started=false;
-        for(var i=0;i<90;i++){
-            var sd=new Date(now);sd.setUTCDate(sd.getUTCDate()-i);
-            var dayKey=getUtcDayKey(sd);
-            if(daySet.has(dayKey)){started=true;streak++}
-            else if(started)break;
-        }
-        var badge=document.getElementById('streakBadge');
-        if(badge&&streak>=2){
-            badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M9.533.753V1.91c0 .033.013.065.036.09.082.09.122.21.122.34 0 .263-.199.488-.462.522C7.592 3.08 6.307 4.271 5.8 5.82c-.053.162-.098.327-.137.494a5.937 5.937 0 00-.14 1.278c0 .157.004.313.014.468.016.285.054.572.116.86.045.218.103.432.174.641C6.473 11.336 8.133 12.688 10.1 12.688c.57 0 1.138-.122 1.657-.361.14-.065.28-.14.413-.224a4.39 4.39 0 001.053-.907c.069-.083.164-.116.247-.08.09.04.14.14.12.237a6.063 6.063 0 01-.63 1.897c-.29.484-.65.92-1.07 1.297-.42.377-.9.685-1.42.91a4.93 4.93 0 01-1.83.344c-1.172 0-2.2-.442-2.983-1.172-.783-.73-1.343-1.754-1.609-2.96A9.2 9.2 0 013.8 10.6c0-2.9 1.356-5.513 3.465-7.168a.283.283 0 01.17-.058c.155 0 .273.127.273.283v.02c0 .058-.017.112-.047.158-.487.72-.806 1.57-.922 2.48a.267.267 0 00.082.238.246.246 0 00.24.044C8.494 6.12 9.54 5.05 9.99 3.69a6.57 6.57 0 00.275-1.592c.013-.22.02-.44.02-.662 0-.257-.01-.512-.03-.764a.282.282 0 01.278-.3z"/></svg> '+streak+'-day streak';
-        }
-        // Recently Pushed Ribbon
-        var ribbon=document.getElementById('pushRibbon');
-        if(ribbon){
-            var seen={};var chips=[];
-            pushEvents.forEach(function(ev){
-                var repoName=ev.repo&&typeof ev.repo.name==='string'?ev.repo.name.split('/')[1]:'';
-                if(!repoName||seen[repoName])return;seen[repoName]=1;
-                if(chips.length>=8)return;
-                var d=new Date(ev.created_at);
-                if(Number.isNaN(d.getTime()))return;
-                var ago=Math.max(0,Math.floor((now-d)/60000));
-                var timeStr;
-                if(ago<60)timeStr=ago+'m ago';
-                else if(ago<1440)timeStr=Math.floor(ago/60)+'h ago';
-                else timeStr=Math.floor(ago/1440)+'d ago';
-                var srepo=safeRepo(repoName);if(!srepo)return;
-                chips.push('<a href="https://github.com/SysAdminDoc/'+srepo+'" target="_blank" rel="noopener" class="push-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4"/></svg>'+escapeHTML(srepo)+'<span class="push-time">'+escapeHTML(timeStr)+'</span></a>');
-            });
-            if(chips.length>0){
-                var html=chips.join('');
-                // First copy visible; second copy aria-hidden (marquee loop continuity)
-                ribbon.innerHTML='<div class="push-ribbon-inner">'+html+'<div aria-hidden="true" style="display:contents">'+html+'</div></div>';
-                ribbon.style.display='';
-            }
-        }
-    }catch(e){
-        const el=document.getElementById('lastActiveText');
-        if(el)el.textContent='Building something right now, probably';
-        if(wrap)wrap.hidden=false;
-    }
-}
-scheduleIdle(fetchLastActive,1600);
 
 /* ===== HERO AVATAR (cached 30 min) ===== */
 (function(){

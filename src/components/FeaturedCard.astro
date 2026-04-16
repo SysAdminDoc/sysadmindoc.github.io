@@ -15,6 +15,7 @@ if (project.bento === 'hero') classes.push('bento-hero');
   href={`/projects/${project.repo}/`}
   class={classes.join(' ')}
   data-repo={project.repo}
+  aria-label={`${project.name}. Featured ${project.langLabel} project.`}
 >
   <div class="ct">
     <div class={`ci ${project.lang}`}>{project.langLabel}</div>
@@ -26,7 +27,7 @@ if (project.bento === 'hero') classes.push('bento-hero');
     {project.tags.map((t) => <span class="ctg">{t}</span>)}
   </div>
   <div class="pc-foot" aria-hidden="true">
-    <span class="pc-foot-copy">Project detail</span>
-    <span class="pc-foot-cta">Open case file</span>
+    <span class="pc-foot-copy">Featured project</span>
+    <span class="pc-foot-cta">Open project overview</span>
   </div>
 </a>
