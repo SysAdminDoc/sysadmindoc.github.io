@@ -28,7 +28,7 @@
         .nl{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--grn);text-decoration:none;text-shadow:0 0 20px var(--grn-glow)}.nl span{color:var(--t3)}
         .nk{display:flex;gap:4px}.nk a{font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 12px;border-radius:6px;transition:color .25s ease,background-color .25s ease,box-shadow .25s ease}.nk a:hover,.nk a.active{color:var(--t1);background:rgba(88,130,200,.1)}
         .ng{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--t2);text-decoration:none;padding:6px 14px;border-radius:6px;border:1px solid var(--glass-border);transition:color .3s ease,background-color .3s ease,border-color .3s ease,box-shadow .3s ease,transform .3s ease;background:var(--glass)}.ng:hover{color:var(--t1);border-color:var(--brdb);background:var(--glass-hover);box-shadow:0 0 20px rgba(88,166,255,.08)}.ng svg{width:16px;height:16px;fill:currentColor}
-        .mt{display:none;background:none;border:none;cursor:pointer;color:var(--t2);padding:4px}.mt svg{width:24px;height:24px;stroke:currentColor;fill:none}
+        .mt{display:none;background:none;border:none;cursor:pointer;color:var(--t2);padding:4px;position:relative;width:40px;height:40px;border-radius:999px;transition:color .2s ease,background-color .2s ease}.mt:hover{color:var(--t1);background:var(--glass-hover)}.mt svg{width:24px;height:24px;stroke:currentColor;fill:none}.mt line{transition:transform .25s ease,opacity .15s ease;transform-origin:center}
 
         /* Hero */
         .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:80px 24px 60px}
@@ -3051,5 +3051,240 @@ html[data-theme="light"] .fb{
   .lang-card,
   .hcit-card{
     padding:20px;
+  }
+}
+
+/* ===== v1.0.2 premium polish continuation ===== */
+
+/* Hamburger → X animation on mobile toggle */
+.mt[aria-expanded="true"] line:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.mt[aria-expanded="true"] line:nth-child(2){opacity:0;transform:scaleX(0)}
+.mt[aria-expanded="true"] line:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* Hero terminal focus ring */
+.term:focus-visible{
+  outline:2px solid var(--grn);
+  outline-offset:3px;
+}
+
+/* Chord hint toast — accessible live region */
+#chordHint{
+  /* Base styles set in JS; add polish here */
+  border-radius:14px!important;
+  border:1px solid var(--border-soft)!important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+/* Footer bottom padding — prevent content clipping at viewport bottom */
+footer{
+  padding-bottom:max(32px, env(safe-area-inset-bottom, 0px));
+}
+.route-interior footer{
+  padding-bottom:max(28px, env(safe-area-inset-bottom, 0px));
+}
+
+/* Command palette — premium scrollbar inside results list */
+.cmdk-list::-webkit-scrollbar{width:4px}
+.cmdk-list::-webkit-scrollbar-track{background:transparent}
+.cmdk-list::-webkit-scrollbar-thumb{background:rgba(124,184,255,.2);border-radius:2px}
+.cmdk-list::-webkit-scrollbar-thumb:hover{background:rgba(124,184,255,.35)}
+.cmdk-list{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(124,184,255,.2) transparent;
+}
+
+/* Command palette — auto-scroll selected item into view smoother */
+.cmdk-item{
+  scroll-margin-block:8px;
+}
+
+/* Command palette — empty state icon + density */
+.cmdk-empty{
+  padding:36px 28px;
+  font-size:15px;
+  color:var(--t3);
+}
+
+/* Now-grid spacing — tighter approach to divider */
+.now-grid{
+  margin-top:0;
+}
+
+/* Interior page section headings — consistent h2 spacing */
+.hcit-h2,
+.lang-h2{
+  margin-bottom:22px;
+  margin-top:0;
+}
+
+/* Light theme — command palette refinement */
+html[data-theme="light"] .cmdk{
+  background:var(--bg);
+  box-shadow:0 24px 64px rgba(29,42,70,.22),0 0 0 1px var(--border-soft);
+}
+html[data-theme="light"] .cmdk-input-row{
+  border-bottom-color:var(--border-soft);
+}
+html[data-theme="light"] .cmdk-footer{
+  border-top-color:var(--border-soft);
+  background:rgba(0,0,0,.02);
+}
+html[data-theme="light"] .cmdk-kbd,
+html[data-theme="light"] .cmdk-footer kbd{
+  border-color:var(--border-soft);
+  background:var(--bg2);
+}
+html[data-theme="light"] .cmdk-item[aria-selected="true"],
+html[data-theme="light"] .cmdk-item:hover{
+  background:var(--glass-hover);
+}
+
+/* Light theme — mobile nav dropdown */
+html[data-theme="light"] .nk.open{
+  background:rgba(248,244,234,.96);
+}
+
+/* Light theme — hero stage and terminal */
+html[data-theme="light"] .hero-stage{
+  background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(247,241,231,.64));
+  box-shadow:0 28px 64px rgba(29,42,70,.14);
+}
+html[data-theme="light"] .hero-terminal-shell{
+  background:rgba(9,16,29,.06);
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .hero-stage .term{
+  background:rgba(9,16,29,.06);
+  border-color:var(--border-soft);
+  box-shadow:0 12px 28px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .hero-reel-item{
+  border-color:var(--border-soft);
+  background:rgba(0,0,0,.02);
+}
+html[data-theme="light"] .hero-reel-item:hover{
+  background:rgba(0,0,0,.04);
+}
+
+/* Light theme — catalog + card surfaces */
+html[data-theme="light"] .pc,
+html[data-theme="light"] .lc2,
+html[data-theme="light"] .skc,
+html[data-theme="light"] .prc,
+html[data-theme="light"] .cnc,
+html[data-theme="light"] .video-card,
+html[data-theme="light"] .album-card,
+html[data-theme="light"] .music-hero,
+html[data-theme="light"] .spotify-embed-wrap{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 16px 36px rgba(29,42,70,.1);
+}
+html[data-theme="light"] .pc:hover,
+html[data-theme="light"] .lc2:hover,
+html[data-theme="light"] .skc:hover,
+html[data-theme="light"] .prc:hover,
+html[data-theme="light"] .cnc:hover{
+  box-shadow:0 22px 48px rgba(29,42,70,.14);
+}
+
+/* Light theme — page panels and stat cards */
+html[data-theme="light"] .page-stat,
+html[data-theme="light"] .page-panel,
+html[data-theme="light"] .page-jump-nav,
+html[data-theme="light"] .now-section,
+html[data-theme="light"] .now-pulse-item,
+html[data-theme="light"] .rel-month-shell,
+html[data-theme="light"] .hcit-card,
+html[data-theme="light"] .hcit-why,
+html[data-theme="light"] .lang-card,
+html[data-theme="light"] .lang-hero-surface,
+html[data-theme="light"] .lang-hero-signal,
+html[data-theme="light"] .about-signal,
+html[data-theme="light"] .about-link,
+html[data-theme="light"] .about-terminal,
+html[data-theme="light"] .philosophy-intro,
+html[data-theme="light"] .beyond-card,
+html[data-theme="light"] .stack-overview,
+html[data-theme="light"] .lang-donut-panel,
+html[data-theme="light"] .project-header,
+html[data-theme="light"] .project-fact,
+html[data-theme="light"] .project-outline,
+html[data-theme="light"] .catalog-feedback,
+html[data-theme="light"] .no-results{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 14px 32px rgba(29,42,70,.08);
+}
+
+/* Light theme — footer */
+html[data-theme="light"] footer{
+  border-top-color:var(--border-soft);
+}
+
+/* Light theme — back-to-top button */
+html[data-theme="light"] .btt{
+  background:rgba(255,255,255,.82);
+  border-color:var(--border-soft);
+}
+
+/* Light theme — grid overlay & hero glows */
+html[data-theme="light"] body::before{
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
+  opacity:.18;
+}
+html[data-theme="light"] .hero-grid{
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
+  opacity:.2;
+}
+html[data-theme="light"] .hero::before{
+  background:radial-gradient(circle, rgba(124,184,255,.12) 0%, rgba(124,184,255,.04) 32%, transparent 70%);
+}
+html[data-theme="light"] .hero::after{
+  background:radial-gradient(circle, rgba(198,156,255,.1) 0%, rgba(88,229,214,.06) 28%, transparent 70%);
+}
+
+/* Light theme — connect section */
+html[data-theme="light"] #connect .si{
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(247,241,231,.68));
+  box-shadow:0 24px 56px rgba(29,42,70,.1);
+}
+
+/* Light theme — journey cards */
+html[data-theme="light"] .ji:hover,
+html[data-theme="light"] .ji:focus-visible{
+  background:rgba(255,255,255,.6);
+  box-shadow:0 14px 28px rgba(29,42,70,.08);
+}
+
+/* Light theme — journey line */
+html[data-theme="light"] .jw::before{
+  opacity:.35;
+}
+
+/* Light theme — film grain off */
+html[data-theme="light"] body::after{
+  opacity:.015;
+}
+
+/* Light theme — scroll progress less saturated */
+html[data-theme="light"] .scroll-progress{
+  opacity:.7;
+}
+
+/* Smooth focus for page-jump-link on touch */
+@media(pointer:coarse){
+  .page-jump-link{
+    min-height:44px;
+    padding:12px 14px;
+  }
+  .hero-signal{
+    min-height:48px;
+  }
+  .hero-pulse .pulse-item{
+    min-height:44px;
   }
 }
