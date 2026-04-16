@@ -21,3 +21,12 @@ src/data/_readmes.json
 _extracted.json
 CLAUDE.md
 CODEX_CHANGELOG.md
+
+# Personal resume files - never commit
+resume/
+*.docx
+*.DOCX
+*.doc
+*.DOC
+*.pdf
+*.PDF

@@ -134,8 +134,8 @@ const cmdkQuickLinks = [
 ] as const;
 
 const {
-  title = 'Matt Parker — Systems Administrator & Builder',
-  description = 'Portfolio of Matt Parker — open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+  title = 'Matt Parker — Senior Technical Support Manager & Builder',
+  description = 'Portfolio of Matt Parker — 15+ years in enterprise IT and medical imaging (DICOM/PACS), plus open-source projects across PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
   ogImage = '/og.png',
   cmdkSections = defaultCmdkSections,
 } = Astro.props;
@@ -197,7 +197,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
     '@context': 'https://schema.org',
     '@graph': [
       { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },
-      { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc', jobTitle: 'Senior Systems Administrator', knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging'], sameAs: ['https://github.com/SysAdminDoc','https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW'] }
+      { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc', jobTitle: 'Senior Technical Support Manager', worksFor: { '@type': 'Organization', name: 'Maven Imaging' }, address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' }, knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging','DICOM','PACS','Active Directory','Hyper-V','Cisco Networking','HIPAA'], sameAs: ['https://github.com/SysAdminDoc','https://www.linkedin.com/in/matthewryanparker','https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW'] }
     ]
   })} />
 </head>
