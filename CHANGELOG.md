@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.12.1] - 2026-04-16
+
+**Remove `Scripts` and `ChanPrep` from the site.**
+
+- `Scripts` dropped from catalog (`ps`).
+- `ChanPrep` dropped from catalog (`web`, `live`) and from `liveApps`.
+- Dedicated `/projects/Scripts/` and `/projects/ChanPrep/` pages no longer built. Build: 153 → 151 pages.
+- `AmazonEnhanced` and `DuplicateFF` from the v0.12.0 pass stay.
+- Both repos are still public on GitHub — they just aren't surfaced in the portfolio.
+
 ## [v0.12.0] - 2026-04-16
 
 **Close the gap between GitHub repos and site catalog — every public project now has a dedicated page.**

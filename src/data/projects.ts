@@ -36,8 +36,7 @@ export const liveApps: LiveApp[] = [
   { slug: "UserScriptHunt", name: "UserScriptHunt", url: "https://sysadmindoc.github.io/UserScriptHunt/", desc: "Unified userscript search engine" },
   { slug: "SearchHub", name: "SearchHub", url: "https://sysadmindoc.github.io/SearchHub/", desc: "538 engines across 29 categories" },
   { slug: "NATO_PHONETIC_TRAINING", name: "NATO_PHONETIC_TRAINING", url: "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/", desc: "NATO phonetic alphabet trainer" },
-  { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" },
-  { slug: "ChanPrep", name: "ChanPrep", url: "https://sysadmindoc.github.io/ChanPrep/", desc: "Make any file fit any 4chan board &mdash; compress, convert, upload, entirely in-browser" }
+  { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" }
 ];
 
 export const catalog: CatalogEntry[] = [
@@ -69,7 +68,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "WinForge", name: "WinForge", url: "https://github.com/SysAdminDoc/WinForge", category: "ps", desc: "All-in-one Windows provisioning suite" },
   { repo: "WURepair", name: "WURepair", url: "https://github.com/SysAdminDoc/WURepair", category: "ps", desc: "Windows Update component repair" },
   { repo: "DuplicateFF", name: "DuplicateFF", url: "https://github.com/SysAdminDoc/DuplicateFF", category: "ps", desc: "Archived reference architecture for a duplicate-file finder" },
-  { repo: "Scripts", name: "Scripts", url: "https://github.com/SysAdminDoc/Scripts", category: "ps", desc: "Grab-bag of PowerShell + userscripts for sysadmin, debloating, network, security, and browser customization" },
   { repo: "project-nomad-desktop", name: "project-nomad-desktop", url: "https://github.com/SysAdminDoc/project-nomad-desktop", category: "py", desc: "Offline survival command center" },
   { repo: "GmailDownloader", name: "GmailDownloader", url: "https://github.com/SysAdminDoc/GmailDownloader", category: "py", desc: "Gmail mailbox downloader &amp; organizer" },
   { repo: "UniFile", name: "UniFile", url: "https://github.com/SysAdminDoc/UniFile", category: "py", desc: "AI-powered file organization" },
@@ -134,7 +132,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "kindred", name: "kindred", url: "https://github.com/SysAdminDoc/kindred", category: "web", desc: "Privacy-first dating platform" },
   { repo: "ConvertFlow", name: "ConvertFlow", url: "https://sysadmindoc.github.io/ConvertFlow/", category: "web", desc: "Browser media converter", live: true },
   { repo: "ImageXpert", name: "ImageXpert", url: "https://sysadmindoc.github.io/ImageXpert/", category: "web", desc: "Multi-engine reverse image search", live: true },
-  { repo: "ChanPrep", name: "ChanPrep", url: "https://sysadmindoc.github.io/ChanPrep/", category: "web", desc: "Drag, drop, done &mdash; compresses + converts any file to fit any 4chan board, with one-click Catbox upload. Entirely in-browser.", live: true },
   { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
   { repo: "NDNS", name: "NDNS", url: "https://github.com/SysAdminDoc/NDNS", category: "ext", desc: "NextDNS floating panel & analytics" },
   { repo: "BackgroundSearch", name: "BackgroundSearch", url: "https://github.com/SysAdminDoc/BackgroundSearch", category: "ext", desc: "Background tab opener extension" },
