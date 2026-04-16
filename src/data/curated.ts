@@ -79,7 +79,7 @@ export const manifesto: ManifestoRule[] = [
  */
 export const healthcareIT = {
   intro:
-    "I spent years in the deep end of healthcare IT — provisioning workstations, managing networks, and keeping medical imaging systems running for clinics that can't afford downtime. Everything here started as a real production problem.",
+    "I'm the Senior Technical Support Manager at Maven Imaging — medical imaging equipment, PACS, DR panels, and cloud-based diagnostic archiving. My day job is PACS migrations (OpalRad → Candelis, on-prem → RADinfo cloud), DR panel configurations, DICOM routing, VPN infrastructure, and keeping imaging systems up for clinics that can't afford downtime. Every tool here started as a real production problem.",
   repos: [
     'DICOM-PACS-Migrator',
     'XRayAcquisition',
@@ -93,8 +93,8 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-04-14',
-  location: 'Florida, USA',
+  updated: '2026-04-16',
+  location: 'Sarasota, FL',
   building: [
     'NovaCut v3.20 — shipping final competitor-inspired features, tightening Media3 1.9.2 integration',
     'project-nomad-desktop — Situation Room v6.24 polish (108 cards, 435 feeds)',
