@@ -143,3 +143,48 @@
     if(window.innerWidth > 640 && navLinks.classList.contains('open')) setMobileNav(false);
   });
 })();
+
+/* Shared scroll reveal for homepage + interior routes */
+(function(){
+  const revealItems = Array.from(document.querySelectorAll('.rv'));
+  const cardItems = Array.from(document.querySelectorAll('.card-enter'));
+  if(!revealItems.length && !cardItems.length) return;
+
+  const reduceMotion = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const revealNow = () => {
+    revealItems.forEach(el => el.classList.add('vis'));
+    cardItems.forEach(el => el.classList.add('vis'));
+  };
+
+  if(reduceMotion || typeof IntersectionObserver !== 'function'){
+    revealNow();
+    return;
+  }
+
+  if(revealItems.length){
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(!entry.isIntersecting) return;
+        entry.target.classList.add('vis');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: .08, rootMargin: '0px 0px -8% 0px' });
+    revealItems.forEach(item => revealObserver.observe(item));
+  }
+
+  if(cardItems.length){
+    const cardObserver = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting);
+      visible.forEach((entry, index) => {
+        const delay = Math.min(index * 55, 180);
+        window.setTimeout(() => {
+          entry.target.classList.add('vis');
+          cardObserver.unobserve(entry.target);
+        }, delay);
+      });
+    }, { threshold: .05, rootMargin: '0px 0px -6% 0px' });
+    cardItems.forEach(item => cardObserver.observe(item));
+  }
+})();

@@ -187,6 +187,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   {/* Async, non-blocking font loading — saves ~300ms FCP vs default stylesheet */}
   <link id="fontStylesheet" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
+  <noscript><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript>
   <script is:inline>var f=document.getElementById('fontStylesheet');if(f){f.addEventListener('load',function(){this.setAttribute('rel','stylesheet')},{once:true})}</script>
 
   {/* Theme init must run BEFORE first paint to avoid FOUC. Inline, sync, tiny. */}
