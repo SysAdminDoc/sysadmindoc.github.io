@@ -11,9 +11,17 @@ const langMap: Record<string, string> = {
   'Kotlin': 'kotlin',
   'C#': 'cs',
 };
+const fallbackHrefMap: Record<string, string> = {
+  'C#': '/?cat=cs#catalog',
+  'C++': '/?cat=cs#catalog',
+  'HTML / CSS': '/?cat=web#catalog',
+  pfSense: '/?cat=sec#catalog',
+};
 const slug = langMap[skill.name];
-const Tag = slug ? 'a' : 'div';
-const extra = slug ? { href: `/lang/${slug}/` } : {};
+const href = slug ? `/lang/${slug}/` : fallbackHrefMap[skill.name];
+const Tag = href ? 'a' : 'div';
+const extra = href ? { href } : {};
+const footLabel = slug ? 'Open track →' : href ? 'Open matches →' : 'Reference only';
 ---
 <Tag class="skc card-enter" {...extra}>
   <div class="sk-ring" style={`--ring-target:${skill.ringTarget}`}>
@@ -26,8 +34,8 @@ const extra = slug ? { href: `/lang/${slug}/` } : {};
   <div class="skn">{skill.name}</div>
   <div class="sks">{skill.sub}</div>
   <div class="skc-foot">
-    <span class="skc-meta">{slug ? 'Language Track' : 'Core Tooling'}</span>
-    {slug ? <div class="skc-more">Open the Lane →</div> : <div class="skc-more static">Reference Only</div>}
+    <span class="skc-meta">{slug ? 'Guided track' : 'Filtered archive'}</span>
+    <div class={`skc-more${href ? '' : ' static'}`}>{footLabel}</div>
   </div>
 </Tag>
 

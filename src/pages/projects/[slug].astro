@@ -1,13 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Divider from '../../components/Divider.astro';
+import InteriorNav from '../../components/InteriorNav.astro';
+import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { featured, liveApps, catalog } from '../../data/projects';
+import { healthcareIT } from '../../data/curated';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
+import { LANGS } from '../lang/_langs';
 
 export async function getStaticPaths() {
   // One page per unique repo across featured + liveApps + catalog
@@ -62,6 +66,7 @@ try {
   readmes = (mod.default ?? mod) as Record<string, string>;
 } catch {}
 let readmeHtml: string | null = null;
+let readmeOutline: Array<{ id: string; text: string; depth: number }> = [];
 const rawMd = readmes[slug];
 if (rawMd && rawMd.trim().length > 0) {
   // Rewrite relative links/images to point at GitHub raw so assets resolve.
@@ -69,6 +74,14 @@ if (rawMd && rawMd.trim().length > 0) {
   const blobBase = `https://github.com/SysAdminDoc/${slug}/blob/HEAD/`;
   const escapeAttr = (value: string) =>
     String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const stripHtml = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const decodeEntities = (value: string) =>
+    value
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
   marked.use({
     gfm: true,
     breaks: false,
@@ -93,7 +106,26 @@ if (rawMd && rawMd.trim().length > 0) {
     },
   });
   const rendered = await marked.parse(rawMd);
-  readmeHtml = sanitizeHtml(rendered as string, {
+  const headingCounts = new Map<string, number>();
+  const renderedWithHeadingIds = (rendered as string).replace(/<h([1-6])>([\s\S]*?)<\/h\1>/g, (_match, level, inner) => {
+    const depth = Number(level);
+    const text = decodeEntities(stripHtml(inner));
+    const baseId = text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'section';
+    const seen = headingCounts.get(baseId) ?? 0;
+    headingCounts.set(baseId, seen + 1);
+    const id = seen === 0 ? baseId : `${baseId}-${seen + 1}`;
+    if (text && depth <= 3) {
+      readmeOutline.push({ id, text, depth });
+    }
+    return `<h${depth} id="${escapeAttr(id)}">${inner}</h${depth}>`;
+  });
+  if (readmeOutline[0]?.depth === 1) {
+    readmeOutline = readmeOutline.slice(1);
+  }
+  readmeHtml = sanitizeHtml(renderedWithHeadingIds, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'picture', 'source', 'details', 'summary', 'kbd', 'del', 'input']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
@@ -158,6 +190,22 @@ const techChips = Array.from(new Set([
   categoryLabel[category] ?? null,
   ...tags,
 ].filter(Boolean))) as string[];
+const categoryTrackSlug: Record<string, string> = {
+  ps: 'powershell',
+  py: 'python',
+  ext: 'javascript',
+  web: 'web',
+  kt: 'kotlin',
+  cs: 'cs',
+  sec: 'security',
+};
+const inHealthcareTrack = healthcareIT.repos.includes(slug!);
+const categoryTrack = categoryTrackSlug[category];
+const relatedTrack = inHealthcareTrack
+  ? { href: '/healthcare-it/', label: 'Healthcare IT track' }
+  : categoryTrack
+    ? { href: `/lang/${categoryTrack}/`, label: `${LANGS[categoryTrack].label} lane` }
+    : null;
 const lastTouchedAt = metaMap[slug]?.updatedAt ?? metaMap[slug]?.pushedAt ?? null;
 const latestRelease = projectReleases[0] ?? null;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
@@ -168,11 +216,13 @@ const projectFacts = [
     detail: isLive ? 'Launches in the browser with no install wall.' : 'Browse code, README, and release notes on GitHub.',
   },
   {
-    label: 'Primary stack',
-    value: language ?? (categoryLabel[category] ?? 'Other'),
-    detail: language && categoryLabel[category] && language !== categoryLabel[category]
-      ? `${categoryLabel[category]} category`
-      : 'Catalog classification',
+    label: 'Primary lane',
+    value: relatedTrack?.label ?? language ?? (categoryLabel[category] ?? 'Other'),
+    detail: relatedTrack
+      ? 'The clearest adjacent context for this project inside the portfolio.'
+      : language && categoryLabel[category] && language !== categoryLabel[category]
+        ? `${categoryLabel[category]} category`
+        : 'Catalog classification',
   },
   {
     label: 'Freshness',
@@ -199,33 +249,53 @@ const related = catalog
   }))
   .sort((a, b) => (b._stars - a._stars) || (new Date(b._pushed).getTime() - new Date(a._pushed).getTime()))
   .slice(0, 4);
+const footerShortcuts = [
+  relatedTrack
+    ? { href: relatedTrack.href, label: relatedTrack.label, meta: 'Return to the lane that gives this project its clearest adjacent context.', external: false }
+    : { href: '/#catalog', label: 'Full Archive', meta: 'Step back into the broader catalog and compare this project against the rest.', external: false },
+  { href: '/releases/', label: 'Release Stream', meta: 'Track what is still shipping across this project and the surrounding portfolio.', external: false },
+  liveUrl
+    ? { href: liveUrl, label: 'Live Build', meta: 'Open the browser version directly and judge the experience in context.', external: true }
+    : { href: 'https://github.com/SysAdminDoc', label: 'GitHub Workspace', meta: 'Browse the wider source archive, issues, and project history.', external: true },
+] as const;
+const cmdkSections = [
+  { label: 'Overview', href: '#project-overview', desc: 'Project snapshot, delivery details, and primary actions.', badge: 'PROJECT' },
+  { label: hasScreenshot ? 'Live Preview' : 'Preview', href: '#project-preview', desc: hasScreenshot && isLive ? 'Captured product surface from the live build.' : 'Generated fallback card until a live capture is available.', badge: 'VISUAL' },
+  {
+    label: readmeHtml ? 'README' : 'Repository Notes',
+    href: readmeHtml ? '#project-readme' : '#project-notes',
+    desc: readmeHtml ? 'Cached project documentation cleaned up for in-site reading.' : 'Fallback notes when a cached README is not available yet.',
+    badge: 'DOCS',
+  },
+  ...(projectReleases.length > 0
+    ? [{ label: 'Recent Releases', href: '#project-releases', desc: 'Tagged release history pulled from GitHub for this project.', badge: 'RELEASES' }]
+    : []),
+  ...(related.length > 0
+    ? [{ label: 'More from This Lane', href: '#project-related', desc: 'Adjacent work from the same category, ranked by signal and freshness.', badge: 'RELATED' }]
+    : []),
+];
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
 ---
-<Base title={title} description={desc} ogImage={ogImage}>
+<Base title={title} description={desc} ogImage={ogImage} cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
-
-  <nav id="nav" aria-label="Main navigation">
-    <div class="ni">
-      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk" id="navLinks">
-        <a href="/#featured">Projects</a>
-        <a href="/#live">Live Apps</a>
-        <a href="/#catalog">Catalog</a>
-        <a href="/#about">About</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <a href="/" class="ng" aria-label="Home">← Home</a>
-        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      </div>
-    </div>
-  </nav>
+  <InteriorNav contextLabel={name} contextTone="slate" />
 
   <main id="main" class="project-page">
-    <div class="si" style="padding-top:100px">
-      <div class="project-header">
+    <div class="si page-shell">
+      <div class="project-header" id="project-overview">
+        <div class="project-breadcrumbs">
+          <a href="/#catalog" class="page-inline-link">Portfolio</a>
+          <span>/</span>
+          {relatedTrack ? (
+            <>
+              <a href={relatedTrack.href} class="page-inline-link">{relatedTrack.label}</a>
+              <span>/</span>
+            </>
+          ) : null}
+          <span>{name}</span>
+        </div>
         <div class="project-meta">
           <span class={`cdo ${category}`} style="display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px"></span>
           <span class="project-category">{category.toUpperCase()}</span>
@@ -239,16 +309,19 @@ const ogImage = `/og/${slug}.png`;
             {techChips.map((t) => <span class="ctg">{t}</span>)}
           </div>
         )}
-        <div class="project-actions">
+        <div class="project-actions page-actions">
           <a href={ghUrl} target="_blank" rel="noopener" class="btn bp">
             <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            View on GitHub
+            Open source on GitHub
           </a>
           {liveUrl && (
             <a href={liveUrl} target="_blank" rel="noopener" class="btn bg2">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-              Open live app
+              Open live build
             </a>
+          )}
+          {relatedTrack && (
+            <a href={relatedTrack.href} class="page-action-link">Open the {relatedTrack.label}</a>
           )}
           {starCount > 0 && (
             <span class="project-stars"><StarSvg /> {starCount}</span>
@@ -267,17 +340,18 @@ const ogImage = `/og/${slug}.png`;
             </div>
           ))}
         </div>
+        <SectionJumpNav items={cmdkSections} />
       </div>
     </div>
     <Divider />
 
     {/* Preview: live screenshot (if captured) or OG card */}
     <div class="si">
-      <div class="project-readme-wrap project-panel">
+      <div class="project-readme-wrap project-panel" id="project-preview">
         <div class="project-section-head">
           <div>
             <h2 class="project-section-title">{hasScreenshot ? 'Live Preview' : 'Preview'}</h2>
-            <p class="project-section-copy">{hasScreenshot && isLive ? 'Captured from the deployed app so you can judge the real product surface before opening it.' : 'Using the generated project card until a live capture is available.'}</p>
+            <p class="project-section-copy">{hasScreenshot && isLive ? 'Captured from the deployed app so you can judge the real product surface before opening it.' : 'Using the generated project card as a clean fallback until a live capture is available.'}</p>
           </div>
         </div>
         {hasScreenshot && isLive ? (
@@ -297,29 +371,61 @@ const ogImage = `/og/${slug}.png`;
 
     {readmeHtml && (
       <div class="si">
-        <div class="project-readme-wrap project-panel">
+        <div class="project-readme-wrap project-panel" id="project-readme">
           <div class="project-section-head">
             <div>
               <h2 class="project-section-title">README</h2>
               <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p>
             </div>
           </div>
-          <article class="project-readme" set:html={readmeHtml}></article>
+          <div class:list={['project-readme-layout', readmeOutline.length > 1 && 'has-outline']}>
+            {readmeOutline.length > 1 && (
+              <aside class="project-outline" aria-label="README outline">
+                <div class="project-outline-head">
+                  <span class="project-outline-kicker">README Outline</span>
+                  <p class="project-outline-copy">Jump directly into the parts of the documentation most worth reading.</p>
+                </div>
+                <nav class="project-outline-nav">
+                  {readmeOutline.map((item) => (
+                    <a href={`#${item.id}`} class={`project-outline-link depth-${Math.min(item.depth, 3)}`} data-outline-link={item.id}>
+                      <span>{item.text}</span>
+                    </a>
+                  ))}
+                </nav>
+              </aside>
+            )}
+            <article class="project-readme" set:html={readmeHtml}></article>
+          </div>
           <p class="project-readme-hint" style="margin-top:24px">
             Read on GitHub → <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>
           </p>
         </div>
       </div>
     )}
-    {readmeHtml && <Divider />}
+    {!readmeHtml && (
+      <div class="si">
+        <div class="project-readme-wrap project-panel" id="project-notes">
+          <div class="project-section-head">
+            <div>
+              <h2 class="project-section-title">Repository Notes</h2>
+              <p class="project-section-copy">GitHub metadata is available, but a readable cached README has not been pulled into the site yet.</p>
+            </div>
+          </div>
+          <div class="project-empty page-empty">
+            <strong>No cached README yet.</strong> Use the GitHub source and the release history below for the clearest current view of this project.
+          </div>
+        </div>
+      </div>
+    )}
+    <Divider />
 
     {projectReleases.length > 0 && (
       <div class="si">
-        <div class="project-readme-wrap project-panel">
+        <div class="project-readme-wrap project-panel" id="project-releases">
           <div class="project-section-head">
             <div>
               <h2 class="project-section-title">Recent Releases</h2>
-              <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this repo.</p>
+              <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this project.</p>
             </div>
           </div>
           <ul class="project-releases">
@@ -340,10 +446,10 @@ const ogImage = `/og/${slug}.png`;
 
     {related.length > 0 && (
       <div class="si">
-        <div class="project-readme-wrap project-panel">
+        <div class="project-readme-wrap project-panel" id="project-related">
           <div class="project-section-head">
             <div>
-              <h2 class="project-section-title">Related Projects</h2>
+              <h2 class="project-section-title">More from this lane</h2>
               <p class="project-section-copy">More work from the same lane, ranked by stars first and then by how recently it moved.</p>
             </div>
           </div>
@@ -351,8 +457,27 @@ const ogImage = `/og/${slug}.png`;
           {related.map((r) => (
             <a href={`/projects/${r.repo}/`} class="ca">
               <span class={`cdo ${r.category}`}></span>
-              <span class="cna">{r.name}</span>
-              <span class="cds" set:html={r.desc}></span>
+              <span class="ca-copy">
+                <span class="cna">
+                  <span class="cna-label">{r.name}</span>
+                  <span class="ca-kind">{categoryLabel[r.category] ?? r.category}</span>
+                </span>
+                <span class="cds" set:html={r.desc}></span>
+              </span>
+              <span class="ca-side">
+                {r._pushed !== '0' && (
+                  <time class="ca-age age-cool" datetime={r._pushed} data-rel-short={r._pushed}>
+                    {compactUtcDate.format(new Date(r._pushed))}
+                  </time>
+                )}
+                {r._stars > 0 && (
+                  <span class="ca-stars">
+                    <StarSvg />
+                    <span>{r._stars}</span>
+                  </span>
+                )}
+                {r.live && <span class="lb2">LIVE</span>}
+              </span>
             </a>
           ))}
         </div>
@@ -362,18 +487,131 @@ const ogImage = `/og/${slug}.png`;
   </main>
 
   <footer>
-    <div class="fi">
-      <div class="ft">
-        <a href="/" style="color:var(--t2)">← Back to portfolio</a>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft">
+          <a href="/" class="footer-backlink">← Back to portfolio</a>
+        </div>
+        <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p>
       </div>
-      <div class="fl"><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      <nav class="footer-actions" aria-label="Continue exploring">
+        <div class="footer-actions-head">
+          <span class="footer-actions-kicker">Continue Exploring</span>
+          <p class="footer-actions-copy">Move outward from the detail page into the lane, the shipping history, or the live product surface depending on what kind of context you need next.</p>
+        </div>
+        <div class="footer-shortcuts">
+          {footerShortcuts.map((link) => (
+            <a href={link.href} class="footer-shortcut" target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>
+              <span class="footer-shortcut-label">{link.label}</span>
+              <span class="footer-shortcut-meta">{link.meta}</span>
+            </a>
+          ))}
+        </div>
+        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      </nav>
     </div>
   </footer>
+
+  <script is:inline>
+    (() => {
+      const mountReadmeChrome = () => {
+        const article = document.querySelector('.project-readme');
+        const outlineLinks = Array.from(document.querySelectorAll('[data-outline-link]'));
+        if (!article || outlineLinks.length === 0) return;
+
+        const outlineHeadings = outlineLinks
+          .map((link) => {
+            const id = link.getAttribute('data-outline-link');
+            return id ? document.getElementById(id) : null;
+          })
+          .filter((heading) => heading instanceof HTMLElement);
+
+        if (outlineHeadings.length === 0) return;
+
+        const headingAnchors = Array.from(article.querySelectorAll('h1[id], h2[id], h3[id], h4[id]'));
+        headingAnchors.forEach((heading) => {
+          if (heading.querySelector('.project-heading-anchor')) return;
+          const headingId = heading.getAttribute('id');
+          const headingText = heading.textContent?.trim();
+          if (!headingId || !headingText) return;
+
+          const anchor = document.createElement('a');
+          anchor.href = `#${headingId}`;
+          anchor.className = 'project-heading-anchor';
+          anchor.setAttribute('aria-label', `Link to ${headingText}`);
+          anchor.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          `;
+          heading.append(anchor);
+        });
+
+        const setActive = (id) => {
+          outlineLinks.forEach((link) => {
+            const isActive = link.getAttribute('data-outline-link') === id;
+            link.classList.toggle('is-active', isActive);
+            if (isActive) {
+              link.setAttribute('aria-current', 'location');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        };
+
+        let frame = 0;
+        const syncActiveHeading = () => {
+          let currentId = outlineHeadings[0]?.id ?? '';
+          for (const heading of outlineHeadings) {
+            if (heading.getBoundingClientRect().top <= 164) {
+              currentId = heading.id;
+            } else {
+              break;
+            }
+          }
+          if (currentId) setActive(currentId);
+        };
+
+        const scheduleSync = () => {
+          if (frame) return;
+          frame = window.requestAnimationFrame(() => {
+            frame = 0;
+            syncActiveHeading();
+          });
+        };
+
+        outlineLinks.forEach((link) => {
+          link.addEventListener('click', () => {
+            const id = link.getAttribute('data-outline-link');
+            if (id) setActive(id);
+          });
+        });
+
+        window.addEventListener('scroll', scheduleSync, { passive: true });
+        window.addEventListener('resize', scheduleSync);
+        window.addEventListener('hashchange', scheduleSync);
+
+        const initialId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+        if (initialId) {
+          setActive(initialId);
+        }
+        scheduleSync();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mountReadmeChrome, { once: true });
+      } else {
+        mountReadmeChrome();
+      }
+    })();
+  </script>
 </Base>
 
 <style is:global>
   .project-page{min-height:calc(100vh - 200px)}
   .project-header{max-width:900px;margin:0 auto;text-align:left}
+  .project-breadcrumbs{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
   .project-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-family:var(--mono);font-size:12px;color:var(--t3);flex-wrap:wrap}
   .project-category{letter-spacing:.1em}
   .project-badge-featured,.project-badge-live{padding:3px 8px;border-radius:4px;font-weight:600;font-size:10px}
@@ -382,9 +620,9 @@ const ogImage = `/og/${slug}.png`;
   .project-title{font-family:var(--mono);font-size:clamp(32px,5vw,56px);font-weight:700;margin-bottom:16px;color:var(--t1);word-break:break-word}
   .project-desc{font-size:clamp(16px,1.5vw,20px);color:var(--t2);line-height:1.6;margin-bottom:24px;max-width:700px}
   .project-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
-  .project-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .project-actions{margin-top:0}
   .project-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
-  .project-fact{padding:18px 18px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));box-shadow:0 18px 42px rgba(0,0,0,.16)}
+  .project-fact{padding:20px 18px 18px;border-radius:24px;border:1px solid var(--border-soft);background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .project-fact-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
   .project-fact-value{font-family:var(--mono);font-size:18px;color:var(--t1);line-height:1.2;margin-bottom:8px}
   .project-fact-detail{font-size:13px;color:var(--t2);line-height:1.6}
@@ -394,23 +632,41 @@ const ogImage = `/og/${slug}.png`;
   .project-section-title{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);margin-bottom:8px}
   .project-section-copy{max-width:58ch;color:var(--t3);font-size:14px;line-height:1.7}
   .project-readme-wrap{max-width:1000px;margin:0 auto}
-  .project-panel{padding:30px;border-radius:28px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));box-shadow:0 24px 60px rgba(0,0,0,.22)}
+  .project-panel{padding:30px;border-radius:30px;border:1px solid var(--border-soft);background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .project-readme-hint{color:var(--t3);font-size:14px;margin-bottom:20px}
   .project-link{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
   .project-link:hover{border-color:var(--grn)}
+  .project-readme-layout{display:grid;gap:24px}
+  .project-outline{display:grid;gap:16px;padding:20px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:rgba(255,255,255,.025)}
+  .project-outline-head{display:grid;gap:6px}
+  .project-outline-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+  .project-outline-copy{margin:0;color:var(--t3);font-size:13px;line-height:1.65}
+  .project-outline-nav{display:grid;gap:8px}
+  .project-outline-link{display:flex;align-items:center;min-height:36px;padding:8px 12px;border-radius:16px;border:1px solid transparent;color:var(--t2);text-decoration:none;font-family:var(--mono);font-size:12px;line-height:1.55;transition:color .2s ease,background-color .2s ease,border-color .2s ease,transform .2s ease}
+  .project-outline-link:hover,.project-outline-link:focus-visible{color:var(--t1);border-color:rgba(255,255,255,.1);background:var(--glass-hover);transform:translateX(2px)}
+  .project-outline-link.is-active{color:var(--t1);border-color:rgba(88,166,255,.22);background:rgba(88,166,255,.1);box-shadow:inset 0 0 0 1px rgba(88,166,255,.08)}
+  .project-outline-link.is-active,.project-outline-link.is-active:hover,.project-outline-link.is-active:focus-visible{transform:none}
+  .project-outline-link.depth-3{padding-left:24px}
+  .project-readme-layout.has-outline .project-readme{max-width:none;margin:0}
   .project-shot-link{display:block;position:relative;max-width:960px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid var(--glass-border);background:var(--bg2);box-shadow:0 24px 60px rgba(0,0,0,.4);transition:transform .25s ease-out,box-shadow .25s}
   .project-shot-link:hover{transform:translateY(-4px);box-shadow:0 30px 80px rgba(88,166,255,.15)}
   .project-shot{display:block;width:100%;height:auto;aspect-ratio:16/10}
   .project-shot-badge{position:absolute;bottom:16px;right:16px;padding:8px 14px;border-radius:8px;background:rgba(10,14,23,.85);color:var(--grn);font-family:var(--mono);font-size:13px;border:1px solid rgba(74,222,128,.3);backdrop-filter:blur(8px);opacity:0;transition:opacity .2s}
   .project-shot-link:hover .project-shot-badge{opacity:1}
   .project-og{display:block;max-width:800px;width:100%;height:auto;border-radius:12px;border:1px solid var(--glass-border);margin:0 auto}
+  .project-empty{max-width:none}
   .project-readme{color:var(--t2);line-height:1.7;font-size:16px;max-width:860px;margin:0 auto;word-wrap:break-word}
   .project-readme h1,.project-readme h2,.project-readme h3,.project-readme h4{color:var(--t1);font-family:var(--mono);margin:32px 0 14px;line-height:1.3}
+  .project-readme h1[id],.project-readme h2[id],.project-readme h3[id],.project-readme h4[id]{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
   .project-readme h1[id],.project-readme h2[id],.project-readme h3[id],.project-readme h4[id],.project-readme h5[id],.project-readme h6[id]{scroll-margin-top:96px}
   .project-readme h1{font-size:28px;border-bottom:1px solid var(--glass-border);padding-bottom:10px}
   .project-readme h2{font-size:22px;border-bottom:1px solid var(--glass-border);padding-bottom:8px}
   .project-readme h3{font-size:18px}
   .project-readme h4{font-size:16px;color:var(--t2)}
+  .project-heading-anchor{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:28px;height:28px;border-radius:999px;border:1px solid transparent;color:var(--t3);text-decoration:none;opacity:0;transition:opacity .2s ease,color .2s ease,border-color .2s ease,background-color .2s ease,transform .2s ease}
+  .project-heading-anchor svg{width:14px;height:14px}
+  .project-readme h1[id]:hover .project-heading-anchor,.project-readme h2[id]:hover .project-heading-anchor,.project-readme h3[id]:hover .project-heading-anchor,.project-readme h4[id]:hover .project-heading-anchor,.project-readme h1[id]:focus-within .project-heading-anchor,.project-readme h2[id]:focus-within .project-heading-anchor,.project-readme h3[id]:focus-within .project-heading-anchor,.project-readme h4[id]:focus-within .project-heading-anchor{opacity:1}
+  .project-heading-anchor:hover,.project-heading-anchor:focus-visible{opacity:1;color:var(--blue);border-color:rgba(88,166,255,.18);background:rgba(88,166,255,.08);transform:translateY(-1px)}
   .project-readme p{margin:0 0 16px}
   .project-readme a{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
   .project-readme a:hover{border-color:var(--grn)}
@@ -434,6 +690,10 @@ const ogImage = `/og/${slug}.png`;
   .project-release-tag:hover{text-decoration:underline}
   .project-release-date{font-family:var(--mono);font-size:12px;color:var(--t3)}
   .project-release-body{margin:8px 0 0;color:var(--t2);font-size:14px;line-height:1.6}
+  @media(min-width:1024px){
+    .project-readme-layout.has-outline{grid-template-columns:minmax(0,1fr) 280px;align-items:start}
+    .project-outline{order:2;position:sticky;top:calc(88px + env(safe-area-inset-top,0px))}
+  }
   @media(max-width:980px){
     .project-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
   }
@@ -441,5 +701,10 @@ const ogImage = `/og/${slug}.png`;
     .project-overview{grid-template-columns:1fr}
     .project-panel{padding:22px;border-radius:22px}
     .project-section-copy{font-size:13px}
+    .project-outline{padding:18px;border-radius:20px}
+    .project-outline-link{padding:9px 12px}
+  }
+  @media(pointer:coarse){
+    .project-heading-anchor{opacity:1}
   }
 </style>

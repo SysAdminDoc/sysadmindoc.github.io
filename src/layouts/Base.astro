@@ -1,20 +1,148 @@
 ---
 import '../styles/global.css';
+import { catalog, featured, liveApps } from '../data/projects';
+
+type CmdkSection = {
+  label: string;
+  href: string;
+  desc?: string;
+  badge?: string;
+};
+
+type CmdkProject = {
+  slug: string;
+  name: string;
+  desc: string;
+  type: 'featured' | 'live' | 'catalog';
+  url: string;
+  category?: string;
+  categoryLabel?: string;
+  searchTerms?: string[];
+};
 
 export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  cmdkSections?: readonly CmdkSection[];
 }
+
+const categoryLabels: Record<string, string> = {
+  ps: 'PowerShell',
+  py: 'Python',
+  web: 'Web Apps',
+  ext: 'Extensions',
+  kt: 'Android',
+  sec: 'Security',
+  media: 'Media',
+  cs: 'Desktop',
+  guide: 'Guides',
+  fork: 'Forks',
+  other: 'Other',
+};
+const normalizeCmdkDesc = (value: string) => value.replace(/&[a-z]+;/gi, ' ');
+const cmdkProjectMap = new Map<string, CmdkProject>();
+function upsertCmdkProject(slug: string, next: CmdkProject) {
+  const existing = cmdkProjectMap.get(slug);
+  const searchTerms = Array.from(
+    new Set([...(existing?.searchTerms ?? []), ...(next.searchTerms ?? [])].filter(Boolean)),
+  );
+  cmdkProjectMap.set(slug, {
+    ...existing,
+    ...next,
+    category: next.category ?? existing?.category,
+    categoryLabel: next.categoryLabel ?? existing?.categoryLabel,
+    searchTerms: searchTerms.length ? searchTerms : undefined,
+  });
+}
+for (const project of catalog) {
+  upsertCmdkProject(project.repo, {
+    slug: project.repo,
+    name: project.name,
+    desc: normalizeCmdkDesc(project.desc),
+    type: 'catalog',
+    url: `/projects/${project.repo}/`,
+    category: project.category,
+    categoryLabel: categoryLabels[project.category] ?? project.category,
+    searchTerms: [project.category, categoryLabels[project.category] ?? project.category],
+  });
+}
+for (const app of liveApps) {
+  upsertCmdkProject(app.slug, {
+    slug: app.slug,
+    name: app.name,
+    desc: normalizeCmdkDesc(app.desc),
+    type: 'live',
+    url: `/projects/${app.slug}/`,
+    searchTerms: ['Live Apps', 'Live App', 'Browser'],
+  });
+}
+for (const project of featured) {
+  upsertCmdkProject(project.repo, {
+    slug: project.repo,
+    name: project.name,
+    desc: normalizeCmdkDesc(project.desc),
+    type: 'featured',
+    url: `/projects/${project.repo}/`,
+    searchTerms: project.tags,
+  });
+}
+const cmdkProjects = Array.from(cmdkProjectMap.values());
+const defaultCmdkSections: CmdkSection[] = [
+  { label: 'Home', href: '/', desc: 'Return to the portfolio overview and first-run poster view.', badge: 'HOME' },
+  { label: 'Highlights', href: '/#greatest-hits', desc: 'Start with the shortest path through the strongest work.', badge: 'START' },
+  { label: 'Catalog', href: '/#catalog', desc: 'Browse every public project with filters, search, and freshness signals.', badge: 'ARCHIVE' },
+  { label: 'Live Apps', href: '/#live', desc: 'Jump straight into browser-ready builds with no setup wall.', badge: 'LIVE' },
+  { label: 'Releases', href: '/releases/', desc: 'See what is shipping across the most active projects.', badge: 'PAGE' },
+  { label: 'Now', href: '/now/', desc: 'Open the current focus page and short-range work queue.', badge: 'PAGE' },
+  { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context, imaging systems, and production-first tooling.', badge: 'TRACK' },
+];
+const cmdkQuickLinks = [
+  {
+    label: 'Releases',
+    url: '/releases/',
+    desc: 'Chronological release stream across the most active projects in the archive.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['shipping', 'updates', 'release stream'],
+  },
+  {
+    label: 'Now',
+    url: '/now/',
+    desc: 'Current build queue, focus areas, and the latest signals from the portfolio.',
+    badge: 'PAGE',
+    tone: 'green',
+    searchTerms: ['current focus', 'working on now'],
+  },
+  {
+    label: 'Healthcare IT Track',
+    url: '/healthcare-it/',
+    desc: 'Operational context, imaging systems, and the environment that shaped the work.',
+    badge: 'TRACK',
+    tone: 'amber',
+    searchTerms: ['clinical', 'medical imaging', 'healthcare'],
+  },
+  {
+    label: 'GitHub Workspace',
+    url: 'https://github.com/SysAdminDoc',
+    desc: 'Browse the source, issues, and project history directly in GitHub.',
+    badge: 'SOURCE',
+    tone: 'slate',
+    external: true,
+    searchTerms: ['source', 'github', 'issues'],
+  },
+] as const;
 
 const {
   title = 'Matt Parker — Systems Administrator & Builder',
-  description = 'Portfolio of Matt Parker — open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+  description = 'Portfolio of Matt Parker — open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
   ogImage = '/og.png',
+  cmdkSections = defaultCmdkSections,
 } = Astro.props;
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -67,13 +195,33 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <script is:inline type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },
+      { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },
       { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc', jobTitle: 'Senior Systems Administrator', knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging'], sameAs: ['https://github.com/SysAdminDoc','https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW'] }
     ]
   })} />
 </head>
-<body>
+<body class={bodyClass}>
   <slot />
+  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
+    <div class="cmdk">
+      <div class="cmdk-input-row">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Jump to a project, page, category, or section…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
+        <span class="cmdk-kbd">Esc</span>
+      </div>
+      <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div>
+      <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div>
+      <div class="cmdk-footer" aria-hidden="true">
+        <span><kbd>Enter</kbd> Open</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd> Move</span>
+        <span><kbd>Esc</kbd> Close</span>
+      </div>
+    </div>
+  </div>
+  <script is:inline define:vars={{ allProjects: cmdkProjects, quickLinks: cmdkQuickLinks, sections: cmdkSections }}>
+    window.__PORTFOLIO_DATA = { allProjects, quickLinks, sections };
+  </script>
+  <script src="/scripts/cmdk.js" is:inline></script>
   <script src="/scripts/theme.js" is:inline></script>
 </body>
 </html>
