@@ -2,6 +2,38 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.11.0] - 2026-04-16
+
+**Site claims upgraded from "trust me" to "here are the numbers."** Content pass sourced from a privacy-scrubbed mailbox scan.
+
+Hard numbers replace soft language
+- Maven Imaging career card: 10+ PACS migrations led, single largest moved 1M+ files, 54 cross-vendor cloud accounts restored.
+- Stack chips expanded: DICOM C-Store, Voyance / VoyanceX, Patient Image Cloud, Rayence DR, Hyper-V, UniFi VPN.
+- Period refined to `Feb 2021 — Present`.
+
+International scope surfaced
+- About signal "Reach" replaces generic "Experience" label — now calls out clinical support across the Caribbean, East Africa, and East Asia.
+- Hero signal reframed as "Scope — 10+ PACS migrations" instead of bare tenure.
+- Healthcare IT page swaps the `64k+ Studies` tile for three stronger tiles: `10+ PACS migrations led`, `54 Cloud accounts restored`, `3 continents clinical reach`.
+
+Healthcare track intro
+- `curated.ts` `healthcareIT.intro` now leads with concrete outcomes: 10+ PACS migrations, million-file Candelis transfer, 54-account cloud transition, 3-continent clinical support.
+
+Greatest Hits refinement
+- `DICOM-PACS-Migrator` why-line upgraded from "64k+ studies" to "1M+ DICOM files when the vendor tool gave up mid-job" — matches the highest-confidence number in the mining data.
+
+About section rewrite
+- New "when a vendor tool fails, I write the replacement" framing.
+- Surfaces the in-house tooling portfolio (custom DICOM C-Store sender, PC-provisioning kit, acquisition-PC network scanner, service-watcher scripts) on top of the public GitHub archive.
+
+/now update
+- `building` list now leads with real current work: cross-border PACS data restoration, DR-panel + handheld X-ray training for a major OEM's field engineers, internal tooling kit.
+- `thinking` trimmed: "When 'write the tool yourself' is cheaper than another vendor escalation" replaces the "single-file rule at scale" question.
+
+Privacy
+- Mining data moved to `resume/` (gitignored) to keep raw mailbox output out of the public repo.
+- No customer/facility names, no PHI, no verbatim internal quotes published. All international references anonymized to continent-level ("Caribbean / East Africa / East Asia").
+
 ## [v0.10.0] - 2026-04-16
 
 **Premium-polish UX pass — design tokens, unified focus system, and cross-surface coherence.**

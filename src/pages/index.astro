@@ -78,9 +78,9 @@ const heroSignals = [
     meta: 'Maven Imaging — PACS, DR panels, cloud migrations.',
   },
   {
-    label: 'Tenure',
-    value: '15+ years in IT',
-    meta: 'Healthcare IT, PBS broadcast, and managed services.',
+    label: 'Scope',
+    value: '10+ PACS migrations',
+    meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia. 15+ years in IT.',
   },
   {
     label: 'Strongest lanes',
@@ -172,9 +172,9 @@ const stackRoutes = [
   { href: '/lang/security/', label: 'Security', meta: 'Audits & network hardening' },
 ] as const;
 const aboutSignals = [
-  { label: 'Day Job', value: 'Maven Imaging', meta: 'Senior Technical Support Manager — PACS, DR panels, cloud migrations, and international clinical support.' },
-  { label: 'Experience', value: '15+ years in IT', meta: 'Healthcare imaging, PBS broadcast systems, and managed services across HIPAA, government, and academic clients.' },
-  { label: 'Public Archive', value: `${stats.totalRepos}+ projects`, meta: 'A growing body of PowerShell, Python, JavaScript, Kotlin, and C# work.' },
+  { label: 'Day Job', value: 'Maven Imaging', meta: 'Senior Technical Support Manager — PACS migrations, DR panel deployments, cloud transitions, and international clinical support.' },
+  { label: 'Reach', value: '3-continent support', meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia — plus HIPAA-regulated clients stateside.' },
+  { label: 'Public Archive', value: `${stats.totalRepos}+ projects`, meta: 'Fifteen-plus years of IT, compounded into a working body of PowerShell, Python, JavaScript, Kotlin, C#, and C++ tools.' },
 ] as const;
 const aboutLinks = [
   { href: '/healthcare-it/', label: 'See the Healthcare Track', meta: 'The operational context, environments, and system work that shaped the portfolio.' },
@@ -185,17 +185,18 @@ const careerRoles = [
     role: 'Senior Technical Support Manager',
     company: 'Maven Imaging',
     location: 'Sarasota, FL',
-    period: '2021 — Present',
+    period: 'Feb 2021 — Present',
     tag: 'Current',
     tone: 'current',
-    summary: 'Tier II technical escalation lead for PACS, DR panels, and cloud migrations. Architected OpalRad → Candelis migration for a BVI medical facility (DICOM routing + UniFi VPN + remote radiologist access) and managed a fleet-wide move to RADinfo Systems cloud.',
+    summary: 'Tier II escalation lead for PACS, DR panels, and cloud migrations. Architected 10+ PACS migrations (including a 1M+ file Candelis legacy transfer when vendor tooling failed), drove a 54-account cross-vendor cloud restoration, and support clinics across the Caribbean, East Africa, and East Asia. Built the in-house tooling that makes it possible.',
     highlights: [
-      'Built 4 production tools adopted company-wide (DICOM PACS Migrator, RadAtlas, Generator Specs, WiFi Tool)',
-      'Diagnosed and fixed a fleet-wide Win11 MAC randomization licensing bug',
-      'International support across Kenya, Singapore, and the British Virgin Islands',
-      'Built + runs the Maven Imaging YouTube tutorials library and docs hub',
+      'Led 10+ PACS migrations — single largest moved 1M+ files after writing a custom C-Store sender to bypass broken vendor tooling',
+      'Restored 54 customer cloud accounts during a cross-vendor PatientImage / RADinfo transition',
+      'Diagnosed and fixed a fleet-wide Windows 11 random-MAC licensing bug; set the shipping-PC standard to prevent recurrence',
+      'Built production tooling adopted company-wide: DICOM PACS Migrator, RadAtlas, Generator Specs, WiFi Tool, acquisition-PC network scanner',
+      'Produces the Maven Imaging YouTube tutorial library (VoyanceX, VXvue, Rayence, Genoray, AMRAD) and trains a major OEM\u2019s field engineers',
     ],
-    stack: ['DICOM/PACS', 'Candelis ImageGrid', 'VxVue', 'Voyance', 'RADinfo Cloud', 'UniFi', 'Freshdesk', 'HubSpot'],
+    stack: ['DICOM C-Store', 'Candelis ImageGrid', 'Voyance / VoyanceX', 'Patient Image Cloud', 'VXvue', 'Rayence DR', 'Hyper-V', 'UniFi VPN', 'Freshdesk'],
   },
   {
     role: 'Systems Administrator',
@@ -539,8 +540,8 @@ const cmdkSections = [
     <div class="ac">
       <div class="about-copy rv">
         <div class="about-kicker">Systems operator first. Product finisher by habit.</div>
-        <p class="atp">I'm the <strong>Senior Technical Support Manager</strong> at <strong>Maven Imaging</strong> &mdash; architecting PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities from Sarasota to the British Virgin Islands. Before this I spent 11 years as Systems Administrator at <strong>ThinkTV</strong> (PBS affiliate) running Windows servers, Cisco networking, Hyper-V, and SCCM, with four years at a Dayton MSP before that.</p>
-        <p class="atp">After hours I build the tools I can't find anywhere else. A quick fix for personal friction usually turns into a full-featured open source project &mdash; a pattern that has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them (DICOM PACS Migrator, RadAtlas, Generator Specs) went from side-project to company-wide production tools.</p>
+        <p class="atp">I'm the <strong>Senior Technical Support Manager</strong> at <strong>Maven Imaging</strong> &mdash; where I&rsquo;ve architected 10+ PACS migrations (including a million-file Candelis legacy transfer when vendor tooling gave up), restored 54 customer cloud accounts through a cross-vendor transition, and support medical imaging clinics across the Caribbean, East Africa, and East Asia. Before this I spent 11 years as Systems Administrator at <strong>ThinkTV</strong> (PBS affiliate) running Windows servers, Cisco networking, Hyper-V, and SCCM, with four years at a Dayton MSP before that.</p>
+        <p class="atp">When a vendor tool fails at the worst possible moment, I write the replacement. That habit has produced a full set of in-house utilities &mdash; a custom DICOM C-Store sender, a PC-provisioning kit, an acquisition-PC network scanner, a service-watcher script that keeps overnight transfers alive &mdash; on top of the <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> on GitHub across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them (DICOM PACS Migrator, RadAtlas, Generator Specs) went from side-project to company-wide production tools.</p>
         <div class="about-signals" aria-label="Profile highlights">
           {aboutSignals.map((signal) => (
             <div class="about-signal">
