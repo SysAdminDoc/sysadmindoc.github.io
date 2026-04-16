@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
-import FeaturedCard from '../components/FeaturedCard.astro';
 import LiveCard from '../components/LiveCard.astro';
 import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
@@ -299,7 +298,6 @@ const latestReleaseName = latestRelease ? latestRelease.name ?? projectNameMap.g
 const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.lastPushedRepo) ?? stats.lastPushedRepo : null;
 const cmdkSections = [
   { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
-  { label: 'Featured', href: '#featured', desc: 'Flagship builds with the sharpest product and systems thinking.', badge: 'SECTION' },
   { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
   { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
@@ -319,7 +317,6 @@ const cmdkSections = [
       <a href="#hero" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
       <div class="nk" id="navLinks">
         <a href="#greatest-hits">Hits</a>
-        <a href="#featured">Projects</a>
         <a href="#live">Live</a>
         <a href="#catalog">Catalog</a>
         <a href="/releases/">Releases</a>
@@ -438,14 +435,6 @@ const cmdkSections = [
   <Divider />
 
   <GreatestHits />
-  <Divider />
-
-  <section id="featured"><div class="si">
-    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Case studies worth opening first</h2><p class="sd">The strongest portfolio pieces, chosen for product clarity, systems depth, and how complete they feel when you actually use them.</p></div>
-    <div class="fg" id="featuredGrid">
-      {featured.map((p) => <FeaturedCard project={p} stars={stars[p.repo]} />)}
-    </div>
-  </div></section>
   <Divider />
 
   <section id="live"><div class="si">
