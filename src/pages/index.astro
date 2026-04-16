@@ -73,14 +73,14 @@ const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${c
 const heroSignalCategories = heroTopCategories.map(({ label }) => label).join(' / ');
 const heroSignals = [
   {
-    label: 'Operational base',
-    value: 'Healthcare IT',
-    meta: 'Imaging systems and production support.',
+    label: 'Current role',
+    value: 'Sr. Tech Support Mgr',
+    meta: 'Maven Imaging — PACS, DR panels, cloud migrations.',
   },
   {
-    label: 'Build standard',
-    value: 'First-launch ready',
-    meta: 'Fast starts, calm UX, and open code.',
+    label: 'Tenure',
+    value: '15+ years in IT',
+    meta: 'Healthcare IT, PBS broadcast, and managed services.',
   },
   {
     label: 'Strongest lanes',
@@ -94,7 +94,7 @@ const journeyMilestones = [
   {
     title: 'Healthcare IT & Systems Administration',
     eyebrow: 'Origin point',
-    desc: 'Started in the deep end — provisioning workstations, managing networks, and keeping medical imaging systems running across healthcare facilities. Learned quickly that the only stable path through complex environments is to automate the parts you touch every day.',
+    desc: 'Fifteen-plus years keeping Windows fleets, Cisco networks, and medical imaging systems running — from a Dayton MSP to PBS broadcast infrastructure to the PACS / DR / cloud-migration work I do now at Maven Imaging. The only stable path through complex environments is automating the parts you touch every day.',
     href: '/healthcare-it/',
     cta: 'Open the healthcare track',
     meta: 'Clinical systems, imaging uptime, and production-first tooling.',
@@ -172,13 +172,67 @@ const stackRoutes = [
   { href: '/lang/security/', label: 'Security', meta: 'Audits & network hardening' },
 ] as const;
 const aboutSignals = [
-  { label: 'Day Job', value: 'Healthcare IT', meta: 'Imaging uptime, workstation rollouts, and network stability inside real environments.' },
-  { label: 'After Hours', value: 'Tooling that ships', meta: 'Turn repeated friction into something calmer, faster, and genuinely launch-ready.' },
+  { label: 'Day Job', value: 'Maven Imaging', meta: 'Senior Technical Support Manager — PACS, DR panels, cloud migrations, and international clinical support.' },
+  { label: 'Experience', value: '15+ years in IT', meta: 'Healthcare imaging, PBS broadcast systems, and managed services across HIPAA, government, and academic clients.' },
   { label: 'Public Archive', value: `${stats.totalRepos}+ projects`, meta: 'A growing body of PowerShell, Python, JavaScript, Kotlin, and C# work.' },
 ] as const;
 const aboutLinks = [
   { href: '/healthcare-it/', label: 'See the Healthcare Track', meta: 'The operational context, environments, and system work that shaped the portfolio.' },
   { href: '/now/', label: 'Open the Current Focus', meta: 'What is being built, refined, and most likely to expand next.' },
+] as const;
+const careerRoles = [
+  {
+    role: 'Senior Technical Support Manager',
+    company: 'Maven Imaging',
+    location: 'Sarasota, FL',
+    period: '2021 — Present',
+    tag: 'Current',
+    tone: 'current',
+    summary: 'Tier II technical escalation lead for PACS, DR panels, and cloud migrations. Architected OpalRad → Candelis migration for a BVI medical facility (DICOM routing + UniFi VPN + remote radiologist access) and managed a fleet-wide move to RADinfo Systems cloud.',
+    highlights: [
+      'Built 4 production tools adopted company-wide (DICOM PACS Migrator, RadAtlas, Generator Specs, WiFi Tool)',
+      'Diagnosed and fixed a fleet-wide Win11 MAC randomization licensing bug',
+      'International support across Kenya, Singapore, and the British Virgin Islands',
+      'Built + runs the Maven Imaging YouTube tutorials library and docs hub',
+    ],
+    stack: ['DICOM/PACS', 'Candelis ImageGrid', 'VxVue', 'Voyance', 'RADinfo Cloud', 'UniFi', 'Freshdesk', 'HubSpot'],
+  },
+  {
+    role: 'Systems Administrator',
+    company: 'ThinkTV (PBS Affiliate)',
+    location: 'Dayton, OH',
+    period: 'Apr 2014 — Feb 2025',
+    tag: '~11 years',
+    tone: 'previous',
+    summary: 'Administered the full network and server stack for a regional PBS station serving Dayton and Cincinnati — physical and virtual Windows Servers, Cisco networking, SCCM, and the broadcast-automation infrastructure that had to stay on-air 24/7.',
+    highlights: [
+      'Led Hyper-V virtualization initiative, consolidating physical hardware',
+      'Implemented SCCM from scratch to manage 100+ Win7/10 workstations',
+      'Deployed Cisco ISR 4300, ASA firewalls, and Catalyst 2960/3560/SG300 switches',
+      'Maintained Grass Valley K2 video servers + Harmonic encoders on the broadcast side',
+    ],
+    stack: ['Windows Server 2008–2016', 'Active Directory & GPO', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP'],
+  },
+  {
+    role: 'IT Support Technician',
+    company: 'Dayton Technology Group (MSP)',
+    location: 'Dayton, OH',
+    period: 'Jun 2010 — Apr 2014',
+    tag: '~4 years',
+    tone: 'previous',
+    summary: 'Managed day-to-day operations across multiple MSP client environments — Active Directory, Group Policy, DNS/DHCP, legacy server decommissioning, and 24/7/365 network monitoring with escalation to senior admins when needed.',
+    highlights: [
+      'Migrated file servers + legacy apps off Windows Server 2003 R2 to 2012 R2',
+      'Built network/system documentation — topology diagrams and runbooks',
+      'Onboarded new users and trained them on workflows, software, and phone systems',
+    ],
+    stack: ['Windows Server 2003–2012 R2', 'Active Directory', 'Group Policy', 'Avaya IP Office', 'Endpoint security'],
+  },
+] as const;
+const careerSignals = [
+  { label: 'Tenure', value: '15+ years' },
+  { label: 'Industries', value: 'Healthcare IT / Broadcast / MSP' },
+  { label: 'Compliance', value: 'HIPAA / Gov / Academic' },
 ] as const;
 const philosophyChecks = [
   'One launch path',
@@ -249,6 +303,7 @@ const cmdkSections = [
   { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
   { label: 'About', href: '#about', desc: 'Background, operating style, and what drives the work.', badge: 'SECTION' },
+  { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
   { label: 'Philosophy', href: '#philosophy', desc: 'The product standards behind every project.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Drone work, music, and the rest of the creative output.', badge: 'SECTION' },
@@ -269,6 +324,7 @@ const cmdkSections = [
         <a href="/releases/">Releases</a>
         <a href="/now/">Now</a>
         <a href="#about">About</a>
+        <a href="#career">Career</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
       <div class="nav-actions">
@@ -294,8 +350,8 @@ const cmdkSections = [
         <img class="hero-avatar" id="heroAvatar" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Matt Parker" width="56" height="56" decoding="async">
         <div class="htag" id="heroTag"><span class="dot"></span> Open for thoughtful collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
-        <p class="hr">Senior systems administrator shipping open-source tools for the workflows I live in every day.</p>
-        <p class="hd">I keep Windows fleets, networks, and medical imaging systems steady in production, then turn the repeated friction into launch-ready software: fast starts, calm UX, offline resilience, and direct access to the source.</p>
+        <p class="hr">Senior Technical Support Manager &amp; systems administrator with 15+ years in the trenches &mdash; medical imaging (DICOM/PACS), enterprise infrastructure, and the open-source tools that grew out of that work.</p>
+        <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
         <div class="hs">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -482,8 +538,8 @@ const cmdkSections = [
     <div class="ac">
       <div class="about-copy rv">
         <div class="about-kicker">Systems operator first. Product finisher by habit.</div>
-        <p class="atp">I'm a <strong>Senior Systems Administrator</strong> by day &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
-        <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
+        <p class="atp">I'm the <strong>Senior Technical Support Manager</strong> at <strong>Maven Imaging</strong> &mdash; architecting PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities from Sarasota to the British Virgin Islands. Before this I spent 11 years as Systems Administrator at <strong>ThinkTV</strong> (PBS affiliate) running Windows servers, Cisco networking, Hyper-V, and SCCM, with four years at a Dayton MSP before that.</p>
+        <p class="atp">After hours I build the tools I can't find anywhere else. A quick fix for personal friction usually turns into a full-featured open source project &mdash; a pattern that has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them (DICOM PACS Migrator, RadAtlas, Generator Specs) went from side-project to company-wide production tools.</p>
         <div class="about-signals" aria-label="Profile highlights">
           {aboutSignals.map((signal) => (
             <div class="about-signal">
@@ -499,8 +555,11 @@ const cmdkSections = [
           <div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">about.json</span></div>
           <div class="atb">
             <div><span class="tcm">&#123;</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"role"</span><span class="tcm">:</span> <span class="ts">"Sr. Systems Administrator"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"focus"</span><span class="tcm">:</span> <span class="ts">"Automation &amp; Open Source"</span><span class="tcm">,</span></div>
+            <div>&nbsp;&nbsp;<span class="tk">"role"</span><span class="tcm">:</span> <span class="ts">"Sr. Technical Support Manager"</span><span class="tcm">,</span></div>
+            <div>&nbsp;&nbsp;<span class="tk">"employer"</span><span class="tcm">:</span> <span class="ts">"Maven Imaging"</span><span class="tcm">,</span></div>
+            <div>&nbsp;&nbsp;<span class="tk">"location"</span><span class="tcm">:</span> <span class="ts">"Sarasota, FL"</span><span class="tcm">,</span></div>
+            <div>&nbsp;&nbsp;<span class="tk">"experience_years"</span><span class="tcm">:</span> <span class="tv">15</span><span class="tcm">,</span></div>
+            <div>&nbsp;&nbsp;<span class="tk">"focus"</span><span class="tcm">:</span> <span class="ts">"DICOM/PACS &amp; Open Source"</span><span class="tcm">,</span></div>
             <div>&nbsp;&nbsp;<span class="tk">"languages"</span><span class="tcm">:</span> <span class="tcm">[</span></div>
             <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"PowerShell"</span><span class="tcm">,</span> <span class="ts">"Python"</span><span class="tcm">,</span></div>
             <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"JavaScript"</span><span class="tcm">,</span> <span class="ts">"Kotlin"</span><span class="tcm">,</span> <span class="ts">"C#"</span><span class="tcm">,</span> <span class="ts">"C++"</span></div>
@@ -520,6 +579,42 @@ const cmdkSections = [
           ))}
         </div>
       </div>
+    </div>
+  </div></section>
+  <Divider />
+
+  <section id="career"><div class="si">
+    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Medical imaging now, broadcast infrastructure before that, MSP work before that. Every step has been about keeping complex production systems steady and turning the repeated friction into better tooling.</p></div>
+    <div class="career-signals rv" aria-label="Career signals">
+      {careerSignals.map((signal) => (
+        <div class="career-signal">
+          <span class="career-signal-label">{signal.label}</span>
+          <strong class="career-signal-value">{signal.value}</strong>
+        </div>
+      ))}
+    </div>
+    <div class="career-timeline">
+      {careerRoles.map((role) => (
+        <article class={`career-card card-enter career-${role.tone}`}>
+          <div class="career-card-head">
+            <span class="career-card-tag">{role.tag}</span>
+            <span class="career-card-period">{role.period}</span>
+          </div>
+          <h3 class="career-card-role">{role.role}</h3>
+          <div class="career-card-company">
+            <span class="career-card-company-name">{role.company}</span>
+            <span class="career-card-company-sep">·</span>
+            <span class="career-card-location">{role.location}</span>
+          </div>
+          <p class="career-card-summary">{role.summary}</p>
+          <ul class="career-card-highlights">
+            {role.highlights.map((h) => <li>{h}</li>)}
+          </ul>
+          <div class="career-card-stack" aria-label="Stack">
+            {role.stack.map((s) => <span class="career-stack-chip">{s}</span>)}
+          </div>
+        </article>
+      ))}
     </div>
   </div></section>
   <Divider />
