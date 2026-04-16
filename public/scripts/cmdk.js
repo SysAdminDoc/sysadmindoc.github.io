@@ -27,7 +27,6 @@
   };
   const defaultProjectTypes = ['featured', 'live'];
   const chordMap = {
-    f: '/#featured',
     l: '/#live',
     c: '/#catalog',
     s: '/#skills',
