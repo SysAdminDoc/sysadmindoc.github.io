@@ -18,7 +18,7 @@ export const greatestHits: GreatestHit[] = [
   {
     repo: 'DICOM-PACS-Migrator',
     name: 'DICOM-PACS-Migrator',
-    why: 'Migrated 64k+ medical imaging studies in production between PACS systems when the vendor tool quit mid-job. Fault-tolerant, resumable, audited.',
+    why: 'Moved 1M+ DICOM files between PACS systems in production when the vendor tool gave up mid-job. Fault-tolerant, resumable, audit-logged — used on real clinical archives.',
     tag: 'Healthcare IT',
   },
   {
@@ -79,7 +79,7 @@ export const manifesto: ManifestoRule[] = [
  */
 export const healthcareIT = {
   intro:
-    "I'm the Senior Technical Support Manager at Maven Imaging — medical imaging equipment, PACS, DR panels, and cloud-based diagnostic archiving. My day job is PACS migrations (OpalRad → Candelis, on-prem → RADinfo cloud), DR panel configurations, DICOM routing, VPN infrastructure, and keeping imaging systems up for clinics that can't afford downtime. Every tool here started as a real production problem.",
+    "I'm the Senior Technical Support Manager at Maven Imaging — medical imaging equipment, PACS, DR panels, and cloud-based diagnostic archiving. My day job is PACS migrations (10+ to date, including a million-file Candelis transfer that vendor tooling couldn't handle), DR panel deployments, 54-account cloud transitions, and keeping imaging systems up for clinics across the Caribbean, East Africa, and East Asia. Every tool here started as a real production problem.",
   repos: [
     'DICOM-PACS-Migrator',
     'XRayAcquisition',
@@ -96,14 +96,16 @@ export const now = {
   updated: '2026-04-16',
   location: 'Sarasota, FL',
   building: [
+    'Cross-border PACS data restoration — finishing a 54-account rehydration with the legacy cloud vendor',
+    'Delivering DR panel + handheld X-ray training to a major OEM\u2019s field engineers',
+    'Internal tooling kit — custom DICOM C-Store sender, acquisition-PC network scanner, PC-provisioning scripts',
     'NovaCut v3.20 — shipping final competitor-inspired features, tightening Media3 1.9.2 integration',
     'project-nomad-desktop — Situation Room v6.24 polish (108 cards, 435 feeds)',
-    'StreamKeep — Wave 3 features, plugin SDK stabilization',
     `This portfolio — turning ${fallbackRepoCount} repos into something visitors actually read`,
   ],
   thinking: [
     `How to make ${fallbackRepoCount} repos legible without flattening them into a spreadsheet`,
-    'Whether the "single-file when possible" rule still holds at scale',
+    'When "write the tool yourself" is cheaper than another vendor escalation',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Slunder — my own Suno-generated albums, on loop',
