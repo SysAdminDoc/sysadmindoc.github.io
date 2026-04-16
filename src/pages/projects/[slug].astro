@@ -67,7 +67,41 @@ try {
 } catch {}
 let readmeHtml: string | null = null;
 let readmeOutline: Array<{ id: string; text: string; depth: number }> = [];
-const rawMd = readmes[slug];
+// Strip "Quick Start" sections from the README before rendering. These tend to be
+// install-command lists that dominate the top of the project page and aren't useful
+// alongside the existing GitHub/Live CTAs and Preview section.
+function stripQuickStart(md: string): string {
+  const lines = md.split('\n');
+  const out: string[] = [];
+  let skipping = false;
+  let skipLevel = 0;
+  let inFence = false;
+  let fenceMark = '';
+  for (const line of lines) {
+    const fenceMatch = line.match(/^(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      if (!inFence) { inFence = true; fenceMark = fenceMatch[1]; }
+      else if (line.startsWith(fenceMark)) { inFence = false; fenceMark = ''; }
+    }
+    if (!inFence) {
+      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) {
+        const level = h[1].length;
+        const title = h[2].trim().replace(/\s+\{[^}]+\}\s*$/, '');
+        if (/^quick[-\s]*start\b/i.test(title)) {
+          skipping = true;
+          skipLevel = level;
+          continue;
+        }
+        if (skipping && level <= skipLevel) skipping = false;
+      }
+    }
+    if (!skipping) out.push(line);
+  }
+  return out.join('\n');
+}
+const rawMdOriginal = readmes[slug];
+const rawMd = rawMdOriginal ? stripQuickStart(rawMdOriginal) : rawMdOriginal;
 if (rawMd && rawMd.trim().length > 0) {
   // Rewrite relative links/images to point at GitHub raw so assets resolve.
   const rawBase = `https://raw.githubusercontent.com/SysAdminDoc/${slug}/HEAD/`;

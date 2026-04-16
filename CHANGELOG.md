@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.11.1] - 2026-04-16
+
+**Strip "Quick Start" sections from project-page README rendering.**
+
+- On 8 project pages the README's `## Quick Start` / `### Quick Start` block was dominating the top of the page and duplicating what the GitHub/Live CTAs and Preview section already communicate.
+- Added a `stripQuickStart()` markdown preprocessor in `src/pages/projects/[slug].astro` that removes any `Quick Start` heading + all content up to the next same-or-higher-level heading, before the markdown is passed to `marked`. Fence-aware so code blocks inside unrelated sections aren't affected.
+- Outline sidebar also cleaned up — Quick Start no longer appears in the auto-generated TOC.
+- Affected pages confirmed clean: StreamKeep, Aura, HostsFileGet, OpenCut, ZeusWatch, win11-nvme-driver-patcher, yt_livestream_downloader, npp-sc-scanner. Adjacent sections (Features, Installation, Requirements, etc.) all intact.
+
 ## [v0.11.0] - 2026-04-16
 
 **Site claims upgraded from "trust me" to "here are the numbers."** Content pass sourced from a privacy-scrubbed mailbox scan.
