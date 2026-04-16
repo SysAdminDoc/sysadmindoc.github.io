@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.12.2] - 2026-04-16
+
+**Fix Connect-section card layout — description text was wrapping 1–2 words per line.**
+
+- Root cause: `.cnc` cards had `display:flex` from the original v0.4 ruleset at line 317 (horizontal row) and the v0.9.0 override tuned alignment/gap but never added `flex-direction: column`. So `.cnc-top`, `.cnc-desc`, and `.cnc-foot` were trying to sit side-by-side inside the narrow card.
+- Fix: added `flex-direction:column` to the v0.9.0 `.cnc` block and changed `justify-content:space-between` → `flex-start` (vertical content doesn't need the push-to-edges behavior). CTA row still sticks to the card base via `.cnc-foot { margin-top:auto }`.
+
 ## [v0.12.1] - 2026-04-16
 
 **Remove `Scripts` and `ChanPrep` from the site.**
