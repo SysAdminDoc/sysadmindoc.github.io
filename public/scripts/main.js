@@ -251,23 +251,6 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
     document.querySelectorAll('.ca[data-repo]').forEach(el=>{
         if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
     });
-    // Commit freshness on featured cards
-    document.querySelectorAll('#featuredGrid .pc[data-repo]').forEach(card=>{
-        if(ghData[card.dataset.repo]){
-            const updated=new Date(ghData[card.dataset.repo].updated);
-            const days=Math.floor((Date.now()-updated)/86400000);
-            let text;
-            if(days===0)text='Updated today';
-            else if(days===1)text='Updated yesterday';
-            else if(days<30)text='Updated '+days+'d ago';
-            else if(days<365)text='Updated '+Math.floor(days/30)+'mo ago';
-            else text='Updated '+Math.floor(days/365)+'y ago';
-            const badge=card.querySelector('.pc-fresh')||document.createElement('div');
-            badge.className='pc-fresh';
-            badge.textContent=text;
-            if(!badge.parentNode)card.appendChild(badge);
-        }
-    });
     // Language donut
     if(langCount)renderLangDonut(langCount,repoCount);
 }

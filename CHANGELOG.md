@@ -2,6 +2,26 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.13.0] - 2026-04-16
+
+**Remove the `#featured` section — it duplicated Greatest Hits.**
+
+Scrolling down the homepage showed the same story twice: Greatest Hits (8 curated repos with story-driven "why" descriptions) immediately followed by "Case studies worth opening first" (9 featured cards over the same repo slugs). Greatest Hits is the stronger frame.
+
+Removed
+- `<section id="featured">` block + its surrounding divider from [src/pages/index.astro](src/pages/index.astro).
+- `Featured` entry from the command-palette section list.
+- The `Projects` nav link (was pointing to `#featured`; Hits / Catalog / Live cover the same ground).
+- `FeaturedCard` import from index.astro.
+- [src/components/FeaturedCard.astro](src/components/FeaturedCard.astro) — fully orphaned, deleted.
+- `#featuredGrid .pc[data-repo]` freshness-badge block in [public/scripts/main.js](public/scripts/main.js) — had no target after removal.
+- `f:` → `/#featured` chord in [public/scripts/cmdk.js](public/scripts/cmdk.js).
+
+Preserved
+- The `featured` data array — still powers `heroSignatureProjects` (top-3 hero reel) and the global command-palette project index.
+- Every `/projects/<slug>/` detail page — still built via `getStaticPaths()`.
+- Greatest Hits section — untouched. It's the primary showcase now.
+
 ## [v0.12.2] - 2026-04-16
 
 **Fix Connect-section card layout — description text was wrapping 1–2 words per line.**
