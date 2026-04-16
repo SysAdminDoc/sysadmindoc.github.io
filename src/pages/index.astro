@@ -80,7 +80,6 @@ const journeyMilestones = [
     href: '/healthcare-it/',
     cta: 'Open the healthcare track',
     meta: 'Clinical systems, imaging uptime, and production-first tooling.',
-    repoCount: false,
   },
   {
     title: 'PowerShell & Windows Automation',
@@ -89,7 +88,6 @@ const journeyMilestones = [
     href: '/lang/powershell/',
     cta: 'See the PowerShell stack',
     meta: 'Provisioning, repair, compliance, and system management.',
-    repoCount: false,
   },
   {
     title: 'Python & Desktop Applications',
@@ -98,7 +96,6 @@ const journeyMilestones = [
     href: '/lang/python/',
     cta: 'Browse the Python builds',
     meta: 'Local-first utilities, offline tools, and desktop workflows.',
-    repoCount: false,
   },
   {
     title: 'Web Apps & Live Deployments',
@@ -107,27 +104,25 @@ const journeyMilestones = [
     href: '#live',
     cta: 'Launch the live apps',
     meta: 'Browser tools that start without install, sign-in, or setup.',
-    repoCount: false,
   },
   {
     title: 'Full Stack & Beyond',
     eyebrow: 'Portfolio depth',
-    desc: 'open source repos across six languages. Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes, and desktop software — a broad archive, but still grounded in practical use cases.',
+    desc: `${stats.totalRepos}+ public projects across six languages — Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes, desktop software, and a broad archive that still stays grounded in practical use cases.`,
     href: '#catalog',
     cta: 'Open the full catalog',
     meta: 'The complete archive, filters included.',
-    repoCount: true,
   },
 ] as const;
 const connectPaths = [
   {
-    title: 'GitHub issue',
-    handle: '@SysAdminDoc',
+    title: 'GitHub workspace',
+    handle: 'github.com/SysAdminDoc',
     href: 'https://github.com/SysAdminDoc',
     external: true,
-    desc: 'Best for bug reports, scoped feature ideas, and first-contact collaboration threads tied to a real repo.',
-    meta: 'Public, async, and attached to the work itself.',
-    cta: 'Open GitHub',
+    desc: 'Best for opening an issue, browsing the source, or grounding a conversation in a specific project.',
+    meta: 'Public, traceable, and attached directly to the work.',
+    cta: 'Open GitHub workspace',
     icon: 'github',
   },
   {
@@ -137,7 +132,7 @@ const connectPaths = [
     external: false,
     desc: 'See what is actively shipping, what just changed, and which parts of the portfolio are moving right now.',
     meta: 'Best if you want the current maintenance pulse first.',
-    cta: 'Browse releases',
+    cta: 'Open release stream',
     icon: 'release',
   },
   {
@@ -147,7 +142,7 @@ const connectPaths = [
     external: false,
     desc: 'Quick snapshot of what I am building, polishing, and most likely to expand next.',
     meta: 'Best if you want to gauge timing and fit for new work.',
-    cta: 'View now',
+    cta: 'Open current focus',
     icon: 'pulse',
   },
 ] as const;
@@ -161,7 +156,7 @@ const stackRoutes = [
 const aboutSignals = [
   { label: 'Day Job', value: 'Healthcare IT', meta: 'Imaging uptime, workstation rollouts, and network stability inside real environments.' },
   { label: 'After Hours', value: 'Tooling that ships', meta: 'Turn repeated friction into something calmer, faster, and genuinely launch-ready.' },
-  { label: 'Public Archive', value: `${stats.totalRepos}+ repos`, meta: 'A growing body of PowerShell, Python, JavaScript, Kotlin, and C# work.' },
+  { label: 'Public Archive', value: `${stats.totalRepos}+ projects`, meta: 'A growing body of PowerShell, Python, JavaScript, Kotlin, and C# work.' },
 ] as const;
 const aboutLinks = [
   { href: '/healthcare-it/', label: 'See the Healthcare Track', meta: 'The operational context, environments, and system work that shaped the portfolio.' },
@@ -183,7 +178,7 @@ const philosophyPrinciples = [
   },
   {
     title: "Build What's Missing",
-    desc: "When the right tool does not exist, I build it. Most repos begin as a fix for personal operational friction, then grow into maintained software that solves the same problem for other people too.",
+    desc: "When the right tool does not exist, I build it. Most projects begin as a fix for personal operational friction, then grow into maintained software that solves the same problem for other people too.",
     note: 'The best backlog is the one you already trip over at work.',
     bg: 'var(--grnd)',
     accent: 'var(--grn)',
@@ -199,7 +194,7 @@ const philosophyPrinciples = [
   },
   {
     title: 'Open by Default',
-    desc: `Everything ships in public. ${stats.totalRepos}+ repositories and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
+    desc: `Everything ships in public. ${stats.totalRepos}+ projects and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
     note: 'Trust comes faster when the work is inspectable and easy to try.',
     bg: 'var(--orgd)',
     accent: 'var(--org)',
@@ -228,71 +223,27 @@ const footerShortcuts = [
   { href: '/releases/', label: 'Releases', meta: 'See what moved across the portfolio recently.' },
   { href: '/now/', label: 'Now', meta: 'Open the current build queue and focus areas.' },
 ] as const;
-type CmdkProject = {
-  slug: string;
-  name: string;
-  desc: string;
-  type: 'featured' | 'live' | 'catalog';
-  url: string;
-  category?: string;
-  categoryLabel?: string;
-  searchTerms?: string[];
-};
-const cmdkProjectMap = new Map<string, CmdkProject>();
-const normalizeCmdkDesc = (value: string) => value.replace(/&[a-z]+;/gi, ' ');
-function upsertCmdkProject(slug: string, next: CmdkProject) {
-  const existing = cmdkProjectMap.get(slug);
-  const searchTerms = Array.from(
-    new Set([...(existing?.searchTerms ?? []), ...(next.searchTerms ?? [])].filter(Boolean)),
-  );
-  cmdkProjectMap.set(slug, {
-    ...existing,
-    ...next,
-    category: next.category ?? existing?.category,
-    categoryLabel: next.categoryLabel ?? existing?.categoryLabel,
-    searchTerms: searchTerms.length ? searchTerms : undefined,
-  });
-}
-for (const project of catalog) {
-  upsertCmdkProject(project.repo, {
-    slug: project.repo,
-    name: project.name,
-    desc: normalizeCmdkDesc(project.desc),
-    type: 'catalog',
-    url: `/projects/${project.repo}/`,
-    category: project.category,
-    categoryLabel: filterLabelByKey[project.category] ?? project.category,
-    searchTerms: [project.category, filterLabelByKey[project.category] ?? project.category],
-  });
-}
-for (const app of liveApps) {
-  upsertCmdkProject(app.slug, {
-    slug: app.slug,
-    name: app.name,
-    desc: normalizeCmdkDesc(app.desc),
-    type: 'live',
-    url: `/projects/${app.slug}/`,
-    searchTerms: ['Live Apps', 'Live App', 'Browser'],
-  });
-}
-for (const project of featured) {
-  upsertCmdkProject(project.repo, {
-    slug: project.repo,
-    name: project.name,
-    desc: normalizeCmdkDesc(project.desc),
-    type: 'featured',
-    url: `/projects/${project.repo}/`,
-    searchTerms: project.tags,
-  });
-}
-const cmdkProjects = Array.from(cmdkProjectMap.values());
+const projectNameMap = new Map<string, string>();
+featured.forEach((project) => projectNameMap.set(project.repo, project.name));
+liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
+catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
+const latestReleaseName = latestRelease ? latestRelease.name ?? projectNameMap.get(latestRelease.repo) ?? latestRelease.repo : null;
+const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.lastPushedRepo) ?? stats.lastPushedRepo : null;
+const cmdkSections = [
+  { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
+  { label: 'Featured', href: '#featured', desc: 'Flagship builds with the sharpest product and systems thinking.', badge: 'SECTION' },
+  { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
+  { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
+  { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
+  { label: 'About', href: '#about', desc: 'Background, operating style, and what drives the work.', badge: 'SECTION' },
+  { label: 'Philosophy', href: '#philosophy', desc: 'The product standards behind every project.', badge: 'SECTION' },
+  { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
+  { label: 'Beyond Code', href: '#beyond', desc: 'Drone work, music, and the rest of the creative output.', badge: 'SECTION' },
+  { label: 'Connect', href: '#connect', desc: 'Best ways to collaborate and what to bring.', badge: 'SECTION' },
+] as const;
 ---
-<Base>
+<Base cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
-  <div id="loader"><div class="lp">initializing portfolio<span class="lc"></span></div><div class="lbt"><div class="lb" id="loaderBar"></div></div></div>
-  <canvas id="particles"></canvas>
-  <div class="cc-dot" id="ccDot" aria-hidden="true"></div>
-  <div class="cc-ring" id="ccRing" aria-hidden="true"></div>
 
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
@@ -307,9 +258,13 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
         <a href="#about">About</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
+      <div class="nav-actions">
         <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <button type="button" class="theme-toggle" id="cmdkToggle" aria-label="Open command palette (Ctrl or Cmd + K)" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Search (Ctrl/Cmd + K)"><svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command palette (Ctrl or Cmd + K)" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Search (Ctrl/Cmd + K)">
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="nav-search-label">Search</span>
+          <span class="nav-search-kbd" aria-hidden="true">Ctrl K</span>
+        </button>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="ng" aria-label="GitHub Profile"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
         <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -324,13 +279,13 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
       <div class="ht">
         <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
         <img class="hero-avatar" id="heroAvatar" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Matt Parker" width="56" height="56" decoding="async">
-        <div class="htag" id="heroTag"><span class="dot"></span> Available for collaboration</div>
+        <div class="htag" id="heroTag"><span class="dot"></span> Open for thoughtful collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
-        <p class="hr">Senior systems administrator building open source tools for the work I do every day.</p>
-        <p class="hd">By day I keep Windows fleets, networks, and medical imaging systems running. After hours I turn the rough edges into polished utilities that launch fast, work offline, and ship finished on day one.</p>
-        <p class="hero-domain-list">Operating across {heroDomainText}.</p>
+        <p class="hr">Senior systems administrator shipping open-source tools for the workflows I live in every day.</p>
+        <p class="hd">I keep Windows fleets, networks, and medical imaging systems steady in production, then turn the repeated friction into launch-ready software: fast starts, calm UX, offline resilience, and direct access to the source.</p>
+        <p class="hero-domain-list">Most active lanes: {heroDomainText}.</p>
         <div class="hs">
-          <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Repositories</div></div>
+          <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
           <div class="hs-item"><div class="hsn" id="statLive">{liveApps.length}</div><div class="hsl">Live Apps</div></div>
         </div>
@@ -345,29 +300,28 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
           {latestRelease && (
             <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${heroReleaseDate.format(new Date(latestRelease.publishedAt))}`}>
               <span class="pulse-k">latest</span>
-              <span class="pulse-v">{latestRelease.repo} <span class="pulse-sub">{latestRelease.tag}</span></span>
+              <span class="pulse-v">{latestReleaseName} {latestRelease.tag && <span class="pulse-sub">{latestRelease.tag}</span>}</span>
             </a>
           )}
           {stats.lastPushedRepo && stats.lastPushedAt && (
-            <a href={`https://github.com/SysAdminDoc/${stats.lastPushedRepo}`} target="_blank" rel="noopener" class="pulse-item" title={`Last push ${stats.lastPushedAt}`}>
+            <a href={`https://github.com/SysAdminDoc/${stats.lastPushedRepo}`} target="_blank" rel="noopener" class="pulse-item" title={lastPushedProjectName ? `Last push to ${lastPushedProjectName}` : `Last push ${stats.lastPushedAt}`}>
               <span class="pulse-k">pushed</span>
-              <span class="pulse-v" data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</span>
+              <span class="pulse-v"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time>{lastPushedProjectName && <span class="pulse-sub">{lastPushedProjectName}</span>}</span>
             </a>
           )}
         </div>
-        <div class="last-active" id="lastActive" hidden role="status" aria-live="polite"><span class="la-dot"></span> <span id="lastActiveText"></span><span id="streakBadge"></span></div>
         <div class="ha">
-          <a href="#featured" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Explore the Portfolio</a>
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub Profile</a>
+          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Start with the strongest work</a>
+          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View the GitHub archive</a>
         </div>
       </div>
       <div class="hero-stage" aria-label="Portfolio highlights">
         <div class="hero-stage-head">
           <div>
             <div class="hero-stage-kicker">Signature builds</div>
-            <h2 class="hero-stage-title">Three I keep coming back to.</h2>
+            <h2 class="hero-stage-title">Three projects that explain how I build.</h2>
           </div>
-          <a href="#greatest-hits" class="hero-stage-link">See greatest hits</a>
+          <a href="#greatest-hits" class="hero-stage-link">Open the short list</a>
         </div>
         <div class="hero-reel">
           {heroSignatureProjects.map((project, index) => (
@@ -384,15 +338,15 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
         <div class="hero-terminal-shell">
           <div class="hero-terminal-meta">
             <div class="hero-terminal-copy">
-              <span class="hero-terminal-kicker">Interactive shell</span>
-              <span class="hero-terminal-note">Type `help`, `ls`, or `open LibreSpot`.</span>
+              <span class="hero-terminal-kicker">Portfolio shell</span>
+              <span class="hero-terminal-note">Jump through the archive with `help`, `ls`, or `open LibreSpot`.</span>
             </div>
-            <span class="hero-terminal-badge">Try it</span>
+            <span class="hero-terminal-badge">Live</span>
           </div>
-          <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">click terminal or start typing to interact</div></div>
+          <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">Click the terminal or start typing to explore</div></div>
         </div>
         <div class="hero-flightpath">
-          <span class="hero-flightpath-label">Launch instantly</span>
+          <span class="hero-flightpath-label">Open in browser</span>
           <div class="hero-flightpath-items">
             {heroLaunchApps.map((app) => (
               <a href={app.url} target="_blank" rel="noopener">{app.name}</a>
@@ -403,15 +357,13 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
     </div>
   </section>
 
-  <svg style="position:absolute;width:0;height:0"><defs><linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--blue)" stop-opacity="0"/><stop offset="30%" stop-color="var(--blue)"/><stop offset="50%" stop-color="var(--pur)"/><stop offset="70%" stop-color="var(--teal)"/><stop offset="100%" stop-color="var(--teal)" stop-opacity="0"/></linearGradient></defs></svg>
-  <div class="push-ribbon" id="pushRibbon" style="display:none"></div>
   <Divider />
 
   <GreatestHits />
   <Divider />
 
   <section id="featured"><div class="si">
-    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Top Projects</h2><p class="sd">Handpicked work where systems depth, strong UI, and practical utility all meet.</p></div>
+    <div class="sh rv"><div class="sl">// Featured</div><h2 class="st">Case studies worth opening first</h2><p class="sd">The strongest portfolio pieces, chosen for product clarity, systems depth, and how complete they feel when you actually use them.</p></div>
     <div class="fg" id="featuredGrid">
       {featured.map((p) => <FeaturedCard project={p} stars={stars[p.repo]} />)}
     </div>
@@ -419,7 +371,7 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
   <Divider />
 
   <section id="live"><div class="si">
-    <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Try in Your Browser</h2><p class="sd">Fast, direct launches with no signup wall, no install friction, and no setup ceremony.</p></div>
+    <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Open the product surface immediately</h2><p class="sd">Browser-ready apps with no sign-in gate, no install ceremony, and enough polish to judge the experience in a minute.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
     </div>
@@ -430,13 +382,13 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
   <Divider />
 
   <section id="catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All {catalogTotal} repositories</h2><p class="sd">Every public repo. Search, filter, sort. Age badges show freshness at a glance.</p></div>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and freshness signals that help you decide what is active before you click through.</p></div>
     <div class="catalog-controls rv">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" class="search-input" id="searchInput" name="repository-search" placeholder="Search repositories…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search repositories">
+        <input type="search" class="search-input" id="searchInput" name="project-search" placeholder="Search projects…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects">
       </div>
-      <select class="sort-select" id="sortSelect" aria-label="Sort repositories">
+      <select class="sort-select" id="sortSelect" aria-label="Sort projects">
         <option value="default">Default order</option>
         <option value="stars">Most stars</option>
         <option value="name">A-Z</option>
@@ -445,28 +397,28 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
       </select>
     </div>
     <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
-      <button type="button" class="fb act" data-filter="all" data-label="All repositories">All <span class="fc" id="countAll">{catalogTotal}</span></button>
+      <button type="button" class="fb act" data-filter="all" data-label="All projects">All <span class="fc" id="countAll">{catalogTotal}</span></button>
       {filterButtons.map((f) => (
         <button type="button" class="fb" data-filter={f.key} data-label={f.label}>{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
       ))}
     </div>
     <div class="catalog-feedback rv">
-      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing all {catalogTotal} repositories.</div>
+      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the full archive: {catalogTotal} public projects.</div>
       <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>
     </div>
     <div class="cg" id="catalogGrid">
       {catalog.map((entry, index) => <CatalogEntry entry={entry} index={index} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt} />)}
     </div>
     <div class="no-results" id="noResults" role="status" aria-live="polite" hidden>
-      <div class="no-results-title">No repositories match this view.</div>
-      <p class="no-results-copy">Try a broader term, switch categories, or reset the catalog to get back to the full archive.</p>
+      <div class="no-results-title">Nothing lands in this slice yet.</div>
+      <p class="no-results-copy">Broaden the search, switch lanes, or reset the archive to get back to the strongest matches.</p>
       <button type="button" class="catalog-reset no-results-action" id="catalogResetEmpty">Reset the catalog</button>
     </div>
   </div></section>
   <Divider />
 
   <section id="skills"><div class="si">
-    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">The portfolio spans a lot of repos, but the work organizes into a few strong lanes. Start with the language track that matches your problem, then use the repo mix to understand the bigger picture.</p></div>
+    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">The portfolio spans a lot of projects, but the work organizes into a few strong lanes. Start with the language track that matches your problem, then use the project mix to understand the bigger picture.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
         <div class="stack-kicker">Browse by lane</div>
@@ -483,7 +435,7 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
       <div class="lang-donut-wrap rv" id="langDonut">
         <div class="lang-donut-panel">
           <div class="lang-donut-head">
-            <div class="lang-donut-kicker">Repo Mix</div>
+            <div class="lang-donut-kicker">Project Mix</div>
             <p class="lang-donut-copy">Loading the language mix from GitHub so the stack view reflects the live public archive.</p>
           </div>
           <div class="lang-donut-fallback" aria-hidden="true">
@@ -505,12 +457,12 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
   <Divider />
 
   <section id="about"><div class="si">
-    <div class="sh rv"><div class="sl">// About</div><h2 class="st">Who I Am</h2><p class="sd">Operational systems by day, launch-ready tooling after hours, with the same bias toward calm, reliable software in both places.</p></div>
+    <div class="sh rv"><div class="sl">// About</div><h2 class="st">The operator behind the portfolio</h2><p class="sd">Operational systems by day, launch-ready tooling after hours, with the same bias toward calm, reliable software in both places.</p></div>
     <div class="ac">
       <div class="about-copy rv">
         <div class="about-kicker">Systems operator first. Product finisher by habit.</div>
         <p class="atp">I'm a <strong>Senior Systems Administrator</strong> by day &mdash; provisioning workstations, managing networks, and keeping medical imaging systems running for healthcare facilities.</p>
-        <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public repositories</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
+        <p class="atp">After hours, I build the tools I can't find anywhere else. What starts as a quick fix for a personal annoyance usually turns into a full-featured open source project. That pattern has produced <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> across PowerShell, Python, JavaScript, Kotlin, and C#.</p>
         <div class="about-signals" aria-label="Profile highlights">
           {aboutSignals.map((signal) => (
             <div class="about-signal">
@@ -533,7 +485,7 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
             <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"JavaScript"</span><span class="tcm">,</span> <span class="ts">"Kotlin"</span><span class="tcm">,</span> <span class="ts">"C#"</span><span class="tcm">,</span> <span class="ts">"C++"</span></div>
             <div>&nbsp;&nbsp;<span class="tcm">],</span></div>
             <div>&nbsp;&nbsp;<span class="tk">"philosophy"</span><span class="tcm">:</span> <span class="ts">"Works on first launch. Dark theme."</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"repos"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">{stats.totalRepos}</span><span class="tcm">,</span></div>
+              <div>&nbsp;&nbsp;<span class="tk">"projects"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">{stats.totalRepos}</span><span class="tcm">,</span></div>
             <div>&nbsp;&nbsp;<span class="tk">"available"</span><span class="tcm">:</span> <span class="tv">true</span></div>
             <div><span class="tcm">&#125;</span></div>
           </div>
@@ -556,7 +508,7 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
     <div class="philosophy-intro rv">
       <div class="philosophy-copy-block">
         <div class="philosophy-kicker">Shipping Standard</div>
-        <p class="philosophy-copy">The repo count matters less than the feeling after launch: clear intent, low setup anxiety, and enough polish that the software feels maintained before you read a line of documentation.</p>
+            <p class="philosophy-copy">The project count matters less than the feeling after launch: clear intent, low setup anxiety, and enough polish that the software feels maintained before you read a line of documentation.</p>
       </div>
       <div class="philosophy-checks" aria-label="Build standards">
         {philosophyChecks.map((check) => <span>{check}</span>)}
@@ -579,20 +531,14 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
   <Divider />
 
   <section id="journey"><div class="si">
-    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How I Got Here</h2><p class="sd">Every project started with a problem nobody else was solving.</p></div>
+    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
         <a href={step.href} class="ji rv">
           <div class="jd"></div>
           <div class="jeyebrow">{step.eyebrow}</div>
           <h3 class="jt">{step.title}</h3>
-          <p class="jdesc">
-            {step.repoCount ? (
-              <>Grew to <span id="journeyRepos">{stats.totalRepos}</span>+ {step.desc}</>
-            ) : (
-              step.desc
-            )}
-          </p>
+          <p class="jdesc">{step.desc}</p>
           <div class="jfoot">
             <span class="jmeta">{step.meta}</span>
             <span class="jlink">{step.cta}</span>
@@ -671,11 +617,11 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
   <Divider />
 
   <section id="connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Let's Build Something</h2><p class="sd">Three fast ways to start the right conversation, whether you want to see what is shipping or open a new thread.</p></div>
-    <p class="connect-msg rv">If you've got a process worth automating, a workflow that's grown teeth, or a tool you wish existed — open an issue on any repo and let's talk.</p>
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Three fast entry points depending on whether you want source, shipping activity, or the current focus.</p></div>
+    <p class="connect-msg rv">If you have a workflow worth automating, a product surface that feels rough, or a tool that should exist, start with the route that gives the right amount of context.</p>
     <div class="connect-notes rv" aria-label="Best collaboration fit">
-      <div class="connect-note"><span class="connect-note-label">What I do</span> Automation, internal tooling, browser products, and UX cleanup for complex workflows.</div>
-      <div class="connect-note"><span class="connect-note-label">Where to start</span> A GitHub issue, a rough idea, or the repetitive process you want gone.</div>
+      <div class="connect-note"><span class="connect-note-label">Best fit</span> Automation, internal tooling, browser products, and UX cleanup for complex workflows.</div>
+      <div class="connect-note"><span class="connect-note-label">Bring along</span> A GitHub issue, a rough idea, or the repetitive process you want gone.</div>
     </div>
     <div class="cng">
       {connectPaths.map((path) => (
@@ -743,32 +689,9 @@ const cmdkProjects = Array.from(cmdkProjectMap.values());
         </div>
       </nav>
     </div>
-    <div class="footer-ticker-wrap"><div class="footer-ticker" id="footerTicker"></div></div>
   </footer>
 
   <button type="button" class="btt" id="backToTop" aria-label="Back to top"><svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
 
-  {/* Command palette — Ctrl/Cmd+K or click search */}
-  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
-    <div class="cmdk">
-      <div class="cmdk-input-row">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Jump to a project, category, or section…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, categories, and sections" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
-        <span class="cmdk-kbd">Esc</span>
-      </div>
-      <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div>
-      <div class="cmdk-footer" aria-hidden="true">
-        <span><kbd>Enter</kbd> Open</span>
-        <span><kbd>↑</kbd><kbd>↓</kbd> Move</span>
-        <span><kbd>Esc</kbd> Close</span>
-      </div>
-    </div>
-  </div>
-
-  {/* Data bridge for command palette + search (injected at build) */}
-  <script is:inline define:vars={{ allProjects: cmdkProjects, sections: [{ id: 'featured', label: 'Featured' }, { id: 'live', label: 'Live Apps' }, { id: 'catalog', label: 'Catalog' }, { id: 'skills', label: 'Stack' }, { id: 'about', label: 'About' }, { id: 'philosophy', label: 'Philosophy' }, { id: 'journey', label: 'Journey' }, { id: 'beyond', label: 'Beyond Code' }, { id: 'connect', label: 'Connect' }] }}>
-    window.__PORTFOLIO_DATA = { allProjects, sections };
-  </script>
   <script src="/scripts/main.js" is:inline></script>
-  <script src="/scripts/cmdk.js" is:inline></script>
 </Base>

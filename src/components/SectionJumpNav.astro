@@ -1,0 +1,119 @@
+---
+type JumpItem = {
+  label: string;
+  href: string;
+  badge?: string;
+  desc?: string;
+};
+
+export interface Props {
+  items: readonly JumpItem[];
+  label?: string;
+}
+
+const { items = [], label = 'On This Page' } = Astro.props;
+const sectionItems = items.filter((item) => item.href?.startsWith('#'));
+---
+{sectionItems.length > 1 && (
+  <nav class="page-jump-nav rv" aria-label={label} data-page-jump-nav>
+    <span class="page-jump-label">{label}</span>
+    <div class="page-jump-links">
+      {sectionItems.map((item) => (
+        <a href={item.href} class="page-jump-link" title={item.desc ?? item.label} data-page-jump-link={item.href.slice(1)}>
+          <span class="page-jump-link-label">{item.label}</span>
+          {item.badge && <span class="page-jump-badge">{item.badge}</span>}
+        </a>
+      ))}
+    </div>
+  </nav>
+)}
+{sectionItems.length > 1 && (
+  <script is:inline>
+    (() => {
+      const mountJumpNav = () => {
+        const navs = Array.from(document.querySelectorAll('[data-page-jump-nav]'));
+        if (navs.length === 0) return;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        navs.forEach((nav) => {
+          const links = Array.from(nav.querySelectorAll('[data-page-jump-link]'));
+          const targets = links
+            .map((link) => {
+              const id = link.getAttribute('data-page-jump-link');
+              return id ? document.getElementById(id) : null;
+            })
+            .filter((target) => target instanceof HTMLElement);
+
+          if (links.length === 0 || targets.length === 0) return;
+
+          const setActive = (id) => {
+            links.forEach((link) => {
+              const isActive = link.getAttribute('data-page-jump-link') === id;
+              link.classList.toggle('is-active', isActive);
+              if (isActive) {
+                link.setAttribute('aria-current', 'location');
+              } else {
+                link.removeAttribute('aria-current');
+              }
+            });
+          };
+
+          links.forEach((link) => {
+            link.addEventListener('click', (event) => {
+              const id = link.getAttribute('data-page-jump-link');
+              if (!id) return;
+              const target = document.getElementById(id);
+              if (!(target instanceof HTMLElement)) return;
+
+              event.preventDefault();
+              const focusable = target.matches('a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])');
+              if (!focusable && !target.hasAttribute('tabindex')) {
+                target.setAttribute('tabindex', '-1');
+              }
+              history.pushState(null, '', `#${id}`);
+              target.focus({ preventScroll: true });
+              target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+              setActive(id);
+            });
+          });
+
+          let frame = 0;
+          const syncActive = () => {
+            let activeId = targets[0]?.id ?? '';
+            for (const target of targets) {
+              if (target.getBoundingClientRect().top <= 164) {
+                activeId = target.id;
+              } else {
+                break;
+              }
+            }
+            if (activeId) setActive(activeId);
+          };
+
+          const scheduleSync = () => {
+            if (frame) return;
+            frame = window.requestAnimationFrame(() => {
+              frame = 0;
+              syncActive();
+            });
+          };
+
+          window.addEventListener('scroll', scheduleSync, { passive: true });
+          window.addEventListener('resize', scheduleSync);
+          window.addEventListener('hashchange', scheduleSync);
+
+          const initialId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+          if (initialId) setActive(initialId);
+          scheduleSync();
+        });
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mountJumpNav, { once: true });
+      } else {
+        mountJumpNav();
+      }
+    })();
+  </script>
+)}

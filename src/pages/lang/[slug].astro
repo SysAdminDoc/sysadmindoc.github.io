@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Divider from '../../components/Divider.astro';
+import InteriorNav from '../../components/InteriorNav.astro';
+import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { catalog, featured } from '../../data/projects';
 
@@ -40,66 +42,59 @@ const mostRecent = repos
   .filter((r) => r.pushedAt)
   .sort((a, b) => (b.pushedAt || '').localeCompare(a.pushedAt || ''))[0];
 
-const title = `${lang.label} — ${repos.length} repos by Matt Parker`;
-const description = `Everything I've shipped in ${lang.label}. ${repos.length} public repos, ${totalStars} stars.`;
+const title = `${lang.label} — ${repos.length} projects by Matt Parker`;
+const description = `Everything I've shipped in ${lang.label}. ${repos.length} public projects, ${totalStars} stars.`;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const footerShortcuts = [
+  { href: '/#catalog', label: 'Full Archive', meta: 'Step out of this lane and scan the broader project mix.' },
+  { href: '/releases/', label: 'Release Stream', meta: 'See what is still shipping across this lane and the rest of the archive.' },
+  { href: '/now/', label: 'Current Focus', meta: 'Open the short-term build queue and what is getting active refinement.' },
+] as const;
+const cmdkSections = [
+  { label: 'Overview', href: '#lane-overview', desc: `${lang.label} lane summary, stats, and the clearest next routes.`, badge: 'LANE' },
+  { label: 'Projects in This Lane', href: '#lane-projects', desc: `Browse the public ${lang.label} projects collected in this stack view.`, badge: 'ARCHIVE' },
+];
 ---
-<Base title={title} description={description}>
+<Base title={title} description={description} cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
-  <nav id="nav" aria-label="Main navigation">
-    <div class="ni">
-      <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
-      <div class="nk" id="navLinks">
-        <a href="/#greatest-hits">Hits</a>
-        <a href="/#featured">Projects</a>
-        <a href="/#live">Live</a>
-        <a href="/#catalog">Catalog</a>
-        <a href="/releases/">Releases</a>
-        <a href="/now/">Now</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
-        <a href="/" class="ng">← Home</a>
-        <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      </div>
-    </div>
-  </nav>
+  <InteriorNav contextLabel={`${lang.label} lane`} contextTone="blue" />
 
   <main id="main" class="lang-page">
-    <div class="si" style="padding-top:100px">
+    <div class="si page-shell" id="lane-overview">
       <div class="sh rv">
         <div class="sl">// Stack · {lang.label}</div>
         <h1 class="lang-title" style={`--accent:var(${lang.accent})`}>{lang.label}</h1>
         <p class="lang-intro">{lang.intro}</p>
       </div>
 
-      <div class="lang-stats rv">
-        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{repos.length}</div><div class="lang-stat-label">Public repos</div></div>
-        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{totalStars}</div><div class="lang-stat-label">Stars across repos</div></div>
-        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{featuredCount}</div><div class="lang-stat-label">Featured repos</div></div>
-        <div class="lang-stat"><div class="lang-stat-num" style={`color:var(${lang.accent})`}>{liveCount}</div><div class="lang-stat-label">Browser-ready builds</div></div>
+      <div class="lang-stats page-stat-grid rv">
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{repos.length}</div><div class="lang-stat-label page-stat-label">Public projects</div><div class="page-stat-copy">The depth of the public archive in this lane.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{totalStars}</div><div class="lang-stat-label page-stat-label">Stars across projects</div><div class="page-stat-copy">A quick signal for where attention has concentrated.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{featuredCount}</div><div class="lang-stat-label page-stat-label">Featured projects</div><div class="page-stat-copy">Projects strong enough to anchor the portfolio story.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{liveCount}</div><div class="lang-stat-label page-stat-label">Browser-ready builds</div><div class="page-stat-copy">Deployable work you can judge without a local setup step.</div></div>
         {mostRecent?.pushedAt && (
           <div class="lang-highlight">
-            <span class="lang-highlight-label">Latest Move</span>
+            <span class="lang-highlight-label">Latest update</span>
             <span class="lang-highlight-value">
-              <a href={`/projects/${mostRecent.repo}/`} class="lang-highlight-link">{mostRecent.repo}</a>
+              <a href={`/projects/${mostRecent.repo}/`} class="lang-highlight-link">{mostRecent.name}</a>
               <span class="lang-highlight-sep">·</span>
               <time datetime={mostRecent.pushedAt} data-rel={mostRecent.pushedAt}>{compactUtcDate.format(new Date(mostRecent.pushedAt))}</time>
             </span>
           </div>
         )}
       </div>
-      <div class="lang-actions rv">
-        <a href="/#catalog" class="btn bp">Browse Full Catalog</a>
-        <a href="/releases/" class="btn bg2">Open Release Stream</a>
+      <div class="lang-actions page-actions rv">
+        <a href="/#catalog" class="btn bp">Open full archive</a>
+        <a href="/releases/" class="btn bg2">Open release stream</a>
       </div>
+      <SectionJumpNav items={cmdkSections} />
     </div>
     <Divider />
 
-    <div class="si">
-      <h2 class="lang-h2">Every repo</h2>
+    <div class="si" id="lane-projects">
+      <h2 class="lang-h2">Projects in this lane</h2>
       {repos.length === 0 ? (
-        <div class="lang-empty">No public repos are grouped under {lang.label} yet.</div>
+        <div class="lang-empty page-empty"><strong>No public projects are grouped under {lang.label} yet.</strong> When that changes, this lane will become the fastest way to scan the strongest examples in this stack.</div>
       ) : (
         <div class="lang-grid">
           {repos.map((r) => (
@@ -119,7 +114,7 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
                     'Freshness unavailable'
                   )}
                 </span>
-                <span class="lang-card-cta">{r.live ? 'Open Project + Demo' : 'Open Project'}</span>
+                <span class="lang-card-cta">{r.live ? 'Open project + demo' : 'Open project'}</span>
               </div>
             </a>
           ))}
@@ -129,14 +124,31 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
   </main>
 
   <footer>
-    <div class="fi">
-      <div class="ft"><a href="/" style="color:var(--t2)">← Back to portfolio</a></div>
-      <div class="fl">
-        {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 4).map(([s, l]) => (
-          <a href={`/lang/${s}/`}>{l.label}</a>
-        ))}
-        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">{lang.label} is one lane inside a broader archive of automation, desktop software, browser products, and systems-focused tooling.</p>
       </div>
+      <nav class="footer-actions" aria-label="Continue exploring">
+        <div class="footer-actions-head">
+          <span class="footer-actions-kicker">Continue Exploring</span>
+          <p class="footer-actions-copy">Stay in this lane when you want stack-specific depth, then use the archive and release views to understand how it fits into the full portfolio.</p>
+        </div>
+        <div class="footer-shortcuts">
+          {footerShortcuts.map((link) => (
+            <a href={link.href} class="footer-shortcut">
+              <span class="footer-shortcut-label">{link.label}</span>
+              <span class="footer-shortcut-meta">{link.meta}</span>
+            </a>
+          ))}
+        </div>
+        <div class="fl">
+          {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 3).map(([s, l]) => (
+            <a href={`/lang/${s}/`}>{l.label}</a>
+          ))}
+          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </nav>
     </div>
   </footer>
 </Base>
@@ -145,21 +157,20 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
   .lang-page{min-height:calc(100vh - 200px)}
   .lang-title{font-family:var(--mono);font-size:clamp(48px,8vw,96px);font-weight:700;margin:8px 0 20px;background:linear-gradient(120deg,var(--t1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.02}
   .lang-intro{font-size:clamp(16px,1.4vw,19px);color:var(--t2);line-height:1.7;max-width:720px;margin:0}
-  .lang-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:40px;max-width:980px}
-  .lang-stat{padding:22px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));text-align:center;box-shadow:0 20px 48px rgba(0,0,0,.16)}
-  .lang-stat-num{font-family:var(--mono);font-size:32px;font-weight:700}
+  .lang-stats{gap:16px;margin-top:32px;max-width:1100px}
+  .lang-stat{height:100%}
+  .lang-stat-num{font-weight:700}
   .lang-stat-num-sm{font-size:14px;font-weight:600;word-break:break-word}
-  .lang-stat-label{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
   .lang-highlight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--t2)}
   .lang-highlight-label{color:var(--t3);letter-spacing:.12em;text-transform:uppercase}
   .lang-highlight-value{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03)}
   .lang-highlight-link{color:var(--t1);text-decoration:none}
   .lang-highlight-link:hover{color:var(--accent)}
   .lang-highlight-sep{color:var(--t3)}
-  .lang-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .lang-actions{margin-top:22px}
   .lang-h2{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:24px;max-width:1200px;margin-left:auto;margin-right:auto}
   .lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;max-width:1200px;margin:0 auto}
-  .lang-empty{max-width:720px;margin:0 auto;padding:28px;border:1px dashed rgba(255,255,255,.12);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));text-align:center;color:var(--t2);font-size:14px;line-height:1.7}
+  .lang-empty{margin:0 auto}
   .lang-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:20px 22px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));text-decoration:none;color:var(--t1);transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease,transform .2s ease;box-shadow:0 18px 42px rgba(0,0,0,.14)}
   .lang-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 24px 54px rgba(0,0,0,.18)}
   .lang-card-head{display:flex;align-items:center;gap:8px}
@@ -175,7 +186,6 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
   .lang-card-cta::after{content:'→';color:var(--accent);transition:transform .2s ease-out}
   .lang-card:hover .lang-card-cta::after,.lang-card:focus-visible .lang-card-cta::after{transform:translateX(3px)}
   @media(max-width:640px){
-    .lang-actions{align-items:stretch}
     .lang-card-foot{flex-direction:column;align-items:flex-start}
   }
 </style>
