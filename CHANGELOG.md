@@ -2,6 +2,45 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.10.0] - 2026-04-16
+
+**Premium-polish UX pass — design tokens, unified focus system, and cross-surface coherence.**
+
+Motion & design tokens
+- New `:root` tokens: `--ease-out`, `--ease-spring`, `--ease-in-out`, `--dur-fast/base/slow` for consistent motion. `--selection-bg/--selection-fg` for theme-aware selection. `--focus-ring/--focus-outline` for a unified focus system.
+- Replaced scattered hand-coded `.3s ease` / `cubic-bezier(.16,1,.3,1)` with token references across hero, career, catalog, buttons, pulse widget.
+
+Unified focus-ring system
+- All interactive elements now use a single recipe: `2px outline` + `3px offset` + (for cards) a soft `box-shadow` halo via `--focus-ring`. Previously drifted between 2px and 3px offsets. Search input / sort select / terminal now include the halo too.
+
+Global selection + scrollbar styling
+- New `::selection` rule (brand-green tint) so text highlighting stops using harsh browser defaults. Separate tint for light theme.
+- Scrollbars redesigned: 10px track, rounded thumb with padding-box border, hover-intensity state. Firefox `scrollbar-color` set per theme. Feels native on premium OS builds.
+
+Career section upgrade (#career)
+- Swapped one-off colors for shared surface/radius/shadow tokens (`--surface-1/2`, `--radius-lg`, `--shadow-soft/strong`).
+- Tag pills now pill-shaped with brand tint background (matches rest of site's badge language).
+- Highlight bullets upgraded from `▸` to glowing colored dots (green for current role, blue for previous).
+- Subtle gradient-border halo on hover (CSS mask trick, no extra DOM), plus spring easing on lift.
+- Mobile: tighter spacing, smaller radius, flex-grow signals.
+
+Hero polish
+- `.htag` (availability pill) gets a triple-layer glow + backdrop-blur for a premium chip feel.
+- Hero signals: hover state (border-strong, lift), surface tokens instead of raw rgba.
+- Hero pulse widget: tightened gap, surface-2 background, lift-on-hover, tabular numerics.
+
+Button system
+- `.btn`: border-radius 10→12px, letter-spacing tighten, active-press scale, token-driven transitions. Icon micro-translate on hover.
+- `.bp` primary: layered shadow with inset sheen line for dimension. Shimmer sweep now eases on `--ease-out`.
+- `.bg2` secondary: now uses surface tokens, adapts correctly across themes.
+
+Catalog controls
+- Search input + sort select + filter buttons: `min-height: 38–42px` to ensure tap targets. Focus state now includes halo ring. Active filter button has inset ring instead of hard outer glow. Count chip is pill-shaped and tabular.
+- Empty state: added magnifying-glass icon, tightened title to "No matches in this slice", refined copy, CTA renamed to "Reset filters".
+
+Skip link
+- Premium treatment: larger padding, proper brand shadow, halo ring on focus.
+
 ## [v0.9.0] - 2026-04-16
 
 **Portfolio now reflects the real résumé — role, employer, tenure, career history.**
