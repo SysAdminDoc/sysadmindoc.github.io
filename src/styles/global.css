@@ -1180,10 +1180,11 @@ html[data-theme="light"] .ca:hover{
   max-width:none;
 }
 .cnc{
+  flex-direction:column;
   min-width:0;
   padding:24px 28px;
   align-items:flex-start;
-  justify-content:space-between;
+  justify-content:flex-start;
   gap:18px;
 }
 .cnc-top{
