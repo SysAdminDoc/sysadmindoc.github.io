@@ -49,11 +49,6 @@ const cmdkSections = [
   { label: 'Overview', href: '#release-overview', desc: 'Release counts, tracked-project stats, and entry points into the archive.', badge: 'PAGE' },
   { label: 'Timeline', href: '#release-timeline', desc: 'Chronological release history grouped by month across active projects.', badge: 'TIMELINE' },
 ];
-const footerShortcuts = [
-  { href: '/#greatest-hits', label: 'Highlights', meta: 'Start with the shortlist of projects that best explain the portfolio.' },
-  { href: '/now/', label: 'Current Focus', meta: 'See what is getting active polish and engineering time right now.' },
-  { href: '/#catalog', label: 'Full Archive', meta: 'Step out of the timeline view and browse the full project catalog.' },
-] as const;
 ---
 <Base title="Releases — Matt Parker" description="Chronological stream of releases across the active public archive." cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -139,21 +134,7 @@ const footerShortcuts = [
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">The release stream shows movement across the portfolio. The highlights, current-focus view, and catalog explain what each change belongs to.</p>
       </div>
-      <nav class="footer-actions" aria-label="Continue exploring">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Continue Exploring</span>
-          <p class="footer-actions-copy">Use the timeline for shipping cadence, then open the routes that give stronger project context and product depth.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut">
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
-      </nav>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </footer>
 </Base>

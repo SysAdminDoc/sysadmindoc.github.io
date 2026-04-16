@@ -63,11 +63,6 @@ const cmdkSections = [
     badge: 'SECTION',
   })),
 ];
-const footerShortcuts = [
-  { href: '/releases/', label: 'Release Stream', meta: 'See what is moving across the archive beyond the short-term focus list.' },
-  { href: '/healthcare-it/', label: 'Healthcare Track', meta: 'The operational context and imaging systems that shape the work.' },
-  { href: '/#catalog', label: 'Full Archive', meta: 'Browse the entire public catalog once you have the current context.' },
-] as const;
 ---
 <Base title="Now — Matt Parker" description="What I'm currently building, thinking about, and deliberately not working on." cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -147,21 +142,7 @@ const footerShortcuts = [
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">The /now page is the short-range signal. The release stream and full archive show what is already shipped, maintained, and still earning attention.</p>
       </div>
-      <nav class="footer-actions" aria-label="Continue exploring">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Continue Exploring</span>
-          <p class="footer-actions-copy">Use this page to understand current momentum, then open the routes that add long-term context and shipped examples.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut">
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
-      </nav>
+      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </footer>
 </Base>
