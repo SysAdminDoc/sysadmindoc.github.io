@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.11.2] - 2026-04-16
+
+**Correction: the thing dominating the top of project pages was the README outline sidebar, not README Quick Start content.**
+
+- Reverted the v0.11.1 `stripQuickStart()` markdown preprocessor. Quick Start sections are back in the rendered README where they belong.
+- Removed the entire README outline sidebar feature instead: `.project-outline`, `.project-outline-nav`, `.project-outline-link`, the outline-aside markup, the scroll-synced active-heading JS, and the hover-to-reveal `.project-heading-anchor` icons tied to it.
+- Simplified `.project-readme-layout` — no more `has-outline` grid variant or sticky sidebar at ≥1024px. The README article flows single-column at a comfortable reading width.
+- Heading IDs are still generated so in-page anchor links (e.g. `/projects/<slug>/#features`) continue to resolve. The `readmeOutline` build-time array and the `[data-outline-link]` hooks are gone.
+
 ## [v0.11.1] - 2026-04-16
 
 **Strip "Quick Start" sections from project-page README rendering.**
