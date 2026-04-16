@@ -45,11 +45,6 @@ const mostRecent = repos
 const title = `${lang.label} — ${repos.length} projects by Matt Parker`;
 const description = `Everything I've shipped in ${lang.label}. ${repos.length} public projects, ${totalStars} stars.`;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
-const footerShortcuts = [
-  { href: '/#catalog', label: 'Full Archive', meta: 'Step out of this lane and scan the broader project mix.' },
-  { href: '/releases/', label: 'Release Stream', meta: 'See what is still shipping across this lane and the rest of the archive.' },
-  { href: '/now/', label: 'Current Focus', meta: 'Open the short-term build queue and what is getting active refinement.' },
-] as const;
 const cmdkSections = [
   { label: 'Overview', href: '#lane-overview', desc: `${lang.label} lane summary, stats, and the clearest next routes.`, badge: 'LANE' },
   { label: 'Projects in This Lane', href: '#lane-projects', desc: `Browse the public ${lang.label} projects collected in this stack view.`, badge: 'ARCHIVE' },
@@ -129,26 +124,12 @@ const cmdkSections = [
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">{lang.label} is one lane inside a broader archive of automation, desktop software, browser products, and systems-focused tooling.</p>
       </div>
-      <nav class="footer-actions" aria-label="Continue exploring">
-        <div class="footer-actions-head">
-          <span class="footer-actions-kicker">Continue Exploring</span>
-          <p class="footer-actions-copy">Stay in this lane when you want stack-specific depth, then use the archive and release views to understand how it fits into the full portfolio.</p>
-        </div>
-        <div class="footer-shortcuts">
-          {footerShortcuts.map((link) => (
-            <a href={link.href} class="footer-shortcut">
-              <span class="footer-shortcut-label">{link.label}</span>
-              <span class="footer-shortcut-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-        <div class="fl">
-          {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 3).map(([s, l]) => (
-            <a href={`/lang/${s}/`}>{l.label}</a>
-          ))}
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
-        </div>
-      </nav>
+      <div class="fl">
+        {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 3).map(([s, l]) => (
+          <a href={`/lang/${s}/`}>{l.label}</a>
+        ))}
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
   </footer>
 </Base>
