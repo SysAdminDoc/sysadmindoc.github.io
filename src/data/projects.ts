@@ -56,6 +56,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "EXTRACTORX", name: "EXTRACTORX", url: "https://github.com/SysAdminDoc/EXTRACTORX", category: "ps", desc: "Bulk archive extraction tool" },
   { repo: "Debloat-Win11", name: "Debloat-Win11", url: "https://github.com/SysAdminDoc/Debloat-Win11", category: "ps", desc: "Enterprise Windows 11 debloating" },
   { repo: "DefenderControl", name: "DefenderControl", url: "https://github.com/SysAdminDoc/DefenderControl", category: "ps", desc: "Disable or enable Microsoft Defender" },
+  { repo: "DisableDefender", name: "DisableDefender", url: "https://github.com/SysAdminDoc/DisableDefender", category: "ps", desc: "Defender disabler/remover &mdash; CLI + premium WPF GUI, firewall preserved" },
   { repo: "DefenderShield", name: "DefenderShield", url: "https://github.com/SysAdminDoc/DefenderShield", category: "ps", desc: "Repair Defender after debloaters" },
   { repo: "Disable-AdobeTelemetry", name: "Disable-AdobeTelemetry", url: "https://github.com/SysAdminDoc/Disable-AdobeTelemetry", category: "ps", desc: "Adobe telemetry suppression" },
   { repo: "FirewallForge", name: "FirewallForge", url: "https://github.com/SysAdminDoc/FirewallForge", category: "ps", desc: "WPF Windows Firewall manager" },
@@ -99,6 +100,10 @@ export const catalog: CatalogEntry[] = [
   { repo: "HostsGuard", name: "HostsGuard", url: "https://github.com/SysAdminDoc/HostsGuard", category: "py", desc: "Real-time network privacy manager" },
   { repo: "AI-Model-Compass", name: "AI-Model-Compass", url: "https://github.com/SysAdminDoc/AI-Model-Compass", category: "py", desc: "Discover &amp; run local AI models" },
   { repo: "DICOM-PACS-Migrator", name: "DICOM-PACS-Migrator", url: "https://github.com/SysAdminDoc/DICOM-PACS-Migrator", category: "py", desc: "Bulk DICOM C-STORE migration" },
+  { repo: "Tunerize", name: "Tunerize", url: "https://github.com/SysAdminDoc/Tunerize", category: "py", desc: "Audio &rarr; chiptune or SoundFont, locally" },
+  { repo: "Vertigo", name: "Vertigo", url: "https://github.com/SysAdminDoc/Vertigo", category: "py", desc: "9:16 vertical video studio for short-form" },
+  { repo: "PromptCompanion", name: "PromptCompanion", url: "https://github.com/SysAdminDoc/PromptCompanion", category: "py", desc: "Curated, searchable, offline AI prompt library" },
+  { repo: "SunoJump", name: "SunoJump", url: "https://github.com/SysAdminDoc/SunoJump", category: "py", desc: "Audio fingerprint masking for Suno AI" },
   { repo: "Stock-Video-Collector", name: "Stock-Video-Collector", url: "https://github.com/SysAdminDoc/Stock-Video-Collector", category: "py", desc: "Stock video crawler" },
   { repo: "LlamaLink", name: "LlamaLink", url: "https://github.com/SysAdminDoc/LlamaLink", category: "py", desc: "Local LLM chat interface" },
   { repo: "FrameSnap", name: "FrameSnap", url: "https://github.com/SysAdminDoc/FrameSnap", category: "py", desc: "Video frame screenshot extractor" },
@@ -161,6 +166,8 @@ export const catalog: CatalogEntry[] = [
   { repo: "Lawnchair-Lite", name: "Lawnchair-Lite", url: "https://github.com/SysAdminDoc/Lawnchair-Lite", category: "kt", desc: "Lightweight launcher with 5 dark themes" },
   { repo: "HostShield", name: "HostShield", url: "https://github.com/SysAdminDoc/HostShield", category: "kt", desc: "Hosts-based ad blocker" },
   { repo: "NovaCut", name: "NovaCut", url: "https://github.com/SysAdminDoc/NovaCut", category: "kt", desc: "Full-featured Android video editor" },
+  { repo: "LocalAndroidStore", name: "LocalAndroidStore", url: "https://github.com/SysAdminDoc/LocalAndroidStore", category: "kt", desc: "Personal Android-app catalog from GitHub Releases &mdash; Android sibling of LocalChromeStore" },
+  { repo: "one-ui-home-clone", name: "one-ui-home-clone", url: "https://github.com/SysAdminDoc/one-ui-home-clone", category: "kt", desc: "Samsung One UI 7 parity launcher &mdash; Compose, clone not a port" },
   { repo: "pfSenseSuite", name: "pfSenseSuite", url: "https://github.com/SysAdminDoc/pfSenseSuite", category: "sec", desc: "pfSense scripts &amp; customizations" },
   { repo: "BetterNext", name: "BetterNext", url: "https://github.com/SysAdminDoc/BetterNext", category: "sec", desc: "Enhanced NextDNS panel" },
   { repo: "ESET", name: "ESET", url: "https://github.com/SysAdminDoc/ESET", category: "sec", desc: "ESET port &amp; address lists" },
@@ -171,6 +178,11 @@ export const catalog: CatalogEntry[] = [
   { repo: "MediaForge", name: "MediaForge", url: "https://github.com/SysAdminDoc/MediaForge", category: "media", desc: "Multi-format converter" },
   { repo: "VideoSubtitleRemover", name: "VideoSubtitleRemover", url: "https://github.com/SysAdminDoc/VideoSubtitleRemover", category: "media", desc: "Hardcoded subtitle removal" },
   { repo: "MediaDL", name: "MediaDL", url: "https://github.com/SysAdminDoc/MediaDL", category: "media", desc: "Media downloader" },
+  { repo: "MyPortfolio", name: "MyPortfolio", url: "https://github.com/SysAdminDoc/MyPortfolio", category: "cs", desc: "Unified Windows catalog for every app I ship &mdash; binaries, extensions, APKs from GitHub releases" },
+  { repo: "LocalChromeStore", name: "LocalChromeStore", url: "https://github.com/SysAdminDoc/LocalChromeStore", category: "cs", desc: "Personal Chromium extension store sourced from GitHub releases" },
+  { repo: "LocalDesktopStore", name: "LocalDesktopStore", url: "https://github.com/SysAdminDoc/LocalDesktopStore", category: "cs", desc: "Private catalog for Windows desktop apps &mdash; MSI/Inno/NSIS/ZIP" },
+  { repo: "TeamStation", name: "TeamStation", url: "https://github.com/SysAdminDoc/TeamStation", category: "cs", desc: "TeamViewer connection manager &mdash; encrypted credentials, folder tree" },
+  { repo: "Images", name: "Images", url: "https://github.com/SysAdminDoc/Images", category: "cs", desc: "Dark-mode Windows 7 Classic Photo Viewer with live inline rename" },
   { repo: "VaultBox", name: "VaultBox", url: "https://github.com/SysAdminDoc/VaultBox", category: "cs", desc: "Offline Bitwarden password manager" },
   { repo: "qBittorrent-Vanced", name: "qBittorrent-Vanced", url: "https://github.com/SysAdminDoc/qBittorrent-Vanced", category: "cs", desc: "Customized BitTorrent client" },
   { repo: "WolfPack", name: "WolfPack", url: "https://github.com/SysAdminDoc/WolfPack", category: "cs", desc: "Custom LibreWolf distribution" },
@@ -179,7 +191,8 @@ export const catalog: CatalogEntry[] = [
   { repo: "UniversalConverterX", name: "UniversalConverterX", url: "https://github.com/SysAdminDoc/UniversalConverterX", category: "cs", desc: "1000+ format file converter" },
   { repo: "AI_Realism", name: "AI_Realism", url: "https://github.com/SysAdminDoc/AI_Realism", category: "guide", desc: "AI video generation guide" },
   { repo: "facebook-exit-guide", name: "facebook-exit-guide", url: "https://github.com/SysAdminDoc/facebook-exit-guide", category: "guide", desc: "Facebook exit guide" },
-  { repo: "sysadmindoc.github.io", name: "sysadmindoc.github.io", url: "https://github.com/SysAdminDoc/sysadmindoc.github.io", category: "guide", desc: "Portfolio &amp; project showcase" }
+  { repo: "sysadmindoc.github.io", name: "sysadmindoc.github.io", url: "https://github.com/SysAdminDoc/sysadmindoc.github.io", category: "guide", desc: "Portfolio &amp; project showcase" },
+  { repo: "octopus-factory", name: "octopus-factory", url: "https://github.com/SysAdminDoc/octopus-factory", category: "other", desc: "Recipe-driven autonomous coding pipeline &mdash; multi-agent build/audit/release" }
 ];
 
 export const skills: Skill[] = [
