@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
-import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog } from '../data/projects';
 
 let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
@@ -90,8 +89,6 @@ const cmdkSections = [
         <a href="/#catalog" class="btn bg2">Open full archive</a>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="rel-action-link page-action-link">Open GitHub workspace</a>
       </div>
-      <SectionJumpNav items={cmdkSections} />
-
       <div id="release-timeline">
         {releases.length === 0 && (
           <div class="rel-empty page-empty">
