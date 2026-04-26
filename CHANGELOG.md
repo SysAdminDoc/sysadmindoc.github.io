@@ -2,6 +2,19 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.13.1] - 2026-04-25
+
+**Catalog refresh — add 12 missing public repos.**
+
+Added to [src/data/projects.ts](src/data/projects.ts):
+- **C# / Desktop**: MyPortfolio, LocalChromeStore, LocalDesktopStore, TeamStation, Images
+- **Kotlin / Android**: LocalAndroidStore, one-ui-home-clone
+- **Python**: Tunerize, Vertigo, PromptCompanion, SunoJump
+- **PowerShell**: DisableDefender
+- **Other**: octopus-factory
+
+`fallbackRepoCount` (used in `/now` and `derived.ts`) auto-recalculates from the new catalog size, so visible repo numbers update with no further edits.
+
 ## [v0.13.0] - 2026-04-16
 
 **Remove the `#featured` section — it duplicated Greatest Hits.**
