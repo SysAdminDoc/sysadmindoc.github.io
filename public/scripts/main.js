@@ -850,6 +850,11 @@ function onTermReady(){
         });
     },{rootMargin:'200px'});
     document.querySelectorAll('#live .lc2').forEach(card=>{
+        const existingThumb=card.querySelector('.lc2-thumb');
+        if(existingThumb){
+            thumbObs.observe(existingThumb);
+            return;
+        }
         const url=card.href;
         const repo=safeRepo((url.split('sysadmindoc.github.io/')[1]||'').replace(/\/.*$/,''));
         if(!repo)return;
