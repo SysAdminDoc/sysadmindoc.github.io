@@ -17,8 +17,6 @@ export const featured: Featured[] = [
 export const liveApps: LiveApp[] = [
   { slug: "IconForge", name: "IconForge", url: "https://sysadmindoc.github.io/IconForge/", desc: "Image resizer &amp; converter" },
   { slug: "SPECTRE", name: "SPECTRE", url: "https://sysadmindoc.github.io/SPECTRE/", desc: "Intelligence aggregator &mdash; OSINT data feeds" },
-  { slug: "RadAtlas", name: "RadAtlas", url: "https://sysadmindoc.github.io/RadAtlas/", desc: "X-ray technique chart" },
-  { slug: "GeneratorSpecs", name: "GeneratorSpecs", url: "https://sysadmindoc.github.io/GeneratorSpecs/", desc: "Maven generator spec reference" },
   { slug: "ImageXpert", name: "ImageXpert", url: "https://sysadmindoc.github.io/ImageXpert/", desc: "Multi-engine reverse image search" },
   { slug: "ConvertFlow", name: "ConvertFlow", url: "https://sysadmindoc.github.io/ConvertFlow/", desc: "Browser media converter" },
   { slug: "ClipForge", name: "ClipForge", url: "https://sysadmindoc.github.io/ClipForge/", desc: "Browser-based video editor" },
@@ -135,8 +133,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "DeGoogler", name: "DeGoogler", url: "https://sysadmindoc.github.io/DeGoogler/", category: "web", desc: "Google services migration toolkit", live: true },
   { repo: "SearchHub", name: "SearchHub", url: "https://sysadmindoc.github.io/SearchHub/", category: "web", desc: "538 engines, 29 categories", live: true },
   { repo: "UserScriptHunt", name: "UserScriptHunt", url: "https://sysadmindoc.github.io/UserScriptHunt/", category: "web", desc: "Unified userscript search", live: true },
-  { repo: "RadAtlas", name: "RadAtlas", url: "https://sysadmindoc.github.io/RadAtlas/", category: "web", desc: "X-ray technique chart", live: true },
-  { repo: "GeneratorSpecs", name: "GeneratorSpecs", url: "https://sysadmindoc.github.io/GeneratorSpecs/", category: "web", desc: "Maven generator spec reference", live: true },
   { repo: "SkyTrack", name: "SkyTrack", url: "https://sysadmindoc.github.io/SkyTrack/", category: "web", desc: "Real-time aircraft tracker", live: true },
   { repo: "kindred", name: "kindred", url: "https://github.com/SysAdminDoc/kindred", category: "web", desc: "Privacy-first dating platform" },
   { repo: "ConvertFlow", name: "ConvertFlow", url: "https://sysadmindoc.github.io/ConvertFlow/", category: "web", desc: "Browser media converter", live: true },
