@@ -99,7 +99,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "CSV_Power_Tool", name: "CSV_Power_Tool", url: "https://github.com/SysAdminDoc/CSV_Power_Tool", category: "py", desc: "Bulk CSV processing" },
   { repo: "HostsGuard", name: "HostsGuard", url: "https://github.com/SysAdminDoc/HostsGuard", category: "py", desc: "Real-time network privacy manager" },
   { repo: "AI-Model-Compass", name: "AI-Model-Compass", url: "https://github.com/SysAdminDoc/AI-Model-Compass", category: "py", desc: "Discover &amp; run local AI models" },
-  { repo: "DICOM-PACS-Migrator", name: "DICOM-PACS-Migrator", url: "https://github.com/SysAdminDoc/DICOM-PACS-Migrator", category: "py", desc: "Bulk DICOM C-STORE migration" },
   { repo: "Tunerize", name: "Tunerize", url: "https://github.com/SysAdminDoc/Tunerize", category: "py", desc: "Audio &rarr; chiptune or SoundFont, locally" },
   { repo: "Vertigo", name: "Vertigo", url: "https://github.com/SysAdminDoc/Vertigo", category: "py", desc: "9:16 vertical video studio for short-form" },
   { repo: "PromptCompanion", name: "PromptCompanion", url: "https://github.com/SysAdminDoc/PromptCompanion", category: "py", desc: "Curated, searchable, offline AI prompt library" },
