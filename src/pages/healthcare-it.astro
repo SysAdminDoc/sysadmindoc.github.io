@@ -17,8 +17,6 @@ const repos = healthcareIT.repos.map((slug) => {
   const clinicalLane: Record<string, string> = {
     'DICOM-PACS-Migrator': 'Migration',
     XRayAcquisition: 'Acquisition',
-    RadAtlas: 'Technique charts',
-    GeneratorSpecs: 'Generator data',
   };
   const hasDetailPage = !!(f || c || l);
   return {
@@ -40,7 +38,7 @@ const cmdkSections = [
 ---
 <Base
   title="Healthcare IT — Matt Parker"
-  description="Tools I've built specifically for healthcare facilities running medical imaging systems: PACS migration, X-ray acquisition, technique charts, generator specs."
+  description="Tools I've built specifically for healthcare facilities running medical imaging systems: PACS migration and X-ray acquisition."
   ogImage="/og.png"
   cmdkSections={cmdkSections}
 >
