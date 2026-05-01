@@ -2,6 +2,17 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.14.1] - 2026-05-01
+
+**Removed RadAtlas and GeneratorSpecs from the portfolio.**
+
+- Removed from `liveApps` and `catalog` in [src/data/projects.ts](src/data/projects.ts).
+- Removed from `healthcareIT.repos` in [src/data/curated.ts](src/data/curated.ts) — Healthcare IT track now lists DICOM-PACS-Migrator + XRayAcquisition only.
+- Removed `clinicalLane` mappings from [src/pages/healthcare-it.astro](src/pages/healthcare-it.astro) and updated the page description (no longer mentions technique charts / generator specs).
+- Updated narrative in [src/pages/index.astro](src/pages/index.astro) — "production tooling adopted company-wide" line and About paragraph no longer reference RadAtlas or Generator Specs.
+- Removed both LIVE cards and the RadAtlas catalog entry from `legacy.html`.
+- README content-collection counts: live apps 22 → 20, catalog 150 → 148.
+
 ## [v0.14.0] - 2026-04-30
 
 **Catalog refresh — add 12 missing public repos and refine HEICShift description.**

@@ -83,8 +83,6 @@ export const healthcareIT = {
   repos: [
     'DICOM-PACS-Migrator',
     'XRayAcquisition',
-    'RadAtlas',
-    'GeneratorSpecs',
   ],
 };
 
