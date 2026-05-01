@@ -2,6 +2,23 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.14.0] - 2026-04-30
+
+**Catalog refresh — add 12 missing public repos and refine HEICShift description.**
+
+Added to [src/data/projects.ts](src/data/projects.ts):
+- **PowerShell**: AdapterLock (per-adapter IP lockdown, registry-ACL TCP/IP freeze), LTSC-MicrosoftStore (add MS Store to Win11 24H2 LTSC).
+- **Python**: mnamer (media file renaming/organizing), TagStudio (photo & file management).
+- **Extensions**: Vantage (Chromium MV3 new-tab dashboard with RSS, news, weather, quick links).
+- **Kotlin / Android**: AppManagerNG (power-user package manager, continuation of MuntashirAkon/AppManager), CallShield (spam call/text blocker with GitHub-hosted spam DB).
+- **C# / Desktop**: Vigil (lean ungoogled-chromium browser), TabExplorer (tabbed file manager), RcloneBrowser (cross-platform rclone GUI).
+- **Other**: improve-repo (automated repo improvement pipeline), project-nomad (the original NOMAD spec/concept repo, sibling to project-nomad-desktop).
+
+Refined
+- **HEICShift** description: "HEIC/HEIF batch converter" → "Universal image batch converter — HEIC/HEIF/AVIF/WEBP/JPG/PNG, PyQt6" (matches the v2.8.0 scope).
+
+`fallbackRepoCount` (used in `/now` and `derived.ts`) auto-recalculates from the new catalog size, so visible repo numbers update with no further edits. Build cache refreshed via `fetch-stars`.
+
 ## [v0.13.1] - 2026-04-25
 
 **Catalog refresh — add 12 missing public repos.**
