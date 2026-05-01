@@ -2,6 +2,26 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.14.2] - 2026-05-01
+
+**Remove the last private-repo references from the site.**
+
+`DICOM-PACS-Migrator` and `XRayAcquisition` are private/non-public — visitors hitting their detail pages or following their cards from the catalog were getting dead links into GitHub. Stripped every reference so the site reflects only public, openable work.
+
+Removed
+- `DICOM-PACS-Migrator` catalog entry from [src/data/projects.ts](src/data/projects.ts).
+- `DICOM-PACS-Migrator` and `XRayAcquisition` from `healthcareIT.repos` in [src/data/curated.ts](src/data/curated.ts) (now an empty array with an explanatory comment).
+- The `clinicalLane` lookup in [src/pages/healthcare-it.astro](src/pages/healthcare-it.astro) that hand-mapped both private slugs.
+
+Replaced
+- `DICOM-PACS-Migrator` in [Greatest Hits](src/data/curated.ts) → `UniversalConverterX` ("1000+ format desktop converter — WinUI 3 shell with sidecar engines for media, docs, archives, PDFs, subtitles, fonts, ebooks, OCR. The Wondershare alternative that doesn't phone home.").
+
+Refined
+- Healthcare IT page now hides the entire "Projects in this track" section when no public showcases exist; "Why this track exists" still narrates the lane.
+- About-section narrative on the index now says "the DICOM migration toolchain and the acquisition-PC network scanner" instead of naming the private repo directly.
+
+`fallbackRepoCount` auto-updates from the new catalog size.
+
 ## [v0.14.1] - 2026-05-01
 
 **Removed RadAtlas and GeneratorSpecs from the portfolio.**

@@ -16,10 +16,10 @@ export const greatestHits: GreatestHit[] = [
     tag: 'Windows',
   },
   {
-    repo: 'DICOM-PACS-Migrator',
-    name: 'DICOM-PACS-Migrator',
-    why: 'Moved 1M+ DICOM files between PACS systems in production when the vendor tool gave up mid-job. Fault-tolerant, resumable, audit-logged — used on real clinical archives.',
-    tag: 'Healthcare IT',
+    repo: 'UniversalConverterX',
+    name: 'UniversalConverterX',
+    why: '1000+ format desktop converter — WinUI 3 shell with sidecar engines covering media, docs, archives, PDFs, subtitles, fonts, ebooks, OCR. The Wondershare alternative that doesn\u2019t phone home.',
+    tag: 'Desktop',
   },
   {
     repo: 'HostShield',
@@ -80,10 +80,9 @@ export const manifesto: ManifestoRule[] = [
 export const healthcareIT = {
   intro:
     "I'm the Senior Technical Support Manager at Maven Imaging — medical imaging equipment, PACS, DR panels, and cloud-based diagnostic archiving. My day job is PACS migrations (10+ to date, including a million-file Candelis transfer that vendor tooling couldn't handle), DR panel deployments, 54-account cloud transitions, and keeping imaging systems up for clinics across the Caribbean, East Africa, and East Asia. Every tool here started as a real production problem.",
-  repos: [
-    'DICOM-PACS-Migrator',
-    'XRayAcquisition',
-  ],
+  // Public showcases for this track currently live as private internal tooling.
+  // Kept as a track narrative; project cards intentionally omitted.
+  repos: [] as string[],
 };
 
 /**

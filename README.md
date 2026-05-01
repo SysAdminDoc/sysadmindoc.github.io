@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.14.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.14.2-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%205-ff5d01)](https://astro.build)
@@ -11,7 +11,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 
 - **Astro 5** — static site generator with focused client-side enhancements for the homepage experience
 - **TypeScript** data layer ([src/data/projects.ts](src/data/projects.ts))
-- **Content collections**: featured (9), live apps (20), catalog (148), skills (8)
+- **Content collections**: featured (9), live apps (20), catalog (147), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **GitHub Pages + GH Actions** — scheduled data refresh, type checking, build, and deploy
 

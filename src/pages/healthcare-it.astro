@@ -14,27 +14,29 @@ const repos = healthcareIT.repos.map((slug) => {
   const f = featured.find((p) => p.repo === slug);
   const c = catalog.find((x) => x.repo === slug);
   const l = liveApps.find((a) => a.slug === slug);
-  const clinicalLane: Record<string, string> = {
-    'DICOM-PACS-Migrator': 'Migration',
-    XRayAcquisition: 'Acquisition',
-  };
   const hasDetailPage = !!(f || c || l);
   return {
     slug,
     name: f?.name ?? c?.name ?? l?.name ?? slug,
     desc: f?.desc ?? c?.desc ?? l?.desc ?? 'Project details live on GitHub.',
     stars: stars[slug] ?? 0,
-    lane: clinicalLane[slug] ?? 'Healthcare IT',
+    lane: 'Healthcare IT',
     liveUrl: l?.url,
     detailUrl: hasDetailPage ? `/projects/${slug}/` : `https://github.com/SysAdminDoc/${slug}`,
     hasDetailPage,
   };
 });
-const cmdkSections = [
-  { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
-  { label: 'Projects', href: '#clinical-projects', desc: 'Healthcare IT projects shaped by imaging, migration, and support workflows.', badge: 'ARCHIVE' },
-  { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
-];
+const hasRepos = repos.length > 0;
+const cmdkSections = hasRepos
+  ? [
+      { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
+      { label: 'Projects', href: '#clinical-projects', desc: 'Healthcare IT projects shaped by imaging, migration, and support workflows.', badge: 'ARCHIVE' },
+      { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
+    ]
+  : [
+      { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
+      { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
+    ];
 ---
 <Base
   title="Healthcare IT — Matt Parker"
@@ -78,26 +80,30 @@ const cmdkSections = [
     </div>
     <Divider />
 
-    <div class="si" id="clinical-projects">
-      <h2 class="hcit-h2">Projects in this track</h2>
-      <div class="hcit-grid">
-        {repos.map((r) => (
-          <article class="hcit-card card-enter">
-            <div class="hcit-card-head">
-              <span class="hcit-card-tag">{r.lane}</span>
-              {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
-            </div>
-            <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
-            <p class="hcit-card-desc" set:html={r.desc}></p>
-            <div class="hcit-card-actions">
-              <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open source →'}</a>
-              {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Open live demo →</a>}
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-    <Divider />
+    {hasRepos && (
+      <>
+        <div class="si" id="clinical-projects">
+          <h2 class="hcit-h2">Projects in this track</h2>
+          <div class="hcit-grid">
+            {repos.map((r) => (
+              <article class="hcit-card card-enter">
+                <div class="hcit-card-head">
+                  <span class="hcit-card-tag">{r.lane}</span>
+                  {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
+                </div>
+                <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
+                <p class="hcit-card-desc" set:html={r.desc}></p>
+                <div class="hcit-card-actions">
+                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open source →'}</a>
+                  {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Open live demo →</a>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <Divider />
+      </>
+    )}
 
     <div class="si" id="track-context">
       <h2 class="hcit-h2">Why this track exists</h2>
