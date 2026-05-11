@@ -34,7 +34,9 @@ export const liveApps: LiveApp[] = [
   { slug: "UserScriptHunt", name: "UserScriptHunt", url: "https://sysadmindoc.github.io/UserScriptHunt/", desc: "Unified userscript search engine" },
   { slug: "SearchHub", name: "SearchHub", url: "https://sysadmindoc.github.io/SearchHub/", desc: "538 engines across 29 categories" },
   { slug: "NATO_PHONETIC_TRAINING", name: "NATO_PHONETIC_TRAINING", url: "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/", desc: "NATO phonetic alphabet trainer" },
-  { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" }
+  { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" },
+  { slug: "HurricaneMap", name: "HurricaneMap", url: "https://sysadmindoc.github.io/HurricaneMap/", desc: "Every U.S. hurricane landfall (1851&ndash;present) from NOAA HURDAT2" },
+  { slug: "ApocalypseWatch", name: "ApocalypseWatch", url: "https://sysadmindoc.github.io/ApocalypseWatch/", desc: "Realtime business-jet tracker vs. 24h baseline" }
 ];
 
 export const catalog: CatalogEntry[] = [
@@ -134,6 +136,8 @@ export const catalog: CatalogEntry[] = [
   { repo: "UserScriptHunt", name: "UserScriptHunt", url: "https://sysadmindoc.github.io/UserScriptHunt/", category: "web", desc: "Unified userscript search", live: true },
   { repo: "SkyTrack", name: "SkyTrack", url: "https://sysadmindoc.github.io/SkyTrack/", category: "web", desc: "Real-time aircraft tracker", live: true },
   { repo: "kindred", name: "kindred", url: "https://github.com/SysAdminDoc/kindred", category: "web", desc: "Privacy-first dating platform" },
+  { repo: "HurricaneMap", name: "HurricaneMap", url: "https://sysadmindoc.github.io/HurricaneMap/", category: "web", desc: "Interactive map of every U.S. hurricane landfall (1851&ndash;present), NOAA HURDAT2", live: true },
+  { repo: "ApocalypseWatch", name: "ApocalypseWatch", url: "https://sysadmindoc.github.io/ApocalypseWatch/", category: "web", desc: "Premium realtime business-jet tracker dashboard vs. 24h baseline", live: true },
   { repo: "ConvertFlow", name: "ConvertFlow", url: "https://sysadmindoc.github.io/ConvertFlow/", category: "web", desc: "Browser media converter", live: true },
   { repo: "ImageXpert", name: "ImageXpert", url: "https://sysadmindoc.github.io/ImageXpert/", category: "web", desc: "Multi-engine reverse image search", live: true },
   { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
@@ -170,6 +174,9 @@ export const catalog: CatalogEntry[] = [
   { repo: "one-ui-home-clone", name: "one-ui-home-clone", url: "https://github.com/SysAdminDoc/one-ui-home-clone", category: "kt", desc: "Samsung One UI 7 parity launcher &mdash; Compose, clone not a port" },
   { repo: "AppManagerNG", name: "AppManagerNG", url: "https://github.com/SysAdminDoc/AppManagerNG", category: "kt", desc: "Power-user Android package manager &mdash; continuation of MuntashirAkon/AppManager" },
   { repo: "CallShield", name: "CallShield", url: "https://github.com/SysAdminDoc/CallShield", category: "kt", desc: "Spam call &amp; text blocker &mdash; GitHub-hosted spam database, Compose UI" },
+  { repo: "OpenSwift", name: "OpenSwift", url: "https://github.com/SysAdminDoc/OpenSwift", category: "kt", desc: "SwiftKey-inspired Android keyboard &mdash; glide typing, prediction, themes, clipboard" },
+  { repo: "SwiftFloris", name: "SwiftFloris", url: "https://github.com/SysAdminDoc/SwiftFloris", category: "kt", desc: "SwiftKey-inspired keyboard built on FlorisBoard's foundation" },
+  { repo: "OpenTasker", name: "OpenTasker", url: "https://github.com/SysAdminDoc/OpenTasker", category: "kt", desc: "FOSS Tasker alternative for Android" },
   { repo: "pfSenseSuite", name: "pfSenseSuite", url: "https://github.com/SysAdminDoc/pfSenseSuite", category: "sec", desc: "pfSense scripts &amp; customizations" },
   { repo: "BetterNext", name: "BetterNext", url: "https://github.com/SysAdminDoc/BetterNext", category: "sec", desc: "Enhanced NextDNS panel" },
   { repo: "ESET", name: "ESET", url: "https://github.com/SysAdminDoc/ESET", category: "sec", desc: "ESET port &amp; address lists" },
@@ -194,8 +201,12 @@ export const catalog: CatalogEntry[] = [
   { repo: "Vigil", name: "Vigil", url: "https://github.com/SysAdminDoc/Vigil", category: "cs", desc: "Vigil Browser &mdash; lean, privacy-respecting Chromium on ungoogled-chromium" },
   { repo: "TabExplorer", name: "TabExplorer", url: "https://github.com/SysAdminDoc/TabExplorer", category: "cs", desc: "Lightweight tabbed file manager for Windows" },
   { repo: "RcloneBrowser", name: "RcloneBrowser", url: "https://github.com/SysAdminDoc/RcloneBrowser", category: "cs", desc: "Cross-platform GUI for rclone &mdash; Windows, macOS, Linux" },
+  { repo: "Devicer", name: "Devicer", url: "https://github.com/SysAdminDoc/Devicer", category: "cs", desc: "Unified Windows toolkit for rooted Android &mdash; identify, ROM search, partition backup, boot.img patch, flashing. Native FUS, no Python or JRE" },
+  { repo: "Snapture", name: "Snapture", url: "https://github.com/SysAdminDoc/Snapture", category: "cs", desc: "All-in-one Windows screenshot utility &mdash; region/window/fullscreen, pinned overlays, no telemetry. .NET 10 WPF" },
+  { repo: "OrganizeContacts", name: "OrganizeContacts", url: "https://github.com/SysAdminDoc/OrganizeContacts", category: "cs", desc: "Local-first contact organizer &amp; deduper &mdash; native Windows desktop, no cloud upload" },
   { repo: "AI_Realism", name: "AI_Realism", url: "https://github.com/SysAdminDoc/AI_Realism", category: "guide", desc: "AI video generation guide" },
   { repo: "facebook-exit-guide", name: "facebook-exit-guide", url: "https://github.com/SysAdminDoc/facebook-exit-guide", category: "guide", desc: "Facebook exit guide" },
+  { repo: "android-debloat-list", name: "android-debloat-list", url: "https://github.com/SysAdminDoc/android-debloat-list", category: "guide", desc: "Curated Android debloat list with vulnerability notes &mdash; companion to AppManagerNG" },
   { repo: "sysadmindoc.github.io", name: "sysadmindoc.github.io", url: "https://github.com/SysAdminDoc/sysadmindoc.github.io", category: "guide", desc: "Portfolio &amp; project showcase" },
   { repo: "octopus-factory", name: "octopus-factory", url: "https://github.com/SysAdminDoc/octopus-factory", category: "other", desc: "Recipe-driven autonomous coding pipeline &mdash; multi-agent build/audit/release" },
   { repo: "improve-repo", name: "improve-repo", url: "https://github.com/SysAdminDoc/improve-repo", category: "other", desc: "Automated repo improvement pipeline &mdash; research, implement, polish, review, PR" },

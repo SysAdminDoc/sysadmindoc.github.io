@@ -2,6 +2,25 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.15.0] - 2026-05-11
+
+**Catalog refresh — add 9 new public repos shipped since v0.14.x.**
+
+Added to [src/data/projects.ts](src/data/projects.ts):
+- `HurricaneMap` — live + catalog (web). Leaflet map of every U.S. hurricane landfall from NOAA HURDAT2.
+- `ApocalypseWatch` — live + catalog (web). Realtime business-jet tracker dashboard.
+- `Devicer` (cs) — Windows toolkit for rooted Android, .NET 10 WPF.
+- `Snapture` (cs) — all-in-one Windows screenshot utility, .NET 10 WPF.
+- `OrganizeContacts` (cs) — local-first contact deduper.
+- `OpenSwift` (kt) — SwiftKey-style Android keyboard.
+- `SwiftFloris` (kt) — SwiftKey-style FlorisBoard fork.
+- `OpenTasker` (kt) — FOSS Tasker alternative for Android.
+- `android-debloat-list` (guide) — curated Android debloat list with vulnerability notes.
+
+Live apps 20 → 22. Catalog 147 → 156. `fallbackRepoCount` auto-updates.
+
+Star cache also refreshed against current GitHub state.
+
 ## [v0.14.2] - 2026-05-01
 
 **Remove the last private-repo references from the site.**
