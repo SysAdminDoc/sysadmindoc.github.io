@@ -410,26 +410,6 @@ document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
     thumb.addEventListener('click',function(){playVideo(this)});
 });
 
-/* ===== LAZY-LOAD SPOTIFY EMBED ===== */
-(function(){
-    const wrap=document.getElementById('spotifyWrap');
-    if(!wrap||!wrap.dataset.src)return;
-    const io=new IntersectionObserver(entries=>{
-        if(!entries[0].isIntersecting)return;
-        io.disconnect();
-        const iframe=document.createElement('iframe');
-        iframe.src=wrap.dataset.src;
-        iframe.title='Slunder Spotify profile';
-        iframe.style.cssText='border-radius:16px;border:none';
-        iframe.width='100%';iframe.height='740';
-        iframe.allowFullscreen=true;
-        iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-        iframe.loading='lazy';
-        wrap.appendChild(iframe);
-    },{rootMargin:'200px'});
-    io.observe(wrap);
-})();
-
 /* ===== CATALOG: FILTER + SEARCH + SORT ===== */
 const grid=document.getElementById('catalogGrid');
 const allItems=grid?Array.from(grid.querySelectorAll('.ca')):[];
