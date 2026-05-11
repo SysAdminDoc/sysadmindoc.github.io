@@ -93,7 +93,7 @@ const journeyMilestones = [
   {
     title: 'Healthcare IT & Systems Administration',
     eyebrow: 'Origin point',
-    desc: 'Fifteen-plus years keeping Windows fleets, Cisco networks, and medical imaging systems running — from a Dayton MSP to PBS broadcast infrastructure to the PACS / DR / cloud-migration work I do now at Maven Imaging. The only stable path through complex environments is automating the parts you touch every day.',
+    desc: 'Started in general systems administration — Windows fleets, Cisco networks, MSP work, PBS broadcast infrastructure. Moved into medical imaging six years ago: PACS, DR panel deployments, and cloud migrations at Maven Imaging. The only stable path through complex environments is automating the parts you touch every day.',
     href: '/healthcare-it/',
     cta: 'Open the healthcare track',
     meta: 'Clinical systems, imaging uptime, and production-first tooling.',
@@ -279,17 +279,6 @@ const aerialClips = [
   {id:'PnlsSqa8DtQ', title:'Venice Jetty', desc:'Aerial view of the Venice, Florida jetty'},
   {id:'FVroPKvYgKQ', title:'Nokomis Beach, Florida', desc:'Drone flight over Nokomis Beach'},
 ] as const;
-const albums = [
-  {id:'7xHMgXflIR9qRtjU39Q80t', art:'ab67616d00001e02e042810ddecccc2339656b49', name:'Push The Button', year:2026},
-  {id:'7KlKXiga7kHUOgC8LeyKH4', art:'ab67616d00001e027c428d22537bec2ed4af94d8', name:'Game Over', year:2026},
-  {id:'3NQ019Wd8fjtSCCQcK1WDH', art:'ab67616d00001e02f8ef4af6c2f7c3c8f592ebcb', name:'Saltwater in My Veins', year:2025},
-  {id:'66iCBrYX5vrYn7LvPd2P5d', art:'ab67616d00001e029d375d3a3ad769fda8e2af93', name:'Unmasked', year:2025},
-  {id:'39NZL7jH79wznqPBvr7Fwt', art:'ab67616d00001e026ed0117b585d98248228e17c', name:'Apocalypse', year:2025},
-  {id:'2FsIqZY3LW1pTCjEb7URJk', art:'ab67616d00001e0234b30d89e374047ef7ecd730', name:'Thanks for Giving Up', year:2025},
-] as const;
-const earliestAlbumYear = Math.min(...albums.map((album) => album.year));
-const latestAlbumYear = Math.max(...albums.map((album) => album.year));
-const latestAlbumName = albums.find((album) => album.year === latestAlbumYear)?.name ?? albums[0]?.name ?? 'Latest release';
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
@@ -348,7 +337,7 @@ const cmdkSections = [
         <img class="hero-avatar" id="heroAvatar" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Matt Parker" width="56" height="56" decoding="async">
         <div class="htag" id="heroTag"><span class="dot"></span> Open for thoughtful collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
-        <p class="hr">Senior Technical Support Manager &amp; systems administrator with 15+ years in the trenches &mdash; medical imaging (DICOM/PACS), enterprise infrastructure, and the open-source tools that grew out of that work.</p>
+        <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
         <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
         <div class="hs">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Projects</div></div>
@@ -657,24 +646,10 @@ const cmdkSections = [
   <Divider />
 
   <section id="beyond"><div class="si">
-    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage, original music, and everything outside the terminal.</p></div>
-    <div class="beyond-overview rv">
-      <a href="#beyond-video" class="beyond-card">
-        <span class="beyond-card-kicker">Aerial Footage</span>
-        <strong class="beyond-card-value">{aerialClips.length}</strong>
-        <p class="beyond-card-copy">Florida coastline flight logs, captured as short visual resets away from the terminal.</p>
-        <span class="beyond-card-cta">Jump to the videos</span>
-      </a>
-      <a href="#beyond-music" class="beyond-card">
-        <span class="beyond-card-kicker">Slunder</span>
-        <strong class="beyond-card-value">{albums.length}</strong>
-        <p class="beyond-card-copy">Spotify releases built with Suno, shaping the same obsessive energy into music instead of software.</p>
-        <span class="beyond-card-cta">Jump to the releases</span>
-      </a>
-    </div>
+    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage and everything outside the terminal.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
-    <div class="video-grid" style="margin-bottom:60px">
+    <div class="video-grid">
       {aerialClips.map((v) => (
         <div class="video-card card-enter">
           <button type="button" class="video-thumb" data-yt={v.id} aria-label={`Play ${v.title} video`}>
@@ -684,41 +659,6 @@ const cmdkSections = [
           <div class="video-info"><div class="video-title">{v.title}</div><div class="video-desc">{v.desc}</div></div>
         </div>
       ))}
-    </div>
-
-    <h3 class="beyond-subtitle rv" id="beyond-music">Music &mdash; Made with Suno</h3>
-    <div class="music-layout">
-      <div>
-        <div class="music-hero card-enter">
-          <div class="music-art">
-            <div class="music-art-glow"><img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="" loading="lazy" decoding="async" width="640" height="640"></div>
-            <img src="https://i.scdn.co/image/ab67616100005174dd857aa31d70bb7f50b4f4f4" alt="Slunder" loading="lazy" decoding="async" width="640" height="640">
-          </div>
-          <div class="music-details">
-            <h3>Slunder</h3>
-            <div class="music-sub">Synthesizing art and intellect into a personal soundtrack.</div>
-            <div class="music-stat">
-              <div class="music-stat-item"><span>{albums.length}</span> releases</div>
-              <div class="music-stat-item"><span>{earliestAlbumYear}&ndash;{latestAlbumYear}</span> active years</div>
-              <div class="music-stat-item"><span>{latestAlbumName}</span> latest drop</div>
-            </div>
-            <a href="https://open.spotify.com/artist/48Fd3yL6KvxtZO0MOPZYHW" target="_blank" rel="noopener" class="spotify-btn"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>Listen on Spotify</a>
-          </div>
-        </div>
-        <div style="margin-top:20px">
-          <div class="album-grid">
-            {albums.map((a) => (
-              <a href={`https://open.spotify.com/album/${a.id}`} target="_blank" rel="noopener" class="album-card card-enter">
-                <div class="album-art"><img src={`https://i.scdn.co/image/${a.art}`} alt={a.name} loading="lazy" decoding="async" width="640" height="640"><div class="album-art-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-                <div class="album-info"><div class="album-name">{a.name}</div><div class="album-year">{a.year}</div></div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="spotify-embed-wrap card-enter" id="spotifyWrap" data-src="https://open.spotify.com/embed/artist/48Fd3yL6KvxtZO0MOPZYHW?utm_source=generator&theme=0" style="min-height:740px"></div>
-      </div>
     </div>
   </div></section>
   <Divider />
