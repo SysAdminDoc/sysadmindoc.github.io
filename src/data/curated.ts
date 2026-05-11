@@ -105,7 +105,7 @@ export const now = {
     'When "write the tool yourself" is cheaper than another vendor escalation',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
-  listening: 'Slunder — my own Suno-generated albums, on loop',
+  listening: 'Whatever keeps the focus session going.',
   notWorkingOn:
     "Anything that requires a cloud login, a monthly subscription, or a \"trial period\". If a tool can't just run, I'm not shipping it.",
 };

@@ -2,6 +2,24 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.0] - 2026-05-11
+
+**Remove the Spotify / Slunder music section + tighten experience claims.**
+
+The Spotify portion of "Beyond Code" added noise without telling visitors anything actionable about the work. Pulled the embed, album grid, Listen-on-Spotify CTA, and the matching Beyond-card kicker. Aerial Footage subsection stays.
+
+Removed
+- The entire `<h3 id="beyond-music">` block from [src/pages/index.astro](src/pages/index.astro), the `<a href="#beyond-music">` Beyond card, and the `albums` / `earliestAlbumYear` / `latestAlbumYear` / `latestAlbumName` constants.
+- Spotify URL from the `Person.sameAs` array in [src/layouts/Base.astro](src/layouts/Base.astro) JSON-LD.
+- The lazy-load Spotify embed IIFE from [public/scripts/main.js](public/scripts/main.js).
+- All `.music-*`, `.album-*`, `.spotify-*` rules + joint-selector references in [src/styles/global.css](src/styles/global.css) (the `/* Music */` block plus the responsive + light-theme compounds).
+- Slunder/Suno reference in the `/now` `listening` line ([src/data/curated.ts](src/data/curated.ts)) — replaced with neutral copy.
+
+Honesty pass
+- Hero title under "Matt Parker": no longer claims 15+ years in DICOM/PACS. Now: "15+ years in enterprise IT, the last six in medical imaging".
+- `<meta description>` in `Base.astro` aligned to the same split (15+ IT / 6 imaging).
+- Healthcare-IT origin-point narrative in the Journey section rewritten so it doesn't imply 15 straight years of imaging.
+
 ## [v0.15.0] - 2026-05-11
 
 **Catalog refresh — add 9 new public repos shipped since v0.14.x.**
