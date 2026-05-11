@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.1] - 2026-05-11
+
+**Drop TeamStation — repo went PRIVATE on GitHub.**
+
+The catalog entry was 404'ing for visitors. Removed from [src/data/projects.ts](src/data/projects.ts) (catalog 156 → 155). Caught during the matching profile-README cleanup pass.
+
 ## [v0.16.0] - 2026-05-11
 
 **Remove the Spotify / Slunder music section + tighten experience claims.**

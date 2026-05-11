@@ -190,7 +190,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "MyPortfolio", name: "MyPortfolio", url: "https://github.com/SysAdminDoc/MyPortfolio", category: "cs", desc: "Unified Windows catalog for every app I ship &mdash; binaries, extensions, APKs from GitHub releases" },
   { repo: "LocalChromeStore", name: "LocalChromeStore", url: "https://github.com/SysAdminDoc/LocalChromeStore", category: "cs", desc: "Personal Chromium extension store sourced from GitHub releases" },
   { repo: "LocalDesktopStore", name: "LocalDesktopStore", url: "https://github.com/SysAdminDoc/LocalDesktopStore", category: "cs", desc: "Private catalog for Windows desktop apps &mdash; MSI/Inno/NSIS/ZIP" },
-  { repo: "TeamStation", name: "TeamStation", url: "https://github.com/SysAdminDoc/TeamStation", category: "cs", desc: "TeamViewer connection manager &mdash; encrypted credentials, folder tree" },
   { repo: "Images", name: "Images", url: "https://github.com/SysAdminDoc/Images", category: "cs", desc: "Dark-mode Windows 7 Classic Photo Viewer with live inline rename" },
   { repo: "VaultBox", name: "VaultBox", url: "https://github.com/SysAdminDoc/VaultBox", category: "cs", desc: "Offline Bitwarden password manager" },
   { repo: "qBittorrent-Vanced", name: "qBittorrent-Vanced", url: "https://github.com/SysAdminDoc/qBittorrent-Vanced", category: "cs", desc: "Customized BitTorrent client" },
