@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.6-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.7-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -44,6 +44,8 @@ All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and
 
 Category filter counts auto-compute from the catalog array.
 
+Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
+
 ## Deploy
 
 Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy.yml) which:
@@ -72,6 +74,7 @@ src/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
 │   ├── projects.ts  # all content (EDIT THIS)
+│   ├── proof.ts
 │   ├── catalog-policy.json
 │   └── _*.json      # generated GitHub cache files (gitignored)
 ├── layouts/Base.astro

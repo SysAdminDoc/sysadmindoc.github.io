@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.6
+Current tracked version: v0.16.7
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -62,8 +62,9 @@ Primary catalog data is currently in `src/data/projects.ts`:
 - `liveApps`: projects with screenshots/live demo style presentation.
 - `catalog`: larger repository catalog.
 - `skills`: skills surfaced on the site.
+- `src/data/proof.ts`: optional source-backed proof sections for project detail pages.
 
-`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, or command palette coverage gaps. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
+`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, or malformed proof records. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
 
 Derived data in `src/data/derived.ts` computes fallback repository count from unique project references. The count currently excludes several intentionally skipped repos and can diverge from live GitHub if caches are stale.
 
@@ -126,8 +127,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Add proof-oriented project detail sections.
-2. Build a year-in-review and project timeline layer.
+1. Build a year-in-review and project timeline layer.
+2. Create a public-safe `/til` or notes feed only if there is durable source content.
 
 ## Definition of Done for Future Changes
 
@@ -148,3 +149,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped split generated-data refresh reporting. Added `npm run data:summary`, a scheduled/manual `data-refresh.yml` workflow, deploy-time summary artifacts, and local ignored summary output folders.
 - 2026-05-17: Shipped stale asset and reference auditing. Added `npm run assets:audit`, screenshot drift detection, public script/component/data-module reference checks, and `archive/screenshots/` policy documentation.
 - 2026-05-17: Shipped modernized CI quality gates. Added Dependabot for npm/GitHub Actions and a weekly/manual quality-gates workflow that reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue on failures.
+- 2026-05-17: Shipped proof-oriented project detail sections. Added `src/data/proof.ts`, ProjectProof types, conditional project-page rendering, and validator coverage for proof records and source URLs.
