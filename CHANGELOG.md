@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.7] - 2026-05-17
+
+**Add proof-oriented project detail sections.**
+
+- Added [src/data/proof.ts](src/data/proof.ts) with source-backed optional proof records for high-signal projects.
+- Added `ProjectProof` and `ProjectProofSource` types.
+- Project detail pages now render a conditional Proof section covering problem, build evidence, platform support, install path, known limitations, and sources.
+- `npm run data:validate` now validates proof records and source URL shape.
+
 ## [v0.16.6] - 2026-05-17
 
 **Modernize CI quality gates.**
