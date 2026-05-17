@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.3 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.4 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -117,22 +117,24 @@ Acceptance:
 - [x] Invalid catalog entries fail at check/build time.
 - [x] Exceptions such as intentionally skipped public repos are explicit.
 
-### [ ] 6. Split generated data refresh from deployment
+### [x] 6. Split generated data refresh from deployment
 
 Evidence: `scripts/fetch-stars.mjs`, `.github/workflows/deploy.yml`, README deployment docs, L06-L08.
 
-Generated GitHub data is ignored and cached locally. The script has safe unauthenticated fallback behavior, but stale data can quietly ship.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+Generated GitHub data is ignored and cached locally. The script has safe unauthenticated fallback behavior, but stale data can quietly ship. The deploy workflow now refreshes generated data for each push/manual deploy and uploads a freshness summary artifact. Daily scheduled refreshes moved to a separate non-deploying workflow so metadata health is visible without publishing the site.
 
 Actions:
 
-- Create a scheduled or manually dispatched GitHub data refresh workflow that requires `GITHUB_TOKEN`.
-- Publish a data freshness summary artifact or issue comment.
-- Keep deploys deterministic: site builds should use committed source plus generated caches from the workflow, not stale local files.
+- [x] Create a scheduled or manually dispatched GitHub data refresh workflow that requires `GITHUB_TOKEN`.
+- [x] Publish a data freshness summary artifact or issue comment.
+- [x] Keep deploys deterministic: site builds should use committed source plus generated caches from the workflow, not stale local files.
 
 Acceptance:
 
-- Stale metadata is visible before deployment.
-- Failed GitHub API refresh does not corrupt existing cache.
+- [x] Stale metadata is visible before deployment.
+- [x] Failed GitHub API refresh does not corrupt existing cache.
 
 ### [ ] 7. Add stale asset and dead-code checks
 
