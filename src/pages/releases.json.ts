@@ -1,6 +1,8 @@
 import type { APIContext } from 'astro';
 import { catalog, featured, liveApps } from '../data/projects';
 
+export const prerender = true;
+
 type Release = {
   repo: string;
   tag: string;
