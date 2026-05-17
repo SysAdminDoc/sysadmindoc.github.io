@@ -30,6 +30,10 @@ jobs:
         run: npm ci
       - name: Audit production dependencies
         run: npm run audit:prod
+      - name: Audit public repository catalog
+        run: npm run catalog:audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Fetch GitHub star counts
         run: npm run fetch-stars
         env:
