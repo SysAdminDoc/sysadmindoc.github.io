@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.12-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.13-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -17,6 +17,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
+- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails and OG PNG metadata validation
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
@@ -29,6 +30,8 @@ npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
 npm run data:validate # validate project data, screenshots, policy, and command palette coverage
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
+npm run images:audit  # validate screenshot masters, thumbnails, and OG PNG metadata
+npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
@@ -42,7 +45,7 @@ npm run preview       # serve dist/
 
 ## Edit content
 
-All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`.
+All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg` and a thumbnail in `public/screenshots/thumbs/<slug>.jpg`.
 
 - Featured: show on the bento grid at the top
 - Live Apps: for GitHub Pages demos
@@ -104,18 +107,22 @@ public/
 ├── manifest.json
 ├── robots.txt
 ├── sw.js
-├── screenshots/      # captured live-app thumbnails
+├── screenshots/      # captured live-app masters plus thumbs/
 └── scripts/          # theme.js, main.js, cmdk.js
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time)
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
 ├── audit-assets.mjs
+├── audit-performance.mjs
+├── audit-image-pipeline.mjs
+├── generate-screenshot-thumbnails.mjs
 ├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
 └── generate-data.mjs      # one-off migration helper
 SEARCH_DECISION.md    # Pagefind vs client-side search decision
 PERFORMANCE_AUDIT.md  # Lighthouse, bfcache, and service-worker update review
+IMAGE_PIPELINE.md     # screenshot, thumbnail, README image, and OG card policy
 NOTES_FEED_POLICY.md  # public-safe activation criteria for future notes/TIL
 legacy.html           # backup of pre-Astro single-file site
 ```

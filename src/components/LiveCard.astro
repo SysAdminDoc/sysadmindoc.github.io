@@ -1,16 +1,19 @@
 ---
 import type { LiveApp } from '../data/types';
 import { existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import process from 'node:process';
 
 export interface Props {
   app: LiveApp;
 }
 const { app } = Astro.props;
-const publicDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public');
+const publicDir = join(process.cwd(), 'public');
 const screenshotPath = join(publicDir, 'screenshots', `${app.slug}.jpg`);
+const screenshotThumbPath = join(publicDir, 'screenshots', 'thumbs', `${app.slug}.jpg`);
 const hasScreenshot = existsSync(screenshotPath);
+const hasScreenshotThumb = existsSync(screenshotThumbPath);
+const previewSrc = hasScreenshotThumb ? `/screenshots/thumbs/${app.slug}.jpg` : `/screenshots/${app.slug}.jpg`;
 const descText = String(app.desc ?? '')
   .replace(/<[^>]+>/g, '')
   .replace(/&amp;/g, '&')
@@ -32,7 +35,7 @@ try {
 >
   {hasScreenshot ? (
     <div class="lc2-thumb lc2-thumb-static" aria-hidden="true">
-      <img src={`/screenshots/${app.slug}.jpg`} alt="" loading="lazy" decoding="async" width="1280" height="800" />
+      <img src={previewSrc} alt="" loading="lazy" decoding="async" width={hasScreenshotThumb ? 640 : 1280} height={hasScreenshotThumb ? 400 : 800} />
       <span class="lc2-preview-label">Captured preview</span>
     </div>
   ) : (

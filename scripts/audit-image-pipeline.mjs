@@ -1,0 +1,165 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import ts from 'typescript';
+import sharp from 'sharp';
+
+const root = process.cwd();
+const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
+const screenshotsDir = path.join(root, 'public', 'screenshots');
+const thumbsDir = path.join(screenshotsDir, 'thumbs');
+const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
+const baseLayoutPath = path.join(root, 'src', 'layouts', 'Base.astro');
+const maxFullBytes = 350_000;
+const maxThumbBytes = 80_000;
+const errors = [];
+
+function fail(message) {
+  errors.push(message);
+}
+
+function propertyName(name) {
+  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
+  return null;
+}
+
+function stringProperty(objectLiteral, key) {
+  for (const property of objectLiteral.properties) {
+    if (!ts.isPropertyAssignment(property)) continue;
+    if (propertyName(property.name) !== key) continue;
+    const value = property.initializer;
+    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
+  }
+  return null;
+}
+
+async function collectLiveSlugs() {
+  const sourceText = await fs.readFile(projectsPath, 'utf8');
+  const source = ts.createSourceFile(projectsPath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const slugs = [];
+
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== 'liveApps') continue;
+      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) {
+        fail('Expected liveApps to be an array literal in src/data/projects.ts.');
+        return slugs;
+      }
+      for (const element of declaration.initializer.elements) {
+        if (!ts.isObjectLiteralExpression(element)) continue;
+        const slug = stringProperty(element, 'slug');
+        if (slug) slugs.push(slug);
+      }
+    }
+  }
+
+  if (slugs.length === 0) fail('No live app slugs found in src/data/projects.ts.');
+  return slugs;
+}
+
+async function listJpegs(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch((error) => {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  });
+  return entries
+    .filter((entry) => entry.isFile() && /\.jpe?g$/i.test(entry.name))
+    .map((entry) => path.join(dir, entry.name));
+}
+
+function formatBytes(bytes) {
+  return `${(bytes / 1024).toFixed(1)} KB`;
+}
+
+function fileSlug(filePath) {
+  return path.basename(filePath, path.extname(filePath));
+}
+
+async function inspectImage(filePath) {
+  const [stat, meta] = await Promise.all([fs.stat(filePath), sharp(filePath).metadata()]);
+  return { bytes: stat.size, width: meta.width ?? 0, height: meta.height ?? 0 };
+}
+
+const liveSlugs = await collectLiveSlugs();
+const liveSlugSet = new Set(liveSlugs);
+const fullFiles = await listJpegs(screenshotsDir);
+const thumbFiles = await listJpegs(thumbsDir);
+const fullSlugSet = new Set(fullFiles.map(fileSlug));
+const thumbSlugSet = new Set(thumbFiles.map(fileSlug));
+
+for (const slug of liveSlugs) {
+  if (!fullSlugSet.has(slug)) fail(`Missing full screenshot: public/screenshots/${slug}.jpg`);
+  if (!thumbSlugSet.has(slug)) fail(`Missing thumbnail screenshot: public/screenshots/thumbs/${slug}.jpg`);
+}
+
+for (const slug of [...fullSlugSet].filter((slug) => !liveSlugSet.has(slug)).sort()) {
+  fail(`Stale full screenshot is not tied to a live app: public/screenshots/${slug}.jpg`);
+}
+for (const slug of [...thumbSlugSet].filter((slug) => !liveSlugSet.has(slug)).sort()) {
+  fail(`Stale thumbnail is not tied to a live app: public/screenshots/thumbs/${slug}.jpg`);
+}
+
+let fullTotal = 0;
+let thumbTotal = 0;
+let largestFull = { slug: '', bytes: 0 };
+let largestThumb = { slug: '', bytes: 0 };
+
+for (const slug of liveSlugs) {
+  const fullPath = path.join(screenshotsDir, `${slug}.jpg`);
+  const thumbPath = path.join(thumbsDir, `${slug}.jpg`);
+
+  if (fullSlugSet.has(slug)) {
+    const full = await inspectImage(fullPath);
+    fullTotal += full.bytes;
+    if (full.bytes > largestFull.bytes) largestFull = { slug, bytes: full.bytes };
+    if (full.bytes > maxFullBytes) fail(`Full screenshot exceeds ${formatBytes(maxFullBytes)}: public/screenshots/${slug}.jpg (${formatBytes(full.bytes)})`);
+    if (full.width < 1200 || full.height < 750) fail(`Full screenshot is too small: public/screenshots/${slug}.jpg (${full.width}x${full.height})`);
+    const ratio = full.width / full.height;
+    if (ratio < 1.5 || ratio > 1.7) fail(`Full screenshot aspect ratio is not close to the expected card/detail frame: public/screenshots/${slug}.jpg (${full.width}x${full.height})`);
+  }
+
+  if (thumbSlugSet.has(slug)) {
+    const thumb = await inspectImage(thumbPath);
+    thumbTotal += thumb.bytes;
+    if (thumb.bytes > largestThumb.bytes) largestThumb = { slug, bytes: thumb.bytes };
+    if (thumb.bytes > maxThumbBytes) fail(`Thumbnail exceeds ${formatBytes(maxThumbBytes)}: public/screenshots/thumbs/${slug}.jpg (${formatBytes(thumb.bytes)})`);
+    if (thumb.width !== 640 || thumb.height !== 400) fail(`Thumbnail must be 640x400: public/screenshots/thumbs/${slug}.jpg (${thumb.width}x${thumb.height})`);
+  }
+}
+
+const ogSource = await fs.readFile(ogEndpointPath, 'utf8');
+const baseSource = await fs.readFile(baseLayoutPath, 'utf8');
+if (!/satori/i.test(ogSource) || !/new\s+Resvg/.test(ogSource)) {
+  fail('OG endpoint must continue using Satori + Resvg for static PNG generation.');
+}
+if (!/width:\s*1200/.test(ogSource) || !/height:\s*630/.test(ogSource)) {
+  fail('OG endpoint must keep 1200x630 social-card dimensions.');
+}
+if (!/['"]Content-Type['"]\s*:\s*['"]image\/png['"]/.test(ogSource)) {
+  fail('OG endpoint must return Content-Type: image/png.');
+}
+if (!/property="og:image:type"\s+content="image\/png"/.test(baseSource)) {
+  fail('Base layout must advertise generated social cards as image/png.');
+}
+if (!/property="og:image:alt"/.test(baseSource) || !/name="twitter:image:alt"/.test(baseSource)) {
+  fail('Base layout must emit alt text for Open Graph and Twitter card images.');
+}
+
+console.log('Image pipeline audit');
+console.log(`  live apps checked: ${liveSlugs.length}`);
+console.log(`  full screenshot total: ${formatBytes(fullTotal)}`);
+console.log(`  thumbnail total: ${formatBytes(thumbTotal)}`);
+console.log(`  largest full: ${largestFull.slug} (${formatBytes(largestFull.bytes)})`);
+console.log(`  largest thumbnail: ${largestThumb.slug} (${formatBytes(largestThumb.bytes)})`);
+console.log('  OG endpoint: 1200x630 PNG via Satori + Resvg');
+console.log('  social metadata: image/png with alt text');
+
+if (errors.length > 0) {
+  console.error('');
+  console.error('Image pipeline audit failed:');
+  for (const error of errors) console.error(`  - ${error}`);
+  process.exit(1);
+}
+
+console.log('Image pipeline audit passed.');
