@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.8-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.9-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -14,6 +14,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Content collections**: featured (9), live apps (22), catalog (173), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
+- **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
 ## Develop
@@ -46,6 +47,8 @@ All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and
 Category filter counts auto-compute from the catalog array.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
+
+Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists. See **[NOTES_FEED_POLICY.md](NOTES_FEED_POLICY.md)** before adding a `/til`, `/notes`, or notes RSS feed.
 
 ## Deploy
 
@@ -103,6 +106,7 @@ scripts/
 ├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
 └── generate-data.mjs      # one-off migration helper
+NOTES_FEED_POLICY.md  # public-safe activation criteria for future notes/TIL
 legacy.html           # backup of pre-Astro single-file site
 ```
 

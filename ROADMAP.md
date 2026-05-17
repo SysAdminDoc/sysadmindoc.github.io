@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.8 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.9 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -210,19 +210,22 @@ Acceptance:
 
 - [x] A visitor can understand current momentum and historical breadth without scanning 150+ entries.
 
-### [ ] 11. Create a public-safe `/til` or notes feed only if there is durable source content
+### [x] 11. Create a public-safe `/til` or notes feed only if there is durable source content
 
 Evidence: old roadmap, Simon Willison TIL/tools pattern E21, Maggie Appleton garden/notes pattern E26.
 
+Status: Parked by policy. The repository does not currently have a durable, reviewed, public-safe notes corpus, so publishing `/til`, `/notes`, or notes RSS would repackage release history, generated metadata, research artifacts, or local memory as editorial content without enough source quality.
+
 Actions:
 
-- Start only after choosing a content source and review policy.
-- Keep it separate from the repo catalog.
-- Include RSS if the section becomes active.
+- [x] Start only after choosing a content source and review policy.
+- [x] Keep it separate from the repo catalog.
+- [x] Include RSS if the section becomes active.
+- [x] Track the activation criteria in `NOTES_FEED_POLICY.md`.
 
 Acceptance:
 
-- Notes are maintainable and public-safe.
+- [x] Notes are maintainable and public-safe. Current decision: do not publish a notes feed until `content/til/`, `content/notes/`, or an equivalent reviewed source exists with validation and explicit public-safe metadata.
 
 ### [ ] 12. Add an archive or anti-portfolio section for retired public projects
 
