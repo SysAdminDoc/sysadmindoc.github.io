@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.5 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.6 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -155,20 +155,22 @@ Acceptance:
 - [x] Removed projects do not leave unreviewed public assets behind.
 - [x] Stale assets are either intentionally archived or deleted.
 
-### [ ] 8. Modernize CI quality gates
+### [x] 8. Modernize CI quality gates
 
 Evidence: `.github/workflows/deploy.yml`, `npm run check`, `npm audit`, GitHub Pages custom workflow docs E04, Dependabot docs E15.
 
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
 Actions:
 
-- Keep `npm run check` and `npm run build` as required deploy gates.
-- Add production audit reporting after remediation.
-- Add dependency update automation, at minimum Dependabot for npm and GitHub Actions.
-- Consider a weekly catalog audit that opens an issue when public GitHub state drifts.
+- [x] Keep `npm run check` and `npm run build` as required deploy gates.
+- [x] Add production audit reporting after remediation.
+- [x] Add dependency update automation, at minimum Dependabot for npm and GitHub Actions.
+- [x] Consider a weekly catalog audit that opens an issue when public GitHub state drifts.
 
 Acceptance:
 
-- Security and catalog drift are visible without manual local sessions.
+- [x] Security and catalog drift are visible without manual local sessions.
 
 ## Tier 2: Portfolio Experience and Storytelling
 
