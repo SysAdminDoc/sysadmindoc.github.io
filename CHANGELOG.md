@@ -2,6 +2,17 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.5] - 2026-05-17
+
+**Add stale asset and source-reference checks.**
+
+- Added [scripts/audit-assets.mjs](scripts/audit-assets.mjs) and `npm run assets:audit`.
+- `npm run check` and `npm run build` now run the asset/reference audit after project data validation.
+- The audit compares `public/screenshots/*.jpg` against live app slugs and fails on missing or stale thumbnails.
+- The audit also checks public script references, Astro component imports, and non-generated data module references as a lightweight dead-code guard.
+- Added [archive/screenshots/README.md](archive/screenshots/README.md) as the explicit policy for stale or historical screenshots outside `public/`.
+- Wired the asset/reference audit into the deploy workflow.
+
 ## [v0.16.4] - 2026-05-17
 
 **Split generated GitHub data refresh from deployment.**

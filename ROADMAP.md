@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.4 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.5 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -136,22 +136,24 @@ Acceptance:
 - [x] Stale metadata is visible before deployment.
 - [x] Failed GitHub API refresh does not corrupt existing cache.
 
-### [ ] 7. Add stale asset and dead-code checks
+### [x] 7. Add stale asset and dead-code checks
 
 Evidence: tracked screenshots, `src/data/projects.ts`, `CHANGELOG.md`, L05-L07.
 
-The repo previously carried removed project screenshots such as `GeneratorSpecs.jpg` and `RadAtlas.jpg`; the privacy-sensitive examples were removed in the medical-imaging boundary pass. A general stale screenshot checker is still needed so future removals do not leave unreviewed assets behind.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+The repo previously carried removed project screenshots such as `GeneratorSpecs.jpg` and `RadAtlas.jpg`; the privacy-sensitive examples were removed in the medical-imaging boundary pass. A general stale screenshot checker now prevents future removals from leaving unreviewed assets behind.
 
 Actions:
 
-- Add a script that compares `public/screenshots/*.jpg` to live app slugs.
-- Add an explicit archive folder or removal policy for stale visual assets.
-- Evaluate `knip`, ESLint, or a lightweight custom script for unused source modules and data fields.
+- [x] Add a script that compares `public/screenshots/*.jpg` to live app slugs.
+- [x] Add an explicit archive folder or removal policy for stale visual assets.
+- [x] Evaluate `knip`, ESLint, or a lightweight custom script for unused source modules and data fields.
 
 Acceptance:
 
-- Removed projects do not leave unreviewed public assets behind.
-- Stale assets are either intentionally archived or deleted.
+- [x] Removed projects do not leave unreviewed public assets behind.
+- [x] Stale assets are either intentionally archived or deleted.
 
 ### [ ] 8. Modernize CI quality gates
 
