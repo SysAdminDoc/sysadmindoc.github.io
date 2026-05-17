@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.11 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.12 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -261,19 +261,21 @@ Acceptance:
 
 - [x] Search finds projects by name, description, language, category, and README keywords.
 
-### [ ] 14. Audit Core Web Vitals, bfcache, and service-worker update UX
+### [x] 14. Audit Core Web Vitals, bfcache, and service-worker update UX
 
 Evidence: `public/sw.js`, `public/scripts/main.js`, web.dev Core Web Vitals E28, bfcache E29, MDN service worker docs E30-E31.
 
+Status: Shipped with `PERFORMANCE_AUDIT.md`, an explicit service-worker update toast, a Chromium bfcache sample, and local Lighthouse JSON samples. Desktop homepage/catalog/project samples pass; homepage mobile LCP and CLS remain documented follow-up risks.
+
 Actions:
 
-- Run Lighthouse/PageSpeed checks for homepage, catalog, and project pages.
-- Add a service-worker update toast if cached assets can go stale across deploys.
-- Test bfcache eligibility after view transitions or more client JavaScript changes.
+- [x] Run Lighthouse/PageSpeed checks for homepage, catalog, and project pages.
+- [x] Add a service-worker update toast if cached assets can go stale across deploys.
+- [x] Test bfcache eligibility after view transitions or more client JavaScript changes.
 
 Acceptance:
 
-- The site has documented LCP, INP, CLS, and bfcache status for representative pages.
+- [x] The site has documented LCP, INP, CLS, and bfcache status for representative pages.
 
 ### [ ] 15. Review image and OG generation pipeline
 

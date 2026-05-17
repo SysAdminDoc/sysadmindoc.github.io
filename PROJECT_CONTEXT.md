@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.11
+Current tracked version: v0.16.12
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -28,6 +28,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
+- `PERFORMANCE_AUDIT.md` records the current Lighthouse, bfcache, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
@@ -40,6 +41,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
+- Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
 - Preview: `npm run preview`
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
@@ -53,6 +55,7 @@ Current verification baseline:
 
 - `npm run check` passed.
 - `npm run build` passed, including Pagefind index generation.
+- Local Lighthouse samples were recorded for `/`, `/#catalog`, and `/projects/LibreSpot/`; desktop passed, project mobile CLS passed, and homepage mobile LCP/CLS remains the main follow-up.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
@@ -134,8 +137,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Audit Core Web Vitals, bfcache, and service-worker update UX.
-2. Review image and OG generation pipeline.
+1. Review image and OG generation pipeline.
+2. Add public portfolio feeds and machine-readable index files.
 
 ## Definition of Done for Future Changes
 
@@ -161,3 +164,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Parked the conditional public notes feed behind a tracked decision record. Added `NOTES_FEED_POLICY.md` with source, review, privacy, validation, and RSS activation criteria instead of publishing planning or machine-memory artifacts as notes.
 - 2026-05-17: Shipped archive decisions. Added `src/data/archive.ts`, `/archive/`, navigation/command-palette links, and validator coverage so retired or held-back project context can be explained without exposing unsafe links.
 - 2026-05-17: Shipped static full-text search. Added Pagefind Component UI, `/search/`, `SEARCH_DECISION.md`, build-time `dist/pagefind` generation, and no-JS fallback links while preserving the command palette for keyboard route jumps.
+- 2026-05-17: Audited performance, bfcache, and service-worker update UX. Added explicit update prompts, documented local Lighthouse/bfcache status in `PERFORMANCE_AUDIT.md`, and reduced desktop homepage layout shift by reserving terminal space.

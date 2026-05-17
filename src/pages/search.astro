@@ -119,13 +119,15 @@ const cmdkSections = [
 
 <style is:global>
   .search-page{min-height:calc(100vh - 200px)}
+  .search-page .page-shell{grid-template-columns:minmax(0,1fr)}
+  .search-page .page-shell > *{min-width:0;max-width:100%}
   .search-title{font-size:clamp(34px,4.8vw,56px)!important}
   .search-overview{margin-top:32px}
-  .search-shell{margin-top:28px;padding:22px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .search-shell{width:100%;min-width:0;max-width:100%;margin-top:28px;padding:22px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft);overflow:hidden}
   .search-loading{margin:14px 0 0;color:var(--t3);font-size:14px;line-height:1.6}
   .search-noscript{margin-top:18px}
-  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;gap:12px}
-  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-keyboard-hints{display:block}
+  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0;max-width:100%}
+  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-keyboard-hints{display:block;min-width:0;max-width:100%}
   .portfolio-pagefind .pf-result-link{color:var(--t1);text-decoration:none}
   .portfolio-pagefind .pf-result-link:hover{color:var(--grn)}
   .portfolio-pagefind .pf-result-card{box-shadow:none}

@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.11-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.12-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -16,6 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts
+- **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
@@ -30,6 +31,7 @@ npm run data:validate # validate project data, screenshots, policy, and command 
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
+npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
 npm run build         # validate data, then output to dist/
@@ -113,6 +115,7 @@ scripts/
 ├── capture-screenshots.mjs
 └── generate-data.mjs      # one-off migration helper
 SEARCH_DECISION.md    # Pagefind vs client-side search decision
+PERFORMANCE_AUDIT.md  # Lighthouse, bfcache, and service-worker update review
 NOTES_FEED_POLICY.md  # public-safe activation criteria for future notes/TIL
 legacy.html           # backup of pre-Astro single-file site
 ```
