@@ -81,6 +81,15 @@ function formatList(items, mapper = (item) => item) {
   return items.length === 0 ? '  none' : items.map((item) => `  - ${mapper(item)}`).join('\n');
 }
 
+async function exists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const sourceText = await fs.readFile(projectsPath, 'utf8');
 const policy = JSON.parse(await fs.readFile(policyPath, 'utf8'));
 const portfolioRefs = collectPortfolioRepos(sourceText);
@@ -109,6 +118,15 @@ const reviewedMissing = auditScope
   .filter((repo) => !portfolioRefs.has(repo.name))
   .filter((repo) => reviewedExceptions.has(repo.name))
   .sort((a, b) => a.name.localeCompare(b.name));
+const privacyListed = (policy.privacyReviewRequired ?? [])
+  .filter((entry) => portfolioRefs.has(entry.repo))
+  .sort((a, b) => a.repo.localeCompare(b.repo));
+const privacyScreenshots = [];
+for (const entry of policy.privacyReviewRequired ?? []) {
+  const screenshotPath = path.join(root, 'public', 'screenshots', `${entry.repo}.jpg`);
+  if (await exists(screenshotPath)) privacyScreenshots.push(entry);
+}
+privacyScreenshots.sort((a, b) => a.repo.localeCompare(b.repo));
 
 console.log('Catalog audit');
 console.log(`  owner: ${policy.owner}`);
@@ -121,7 +139,7 @@ console.log('Reviewed public repos not cataloged:');
 console.log(formatList(reviewedMissing, (repo) => `${repo.name} - ${reviewedExceptions.get(repo.name)}`));
 console.log('');
 
-if (missing.length > 0 || stale.length > 0) {
+if (missing.length > 0 || stale.length > 0 || privacyListed.length > 0 || privacyScreenshots.length > 0) {
   if (missing.length > 0) {
     console.error('Unreviewed active public repos missing from portfolio data:');
     console.error(formatList(missing, (repo) => `${repo.name} (${repo.html_url})`));
@@ -129,6 +147,14 @@ if (missing.length > 0 || stale.length > 0) {
   if (stale.length > 0) {
     console.error('Portfolio repo refs not found as active public repositories:');
     console.error(formatList(stale));
+  }
+  if (privacyListed.length > 0) {
+    console.error('Privacy-review repos must not appear in portfolio data:');
+    console.error(formatList(privacyListed, (entry) => `${entry.repo} - ${entry.reason}`));
+  }
+  if (privacyScreenshots.length > 0) {
+    console.error('Privacy-review repos must not have public screenshot artifacts:');
+    console.error(formatList(privacyScreenshots, (entry) => `${entry.repo} - public/screenshots/${entry.repo}.jpg`));
   }
   process.exitCode = 1;
 } else {
