@@ -11,18 +11,19 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch-stars": "node scripts/fetch-stars.mjs",
-    "capture-screenshots": "node scripts/capture-screenshots.mjs"
+    "capture-screenshots": "node scripts/capture-screenshots.mjs",
+    "audit:prod": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "@resvg/resvg-js": "^2.6.2",
-    "astro": "^5.1.0",
-    "marked": "^18.0.0",
-    "sanitize-html": "^2.17.2",
+    "astro": "^6.3.3",
+    "marked": "^18.0.3",
+    "sanitize-html": "^2.17.4",
     "satori": "^0.26.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
+    "@astrojs/check": "^0.9.9",
     "@types/sanitize-html": "^2.16.1",
     "lightningcss": "^1.32.0",
     "typescript": "^5.7.2"
