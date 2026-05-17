@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.3-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.4-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -13,7 +13,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Schema-checked TypeScript** data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Content collections**: featured (9), live apps (22), catalog (173), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
-- **GitHub Pages + GH Actions** — scheduled data refresh, type checking, build, and deploy
+- **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
 ## Develop
 
@@ -23,6 +23,7 @@ npm run fetch-stars   # optional: refresh star cache from GitHub
 npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
 npm run data:validate # validate project data, screenshots, policy, and command palette coverage
+npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
 npm run build         # validate data, then output to dist/
@@ -49,12 +50,14 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 2. Audits high/critical production advisories
 3. Audits public GitHub repo drift against the portfolio catalog
 4. Validates project data, screenshots, policy exceptions, and command palette coverage
-5. Refreshes generated GitHub data
-6. Runs `npm run check`
-7. Builds the Astro site
-8. Publishes to GitHub Pages
+5. Requires the workflow `GITHUB_TOKEN`
+6. Refreshes generated GitHub data for that workflow run
+7. Uploads a generated-data freshness summary artifact
+8. Runs `npm run check`
+9. Builds the Astro site
+10. Publishes to GitHub Pages
 
-A cron also runs daily to keep the generated GitHub data fresh without needing a push.
+The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
 
 ## Layout
 
@@ -87,6 +90,7 @@ scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time)
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
+├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
 └── generate-data.mjs      # one-off migration helper
 legacy.html           # backup of pre-Astro single-file site

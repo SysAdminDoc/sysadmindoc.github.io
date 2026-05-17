@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.3
+Current tracked version: v0.16.4
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -36,6 +36,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
 - Validate project data: `npm run data:validate`
+- Summarize generated GitHub metadata: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
 
@@ -44,6 +45,7 @@ Current verification baseline:
 - `npm run check` passed.
 - `npm run build` passed.
 - `npm run data:validate` passed.
+- `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -79,6 +81,8 @@ Catalog reconciliation from 2026-05-17 live GitHub scan:
 ## Generated Data and Automation
 
 `scripts/fetch-stars.mjs` fetches public GitHub repo metadata, releases, README excerpts, and star counts. It preserves existing generated caches when unauthenticated rate limits would otherwise wipe data. Full README refreshes require a token.
+
+`scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
 
 `scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes to `public/screenshots/`. Screenshots are tracked, so stale screenshots need explicit cleanup or archival.
 
@@ -116,8 +120,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Split generated data refresh from deployment.
-2. Add stale screenshot and unused asset checks.
+1. Add stale screenshot and unused asset checks.
+2. Modernize CI quality gates.
 
 ## Definition of Done for Future Changes
 
@@ -135,3 +139,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped catalog drift audit and reconciliation. Added `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`; documented intentional public-repo exclusions in `catalog-policy.json`; refreshed ignored GitHub metadata caches with `GITHUB_TOKEN`; added `npm run catalog:audit` to CI.
 - 2026-05-17: Shipped the portfolio-side medical-imaging boundary. `RadAtlas` remains excluded and blocked by `npm run catalog:audit`; stale `RadAtlas` and `GeneratorSpecs` screenshots were removed. GitHub visibility changes remain outside this repo.
 - 2026-05-17: Shipped schema-checked project data. Added `npm run data:validate`, shared category labels, live-app screenshot coverage enforcement, command-palette coverage checks, and missing screenshots for `HurricaneMap` and `ApocalypseWatch`.
+- 2026-05-17: Shipped split generated-data refresh reporting. Added `npm run data:summary`, a scheduled/manual `data-refresh.yml` workflow, deploy-time summary artifacts, and local ignored summary output folders.
