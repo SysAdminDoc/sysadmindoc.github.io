@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.2
+Current tracked version: v0.16.3
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -24,6 +24,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
+- Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
 
 ## Key Commands
@@ -32,8 +33,9 @@ The site must remain public-safe. It should not expose private repository names,
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
 - Preview: `npm run preview`
-- Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch:stars`
+- Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
+- Validate project data: `npm run data:validate`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
 
@@ -41,6 +43,7 @@ Current verification baseline:
 
 - `npm run check` passed.
 - `npm run build` passed.
+- `npm run data:validate` passed.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -53,6 +56,8 @@ Primary catalog data is currently in `src/data/projects.ts`:
 - `liveApps`: projects with screenshots/live demo style presentation.
 - `catalog`: larger repository catalog.
 - `skills`: skills surfaced on the site.
+
+`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, or command palette coverage gaps. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
 
 Derived data in `src/data/derived.ts` computes fallback repository count from unique project references. The count currently excludes several intentionally skipped repos and can diverge from live GitHub if caches are stale.
 
@@ -111,7 +116,7 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Move project data toward schema validation.
+1. Split generated data refresh from deployment.
 2. Add stale screenshot and unused asset checks.
 
 ## Definition of Done for Future Changes
@@ -129,3 +134,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped Tier 0 production dependency remediation. Upgraded Astro, `marked`, and `sanitize-html`; refreshed transitive `devalue` and `postcss`; added `npm run audit:prod` to CI; verified production audit, Astro check, and full static build.
 - 2026-05-17: Shipped catalog drift audit and reconciliation. Added `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`; documented intentional public-repo exclusions in `catalog-policy.json`; refreshed ignored GitHub metadata caches with `GITHUB_TOKEN`; added `npm run catalog:audit` to CI.
 - 2026-05-17: Shipped the portfolio-side medical-imaging boundary. `RadAtlas` remains excluded and blocked by `npm run catalog:audit`; stale `RadAtlas` and `GeneratorSpecs` screenshots were removed. GitHub visibility changes remain outside this repo.
+- 2026-05-17: Shipped schema-checked project data. Added `npm run data:validate`, shared category labels, live-app screenshot coverage enforcement, command-palette coverage checks, and missing screenshots for `HurricaneMap` and `ApocalypseWatch`.

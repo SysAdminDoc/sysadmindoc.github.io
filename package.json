@@ -1,17 +1,18 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
-    "check": "astro check",
+    "build": "npm run data:validate && astro build",
+    "check": "npm run data:validate && astro check",
     "preview": "astro preview",
     "astro": "astro",
     "fetch-stars": "node scripts/fetch-stars.mjs",
     "capture-screenshots": "node scripts/capture-screenshots.mjs",
+    "data:validate": "node scripts/validate-project-data.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "catalog:audit": "node scripts/audit-catalog.mjs"
   },
