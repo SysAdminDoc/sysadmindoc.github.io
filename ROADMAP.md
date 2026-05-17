@@ -60,23 +60,25 @@ Acceptance:
 - [x] README/site count language matches catalog data.
 - [x] Fork inclusion policy is explicit in `PROJECT_CONTEXT.md` and `src/data/catalog-policy.json`.
 
-### [ ] 3. Resolve the medical-imaging public boundary
+### [x] 3. Resolve the medical-imaging public boundary
 
 Evidence: GitHub CLI scan C04, local privacy rule inventory in `MEMORY_CONSOLIDATION.md`, L07.
 
-`RadAtlas` is public on GitHub and its description identifies it as an X-ray technique chart application. Existing local rules state that X-ray and medical-imaging repositories should be private unless explicitly approved. This roadmap cannot change GitHub visibility by itself, but it should make the risk visible.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+`RadAtlas` is public on GitHub and its description identifies it as an X-ray technique chart application. Existing local rules state that X-ray and medical-imaging repositories should be private unless explicitly approved. This repository now enforces the portfolio-side decision: `RadAtlas` stays excluded, is held in the privacy-review list, and cannot be reintroduced into portfolio data or screenshots without failing `npm run catalog:audit`. The roadmap still rejects automatic GitHub visibility changes from this site; changing the upstream repository visibility remains an explicit owner action outside this repo.
 
 Actions:
 
-- Review whether `RadAtlas` should remain public.
-- If public is intentional, document why it is safe to be public and whether it can be listed.
-- If public is not intentional, make the repository private outside this repo and keep it excluded here.
-- Remove or archive stale screenshots for removed private-sensitive projects unless they are intentionally retained as non-linked historical artifacts.
+- [x] Review whether `RadAtlas` should remain linked from this portfolio.
+- [x] Document that it is not safe to list here without explicit public-safety approval.
+- [x] Keep it excluded here and enforce that exclusion in `npm run catalog:audit`.
+- [x] Remove stale screenshots for removed private-sensitive projects.
 
 Acceptance:
 
-- The visibility decision is documented.
-- The portfolio does not link to unsafe or unintended public medical-imaging work.
+- [x] The portfolio visibility decision is documented.
+- [x] The portfolio does not link to unsafe or unintended public medical-imaging work.
 
 ### [x] 4. Make project memory canonical
 
@@ -134,7 +136,7 @@ Acceptance:
 
 Evidence: tracked screenshots, `src/data/projects.ts`, `CHANGELOG.md`, L05-L07.
 
-Tracked screenshots include removed project names such as `GeneratorSpecs.jpg` and `RadAtlas.jpg`. This is harmless at runtime but weakens trust in the repo.
+The repo previously carried removed project screenshots such as `GeneratorSpecs.jpg` and `RadAtlas.jpg`; the privacy-sensitive examples were removed in the medical-imaging boundary pass. A general stale screenshot checker is still needed so future removals do not leave unreviewed assets behind.
 
 Actions:
 

@@ -62,13 +62,13 @@ Important current exclusions:
 - `SysAdminDoc` is a public profile repository and is intentionally not listed.
 - `null` is a public placeholder repository and is intentionally not listed.
 - Private/internal repos must not be listed.
-- Public medical-imaging or X-ray repos require explicit review before being linked or promoted. `RadAtlas` is currently held in `catalog-policy.json` for that reason.
+- Public medical-imaging or X-ray repos require explicit review before being linked or promoted. `RadAtlas` and removed medical-imaging artifacts are held in `catalog-policy.json` for that reason.
 
 Catalog reconciliation from 2026-05-17 live GitHub scan:
 
 - Added newly public active repos `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`.
 - Active public non-fork repos that are not represented in `projects.ts` are documented in `src/data/catalog-policy.json`.
-- `RadAtlas` is public and X-ray-related, but was removed from the portfolio. Its visibility should be reviewed outside this site before any listing.
+- `RadAtlas` is public and X-ray-related, but it is excluded from the portfolio and blocked by `npm run catalog:audit`. Any GitHub visibility change remains an explicit owner action outside this site.
 - The generated GitHub caches were refreshed locally with `GITHUB_TOKEN` on 2026-05-17: 170 public non-fork metadata entries, 220 stars, 60 releases, and 170 README entries. These generated files remain ignored.
 
 ## Generated Data and Automation
@@ -111,9 +111,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Resolve the public/private boundary for medical-imaging projects.
-2. Move project data toward schema validation.
-3. Add stale screenshot and unused asset checks.
+1. Move project data toward schema validation.
+2. Add stale screenshot and unused asset checks.
 
 ## Definition of Done for Future Changes
 
@@ -129,3 +128,4 @@ Highest-priority work after this research pass:
 
 - 2026-05-17: Shipped Tier 0 production dependency remediation. Upgraded Astro, `marked`, and `sanitize-html`; refreshed transitive `devalue` and `postcss`; added `npm run audit:prod` to CI; verified production audit, Astro check, and full static build.
 - 2026-05-17: Shipped catalog drift audit and reconciliation. Added `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`; documented intentional public-repo exclusions in `catalog-policy.json`; refreshed ignored GitHub metadata caches with `GITHUB_TOKEN`; added `npm run catalog:audit` to CI.
+- 2026-05-17: Shipped the portfolio-side medical-imaging boundary. `RadAtlas` remains excluded and blocked by `npm run catalog:audit`; stale `RadAtlas` and `GeneratorSpecs` screenshots were removed. GitHub visibility changes remain outside this repo.
