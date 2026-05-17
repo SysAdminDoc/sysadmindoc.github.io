@@ -66,7 +66,7 @@ jobs:
             echo "See the uploaded quality-gate-reports artifact for command logs."
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload quality gate reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: quality-gate-reports
           path: |
