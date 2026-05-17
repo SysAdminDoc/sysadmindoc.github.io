@@ -2,6 +2,18 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.3] - 2026-05-17
+
+**Schema-check the project data layer.**
+
+- Added `npm run data:validate` via [scripts/validate-project-data.mjs](scripts/validate-project-data.mjs).
+- `npm run check` and `npm run build` now validate project data before Astro check/build.
+- The validator checks required fields, unique section slugs, category/language enums, HTTPS URL shape, live app screenshot coverage, public/private policy exceptions, derived route counts, and command palette coverage.
+- Added shared category labels in [src/data/categories.ts](src/data/categories.ts) and typed featured project language IDs against the `Lang` enum.
+- Added missing tracked screenshots for `HurricaneMap` and `ApocalypseWatch` so every live app has a validation-backed thumbnail.
+- Wired project data validation into the GitHub Pages workflow.
+- Corrected the current catalog count surfaced in README/docs to the schema-validated 173 entries.
+
 ## [v0.16.2] - 2026-05-17
 
 **Security remediation, catalog drift audit, and three new public repos.**

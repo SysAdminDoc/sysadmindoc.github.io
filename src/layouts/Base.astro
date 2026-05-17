@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { catalog, featured, liveApps } from '../data/projects';
+import { categoryLabels } from '../data/categories';
 
 type CmdkSection = {
   label: string;
@@ -27,19 +28,6 @@ export interface Props {
   cmdkSections?: readonly CmdkSection[];
 }
 
-const categoryLabels: Record<string, string> = {
-  ps: 'PowerShell',
-  py: 'Python',
-  web: 'Web Apps',
-  ext: 'Extensions',
-  kt: 'Android',
-  sec: 'Security',
-  media: 'Media',
-  cs: 'Desktop',
-  guide: 'Guides',
-  fork: 'Forks',
-  other: 'Other',
-};
 const normalizeCmdkDesc = (value: string) => value.replace(/&[a-z]+;/gi, ' ');
 const cmdkProjectMap = new Map<string, CmdkProject>();
 function upsertCmdkProject(slug: string, next: CmdkProject) {
