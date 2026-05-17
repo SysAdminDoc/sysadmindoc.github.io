@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.11] - 2026-05-17
+
+**Add static full-text search.**
+
+- Added Pagefind as the static search indexer and wired `npm run build` to generate `dist/pagefind` after Astro builds.
+- Added [src/pages/search.astro](src/pages/search.astro), a Pagefind Component UI search page for rendered project pages, README excerpts, route copy, releases, timeline entries, and archive decisions.
+- Added [SEARCH_DECISION.md](SEARCH_DECISION.md) comparing Pagefind, MiniSearch, Fuse.js, Lunr.js, and the existing command palette against GitHub Pages constraints.
+- Wired Search into homepage navigation, interior navigation, command palette defaults, quick links, and Connect entry points.
+- Kept `Ctrl/Cmd+K` for keyboard command navigation and added no-JS fallback links on `/search/`.
+
 ## [v0.16.10] - 2026-05-17
 
 **Add public-safe archive decisions.**

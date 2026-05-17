@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.10 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.11 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -245,19 +245,21 @@ Acceptance:
 
 ## Tier 3: Discovery, Search, and Performance
 
-### [ ] 13. Upgrade search beyond the current command palette dataset
+### [x] 13. Upgrade search beyond the current command palette dataset
 
-Evidence: `public/scripts/cmdk.js`, `Base.astro`, Pagefind docs E16, MiniSearch/Fuse/Lunr sources E17-E19.
+Evidence: `public/scripts/cmdk.js`, `Base.astro`, Pagefind docs E15, MiniSearch/Fuse/Lunr sources E16-E18.
+
+Status: Shipped as `/search/` with Pagefind Component UI. The existing command palette remains for keyboard route jumps; Pagefind indexes rendered HTML after Astro so project pages and README excerpts are searchable without a backend.
 
 Actions:
 
-- Compare Pagefind, MiniSearch, and the existing custom command palette against static GitHub Pages constraints.
-- Include README excerpts and project detail pages in the index if size remains acceptable.
-- Keep keyboard search accessible and no-JS fallback links intact.
+- [x] Compare Pagefind, MiniSearch, and the existing custom command palette against static GitHub Pages constraints.
+- [x] Include README excerpts and project detail pages in the index if size remains acceptable.
+- [x] Keep keyboard search accessible and no-JS fallback links intact.
 
 Acceptance:
 
-- Search finds projects by name, description, language, category, and README keywords.
+- [x] Search finds projects by name, description, language, category, and README keywords.
 
 ### [ ] 14. Audit Core Web Vitals, bfcache, and service-worker update UX
 

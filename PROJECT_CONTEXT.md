@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.10
+Current tracked version: v0.16.11
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -17,7 +17,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 - Static site built with Astro 6.
 - TypeScript data layer under `src/data/`.
-- Main pages under `src/pages/`, including homepage, catalog, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
+- Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - Global styling in `src/styles/global.css`.
@@ -27,6 +27,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/timeline/` is generated from ignored GitHub release and metadata caches plus tracked changelog entries, then filtered client-side by year, platform, category, and language.
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
+- `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
@@ -38,6 +39,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Install: `npm install`
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
+- Build search index only: `npm run search:index` after `astro build`
 - Preview: `npm run preview`
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
@@ -50,7 +52,7 @@ The site must remain public-safe. It should not expose private repository names,
 Current verification baseline:
 
 - `npm run check` passed.
-- `npm run build` passed.
+- `npm run build` passed, including Pagefind index generation.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
@@ -132,8 +134,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Upgrade search beyond the current command palette dataset.
-2. Audit Core Web Vitals, bfcache, and service-worker update UX.
+1. Audit Core Web Vitals, bfcache, and service-worker update UX.
+2. Review image and OG generation pipeline.
 
 ## Definition of Done for Future Changes
 
@@ -158,3 +160,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped the generated timeline/year-in-review layer. Added `/timeline/`, wired it into navigation and command palette, and generated year cards plus filterable release/project/changelog events from existing build-time evidence.
 - 2026-05-17: Parked the conditional public notes feed behind a tracked decision record. Added `NOTES_FEED_POLICY.md` with source, review, privacy, validation, and RSS activation criteria instead of publishing planning or machine-memory artifacts as notes.
 - 2026-05-17: Shipped archive decisions. Added `src/data/archive.ts`, `/archive/`, navigation/command-palette links, and validator coverage so retired or held-back project context can be explained without exposing unsafe links.
+- 2026-05-17: Shipped static full-text search. Added Pagefind Component UI, `/search/`, `SEARCH_DECISION.md`, build-time `dist/pagefind` generation, and no-JS fallback links while preserving the command palette for keyboard route jumps.
