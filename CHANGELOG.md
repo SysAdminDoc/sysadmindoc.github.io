@@ -2,14 +2,27 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.13] - 2026-05-17
+
+**Review image and OG generation pipeline.**
+
+- Added Sharp-backed `npm run screenshots:thumbs` to regenerate 640x400 JPEG thumbnail derivatives from the tracked live-app screenshot masters.
+- Added [IMAGE_PIPELINE.md](IMAGE_PIPELINE.md) as the operating record for social cards, live-app screenshots, thumbnail derivatives, README image handling, and the Astro image tooling decision.
+- Added `npm run images:audit` and [scripts/audit-image-pipeline.mjs](scripts/audit-image-pipeline.mjs) to validate screenshot master coverage, thumbnail coverage, image dimensions, size budgets, and OG PNG generation constraints.
+- Updated live app cards and lazy client thumbnail fallback code to prefer `public/screenshots/thumbs/*.jpg` for compact card previews while keeping full screenshots for detail contexts.
+- Extended asset auditing so missing or stale thumbnail derivatives fail alongside missing or stale screenshot masters.
+- Added Open Graph/Twitter image type and alt metadata to the shared layout while keeping project OG output as 1200x630 PNG through Satori and Resvg.
+
 ## [v0.16.12] - 2026-05-17
 
 **Audit performance, bfcache, and service-worker update UX.**
 
-- Added [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) with local Lighthouse results for homepage, catalog, and project-page samples plus bfcache status.
+- Added [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) with repeatable local Chromium results for homepage, search, archive, and project-page samples plus bfcache status.
+- Added `npm run audit:perf` and [scripts/audit-performance.mjs](scripts/audit-performance.mjs) to measure LCP, CLS, lab event timing, long tasks, horizontal overflow, console/network errors, and bfcache restore against a local preview.
 - Changed the service worker update flow so new workers wait, show an accessible update toast, and refresh only after the visitor chooses the refresh action.
 - Reserved stable homepage terminal and hero text space to reduce desktop layout shift during the animated first viewport.
-- Documented remaining mobile LCP and homepage CLS follow-up work separately from the clean desktop and project-page samples.
+- Fixed project-detail README rendering so raw relative image HTML resolves to GitHub raw assets instead of missing same-origin files.
+- Tightened project-detail mobile layout so README/code/table/header content cannot widen the viewport.
 
 ## [v0.16.11] - 2026-05-17
 

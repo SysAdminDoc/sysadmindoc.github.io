@@ -25,6 +25,7 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   cmdkSections?: readonly CmdkSection[];
 }
 
@@ -152,6 +153,7 @@ const {
   title = 'Matt Parker — Senior Technical Support Manager & Builder',
   description = 'Portfolio of Matt Parker — 15+ years in enterprise IT, six years in medical imaging (DICOM/PACS), plus open-source projects across PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
   ogImage = '/og.png',
+  ogImageAlt = description,
   cmdkSections = defaultCmdkSections,
 } = Astro.props;
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
@@ -176,11 +178,14 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content="Matt Parker Portfolio" />
   <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={ogImageAlt} />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content={ogImageUrl} />
+  <meta name="twitter:image:alt" content={ogImageAlt} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 

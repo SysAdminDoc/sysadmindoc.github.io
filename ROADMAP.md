@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.12 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.13 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -265,7 +265,7 @@ Acceptance:
 
 Evidence: `public/sw.js`, `public/scripts/main.js`, web.dev Core Web Vitals E28, bfcache E29, MDN service worker docs E30-E31.
 
-Status: Shipped with `PERFORMANCE_AUDIT.md`, an explicit service-worker update toast, a Chromium bfcache sample, and local Lighthouse JSON samples. Desktop homepage/catalog/project samples pass; homepage mobile LCP and CLS remain documented follow-up risks.
+Status: Shipped with `PERFORMANCE_AUDIT.md`, an explicit service-worker update toast, local Lighthouse samples, and a repeatable Chromium CDP audit command. `npm run audit:perf` documents representative homepage, search, archive, project-detail, and desktop homepage samples. The current run is clean for CLS, lab event timing, bfcache restore, console/network errors, and horizontal overflow; mobile homepage LCP remains a documented warning for future first-viewport work.
 
 Actions:
 
@@ -277,19 +277,21 @@ Acceptance:
 
 - [x] The site has documented LCP, INP, CLS, and bfcache status for representative pages.
 
-### [ ] 15. Review image and OG generation pipeline
+### [x] 15. Review image and OG generation pipeline
 
-Evidence: `src/pages/og/[slug].png.ts`, `public/screenshots`, `scripts/capture-screenshots.mjs`, Astro image docs E03.
+Evidence: `src/pages/og/[slug].png.ts`, `public/screenshots`, `public/screenshots/thumbs`, `scripts/capture-screenshots.mjs`, `scripts/audit-image-pipeline.mjs`, `IMAGE_PIPELINE.md`, Astro image docs E03, Open Graph protocol E32.
+
+Status: Shipped with `IMAGE_PIPELINE.md`, Sharp-generated 640x400 screenshot thumbnails, a dedicated `npm run images:audit` gate, extended stale-thumbnail coverage in `npm run assets:audit`, and explicit social-card PNG type/alt metadata. The implementation keeps the existing static Satori + Resvg OG endpoint instead of migrating to Astro image tooling because the current GitHub Pages static build path is already deterministic and the highest-value gap was card thumbnail weight. The current audited inventory has 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and a largest thumbnail of 37.3 KB.
 
 Actions:
 
-- Keep OG output PNG-compatible for social platforms.
-- Compress internal screenshots and thumbnails separately.
-- Evaluate Astro image tooling for static builds, but avoid a migration that makes GitHub Pages deploy brittle.
+- [x] Keep OG output PNG-compatible for social platforms.
+- [x] Compress internal screenshots and thumbnails separately.
+- [x] Evaluate Astro image tooling for static builds, but avoid a migration that makes GitHub Pages deploy brittle.
 
 Acceptance:
 
-- Visual assets are current, smaller, and traceable to active projects.
+- [x] Visual assets are current, smaller, and traceable to active projects.
 
 ## Tier 4: Longer-Term Data, Automation, and Integrations
 
@@ -350,6 +352,9 @@ Local sources:
 - L17 `scripts/capture-screenshots.mjs`
 - L18 `.github/workflows/deploy.yml`
 - L19 ignored generated caches under `src/data/_*.json`
+- L20 `IMAGE_PIPELINE.md`
+- L21 `scripts/audit-image-pipeline.mjs`
+- L22 `scripts/generate-screenshot-thumbnails.mjs`
 
 Command evidence:
 
@@ -394,3 +399,4 @@ External sources:
 - E29 bfcache: https://web.dev/articles/bfcache
 - E30 ServiceWorker `updatefound`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/updatefound_event
 - E31 ServiceWorker `skipWaiting`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
+- E32 Open Graph protocol: https://ogp.me/

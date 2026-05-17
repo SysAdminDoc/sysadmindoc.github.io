@@ -1,13 +1,13 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.16.12",
+  "version": "0.16.13",
   "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run data:validate && npm run assets:audit && astro build && npm run search:index",
-    "check": "npm run data:validate && npm run assets:audit && astro check",
+    "build": "npm run data:validate && npm run assets:audit && npm run images:audit && astro build && npm run search:index",
+    "check": "npm run data:validate && npm run assets:audit && npm run images:audit && astro check",
     "preview": "astro preview",
     "astro": "astro",
     "fetch-stars": "node scripts/fetch-stars.mjs",
@@ -15,6 +15,8 @@
     "data:validate": "node scripts/validate-project-data.mjs",
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
+    "images:audit": "node scripts/audit-image-pipeline.mjs",
+    "screenshots:thumbs": "node scripts/generate-screenshot-thumbnails.mjs",
     "audit:perf": "node scripts/audit-performance.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
@@ -33,6 +35,7 @@
     "@types/sanitize-html": "^2.16.1",
     "lightningcss": "^1.32.0",
     "pagefind": "^1.5.2",
+    "sharp": "^0.34.5",
     "typescript": "^5.7.2"
   }
 }
