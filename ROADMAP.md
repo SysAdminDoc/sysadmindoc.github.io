@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.6 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.7 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -174,21 +174,23 @@ Acceptance:
 
 ## Tier 2: Portfolio Experience and Storytelling
 
-### [ ] 9. Add proof-oriented project detail sections
+### [x] 9. Add proof-oriented project detail sections
 
 Evidence: `src/pages/projects/[slug].astro`, `src/data/projects.ts`, competitor patterns E20-E27.
 
-The site already renders project pages, README excerpts, release metadata, and related projects. The next trust step is structured proof: what problem was solved, what changed, what is verified, and what a user can try.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+The site already renders project pages, README excerpts, release metadata, and related projects. The next trust step is structured proof: what problem was solved, what changed, what is verified, and what a user can try. Project pages now render optional proof sections from `src/data/proof.ts` when a source-backed record exists.
 
 Actions:
 
-- Add optional fields for "problem", "build evidence", "platform support", "install path", and "known limitations".
-- Prefer facts that can be sourced from README, releases, screenshots, or local repository docs.
-- Keep private/internal work sanitized.
+- [x] Add optional fields for "problem", "build evidence", "platform support", "install path", and "known limitations".
+- [x] Prefer facts that can be sourced from README, releases, screenshots, or local repository docs.
+- [x] Keep private/internal work sanitized.
 
 Acceptance:
 
-- High-value projects can tell a full story without overclaiming.
+- [x] High-value projects can tell a full story without overclaiming.
 
 ### [ ] 10. Build a year-in-review and project timeline layer
 
