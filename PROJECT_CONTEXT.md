@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.12
+Current tracked version: v0.16.13
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -28,7 +28,9 @@ The site must remain public-safe. It should not expose private repository names,
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
-- `PERFORMANCE_AUDIT.md` records the current Lighthouse, bfcache, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
+- `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
+- `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
+- Live-app card previews use Sharp-generated 640x400 thumbnails under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
@@ -42,9 +44,11 @@ The site must remain public-safe. It should not expose private repository names,
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
+- Regenerate live-app card thumbnails: `npm run screenshots:thumbs`
+- Audit image pipeline: `npm run images:audit`
 - Preview: `npm run preview`
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
-- Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
+- Capture screenshots: `npm run capture-screenshots` after installing Playwright browser dependencies
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
 - Summarize generated GitHub metadata: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
@@ -54,10 +58,12 @@ The site must remain public-safe. It should not expose private repository names,
 Current verification baseline:
 
 - `npm run check` passed.
-- `npm run build` passed, including Pagefind index generation.
-- Local Lighthouse samples were recorded for `/`, `/#catalog`, and `/projects/LibreSpot/`; desktop passed, project mobile CLS passed, and homepage mobile LCP/CLS remains the main follow-up.
+- `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and 1200x630 PNG OG metadata checks.
+- `npm run build` passed, including image pipeline auditing and Pagefind index generation.
+- `npm run audit:perf` ran against local preview for `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`; all samples restored from bfcache and had no horizontal overflow or console/network errors. Search, archive, project, and desktop homepage samples stayed under LCP/CLS/lab event-timing thresholds; mobile homepage LCP is the remaining warning.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
+- `npm run images:audit` passed; 22 screenshot masters and 22 thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
 - `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
@@ -99,9 +105,11 @@ Catalog reconciliation from 2026-05-17 live GitHub scan:
 
 `scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
 
-`scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes to `public/screenshots/`. Screenshots are tracked, and `npm run assets:audit` now fails when a screenshot is missing for a live app or when `public/screenshots/*.jpg` is no longer tied to a live app slug.
+`scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes full masters to `public/screenshots/` plus card thumbnails to `public/screenshots/thumbs/`. `npm run screenshots:thumbs` regenerates thumbnails from existing masters. Screenshots are tracked, and `npm run assets:audit` now fails when a screenshot or thumbnail is missing for a live app or when either artifact is no longer tied to a live app slug.
 
 Historical non-sensitive screenshots can be documented under `archive/screenshots/`; sensitive, private, medical-imaging, or internal screenshots should not be retained there.
+
+Live-app thumbnails are derived assets. Run `npm run screenshots:thumbs` after changing screenshot masters, then run `npm run images:audit` and `npm run assets:audit` before committing.
 
 ## Security and Trust Boundaries
 
@@ -137,8 +145,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Review image and OG generation pipeline.
-2. Add public portfolio feeds and machine-readable index files.
+1. Add public portfolio feeds and machine-readable index files.
+2. Evaluate local semantic indexing for project organization.
 
 ## Definition of Done for Future Changes
 
@@ -164,4 +172,5 @@ Highest-priority work after this research pass:
 - 2026-05-17: Parked the conditional public notes feed behind a tracked decision record. Added `NOTES_FEED_POLICY.md` with source, review, privacy, validation, and RSS activation criteria instead of publishing planning or machine-memory artifacts as notes.
 - 2026-05-17: Shipped archive decisions. Added `src/data/archive.ts`, `/archive/`, navigation/command-palette links, and validator coverage so retired or held-back project context can be explained without exposing unsafe links.
 - 2026-05-17: Shipped static full-text search. Added Pagefind Component UI, `/search/`, `SEARCH_DECISION.md`, build-time `dist/pagefind` generation, and no-JS fallback links while preserving the command palette for keyboard route jumps.
-- 2026-05-17: Audited performance, bfcache, and service-worker update UX. Added explicit update prompts, documented local Lighthouse/bfcache status in `PERFORMANCE_AUDIT.md`, and reduced desktop homepage layout shift by reserving terminal space.
+- 2026-05-17: Audited performance, bfcache, and service-worker update UX. Added explicit update prompts, documented repeatable Chromium audit status in `PERFORMANCE_AUDIT.md`, reduced homepage layout shift, and fixed project-page README image/overflow issues found by the audit harness.
+- 2026-05-17: Shipped image and OG pipeline hardening. Added Sharp-generated live-app thumbnail derivatives, `npm run images:audit`, thumbnail-aware asset auditing, thumbnail-first live cards, and explicit social-card PNG alt/type metadata.

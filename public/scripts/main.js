@@ -845,9 +845,9 @@ function onTermReady(){
         thumb.style.aspectRatio='16/10';
         const img=document.createElement('img');
         img.alt='';img.loading='lazy';img.decoding='async';
-        img.width=1280;img.height=800;
-        // Prefer locally-captured screenshot; fall back to opengraph image if missing.
-        img.dataset.src='/screenshots/'+repo+'.jpg';
+        img.width=640;img.height=400;
+        // Prefer locally-compressed card thumbnail; fall back to opengraph image if missing.
+        img.dataset.src='/screenshots/thumbs/'+repo+'.jpg';
         img.onerror=function(){
             img.onerror=function(){thumb.classList.add('thumb-fallback');img.remove()};
             img.src='https://opengraph.githubassets.com/1/SysAdminDoc/'+repo;

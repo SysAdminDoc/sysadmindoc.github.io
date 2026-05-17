@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Capture screenshots of every live web app using Playwright.
-// Writes public/screenshots/<slug>.jpg (~800x500, JPEG q=75).
+// Writes public/screenshots/<slug>.jpg as the detail capture and
+// public/screenshots/thumbs/<slug>.jpg as the card thumbnail.
 //
 // Usage:
 //   npm install --no-save playwright   # one-time install
@@ -11,9 +12,10 @@
 // build wastes minutes. Capture locally, commit the JPGs, ship them. Only need to
 // re-run when UI changes significantly or new live apps are added.
 
-import { mkdirSync, readFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const projectsSrc = readFileSync(join(root, 'src', 'data', 'projects.ts'), 'utf8');
@@ -44,7 +46,9 @@ try {
 }
 
 const outDir = join(root, 'public', 'screenshots');
+const thumbDir = join(outDir, 'thumbs');
 mkdirSync(outDir, { recursive: true });
+mkdirSync(thumbDir, { recursive: true });
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({
@@ -59,6 +63,7 @@ const CONCURRENCY = 4;
 
 async function captureOne({ slug, url }) {
   const out = join(outDir, `${slug}.jpg`);
+  const thumb = join(thumbDir, `${slug}.jpg`);
   const page = await ctx.newPage();
   try {
     const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -84,12 +89,17 @@ async function captureOne({ slug, url }) {
       throw new Error('Detected error-page content');
     }
 
-    await page.screenshot({ path: out, type: 'jpeg', quality: 75, fullPage: false });
+    const screenshot = await page.screenshot({ type: 'jpeg', quality: 78, fullPage: false });
+    writeFileSync(out, screenshot);
+    await sharp(screenshot)
+      .resize({ width: 640, height: 400, fit: 'cover' })
+      .jpeg({ quality: 68, mozjpeg: true })
+      .toFile(thumb);
     ok += 1;
     console.log(`✓ ${slug}`);
   } catch (error) {
     fail += 1;
-    const kept = existsSync(out) ? ' (kept previous screenshot)' : '';
+    const kept = existsSync(out) ? ' (kept previous screenshot assets)' : '';
     console.error(`✗ ${slug} — ${error.message}${kept}`);
   } finally {
     await page.close().catch(() => {});
