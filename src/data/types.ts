@@ -61,6 +61,26 @@ export interface ProjectProof {
   sources: ProjectProofSource[];
 }
 
+export type ArchiveStatus = 'moved' | 'held' | 'removed' | 'superseded' | 'archived';
+
+export interface ArchiveLink {
+  label: string;
+  href: string;
+  note?: string;
+}
+
+export interface ArchiveEntry {
+  id: string;
+  name: string;
+  status: ArchiveStatus;
+  statusLabel: string;
+  summary: string;
+  reason: string;
+  source: string;
+  links: ArchiveLink[];
+  sensitive?: boolean;
+}
+
 export interface Video {
   ytId: string;
   title: string;

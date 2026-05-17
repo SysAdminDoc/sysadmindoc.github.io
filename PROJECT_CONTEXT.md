@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.9
+Current tracked version: v0.16.10
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -17,7 +17,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 - Static site built with Astro 6.
 - TypeScript data layer under `src/data/`.
-- Main pages under `src/pages/`, including homepage, catalog, project detail pages, OG image endpoints, RSS, releases, timeline, language pages, and healthcare IT pages.
+- Main pages under `src/pages/`, including homepage, catalog, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - Global styling in `src/styles/global.css`.
@@ -26,6 +26,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
 - `/timeline/` is generated from ignored GitHub release and metadata caches plus tracked changelog entries, then filtered client-side by year, platform, category, and language.
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
+- `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
@@ -66,8 +67,9 @@ Primary catalog data is currently in `src/data/projects.ts`:
 - `catalog`: larger repository catalog.
 - `skills`: skills surfaced on the site.
 - `src/data/proof.ts`: optional source-backed proof sections for project detail pages.
+- `src/data/archive.ts`: public-safe archive decisions for retired, moved, held, removed, or superseded project surfaces.
 
-`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, or malformed proof records. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
+`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, malformed proof records, or unsafe archive entries. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
 
 Derived data in `src/data/derived.ts` computes fallback repository count from unique project references. The count currently excludes several intentionally skipped repos and can diverge from live GitHub if caches are stale.
 
@@ -130,8 +132,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Add an archive or anti-portfolio section for retired public projects.
-2. Upgrade search beyond the current command palette dataset.
+1. Upgrade search beyond the current command palette dataset.
+2. Audit Core Web Vitals, bfcache, and service-worker update UX.
 
 ## Definition of Done for Future Changes
 
@@ -155,3 +157,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped proof-oriented project detail sections. Added `src/data/proof.ts`, ProjectProof types, conditional project-page rendering, and validator coverage for proof records and source URLs.
 - 2026-05-17: Shipped the generated timeline/year-in-review layer. Added `/timeline/`, wired it into navigation and command palette, and generated year cards plus filterable release/project/changelog events from existing build-time evidence.
 - 2026-05-17: Parked the conditional public notes feed behind a tracked decision record. Added `NOTES_FEED_POLICY.md` with source, review, privacy, validation, and RSS activation criteria instead of publishing planning or machine-memory artifacts as notes.
+- 2026-05-17: Shipped archive decisions. Added `src/data/archive.ts`, `/archive/`, navigation/command-palette links, and validator coverage so retired or held-back project context can be explained without exposing unsafe links.

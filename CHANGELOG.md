@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.10] - 2026-05-17
+
+**Add public-safe archive decisions.**
+
+- Added [src/data/archive.ts](src/data/archive.ts) with typed archive-decision entries for moved, archived, held, removed, and superseded project surfaces.
+- Added [src/pages/archive.astro](src/pages/archive.astro), a static anti-portfolio page that explains retired project decisions without exposing unsafe links.
+- Wired Archive into the homepage nav, interior nav, command palette, quick links, and Connect section.
+- Extended `npm run data:validate` to validate archive entry IDs, statuses, source notes, safe links, and no-link sensitive holds.
+- Updated roadmap, README, project context, and package version so the next active roadmap item is upgraded search.
+
 ## [v0.16.9] - 2026-05-17
 
 **Document the public notes-feed decision.**
