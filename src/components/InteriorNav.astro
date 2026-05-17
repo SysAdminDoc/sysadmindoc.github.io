@@ -1,5 +1,5 @@
 ---
-type ActiveRoute = 'releases' | 'timeline' | 'archive' | 'now';
+type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now';
 type ContextTone = 'blue' | 'green' | 'amber' | 'slate';
 
 export interface Props {
@@ -27,6 +27,7 @@ const contextClass = `nav-context nav-context-${contextTone}`;
       <a href="/#featured">Projects</a>
       <a href="/#live">Live</a>
       <a href="/#catalog">Catalog</a>
+      <a href="/search/" class={isActive('search') ? 'active' : undefined} aria-current={isActive('search') ? 'page' : undefined}>Search</a>
       <a href="/releases/" class={isActive('releases') ? 'active' : undefined} aria-current={isActive('releases') ? 'page' : undefined}>Releases</a>
       <a href="/timeline/" class={isActive('timeline') ? 'active' : undefined} aria-current={isActive('timeline') ? 'page' : undefined}>Timeline</a>
       <a href="/archive/" class={isActive('archive') ? 'active' : undefined} aria-current={isActive('archive') ? 'page' : undefined}>Archive</a>
