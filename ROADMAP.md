@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.14 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.15 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -297,7 +297,7 @@ Acceptance:
 
 ### [x] 16. Add public portfolio feeds and machine-readable index files
 
-Evidence: `src/pages/rss.xml.ts`, `src/pages/releases.astro`, `src/pages/projects.json.ts`, `src/pages/releases.json.ts`, search/source needs in this roadmap.
+Evidence: `src/pages/rss.xml.ts`, `src/pages/releases.astro`, `src/pages/projects.json.ts`, `src/pages/releases.json.ts`, Astro endpoint docs E33, search/source needs in this roadmap.
 
 Status: Shipped as static `/projects.json` and `/releases.json` endpoints. Both include `schemaVersion`, freshness timestamps, counts, and public URLs so external consumers and future repo tooling can consume portfolio data without scraping rendered HTML.
 
@@ -310,19 +310,21 @@ Acceptance:
 
 - [x] External consumers and future tooling can use project data without scraping HTML.
 
-### [ ] 17. Evaluate local semantic indexing for project organization
+### [x] 17. Evaluate local semantic indexing for project organization
 
-Evidence: README corpus in `_readmes.json`, project descriptions, dataset review.
+Evidence: README corpus in `_readmes.json`, project descriptions, dataset review, `SEMANTIC_INDEX_DECISION.md`, `scripts/audit-semantic-index.mjs`.
+
+Status: Evaluated and shipped as a local advisory audit. The portfolio keeps Pagefind as the user-facing static search layer and avoids hosted semantic search, client-side embeddings, visitor tracking, or committed model artifacts. `npm run semantic:audit -- --limit 12` currently checks 173 projects and 165 usable cached README texts, then reports similar-project and cross-category review candidates for maintainers.
 
 Actions:
 
-- Keep any model work offline/generated and committed only as derived metadata if useful.
-- Evaluate embeddings or classification for duplicate category detection, similar-project linking, and stronger search.
-- Do not add user tracking or hosted inference for a static portfolio.
+- [x] Keep any model work offline/generated and committed only as derived metadata if useful.
+- [x] Evaluate embeddings or classification for duplicate category detection, similar-project linking, and stronger search.
+- [x] Do not add user tracking or hosted inference for a static portfolio.
 
 Acceptance:
 
-- Model usage improves maintainability or discovery without adding privacy or runtime complexity.
+- [x] Local semantic evaluation improves maintainability without adding privacy or runtime complexity.
 
 ## Rejected or Parked
 
@@ -357,6 +359,11 @@ Local sources:
 - L20 `IMAGE_PIPELINE.md`
 - L21 `scripts/audit-image-pipeline.mjs`
 - L22 `scripts/generate-screenshot-thumbnails.mjs`
+- L23 `src/pages/projects.json.ts`
+- L24 `src/pages/releases.json.ts`
+- L25 `src/pages/rss.xml.ts`
+- L26 `SEMANTIC_INDEX_DECISION.md`
+- L27 `scripts/audit-semantic-index.mjs`
 
 Command evidence:
 
@@ -367,6 +374,7 @@ Command evidence:
 - C05 `gh repo list SysAdminDoc --limit 300 --visibility public ...`
 - C06 `gh repo view SysAdminDoc/RadAtlas ...`
 - C07 secret-pattern scan with `rg`
+- C08 `npm run semantic:audit -- --limit 12`
 
 External sources:
 
@@ -402,3 +410,4 @@ External sources:
 - E30 ServiceWorker `updatefound`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/updatefound_event
 - E31 ServiceWorker `skipWaiting`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
 - E32 Open Graph protocol: https://ogp.me/
+- E33 Astro endpoints: https://docs.astro.build/en/guides/endpoints/
