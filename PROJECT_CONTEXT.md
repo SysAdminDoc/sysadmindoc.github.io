@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.13
+Current tracked version: v0.16.14
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -28,6 +28,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
+- `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
 - Live-app card previews use Sharp-generated 640x400 thumbnails under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts.
@@ -145,8 +146,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Add public portfolio feeds and machine-readable index files.
-2. Evaluate local semantic indexing for project organization.
+1. Evaluate local semantic indexing for project organization.
+2. Continue future roadmap from the parked/rejected section only if new evidence changes scope.
 
 ## Definition of Done for Future Changes
 
@@ -174,3 +175,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped static full-text search. Added Pagefind Component UI, `/search/`, `SEARCH_DECISION.md`, build-time `dist/pagefind` generation, and no-JS fallback links while preserving the command palette for keyboard route jumps.
 - 2026-05-17: Audited performance, bfcache, and service-worker update UX. Added explicit update prompts, documented repeatable Chromium audit status in `PERFORMANCE_AUDIT.md`, reduced homepage layout shift, and fixed project-page README image/overflow issues found by the audit harness.
 - 2026-05-17: Shipped image and OG pipeline hardening. Added Sharp-generated live-app thumbnail derivatives, `npm run images:audit`, thumbnail-aware asset auditing, thumbnail-first live cards, and explicit social-card PNG alt/type metadata.
+- 2026-05-17: Shipped public machine-readable indexes. Added `/projects.json` and `/releases.json` with schema versions, freshness timestamps, counts, public URLs, and build-time GitHub metadata for future tooling.

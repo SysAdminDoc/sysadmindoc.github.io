@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.14] - 2026-05-17
+
+**Add public portfolio JSON indexes.**
+
+- Added `/projects.json`, a schema-versioned static project index generated from `src/data/projects.ts` and build-time GitHub metadata.
+- Added `/releases.json`, a schema-versioned static release index generated from the cached GitHub release data.
+- Included freshness timestamps, counts, public project URLs, repository URLs, live URLs, OG image URLs, screenshot/thumbnail URLs, star counts, and pushed/updated metadata where available.
+- Advertised both JSON indexes through `<link rel="alternate" type="application/json">` in the shared layout.
+- Updated roadmap, README, changelog, and project context for v0.16.14.
+
 ## [v0.16.13] - 2026-05-17
 
 **Review image and OG generation pipeline.**

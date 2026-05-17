@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.13 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.14 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -295,18 +295,20 @@ Acceptance:
 
 ## Tier 4: Longer-Term Data, Automation, and Integrations
 
-### [ ] 16. Add public portfolio feeds and machine-readable index files
+### [x] 16. Add public portfolio feeds and machine-readable index files
 
-Evidence: existing RSS pages, `src/pages/releases.xml.ts`, search/source needs in this roadmap.
+Evidence: `src/pages/rss.xml.ts`, `src/pages/releases.astro`, `src/pages/projects.json.ts`, `src/pages/releases.json.ts`, search/source needs in this roadmap.
+
+Status: Shipped as static `/projects.json` and `/releases.json` endpoints. Both include `schemaVersion`, freshness timestamps, counts, and public URLs so external consumers and future repo tooling can consume portfolio data without scraping rendered HTML.
 
 Actions:
 
-- Add `projects.json`, `releases.json`, or category feeds generated from the same source data.
-- Include freshness timestamps and schema versioning.
+- [x] Add `projects.json`, `releases.json`, or category feeds generated from the same source data.
+- [x] Include freshness timestamps and schema versioning.
 
 Acceptance:
 
-- External consumers and future tooling can use project data without scraping HTML.
+- [x] External consumers and future tooling can use project data without scraping HTML.
 
 ### [ ] 17. Evaluate local semantic indexing for project organization
 
