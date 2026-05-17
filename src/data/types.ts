@@ -3,7 +3,7 @@ export type Lang = 'ps' | 'py' | 'web' | 'ext' | 'kt' | 'sec' | 'media' | 'cs' |
 export interface Featured {
   repo: string;
   name: string;
-  lang: string; // bg class
+  lang: Lang; // bg class
   langLabel: string; // badge text e.g. "PS"
   desc: string;
   tags: string[];
