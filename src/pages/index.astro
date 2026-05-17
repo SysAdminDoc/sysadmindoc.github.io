@@ -163,6 +163,16 @@ const connectPaths = [
     icon: 'pulse',
   },
   {
+    title: 'Archive decisions',
+    handle: '/archive',
+    href: '/archive/',
+    external: false,
+    desc: 'See why older projects moved out of the spotlight, became references, or stayed held back for review.',
+    meta: 'Best if you want the public-safe anti-portfolio context.',
+    cta: 'Open archive decisions',
+    icon: 'release',
+  },
+  {
     title: 'Current focus',
     handle: '/now',
     href: '/now/',
@@ -299,6 +309,7 @@ const cmdkSections = [
   { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
   { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
   { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
+  { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
   { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
   { label: 'About', href: '#about', desc: 'Background, operating style, and what drives the work.', badge: 'SECTION' },
   { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
@@ -320,6 +331,7 @@ const cmdkSections = [
         <a href="#catalog">Catalog</a>
         <a href="/releases/">Releases</a>
         <a href="/timeline/">Timeline</a>
+        <a href="/archive/">Archive</a>
         <a href="/now/">Now</a>
         <a href="#about">About</a>
         <a href="#career">Career</a>
@@ -675,7 +687,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want source, shipping activity, archive history, or the current focus.</p></div>
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want source, shipping activity, timeline history, archive decisions, or the current focus.</p></div>
     <p class="connect-msg rv">If you have a workflow worth automating, a product surface that feels rough, or a tool that should exist, start with the route that gives the right amount of context.</p>
     <div class="connect-notes rv" aria-label="Best collaboration fit">
       <div class="connect-note"><span class="connect-note-label">Best fit</span> Automation, internal tooling, browser products, and UX cleanup for complex workflows.</div>

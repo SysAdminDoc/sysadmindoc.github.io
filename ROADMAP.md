@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.9 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.10 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -227,19 +227,21 @@ Acceptance:
 
 - [x] Notes are maintainable and public-safe. Current decision: do not publish a notes feed until `content/til/`, `content/notes/`, or an equivalent reviewed source exists with validation and explicit public-safe metadata.
 
-### [ ] 12. Add an archive or anti-portfolio section for retired public projects
+### [x] 12. Add an archive or anti-portfolio section for retired public projects
 
 Evidence: `CHANGELOG.md`, removed project screenshots, existing roadmap, competitor digital-garden patterns E26.
 
+Status: Shipped as `/archive/`. Archive decisions are typed in `src/data/archive.ts`, validated by `npm run data:validate`, and rendered as short public-safe records. Sensitive removals are grouped without links.
+
 Actions:
 
-- Capture why projects were removed, renamed, privatized, or superseded.
-- Keep entries short and non-sensitive.
-- Link to public repos only when safe.
+- [x] Capture why projects were removed, renamed, privatized, or superseded.
+- [x] Keep entries short and non-sensitive.
+- [x] Link to public repos only when safe.
 
 Acceptance:
 
-- The portfolio explains evolution without resurrecting unsafe links.
+- [x] The portfolio explains evolution without resurrecting unsafe links.
 
 ## Tier 3: Discovery, Search, and Performance
 

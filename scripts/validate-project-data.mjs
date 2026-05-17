@@ -9,6 +9,7 @@ const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const typesPath = path.join(root, 'src', 'data', 'types.ts');
 const categoriesPath = path.join(root, 'src', 'data', 'categories.ts');
 const proofPath = path.join(root, 'src', 'data', 'proof.ts');
+const archivePath = path.join(root, 'src', 'data', 'archive.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 
@@ -160,6 +161,20 @@ function validateHttpsUrl(section, index, key, value) {
   }
 }
 
+function validatePublicPathOrHttpsUrl(section, index, key, value) {
+  if (typeof value !== 'string') {
+    fail(`${section}[${index}].${key} must be a string.`);
+    return;
+  }
+  if (value.startsWith('/')) {
+    if (!/^\/[A-Za-z0-9._~!$&'()*+,;=:@/-]+\/?$/.test(value)) {
+      fail(`${section}[${index}].${key} must be a safe root-relative path, got "${value}".`);
+    }
+    return;
+  }
+  validateHttpsUrl(section, index, key, value);
+}
+
 function validateUnique(section, records, key) {
   const seen = new Map();
   records.forEach((record, index) => {
@@ -183,11 +198,12 @@ async function fileExists(filePath) {
   }
 }
 
-const [projectsText, typesText, categoriesText, proofText, policyText] = await Promise.all([
+const [projectsText, typesText, categoriesText, proofText, archiveText, policyText] = await Promise.all([
   fs.readFile(projectsPath, 'utf8'),
   fs.readFile(typesPath, 'utf8'),
   fs.readFile(categoriesPath, 'utf8'),
   fs.readFile(proofPath, 'utf8'),
+  fs.readFile(archivePath, 'utf8'),
   fs.readFile(policyPath, 'utf8'),
 ]);
 
@@ -195,6 +211,7 @@ const projectsSource = sourceFile(projectsPath, projectsText);
 const typesSource = sourceFile(typesPath, typesText);
 const categoriesSource = sourceFile(categoriesPath, categoriesText);
 const proofSource = sourceFile(proofPath, proofText);
+const archiveSource = sourceFile(archivePath, archiveText);
 const policy = JSON.parse(policyText);
 
 const allowedLangs = new Set(exportedStringUnion(typesSource, 'Lang'));
@@ -204,11 +221,13 @@ const liveApps = exportedArray(projectsSource, 'liveApps');
 const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
 const proofRecords = exportedObject(proofSource, 'projectProof');
+const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
 
 validateUnique('featured', featured, 'repo');
 validateUnique('liveApps', liveApps, 'slug');
 validateUnique('catalog', catalog, 'repo');
 validateUnique('skills', skills, 'code');
+validateUnique('archiveEntries', archiveEntries, 'id');
 
 for (const lang of allowedLangs) {
   if (typeof categoryLabels[lang] !== 'string' || categoryLabels[lang].trim().length === 0) {
@@ -332,6 +351,36 @@ for (const [slug, proof] of Object.entries(proofRecords)) {
   }
 }
 
+const allowedArchiveStatuses = new Set(['moved', 'held', 'removed', 'superseded', 'archived']);
+for (const [index, entry] of archiveEntries.entries()) {
+  const id = requireString('archiveEntries', index, entry, 'id');
+  if (!/^[a-z0-9-]+$/.test(id)) fail(`archiveEntries[${index}].id must be lowercase kebab-case.`);
+  requireString('archiveEntries', index, entry, 'name');
+  const status = requireString('archiveEntries', index, entry, 'status');
+  if (!allowedArchiveStatuses.has(status)) fail(`archiveEntries[${index}].status "${status}" is not an allowed archive status.`);
+  requireString('archiveEntries', index, entry, 'statusLabel');
+  requireString('archiveEntries', index, entry, 'summary');
+  requireString('archiveEntries', index, entry, 'reason');
+  requireString('archiveEntries', index, entry, 'source');
+  if (hasOwn(entry, 'sensitive') && typeof entry.sensitive !== 'boolean') {
+    fail(`archiveEntries[${index}].sensitive must be boolean when present.`);
+  }
+  if (!Array.isArray(entry.links)) {
+    fail(`archiveEntries[${index}].links must be an array.`);
+  } else {
+    entry.links.forEach((link, linkIndex) => {
+      requireString(`archiveEntries[${index}].links`, linkIndex, link, 'label');
+      validatePublicPathOrHttpsUrl(`archiveEntries[${index}].links`, linkIndex, 'href', requireString(`archiveEntries[${index}].links`, linkIndex, link, 'href'));
+      if (hasOwn(link, 'note') && (typeof link.note !== 'string' || link.note.trim().length === 0)) {
+        fail(`archiveEntries[${index}].links[${linkIndex}].note must be a non-empty string when present.`);
+      }
+    });
+  }
+  if (entry.sensitive === true && Array.isArray(entry.links) && entry.links.length > 0) {
+    fail(`archiveEntries[${index}] is marked sensitive and must not contain public links.`);
+  }
+}
+
 const routeSlugs = new Map();
 for (const slug of portfolioRefs) {
   const normalized = slug.toLowerCase();
@@ -403,6 +452,7 @@ console.log(`  unique project routes: ${portfolioRefs.size}`);
 console.log(`  command palette projects: ${commandPaletteProjects.size}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
 console.log(`  proof records: ${Object.keys(proofRecords).length}`);
+console.log(`  archive entries: ${archiveEntries.length}`);
 
 if (errors.length > 0) {
   console.error('');
