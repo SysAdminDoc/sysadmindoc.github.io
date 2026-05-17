@@ -133,6 +133,16 @@ const journeyMilestones = [
 ] as const;
 const connectPaths = [
   {
+    title: 'Full-text search',
+    handle: '/search',
+    href: '/search/',
+    external: false,
+    desc: 'Search rendered project pages, README excerpts, release history, archive decisions, and route copy.',
+    meta: 'Best if you remember a feature, keyword, library, or README phrase.',
+    cta: 'Open full-text search',
+    icon: 'release',
+  },
+  {
     title: 'GitHub workspace',
     handle: 'github.com/SysAdminDoc',
     href: 'https://github.com/SysAdminDoc',
@@ -308,6 +318,7 @@ const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.la
 const cmdkSections = [
   { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
   { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
+  { label: 'Full-Text Search', href: '/search/', desc: 'Search rendered project pages, README excerpts, and route copy.', badge: 'PAGE' },
   { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
   { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
   { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
@@ -329,6 +340,7 @@ const cmdkSections = [
         <a href="#greatest-hits">Hits</a>
         <a href="#live">Live</a>
         <a href="#catalog">Catalog</a>
+        <a href="/search/">Search</a>
         <a href="/releases/">Releases</a>
         <a href="/timeline/">Timeline</a>
         <a href="/archive/">Archive</a>
@@ -687,7 +699,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want source, shipping activity, timeline history, archive decisions, or the current focus.</p></div>
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want full-text discovery, source, shipping activity, timeline history, archive decisions, or the current focus.</p></div>
     <p class="connect-msg rv">If you have a workflow worth automating, a product surface that feels rough, or a tool that should exist, start with the route that gives the right amount of context.</p>
     <div class="connect-notes rv" aria-label="Best collaboration fit">
       <div class="connect-note"><span class="connect-note-label">Best fit</span> Automation, internal tooling, browser products, and UX cleanup for complex workflows.</div>
