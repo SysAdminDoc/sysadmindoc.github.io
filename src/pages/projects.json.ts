@@ -2,6 +2,8 @@ import type { APIContext } from 'astro';
 import { categoryLabels } from '../data/categories';
 import { catalog, featured, liveApps } from '../data/projects';
 
+export const prerender = true;
+
 type Stats = {
   fetchedAt?: string | null;
   lastPushedAt?: string | null;
