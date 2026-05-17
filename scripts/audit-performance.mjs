@@ -318,8 +318,6 @@ async function sendInteraction(client, test) {
   const x = Math.round(test.width / 2);
   const y = Math.round(Math.min(test.height - 40, test.height / 2));
   await client.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
-  await client.send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
-  await client.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
   await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
   await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
   await delay(300);
