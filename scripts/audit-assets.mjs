@@ -6,6 +6,7 @@ import ts from 'typescript';
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
+const screenshotThumbsDir = path.join(screenshotsDir, 'thumbs');
 const publicScriptsDir = path.join(root, 'public', 'scripts');
 const componentsDir = path.join(root, 'src', 'components');
 const dataDir = path.join(root, 'src', 'data');
@@ -57,7 +58,10 @@ async function collectLiveSlugs() {
 }
 
 async function listFiles(dir, predicate = () => true) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch((error) => {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  });
   const files = [];
   for (const entry of entries) {
     const filePath = path.join(dir, entry.name);
@@ -106,17 +110,27 @@ function moduleImportRegex(moduleBase) {
 
 const liveSlugs = await collectLiveSlugs();
 const liveSlugSet = new Set(liveSlugs);
-const screenshotFiles = await listFiles(screenshotsDir, (filePath) => /\.jpg$/i.test(filePath));
+const screenshotFiles = await listFiles(screenshotsDir, (filePath) => path.dirname(filePath) === screenshotsDir && /\.jpg$/i.test(filePath));
+const screenshotThumbFiles = await listFiles(screenshotThumbsDir, (filePath) => /\.jpg$/i.test(filePath));
 const screenshotSlugs = new Set(screenshotFiles.map((filePath) => path.basename(filePath, path.extname(filePath))));
+const screenshotThumbSlugs = new Set(screenshotThumbFiles.map((filePath) => path.basename(filePath, path.extname(filePath))));
 
 const missingScreenshots = liveSlugs.filter((slug) => !screenshotSlugs.has(slug));
+const missingThumbs = liveSlugs.filter((slug) => !screenshotThumbSlugs.has(slug));
 const staleScreenshots = [...screenshotSlugs].filter((slug) => !liveSlugSet.has(slug)).sort((a, b) => a.localeCompare(b));
+const staleThumbs = [...screenshotThumbSlugs].filter((slug) => !liveSlugSet.has(slug)).sort((a, b) => a.localeCompare(b));
 
 for (const slug of missingScreenshots) {
   fail(`Missing live app screenshot: public/screenshots/${slug}.jpg`);
 }
 for (const slug of staleScreenshots) {
   fail(`Stale screenshot is not tied to a live app: public/screenshots/${slug}.jpg`);
+}
+for (const slug of missingThumbs) {
+  fail(`Missing live app screenshot thumbnail: public/screenshots/thumbs/${slug}.jpg`);
+}
+for (const slug of staleThumbs) {
+  fail(`Stale screenshot thumbnail is not tied to a live app: public/screenshots/thumbs/${slug}.jpg`);
 }
 
 const sourceTexts = await readTextFiles();
@@ -168,7 +182,8 @@ for (const filePath of dataModules) {
 
 console.log('Asset and reference audit');
 console.log(`  live app screenshots expected: ${liveSlugs.length}`);
-console.log(`  tracked screenshots: ${screenshotSlugs.size}`);
+console.log(`  tracked screenshot masters: ${screenshotSlugs.size}`);
+console.log(`  tracked screenshot thumbnails: ${screenshotThumbSlugs.size}`);
 console.log(`  public scripts checked: ${publicScripts.length}`);
 console.log(`  components checked: ${components.length}`);
 console.log(`  data modules checked: ${dataModules.length}`);
