@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.14-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.15-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -19,6 +19,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails and OG PNG metadata validation
+- **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
@@ -33,6 +34,7 @@ npm run data:validate # validate project data, screenshots, policy, and command 
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
 npm run images:audit  # validate screenshot masters, thumbnails, and OG PNG metadata
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives
+npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
@@ -120,12 +122,14 @@ scripts/
 ├── audit-performance.mjs
 ├── audit-image-pipeline.mjs
 ├── generate-screenshot-thumbnails.mjs
+├── audit-semantic-index.mjs
 ├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
 └── generate-data.mjs      # one-off migration helper
 SEARCH_DECISION.md    # Pagefind vs client-side search decision
 PERFORMANCE_AUDIT.md  # Lighthouse, bfcache, and service-worker update review
 IMAGE_PIPELINE.md     # screenshot, thumbnail, README image, and OG card policy
+SEMANTIC_INDEX_DECISION.md # local semantic indexing decision and audit policy
 NOTES_FEED_POLICY.md  # public-safe activation criteria for future notes/TIL
 legacy.html           # backup of pre-Astro single-file site
 ```

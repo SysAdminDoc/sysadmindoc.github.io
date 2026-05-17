@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.16.14",
+  "version": "0.16.15",
   "private": true,
   "scripts": {
     "dev": "astro dev",
@@ -17,6 +17,7 @@
     "assets:audit": "node scripts/audit-assets.mjs",
     "images:audit": "node scripts/audit-image-pipeline.mjs",
     "screenshots:thumbs": "node scripts/generate-screenshot-thumbnails.mjs",
+    "semantic:audit": "node scripts/audit-semantic-index.mjs",
     "audit:perf": "node scripts/audit-performance.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",

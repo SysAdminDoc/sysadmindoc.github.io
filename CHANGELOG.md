@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.15] - 2026-05-17
+
+**Evaluate local semantic indexing.**
+
+- Added `SEMANTIC_INDEX_DECISION.md` to document why the portfolio is not adding hosted semantic search, client-side embeddings, or visitor tracking right now.
+- Added `npm run semantic:audit`, a local advisory project-similarity report over public project metadata and cached README text.
+- The audit currently checks 173 projects and 165 usable cached README texts, then reports similar-project and cross-category review candidates for catalog maintenance.
+- Kept Pagefind as the user-facing static search layer and limited semantic work to offline maintainability guidance.
+- Updated roadmap, README, project context, and package version for v0.16.15.
+
 ## [v0.16.14] - 2026-05-17
 
 **Add public portfolio JSON indexes.**

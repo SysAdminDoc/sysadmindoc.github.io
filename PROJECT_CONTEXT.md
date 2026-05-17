@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.14
+Current tracked version: v0.16.15
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -32,6 +32,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
 - Live-app card previews use Sharp-generated 640x400 thumbnails under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts.
+- `SEMANTIC_INDEX_DECISION.md` records the local semantic-indexing decision. User-facing search stays static through Pagefind; `npm run semantic:audit` is an offline advisory catalog-maintenance report.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
@@ -47,6 +48,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
 - Regenerate live-app card thumbnails: `npm run screenshots:thumbs`
 - Audit image pipeline: `npm run images:audit`
+- Audit local semantic project similarity: `npm run semantic:audit -- --limit 12`
 - Preview: `npm run preview`
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch-stars`
 - Capture screenshots: `npm run capture-screenshots` after installing Playwright browser dependencies
@@ -65,6 +67,7 @@ Current verification baseline:
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters and 22 thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
+- `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
 - `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
@@ -112,6 +115,8 @@ Historical non-sensitive screenshots can be documented under `archive/screenshot
 
 Live-app thumbnails are derived assets. Run `npm run screenshots:thumbs` after changing screenshot masters, then run `npm run images:audit` and `npm run assets:audit` before committing.
 
+`scripts/audit-semantic-index.mjs` builds a deterministic local token-similarity report from public project metadata and ignored cached README text. It is advisory only and is meant for category drift, duplicate positioning, and related-project review. It must not become hosted inference, visitor tracking, or a committed private text/embedding dump without a new reviewed decision.
+
 ## Security and Trust Boundaries
 
 The project parses remote README content through `marked` and `sanitize-html`, so markdown parser and sanitizer advisories are high-priority even though the site is static.
@@ -146,7 +151,7 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Evaluate local semantic indexing for project organization.
+1. No active unchecked roadmap items remain.
 2. Continue future roadmap from the parked/rejected section only if new evidence changes scope.
 
 ## Definition of Done for Future Changes
@@ -176,3 +181,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Audited performance, bfcache, and service-worker update UX. Added explicit update prompts, documented repeatable Chromium audit status in `PERFORMANCE_AUDIT.md`, reduced homepage layout shift, and fixed project-page README image/overflow issues found by the audit harness.
 - 2026-05-17: Shipped image and OG pipeline hardening. Added Sharp-generated live-app thumbnail derivatives, `npm run images:audit`, thumbnail-aware asset auditing, thumbnail-first live cards, and explicit social-card PNG alt/type metadata.
 - 2026-05-17: Shipped public machine-readable indexes. Added `/projects.json` and `/releases.json` with schema versions, freshness timestamps, counts, public URLs, and build-time GitHub metadata for future tooling.
+- 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
