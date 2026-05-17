@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.1
+Current tracked version: v0.16.2
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -34,13 +34,16 @@ The site must remain public-safe. It should not expose private repository names,
 - Preview: `npm run preview`
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch:stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
+- Audit public repo drift: `npm run catalog:audit`
+- Audit production advisories: `npm run audit:prod`
 
 Current verification baseline:
 
 - `npm run check` passed.
 - `npm run build` passed.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
-- Live GitHub scan reported 178 active public repositories, including 170 active public non-forks, 8 active public forks, and 220 public stars.
+- Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
+- `npm run catalog:audit` passed with no unreviewed active public repo drift.
 
 ## Data Model
 
@@ -56,14 +59,17 @@ Derived data in `src/data/derived.ts` computes fallback repository count from un
 Important current exclusions:
 
 - `Scripts` and `ChanPrep` are public but intentionally not listed.
+- `SysAdminDoc` is a public profile repository and is intentionally not listed.
+- `null` is a public placeholder repository and is intentionally not listed.
 - Private/internal repos must not be listed.
-- Public medical-imaging or X-ray repos require explicit review before being linked or promoted.
+- Public medical-imaging or X-ray repos require explicit review before being linked or promoted. `RadAtlas` is currently held in `catalog-policy.json` for that reason.
 
-Known drift from 2026-05-17 live GitHub scan:
+Catalog reconciliation from 2026-05-17 live GitHub scan:
 
-- Newly public active repos not represented in `projects.ts`: `OpenLumen`, `PhoneFork`, `AI-Usage_Tracker`.
+- Added newly public active repos `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`.
+- Active public non-fork repos that are not represented in `projects.ts` are documented in `src/data/catalog-policy.json`.
 - `RadAtlas` is public and X-ray-related, but was removed from the portfolio. Its visibility should be reviewed outside this site before any listing.
-- The generated `_stats.json` cache was stale, reporting 167 non-fork repos and 204 stars from 2026-05-11.
+- The generated GitHub caches were refreshed locally with `GITHUB_TOKEN` on 2026-05-17: 170 public non-fork metadata entries, 220 stars, 60 releases, and 170 README entries. These generated files remain ignored.
 
 ## Generated Data and Automation
 
@@ -105,10 +111,9 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Add catalog drift automation and reconcile new public repos.
-2. Resolve the public/private boundary for medical-imaging projects.
-3. Move project data toward schema validation.
-4. Add stale screenshot and unused asset checks.
+1. Resolve the public/private boundary for medical-imaging projects.
+2. Move project data toward schema validation.
+3. Add stale screenshot and unused asset checks.
 
 ## Definition of Done for Future Changes
 
@@ -123,3 +128,4 @@ Highest-priority work after this research pass:
 ## Progress Log
 
 - 2026-05-17: Shipped Tier 0 production dependency remediation. Upgraded Astro, `marked`, and `sanitize-html`; refreshed transitive `devalue` and `postcss`; added `npm run audit:prod` to CI; verified production audit, Astro check, and full static build.
+- 2026-05-17: Shipped catalog drift audit and reconciliation. Added `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`; documented intentional public-repo exclusions in `catalog-policy.json`; refreshed ignored GitHub metadata caches with `GITHUB_TOKEN`; added `npm run catalog:audit` to CI.

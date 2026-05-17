@@ -1,0 +1,29 @@
+{
+  "owner": "SysAdminDoc",
+  "forkPolicy": "Public forks may be cataloged intentionally, but the live drift audit tracks active non-fork repositories by default because the portfolio's headline repo count follows owned source work.",
+  "includeForksInMissingAudit": false,
+  "intentionallySkippedPublicRepos": [
+    {
+      "repo": "Scripts",
+      "reason": "Personal script grab bag; intentionally omitted from the polished public portfolio catalog."
+    },
+    {
+      "repo": "ChanPrep",
+      "reason": "Public but intentionally omitted from the profile and portfolio catalog."
+    },
+    {
+      "repo": "SysAdminDoc",
+      "reason": "GitHub profile repository; not a portfolio project."
+    },
+    {
+      "repo": "null",
+      "reason": "Placeholder repository; intentionally excluded from the public portfolio catalog."
+    }
+  ],
+  "privacyReviewRequired": [
+    {
+      "repo": "RadAtlas",
+      "reason": "Public X-ray and medical-imaging repo. Keep excluded from the portfolio until visibility and public-safety review is explicitly resolved."
+    }
+  ]
+}
