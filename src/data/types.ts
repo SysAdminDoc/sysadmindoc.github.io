@@ -46,6 +46,21 @@ export interface Skill {
   color: string; // css var name e.g. "--blue"
 }
 
+export interface ProjectProofSource {
+  label: string;
+  url: string;
+  note?: string;
+}
+
+export interface ProjectProof {
+  problem: string;
+  buildEvidence: string[];
+  platforms: string[];
+  installPath: string;
+  knownLimitations: string;
+  sources: ProjectProofSource[];
+}
+
 export interface Video {
   ytId: string;
   title: string;

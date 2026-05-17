@@ -8,6 +8,7 @@ const owner = 'SysAdminDoc';
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const typesPath = path.join(root, 'src', 'data', 'types.ts');
 const categoriesPath = path.join(root, 'src', 'data', 'categories.ts');
+const proofPath = path.join(root, 'src', 'data', 'proof.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 
@@ -182,16 +183,18 @@ async function fileExists(filePath) {
   }
 }
 
-const [projectsText, typesText, categoriesText, policyText] = await Promise.all([
+const [projectsText, typesText, categoriesText, proofText, policyText] = await Promise.all([
   fs.readFile(projectsPath, 'utf8'),
   fs.readFile(typesPath, 'utf8'),
   fs.readFile(categoriesPath, 'utf8'),
+  fs.readFile(proofPath, 'utf8'),
   fs.readFile(policyPath, 'utf8'),
 ]);
 
 const projectsSource = sourceFile(projectsPath, projectsText);
 const typesSource = sourceFile(typesPath, typesText);
 const categoriesSource = sourceFile(categoriesPath, categoriesText);
+const proofSource = sourceFile(proofPath, proofText);
 const policy = JSON.parse(policyText);
 
 const allowedLangs = new Set(exportedStringUnion(typesSource, 'Lang'));
@@ -200,6 +203,7 @@ const featured = exportedArray(projectsSource, 'featured');
 const liveApps = exportedArray(projectsSource, 'liveApps');
 const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
+const proofRecords = exportedObject(proofSource, 'projectProof');
 
 validateUnique('featured', featured, 'repo');
 validateUnique('liveApps', liveApps, 'slug');
@@ -308,6 +312,26 @@ for (const [index, entry] of (policy.privacyReviewRequired ?? []).entries()) {
   }
 }
 
+for (const [slug, proof] of Object.entries(proofRecords)) {
+  if (!portfolioRefs.has(slug)) fail(`projectProof.${slug} must refer to a project route in projects.ts.`);
+  requireString('projectProof', slug, proof, 'problem');
+  requireStringArray('projectProof', slug, proof, 'buildEvidence');
+  requireStringArray('projectProof', slug, proof, 'platforms');
+  requireString('projectProof', slug, proof, 'installPath');
+  requireString('projectProof', slug, proof, 'knownLimitations');
+  if (!Array.isArray(proof.sources) || proof.sources.length === 0) {
+    fail(`projectProof.${slug}.sources must be a non-empty array.`);
+  } else {
+    proof.sources.forEach((source, index) => {
+      requireString(`projectProof.${slug}.sources`, index, source, 'label');
+      validateHttpsUrl(`projectProof.${slug}.sources`, index, 'url', requireString(`projectProof.${slug}.sources`, index, source, 'url'));
+      if (hasOwn(source, 'note') && (typeof source.note !== 'string' || source.note.trim().length === 0)) {
+        fail(`projectProof.${slug}.sources[${index}].note must be a non-empty string when present.`);
+      }
+    });
+  }
+}
+
 const routeSlugs = new Map();
 for (const slug of portfolioRefs) {
   const normalized = slug.toLowerCase();
@@ -378,6 +402,7 @@ console.log(`  catalog: ${catalog.length}`);
 console.log(`  unique project routes: ${portfolioRefs.size}`);
 console.log(`  command palette projects: ${commandPaletteProjects.size}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
+console.log(`  proof records: ${Object.keys(proofRecords).length}`);
 
 if (errors.length > 0) {
   console.error('');
