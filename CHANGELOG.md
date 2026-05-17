@@ -2,6 +2,17 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.8] - 2026-05-17
+
+**Add generated year-in-review timeline.**
+
+- Added [src/pages/timeline.astro](src/pages/timeline.astro), a static timeline generated from cached GitHub releases, project push metadata, and tracked changelog highlights.
+- Added year-review cards plus timeline filters for year, platform, category, and language.
+- Wired Timeline into the homepage nav, interior nav, command palette, and connect entry points.
+- Kept filter state in-page instead of query-string URLs so static preview and GitHub Pages direct links stay reliable.
+- Limited Astro build route concurrency to one to keep the large generated OG route set deterministic during local and CI builds.
+- Updated roadmap and project context so the next visible roadmap item is the public-safe notes feed decision.
+
 ## [v0.16.7] - 2026-05-17
 
 **Add proof-oriented project detail sections.**
