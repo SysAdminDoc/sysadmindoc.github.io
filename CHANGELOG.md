@@ -15,6 +15,8 @@ Security and CI
 Catalog
 - Added `OpenLumen` (Kotlin/Android), `PhoneFork` (C# desktop), and `AI-Usage_Tracker` (extension/userscript) to [src/data/projects.ts](src/data/projects.ts).
 - Added [src/data/catalog-policy.json](src/data/catalog-policy.json) to document intentional public-repo exclusions and the `RadAtlas` privacy-review hold.
+- Strengthened [scripts/audit-catalog.mjs](scripts/audit-catalog.mjs) so privacy-review repos fail the audit if they reappear in project data or public screenshot artifacts.
+- Removed stale `RadAtlas` and `GeneratorSpecs` screenshots.
 - Catalog count: 155 -> 158.
 
 ## [v0.16.1] - 2026-05-11
