@@ -228,6 +228,7 @@ const cmdkSections = [
       min-width:0;
     }
     .archive-title{
+      max-width:12ch;
       font-size:clamp(30px,8vw,36px)!important;
       line-height:1.12;
       overflow-wrap:break-word;
@@ -240,8 +241,27 @@ const cmdkSections = [
       max-width:100%;
       overflow-wrap:break-word;
     }
+    .archive-page .sd{
+      max-width:26ch;
+      font-size:15px;
+      line-height:1.65;
+    }
     .archive-entry{padding:20px}
     .archive-links a{align-items:flex-start;flex-direction:column}
     .archive-links small{text-align:left}
+  }
+  @media(max-width:420px){
+    .archive-page .page-shell > .sh{
+      padding:24px 20px 22px;
+    }
+    .archive-title{
+      max-width:12ch;
+      font-size:30px!important;
+    }
+    .archive-page .sd{
+      max-width:24ch;
+      font-size:15px;
+      line-height:1.65;
+    }
   }
 </style>
