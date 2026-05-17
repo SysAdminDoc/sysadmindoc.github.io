@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.8
+Current tracked version: v0.16.9
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -26,6 +26,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
 - `/timeline/` is generated from ignored GitHub release and metadata caches plus tracked changelog entries, then filtered client-side by year, platform, category, and language.
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
+- `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
@@ -129,8 +130,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Create a public-safe `/til` or notes feed only if there is durable source content.
-2. Add an archive or anti-portfolio section for retired public projects.
+1. Add an archive or anti-portfolio section for retired public projects.
+2. Upgrade search beyond the current command palette dataset.
 
 ## Definition of Done for Future Changes
 
@@ -153,3 +154,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped modernized CI quality gates. Added Dependabot for npm/GitHub Actions and a weekly/manual quality-gates workflow that reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue on failures.
 - 2026-05-17: Shipped proof-oriented project detail sections. Added `src/data/proof.ts`, ProjectProof types, conditional project-page rendering, and validator coverage for proof records and source URLs.
 - 2026-05-17: Shipped the generated timeline/year-in-review layer. Added `/timeline/`, wired it into navigation and command palette, and generated year cards plus filterable release/project/changelog events from existing build-time evidence.
+- 2026-05-17: Parked the conditional public notes feed behind a tracked decision record. Added `NOTES_FEED_POLICY.md` with source, review, privacy, validation, and RSS activation criteria instead of publishing planning or machine-memory artifacts as notes.
