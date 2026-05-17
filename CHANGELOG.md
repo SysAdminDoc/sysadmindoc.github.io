@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.9] - 2026-05-17
+
+**Document the public notes-feed decision.**
+
+- Added [NOTES_FEED_POLICY.md](NOTES_FEED_POLICY.md) as the source-of-truth decision record for the conditional `/til` or notes feed roadmap item.
+- Documented why changelog history, generated GitHub metadata, research logs, and local memory are not durable public note sources.
+- Added activation criteria for any future public-safe notes feed and RSS implementation.
+- Updated roadmap, README, and project context so the next active roadmap item is the retired-project archive.
+
 ## [v0.16.8] - 2026-05-17
 
 **Add generated year-in-review timeline.**
