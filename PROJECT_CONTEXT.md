@@ -15,7 +15,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 ## Current Architecture
 
-- Static site built with Astro 5.
+- Static site built with Astro 6.
 - TypeScript data layer under `src/data/`.
 - Main pages under `src/pages/`, including homepage, catalog, project detail pages, OG image endpoints, RSS, releases, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
@@ -35,10 +35,11 @@ The site must remain public-safe. It should not expose private repository names,
 - Refresh GitHub metadata: `GITHUB_TOKEN=... npm run fetch:stars`
 - Capture screenshots: `npm run capture:screenshots` after installing Playwright browser dependencies
 
-Baseline during the 2026-05-17 research pass:
+Current verification baseline:
 
 - `npm run check` passed.
-- `npm audit --omit=dev` reported production advisories requiring remediation.
+- `npm run build` passed.
+- `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks, 8 active public forks, and 220 public stars.
 
 ## Data Model
@@ -74,12 +75,16 @@ Known drift from 2026-05-17 live GitHub scan:
 
 The project parses remote README content through `marked` and `sanitize-html`, so markdown parser and sanitizer advisories are high-priority even though the site is static.
 
-Production dependency advisories found on 2026-05-17:
+Production dependency advisories found on 2026-05-17 were remediated:
 
-- `sanitize-html` critical advisory range covering 2.17.2.
-- `marked` high advisory range covering 18.0.0.
-- Astro moderate advisories remediated upstream through Astro 6.
-- Transitive `devalue` and `postcss` advisories through the current dependency tree.
+- `sanitize-html` upgraded to 2.17.4.
+- `marked` upgraded to 18.0.3.
+- Astro upgraded to 6.3.3.
+- Transitive `devalue` resolved to 5.8.1.
+- Transitive `postcss` resolved to 8.5.14.
+- CI now runs `npm run audit:prod`, which gates high/critical production advisories.
+
+Full `npm audit` still reports dev-only moderate findings in the `@astrojs/check` language-server chain. That is documented but does not affect production dependencies.
 
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 
@@ -100,11 +105,10 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Remediate production dependency advisories.
-2. Add catalog drift automation and reconcile new public repos.
-3. Resolve the public/private boundary for medical-imaging projects.
-4. Move project data toward schema validation.
-5. Add stale screenshot and unused asset checks.
+1. Add catalog drift automation and reconcile new public repos.
+2. Resolve the public/private boundary for medical-imaging projects.
+3. Move project data toward schema validation.
+4. Add stale screenshot and unused asset checks.
 
 ## Definition of Done for Future Changes
 
@@ -115,3 +119,7 @@ Highest-priority work after this research pass:
 - Run `npm run build` for source, data, routing, or rendering changes.
 - For dependency or README rendering changes, run `npm audit --omit=dev` and inspect project page rendering.
 - Commit the intended changes with a clear message.
+
+## Progress Log
+
+- 2026-05-17: Shipped Tier 0 production dependency remediation. Upgraded Astro, `marked`, and `sanitize-html`; refreshed transitive `devalue` and `postcss`; added `npm run audit:prod` to CI; verified production audit, Astro check, and full static build.
