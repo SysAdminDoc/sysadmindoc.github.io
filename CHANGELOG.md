@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.6] - 2026-05-17
+
+**Modernize CI quality gates.**
+
+- Added [.github/dependabot.yml](.github/dependabot.yml) for weekly npm and GitHub Actions dependency updates.
+- Added [.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) for weekly/manual production audit, catalog drift, data validation, asset/reference audit, and Astro check reporting.
+- The quality-gates workflow uploads command logs as `quality-gate-reports`.
+- When production audit or public catalog drift fails, the workflow opens or updates a GitHub issue with the failing logs.
+
 ## [v0.16.5] - 2026-05-17
 
 **Add stale asset and source-reference checks.**
