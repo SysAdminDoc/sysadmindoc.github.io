@@ -100,7 +100,9 @@ async function waitForDevToolsPort(userDataDir, chrome) {
 }
 
 async function requestJson(url, init) {
-  const response = await fetch(url, init);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  const response = await fetch(url, { ...(init || {}), signal: controller.signal }).finally(() => clearTimeout(timer));
   if (!response.ok) throw new Error(`${init?.method || 'GET'} ${url} failed with ${response.status}`);
   return response.json();
 }
@@ -115,9 +117,24 @@ class CdpClient {
 
   open() {
     return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Timed out opening CDP socket.')), 15000);
       this.socket = new WebSocket(this.webSocketUrl);
-      this.socket.addEventListener('open', resolve, { once: true });
-      this.socket.addEventListener('error', reject, { once: true });
+      this.socket.addEventListener(
+        'open',
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        { once: true },
+      );
+      this.socket.addEventListener(
+        'error',
+        (event) => {
+          clearTimeout(timer);
+          reject(event.error || new Error('CDP socket error.'));
+        },
+        { once: true },
+      );
       this.socket.addEventListener('message', (event) => this.handleMessage(event.data));
       this.socket.addEventListener('close', () => {
         for (const { reject: rejectPending } of this.pending.values()) {
@@ -149,7 +166,20 @@ class CdpClient {
     const id = this.nextId++;
     this.socket.send(JSON.stringify({ id, method, params }));
     return new Promise((resolve, reject) => {
-      this.pending.set(id, { resolve, reject });
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(new Error(`Timed out running ${method}.`));
+      }, 45000);
+      this.pending.set(id, {
+        resolve: (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        reject: (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      });
     });
   }
 
