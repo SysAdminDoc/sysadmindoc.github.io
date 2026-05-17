@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.13-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.14-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -16,6 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts
+- **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails and OG PNG metadata validation
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
@@ -94,6 +95,8 @@ src/
 ├── pages/
 │   ├── index.astro
 │   ├── now.astro
+│   ├── projects.json.ts
+│   ├── releases.json.ts
 │   ├── search.astro
 │   ├── releases.astro
 │   ├── timeline.astro
