@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.12] - 2026-05-17
+
+**Audit performance, bfcache, and service-worker update UX.**
+
+- Added [PERFORMANCE_AUDIT.md](PERFORMANCE_AUDIT.md) with local Lighthouse results for homepage, catalog, and project-page samples plus bfcache status.
+- Changed the service worker update flow so new workers wait, show an accessible update toast, and refresh only after the visitor chooses the refresh action.
+- Reserved stable homepage terminal and hero text space to reduce desktop layout shift during the animated first viewport.
+- Documented remaining mobile LCP and homepage CLS follow-up work separately from the clean desktop and project-page samples.
+
 ## [v0.16.11] - 2026-05-17
 
 **Add static full-text search.**

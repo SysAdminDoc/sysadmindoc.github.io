@@ -324,6 +324,14 @@
         /* Copy Toast */
         .copy-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--grn);color:var(--bg);font-family:var(--mono);font-size:13px;padding:8px 20px;border-radius:8px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:10000;box-shadow:0 4px 20px rgba(74,222,128,.3)}
         .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        .sw-update-toast{position:fixed;right:18px;bottom:18px;display:flex;align-items:center;gap:14px;max-width:min(420px,calc(100vw - 36px));padding:14px 14px 14px 16px;border:1px solid var(--border);border-radius:8px;background:var(--surface-1);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.45;box-shadow:var(--shadow-strong);opacity:0;transform:translateY(14px);transition:opacity .25s ease,transform .25s ease;z-index:10001}
+        .sw-update-toast.show{opacity:1;transform:translateY(0)}
+        .sw-update-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+        .sw-update-actions button{min-height:34px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--t1);font:inherit;cursor:pointer}
+        .sw-update-actions button:first-child{border-color:var(--grn);background:var(--grnd);color:var(--grn)}
+        .sw-update-actions button:hover,.sw-update-actions button:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring);outline:0}
+        .sw-update-actions button:disabled{cursor:wait;opacity:.72}
+        @media(max-width:560px){.sw-update-toast{left:14px;right:14px;bottom:14px;align-items:stretch;flex-direction:column}.sw-update-actions{width:100%;margin-left:0}.sw-update-actions button{flex:1}}
 
         /* Terminal Copy Hover */
         .term-output{position:relative;cursor:pointer;padding:2px 4px;margin:-2px -4px;border-radius:4px;transition:background .2s}
@@ -656,6 +664,7 @@ html[data-theme="light"] nav{background:rgba(248,244,234,.8)}
   margin-bottom:16px;
   color:var(--t1);
   font-size:clamp(16px,2vw,20px);
+  line-height:1.65;
   letter-spacing:.01em;
 }
 .hd{
@@ -1240,7 +1249,7 @@ html[data-theme="light"] .ca:hover{
   .hero{padding:92px 16px 40px}
   .hero-brandline{margin-bottom:18px}
   .hn{font-size:clamp(44px,16vw,68px)}
-  .hr{font-size:17px}
+  .hr{font-size:17px;min-height:calc(6 * 1em * 1.65)}
   .hd{font-size:16px}
   .hero-domain-list{line-height:1.7}
   .hs{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:18px 0}
@@ -2732,6 +2741,11 @@ html[data-theme="light"] .fb{
 .hero-stage{
   padding:22px;
 }
+@media(min-width:901px){
+  .hi{
+    align-items:start;
+  }
+}
 .hero-stage-head{
   margin-bottom:18px;
 }
@@ -2746,7 +2760,9 @@ html[data-theme="light"] .fb{
   font-size:13px;
 }
 .hero-stage .tbd{
-  min-height:184px;
+  height:280px;
+  min-height:280px;
+  overflow:hidden;
 }
 .hero-flightpath{
   margin-top:14px;
@@ -2779,6 +2795,10 @@ html[data-theme="light"] .fb{
   display:grid;
   gap:28px;
   padding-top:116px;
+}
+.page-shell > *{
+  min-width:0;
+  max-width:100%;
 }
 .route-interior .page-shell > .sh{
   position:relative;
@@ -2909,6 +2929,27 @@ html[data-theme="light"] .fb{
 }
 .project-readme{
   line-height:1.82;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.project-readme img,
+.project-readme svg,
+.project-readme video{
+  max-width:100%;
+  height:auto;
+}
+.project-readme pre{
+  max-width:100%;
+  overflow-x:auto;
+}
+.project-readme table{
+  display:block;
+  max-width:100%;
+  overflow-x:auto;
+}
+.project-readme th,
+.project-readme td{
+  min-width:0;
 }
 .project-release{
   display:grid;
