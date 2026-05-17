@@ -1,0 +1,129 @@
+name: Weekly quality gates
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Report production audit and public catalog drift every Monday at 09:00 UTC.
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: weekly-quality-gates
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run production audit report
+        id: prod_audit
+        shell: bash
+        run: |
+          set +e
+          npm run audit:prod > prod-audit.log 2>&1
+          code=$?
+          cat prod-audit.log
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Run public catalog audit report
+        id: catalog_audit
+        shell: bash
+        run: |
+          set +e
+          npm run catalog:audit > catalog-audit.log 2>&1
+          code=$?
+          cat catalog-audit.log
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Run local quality checks
+        shell: bash
+        run: |
+          npm run data:validate | tee data-validate.log
+          npm run assets:audit | tee assets-audit.log
+          npm run check | tee astro-check.log
+      - name: Publish quality summary
+        shell: bash
+        run: |
+          {
+            echo "# Weekly quality gates"
+            echo ""
+            echo "- Production dependency audit: ${{ steps.prod_audit.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "- Public catalog drift audit: ${{ steps.catalog_audit.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "- Local data/assets/Astro checks: PASS"
+            echo ""
+            echo "See the uploaded quality-gate-reports artifact for command logs."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload quality gate reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-gate-reports
+          path: |
+            prod-audit.log
+            catalog-audit.log
+            data-validate.log
+            assets-audit.log
+            astro-check.log
+          if-no-files-found: error
+      - name: Open or update quality gate issue
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const title = 'Portfolio quality gates need attention';
+            const prod = fs.readFileSync('prod-audit.log', 'utf8').slice(-6000);
+            const catalog = fs.readFileSync('catalog-audit.log', 'utf8').slice(-6000);
+            const body = [
+              'The scheduled portfolio quality gates detected a production dependency audit or public catalog drift issue.',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Production audit',
+              '```text',
+              prod,
+              '```',
+              '',
+              '## Catalog audit',
+              '```text',
+              catalog,
+              '```',
+              '',
+              'Close this issue after the underlying dependency or catalog drift is fixed and the workflow is green.',
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const existing = issues.find((issue) => issue.title === title && !issue.pull_request);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
+      - name: Fail on reported gate failures
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0'
+        run: exit 1
