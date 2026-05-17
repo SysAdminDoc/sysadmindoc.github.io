@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.9-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.10-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -14,6 +14,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Content collections**: featured (9), live apps (22), catalog (173), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
+- **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
 
@@ -79,6 +80,7 @@ src/
 │   ├── categories.ts
 │   ├── projects.ts  # all content (EDIT THIS)
 │   ├── proof.ts
+│   ├── archive.ts
 │   ├── catalog-policy.json
 │   └── _*.json      # generated GitHub cache files (gitignored)
 ├── layouts/Base.astro
@@ -87,6 +89,7 @@ src/
 │   ├── now.astro
 │   ├── releases.astro
 │   ├── timeline.astro
+│   ├── archive.astro
 │   ├── rss.xml.ts
 │   ├── lang/[slug].astro
 │   ├── og/[slug].png.ts

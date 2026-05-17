@@ -1,0 +1,78 @@
+import type { ArchiveEntry } from './types';
+
+export const archiveEntries: ArchiveEntry[] = [
+  {
+    id: 'live-showcase-trim',
+    name: 'Live showcase trim',
+    status: 'moved',
+    statusLabel: 'Moved to catalog',
+    summary: 'A small group of older browser demos was removed from the homepage live showcase but kept in the catalog where the work is still safe to browse.',
+    reason: 'The live grid now prioritizes current screenshots and launch-ready apps; older demos belong in project context instead of competing with active highlights.',
+    source: 'CHANGELOG.md v0.2.1 and current src/data/projects.ts catalog entries.',
+    links: [
+      { label: 'NukeMap', href: '/projects/NukeMap/', note: 'Public catalog entry' },
+      { label: 'CronScope', href: '/projects/CronScope/', note: 'Public catalog entry' },
+      { label: 'MHTMLens', href: '/projects/MHTMLens/', note: 'Public catalog entry' },
+      { label: 'LogLens', href: '/projects/LogLens/', note: 'Public catalog entry' },
+    ],
+  },
+  {
+    id: 'public-skipped-repos',
+    name: 'Public repos intentionally outside the catalog',
+    status: 'removed',
+    statusLabel: 'Catalog skipped',
+    summary: 'Some public repositories are intentionally omitted from the polished portfolio catalog because they are grab bags, placeholders, or lower-signal surfaces.',
+    reason: 'The portfolio should stay navigable and product-oriented; the archive can name reviewed public exceptions without turning them into headline projects.',
+    source: 'src/data/catalog-policy.json intentionallySkippedPublicRepos and CHANGELOG.md v0.12.1.',
+    links: [
+      { label: 'Scripts', href: 'https://github.com/SysAdminDoc/Scripts', note: 'Public but intentionally outside the catalog' },
+      { label: 'ChanPrep', href: 'https://github.com/SysAdminDoc/ChanPrep', note: 'Public but intentionally outside the catalog' },
+    ],
+  },
+  {
+    id: 'duplicateff-reference',
+    name: 'DuplicateFF',
+    status: 'archived',
+    statusLabel: 'Archived reference',
+    summary: 'DuplicateFF remains visible as a reference architecture rather than a current flagship utility.',
+    reason: 'The catalog description frames it as an archived duplicate-file finder reference, which is useful context without overstating current maintenance.',
+    source: 'CHANGELOG.md v0.12.0 and current src/data/projects.ts catalog description.',
+    links: [
+      { label: 'Project page', href: '/projects/DuplicateFF/', note: 'Public catalog entry' },
+    ],
+  },
+  {
+    id: 'legacy-private-batch',
+    name: 'Legacy private or archived batch',
+    status: 'removed',
+    statusLabel: 'Removed from catalog',
+    summary: 'An older batch of private, archived, or placeholder repositories was removed from the catalog and is not re-listed here by name.',
+    reason: 'The portfolio should explain the cleanup pattern without turning old private or low-signal repository names into a new public index.',
+    source: 'CHANGELOG.md v0.2.0 and PROJECT_CONTEXT.md public/private boundary.',
+    links: [],
+    sensitive: true,
+  },
+  {
+    id: 'medical-imaging-boundary',
+    name: 'Medical-imaging boundary hold',
+    status: 'held',
+    statusLabel: 'Held for review',
+    summary: 'Medical-imaging artifacts that could expose clinical or employer context are excluded from visible project surfaces and public screenshots.',
+    reason: 'X-ray and medical-imaging work needs explicit public-safety review before promotion, even when repository metadata is technically public.',
+    source: 'src/data/catalog-policy.json privacyReviewRequired, CHANGELOG.md v0.14.1-v0.14.2, and PROJECT_CONTEXT.md security boundaries.',
+    links: [],
+    sensitive: true,
+  },
+  {
+    id: 'start-menu-successor',
+    name: 'Start Menu tooling successor',
+    status: 'superseded',
+    statusLabel: 'Superseded',
+    summary: 'A legacy Start Menu management direction is represented by the current Start-Menu-Organizer project instead of keeping older names in the portfolio.',
+    reason: 'The archive should point visitors toward the maintained public surface when an older tool line has a clearer successor.',
+    source: 'CHANGELOG.md v0.2.0 removal notes and current src/data/projects.ts catalog entry.',
+    links: [
+      { label: 'Start-Menu-Organizer', href: '/projects/Start-Menu-Organizer/', note: 'Current public successor' },
+    ],
+  },
+];
