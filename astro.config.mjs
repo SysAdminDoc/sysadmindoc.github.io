@@ -8,6 +8,7 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'auto',
     assets: '_assets',
+    concurrency: 1,
   },
   vite: {
     build: {

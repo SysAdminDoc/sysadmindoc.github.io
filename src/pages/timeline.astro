@@ -1,0 +1,491 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import { catalog } from '../data/projects';
+import { categoryLabels } from '../data/categories';
+import type { Lang } from '../data/types';
+
+type ReleaseRecord = {
+  repo: string;
+  tag: string;
+  name: string;
+  publishedAt: string;
+  url: string;
+  bodyFirst: string;
+};
+
+type RepoMeta = {
+  stars?: number;
+  pushedAt?: string;
+  updatedAt?: string;
+  language?: string | null;
+};
+
+type TimelineEvent = {
+  id: string;
+  type: 'release' | 'project' | 'changelog';
+  typeLabel: string;
+  title: string;
+  desc: string;
+  href: string;
+  external: boolean;
+  date: string;
+  year: string;
+  sortTime: number;
+  project?: string;
+  platformId: string;
+  platformLabel: string;
+  categoryId: string;
+  categoryLabel: string;
+  languageId: string;
+  languageLabel: string;
+};
+
+let releases: ReleaseRecord[] = [];
+try {
+  const mod = await import('../data/_releases.json');
+  releases = (mod.default ?? mod) as ReleaseRecord[];
+} catch {}
+
+let meta: Record<string, RepoMeta> = {};
+try {
+  const mod = await import('../data/_meta.json');
+  meta = (mod.default ?? mod) as Record<string, RepoMeta>;
+} catch {}
+
+const changelogPath = join(process.cwd(), 'CHANGELOG.md');
+const changelogText = readFileSync(changelogPath, 'utf8');
+
+const slugId = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'other';
+
+const cleanText = (value: string) =>
+  value
+    .replace(/<[^>]+>/g, '')
+    .replace(/&mdash;/g, '-')
+    .replace(/&amp;/g, '&')
+    .replace(/&rarr;/g, '->')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const projectByRepo = new Map(catalog.map((entry) => [entry.repo, entry]));
+
+const platformForCategory = (category?: Lang, language?: string | null) => {
+  if (category === 'kt') return { id: 'android', label: 'Android' };
+  if (category === 'web') return { id: 'web', label: 'Web Apps' };
+  if (category === 'ext') return { id: 'browser', label: 'Browser Extensions' };
+  if (category === 'ps' || category === 'cs' || category === 'cpp') return { id: 'windows', label: 'Windows/Desktop' };
+  if (category === 'py') return { id: 'python', label: 'Python Tools' };
+  if (category === 'sec') return { id: 'security', label: 'Security/Network' };
+  if (category === 'media') return { id: 'media', label: 'Media/AI' };
+  if (category === 'guide') return { id: 'guides', label: 'Guides' };
+  if (language === 'HTML' || language === 'JavaScript') return { id: 'web', label: 'Web Apps' };
+  return { id: 'other', label: 'Other' };
+};
+
+const releaseEvents: TimelineEvent[] = releases
+  .map((release, index) => {
+    const project = projectByRepo.get(release.repo);
+    const repoMeta = meta[release.repo] ?? {};
+    const category = project?.category ?? 'other';
+    const platform = platformForCategory(category, repoMeta.language);
+    const date = release.publishedAt;
+    const languageLabel = repoMeta.language ?? categoryLabels[category] ?? 'Unknown';
+    return {
+      id: `release-${release.repo}-${release.tag}-${index}`,
+      type: 'release' as const,
+      typeLabel: 'Release',
+      title: `${project?.name ?? release.repo} ${release.tag}`,
+      desc: cleanText(release.bodyFirst || release.name || 'GitHub release published for this project.'),
+      href: release.url,
+      external: true,
+      date,
+      year: date.slice(0, 4),
+      sortTime: new Date(date).getTime(),
+      project: release.repo,
+      platformId: platform.id,
+      platformLabel: platform.label,
+      categoryId: category,
+      categoryLabel: categoryLabels[category] ?? category,
+      languageId: slugId(languageLabel),
+      languageLabel,
+    };
+  })
+  .filter((event) => Number.isFinite(event.sortTime));
+
+const projectEvents: TimelineEvent[] = catalog
+  .map((project) => {
+    const repoMeta = meta[project.repo] ?? {};
+    const date = repoMeta.pushedAt ?? repoMeta.updatedAt;
+    if (!date) return null;
+    const platform = platformForCategory(project.category, repoMeta.language);
+    const languageLabel = repoMeta.language ?? categoryLabels[project.category] ?? project.category;
+    const sortTime = new Date(date).getTime();
+    if (!Number.isFinite(sortTime)) return null;
+    return {
+      id: `project-${project.repo}`,
+      type: 'project' as const,
+      typeLabel: 'Project Update',
+      title: project.name,
+      desc: cleanText(project.desc),
+      href: `/projects/${project.repo}/`,
+      external: false,
+      date,
+      year: date.slice(0, 4),
+      sortTime,
+      project: project.repo,
+      platformId: platform.id,
+      platformLabel: platform.label,
+      categoryId: project.category,
+      categoryLabel: categoryLabels[project.category] ?? project.category,
+      languageId: slugId(languageLabel),
+      languageLabel,
+    };
+  })
+  .filter(Boolean) as TimelineEvent[];
+
+const changelogEvents: TimelineEvent[] = Array.from(
+  changelogText.matchAll(/^## \[(v[^\]]+)\] - (\d{4}-\d{2}-\d{2})\s*\n+([\s\S]*?)(?=\n## \[|$)/gm),
+)
+  .map((match, index) => {
+    const [, version, date, body] = match;
+    const title = body.match(/\*\*(.*?)\*\*/)?.[1] ?? version;
+    const bullet = body.match(/^- (.+)$/m)?.[1] ?? 'Portfolio changelog entry.';
+    const isoDate = `${date}T12:00:00Z`;
+    const sortTime = new Date(isoDate).getTime();
+    if (!Number.isFinite(sortTime)) return null;
+    return {
+      id: `changelog-${version}-${index}`,
+      type: 'changelog' as const,
+      typeLabel: 'Changelog',
+      title: `${version}: ${cleanText(title)}`,
+      desc: cleanText(bullet),
+      href: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/CHANGELOG.md',
+      external: true,
+      date: isoDate,
+      year: date.slice(0, 4),
+      sortTime,
+      platformId: 'portfolio',
+      platformLabel: 'Portfolio Site',
+      categoryId: 'portfolio',
+      categoryLabel: 'Portfolio',
+      languageId: 'astro',
+      languageLabel: 'Astro',
+    };
+  })
+  .filter(Boolean) as TimelineEvent[];
+
+const events = [...releaseEvents, ...projectEvents, ...changelogEvents].sort((a, b) => b.sortTime - a.sortTime);
+
+const uniqueOptions = (field: 'year' | 'platform' | 'category' | 'language') => {
+  const map = new Map<string, string>();
+  for (const event of events) {
+    if (field === 'year') map.set(event.year, event.year);
+    if (field === 'platform') map.set(event.platformId, event.platformLabel);
+    if (field === 'category') map.set(event.categoryId, event.categoryLabel);
+    if (field === 'language') map.set(event.languageId, event.languageLabel);
+  }
+  return Array.from(map, ([id, label]) => ({ id, label })).sort((a, b) => {
+    if (field === 'year') return b.label.localeCompare(a.label);
+    return a.label.localeCompare(b.label);
+  });
+};
+
+const yearOptions = uniqueOptions('year');
+const platformOptions = uniqueOptions('platform');
+const categoryOptions = uniqueOptions('category');
+const languageOptions = uniqueOptions('language');
+
+const byYear = new Map<string, TimelineEvent[]>();
+for (const event of events) {
+  const bucket = byYear.get(event.year) ?? [];
+  bucket.push(event);
+  byYear.set(event.year, bucket);
+}
+
+const yearSummaries = Array.from(byYear, ([year, yearEvents]) => {
+  const categoryCounts = new Map<string, number>();
+  const projectSet = new Set<string>();
+  for (const event of yearEvents) {
+    categoryCounts.set(event.categoryLabel, (categoryCounts.get(event.categoryLabel) ?? 0) + 1);
+    if (event.project) projectSet.add(event.project);
+  }
+  const topCategories = Array.from(categoryCounts, ([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+  return {
+    year,
+    releases: yearEvents.filter((event) => event.type === 'release').length,
+    projectUpdates: yearEvents.filter((event) => event.type === 'project').length,
+    changelog: yearEvents.filter((event) => event.type === 'changelog').length,
+    projects: projectSet.size,
+    topCategories,
+  };
+}).sort((a, b) => b.year.localeCompare(a.year));
+
+const latestYear = yearSummaries[0]?.year ?? new Date().getUTCFullYear().toString();
+const activeProjects = new Set(events.map((event) => event.project).filter(Boolean)).size;
+const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const cmdkSections = [
+  { label: 'Overview', href: '#timeline-overview', desc: 'Year-level momentum, release counts, active projects, and source mix.', badge: 'TIMELINE' },
+  { label: 'Year Review', href: '#year-review', desc: 'Roll-up cards generated from release, project, and changelog evidence.', badge: 'YEARS' },
+  { label: 'Events', href: '#timeline-events', desc: 'Filterable project timeline by year, platform, category, and language.', badge: 'FILTERS' },
+] as const;
+---
+<Base title="Timeline — Matt Parker" description="Year-in-review timeline generated from GitHub releases, project metadata, and portfolio changelog highlights." cmdkSections={cmdkSections}>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="timeline" contextLabel="Timeline" contextTone="blue" />
+
+  <main id="main" class="timeline-page">
+    <div class="si page-shell" id="timeline-overview">
+      <div class="sh rv">
+        <div class="sl">// Timeline</div>
+        <h1 class="st timeline-title">Year-in-review for the public archive</h1>
+        <p class="sd">
+          A generated view of what shipped, what moved, and where the work clustered.
+          It combines GitHub release cache entries, latest project pushes, and tracked changelog highlights.
+        </p>
+      </div>
+
+      <div class="timeline-overview page-stat-grid rv">
+        <div class="page-stat">
+          <div class="page-stat-value">{latestYear}</div>
+          <div class="page-stat-label">Latest Year</div>
+          <div class="page-stat-copy">Newest generated year currently represented by releases, pushes, or changelog entries.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">{releaseEvents.length}</div>
+          <div class="page-stat-label">Releases</div>
+          <div class="page-stat-copy">Tagged GitHub releases available in the generated cache.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">{activeProjects}</div>
+          <div class="page-stat-label">Active Projects</div>
+          <div class="page-stat-copy">Projects with release or push evidence in this build-time snapshot.</div>
+        </div>
+      </div>
+
+      <div class="timeline-actions page-actions rv">
+        <a href="/releases/" class="btn bp">Open release stream</a>
+        <a href="/#catalog" class="btn bg2">Open project catalog</a>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="page-action-link">Open GitHub workspace</a>
+      </div>
+
+      <section class="timeline-years" id="year-review" aria-labelledby="year-review-title">
+        <div class="timeline-section-head">
+          <h2 id="year-review-title">Review By Year</h2>
+          <p>Each card is generated from current build evidence rather than a hand-maintained narrative.</p>
+        </div>
+        <div class="timeline-year-grid">
+          {yearSummaries.map((summary) => (
+            <article class="timeline-year-card">
+              <div class="timeline-year">{summary.year}</div>
+              <div class="timeline-year-stats">
+                <span><strong>{summary.releases}</strong> releases</span>
+                <span><strong>{summary.projectUpdates}</strong> project updates</span>
+                <span><strong>{summary.changelog}</strong> site notes</span>
+              </div>
+              <p>{summary.projects} public projects show activity or release evidence this year.</p>
+              {summary.topCategories.length > 0 && (
+                <div class="timeline-chip-row" aria-label={`Top ${summary.year} lanes`}>
+                  {summary.topCategories.map((category) => (
+                    <span>{category.label} {category.count}</span>
+                  ))}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="timeline-events-wrap" id="timeline-events" aria-labelledby="timeline-events-title">
+        <div class="timeline-section-head">
+          <h2 id="timeline-events-title">Filterable Timeline</h2>
+          <p>Use the filters to move from the full archive view into a platform, language, category, or year lane.</p>
+        </div>
+
+        <form class="timeline-controls" id="timelineFilters">
+          <label>
+            <span>Year</span>
+            <select id="timelineYear" name="year">
+              <option value="all">All years</option>
+              {yearOptions.map((option) => <option value={option.id}>{option.label}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Platform</span>
+            <select id="timelinePlatform" name="platform">
+              <option value="all">All platforms</option>
+              {platformOptions.map((option) => <option value={option.id}>{option.label}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Category</span>
+            <select id="timelineCategory" name="category">
+              <option value="all">All categories</option>
+              {categoryOptions.map((option) => <option value={option.id}>{option.label}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Language</span>
+            <select id="timelineLanguage" name="language">
+              <option value="all">All languages</option>
+              {languageOptions.map((option) => <option value={option.id}>{option.label}</option>)}
+            </select>
+          </label>
+          <button type="button" class="timeline-reset" id="timelineReset">Reset</button>
+        </form>
+        <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">{events.length} timeline events shown.</p>
+
+        <ol class="timeline-list" id="timelineList">
+          {events.map((event) => (
+            <li
+              class="timeline-event"
+              data-timeline-event
+              data-year={event.year}
+              data-platform={event.platformId}
+              data-category={event.categoryId}
+              data-language={event.languageId}
+            >
+              <div class={`timeline-marker timeline-marker-${event.type}`}></div>
+              <article class="timeline-event-card">
+                <div class="timeline-event-meta">
+                  <span class={`timeline-type timeline-type-${event.type}`}>{event.typeLabel}</span>
+                  <time datetime={event.date}>{dateFormatter.format(new Date(event.date))}</time>
+                </div>
+                <h3>
+                  <a href={event.href} target={event.external ? '_blank' : undefined} rel={event.external ? 'noopener' : undefined}>{event.title}</a>
+                </h3>
+                <p>{event.desc}</p>
+                <div class="timeline-chip-row">
+                  <span>{event.platformLabel}</span>
+                  <span>{event.categoryLabel}</span>
+                  <span>{event.languageLabel}</span>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">The timeline is the wide-angle view. Project pages and releases carry the source-level detail.</p>
+      </div>
+      <div class="fl"><a href="/releases/">Releases</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+  </footer>
+
+  <script>
+    // @ts-nocheck
+    (() => {
+      const form = document.getElementById('timelineFilters');
+      const status = document.getElementById('timelineStatus');
+      const reset = document.getElementById('timelineReset');
+      const events = Array.from(document.querySelectorAll('[data-timeline-event]'));
+      if (!form || !status || events.length === 0) return;
+      const controls = {
+        year: document.getElementById('timelineYear'),
+        platform: document.getElementById('timelinePlatform'),
+        category: document.getElementById('timelineCategory'),
+        language: document.getElementById('timelineLanguage'),
+      };
+      const getValue = (key) => controls[key]?.value || 'all';
+      const setValue = (key, value) => {
+        const control = controls[key];
+        if (!control) return;
+        const hasValue = Array.from(control.options).some((option) => option.value === value);
+        control.value = hasValue ? value : 'all';
+      };
+      const apply = () => {
+        const filters = {
+          year: getValue('year'),
+          platform: getValue('platform'),
+          category: getValue('category'),
+          language: getValue('language'),
+        };
+        let visible = 0;
+        events.forEach((event) => {
+          const show =
+            (filters.year === 'all' || event.dataset.year === filters.year) &&
+            (filters.platform === 'all' || event.dataset.platform === filters.platform) &&
+            (filters.category === 'all' || event.dataset.category === filters.category) &&
+            (filters.language === 'all' || event.dataset.language === filters.language);
+          event.hidden = !show;
+          if (show) visible += 1;
+        });
+        status.textContent = `${visible} of ${events.length} timeline events shown.`;
+      };
+      form.addEventListener('change', apply);
+      reset?.addEventListener('click', () => {
+        Object.keys(controls).forEach((key) => setValue(key, 'all'));
+        apply();
+      });
+      apply();
+    })();
+  </script>
+</Base>
+
+<style is:global>
+  .timeline-page{min-height:calc(100vh - 200px)}
+  .timeline-title{font-size:clamp(34px,4.8vw,56px)!important}
+  .timeline-overview{margin-top:32px}
+  .timeline-actions{margin-top:22px}
+  .timeline-years,.timeline-events-wrap{margin-top:58px}
+  .timeline-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-soft)}
+  .timeline-section-head h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--t1);margin:0}
+  .timeline-section-head p{color:var(--t3);font-size:14px;line-height:1.6;max-width:52ch;margin:0}
+  .timeline-year-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .timeline-year-card{padding:20px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .timeline-year{font-family:var(--mono);font-size:28px;color:var(--t1);line-height:1;margin-bottom:14px}
+  .timeline-year-stats{display:grid;gap:8px;color:var(--t2);font-size:13px;line-height:1.4}
+  .timeline-year-stats strong{font-family:var(--mono);color:var(--grn)}
+  .timeline-year-card p{color:var(--t3);font-size:14px;line-height:1.6;margin:14px 0}
+  .timeline-chip-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .timeline-chip-row span{font-family:var(--mono);font-size:11px;color:var(--t2);padding:4px 8px;border:1px solid var(--border-soft);border-radius:6px;background:rgba(255,255,255,.03)}
+  .timeline-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:12px;align-items:end;margin-bottom:12px}
+  .timeline-controls label{display:grid;gap:7px;color:var(--t3);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+  .timeline-controls select{width:100%;min-height:42px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-2);color:var(--t1);padding:0 12px;font:500 13px var(--mono)}
+  .timeline-reset{min-height:42px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-2);color:var(--t1);font:600 12px var(--mono);padding:0 16px;cursor:pointer}
+  .timeline-reset:hover,.timeline-controls select:hover{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring)}
+  .timeline-status{color:var(--t3);font-size:13px;margin:0 0 20px}
+  .timeline-list{list-style:none;margin:0;padding:0;display:grid;gap:12px;position:relative}
+  .timeline-event{display:grid;grid-template-columns:18px minmax(0,1fr);gap:14px;align-items:start}
+  .timeline-event[hidden]{display:none}
+  .timeline-marker{width:10px;height:10px;border-radius:2px;margin-top:25px;background:var(--blue);box-shadow:0 0 16px rgba(88,166,255,.3)}
+  .timeline-marker-release{background:var(--grn);box-shadow:0 0 16px var(--grn-glow)}
+  .timeline-marker-project{background:var(--blue)}
+  .timeline-marker-changelog{background:var(--yel)}
+  .timeline-event-card{padding:20px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+  .timeline-event-card:hover{border-color:rgba(74,222,128,.28);transform:translateY(-1px)}
+  .timeline-event-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .timeline-type{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t1);padding:4px 7px;border:1px solid var(--border-soft);border-radius:6px}
+  .timeline-type-release{color:var(--grn);background:var(--grnd);border-color:rgba(74,222,128,.22)}
+  .timeline-type-project{color:var(--blue);background:var(--blued);border-color:rgba(88,166,255,.22)}
+  .timeline-type-changelog{color:var(--yel);background:var(--yeld);border-color:rgba(234,179,8,.22)}
+  .timeline-event-meta time{font-family:var(--mono);font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+  .timeline-event-card h3{font-size:18px;line-height:1.35;margin:0}
+  .timeline-event-card h3 a{color:var(--t1);text-decoration:none}
+  .timeline-event-card h3 a:hover{color:var(--grn)}
+  .timeline-event-card p{color:var(--t2);font-size:14px;line-height:1.65;margin:9px 0 14px}
+  @media(max-width:900px){
+    .timeline-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .timeline-reset{grid-column:1/-1}
+  }
+  @media(max-width:640px){
+    .timeline-section-head{align-items:start;flex-direction:column}
+    .timeline-controls{grid-template-columns:1fr}
+    .timeline-event{grid-template-columns:1fr}
+    .timeline-marker{display:none}
+    .timeline-event-card{padding:18px}
+  }
+</style>

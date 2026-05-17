@@ -82,6 +82,7 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'Catalog', href: '/#catalog', desc: 'Browse every public project with filters, search, and freshness signals.', badge: 'ARCHIVE' },
   { label: 'Live Apps', href: '/#live', desc: 'Jump straight into browser-ready builds with no setup wall.', badge: 'LIVE' },
   { label: 'Releases', href: '/releases/', desc: 'See what is shipping across the most active projects.', badge: 'PAGE' },
+  { label: 'Timeline', href: '/timeline/', desc: 'Review yearly momentum across releases, project pushes, and changelog highlights.', badge: 'PAGE' },
   { label: 'Now', href: '/now/', desc: 'Open the current focus page and short-range work queue.', badge: 'PAGE' },
   { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context, imaging systems, and production-first tooling.', badge: 'TRACK' },
 ];
@@ -93,6 +94,14 @@ const cmdkQuickLinks = [
     badge: 'PAGE',
     tone: 'blue',
     searchTerms: ['shipping', 'updates', 'release stream'],
+  },
+  {
+    label: 'Timeline',
+    url: '/timeline/',
+    desc: 'Year-in-review view generated from releases, repository movement, and changelog entries.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['year in review', 'history', 'momentum', 'timeline'],
   },
   {
     label: 'Now',

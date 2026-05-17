@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.7 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.8 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -192,19 +192,23 @@ Acceptance:
 
 - [x] High-value projects can tell a full story without overclaiming.
 
-### [ ] 10. Build a year-in-review and project timeline layer
+### [x] 10. Build a year-in-review and project timeline layer
 
 Evidence: `CHANGELOG.md`, `_releases.json`, GitHub release metadata, Simon Willison and fasterthanli.me timeline patterns E21, E23.
 
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+The site now has a generated `/timeline/` page that combines cached GitHub releases, per-project push metadata, and tracked changelog highlights. Visitors can filter the timeline by year, platform, category, and language without losing the static GitHub Pages deployment model.
+
 Actions:
 
-- Generate a yearly page from releases, pushes, and changelog highlights.
-- Show "what shipped" without requiring manual narrative for every repo.
-- Add filters by platform, language, and category.
+- [x] Generate a yearly page from releases, pushes, and changelog highlights.
+- [x] Show "what shipped" without requiring manual narrative for every repo.
+- [x] Add filters by platform, language, and category.
 
 Acceptance:
 
-- A visitor can understand current momentum and historical breadth without scanning 150+ entries.
+- [x] A visitor can understand current momentum and historical breadth without scanning 150+ entries.
 
 ### [ ] 11. Create a public-safe `/til` or notes feed only if there is durable source content
 
