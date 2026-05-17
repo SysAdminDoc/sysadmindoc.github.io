@@ -1,95 +1,365 @@
 # Portfolio Roadmap
 
-Living plan for [sysadmindoc.github.io](https://sysadmindoc.github.io/). Ordered by fit × impact × effort. Move items down to **Shipped** as they land.
+Research refresh: 2026-05-17
+Current repo version: v0.16.1 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current branch baseline: `main` at `7817ea7` before this research pass
 
-**Legend:** `S` ≤ 30 min · `M` ≤ 2 hr · `L` ≤ 1 day · `XL` > 1 day
+This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
 
----
+## Operating Principles
 
-## Next up — v0.7.0 (see below)
+- Public-only portfolio: list only repositories that are intentionally public and safe to promote. Private/internal work can be represented as sanitized capability narratives, not repository links.
+- GitHub Pages static-first: preserve the current Astro static output model and avoid adding runtime services unless the value is clear.
+- Evidence over claims: project counts, catalog entries, security status, and feature claims should be generated or checked from source data where possible.
+- Accessibility and performance are core product quality, not polish-only work. Changes must be tested with `npm run check`, `npm run build`, and targeted browser or accessibility checks when UI changes.
+- Agent/tool-specific local instructions stay tool-specific. Durable project facts belong in `PROJECT_CONTEXT.md`.
 
-> v0.6.0 shipped — all Tier A items and the two highest-impact Tier B items (/now, /healthcare-it) are now live. See [ROADMAP-COMPLETED.md](ROADMAP-COMPLETED.md).
+## Tier 0: Correctness, Security, and Trust
 
-## Next up — v0.9.0 (see below)
+### 1. Fix production dependency advisories
 
-> v0.8.0 shipped — Project detail pages now render each repo's README at build time, show the 5 most recent releases inline, display inferred tech-stack chips, and rank related projects by stars × freshness. `/til` still deferred.
+Evidence: `package.json`, `package-lock.json`, `npm audit --omit=dev --json`, E08-E14.
 
-### Deferred from v0.7.0
+`npm audit --omit=dev` currently reports five production advisory buckets, including critical `sanitize-html`, high `marked`, moderate Astro, high `devalue`, and moderate `postcss` exposure through the current dependency graph.
 
-- [ ] **`/til` stream** (~`L`) — markdown-backed Today-I-Learned notes. Needs a content source; the pipeline is trivial once there's material to index. Inspired by simonwillison.net.
+Actions:
 
-## v0.8.0 — creative depth
+- Upgrade `sanitize-html` from 2.17.2 to at least 2.17.4.
+- Upgrade `marked` from 18.0.0 to at least 18.0.2; latest wanted at research time was 18.0.3.
+- Evaluate the Astro 6 migration path because `npm audit` currently routes Astro advisory remediation through `astro@6.3.3`.
+- Re-run `npm audit --omit=dev`, `npm run check`, and `npm run build`.
+- Add an advisory gate to CI for high/critical production vulnerabilities after the first remediation pass, with a documented exception process for transitive false positives.
 
-- [ ] **Year-in-Review template** (~`L` first one) — repos shipped, major releases, lines written, download counts (where available). Annual static post. Inspired by jvns.ca.
-- [ ] **Series / multi-part arcs with completion bars** (~`M`) — group related repos (e.g. "Windows debloat suite: 7 of 9 shipped"). Inspired by fasterthanli.me.
-- [ ] **Yearly archive snapshots** (~`XL`) — `sysadmindoc.github.io/2024`, `/2025` as frozen portfolio snapshots. Needs build-pipeline rework. Inspired by rauno.me.
-- [ ] **Tools gallery with embedded live demos** (~`XL` per tool) — WASM RegEx tester, DICOM tag inspector, PowerShell snippet runner. Inspired by simonwillison.net's Tools.
-- [ ] **Anti-portfolio / Graveyard** (~`M`) — archived/abandoned repos with one-line post-mortems. Inversion play. Inspired by maggie's Antilibrary.
+Acceptance:
 
-## Technical debt & polish (parallel track)
+- No high or critical production vulnerabilities remain, or each remaining item has a dated documented exception.
+- README rendering still sanitizes remote README HTML correctly after upgrades.
 
-- [ ] **OG card file size** — current 139 PNGs total ~15 MB. Try WebP or smaller gradient detail to halve.
-- [ ] **Screenshot refresh cadence** — `npm run capture-screenshots` is manual. Add monthly CI cron that runs in a container with chromium pre-installed, commits diffs.
-- [ ] **Dark/light theme: complete light palette** — currently only color-vars override; nav gradient, hero glow, section backgrounds still show dark-tuned values. Either finish the light theme or remove the toggle.
-- [ ] **Fuzzy search upgrade** — command palette uses a simple subsequence matcher. Fine for now, but Fuse.js or MiniSearch would handle typos better.
-- [ ] **Sitemap** — verify `/projects/<slug>/` routes are all in sitemap-0.xml.
-- [ ] **sw.js**: after major content changes, old users may need `Clear site data`. Consider a visible "Site updated — reload" toast when new SW activates.
-- [ ] **Content collections** — current data layer is a TS array. Astro's content collections with Zod schema would catch typos and dupes at build time.
-- [ ] **Dead-code lint in CI** — stylelint for unused CSS selectors, knip for unused JS exports.
-- [x] ~~**Per-project release feed embed** — on `/projects/<slug>/`, show the latest 3 releases from the GitHub API at build time.~~ (v0.8.0, up to 5)
-- [ ] **Activity ticker** — currently runtime-fetched from `/events/public`; could be baked in at build.
+### 2. Reconcile the live GitHub catalog against `src/data/projects.ts`
 
-## Rejected / parked
+Evidence: `src/data/projects.ts`, `src/data/_stats.json`, GitHub CLI public repo scan C03-C05, L07.
 
-Not planned unless context changes. Revisit only if the portfolio's purpose shifts.
+The ignored cache reports 167 non-fork public repos and 204 stars from 2026-05-11. Live GitHub state on 2026-05-17 reported 178 active public repositories, 170 active public non-forks, 8 public forks, and 220 stars. The data file currently misses newly public active repos including `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`. `Scripts` and `ChanPrep` remain intentional exclusions per existing project memory. `RadAtlas` is public but removed from the portfolio and needs a privacy decision before promotion.
 
-- **Chiang-style sticky-left / scrolling-right two-pane layout** — clashes with terminal/hacker aesthetic.
-- **Ambient music player (à la chris.lu)** — gimmicky for sysadmin brand; Slunder section already owns "music" surface.
-- **Mascot / Cool-Bear-style callouts** — too cute; doesn't match voice.
-- **Tardis/time-travel easter egg (Chiang)** — Ctrl+K command palette is already the playful surface.
-- **Blog** — Matt primarily ships code, not prose. Adding a blog would create maintenance debt without a content source. (TILs at `/til` may replace this if ever needed.)
+Actions:
 
----
+- Add a checked exception list for intentionally skipped public repos.
+- Add a catalog audit script that compares live GitHub repos to `projects.ts` and fails when unreviewed public repos appear.
+- Decide how public forks should be counted because the current stats script excludes forks while the catalog includes some public fork entries.
+- Refresh generated GitHub data with `GITHUB_TOKEN` so README caches, release metadata, and star counts are current.
 
-## Shipped
+Acceptance:
 
-> Moved to ROADMAP-COMPLETED.md.
-## Methodology
+- `npm run catalog:audit` or equivalent reports no unreviewed public repos.
+- README/site count language matches generated data.
+- Fork inclusion policy is explicit in `PROJECT_CONTEXT.md`.
 
-Ideas enter the roadmap only if they pass three filters:
-1. **Fit**: does it match the terminal/sysadmin aesthetic and the "senior shipper" positioning?
-2. **Novelty**: is it already covered by existing capability?
-3. **Story**: does it tell the viewer something they couldn't learn from my GitHub profile alone?
+### 3. Resolve the medical-imaging public boundary
 
-Research sources (Apr 2026): leerob.io, brittanychiang.com, rauno.me, paco.me, simonwillison.net, jvns.ca, rsms.me, maggieappleton.com, fasterthanli.me, chris.lu.
+Evidence: GitHub CLI scan C04, local privacy rule inventory in `MEMORY_CONSOLIDATION.md`, L07.
 
-## Open-Source Research (Round 2)
+`RadAtlas` is public on GitHub and its description identifies it as an X-ray technique chart application. Existing local rules state that X-ray and medical-imaging repositories should be private unless explicitly approved. This roadmap cannot change GitHub visibility by itself, but it should make the risk visible.
 
-### Related OSS Projects
-- https://github.com/manuelernestog/astrofy — Astro + TailwindCSS portfolio with blog/CV/projects/RSS, 30 themes via `data-theme`
-- https://github.com/ixartz/Astro-boilerplate — Astro + TS + React + Tailwind boilerplate (DX tooling: ESLint/Prettier/Husky/Commitlint)
-- https://github.com/zeon-studio/astroplate — Astro 5 + Tailwind + TS starter with content collections out of the box
-- https://github.com/Gothsec/Astro-portfolio — Astro + React + TS + Tailwind, Figma-handcrafted
-- https://github.com/veranikabarel/astro-portfolio — Astro 4 + Tailwind, uses `src/content/*` collections for blog + docs
-- https://github.com/uzzii-21/astro-portfolio — Minimal responsive/SEO-friendly Astro portfolio, GH Pages reference deploy
-- https://casraf.dev/2024/08/create-an-automated-portfolio-using-github-and-astro/ — Reference post: `defineCollection` with a `GitHubProjectSchema`, fetch repos+READMEs, JSON-cache responses
-- https://github.com/topics/astro-portfolio — Topic index (1,445+ repos under portfolio tag)
+Actions:
 
-### Features to Borrow
-- Per-theme `data-theme` attribute on `<html>` for instant 30-preset theme switching — Astrofy
-- JSON response cache on the GitHub data layer so `npm run fetch-stars` is resumable after rate-limit hits — casraf.dev automated portfolio pattern
-- `GitHubProjectSchema` with `defineCollection` validation so malformed `projects.ts` entries fail at `astro check` — casraf.dev
-- MDX + Shiki + Expressive Code for syntax-highlighted project write-ups (shadcn/ui Astro template)
-- i18n (EN/DE) pattern via Astro's `astro:i18n` — `astro-theme` topic, multilingual portfolio templates
-- Terminal-style variant config: all content driven by a single config file for a "Warp terminal" aesthetic (matches your existing sysadmin positioning)
-- RSS feed autogen for the "notes" or CHANGELOG section — Astrofy
-- Opinionated bento hero grid using Tailwind `grid-cols-subgrid` (2026 Tailwind feature) instead of hand-rolled CSS grid
-- Repo + stars aggregation of *starred* repos (not just owned) to surface influences/toolbelt — `astro-theme` topic "auto-gen from your own + starred repos"
-- Cloudflare Workers/Pages deploy target as an alternative to GH Pages (faster cold starts, free analytics) — dailynest reference
+- Review whether `RadAtlas` should remain public.
+- If public is intentional, document why it is safe to be public and whether it can be listed.
+- If public is not intentional, make the repository private outside this repo and keep it excluded here.
+- Remove or archive stale screenshots for removed private-sensitive projects unless they are intentionally retained as non-linked historical artifacts.
 
-### Patterns & Architectures Worth Studying
-- Build-time GitHub API → JSON cache → content collection (three-stage pipeline) so the site builds offline after first fetch
-- `getCollection('project')` + `.sort((a,b)=>a.data.order-b.data.order)` as the single source of truth — lets you delete hand-maintained "featured" arrays
-- Astro islands + `client:visible` for the star-ring charts so the main bundle stays <10 KB JS
-- GH Actions matrix: scheduled `fetch-stars` job (cron) separate from the PR-triggered `astro check` + `build` — keeps star data fresh without blocking deploys
-- Content Collections with Zod for type-safe repo metadata → gives autocomplete in `projects.ts` and catches drift against the GitHub schema
+Acceptance:
+
+- The visibility decision is documented.
+- The portfolio does not link to unsafe or unintended public medical-imaging work.
+
+### 4. Make project memory canonical
+
+Evidence: `AGENTS.md`, `CLAUDE.md`, ignored project memory, `PROJECT_CONTEXT.md`, `.ai/research/2026-05-17/MEMORY_CONSOLIDATION.md`.
+
+Repo-local `CLAUDE.md` is ignored and currently says v0.16.0 while the tracked repo is v0.16.1. The old roadmap was also stale. `PROJECT_CONTEXT.md` is now the tracked canonical project memory.
+
+Actions:
+
+- Treat `PROJECT_CONTEXT.md` as the durable tracked context file.
+- Keep tool-specific files (`AGENTS.md`, `CLAUDE.md`, local memory files) as pointers or working notes rather than canonical public documentation.
+- When counts, version, exclusions, or privacy boundaries change, update `PROJECT_CONTEXT.md` in the same change set.
+
+Acceptance:
+
+- Future sessions can start from `PROJECT_CONTEXT.md` and current Git state without relying on ignored local files.
+
+## Tier 1: Data Model and Build Reliability
+
+### 5. Move project data behind a schema-checked content layer
+
+Evidence: `src/data/projects.ts`, `src/data/types.ts`, Astro content collections docs E01.
+
+The current TypeScript arrays are direct and simple, but catalog size and privacy constraints now justify stronger validation.
+
+Actions:
+
+- Evaluate Astro content collections or a schema-checked data loader for project records.
+- Validate unique slugs, required descriptions, category/language enums, URL shape, screenshot existence for live apps, and public/private policy flags.
+- Add tests for derived counts and command palette data.
+
+Acceptance:
+
+- Invalid catalog entries fail at check/build time.
+- Exceptions such as intentionally skipped public repos are explicit.
+
+### 6. Split generated data refresh from deployment
+
+Evidence: `scripts/fetch-stars.mjs`, `.github/workflows/deploy.yml`, README deployment docs, L06-L08.
+
+Generated GitHub data is ignored and cached locally. The script has safe unauthenticated fallback behavior, but stale data can quietly ship.
+
+Actions:
+
+- Create a scheduled or manually dispatched GitHub data refresh workflow that requires `GITHUB_TOKEN`.
+- Publish a data freshness summary artifact or issue comment.
+- Keep deploys deterministic: site builds should use committed source plus generated caches from the workflow, not stale local files.
+
+Acceptance:
+
+- Stale metadata is visible before deployment.
+- Failed GitHub API refresh does not corrupt existing cache.
+
+### 7. Add stale asset and dead-code checks
+
+Evidence: tracked screenshots, `src/data/projects.ts`, `CHANGELOG.md`, L05-L07.
+
+Tracked screenshots include removed project names such as `GeneratorSpecs.jpg` and `RadAtlas.jpg`. This is harmless at runtime but weakens trust in the repo.
+
+Actions:
+
+- Add a script that compares `public/screenshots/*.jpg` to live app slugs.
+- Add an explicit archive folder or removal policy for stale visual assets.
+- Evaluate `knip`, ESLint, or a lightweight custom script for unused source modules and data fields.
+
+Acceptance:
+
+- Removed projects do not leave unreviewed public assets behind.
+- Stale assets are either intentionally archived or deleted.
+
+### 8. Modernize CI quality gates
+
+Evidence: `.github/workflows/deploy.yml`, `npm run check`, `npm audit`, GitHub Pages custom workflow docs E04, Dependabot docs E15.
+
+Actions:
+
+- Keep `npm run check` and `npm run build` as required deploy gates.
+- Add production audit reporting after remediation.
+- Add dependency update automation, at minimum Dependabot for npm and GitHub Actions.
+- Consider a weekly catalog audit that opens an issue when public GitHub state drifts.
+
+Acceptance:
+
+- Security and catalog drift are visible without manual local sessions.
+
+## Tier 2: Portfolio Experience and Storytelling
+
+### 9. Add proof-oriented project detail sections
+
+Evidence: `src/pages/projects/[slug].astro`, `src/data/projects.ts`, competitor patterns E20-E27.
+
+The site already renders project pages, README excerpts, release metadata, and related projects. The next trust step is structured proof: what problem was solved, what changed, what is verified, and what a user can try.
+
+Actions:
+
+- Add optional fields for "problem", "build evidence", "platform support", "install path", and "known limitations".
+- Prefer facts that can be sourced from README, releases, screenshots, or local repository docs.
+- Keep private/internal work sanitized.
+
+Acceptance:
+
+- High-value projects can tell a full story without overclaiming.
+
+### 10. Build a year-in-review and project timeline layer
+
+Evidence: `CHANGELOG.md`, `_releases.json`, GitHub release metadata, Simon Willison and fasterthanli.me timeline patterns E21, E23.
+
+Actions:
+
+- Generate a yearly page from releases, pushes, and changelog highlights.
+- Show "what shipped" without requiring manual narrative for every repo.
+- Add filters by platform, language, and category.
+
+Acceptance:
+
+- A visitor can understand current momentum and historical breadth without scanning 150+ entries.
+
+### 11. Create a public-safe `/til` or notes feed only if there is durable source content
+
+Evidence: old roadmap, Simon Willison TIL/tools pattern E21, Maggie Appleton garden/notes pattern E26.
+
+Actions:
+
+- Start only after choosing a content source and review policy.
+- Keep it separate from the repo catalog.
+- Include RSS if the section becomes active.
+
+Acceptance:
+
+- Notes are maintainable and public-safe.
+
+### 12. Add an archive or anti-portfolio section for retired public projects
+
+Evidence: `CHANGELOG.md`, removed project screenshots, existing roadmap, competitor digital-garden patterns E26.
+
+Actions:
+
+- Capture why projects were removed, renamed, privatized, or superseded.
+- Keep entries short and non-sensitive.
+- Link to public repos only when safe.
+
+Acceptance:
+
+- The portfolio explains evolution without resurrecting unsafe links.
+
+## Tier 3: Discovery, Search, and Performance
+
+### 13. Upgrade search beyond the current command palette dataset
+
+Evidence: `public/scripts/cmdk.js`, `Base.astro`, Pagefind docs E16, MiniSearch/Fuse/Lunr sources E17-E19.
+
+Actions:
+
+- Compare Pagefind, MiniSearch, and the existing custom command palette against static GitHub Pages constraints.
+- Include README excerpts and project detail pages in the index if size remains acceptable.
+- Keep keyboard search accessible and no-JS fallback links intact.
+
+Acceptance:
+
+- Search finds projects by name, description, language, category, and README keywords.
+
+### 14. Audit Core Web Vitals, bfcache, and service-worker update UX
+
+Evidence: `public/sw.js`, `public/scripts/main.js`, web.dev Core Web Vitals E28, bfcache E29, MDN service worker docs E30-E31.
+
+Actions:
+
+- Run Lighthouse/PageSpeed checks for homepage, catalog, and project pages.
+- Add a service-worker update toast if cached assets can go stale across deploys.
+- Test bfcache eligibility after view transitions or more client JavaScript changes.
+
+Acceptance:
+
+- The site has documented LCP, INP, CLS, and bfcache status for representative pages.
+
+### 15. Review image and OG generation pipeline
+
+Evidence: `src/pages/og/[slug].png.ts`, `public/screenshots`, `scripts/capture-screenshots.mjs`, Astro image docs E03.
+
+Actions:
+
+- Keep OG output PNG-compatible for social platforms.
+- Compress internal screenshots and thumbnails separately.
+- Evaluate Astro image tooling for static builds, but avoid a migration that makes GitHub Pages deploy brittle.
+
+Acceptance:
+
+- Visual assets are current, smaller, and traceable to active projects.
+
+## Tier 4: Longer-Term Data, Automation, and Integrations
+
+### 16. Add public portfolio feeds and machine-readable index files
+
+Evidence: existing RSS pages, `src/pages/releases.xml.ts`, search/source needs in this roadmap.
+
+Actions:
+
+- Add `projects.json`, `releases.json`, or category feeds generated from the same source data.
+- Include freshness timestamps and schema versioning.
+
+Acceptance:
+
+- External consumers and future tooling can use project data without scraping HTML.
+
+### 17. Evaluate local semantic indexing for project organization
+
+Evidence: README corpus in `_readmes.json`, project descriptions, dataset review.
+
+Actions:
+
+- Keep any model work offline/generated and committed only as derived metadata if useful.
+- Evaluate embeddings or classification for duplicate category detection, similar-project linking, and stronger search.
+- Do not add user tracking or hosted inference for a static portfolio.
+
+Acceptance:
+
+- Model usage improves maintainability or discovery without adding privacy or runtime complexity.
+
+## Rejected or Parked
+
+- Hosted backend search: parked unless static search cannot cover the catalog.
+- Analytics-heavy visitor tracking: rejected for now; the portfolio can improve with build-time and public GitHub evidence.
+- Listing private/internal repositories: rejected. Use sanitized capability narratives instead.
+- Automatic public/private visibility changes from this repo: rejected. GitHub visibility decisions happen outside this site and require explicit human action.
+
+## Source Index
+
+Local sources:
+
+- L01 `README.md`
+- L02 `CHANGELOG.md`
+- L03 `package.json`
+- L04 `package-lock.json`
+- L05 `ROADMAP.md` before replacement
+- L06 `CLAUDE.md` and `AGENTS.md` local ignored instruction files
+- L07 `src/data/projects.ts`
+- L08 `src/data/curated.ts`
+- L09 `src/data/derived.ts`
+- L10 `src/data/types.ts`
+- L11 `src/pages/projects/[slug].astro`
+- L12 `src/pages/og/[slug].png.ts`
+- L13 `public/scripts/main.js`
+- L14 `public/scripts/cmdk.js`
+- L15 `public/sw.js`
+- L16 `scripts/fetch-stars.mjs`
+- L17 `scripts/capture-screenshots.mjs`
+- L18 `.github/workflows/deploy.yml`
+- L19 ignored generated caches under `src/data/_*.json`
+
+Command evidence:
+
+- C01 `git log -10 --oneline --decorate`
+- C02 `npm run check`
+- C03 `npm audit --omit=dev --json`
+- C04 `npm outdated --json`
+- C05 `gh repo list SysAdminDoc --limit 300 --visibility public ...`
+- C06 `gh repo view SysAdminDoc/RadAtlas ...`
+- C07 secret-pattern scan with `rg`
+
+External sources:
+
+- E01 Astro content collections: https://docs.astro.build/en/guides/content-collections/
+- E02 Astro v6 upgrade guide: https://docs.astro.build/en/guides/upgrade-to/v6/
+- E03 Astro image docs: https://docs.astro.build/en/guides/images/
+- E04 GitHub Pages custom workflows: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+- E05 GitHub Dependabot alerts: https://docs.github.com/en/code-security/concepts/supply-chain-security/about-dependabot-alerts
+- E06 Astro view transitions: https://docs.astro.build/en/guides/view-transitions/
+- E07 Astro prefetch: https://docs.astro.build/en/guides/prefetch/
+- E08 Astro define:vars advisory: https://github.com/advisories/GHSA-j687-52p2-xcff
+- E09 Astro server islands advisory: https://github.com/advisories/GHSA-xr5h-phrj-8vxv
+- E10 devalue advisory: https://github.com/advisories/GHSA-77vg-94rm-hx3p
+- E11 marked advisory: https://github.com/advisories/GHSA-6v9c-7cg6-27q7
+- E12 postcss advisory: https://github.com/advisories/GHSA-qx2v-qp2m-jg93
+- E13 sanitize-html allowedTags advisory: https://github.com/advisories/GHSA-9mrh-v2v3-xpfm
+- E14 sanitize-html raw-text advisory: https://github.com/advisories/GHSA-rpr9-rxv7-x643
+- E15 Pagefind docs: https://pagefind.app/docs/
+- E16 MiniSearch: https://github.com/lucaong/minisearch
+- E17 Fuse.js: https://www.fusejs.io/
+- E18 Lunr.js: https://lunrjs.com/
+- E19 Lee Robinson: https://leerob.com/
+- E20 Simon Willison: https://simonwillison.net/
+- E21 Julia Evans: https://jvns.ca/
+- E22 fasterthanli.me: https://fasterthanli.me/
+- E23 Rauno Freiberg: https://rauno.me/
+- E24 Paco Coursey: https://paco.me/
+- E25 Maggie Appleton: https://maggieappleton.com/
+- E26 Brittany Chiang: https://brittanychiang.com/
+- E27 WCAG 2.2: https://www.w3.org/TR/WCAG22/
+- E28 Core Web Vitals: https://web.dev/articles/vitals
+- E29 bfcache: https://web.dev/articles/bfcache
+- E30 ServiceWorker `updatefound`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/updatefound_event
+- E31 ServiceWorker `skipWaiting`: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
