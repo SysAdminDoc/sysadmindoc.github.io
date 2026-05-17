@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.1 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.2 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -38,24 +38,27 @@ Acceptance:
 - [x] No high or critical production vulnerabilities remain in `npm audit --omit=dev`.
 - [x] README rendering still sanitizes remote README HTML and the project pages build under Astro 6.
 
-### [ ] 2. Reconcile the live GitHub catalog against `src/data/projects.ts`
+### [x] 2. Reconcile the live GitHub catalog against `src/data/projects.ts`
 
 Evidence: `src/data/projects.ts`, `src/data/_stats.json`, GitHub CLI public repo scan C03-C05, L07.
 
-The ignored cache reports 167 non-fork public repos and 204 stars from 2026-05-11. Live GitHub state on 2026-05-17 reported 178 active public repositories, 170 active public non-forks, 8 public forks, and 220 stars. The data file currently misses newly public active repos including `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`. `Scripts` and `ChanPrep` remain intentional exclusions per existing project memory. `RadAtlas` is public but removed from the portfolio and needs a privacy decision before promotion.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+The ignored cache reported 167 non-fork public repos and 204 stars from 2026-05-11. Live GitHub state on 2026-05-17 reported 178 active public repositories, 170 active public non-forks, and 8 public forks. The data file was missing newly public active repos including `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker`; those are now cataloged. `Scripts`, `ChanPrep`, `SysAdminDoc`, and `null` are documented intentional exclusions. `RadAtlas` is public but removed from the portfolio and remains held for privacy review before promotion.
 
 Actions:
 
-- Add a checked exception list for intentionally skipped public repos.
-- Add a catalog audit script that compares live GitHub repos to `projects.ts` and fails when unreviewed public repos appear.
-- Decide how public forks should be counted because the current stats script excludes forks while the catalog includes some public fork entries.
-- Refresh generated GitHub data with `GITHUB_TOKEN` so README caches, release metadata, and star counts are current.
+- [x] Add a checked exception list for intentionally skipped public repos.
+- [x] Add a catalog audit script that compares live GitHub repos to `projects.ts` and fails when unreviewed public repos appear.
+- [x] Decide how public forks should be counted because the current stats script excludes forks while the catalog includes some public fork entries.
+- [x] Add `OpenLumen`, `PhoneFork`, and `AI-Usage_Tracker` to the catalog.
+- [x] Refresh generated GitHub data with `GITHUB_TOKEN`.
 
 Acceptance:
 
-- `npm run catalog:audit` or equivalent reports no unreviewed public repos.
-- README/site count language matches generated data.
-- Fork inclusion policy is explicit in `PROJECT_CONTEXT.md`.
+- [x] `npm run catalog:audit` reports no unreviewed public repos.
+- [x] README/site count language matches catalog data.
+- [x] Fork inclusion policy is explicit in `PROJECT_CONTEXT.md` and `src/data/catalog-policy.json`.
 
 ### [ ] 3. Resolve the medical-imaging public boundary
 

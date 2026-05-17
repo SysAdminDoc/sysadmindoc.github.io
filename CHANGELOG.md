@@ -2,6 +2,21 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.2] - 2026-05-17
+
+**Security remediation, catalog drift audit, and three new public repos.**
+
+Security and CI
+- Upgraded Astro to 6.3.3, `marked` to 18.0.3, and `sanitize-html` to 2.17.4.
+- Refreshed vulnerable transitive production dependencies: `devalue` 5.8.1 and `postcss` 8.5.14.
+- Added `npm run audit:prod` and wired it into the GitHub Pages deploy workflow.
+- Added `npm run catalog:audit` to compare active public GitHub repos against the portfolio data.
+
+Catalog
+- Added `OpenLumen` (Kotlin/Android), `PhoneFork` (C# desktop), and `AI-Usage_Tracker` (extension/userscript) to [src/data/projects.ts](src/data/projects.ts).
+- Added [src/data/catalog-policy.json](src/data/catalog-policy.json) to document intentional public-repo exclusions and the `RadAtlas` privacy-review hold.
+- Catalog count: 155 -> 158.
+
 ## [v0.16.1] - 2026-05-11
 
 **Drop TeamStation — repo went PRIVATE on GitHub.**

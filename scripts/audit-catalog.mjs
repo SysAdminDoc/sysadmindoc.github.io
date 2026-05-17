@@ -1,0 +1,136 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import ts from 'typescript';
+
+const root = process.cwd();
+const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
+const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
+
+function propertyName(name) {
+  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
+  return null;
+}
+
+function stringProperty(objectLiteral, key) {
+  for (const property of objectLiteral.properties) {
+    if (!ts.isPropertyAssignment(property)) continue;
+    if (propertyName(property.name) !== key) continue;
+    const value = property.initializer;
+    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
+  }
+  return null;
+}
+
+function collectPortfolioRepos(sourceText) {
+  const source = ts.createSourceFile(projectsPath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const targetArrays = new Set(['featured', 'liveApps', 'catalog']);
+  const refs = new Map();
+
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name)) continue;
+      const section = declaration.name.text;
+      if (!targetArrays.has(section)) continue;
+      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) continue;
+
+      for (const element of declaration.initializer.elements) {
+        if (!ts.isObjectLiteralExpression(element)) continue;
+        const repo = stringProperty(element, section === 'liveApps' ? 'slug' : 'repo');
+        if (!repo) continue;
+        const existing = refs.get(repo) ?? [];
+        existing.push(section);
+        refs.set(repo, existing);
+      }
+    }
+  }
+
+  return refs;
+}
+
+async function fetchPublicRepos(owner, token) {
+  const repos = [];
+  const headers = {
+    accept: 'application/vnd.github+json',
+    'user-agent': 'sysadmindoc-portfolio-catalog-audit',
+  };
+  if (token) headers.authorization = `Bearer ${token}`;
+
+  for (let page = 1; page < 20; page += 1) {
+    const url = `https://api.github.com/users/${encodeURIComponent(owner)}/repos?per_page=100&page=${page}&type=owner&sort=updated`;
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`GitHub API returned ${response.status} for ${url}: ${body.slice(0, 300)}`);
+    }
+    const batch = await response.json();
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    repos.push(...batch);
+    if (batch.length < 100) break;
+  }
+
+  return repos;
+}
+
+function exceptionMap(entries = []) {
+  return new Map(entries.map((entry) => [entry.repo, entry.reason ?? 'Reviewed exception']));
+}
+
+function formatList(items, mapper = (item) => item) {
+  return items.length === 0 ? '  none' : items.map((item) => `  - ${mapper(item)}`).join('\n');
+}
+
+const sourceText = await fs.readFile(projectsPath, 'utf8');
+const policy = JSON.parse(await fs.readFile(policyPath, 'utf8'));
+const portfolioRefs = collectPortfolioRepos(sourceText);
+const skipped = exceptionMap(policy.intentionallySkippedPublicRepos);
+const privacyReview = exceptionMap(policy.privacyReviewRequired);
+const reviewedExceptions = new Map([...skipped, ...privacyReview]);
+const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+
+const repos = await fetchPublicRepos(policy.owner, token);
+const activePublic = repos.filter((repo) => !repo.private && !repo.archived);
+const activePublicNonFork = activePublic.filter((repo) => !repo.fork);
+const auditScope = policy.includeForksInMissingAudit ? activePublic : activePublicNonFork;
+const activeNames = new Set(activePublic.map((repo) => repo.name));
+
+const missing = auditScope
+  .filter((repo) => !portfolioRefs.has(repo.name))
+  .filter((repo) => !reviewedExceptions.has(repo.name))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const stale = [...portfolioRefs.keys()]
+  .filter((repo) => !activeNames.has(repo))
+  .filter((repo) => !reviewedExceptions.has(repo))
+  .sort((a, b) => a.localeCompare(b));
+
+const reviewedMissing = auditScope
+  .filter((repo) => !portfolioRefs.has(repo.name))
+  .filter((repo) => reviewedExceptions.has(repo.name))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+console.log('Catalog audit');
+console.log(`  owner: ${policy.owner}`);
+console.log(`  active public repos: ${activePublic.length}`);
+console.log(`  active public non-forks: ${activePublicNonFork.length}`);
+console.log(`  portfolio repo refs: ${portfolioRefs.size}`);
+console.log(`  missing audit scope: ${policy.includeForksInMissingAudit ? 'active public repos including forks' : 'active public non-forks'}`);
+console.log('');
+console.log('Reviewed public repos not cataloged:');
+console.log(formatList(reviewedMissing, (repo) => `${repo.name} - ${reviewedExceptions.get(repo.name)}`));
+console.log('');
+
+if (missing.length > 0 || stale.length > 0) {
+  if (missing.length > 0) {
+    console.error('Unreviewed active public repos missing from portfolio data:');
+    console.error(formatList(missing, (repo) => `${repo.name} (${repo.html_url})`));
+  }
+  if (stale.length > 0) {
+    console.error('Portfolio repo refs not found as active public repositories:');
+    console.error(formatList(stale));
+  }
+  process.exitCode = 1;
+} else {
+  console.log('Catalog audit passed: no unreviewed active public repo drift found.');
+}
