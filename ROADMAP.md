@@ -16,26 +16,29 @@ This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plu
 
 ## Tier 0: Correctness, Security, and Trust
 
-### 1. Fix production dependency advisories
+### [x] 1. Fix production dependency advisories
 
 Evidence: `package.json`, `package-lock.json`, `npm audit --omit=dev --json`, E08-E14.
 
-`npm audit --omit=dev` currently reports five production advisory buckets, including critical `sanitize-html`, high `marked`, moderate Astro, high `devalue`, and moderate `postcss` exposure through the current dependency graph.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+`npm audit --omit=dev` previously reported five production advisory buckets, including critical `sanitize-html`, high `marked`, moderate Astro, high `devalue`, and moderate `postcss` exposure through the dependency graph. The production audit is now clean after upgrading Astro, `marked`, `sanitize-html`, and the affected transitive lockfile versions. Full audit still reports dev-only moderate findings in the `@astrojs/check` language-server chain, so the CI gate is intentionally scoped to production high/critical advisories.
 
 Actions:
 
-- Upgrade `sanitize-html` from 2.17.2 to at least 2.17.4.
-- Upgrade `marked` from 18.0.0 to at least 18.0.2; latest wanted at research time was 18.0.3.
-- Evaluate the Astro 6 migration path because `npm audit` currently routes Astro advisory remediation through `astro@6.3.3`.
-- Re-run `npm audit --omit=dev`, `npm run check`, and `npm run build`.
-- Add an advisory gate to CI for high/critical production vulnerabilities after the first remediation pass, with a documented exception process for transitive false positives.
+- [x] Upgrade `sanitize-html` from 2.17.2 to 2.17.4.
+- [x] Upgrade `marked` from 18.0.0 to 18.0.3.
+- [x] Upgrade Astro from 5.18.1 to 6.3.3 and verify the static build.
+- [x] Resolve transitive `devalue` and `postcss` production advisories in the lockfile.
+- [x] Re-run `npm audit --omit=dev`, `npm run check`, and `npm run build`.
+- [x] Add an advisory gate to CI for high/critical production vulnerabilities.
 
 Acceptance:
 
-- No high or critical production vulnerabilities remain, or each remaining item has a dated documented exception.
-- README rendering still sanitizes remote README HTML correctly after upgrades.
+- [x] No high or critical production vulnerabilities remain in `npm audit --omit=dev`.
+- [x] README rendering still sanitizes remote README HTML and the project pages build under Astro 6.
 
-### 2. Reconcile the live GitHub catalog against `src/data/projects.ts`
+### [ ] 2. Reconcile the live GitHub catalog against `src/data/projects.ts`
 
 Evidence: `src/data/projects.ts`, `src/data/_stats.json`, GitHub CLI public repo scan C03-C05, L07.
 
@@ -54,7 +57,7 @@ Acceptance:
 - README/site count language matches generated data.
 - Fork inclusion policy is explicit in `PROJECT_CONTEXT.md`.
 
-### 3. Resolve the medical-imaging public boundary
+### [ ] 3. Resolve the medical-imaging public boundary
 
 Evidence: GitHub CLI scan C04, local privacy rule inventory in `MEMORY_CONSOLIDATION.md`, L07.
 
@@ -72,7 +75,7 @@ Acceptance:
 - The visibility decision is documented.
 - The portfolio does not link to unsafe or unintended public medical-imaging work.
 
-### 4. Make project memory canonical
+### [x] 4. Make project memory canonical
 
 Evidence: `AGENTS.md`, `CLAUDE.md`, ignored project memory, `PROJECT_CONTEXT.md`, `.ai/research/2026-05-17/MEMORY_CONSOLIDATION.md`.
 
@@ -86,11 +89,11 @@ Actions:
 
 Acceptance:
 
-- Future sessions can start from `PROJECT_CONTEXT.md` and current Git state without relying on ignored local files.
+- [x] Future sessions can start from `PROJECT_CONTEXT.md` and current Git state without relying on ignored local files.
 
 ## Tier 1: Data Model and Build Reliability
 
-### 5. Move project data behind a schema-checked content layer
+### [ ] 5. Move project data behind a schema-checked content layer
 
 Evidence: `src/data/projects.ts`, `src/data/types.ts`, Astro content collections docs E01.
 
@@ -107,7 +110,7 @@ Acceptance:
 - Invalid catalog entries fail at check/build time.
 - Exceptions such as intentionally skipped public repos are explicit.
 
-### 6. Split generated data refresh from deployment
+### [ ] 6. Split generated data refresh from deployment
 
 Evidence: `scripts/fetch-stars.mjs`, `.github/workflows/deploy.yml`, README deployment docs, L06-L08.
 
@@ -124,7 +127,7 @@ Acceptance:
 - Stale metadata is visible before deployment.
 - Failed GitHub API refresh does not corrupt existing cache.
 
-### 7. Add stale asset and dead-code checks
+### [ ] 7. Add stale asset and dead-code checks
 
 Evidence: tracked screenshots, `src/data/projects.ts`, `CHANGELOG.md`, L05-L07.
 
@@ -141,7 +144,7 @@ Acceptance:
 - Removed projects do not leave unreviewed public assets behind.
 - Stale assets are either intentionally archived or deleted.
 
-### 8. Modernize CI quality gates
+### [ ] 8. Modernize CI quality gates
 
 Evidence: `.github/workflows/deploy.yml`, `npm run check`, `npm audit`, GitHub Pages custom workflow docs E04, Dependabot docs E15.
 
@@ -158,7 +161,7 @@ Acceptance:
 
 ## Tier 2: Portfolio Experience and Storytelling
 
-### 9. Add proof-oriented project detail sections
+### [ ] 9. Add proof-oriented project detail sections
 
 Evidence: `src/pages/projects/[slug].astro`, `src/data/projects.ts`, competitor patterns E20-E27.
 
@@ -174,7 +177,7 @@ Acceptance:
 
 - High-value projects can tell a full story without overclaiming.
 
-### 10. Build a year-in-review and project timeline layer
+### [ ] 10. Build a year-in-review and project timeline layer
 
 Evidence: `CHANGELOG.md`, `_releases.json`, GitHub release metadata, Simon Willison and fasterthanli.me timeline patterns E21, E23.
 
@@ -188,7 +191,7 @@ Acceptance:
 
 - A visitor can understand current momentum and historical breadth without scanning 150+ entries.
 
-### 11. Create a public-safe `/til` or notes feed only if there is durable source content
+### [ ] 11. Create a public-safe `/til` or notes feed only if there is durable source content
 
 Evidence: old roadmap, Simon Willison TIL/tools pattern E21, Maggie Appleton garden/notes pattern E26.
 
@@ -202,7 +205,7 @@ Acceptance:
 
 - Notes are maintainable and public-safe.
 
-### 12. Add an archive or anti-portfolio section for retired public projects
+### [ ] 12. Add an archive or anti-portfolio section for retired public projects
 
 Evidence: `CHANGELOG.md`, removed project screenshots, existing roadmap, competitor digital-garden patterns E26.
 
@@ -218,7 +221,7 @@ Acceptance:
 
 ## Tier 3: Discovery, Search, and Performance
 
-### 13. Upgrade search beyond the current command palette dataset
+### [ ] 13. Upgrade search beyond the current command palette dataset
 
 Evidence: `public/scripts/cmdk.js`, `Base.astro`, Pagefind docs E16, MiniSearch/Fuse/Lunr sources E17-E19.
 
@@ -232,7 +235,7 @@ Acceptance:
 
 - Search finds projects by name, description, language, category, and README keywords.
 
-### 14. Audit Core Web Vitals, bfcache, and service-worker update UX
+### [ ] 14. Audit Core Web Vitals, bfcache, and service-worker update UX
 
 Evidence: `public/sw.js`, `public/scripts/main.js`, web.dev Core Web Vitals E28, bfcache E29, MDN service worker docs E30-E31.
 
@@ -246,7 +249,7 @@ Acceptance:
 
 - The site has documented LCP, INP, CLS, and bfcache status for representative pages.
 
-### 15. Review image and OG generation pipeline
+### [ ] 15. Review image and OG generation pipeline
 
 Evidence: `src/pages/og/[slug].png.ts`, `public/screenshots`, `scripts/capture-screenshots.mjs`, Astro image docs E03.
 
@@ -262,7 +265,7 @@ Acceptance:
 
 ## Tier 4: Longer-Term Data, Automation, and Integrations
 
-### 16. Add public portfolio feeds and machine-readable index files
+### [ ] 16. Add public portfolio feeds and machine-readable index files
 
 Evidence: existing RSS pages, `src/pages/releases.xml.ts`, search/source needs in this roadmap.
 
@@ -275,7 +278,7 @@ Acceptance:
 
 - External consumers and future tooling can use project data without scraping HTML.
 
-### 17. Evaluate local semantic indexing for project organization
+### [ ] 17. Evaluate local semantic indexing for project organization
 
 Evidence: README corpus in `_readmes.json`, project descriptions, dataset review.
 
