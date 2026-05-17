@@ -3,7 +3,7 @@
 Last consolidated: 2026-05-17
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.5
+Current tracked version: v0.16.6
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -26,6 +26,8 @@ The site must remain public-safe. It should not expose private repository names,
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
+- Dependabot is configured for weekly npm and GitHub Actions dependency updates.
+- A weekly/manual quality-gates workflow reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue when either gate fails.
 
 ## Key Commands
 
@@ -124,8 +126,8 @@ Canonical roadmap: `ROADMAP.md`.
 
 Highest-priority work after this research pass:
 
-1. Modernize CI quality gates.
-2. Add proof-oriented project detail sections.
+1. Add proof-oriented project detail sections.
+2. Build a year-in-review and project timeline layer.
 
 ## Definition of Done for Future Changes
 
@@ -145,3 +147,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped schema-checked project data. Added `npm run data:validate`, shared category labels, live-app screenshot coverage enforcement, command-palette coverage checks, and missing screenshots for `HurricaneMap` and `ApocalypseWatch`.
 - 2026-05-17: Shipped split generated-data refresh reporting. Added `npm run data:summary`, a scheduled/manual `data-refresh.yml` workflow, deploy-time summary artifacts, and local ignored summary output folders.
 - 2026-05-17: Shipped stale asset and reference auditing. Added `npm run assets:audit`, screenshot drift detection, public script/component/data-module reference checks, and `archive/screenshots/` policy documentation.
+- 2026-05-17: Shipped modernized CI quality gates. Added Dependabot for npm/GitHub Actions and a weekly/manual quality-gates workflow that reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue on failures.
