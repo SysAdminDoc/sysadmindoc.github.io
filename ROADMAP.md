@@ -1,7 +1,7 @@
 # Portfolio Roadmap
 
 Research refresh: 2026-05-17
-Current repo version: v0.16.2 (`package.json`, `README.md`, `CHANGELOG.md`)
+Current repo version: v0.16.3 (`package.json`, `README.md`, `CHANGELOG.md`)
 Current branch baseline: `main` at `7817ea7` before this research pass
 
 This roadmap is evidence-backed and should be read with `PROJECT_CONTEXT.md` plus `.ai/research/2026-05-17/`. It replaces the older v0.7-v0.9 era roadmap, which no longer matched the current project state.
@@ -98,22 +98,24 @@ Acceptance:
 
 ## Tier 1: Data Model and Build Reliability
 
-### [ ] 5. Move project data behind a schema-checked content layer
+### [x] 5. Move project data behind a schema-checked content layer
 
 Evidence: `src/data/projects.ts`, `src/data/types.ts`, Astro content collections docs E01.
 
-The current TypeScript arrays are direct and simple, but catalog size and privacy constraints now justify stronger validation.
+Status: shipped 2026-05-17; see the Git history for the implementation commit.
+
+The current TypeScript arrays are direct and simple, but catalog size and privacy constraints now justify stronger validation. The shipped path keeps the lightweight `projects.ts` source model and adds a schema-checked data gate instead of migrating to Astro content collections immediately. That preserves the current editing workflow while making invalid records fail before Astro check/build.
 
 Actions:
 
-- Evaluate Astro content collections or a schema-checked data loader for project records.
-- Validate unique slugs, required descriptions, category/language enums, URL shape, screenshot existence for live apps, and public/private policy flags.
-- Add tests for derived counts and command palette data.
+- [x] Evaluate Astro content collections or a schema-checked data loader for project records.
+- [x] Validate unique slugs, required descriptions, category/language enums, URL shape, screenshot existence for live apps, and public/private policy flags.
+- [x] Add tests for derived counts and command palette data.
 
 Acceptance:
 
-- Invalid catalog entries fail at check/build time.
-- Exceptions such as intentionally skipped public repos are explicit.
+- [x] Invalid catalog entries fail at check/build time.
+- [x] Exceptions such as intentionally skipped public repos are explicit.
 
 ### [ ] 6. Split generated data refresh from deployment
 
