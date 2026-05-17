@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.16.4] - 2026-05-17
+
+**Split generated GitHub data refresh from deployment.**
+
+- Added [scripts/summarize-generated-data.mjs](scripts/summarize-generated-data.mjs) and `npm run data:summary` to report generated metadata freshness and integrity.
+- Added [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml) for scheduled/manual GitHub metadata refresh without deploying.
+- Removed the daily schedule trigger from the deploy workflow; pushes and manual dispatches still refresh generated data before building.
+- Deploy and data-refresh workflows now require `GITHUB_TOKEN`, summarize generated metadata, publish the summary to the job summary, and upload `github-data-refresh-summary`.
+- Ignored local summary output folders with `.tmp/` and `data-refresh-summary/`.
+
 ## [v0.16.3] - 2026-05-17
 
 **Schema-check the project data layer.**
