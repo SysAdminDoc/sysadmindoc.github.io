@@ -16,19 +16,45 @@ import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import ts from 'typescript';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const projectsSrc = readFileSync(join(root, 'src', 'data', 'projects.ts'), 'utf8');
-const liveBlock = projectsSrc.match(/export\s+const\s+liveApps(?:\s*:\s*LiveApp\[\])?\s*=\s*\[([\s\S]*?)\n\];/);
+const projectsPath = join(root, 'src', 'data', 'projects.ts');
 
-if (!liveBlock) {
-  console.error('Could not parse liveApps from src/data/projects.ts');
-  process.exit(1);
+function stringProperty(objectLiteral, key) {
+  for (const property of objectLiteral.properties) {
+    if (!ts.isPropertyAssignment(property)) continue;
+    const name = property.name;
+    if (!(ts.isIdentifier(name) || ts.isStringLiteral(name)) || name.text !== key) continue;
+    const value = property.initializer;
+    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
+  }
+  return null;
 }
 
-const entries = [...liveBlock[1].matchAll(/\{\s*slug:\s*"([^"]+)"[\s\S]*?\burl:\s*"([^"]+)"/g)]
-  .map((match) => ({ slug: match[1], url: match[2] }))
-  .filter((entry) => entry.slug && /^https?:\/\//.test(entry.url));
+function collectLiveEntries() {
+  const sourceText = readFileSync(projectsPath, 'utf8');
+  const source = ts.createSourceFile(projectsPath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const results = [];
+
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== 'liveApps') continue;
+      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) continue;
+      for (const element of declaration.initializer.elements) {
+        if (!ts.isObjectLiteralExpression(element)) continue;
+        const slug = stringProperty(element, 'slug');
+        const url = stringProperty(element, 'url');
+        if (slug && url) results.push({ slug, url });
+      }
+    }
+  }
+
+  return results;
+}
+
+const entries = collectLiveEntries().filter((entry) => /^https?:\/\//.test(entry.url));
 
 if (entries.length === 0) {
   console.error('No live app entries were parsed from src/data/projects.ts');
