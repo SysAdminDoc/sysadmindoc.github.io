@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -35,6 +35,8 @@ jobs:
         run: npm run data:validate
       - name: Audit assets and source references
         run: npm run assets:audit
+      - name: Audit image pipeline
+        run: npm run images:audit
       - name: Require GitHub token
         run: node -e "if (!process.env.GITHUB_TOKEN) { console.error('GITHUB_TOKEN is required for generated data refresh.'); process.exit(1); }"
       - name: Fetch GitHub star counts
@@ -49,10 +51,10 @@ jobs:
           name: github-data-refresh-summary
           path: data-refresh-summary/
           if-no-files-found: error
-      - name: Run Astro checks
-        run: npm run check
+      - name: Run Astro type checks
+        run: npx astro check
       - name: Build Astro site
-        run: npm run build
+        run: npm run build:ci
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

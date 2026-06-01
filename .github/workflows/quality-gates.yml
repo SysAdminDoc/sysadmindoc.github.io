@@ -47,6 +47,16 @@ jobs:
           cat catalog-audit.log
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Run semantic index audit (advisory)
+        id: semantic_audit
+        shell: bash
+        run: |
+          set +e
+          npm run semantic:audit > semantic-audit.log 2>&1
+          code=$?
+          cat semantic-audit.log
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Run local quality checks
         id: local_checks
         shell: bash
@@ -74,6 +84,7 @@ jobs:
           path: |
             prod-audit.log
             catalog-audit.log
+            semantic-audit.log
             data-validate.log
             assets-audit.log
             astro-check.log
