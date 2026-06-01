@@ -1,10 +1,14 @@
 # Portfolio Roadmap
 
 Last updated: 2026-06-01
-Current version: v0.16.15
-Previous roadmap (2026-05-17, 17 items) fully completed -- see [COMPLETED.md](COMPLETED.md).
+Current version: v0.17.0
 
-This roadmap consolidates all active work from the 2026-06-01 deep research pass. Prior completed items and stale references are archived in COMPLETED.md. Research evidence and methodology are in [RESEARCH_REPORT.md](RESEARCH_REPORT.md). Archived 2026-05-17 research artifacts are in [docs/archive/research-2026-05-17/](docs/archive/research-2026-05-17/).
+## Status: 38 of 42 items shipped
+
+The 2026-06-01 research pass produced 42 items. 38 have been implemented across 7 commits. 4 remain (R33, R38, R40, and the mobile LCP follow-up). See [COMPLETED.md](COMPLETED.md) for the prior 17-item roadmap. Research evidence in [RESEARCH_REPORT.md](RESEARCH_REPORT.md).
+
+### Shipped this pass
+R1 (InteriorNav anchor), R2 (/now update), R3 (stats refresh), R4 (OG cpp), R5 (sanitize-html data: URI), R6 (CSP), R7 (extracted.json cleanup), R8 (dead particle canvas), R9 (dead CSS selectors), R10 (dead generate-data.mjs), R11 (legacy.html archive), R12 (avatar bake), R13 (YouTube nocookie), R14 (SW cache version), R15 (SW JS precache), R16 (shared TS-AST helpers), R17 (shared client JS utils), R18 (data-refresh docs), R19 (screenshots TS AST), R20 (quality-gates fix), R21 (concurrency docs), R22 (validation parallelization — skipped, not worth complexity), R23 (mobile nav focus trap), R24 (heading hierarchy), R25 (--t3 contrast), R26 (aria-pressed), R27 (journey card links), R28 (footer nav), R29 (404 page), R30 (View Transitions), R31 (JSON-LD), R32 (case studies), R34 (/uses page), R35 (/resume page), R36 (RSS expansion), R37 (download counts), R39 (zero-star suppress), R41 (native dialog), R42 (self-host fonts)
 
 ## Operating Principles
 
