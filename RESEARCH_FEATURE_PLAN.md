@@ -1,5 +1,7 @@
 # Project Research and Feature Plan
 
+> ⚠ **Open work is now tracked in [TODO.md](TODO.md) (single source of truth).** This file is retained as the **evidence/rationale archive** for the net-new opportunities — full detail keyed by `NF-…` IDs lives here.
+
 > **Companion to [ROADMAP.md](ROADMAP.md), not a replacement.** The existing v0.18.0 roadmap (77 items: SEO, perf, security, a11y, nav, CI, competitive UX) is the tactical backlog. This document does three things that re-reading that roadmap cannot: **(1)** verifies which roadmap items are now stale/shipped after the 4 post-research "premium polish" commits, **(2)** surfaces **net-new** strategic/product/architecture opportunities the tactical audit missed, and **(3)** grounds both in competitive + standards research. Items already in ROADMAP.md are referenced, never re-litigated.
 >
 > Research date: 2026-06-01 · Repo: SysAdminDoc/sysadmindoc.github.io · Version: v0.17.0 (package.json) · Astro **6.3.3**
