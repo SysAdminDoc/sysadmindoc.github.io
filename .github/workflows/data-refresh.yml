@@ -6,6 +6,13 @@ on:
     # Verify GitHub API access and data freshness daily at 07:00 UTC.
     # Generated files are gitignored — this is a health check, not a commit-back.
     # Actual data refresh happens at deploy time via the deploy workflow.
+    #
+    # Rationale for running the FULL fetch-stars rather than a lightweight probe:
+    # it exercises the exact production data path (pagination, events, releases,
+    # README fetch + schema shape) so an API change, rate-limit regression, or a
+    # parser break surfaces here a day before it can fail a real deploy. The
+    # --fail-on-stale summary gate then catches stale caches. The refreshed data
+    # is intentionally discarded (gitignored).
     - cron: '0 7 * * *'
 
 permissions:
