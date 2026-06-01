@@ -1,0 +1,195 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import { skills } from '../data/projects';
+
+const careerRoles = [
+  {
+    role: 'Senior Technical Support Manager',
+    company: 'Maven Imaging',
+    location: 'Sarasota, FL',
+    period: 'Feb 2021 — Present',
+    tag: 'Current',
+    summary: 'Tier II escalation lead for PACS, DR panels, and cloud migrations. Architected 10+ PACS migrations (including a 1M+ file Candelis legacy transfer when vendor tooling failed), drove a 54-account cross-vendor cloud restoration, and support clinics across the Caribbean, East Africa, and East Asia.',
+    highlights: [
+      'Led 10+ PACS migrations — single largest moved 1M+ files after writing a custom C-Store sender to bypass broken vendor tooling',
+      'Restored 54 customer cloud accounts during a cross-vendor PatientImage / RADinfo transition',
+      'Diagnosed and fixed a fleet-wide Windows 11 random-MAC licensing bug; set the shipping-PC standard to prevent recurrence',
+      'Built production tooling adopted company-wide: DICOM PACS Migrator, WiFi Tool, acquisition-PC network scanner',
+      'Produces the Maven Imaging YouTube tutorial library and trains a major OEM\'s field engineers',
+    ],
+    stack: ['DICOM C-Store', 'Candelis ImageGrid', 'Voyance / VoyanceX', 'Patient Image Cloud', 'VXvue', 'Rayence DR', 'Hyper-V', 'UniFi VPN', 'Freshdesk'],
+  },
+  {
+    role: 'Systems Administrator',
+    company: 'ThinkTV (PBS Affiliate)',
+    location: 'Dayton, OH',
+    period: 'Apr 2014 — Feb 2025',
+    summary: 'Administered the full network and server stack for a regional PBS station serving Dayton and Cincinnati — physical and virtual Windows Servers, Cisco networking, SCCM, and the broadcast-automation infrastructure that had to stay on-air 24/7.',
+    highlights: [
+      'Led Hyper-V virtualization initiative, consolidating physical hardware',
+      'Implemented SCCM from scratch to manage 100+ Win7/10 workstations',
+      'Deployed Cisco ISR 4300, ASA firewalls, and Catalyst 2960/3560/SG300 switches',
+      'Maintained Grass Valley K2 video servers + Harmonic encoders on the broadcast side',
+    ],
+    stack: ['Windows Server 2008–2016', 'Active Directory & GPO', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP'],
+  },
+  {
+    role: 'IT Support Technician',
+    company: 'Dayton Technology Group (MSP)',
+    location: 'Dayton, OH',
+    period: 'Jun 2010 — Apr 2014',
+    summary: 'Managed day-to-day operations across multiple MSP client environments — Active Directory, Group Policy, DNS/DHCP, legacy server decommissioning, and 24/7/365 network monitoring.',
+    highlights: [
+      'Migrated file servers + legacy apps off Windows Server 2003 R2 to 2012 R2',
+      'Built network/system documentation — topology diagrams and runbooks',
+      'Onboarded new users and trained them on workflows, software, and phone systems',
+    ],
+    stack: ['Windows Server 2003–2012 R2', 'Active Directory', 'Group Policy', 'Avaya IP Office', 'Endpoint security'],
+  },
+] as const;
+
+const cmdkSections = [
+  { label: 'Overview', href: '#resume-header', desc: 'Name, title, location, and core skills.', badge: 'RESUME' },
+  { label: 'Experience', href: '#resume-experience', desc: 'Career history with highlights and technology stacks.', badge: `${careerRoles.length} ROLES` },
+];
+---
+<Base title="Resume - Matt Parker" description="Printable resume for Matt Parker — 15+ years in enterprise IT, six years in medical imaging, plus open-source development." cmdkSections={cmdkSections}>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav contextLabel="Resume" contextTone="blue" />
+
+  <main id="main" class="resume-page">
+    <div class="si resume-shell">
+      <section class="resume-header" id="resume-header">
+        <div class="resume-name-block">
+          <h1>Matt Parker</h1>
+          <p class="resume-title-line">Senior Technical Support Manager</p>
+          <p class="resume-location">Sarasota, FL</p>
+        </div>
+        <div class="resume-actions no-print">
+          <button type="button" class="btn bp" id="resumePrint" aria-label="Print this page">Print / Save PDF</button>
+          <a href="/" class="btn bg2">Back to portfolio</a>
+        </div>
+      </section>
+
+      <section class="resume-section" aria-labelledby="resume-skills-title">
+        <h2 id="resume-skills-title">Skills</h2>
+        <div class="resume-skills">
+          {skills.map((skill) => (
+            <span class="resume-skill">{skill.name}<small>{skill.sub}</small></span>
+          ))}
+        </div>
+      </section>
+
+      <section class="resume-section" id="resume-experience" aria-labelledby="resume-experience-title">
+        <h2 id="resume-experience-title">Experience</h2>
+        <div class="resume-roles">
+          {careerRoles.map((role) => (
+            <article class="resume-role">
+              <div class="resume-role-header">
+                <div>
+                  <h3>{role.role}</h3>
+                  <p class="resume-company">{role.company} — {role.location}</p>
+                </div>
+                <span class="resume-period">{role.period}</span>
+              </div>
+              <p class="resume-summary">{role.summary}</p>
+              <ul class="resume-highlights">
+                {role.highlights.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              <div class="resume-stack">
+                {role.stack.map((tech) => (
+                  <span>{tech}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="resume-section" aria-labelledby="resume-links-title">
+        <h2 id="resume-links-title">Links</h2>
+        <div class="resume-link-list">
+          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">github.com/SysAdminDoc</a>
+          <a href="https://sysadmindoc.github.io" target="_blank" rel="noopener">sysadmindoc.github.io</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="no-print">
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">Back to portfolio</a></div>
+        <p class="footer-summary">Use the print button or Ctrl/Cmd+P to save a clean PDF copy of this page.</p>
+      </div>
+      <div class="fl"><a href="/#catalog">Catalog</a><a href="/now/">Now</a></div>
+    </div>
+  </footer>
+
+  <script is:inline>
+    document.getElementById('resumePrint').addEventListener('click', function () {
+      window.print();
+    });
+  </script>
+</Base>
+
+<style is:global>
+  .resume-page{min-height:calc(100vh - 200px)}
+  .resume-shell{max-width:860px;margin:0 auto;display:grid;gap:38px}
+  .resume-header{display:flex;align-items:start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .resume-name-block h1{font-size:clamp(34px,4.8vw,48px);line-height:1.1;margin:0}
+  .resume-title-line{font-size:18px;color:var(--t2);margin:6px 0 0}
+  .resume-location{font-size:14px;color:var(--t3);margin:4px 0 0;font-family:var(--mono)}
+  .resume-actions{display:flex;gap:10px;flex-shrink:0}
+  .resume-section h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--grn);margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-soft)}
+  .resume-skills{display:flex;flex-wrap:wrap;gap:8px}
+  .resume-skill{display:inline-flex;align-items:baseline;gap:6px;padding:6px 10px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-1);font-size:14px;font-weight:600;color:var(--t1)}
+  .resume-skill small{font-weight:400;font-size:12px;color:var(--t3)}
+  .resume-roles{display:grid;gap:28px}
+  .resume-role{padding:24px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .resume-role-header{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .resume-role h3{font-size:20px;line-height:1.3;margin:0}
+  .resume-company{font-size:15px;color:var(--t2);margin:4px 0 0}
+  .resume-period{font-family:var(--mono);font-size:12px;color:var(--t3);white-space:nowrap;flex-shrink:0;padding-top:4px}
+  .resume-summary{font-size:15px;color:var(--t2);line-height:1.65;margin:14px 0 0}
+  .resume-highlights{margin:14px 0 0;padding-left:18px;display:grid;gap:6px}
+  .resume-highlights li{font-size:14px;color:var(--t2);line-height:1.6}
+  .resume-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft)}
+  .resume-stack span{font-family:var(--mono);font-size:11px;color:var(--t3);padding:4px 8px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.03)}
+  .resume-link-list{display:flex;gap:16px;flex-wrap:wrap}
+  .resume-link-list a{font-family:var(--mono);font-size:14px;color:var(--grn);text-decoration:none}
+  .resume-link-list a:hover{text-decoration:underline}
+
+  @media(max-width:640px){
+    .resume-header{flex-direction:column}
+    .resume-role-header{flex-direction:column}
+    .resume-role{padding:20px}
+    .resume-name-block h1{font-size:clamp(28px,8vw,36px)}
+  }
+
+  @media print{
+    :root{--t1:#111!important;--t2:#333!important;--t3:#666!important;--surface-1:#fff!important;--border-soft:#ddd!important;--grn:#111!important;--bg:#fff!important}
+    body{background:#fff!important;color:#111!important;font-size:11pt}
+    .no-print,#nav,.scroll-progress,footer,.skip-link,#cmdk,.theme-toggle,.nav-search,.mt,.ng{display:none!important}
+    .resume-page{min-height:auto;padding:0}
+    .resume-shell{max-width:100%;gap:18px;padding:0}
+    .resume-name-block h1{font-size:24pt;color:#111}
+    .resume-title-line{font-size:13pt;color:#333}
+    .resume-location{font-size:10pt;color:#666}
+    .resume-section h2{font-size:10pt;color:#111;border-bottom-color:#ddd}
+    .resume-skill{border-color:#ddd;background:#f9f9f9;font-size:10pt;padding:3px 6px}
+    .resume-skill small{font-size:8pt}
+    .resume-role{border-color:#ddd;background:#fff;box-shadow:none;padding:14px;page-break-inside:avoid}
+    .resume-role h3{font-size:13pt}
+    .resume-company{font-size:11pt}
+    .resume-period{font-size:9pt}
+    .resume-summary{font-size:10pt}
+    .resume-highlights li{font-size:10pt}
+    .resume-stack span{font-size:8pt;border-color:#ddd;background:#f5f5f5}
+    .resume-link-list a{color:#111;font-size:10pt}
+    a{color:#111!important;text-decoration:none!important}
+  }
+</style>

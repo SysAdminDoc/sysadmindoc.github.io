@@ -1,53 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import ts from 'typescript';
+import { collectPortfolioRepos } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
-
-function propertyName(name) {
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
-  return null;
-}
-
-function stringProperty(objectLiteral, key) {
-  for (const property of objectLiteral.properties) {
-    if (!ts.isPropertyAssignment(property)) continue;
-    if (propertyName(property.name) !== key) continue;
-    const value = property.initializer;
-    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
-  }
-  return null;
-}
-
-function collectPortfolioRepos(sourceText) {
-  const source = ts.createSourceFile(projectsPath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-  const targetArrays = new Set(['featured', 'liveApps', 'catalog']);
-  const refs = new Map();
-
-  for (const statement of source.statements) {
-    if (!ts.isVariableStatement(statement)) continue;
-    for (const declaration of statement.declarationList.declarations) {
-      if (!ts.isIdentifier(declaration.name)) continue;
-      const section = declaration.name.text;
-      if (!targetArrays.has(section)) continue;
-      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) continue;
-
-      for (const element of declaration.initializer.elements) {
-        if (!ts.isObjectLiteralExpression(element)) continue;
-        const repo = stringProperty(element, section === 'liveApps' ? 'slug' : 'repo');
-        if (!repo) continue;
-        const existing = refs.get(repo) ?? [];
-        existing.push(section);
-        refs.set(repo, existing);
-      }
-    }
-  }
-
-  return refs;
-}
 
 async function fetchPublicRepos(owner, token) {
   const repos = [];
@@ -92,7 +50,7 @@ async function exists(filePath) {
 
 const sourceText = await fs.readFile(projectsPath, 'utf8');
 const policy = JSON.parse(await fs.readFile(policyPath, 'utf8'));
-const portfolioRefs = collectPortfolioRepos(sourceText);
+const portfolioRefs = collectPortfolioRepos(projectsPath, sourceText);
 const skipped = exceptionMap(policy.intentionallySkippedPublicRepos);
 const privacyReview = exceptionMap(policy.privacyReviewRequired);
 const reviewedExceptions = new Map([...skipped, ...privacyReview]);

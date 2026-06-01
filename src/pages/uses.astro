@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { uses } from '../data/uses';
+
+const cmdkSections = [
+  { label: 'Overview', href: '#uses-overview', desc: 'What this page covers and why it exists.', badge: 'USES' },
+  { label: 'Setup', href: '#uses-setup', desc: 'Editor, terminal, AI tools, languages, frameworks, devops, hardware, and design.', badge: `${uses.length} CATEGORIES` },
+];
+---
+<Base title="Uses - Matt Parker" description="Development environment, tools, languages, frameworks, and design preferences behind the portfolio." cmdkSections={cmdkSections}>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav contextLabel="Uses" contextTone="blue" />
+
+  <main id="main" class="uses-page">
+    <div class="si page-shell" id="uses-overview">
+      <div class="sh rv">
+        <div class="sl">// Uses</div>
+        <h1 class="st uses-title">What I use to build</h1>
+        <p class="sd">
+          The development environment, tools, languages, and design conventions behind every project in the portfolio.
+          Inspired by <a href="https://uses.tech" target="_blank" rel="noopener" class="uses-link">uses.tech</a>.
+        </p>
+      </div>
+
+      <div class="uses-overview page-stat-grid rv">
+        <div class="page-stat">
+          <div class="page-stat-value">{uses.length}</div>
+          <div class="page-stat-label">Categories</div>
+          <div class="page-stat-copy">Editor, terminal, AI, languages, frameworks, devops, hardware, and design.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">{uses.reduce((sum, cat) => sum + cat.items.length, 0)}</div>
+          <div class="page-stat-label">Tools Listed</div>
+          <div class="page-stat-copy">The specific software, services, and conventions used day-to-day.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">Dark</div>
+          <div class="page-stat-label">Default Theme</div>
+          <div class="page-stat-copy">Every UI ships with a dark theme first. Catppuccin Mocha is the go-to palette.</div>
+        </div>
+      </div>
+
+      <SectionJumpNav items={cmdkSections} />
+    </div>
+
+    <section class="si uses-content" id="uses-setup" aria-labelledby="uses-setup-title">
+      <div class="uses-section-head">
+        <h2 id="uses-setup-title">Setup</h2>
+        <p>Everything listed here is actively used. Nothing is aspirational or dormant.</p>
+      </div>
+
+      <div class="uses-grid">
+        {uses.map((category) => (
+          <article class="uses-category">
+            <h3>{category.title}</h3>
+            <ul>
+              {category.items.map((item) => (
+                <li>
+                  <span class="uses-item-name">{item.name}</span>
+                  {item.note && <span class="uses-item-note">{item.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">Back to portfolio</a></div>
+        <p class="footer-summary">This page is a snapshot of the current working environment. Tools change as the portfolio evolves.</p>
+      </div>
+      <div class="fl"><a href="/#catalog">Catalog</a><a href="/now/">Now</a></div>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .uses-page{min-height:calc(100vh - 200px)}
+  .uses-page .page-shell{grid-template-columns:minmax(0,1fr)}
+  .uses-title{font-size:clamp(34px,4.8vw,56px)!important}
+  .uses-overview{margin-top:32px}
+  .uses-link{color:var(--grn);text-decoration:underline;text-underline-offset:3px}
+  .uses-link:hover{color:var(--t1)}
+  .uses-content{margin-top:58px}
+  .uses-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-soft)}
+  .uses-section-head h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--t1);margin:0}
+  .uses-section-head p{color:var(--t3);font-size:14px;line-height:1.6;max-width:52ch;margin:0}
+  .uses-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .uses-category{display:grid;align-content:start;gap:14px;padding:24px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .uses-category h3{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--grn);margin:0}
+  .uses-category ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .uses-category li{display:grid;gap:2px;padding:10px 0;border-bottom:1px solid var(--border-soft)}
+  .uses-category li:last-child{border-bottom:none;padding-bottom:0}
+  .uses-item-name{font-size:15px;font-weight:600;color:var(--t1)}
+  .uses-item-note{font-size:13px;color:var(--t3);line-height:1.55}
+  @media(max-width:900px){
+    .uses-grid{grid-template-columns:1fr}
+    .uses-section-head{align-items:start;flex-direction:column}
+  }
+  @media(max-width:640px){
+    .uses-category{padding:20px}
+    .uses-title{max-width:12ch;font-size:clamp(30px,8vw,36px)!important;line-height:1.12;overflow-wrap:break-word}
+  }
+</style>

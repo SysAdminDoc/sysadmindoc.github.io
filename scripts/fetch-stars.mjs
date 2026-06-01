@@ -246,12 +246,14 @@ async function main() {
       }
       for (const release of list) {
         if (release.draft || release.prerelease) continue;
+        const downloads = Array.isArray(release.assets) ? release.assets.reduce((sum, a) => sum + (a.download_count || 0), 0) : 0;
         allReleases.push({
           repo: repo.name,
           tag: release.tag_name,
           name: release.name || release.tag_name,
           publishedAt: release.published_at,
           url: release.html_url,
+          downloads,
           bodyFirst: (release.body || '')
             .replace(/\r/g, '')
             .split('\n')
