@@ -1,9 +1,11 @@
-name: Refresh GitHub data
+name: GitHub data health check
 
 on:
   workflow_dispatch:
   schedule:
-    # Refresh generated GitHub metadata daily at 07:00 UTC without deploying.
+    # Verify GitHub API access and data freshness daily at 07:00 UTC.
+    # Generated files are gitignored — this is a health check, not a commit-back.
+    # Actual data refresh happens at deploy time via the deploy workflow.
     - cron: '0 7 * * *'
 
 permissions:
