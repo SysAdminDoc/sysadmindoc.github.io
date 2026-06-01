@@ -195,6 +195,26 @@ const connectPaths = [
     cta: 'Open current focus',
     icon: 'pulse',
   },
+  {
+    title: 'Email',
+    handle: 'snafumatthew@gmail.com',
+    href: 'mailto:snafumatthew@gmail.com',
+    external: false,
+    desc: 'The most direct line for collaboration, contract work, or a hiring conversation.',
+    meta: 'Best for anything that needs a real reply — I usually respond within a couple of days.',
+    cta: 'Send an email',
+    icon: 'mail',
+  },
+  {
+    title: 'LinkedIn',
+    handle: 'in/matthewryanparker',
+    href: 'https://www.linkedin.com/in/matthewryanparker',
+    external: true,
+    desc: 'Professional background, full work history, and the easiest place to connect for recruiters.',
+    meta: 'Best for recruiter discovery and the formal career record.',
+    cta: 'Open LinkedIn',
+    icon: 'linkedin',
+  },
 ] as const;
 const stackRoutes = [
   { href: '/lang/powershell/', label: 'PowerShell', meta: 'Automation & WPF' },
@@ -329,7 +349,7 @@ const cmdkSections = [
   { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
   { label: 'Philosophy', href: '#philosophy', desc: 'The product standards behind every project.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
-  { label: 'Beyond Code', href: '#beyond', desc: 'Drone work, music, and the rest of the creative output.', badge: 'SECTION' },
+  { label: 'Beyond Code', href: '#beyond', desc: 'Aerial drone footage and the work outside the terminal.', badge: 'SECTION' },
   { label: 'Connect', href: '#connect', desc: 'Best ways to collaborate and what to bring.', badge: 'SECTION' },
 ] as const;
 ---
@@ -373,11 +393,11 @@ const cmdkSections = [
       <div class="ht">
         <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
         <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="56" height="56" decoding="async" fetchpriority="high">
-        <div class="htag" id="heroTag"><span class="dot"></span> Open for thoughtful collaboration</div>
+        <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Open for thoughtful collaboration</a>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
         <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
-        <div class="hs">
+        <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
           <div class="hs-item"><div class="hsn" id="statLive">{liveApps.length}</div><div class="hsl">Live Apps</div></div>
@@ -385,7 +405,7 @@ const cmdkSections = [
         <div class="hero-pulse">
           <span class="pulse-dot"></span>
           {stats.streak > 0 && (
-            <a href="/now/" class="pulse-item" title="90-day commit streak">
+            <a href="/now/" class="pulse-item" title="Current consecutive-day commit streak">
               <span class="pulse-k">streak</span>
               <span class="pulse-v">{stats.streak}d</span>
             </a>
@@ -470,7 +490,7 @@ const cmdkSections = [
   <GreatestHits />
   <Divider />
 
-  <section id="live"><div class="si">
+  <section id="live" aria-label="Live apps"><div class="si">
     <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Open the product surface immediately</h2><p class="sd">Browser-ready apps with no sign-in gate, no install ceremony, and enough polish to judge the experience in a minute.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
@@ -481,13 +501,15 @@ const cmdkSections = [
   <TagCloud />
   <Divider />
 
-  <section id="catalog"><div class="si">
+  <section id="catalog" aria-label="Project catalog"><div class="si">
     <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and freshness signals that help you decide what is active before you click through.</p></div>
     <div class="catalog-controls rv">
       <div class="search-wrap">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <label class="sr-only" for="searchInput">Search projects</label>
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" class="search-input" id="searchInput" name="project-search" placeholder="Search projects…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects">
       </div>
+      <label class="sr-only" for="sortSelect">Sort projects</label>
       <select class="sort-select" id="sortSelect" aria-label="Sort projects">
         <option value="default">Default order</option>
         <option value="stars">Most stars</option>
@@ -509,7 +531,7 @@ const cmdkSections = [
     <div class="cg" id="catalogGrid">
       {catalog.map((entry, index) => <CatalogEntry entry={entry} index={index} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt} />)}
     </div>
-    <div class="no-results" id="noResults" role="status" aria-live="polite" hidden>
+    <div class="no-results" id="noResults" hidden>
       <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       <div class="no-results-title">No matches in this slice</div>
       <p class="no-results-copy">Try a broader search, a different lane, or reset the archive to see every project.</p>
@@ -518,7 +540,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="skills"><div class="si">
+  <section id="skills" aria-label="Stack and skills"><div class="si">
     <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">The portfolio spans a lot of projects, but the work organizes into a few strong lanes. Start with the language track that matches your problem, then use the project mix to understand the bigger picture.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
@@ -557,7 +579,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="about"><div class="si">
+  <section id="about" aria-label="About"><div class="si">
     <div class="sh rv"><div class="sl">// About</div><h2 class="st">The operator behind the portfolio</h2><p class="sd">Operational systems by day, launch-ready tooling after hours, with the same bias toward calm, reliable software in both places.</p></div>
     <div class="ac">
       <div class="about-copy rv">
@@ -607,7 +629,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="career"><div class="si">
+  <section id="career" aria-label="Career history"><div class="si">
     <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Medical imaging now, broadcast infrastructure before that, MSP work before that. Every step has been about keeping complex production systems steady and turning the repeated friction into better tooling.</p></div>
     <div class="career-signals rv" aria-label="Career signals">
       {careerSignals.map((signal) => (
@@ -643,7 +665,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="philosophy"><div class="si">
+  <section id="philosophy" aria-label="Philosophy"><div class="si">
     <div class="sh rv"><div class="sl">// Philosophy</div><h2 class="st">What Drives Me</h2><p class="sd">The principles behind every project I ship.</p></div>
     <div class="philosophy-intro rv">
       <div class="philosophy-copy-block">
@@ -670,7 +692,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="journey"><div class="si">
+  <section id="journey" aria-label="Journey"><div class="si">
     <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
@@ -689,7 +711,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="beyond"><div class="si">
+  <section id="beyond" aria-label="Beyond code"><div class="si">
     <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage and everything outside the terminal.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
@@ -707,7 +729,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="connect"><div class="si">
+  <section id="connect" aria-label="Connect"><div class="si">
     <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want full-text discovery, source, shipping activity, timeline history, archive decisions, or the current focus.</p></div>
     <p class="connect-msg rv">If you have a workflow worth automating, a product surface that feels rough, or a tool that should exist, start with the route that gives the right amount of context.</p>
     <div class="connect-notes rv" aria-label="Best collaboration fit">
@@ -727,6 +749,10 @@ const cmdkSections = [
               <svg viewBox="0 0 16 16" fill="var(--t1)" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             ) : path.icon === 'release' ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7h8"/><path d="M8 12h8"/><path d="M8 17h5"/><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+            ) : path.icon === 'mail' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            ) : path.icon === 'linkedin' ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.1c0-1.22-.02-2.8-1.9-2.8-1.9 0-2.2 1.35-2.2 2.7V21H9z"/></svg>
             ) : (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l4 2"/><path d="M21 12a9 9 0 1 1-9-9"/></svg>
             )}
@@ -762,6 +788,14 @@ const cmdkSections = [
         <p class="footer-summary">Open source automation, browser tools, and dark-mode-first utilities shaped by real operational work instead of demo-only ideas.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation">
+        <a href="#catalog">Catalog</a>
+        <a href="/search/">Search</a>
+        <a href="/releases/">Releases</a>
+        <a href="/timeline/">Timeline</a>
+        <a href="/archive/">Archive</a>
+        <a href="/now/">Now</a>
+        <a href="/uses/">Uses</a>
+        <a href="/resume/">Resume</a>
         <a href="/rss.xml">RSS</a>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
       </nav>
