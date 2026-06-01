@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'auto',
     assets: '_assets',
-    concurrency: 1,
+    concurrency: 1, // marked.use() mutates global state in [slug].astro; parallel builds race
   },
   vite: {
     build: {

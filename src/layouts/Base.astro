@@ -170,6 +170,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <meta name="description" content={description} />
   <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#050913" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
   <meta name="generator" content={Astro.generator} />
 
   <meta property="og:title" content={title} />
@@ -225,7 +226,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
 </head>
 <body class={bodyClass}>
   <slot />
-  <div class="cmdk-backdrop" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
+  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette">
     <div class="cmdk">
       <div class="cmdk-input-row">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -240,10 +241,11 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
         <span><kbd>Esc</kbd> Close</span>
       </div>
     </div>
-  </div>
+  </dialog>
   <script is:inline define:vars={{ allProjects: cmdkProjects, quickLinks: cmdkQuickLinks, sections: cmdkSections }}>
     window.__PORTFOLIO_DATA = { allProjects, quickLinks, sections };
   </script>
+  <script src="/scripts/shared.js" is:inline></script>
   <script src="/scripts/cmdk.js" is:inline></script>
   <script src="/scripts/theme.js" is:inline></script>
 </body>
