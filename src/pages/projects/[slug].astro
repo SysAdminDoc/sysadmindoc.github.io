@@ -130,7 +130,8 @@ if (rawMd && rawMd.trim().length > 0) {
       input: ['type', 'checked', 'disabled'],
       source: ['srcset', 'media', 'type'],
     },
-    allowedSchemes: ['http', 'https', 'mailto', 'data'],
+    allowedSchemes: ['http', 'https', 'mailto'],
+    allowedSchemesByTag: { img: ['http', 'https', 'data'] },
     transformTags: {
       a: (tagName, attribs) => {
         const href = attribs.href ?? '';
@@ -271,8 +272,20 @@ const cmdkSections = [
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
+const langMap: Record<string, string> = { ps: 'PowerShell', py: 'Python', web: 'JavaScript', ext: 'JavaScript', kt: 'Kotlin', cs: 'C#', cpp: 'C++', media: 'Python', sec: 'JavaScript', guide: '', fork: '', other: '' };
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name,
+  description: desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim(),
+  codeRepository: ghUrl,
+  programmingLanguage: language ?? langMap[category] ?? '',
+  author: { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc' },
+  ...(liveUrl ? { url: liveUrl } : {}),
+});
 ---
 <Base title={title} description={desc} ogImage={ogImage} ogImageAlt={`${name} social preview card`} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={jsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={name} contextTone="slate" />
 

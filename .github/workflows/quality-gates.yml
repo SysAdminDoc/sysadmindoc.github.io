@@ -48,11 +48,13 @@ jobs:
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
       - name: Run local quality checks
+        id: local_checks
         shell: bash
         run: |
-          npm run data:validate | tee data-validate.log
-          npm run assets:audit | tee assets-audit.log
-          npm run check | tee astro-check.log
+          set -eo pipefail
+          npm run data:validate 2>&1 | tee data-validate.log
+          npm run assets:audit 2>&1 | tee assets-audit.log
+          npm run check 2>&1 | tee astro-check.log
       - name: Publish quality summary
         shell: bash
         run: |
@@ -125,5 +127,5 @@ jobs:
               });
             }
       - name: Fail on reported gate failures
-        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0'
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.local_checks.outcome == 'failure'
         run: exit 1

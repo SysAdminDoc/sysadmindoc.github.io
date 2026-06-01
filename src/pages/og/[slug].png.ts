@@ -31,12 +31,12 @@ const [regular, bold] = await Promise.all([loadFont(400), loadFont(700)]);
 const accentByCat: Record<string, string> = {
   ps: '#58a6ff', py: '#4ade80', web: '#facc15', ext: '#fb923c',
   kt: '#2dd4bf', sec: '#f87171', media: '#fb923c', cs: '#c084fc',
-  guide: '#8b9cc0', fork: '#7080a0', other: '#7080a0',
+  cpp: '#f97316', guide: '#8b9cc0', fork: '#7080a0', other: '#7080a0',
 };
 const labelByCat: Record<string, string> = {
   ps: 'PowerShell', py: 'Python', web: 'Web App', ext: 'Extension',
   kt: 'Android', sec: 'Security', media: 'Media', cs: 'Desktop',
-  guide: 'Guide', fork: 'Fork', other: 'Other',
+  cpp: 'C++', guide: 'Guide', fork: 'Fork', other: 'Other',
 };
 
 export async function getStaticPaths() {

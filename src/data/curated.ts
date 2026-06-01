@@ -90,19 +90,19 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-04-16',
+  updated: '2026-06-01',
   location: 'Sarasota, FL',
   building: [
-    'Cross-border PACS data restoration — finishing a 54-account rehydration with the legacy cloud vendor',
+    'Portfolio site v0.17 — deep research audit, accessibility overhaul, View Transitions, self-hosted fonts',
     'Delivering DR panel + handheld X-ray training to a major OEM\u2019s field engineers',
-    'Internal tooling kit — custom DICOM C-Store sender, acquisition-PC network scanner, PC-provisioning scripts',
-    'NovaCut v3.20 — shipping final competitor-inspired features, tightening Media3 1.9.2 integration',
-    'project-nomad-desktop — Situation Room v6.24 polish (108 cards, 435 feeds)',
-    `This portfolio — turning ${fallbackRepoCount} repos into something visitors actually read`,
+    'Conduit — unified operations console for Maven Imaging (Tauri 2 + React 19 + FastAPI)',
+    'XRayRoomPlanner — X-ray room compliance and drafting tool (React + Electron)',
+    `Catalog now at ${fallbackRepoCount}+ repos across 10 categories — 9 new projects added this sprint`,
+    'NexRay — multi-tenant cloud PACS platform with 4 AI engines',
   ],
   thinking: [
-    `How to make ${fallbackRepoCount} repos legible without flattening them into a spreadsheet`,
-    'When "write the tool yourself" is cheaper than another vendor escalation',
+    'Building an Obsidian knowledge graph as an AI-programmable brain for development agents',
+    'When self-hosted tooling beats vendor contracts for small medical imaging shops',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Whatever keeps the focus session going.',

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run data:validate && npm run assets:audit && npm run images:audit && astro build && npm run search:index",
+    "build": "npm run data:validate && npm run assets:audit && npm run images:audit && astro build && npm run sw:stamp && npm run search:index",
+    "sw:stamp": "node -e \"const fs=require('fs'),v=require('./package.json').version,p='dist/sw.js';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace('__BUILD_VERSION__',v))\"",
     "check": "npm run data:validate && npm run assets:audit && npm run images:audit && astro check",
     "preview": "astro preview",
     "astro": "astro",

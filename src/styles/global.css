@@ -1,3 +1,5 @@
+        @view-transition { navigation: auto; }
+        @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation-duration: 0s; } }
         :root{
             /* Shared tokens not redefined in v0.9.0 */
             --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
@@ -40,9 +42,6 @@
         .skip-link:focus{top:0}
 
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-        /* Particle canvas */
-        #particles{position:fixed;inset:0;z-index:0;pointer-events:none;will-change:contents}
 
         /* Nav */
         nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,14,23,.7);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--glass-border);transition:transform .3s}
@@ -355,7 +354,6 @@
         @keyframes rippleOut{to{transform:scale(4);opacity:0}}
 
         /* Color-Tinted Section Backgrounds */
-        #featured::before{background:radial-gradient(ellipse at 30% 20%,rgba(88,166,255,.04) 0%,transparent 60%)!important}
         #live::before{background:radial-gradient(ellipse at 70% 30%,rgba(74,222,128,.04) 0%,transparent 60%)!important}
         #catalog::before{background:radial-gradient(ellipse at 50% 50%,rgba(88,130,200,.03) 0%,transparent 60%)!important}
         #skills::before{background:radial-gradient(ellipse at 40% 40%,rgba(45,212,191,.04) 0%,transparent 60%)!important}
@@ -366,7 +364,7 @@
         #connect::before{background:radial-gradient(ellipse at 50% 30%,rgba(88,166,255,.03) 0%,transparent 60%)!important}
 
         /* prefers-reduced-motion */
-        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#particles{opacity:0!important}body::after{display:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}body::after{display:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}}
 
         /* Responsive */
         @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
@@ -438,7 +436,6 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 .theme-toggle svg{width:18px;height:18px;fill:currentColor}
 
 /* Light theme: see v0.9.0 block below for authoritative values */
-html[data-theme="light"] #particles{opacity:.3}
 html[data-theme="light"] .cmdk{background:#fff}
 
 /* Footer freshness badge */
@@ -458,7 +455,7 @@ html[data-theme="light"] .cmdk{background:#fff}
 .ca-age.age-stale{color:var(--t3);background:transparent;border:1px dashed var(--glass-border)}
 
 /* Greatest hits section spacing parity */
-#greatest-hits,#manifesto,#volume{padding:80px 24px}
+#greatest-hits,#volume{padding:80px 24px}
 #greatest-hits{padding-top:60px}
 
 /* Hero pulse widget (v0.7.0 — replaces runtime last-active) */
@@ -525,7 +522,7 @@ main[id],section[id]{scroll-margin-top:calc(72px + env(safe-area-inset-top,0px))
   --brdb:rgba(124,184,255,.32);
   --t1:#f4f7fb;
   --t2:#a7b4cb;
-  --t3:#707d93;
+  --t3:#8b99b0;
   --blue:#7cb8ff;
   --blued:rgba(124,184,255,.13);
   --blue-glow:rgba(124,184,255,.28);
@@ -1277,7 +1274,7 @@ html[data-theme="light"] .ca:hover{
 }
 
 /* ===== v0.9.1 secondary section polish ===== */
-#manifesto .si,#greatest-hits .si,#volume .si{max-width:1280px}
+#greatest-hits .si,#volume .si{max-width:1280px}
 .ac{
   grid-template-columns:minmax(0,1.02fr) minmax(360px,.98fr);
   gap:56px;
