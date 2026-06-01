@@ -17,16 +17,16 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ---
 
 ## P0 — Trust & correctness (do first)
-- [ ] **T1** Fix contribution-streak algorithm (NF-1, S) — strict consecutive-day walk from latest push; 0 when latest push >1 day old. Accept: unit test passes; `_stats.json` recomputed.
-- [ ] **T2** `forced-colors` / Windows High Contrast support (NF-28, M) — `@media (forced-colors: active)` block: outline focus, bordered controls, hidden decoration. Accept: controls visible under emulated forced-colors.
-- [ ] **T3** Automated a11y gate — axe-core WCAG 2.2 AA (NF-33, M) — `scripts/audit-a11y.mjs` + `a11y:audit` script; advisory in CI. Accept: `npm run a11y:audit` runs, exit-codes on violations.
+- [x] **T1** Fix contribution-streak algorithm (NF-1, S) — strict consecutive-day walk from latest push; 0 when latest push >1 day old. Accept: unit test passes; `_stats.json` recomputed.
+- [x] **T2** `forced-colors` / Windows High Contrast support (NF-28, M) — `@media (forced-colors: active)` block: outline focus, bordered controls, hidden decoration. Accept: controls visible under emulated forced-colors.
+- [x] **T3** Automated a11y gate — axe-core WCAG 2.2 AA (NF-33, M) — `scripts/audit-a11y.mjs` + `a11y:audit` script; advisory in CI. Accept: `npm run a11y:audit` runs, exit-codes on violations.
 
 ## P1 — High-value features, SEO/AEO, resilience, CI
 ### Features / content
 - [ ] **T4** Contact/hire funnel — email + LinkedIn in Connect + footer (NF-8 + R LinkedIn, S). Accept: working mailto/LinkedIn surfaced; hero pill scrolls to #connect.
 - [ ] **T5** Render dead `featured` content (NF-2, M) — surface authored desc/tags beyond hero reel, or prune. Accept: no orphaned authored data.
 - [ ] **T6** Build-time language-donut fallback (NF-6, M) — bake language mix from `_meta.json`; JS enhances. Accept: donut renders with JS disabled.
-- [ ] **T7** Data-layer test runner — `node:test` (NF-12, M) — cover streak/cosine/release-trim/getUtcDayKey; wire `npm test`. Accept: `npm test` green; CI step.
+- [x] **T7** Data-layer test runner — `node:test` (NF-12, M) — cover streak/cosine/release-trim/getUtcDayKey; wire `npm test`. Accept: `npm test` green; CI step.
 ### SEO / AEO
 - [ ] **T8** `/llms.txt` build endpoint (NF-27, S) — curated markdown index from projects data; reference in robots.txt.
 - [ ] **T9** BreadcrumbList JSON-LD on project/lang/interior pages (R, M).
@@ -36,20 +36,20 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T13** Sitemap config: lastmod/priority/changefreq + exclude json/og routes (NF, M).
 ### Performance
 - [ ] **T14** Extract 44KB inline `__PORTFOLIO_DATA` to external JSON (R, M).
-- [ ] **T15** Gate film-grain overlay behind capability media query (R, S).
+- [x] **T15** Gate film-grain overlay behind capability media query (R, S).
 - [ ] **T16** Split / non-block monolithic CSS — defer to CSS pass (R, L) *(coordinate with T2, @layer)*.
 ### Accessibility
-- [ ] **T17** Wrap CSS scroll-driven animations in `prefers-reduced-motion` guard (R, S).
+- [x] **T17** Wrap CSS scroll-driven animations in `prefers-reduced-motion` guard (R, S).
 - [ ] **T18** Accessible labels + aria-live on hero stat counters (R, S).
 - [ ] **T19** Command-palette listbox ARIA: `<a role=option>` → valid pattern (R, M).
 ### Nav / content
 - [ ] **T20** Remove duplicate InteriorNav `/#catalog` link (R, S).
 - [ ] **T21** Add `/uses/` + `/resume/` to InteriorNav + homepage footer (R, S).
 ### Build / CI / docs
-- [ ] **T22** Deduplicate pre-build validation in deploy.yml (R, S).
+- [x] **T22** Deduplicate pre-build validation in deploy.yml (R, S).
 - [ ] **T23** Finish TS-AST helper migration to `scripts/lib/` (R, M).
-- [ ] **T24** Sync `package-lock.json` version → 0.17.0 (R, S).
-- [ ] **T25** PR build gate — `ci.yml` on `pull_request` (NF-36, S).
+- [x] **T24** Sync `package-lock.json` version → 0.17.0 (R, S).
+- [x] **T25** PR build gate — `ci.yml` on `pull_request` (NF-36, S).
 - [ ] **T26** Doc/version reconciliation: CHANGELOG v0.17.0, CLAUDE.md Astro 6 + CSS size, version strings (NF, S).
 - [ ] **T27** Lighthouse CI advisory budget (NF-34, M).
 - [ ] **T28** Migrate `public/` raster art → `astro:assets <Picture>` AVIF/srcset (NF-22, L) *(stage incrementally; may defer)*.
@@ -101,21 +101,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T66** SectionJumpNav on releases + Timeline cross-link (R, S).
 - [ ] **T67** Verify TagCloud quick-pick filter activation (R, S).
 ### Build/CI (P2 cluster)
-- [ ] **T68** `sw:stamp` → ESM script (R, S).
-- [ ] **T69** `.nvmrc` + engines field (R, S).
-- [ ] **T70** Add `.claude/` to .gitignore (R, S).
-- [ ] **T71** `semantic:audit` in quality-gates.yml (R, S).
+- [x] **T68** `sw:stamp` → ESM script (R, S).
+- [x] **T69** `.nvmrc` + engines field (R, S).
+- [x] **T70** Add `.claude/` to .gitignore (R, S).
+- [x] **T71** `semantic:audit` in quality-gates.yml (R, S).
 - [ ] **T72** README layout-tree refresh (R, S) *(folds into T26)*.
 ### Perf (P2 cluster)
 - [ ] **T73** shared.js in SW precache (R, S).
 - [ ] **T74** Gate JS scroll-reveal observer vs CSS (R + improvement, S).
 - [ ] **T75** GitHub API cache TTL increase / metered skip (R, S).
 - [ ] **T76** Bound non-essential infinite CSS animations (R, S).
-- [ ] **T77** font-display:optional for JetBrains Mono (R, S).
+- [x] **T77** font-display:optional for JetBrains Mono (R, S).
 - [ ] **T78** Remove duplicate `.skip-link` CSS (R, S).
 - [ ] **T79** content-visibility:auto below-fold (R, M).
 - [ ] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
-- [ ] **T81** accent-color token (NF-31, S).
+- [x] **T81** accent-color token (NF-31, S).
 - [ ] **T82** Cache-shape contract types `generated.d.ts` (NF, S).
 
 ## P3 — Nice-to-have
@@ -127,10 +127,10 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T88** client-local "recently viewed" (NF, M).
 - [ ] **T89** Pin GitHub Actions to SHAs (NF-36, S).
 - [ ] **T90** Resolve unused `cpp` category (R, S).
-- [ ] **T91** Dependabot labels (R, S).
-- [ ] **T92** deploy.yml cancel-in-progress:true (R, S).
+- [x] **T91** Dependabot labels (R, S).
+- [x] **T92** deploy.yml cancel-in-progress:true (R, S).
 - [ ] **T93** Document Playwright optional dep (R, S).
-- [ ] **T94** data-refresh.yml lightweight health probe (R, S).
+- [x] **T94** data-refresh.yml lightweight health probe (R, S).
 - [ ] **T95** Migrate inline scripts off CSP `unsafe-inline` (R, L) *(largest; may defer with rationale)*.
 
 ---

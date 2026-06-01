@@ -1,0 +1,6 @@
+# Security contact for sysadmindoc.github.io (RFC 9116)
+Contact: https://github.com/SysAdminDoc/sysadmindoc.github.io/security/advisories/new
+Contact: https://github.com/SysAdminDoc
+Preferred-Languages: en
+Canonical: https://sysadmindoc.github.io/.well-known/security.txt
+Expires: 2027-01-01T00:00:00.000Z

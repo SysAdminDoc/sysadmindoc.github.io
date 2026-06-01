@@ -1,0 +1,12 @@
+/* TEAM */
+  Builder: Matt Parker (SysAdminDoc)
+  Site: https://sysadmindoc.github.io
+  GitHub: https://github.com/SysAdminDoc
+  LinkedIn: https://www.linkedin.com/in/matthewryanparker
+  Location: Sarasota, FL, US
+
+/* SITE */
+  Standards: HTML5, CSS3, ES Modules
+  Stack: Astro (static), vanilla JS, self-hosted fonts, Pagefind search
+  Hosting: GitHub Pages
+  Privacy: no analytics, no cookies, no third-party scripts
