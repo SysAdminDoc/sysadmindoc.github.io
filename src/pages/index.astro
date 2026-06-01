@@ -488,9 +488,9 @@ const cmdkSections = [
       </select>
     </div>
     <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
-      <button type="button" class="fb act" data-filter="all" data-label="All projects">All <span class="fc" id="countAll">{catalogTotal}</span></button>
+      <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{catalogTotal}</span></button>
       {filterButtons.map((f) => (
-        <button type="button" class="fb" data-filter={f.key} data-label={f.label}>{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
+        <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
       ))}
     </div>
     <div class="catalog-feedback rv">
@@ -752,10 +752,10 @@ const cmdkSections = [
         </div>
         <p class="footer-summary">Open source automation, browser tools, and dark-mode-first utilities shaped by real operational work instead of demo-only ideas.</p>
       </div>
-      <div class="fl">
+      <nav class="fl" aria-label="Footer navigation">
         <a href="/rss.xml">RSS</a>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
-      </div>
+      </nav>
     </div>
   </footer>
 
