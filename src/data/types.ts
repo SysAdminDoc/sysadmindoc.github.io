@@ -59,6 +59,11 @@ export interface ProjectProof {
   installPath: string;
   knownLimitations: string;
   sources: ProjectProofSource[];
+  caseStudy?: {
+    context: string;
+    decisions: string[];
+    outcomes: string[];
+  };
 }
 
 export type ArchiveStatus = 'moved' | 'held' | 'removed' | 'superseded' | 'archived';

@@ -17,6 +17,20 @@ export const projectProof: Record<string, ProjectProof> = {
       { label: 'Repository', url: 'https://github.com/SysAdminDoc/win11-nvme-driver-patcher' },
       { label: 'README', url: 'https://github.com/SysAdminDoc/win11-nvme-driver-patcher#readme' },
     ],
+    caseStudy: {
+      context: 'Microsoft shipped a significantly improved NVMe storage driver in Windows Server 2025, delivering up to 80% IOPS improvement on modern SSDs. However, this driver was not available to Windows 11 desktop users. The only path was manually editing driver store entries — risky, undocumented, and with no rollback. I needed this for imaging workstations handling large DICOM datasets and built a GUI to make it safe for anyone.',
+      decisions: [
+        'Built a WPF GUI with auto-elevation instead of a raw PowerShell script, so non-technical users can run it safely.',
+        'Added automatic system restore point creation before any driver change, giving users a one-click rollback path.',
+        'Logged every step to a transcript file so users can audit exactly what changed, which matters for enterprise and healthcare environments.',
+        'Kept it as a C# single-binary release — no installer, no dependencies, no admin portal.',
+      ],
+      outcomes: [
+        'Most-starred project in the portfolio (41 stars) — clear demand for a safe driver swap path.',
+        'Used internally on Maven Imaging workstations handling PACS data, where the IOPS improvement measurably reduced study load times.',
+        'Zero data-loss reports from users — the restore-point-first approach proved reliable.',
+      ],
+    },
   },
   Network_Security_Auditor: {
     problem:
@@ -34,6 +48,20 @@ export const projectProof: Record<string, ProjectProof> = {
       { label: 'Repository', url: 'https://github.com/SysAdminDoc/Network_Security_Auditor' },
       { label: 'README', url: 'https://github.com/SysAdminDoc/Network_Security_Auditor#readme' },
     ],
+    caseStudy: {
+      context: 'As a sysadmin managing networks for medical imaging clinics, I needed to produce security audit evidence for HIPAA compliance reviews. Commercial tools were expensive and opaque. I built a PowerShell auditor that runs the same 67 checks I was doing manually — firewall rules, open ports, service configurations, user account policies, certificate states — and produces a structured report I could hand directly to compliance reviewers.',
+      decisions: [
+        'Mapped every check to the MITRE ATT&CK framework so findings have context beyond pass/fail — auditors can trace each finding to a known threat vector.',
+        'Built tiered output (summary, detailed, raw) so different audiences get the right level of detail without filtering.',
+        'Kept it entirely offline and PowerShell-native — no agent install, no cloud upload, no telemetry. Critical for healthcare environments where outbound data is scrutinized.',
+        'Designed checks to be non-destructive (read-only queries, no remediation) so it is safe to run on production imaging workstations.',
+      ],
+      outcomes: [
+        'Used across multiple Maven Imaging client sites for pre-deployment and annual compliance checks.',
+        '6 stars and consistent organic discovery — fills a gap between expensive commercial scanners and manual checklists.',
+        'The MITRE mapping turned out to be the highest-value feature — it translates technical findings into language compliance teams already know.',
+      ],
+    },
   },
   'project-nomad-desktop': {
     problem:
@@ -87,6 +115,20 @@ export const projectProof: Record<string, ProjectProof> = {
       { label: 'README', url: 'https://github.com/SysAdminDoc/NovaCut#readme' },
       { label: 'Releases', url: 'https://github.com/SysAdminDoc/NovaCut/releases' },
     ],
+    caseStudy: {
+      context: 'Every capable Android video editor is either subscription-locked (PowerDirector, KineMaster) or ad-heavy (InShot). I wanted a full editing experience — timeline, effects, transitions, export — that was open source, ran entirely on-device, and respected the user. NovaCut started as a learning project for Jetpack Compose + Media3 and grew into a 38K-line production editor.',
+      decisions: [
+        'Built on Jetpack Compose + Media3 1.9.x instead of the legacy MediaCodec/SurfaceTexture stack — cleaner API, hardware-accelerated by default, and future-proof against Android API changes.',
+        'Implemented 40+ effects and 37 transitions as composable pipeline stages rather than monolithic render passes — each effect is a standalone unit testable in isolation.',
+        'Used R8/ProGuard aggressively to keep the APK under 15MB despite the feature set — comparable to much simpler editors.',
+        'Signed release builds with a dedicated keystore and published via GitHub Releases, not Play Store — avoiding the 30% cut and review delays.',
+      ],
+      outcomes: [
+        '10 stars and growing — the largest Kotlin project in the portfolio by line count.',
+        'Proved that a single developer with AI tooling can ship a video editor that competes on features with funded teams.',
+        'The Media3 integration patterns from NovaCut were reused in Vertigo (vertical video studio) and OpenCut (Premiere Pro extension).',
+      ],
+    },
   },
   'sysadmindoc.github.io': {
     problem:

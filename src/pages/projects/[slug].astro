@@ -422,6 +422,26 @@ const jsonLd = JSON.stringify({
               </ul>
             </section>
           </div>
+          {proof.caseStudy && (
+            <div class="project-proof-grid" style="margin-top: 2rem;">
+              <section class="project-proof-card project-proof-card-wide">
+                <h3>Case Study</h3>
+                <p>{proof.caseStudy.context}</p>
+              </section>
+              <section class="project-proof-card project-proof-card-wide">
+                <h3>Key Decisions</h3>
+                <ul>
+                  {proof.caseStudy.decisions.map((d) => <li>{d}</li>)}
+                </ul>
+              </section>
+              <section class="project-proof-card project-proof-card-wide">
+                <h3>Outcomes</h3>
+                <ul>
+                  {proof.caseStudy.outcomes.map((o) => <li>{o}</li>)}
+                </ul>
+              </section>
+            </div>
+          )}
         </div>
       </div>
     )}
