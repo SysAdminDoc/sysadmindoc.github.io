@@ -79,8 +79,39 @@ const cmdkSections = [
   { label: 'Overview', href: '#lane-overview', desc: `${lang.label} lane summary, stats, and the clearest next routes.`, badge: 'LANE' },
   { label: 'Projects in This Lane', href: '#lane-projects', desc: `Browse the public ${lang.label} projects collected in this stack view.`, badge: 'ARCHIVE' },
 ];
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const langJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: title,
+      description,
+      url: `${siteUrl}/lang/${slug}/`,
+      about: { '@id': 'https://sysadmindoc.github.io/#matt-parker' },
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: repos.length,
+        itemListElement: repos.map((r, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${siteUrl}/projects/${r.repo}/`,
+          name: r.name,
+        })),
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Portfolio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: lang.label, item: `${siteUrl}/lang/${slug}/` },
+      ],
+    },
+  ],
+});
 ---
 <Base title={title} description={description} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={langJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={`${lang.label} lane`} contextTone="blue" />
 

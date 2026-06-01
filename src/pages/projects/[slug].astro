@@ -156,6 +156,9 @@ if (rawMd && rawMd.trim().length > 0) {
         if (nextAttribs.src) nextAttribs.src = resolveReadmeAsset(nextAttribs.src);
         if (!nextAttribs.loading) nextAttribs.loading = 'lazy';
         if (!nextAttribs.decoding) nextAttribs.decoding = 'async';
+        // Raw README <img> tags can omit alt; guarantee a text alternative
+        // (title when present, otherwise empty = decorative) for a11y.
+        if (nextAttribs.alt == null) nextAttribs.alt = nextAttribs.title ?? '';
         return { tagName, attribs: nextAttribs };
       },
       input: (tagName, attribs) => {
@@ -273,15 +276,31 @@ const cmdkSections = [
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
 const langMap: Record<string, string> = { ps: 'PowerShell', py: 'Python', web: 'JavaScript', ext: 'JavaScript', kt: 'Kotlin', cs: 'C#', cpp: 'C++', media: 'Python', sec: 'JavaScript', guide: '', fork: '', other: '' };
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const personRef = { '@id': 'https://sysadmindoc.github.io/#matt-parker' };
+// Breadcrumb mirrors the visual trail: Portfolio / [lane] / project.
+const breadcrumbItems = [
+  { name: 'Portfolio', item: `${siteUrl}/` },
+  ...(relatedTrack ? [{ name: relatedTrack.label, item: `${siteUrl}${relatedTrack.href}` }] : []),
+  { name, item: `${siteUrl}/projects/${slug}/` },
+].map((entry, i) => ({ '@type': 'ListItem', position: i + 1, name: entry.name, item: entry.item }));
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'SoftwareSourceCode',
-  name,
-  description: desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim(),
-  codeRepository: ghUrl,
-  programmingLanguage: language ?? langMap[category] ?? '',
-  author: { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc' },
-  ...(liveUrl ? { url: liveUrl } : {}),
+  '@graph': [
+    {
+      '@type': 'SoftwareSourceCode',
+      name,
+      description: desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim(),
+      codeRepository: ghUrl,
+      programmingLanguage: language ?? langMap[category] ?? '',
+      author: personRef,
+      image: `${siteUrl}${ogImage}`,
+      ...(techChips.length ? { keywords: techChips.join(', ') } : {}),
+      ...(lastTouchedAt ? { dateModified: new Date(lastTouchedAt).toISOString() } : {}),
+      ...(liveUrl ? { url: liveUrl } : {}),
+    },
+    { '@type': 'BreadcrumbList', itemListElement: breadcrumbItems },
+  ],
 });
 ---
 <Base title={title} description={desc} ogImage={ogImage} ogImageAlt={`${name} social preview card`} cmdkSections={cmdkSections}>
