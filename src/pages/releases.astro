@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog } from '../data/projects';
 
 let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
@@ -89,6 +90,7 @@ const cmdkSections = [
         <a href="/#catalog" class="btn bg2">Open full archive</a>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="rel-action-link page-action-link">Open GitHub workspace</a>
       </div>
+      <SectionJumpNav items={cmdkSections} />
       <div id="release-timeline">
         {releases.length === 0 && (
           <div class="rel-empty page-empty">
@@ -131,7 +133,7 @@ const cmdkSections = [
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">The release stream shows movement across the portfolio. The highlights, current-focus view, and catalog explain what each change belongs to.</p>
       </div>
-      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      <nav class="fl" aria-label="Footer navigation"><a href="/timeline/">Timeline</a><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
     </div>
   </footer>
 </Base>
