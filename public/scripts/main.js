@@ -147,21 +147,27 @@ async function fetchGitHub(){
     }
 }
 
+function fadeUpdateStat(el,value){
+    if(!el)return;
+    if(el.textContent===String(value))return;
+    el.classList.add('stat-updating');
+    setTimeout(function(){el.textContent=value;el.classList.remove('stat-updating')},200);
+}
 function applyGitHubData(repoCount,totalStars,langCount,opts){
     opts=opts||{};
     // Hero stats — skip if build-time value is identical (prevents flicker)
     if(!opts.skipAggregate){
-        const sr=document.getElementById('statRepos');if(sr)sr.textContent=repoCount;
-        const ss=document.getElementById('statStars');if(ss)ss.textContent=totalStars;
+        fadeUpdateStat(document.getElementById('statRepos'),repoCount);
+        fadeUpdateStat(document.getElementById('statStars'),totalStars);
         // Terminal
         const tr=document.getElementById('termRepos');if(tr)tr.textContent=repoCount;
         const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
         // About
-        const ar=document.getElementById('aboutRepos');if(ar)ar.textContent=repoCount;
+        fadeUpdateStat(document.getElementById('aboutRepos'),repoCount);
         const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
         // Philosophy & Journey
-        const pr=document.getElementById('philRepos');if(pr)pr.textContent=repoCount;
-        const jr=document.getElementById('journeyRepos');if(jr)jr.textContent=repoCount;
+        fadeUpdateStat(document.getElementById('philRepos'),repoCount);
+        fadeUpdateStat(document.getElementById('journeyRepos'),repoCount);
     }
     // Live apps count
     const liveApps=document.querySelectorAll('#live .lc2').length;
