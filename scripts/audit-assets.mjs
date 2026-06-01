@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import ts from 'typescript';
+import { collectLiveSlugs } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
@@ -15,46 +15,6 @@ const errors = [];
 
 function fail(message) {
   errors.push(message);
-}
-
-function propertyName(name) {
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
-  return null;
-}
-
-function stringProperty(objectLiteral, key) {
-  for (const property of objectLiteral.properties) {
-    if (!ts.isPropertyAssignment(property)) continue;
-    if (propertyName(property.name) !== key) continue;
-    const value = property.initializer;
-    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
-  }
-  return null;
-}
-
-async function collectLiveSlugs() {
-  const sourceText = await fs.readFile(projectsPath, 'utf8');
-  const source = ts.createSourceFile(projectsPath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-  const slugs = [];
-
-  for (const statement of source.statements) {
-    if (!ts.isVariableStatement(statement)) continue;
-    for (const declaration of statement.declarationList.declarations) {
-      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== 'liveApps') continue;
-      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) {
-        fail('Expected liveApps to be an array literal in src/data/projects.ts.');
-        return slugs;
-      }
-      for (const element of declaration.initializer.elements) {
-        if (!ts.isObjectLiteralExpression(element)) continue;
-        const slug = stringProperty(element, 'slug');
-        if (slug) slugs.push(slug);
-      }
-    }
-  }
-
-  if (slugs.length === 0) fail('No live app slugs found in src/data/projects.ts.');
-  return slugs;
 }
 
 async function listFiles(dir, predicate = () => true) {
@@ -108,7 +68,7 @@ function moduleImportRegex(moduleBase) {
   return new RegExp(`(?:from\\s+|import\\s*\\()["'][^"']*${escaped}(?:\\.[a-z]+)?["']`, 'm');
 }
 
-const liveSlugs = await collectLiveSlugs();
+const liveSlugs = await collectLiveSlugs(projectsPath, fail);
 const liveSlugSet = new Set(liveSlugs);
 const screenshotFiles = await listFiles(screenshotsDir, (filePath) => path.dirname(filePath) === screenshotsDir && /\.jpg$/i.test(filePath));
 const screenshotThumbFiles = await listFiles(screenshotThumbsDir, (filePath) => /\.jpg$/i.test(filePath));

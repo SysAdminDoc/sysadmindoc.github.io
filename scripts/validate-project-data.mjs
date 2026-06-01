@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
+import { propertyName, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const owner = 'SysAdminDoc';
@@ -15,10 +16,6 @@ const screenshotsDir = path.join(root, 'public', 'screenshots');
 
 const errors = [];
 
-function sourceFile(filePath, sourceText) {
-  return ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-}
-
 function location(source, node) {
   const { line, character } = source.getLineAndCharacterOfPosition(node.getStart(source));
   return `${path.relative(root, source.fileName)}:${line + 1}:${character + 1}`;
@@ -26,11 +23,6 @@ function location(source, node) {
 
 function fail(message) {
   errors.push(message);
-}
-
-function propertyName(name) {
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
-  return null;
 }
 
 function parseValue(node, source) {

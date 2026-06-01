@@ -87,6 +87,8 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'Timeline', href: '/timeline/', desc: 'Review yearly momentum across releases, project pushes, and changelog highlights.', badge: 'PAGE' },
   { label: 'Archive Decisions', href: '/archive/', desc: 'Read why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
   { label: 'Now', href: '/now/', desc: 'Open the current focus page and short-range work queue.', badge: 'PAGE' },
+  { label: 'Uses', href: '/uses/', desc: 'Development environment, tools, and design conventions.', badge: 'PAGE' },
+  { label: 'Resume', href: '/resume/', desc: 'Printable career summary with skills and experience.', badge: 'PAGE' },
   { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context, imaging systems, and production-first tooling.', badge: 'TRACK' },
 ];
 const cmdkQuickLinks = [
@@ -131,6 +133,22 @@ const cmdkQuickLinks = [
     searchTerms: ['current focus', 'working on now'],
   },
   {
+    label: 'Uses',
+    url: '/uses/',
+    desc: 'Development environment, tools, languages, frameworks, and design conventions.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['setup', 'tools', 'stack', 'environment', 'uses.tech'],
+  },
+  {
+    label: 'Resume',
+    url: '/resume/',
+    desc: 'Printable career summary with skills, experience, and technology stacks.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['cv', 'career', 'hire', 'experience', 'printable'],
+  },
+  {
     label: 'Healthcare IT Track',
     url: '/healthcare-it/',
     desc: 'Operational context, imaging systems, and the environment that shaped the work.',
@@ -170,7 +188,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <meta name="description" content={description} />
   <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#050913" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
   <meta name="generator" content={Astro.generator} />
 
   <meta property="og:title" content={title} />
@@ -197,8 +215,6 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml" />
   <link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json" />
   <link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://api.github.com" crossorigin />
   <link rel="preconnect" href="https://i.scdn.co" crossorigin />
   <link rel="dns-prefetch" href="https://api.github.com" />
@@ -207,11 +223,8 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <link rel="dns-prefetch" href="https://www.youtube.com" />
   <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
   <link rel="manifest" href="/manifest.json" />
-  {/* Async, non-blocking font loading — saves ~300ms FCP vs default stylesheet */}
-  <link id="fontStylesheet" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
+  {/* Fonts self-hosted in public/fonts/ — @font-face rules in global.css */}
   <noscript><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript>
-  <script is:inline>var f=document.getElementById('fontStylesheet');if(f){f.addEventListener('load',function(){this.setAttribute('rel','stylesheet')},{once:true})}</script>
 
   {/* Theme init must run BEFORE first paint to avoid FOUC. Inline, sync, tiny. */}
   <script is:inline>try{var t=localStorage.getItem('theme-pref');var isLight=t==='light';document.documentElement.dataset.theme=isLight?'light':'dark';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',isLight?'#f5f1e8':'#050913')}catch(e){document.documentElement.dataset.theme='dark'}</script>
