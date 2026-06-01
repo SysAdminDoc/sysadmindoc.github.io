@@ -1,5 +1,7 @@
 # Portfolio Roadmap
 
+> ⚠ **Open work is now tracked in [TODO.md](TODO.md) (single source of truth).** This file is retained as the **evidence/rationale archive** for the v0.18.0 audit — full Why/Evidence/Verify detail keyed by `R…` IDs lives here.
+
 Last updated: 2026-06-01
 Current version: v0.17.0
 
