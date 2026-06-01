@@ -177,7 +177,44 @@ const {
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
+const isHome = Astro.url.pathname === '/';
+const bodyClass = isHome ? 'route-home' : 'route-interior';
+
+// One connected knowledge graph: a stable Person @id referenced by WebSite
+// (publisher) and, on the homepage, a ProfilePage. Page-level schemas
+// (BreadcrumbList, CollectionPage) reference the same @ids.
+const personId = 'https://sysadmindoc.github.io/#matt-parker';
+const jsonLdGraph: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': 'https://sysadmindoc.github.io/#website',
+    url: 'https://sysadmindoc.github.io',
+    name: 'Matt Parker Portfolio',
+    description: 'Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+    publisher: { '@id': personId },
+  },
+  {
+    '@type': 'Person',
+    '@id': personId,
+    name: 'Matt Parker',
+    url: 'https://github.com/SysAdminDoc',
+    jobTitle: 'Senior Technical Support Manager',
+    worksFor: { '@type': 'Organization', name: 'Maven Imaging' },
+    address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' },
+    knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging','DICOM','PACS','Active Directory','Hyper-V','Cisco Networking','HIPAA'],
+    sameAs: ['https://github.com/SysAdminDoc','https://www.linkedin.com/in/matthewryanparker'],
+  },
+];
+if (isHome) {
+  jsonLdGraph.push({
+    '@type': 'ProfilePage',
+    '@id': 'https://sysadmindoc.github.io/#profile',
+    url: 'https://sysadmindoc.github.io/',
+    name: title,
+    mainEntity: { '@id': personId },
+    about: { '@id': personId },
+  });
+}
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -218,11 +255,8 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json" />
   <link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json" />
   <link rel="preconnect" href="https://api.github.com" crossorigin />
-  <link rel="preconnect" href="https://i.scdn.co" crossorigin />
   <link rel="dns-prefetch" href="https://api.github.com" />
-  <link rel="dns-prefetch" href="https://i.scdn.co" />
   <link rel="dns-prefetch" href="https://img.youtube.com" />
-  <link rel="dns-prefetch" href="https://www.youtube.com" />
   <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
   <link rel="manifest" href="/manifest.json" />
   {/* Fonts self-hosted in public/fonts/ — @font-face rules in global.css */}
@@ -233,10 +267,7 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
 
   <script is:inline type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
-    '@graph': [
-      { '@type': 'WebSite', url: 'https://sysadmindoc.github.io', name: 'Matt Parker Portfolio', description: 'Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.' },
-      { '@type': 'Person', name: 'Matt Parker', url: 'https://github.com/SysAdminDoc', jobTitle: 'Senior Technical Support Manager', worksFor: { '@type': 'Organization', name: 'Maven Imaging' }, address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' }, knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging','DICOM','PACS','Active Directory','Hyper-V','Cisco Networking','HIPAA'], sameAs: ['https://github.com/SysAdminDoc','https://www.linkedin.com/in/matthewryanparker'] }
-    ]
+    '@graph': jsonLdGraph,
   })} />
 </head>
 <body class={bodyClass}>
