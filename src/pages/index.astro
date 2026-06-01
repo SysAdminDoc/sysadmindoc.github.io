@@ -19,6 +19,7 @@ let stats = {
   lastPushedRepo: null as string | null,
   streak: 0,
   latestRelease: null as { repo: string; tag: string | null; at: string } | null,
+  avatarUrl: null as string | null,
   fetchedAt: null as string | null,
 };
 try {
@@ -369,7 +370,7 @@ const cmdkSections = [
     <div class="hi">
       <div class="ht">
         <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
-        <img class="hero-avatar" id="heroAvatar" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Matt Parker" width="56" height="56" decoding="async">
+        <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="56" height="56" decoding="async">
         <div class="htag" id="heroTag"><span class="dot"></span> Open for thoughtful collaboration</div>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
@@ -418,7 +419,7 @@ const cmdkSections = [
         <div class="hero-stage-head">
           <div>
             <div class="hero-stage-kicker">Signature builds</div>
-            <h2 class="hero-stage-title">Three projects that explain how I build.</h2>
+            <p class="hero-stage-title">Three projects that explain how I build.</p>
           </div>
           <a href="#greatest-hits" class="hero-stage-link">Open the short list</a>
         </div>
@@ -665,16 +666,16 @@ const cmdkSections = [
     <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
-        <a href={step.href} class="ji rv">
+        <div class="ji rv" style="position:relative;">
           <div class="jd"></div>
           <div class="jeyebrow">{step.eyebrow}</div>
-          <h3 class="jt">{step.title}</h3>
+          <h3 class="jt"><a href={step.href} class="ji-link">{step.title}</a></h3>
           <p class="jdesc">{step.desc}</p>
           <div class="jfoot">
             <span class="jmeta">{step.meta}</span>
-            <span class="jlink">{step.cta}</span>
+            <span class="jlink" aria-hidden="true">{step.cta}</span>
           </div>
-        </a>
+        </div>
       ))}
     </div>
   </div></section>

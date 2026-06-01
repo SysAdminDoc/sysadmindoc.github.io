@@ -280,6 +280,7 @@
         .ji:nth-child(4) .jd{background:var(--org);box-shadow:0 0 12px rgba(251,146,60,.25)}
         .ji:nth-child(5) .jd{background:var(--teal);box-shadow:0 0 12px rgba(45,212,191,.25)}
         .jt{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
+        .ji-link{color:inherit;text-decoration:none}.ji-link::after{content:'';position:absolute;inset:0;z-index:1}.ji:hover .ji-link{color:var(--blue)}
         .jdesc{font-size:14px;color:var(--t2);line-height:1.7}
 
         /* Connect */

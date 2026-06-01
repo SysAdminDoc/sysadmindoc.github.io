@@ -204,6 +204,9 @@ async function main() {
     console.warn(`Unable to refresh GitHub events: ${error.message}`);
   }
 
+  // Extract avatar URL from the first repo's owner (same for all repos under the user)
+  const avatarUrl = publicRepos[0]?.owner?.avatar_url || existingStats.avatarUrl || null;
+
   writeJson(starsPath, stars);
   writeJson(
     statsPath,
@@ -214,6 +217,7 @@ async function main() {
       lastPushedRepo,
       streak,
       latestRelease,
+      avatarUrl,
       fetchedAt: new Date().toISOString(),
     },
   );
