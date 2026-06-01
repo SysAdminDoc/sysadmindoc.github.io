@@ -150,6 +150,7 @@ async function main() {
   let lastPushedRepo = null;
   let streak = Number.isFinite(existingStats.streak) ? existingStats.streak : 0;
   let latestRelease = existingStats.latestRelease ?? null;
+  let pushDays = Array.isArray(existingStats.pushDays) ? existingStats.pushDays : [];
 
   for (const repo of publicRepos) {
     stars[repo.name] = repo.stargazers_count;
@@ -174,17 +175,23 @@ async function main() {
       'public events',
     );
     if (Array.isArray(events)) {
-      const pushDays = new Set();
+      const pushDaySet = new Set();
       for (const event of events) {
         if (event?.type === 'PushEvent' && event.created_at) {
-          pushDays.add(getUtcDayKey(event.created_at));
+          pushDaySet.add(getUtcDayKey(event.created_at));
         }
       }
+      // Also fold in pushedAt from repo metadata for broader coverage
+      for (const repo of publicRepos) {
+        if (repo.pushed_at) pushDaySet.add(getUtcDayKey(repo.pushed_at));
+      }
+      pushDaySet.delete('');
+      pushDays = [...pushDaySet].sort();
       streak = 0;
       for (let i = 0; i < 90; i += 1) {
         const day = new Date();
         day.setUTCDate(day.getUTCDate() - i);
-        if (pushDays.has(getUtcDayKey(day))) streak += 1;
+        if (pushDaySet.has(getUtcDayKey(day))) streak += 1;
         else if (streak > 0) break;
       }
       const releaseEvent = events.find(
@@ -218,6 +225,7 @@ async function main() {
       streak,
       latestRelease,
       avatarUrl,
+      pushDays,
       fetchedAt: new Date().toISOString(),
     },
   );
