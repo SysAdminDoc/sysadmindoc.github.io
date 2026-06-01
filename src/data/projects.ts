@@ -1,5 +1,4 @@
-// AUTO-GENERATED from _extracted.json by scripts/generate-data.mjs
-// After initial migration, edit this file directly.
+// Canonical project data — edit this file directly.
 import type { Featured, LiveApp, CatalogEntry, Skill } from './types';
 
 export const featured: Featured[] = [

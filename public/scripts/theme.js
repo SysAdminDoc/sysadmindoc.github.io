@@ -101,6 +101,7 @@
   let previousBodyOverflow = '';
   let previousHtmlOverflow = '';
 
+  var focusableSelector = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
   function setMobileNav(open){
     navLinks.classList.toggle('open', open);
     mobileToggle.setAttribute('aria-expanded', String(open));
@@ -111,10 +112,13 @@
       previousHtmlOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
+      var firstLink = navLinks.querySelector('a');
+      if(firstLink) firstLink.focus();
       return;
     }
     document.body.style.overflow = previousBodyOverflow;
     document.documentElement.style.overflow = previousHtmlOverflow;
+    mobileToggle.focus();
   }
 
   setMobileNav(false);
@@ -136,7 +140,14 @@
   });
 
   document.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && navLinks.classList.contains('open')) setMobileNav(false);
+    if(e.key === 'Escape' && navLinks.classList.contains('open')){ setMobileNav(false); return; }
+    if(e.key === 'Tab' && navLinks.classList.contains('open')){
+      var focusable = Array.from(navLinks.querySelectorAll(focusableSelector)).concat(mobileToggle);
+      if(!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
   });
 
   window.addEventListener('resize', () => {

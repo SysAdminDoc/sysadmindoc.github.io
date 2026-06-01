@@ -54,46 +54,6 @@ if(!isMobile){
     document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
 }
 
-/* ===== PARTICLE CONSTELLATION SYSTEM ===== */
-(function(){
-    const c=document.getElementById('particles');
-    if(!c||prefersReducedMotion)return;
-    const ctx=c.getContext('2d');
-    if(!ctx)return;
-    let w,h,particles=[],particleFrame=0;
-    const CFG={count:isMobile?10:24,speed:.18,size:1.2,connectDist:isMobile?84:118,connectDist2:0,mouseDist:150,mouseDist2:0,color:[88,166,255],mouseColor:[74,222,128]};
-    CFG.connectDist2=CFG.connectDist*CFG.connectDist;
-    CFG.mouseDist2=CFG.mouseDist*CFG.mouseDist;
-    function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
-    function init(){resize();particles=[];for(let i=0;i<CFG.count;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*CFG.speed,vy:(Math.random()-.5)*CFG.speed,s:Math.random()*CFG.size+.5,a:Math.random()*.5+.2})}
-    function draw(){particleFrame=0;ctx.clearRect(0,0,w,h);
-        const cStr=CFG.color[0]+','+CFG.color[1]+','+CFG.color[2];
-        const mStr=CFG.mouseColor[0]+','+CFG.mouseColor[1]+','+CFG.mouseColor[2];
-        for(let i=0;i<particles.length;i++){const p=particles[i];
-            p.x+=p.vx;p.y+=p.vy;
-            if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
-            ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-            ctx.fillStyle='rgba('+cStr+','+p.a+')';ctx.fill();
-            for(let j=i+1;j<particles.length;j++){const q=particles[j];
-                const dx=p.x-q.x,dy=p.y-q.y,dist2=dx*dx+dy*dy;
-                if(dist2<CFG.connectDist2){const dist=Math.sqrt(dist2);const alpha=(1-dist/CFG.connectDist)*.15;
-                    ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
-                    ctx.strokeStyle='rgba('+cStr+','+alpha+')';ctx.lineWidth=.5;ctx.stroke()}}
-            if(!isMobile){
-                const mdx=p.x-mouseState.x,mdy=p.y-mouseState.y,md2=mdx*mdx+mdy*mdy;
-                if(md2<CFG.mouseDist2){const md=Math.sqrt(md2);const ma=(1-md/CFG.mouseDist)*.4;
-                    ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouseState.x,mouseState.y);
-                    ctx.strokeStyle='rgba('+mStr+','+ma+')';ctx.lineWidth=.8;ctx.stroke();
-                    p.vx+=mdx/md*.01;p.vy+=mdy/md*.01}}
-            p.vx*=.999;p.vy*=.999;const spd2=p.vx*p.vx+p.vy*p.vy;if(spd2<.01){p.vx=(Math.random()-.5)*CFG.speed;p.vy=(Math.random()-.5)*CFG.speed}}
-        if(!document.hidden&&!particleFrame)particleFrame=requestAnimationFrame(draw)}
-    function start(){if(document.hidden||particleFrame)return;particleFrame=requestAnimationFrame(draw)}
-    function stop(){if(!particleFrame)return;cancelAnimationFrame(particleFrame);particleFrame=0}
-    window.addEventListener('resize',resize);
-    document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();return;}start()});
-    (window.requestIdleCallback||(cb=>setTimeout(cb,80)))(()=>{init();start()})
-})();
-
 /* ===== COPY TOAST ===== */
 const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
 let copyToastTimer=0;
@@ -393,7 +353,7 @@ function playVideo(trigger){
     frameWrap.dataset.yt=id;
     frameWrap.tabIndex=-1;
     const iframe=document.createElement('iframe');
-    iframe.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?autoplay=1';
+    iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1';
     iframe.title=trigger.querySelector('img')?.alt||'Video';
     iframe.frameBorder='0';
     iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
@@ -778,27 +738,6 @@ function onTermReady(){
         style.textContent='@keyframes matrixFall{0%{transform:translateY(0);opacity:.8}100%{transform:translateY('+(window.innerHeight+200)+'px);opacity:0}}';
         document.head.appendChild(style);
         setTimeout(()=>{overlay.remove();style.remove()},6000);
-    }
-})();
-
-/* ===== HERO AVATAR (cached 30 min) ===== */
-(function(){
-    const CACHE_KEY='gh_avatar_cache';const TTL=1800000;
-    const cached=readJsonCache(CACHE_KEY);
-    const av=document.getElementById('heroAvatar');
-    if(!av)return;
-    function showAvatar(url){if(url){av.src=url;requestAnimationFrame(()=>av.classList.add('loaded'))}}
-    if(cached&&Date.now()-cached.ts<TTL&&cached.url){showAvatar(cached.url)}
-    else if(navigator.onLine!==false){
-        fetchWithTimeout('https://api.github.com/users/SysAdminDoc',void 0,10000).then(r=>{
-            if(!r.ok)throw new Error('GitHub profile unavailable');
-            return r.json();
-        }).then(d=>{
-            if(d.avatar_url){
-                writeJsonCache(CACHE_KEY,{url:d.avatar_url,ts:Date.now()});
-                showAvatar(d.avatar_url);
-            }
-        }).catch(()=>{});
     }
 })();
 
