@@ -210,7 +210,7 @@
         .no-results[hidden]{display:none}
         .no-results-icon{width:44px;height:44px;color:var(--t3);opacity:.7;margin-bottom:2px}
         .no-results-title{font-family:var(--mono);font-size:17px;color:var(--t1);letter-spacing:.01em;font-weight:600}
-        .no-results-copy{max-width:44ch;color:var(--t2);font-size:14px;line-height:1.7;margin:0}
+        .no-results-copy{max-width:44ch;color:var(--t2);font-size:14px;line-height:var(--lh-relaxed);margin:0}
         .no-results-action{margin-top:6px}
 
         /* Skills */
@@ -1181,7 +1181,7 @@ html[data-theme="light"] .ca:hover{
   border:1px solid rgba(255,255,255,.08);
   background:rgba(255,255,255,.03);
   color:var(--t2);
-  line-height:1.7;
+  line-height:var(--lh-relaxed);
 }
 .connect-note-label{
   display:block;
@@ -1237,7 +1237,7 @@ html[data-theme="light"] .ca:hover{
   margin:0;
   color:var(--t2);
   font-size:15px;
-  line-height:1.75;
+  line-height:var(--lh-relaxed);
 }
 .cnc-foot{
   width:100%;
@@ -1571,7 +1571,7 @@ html[data-theme="light"] .ca:hover{
 .lang-donut-copy{
   color:var(--t2);
   font-size:15px;
-  line-height:1.75;
+  line-height:var(--lh-relaxed);
   max-width:48ch;
 }
 .lang-donut-shell,
@@ -1662,7 +1662,7 @@ html[data-theme="light"] .ca:hover{
   max-width:34ch;
   color:var(--t2);
   font-size:15px;
-  line-height:1.75;
+  line-height:var(--lh-relaxed);
 }
 .beyond-card-cta{
   display:inline-flex;
@@ -1778,7 +1778,7 @@ html[data-theme="light"] .ca:hover{
   margin:0;
   color:var(--t2);
   font-size:14px;
-  line-height:1.7;
+  line-height:var(--lh-relaxed);
 }
 .about-side{
   display:grid;
@@ -1906,7 +1906,7 @@ footer{
   margin:0;
   color:var(--t2);
   font-size:15px;
-  line-height:1.75;
+  line-height:var(--lh-relaxed);
 }
 .fl{
   justify-content:flex-end;
@@ -2362,6 +2362,7 @@ html[data-theme="light"] .fb{
 .page-shell .page-head .sd{
   max-width:64ch;
 }
+.error-recovery{max-width:28rem;margin:2.5rem auto 0;display:flex;flex-direction:column;gap:.75rem;text-align:center}
 .page-stat-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
@@ -2394,7 +2395,7 @@ html[data-theme="light"] .fb{
   margin-top:10px;
   color:var(--t2);
   font-size:14px;
-  line-height:1.65;
+  line-height:var(--lh-relaxed);
 }
 .page-actions{
   display:flex;
@@ -2516,7 +2517,7 @@ html[data-theme="light"] .fb{
   background:var(--surface-2);
   color:var(--t2);
   font-size:15px;
-  line-height:1.8;
+  line-height:var(--lh-loose);
 }
 .page-empty strong{
   color:var(--t1);
@@ -2933,7 +2934,7 @@ html[data-theme="light"] .fb{
 }
 .project-desc{
   max-width:60ch;
-  line-height:1.75;
+  line-height:var(--lh-relaxed);
 }
 .project-overview{
   gap:16px;
@@ -3065,7 +3066,7 @@ html[data-theme="light"] .fb{
 }
 .lang-card-desc{
   font-size:14px;
-  line-height:1.65;
+  line-height:var(--lh-relaxed);
 }
 .hcit-grid{
   gap:18px;
@@ -3402,7 +3403,7 @@ html[data-theme="light"] .scroll-progress{
 .career-card-company-name{color:var(--t1);font-weight:500}
 .career-card-company-sep{color:var(--t3);opacity:.7}
 .career-card-location{color:var(--t3)}
-.career-card-summary{color:var(--t2);font-size:14.5px;line-height:1.7;margin:4px 0 0}
+.career-card-summary{color:var(--t2);font-size:14.5px;line-height:var(--lh-relaxed);margin:4px 0 0}
 .career-card-highlights{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:8px}
 .career-card-highlights li{position:relative;padding-left:20px;color:var(--t2);font-size:13.5px;line-height:1.6}
 .career-card-highlights li::before{content:'';position:absolute;left:2px;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px rgba(74,222,128,.4)}
