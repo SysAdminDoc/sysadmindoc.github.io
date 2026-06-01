@@ -1,7 +1,6 @@
 /* ===== SAFE DOM HELPERS (XSS-safe repo/text injection) ===== */
+/* escapeHTML, isTextEntryTarget, prefersReducedMotion — loaded from shared.js */
 function safeText(s){return String(s==null?'':s)}
-const _escMap={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
-function escapeHTML(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>_escMap[c])}
 // Only allow alphanumeric, dash, underscore, dot in repo slugs (GitHub's own rules)
 function safeRepo(s){return String(s==null?'':s).replace(/[^A-Za-z0-9._-]/g,'')}
 const GITHUB_CACHE_KEY='gh_cache';
@@ -23,7 +22,6 @@ function fetchWithTimeout(resource,options,timeoutMs){
     const timer=setTimeout(()=>controller.abort(),timeout);
     return fetch(resource,{...(options||{}),signal:controller.signal}).finally(()=>clearTimeout(timer));
 }
-const prefersReducedMotion=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function getClosestTarget(target,selector){return target instanceof Element?target.closest(selector):null}
 function getFallbackRepoCount(){
     const injected=window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects)?window.__PORTFOLIO_DATA.allProjects.length:0;
@@ -35,15 +33,6 @@ function getFallbackRepoCount(){
     });
     return repos.size;
 }
-function isTextEntryTarget(el){
-    return !!el&&(
-        el.tagName==='INPUT'||
-        el.tagName==='TEXTAREA'||
-        el.tagName==='SELECT'||
-        el.isContentEditable
-    );
-}
-
 /* ===== SHARED MOUSE STATE ===== */
 const isMobile=innerWidth<768;
 const mouseState={x:-1000,y:-1000,moved:false};

@@ -13,12 +13,9 @@
 
   let selected = 0;
   let previousFocus = null;
-  let previousBodyOverflow = '';
-  let previousHtmlOverflow = '';
   let chordTimer = 0;
   let chordActive = false;
-  const prefersReducedMotion = typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* prefersReducedMotion — loaded from shared.js */
   const routeColors = {
     blue: '#7cb8ff',
     green: '#4ade80',
@@ -39,11 +36,8 @@
     h: '/',
     t: '/healthcare-it/',
   };
-  const _escMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, char => _escMap[char]);
-  }
+  /* escapeHTML, isTextEntryTarget — loaded from shared.js */
+  var escapeHtml = escapeHTML;
 
   function highlightMatch(text, query) {
     const value = String(text == null ? '' : text);
@@ -55,15 +49,6 @@
     return escapeHtml(value.slice(0, index))
       + '<mark>' + escapeHtml(value.slice(index, index + query.length)) + '</mark>'
       + escapeHtml(value.slice(index + query.length));
-  }
-
-  function isTextEntryTarget(el) {
-    return !!el && (
-      el.tagName === 'INPUT'
-      || el.tagName === 'TEXTAREA'
-      || el.tagName === 'SELECT'
-      || el.isContentEditable
-    );
   }
 
   function setMeta(message) {
@@ -251,11 +236,6 @@
   function setExpanded(isOpen) {
     toggleBtn?.setAttribute('aria-expanded', String(isOpen));
     input.setAttribute('aria-expanded', String(isOpen));
-    backdrop.setAttribute('aria-hidden', String(!isOpen));
-  }
-
-  function getFocusableElements() {
-    return [input, ...list.querySelectorAll('.cmdk-item')];
   }
 
   function setSelected(nextIndex) {
@@ -307,26 +287,21 @@
   }
 
   function open() {
-    if (backdrop.classList.contains('open')) return;
+    if (backdrop.open) return;
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    previousBodyOverflow = document.body.style.overflow;
-    previousHtmlOverflow = document.documentElement.style.overflow;
-    backdrop.classList.add('open');
     input.value = '';
     render('');
     list.scrollTop = 0;
+    backdrop.showModal();
     setExpanded(true);
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
     setTimeout(() => input.focus(), 20);
   }
 
-  function close(options = {}) {
-    if (!backdrop.classList.contains('open')) return;
-    const restoreFocus = options.restoreFocus !== false;
-    backdrop.classList.remove('open');
-    document.body.style.overflow = previousBodyOverflow;
-    document.documentElement.style.overflow = previousHtmlOverflow;
+  function close(options) {
+    options = options || {};
+    if (!backdrop.open) return;
+    var restoreFocus = options.restoreFocus !== false;
+    backdrop.close();
     input.setAttribute('aria-activedescendant', '');
     setExpanded(false);
     if (restoreFocus && previousFocus && typeof previousFocus.focus === 'function') {
@@ -362,10 +337,10 @@
   document.addEventListener('keydown', event => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
-      backdrop.classList.contains('open') ? close() : open();
+      backdrop.open ? close() : open();
       return;
     }
-    if (event.key === '/' && !backdrop.classList.contains('open')) {
+    if (event.key === '/' && !backdrop.open) {
       const focused = document.activeElement;
       if (focused && isTextEntryTarget(focused)) return;
       event.preventDefault();
@@ -374,7 +349,7 @@
   });
 
   document.addEventListener('keydown', event => {
-    if (backdrop.classList.contains('open')) return;
+    if (backdrop.open) return;
     const focused = document.activeElement;
     if (focused && isTextEntryTarget(focused)) return;
     if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -399,30 +374,16 @@
   });
 
   toggleBtn?.addEventListener('click', () => {
-    backdrop.classList.contains('open') ? close() : open();
+    backdrop.open ? close() : open();
   });
+  /* Native <dialog> fires 'cancel' on Escape — close cleanly */
+  backdrop.addEventListener('cancel', event => {
+    event.preventDefault();
+    close();
+  });
+  /* Click on the ::backdrop (rendered by <dialog>) lands on the dialog element itself */
   backdrop.addEventListener('click', event => {
     if (event.target === backdrop) close();
-  });
-  backdrop.addEventListener('keydown', event => {
-    if (!backdrop.classList.contains('open')) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      close();
-      return;
-    }
-    if (event.key !== 'Tab') return;
-    const focusable = getFocusableElements().filter(el => el && typeof el.focus === 'function');
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
   });
 
   input.addEventListener('input', event => render(event.target.value));
