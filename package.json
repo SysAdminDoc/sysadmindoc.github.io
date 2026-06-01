@@ -11,6 +11,7 @@
     "check": "npm run data:validate && npm run assets:audit && npm run images:audit && astro check",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "node --test",
     "fetch-stars": "node scripts/fetch-stars.mjs",
     "capture-screenshots": "node scripts/capture-screenshots.mjs",
     "data:validate": "node scripts/validate-project-data.mjs",

@@ -13,6 +13,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getUtcDayKey, computeStreak } from './lib/streak.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -81,11 +82,6 @@ async function fetchText(url, options, context) {
   return await res.text();
 }
 
-function getUtcDayKey(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
-}
 
 async function fetchAllRepos() {
   const all = [];
@@ -187,13 +183,9 @@ async function main() {
       }
       pushDaySet.delete('');
       pushDays = [...pushDaySet].sort();
-      streak = 0;
-      for (let i = 0; i < 90; i += 1) {
-        const day = new Date();
-        day.setUTCDate(day.getUTCDate() - i);
-        if (pushDaySet.has(getUtcDayKey(day))) streak += 1;
-        else if (streak > 0) break;
-      }
+      // Consecutive-day streak ending at today (or yesterday, since the UTC day
+      // is not over). See scripts/lib/streak.mjs for the rationale.
+      streak = computeStreak(pushDaySet);
       const releaseEvent = events.find(
         (event) =>
           event?.type === 'ReleaseEvent' ||
