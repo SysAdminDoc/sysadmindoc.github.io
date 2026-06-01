@@ -6,6 +6,7 @@ import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import TagCloud from '../components/TagCloud.astro';
+import Heatmap from '../components/Heatmap.astro';
 import { featured, liveApps, catalog, skills } from '../data/projects';
 import { fallbackRepoCount } from '../data/derived';
 
@@ -20,6 +21,7 @@ let stats = {
   streak: 0,
   latestRelease: null as { repo: string; tag: string | null; at: string } | null,
   avatarUrl: null as string | null,
+  pushDays: [] as string[],
   fetchedAt: null as string | null,
 };
 try {
@@ -456,6 +458,12 @@ const cmdkSections = [
       </div>
     </div>
   </section>
+
+  {stats.pushDays.length > 0 && (
+    <section class="heatmap-section rv"><div class="si">
+      <Heatmap days={stats.pushDays} />
+    </div></section>
+  )}
 
   <Divider />
 
