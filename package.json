@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.16.15",
+  "version": "0.17.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
