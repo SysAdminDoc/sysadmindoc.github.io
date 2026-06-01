@@ -3530,3 +3530,462 @@ html[data-theme="light"] .lc2-preview-label{
 html[data-theme="light"] .lc2 .lc2-thumb::after{
   background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.4));
 }
+
+/* ===== R33: Contribution heatmap ===== */
+.heatmap-section{
+  padding:0 0 12px;
+}
+.heatmap-wrap{
+  max-width:820px;
+  margin:0 auto;
+}
+.heatmap-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.heatmap-label{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--t3);
+  letter-spacing:.02em;
+}
+.heatmap-scroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(55,65,90,.4) transparent;
+}
+.heatmap-svg{
+  display:block;
+}
+.hm-month{
+  fill:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+}
+.hm-day{
+  fill:var(--t3);
+  font-family:var(--mono);
+  font-size:9px;
+  dominant-baseline:auto;
+}
+/* Intensity levels — dark theme */
+.hm-empty{
+  fill:transparent;
+}
+.hm-0{
+  fill:rgba(255,255,255,.04);
+}
+.hm-1{
+  fill:rgba(74,222,128,.28);
+}
+.hm-2{
+  fill:rgba(74,222,128,.52);
+}
+.hm-3{
+  fill:rgba(74,222,128,.82);
+}
+/* Intensity levels — light theme */
+html[data-theme="light"] .hm-0{
+  fill:rgba(70,83,112,.06);
+}
+html[data-theme="light"] .hm-1{
+  fill:rgba(34,160,80,.22);
+}
+html[data-theme="light"] .hm-2{
+  fill:rgba(34,160,80,.46);
+}
+html[data-theme="light"] .hm-3{
+  fill:rgba(34,160,80,.76);
+}
+/* Legend */
+.heatmap-legend{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  justify-content:flex-end;
+  margin-top:8px;
+}
+.heatmap-legend-label{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--t3);
+  margin:0 3px;
+}
+.hm-swatch{
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:2px;
+}
+/* Swatch reuses the same fill classes via background */
+.hm-swatch.hm-0{background:rgba(255,255,255,.04)}
+.hm-swatch.hm-1{background:rgba(74,222,128,.28)}
+.hm-swatch.hm-2{background:rgba(74,222,128,.52)}
+.hm-swatch.hm-3{background:rgba(74,222,128,.82)}
+html[data-theme="light"] .hm-swatch.hm-0{background:rgba(70,83,112,.06)}
+html[data-theme="light"] .hm-swatch.hm-1{background:rgba(34,160,80,.22)}
+html[data-theme="light"] .hm-swatch.hm-2{background:rgba(34,160,80,.46)}
+html[data-theme="light"] .hm-swatch.hm-3{background:rgba(34,160,80,.76)}
+@media(max-width:640px){
+  .heatmap-section{
+    padding:0 0 8px;
+  }
+  .heatmap-head{
+    margin-bottom:6px;
+  }
+  .heatmap-label{
+    font-size:11px;
+  }
+}
+
+/* ===== R38: Light theme completion ===== */
+
+/* Nav link hovers — rgba(255,255,255,.05) invisible on light bg */
+html[data-theme="light"] .nk a:hover,
+html[data-theme="light"] .nk a.active{
+  background:rgba(70,83,112,.08);
+}
+html[data-theme="light"] .ng,
+html[data-theme="light"] .theme-toggle{
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] nav{
+  border-bottom-color:var(--border-soft);
+  box-shadow:0 8px 28px rgba(29,42,70,.1);
+}
+
+/* Hero stat borders — rgba(255,255,255,.08) invisible */
+html[data-theme="light"] .hs{
+  border-top-color:var(--border-soft);
+  border-bottom-color:var(--border-soft);
+}
+html[data-theme="light"] .hs-item:not(:last-child){
+  border-right-color:var(--border-soft);
+}
+@media(max-width:460px){
+  html[data-theme="light"] .hs-item:not(:last-child){
+    border-bottom-color:var(--border-soft);
+  }
+}
+
+/* Hero stage — dark gradient border */
+html[data-theme="light"] .hero-stage{
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .hero-stage::after{
+  border-color:rgba(70,83,112,.06);
+}
+html[data-theme="light"] .hero-stage::before{
+  background:
+    radial-gradient(circle at top right, rgba(124,184,255,.08) 0%, transparent 34%),
+    radial-gradient(circle at bottom left, rgba(198,156,255,.06) 0%, transparent 36%);
+}
+
+/* Hero reel items — rgba(255,255,255,.03/.06) invisible */
+html[data-theme="light"] .hero-reel-lang{
+  background:rgba(70,83,112,.06);
+}
+html[data-theme="light"] .hero-stage-link,
+html[data-theme="light"] .hero-flightpath-items a{
+  border-color:var(--border-soft);
+  background:rgba(70,83,112,.05);
+}
+html[data-theme="light"] .hero-stage-link:hover,
+html[data-theme="light"] .hero-flightpath-items a:hover{
+  border-color:var(--border-strong);
+  background:rgba(70,83,112,.08);
+}
+
+/* Hero terminal shell */
+html[data-theme="light"] .hero-terminal-shell{
+  background:rgba(240,235,225,.6);
+}
+html[data-theme="light"] .hero-stage .term{
+  background:rgba(240,235,225,.7);
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .hero-stage .tb,
+html[data-theme="light"] .about-terminal .tb,
+html[data-theme="light"] .tb{
+  background:rgba(70,83,112,.04);
+}
+
+/* Hero flightpath border */
+html[data-theme="light"] .hero-flightpath{
+  border-top-color:var(--border-soft);
+}
+
+/* Featured card tags — rgba(255,255,255,.04) invisible */
+html[data-theme="light"] .ctg{
+  color:var(--t2);
+  background:rgba(70,83,112,.06);
+  border-color:rgba(70,83,112,.1);
+}
+
+/* Featured card footer — rgba(255,255,255,.08) invisible */
+html[data-theme="light"] .pc-foot{
+  border-top-color:var(--border-soft);
+}
+
+/* Card backgrounds — rgba(17,24,39,.65) is dark */
+html[data-theme="light"] .pc{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 16px 36px rgba(29,42,70,.1);
+}
+html[data-theme="light"] .pc:hover{
+  background:rgba(255,255,255,.88);
+  box-shadow:0 22px 48px rgba(29,42,70,.14);
+}
+
+/* Catalog search/filter — rgba(17,24,39,.7) is dark */
+html[data-theme="light"] .search-input,
+html[data-theme="light"] .sort-select{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 8px 20px rgba(29,42,70,.06);
+}
+html[data-theme="light"] .fb{
+  background:rgba(255,255,255,.6);
+}
+
+/* Filter count badge — rgba(255,255,255,.06) invisible */
+html[data-theme="light"] .fc{
+  background:rgba(70,83,112,.08);
+}
+
+/* Catalog feedback bar */
+html[data-theme="light"] .catalog-feedback{
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .catalog-reset{
+  background:rgba(70,83,112,.05);
+  border-color:var(--border-soft);
+}
+
+/* Skill ring bg — rgba(255,255,255,.06) invisible */
+html[data-theme="light"] .sk-ring .ring-bg{
+  stroke:rgba(70,83,112,.1);
+}
+
+/* Skill cards — rgba(17,24,39,.65) dark */
+html[data-theme="light"] .skc{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 14px 30px rgba(29,42,70,.08);
+}
+
+/* Video cards — rgba(17,24,39,.65) dark */
+html[data-theme="light"] .video-card{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 14px 30px rgba(29,42,70,.08);
+}
+
+/* Live cards — rgba(17,24,39,.65) dark */
+html[data-theme="light"] .lc2{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 14px 30px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .lc2:hover{
+  background:rgba(255,255,255,.88);
+  box-shadow:0 18px 38px rgba(29,42,70,.12);
+}
+
+/* lc2 meta row — rgba(255,255,255,.025) invisible */
+html[data-theme="light"] .lc2-meta-row span{
+  background:rgba(70,83,112,.05);
+}
+
+/* About terminal — dark gradient */
+html[data-theme="light"] .about-terminal{
+  background:linear-gradient(180deg, rgba(255,255,255,.8), rgba(247,241,231,.7));
+  border-color:var(--border-soft);
+  box-shadow:0 20px 48px rgba(29,42,70,.1);
+}
+
+/* About/philosophy/journey — rgba(255,255,255,.04/.08) borders */
+html[data-theme="light"] .about-signal,
+html[data-theme="light"] .about-link,
+html[data-theme="light"] .philosophy-intro{
+  border-color:var(--border-soft);
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(247,241,231,.6));
+  box-shadow:0 14px 32px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .about-link:hover,
+html[data-theme="light"] .about-link:focus-visible{
+  border-color:var(--border-strong);
+  background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,241,231,.78));
+}
+
+/* Philosophy cards */
+html[data-theme="light"] #philosophy .prc{
+  border-color:var(--border-soft);
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(247,241,231,.6));
+  box-shadow:0 14px 32px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .prf{
+  border-top-color:var(--border-soft);
+}
+html[data-theme="light"] .philosophy-checks span{
+  border-color:var(--border-soft);
+  background:rgba(70,83,112,.05);
+}
+
+/* Journey cards */
+html[data-theme="light"] .ji{
+  background:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.28));
+}
+html[data-theme="light"] .jfoot{
+  border-top-color:var(--border-soft);
+}
+
+/* Connect section — dark gradient */
+html[data-theme="light"] #connect .si{
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .connect-note{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.5);
+}
+html[data-theme="light"] .cnc-foot{
+  border-top-color:var(--border-soft);
+}
+
+/* Stack / beyond / donut panels */
+html[data-theme="light"] .stack-overview,
+html[data-theme="light"] .lang-donut-panel,
+html[data-theme="light"] .beyond-card{
+  border-color:var(--border-soft);
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(247,241,231,.6));
+  box-shadow:0 14px 32px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .beyond-card:hover,
+html[data-theme="light"] .beyond-card:focus-visible{
+  border-color:var(--border-strong);
+  background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,241,231,.78));
+  box-shadow:0 18px 42px rgba(29,42,70,.12);
+}
+html[data-theme="light"] .stack-action{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.5);
+}
+html[data-theme="light"] .stack-action:hover,
+html[data-theme="light"] .stack-action:focus-visible{
+  border-color:var(--border-strong);
+  background:rgba(255,255,255,.7);
+}
+
+/* Lang donut fallback list */
+html[data-theme="light"] .lang-donut-fallback-list span{
+  border-color:var(--border-soft);
+  background:rgba(70,83,112,.05);
+}
+
+/* Career section */
+html[data-theme="light"] .career-card{
+  border-color:var(--border-soft);
+  background:var(--surface-1);
+}
+html[data-theme="light"] .career-card:hover{
+  box-shadow:0 22px 48px rgba(29,42,70,.14);
+}
+html[data-theme="light"] .career-card-stack{
+  border-top-color:var(--border-soft);
+}
+html[data-theme="light"] .career-stack-chip{
+  border-color:var(--border-soft);
+  background:rgba(70,83,112,.05);
+}
+html[data-theme="light"] .career-signal{
+  border-color:var(--border-soft);
+}
+
+/* Back-to-top — rgba(17,24,39,.85) dark */
+html[data-theme="light"] .btt{
+  background:rgba(255,255,255,.88);
+  border-color:var(--border-soft);
+  box-shadow:0 8px 20px rgba(29,42,70,.08);
+}
+
+/* Terminal — dark glass */
+html[data-theme="light"] .term{
+  background:rgba(255,255,255,.72);
+  box-shadow:0 14px 32px rgba(29,42,70,.12);
+}
+html[data-theme="light"] .term-output:hover{
+  background:rgba(70,83,112,.04);
+}
+
+/* Shimmer skeleton */
+html[data-theme="light"] .shimmer-load{
+  background:linear-gradient(90deg,rgba(70,83,112,.06) 25%,rgba(70,83,112,.12) 50%,rgba(70,83,112,.06) 75%);
+  background-size:200% 100%;
+}
+
+/* Command palette backdrop */
+html[data-theme="light"] .cmdk-backdrop::backdrop{
+  background:rgba(29,42,70,.5);
+}
+
+/* Mobile nav dropdown — rgba(10,14,23,.95) dark */
+@media(max-width:640px){
+  html[data-theme="light"] .nk.open{
+    background:rgba(248,244,234,.98);
+    border-bottom-color:var(--border-soft);
+  }
+}
+
+/* nav-context */
+html[data-theme="light"] .nav-context{
+  background:rgba(70,83,112,.04);
+}
+html[data-theme="light"] .nav-context-slate{
+  border-color:var(--border-soft);
+  background:rgba(70,83,112,.04);
+}
+
+/* Divider */
+html[data-theme="light"] .dv{
+  background:linear-gradient(90deg,transparent,var(--border-soft),transparent);
+}
+
+/* Starred catalog items */
+html[data-theme="light"] .ca.starred{
+  background:rgba(250,204,21,.06);
+}
+
+/* Primary button */
+html[data-theme="light"] .bp{
+  color:#fff;
+  box-shadow:0 8px 22px rgba(53,107,191,.22);
+}
+html[data-theme="light"] .bp:hover{
+  box-shadow:0 14px 36px rgba(53,107,191,.3);
+}
+
+/* Secondary button */
+html[data-theme="light"] .bg2{
+  background:rgba(255,255,255,.6);
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .bg2:hover{
+  background:rgba(255,255,255,.82);
+  border-color:var(--border-strong);
+  box-shadow:0 10px 24px rgba(29,42,70,.1);
+}
+
+/* Button ripple */
+html[data-theme="light"] .btn .ripple{
+  background:rgba(70,83,112,.18);
+}
+
+/* Conic gradient card borders — keep working */
+html[data-theme="light"] .pc:hover,
+html[data-theme="light"] .lc2:hover{
+  border-color:transparent;
+}
+
+/* Mark highlight */
+html[data-theme="light"] mark{
+  background:rgba(250,204,21,.32);
+}

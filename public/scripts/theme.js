@@ -79,8 +79,6 @@
   }
 
   // Always default to dark. Only honor explicit opt-in via toggle (persisted in localStorage).
-  // Respecting prefers-color-scheme would flip users with OS light mode into our
-  // incomplete light palette on first paint — visibly broken.
   let saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
   apply(saved === 'light' ? 'light' : 'dark');
