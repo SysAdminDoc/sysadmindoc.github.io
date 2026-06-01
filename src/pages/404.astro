@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 ---
-<Base title="404 - Page Not Found" description="The page you're looking for doesn't exist.">
+<Base title="404 — Page Not Found" description="The page you're looking for doesn't exist or was moved.">
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel="404" contextTone="amber" />
 
@@ -12,14 +12,14 @@ import InteriorNav from '../components/InteriorNav.astro';
         <div class="sl">// 404</div>
         <h1 class="st">Page not found</h1>
         <p class="sd">
-          The page you're looking for doesn't exist, was renamed, or was moved.
+          This page doesn't exist, was renamed, or was moved. Try searching the catalog or heading back to the homepage.
         </p>
       </div>
 
-      <div class="error-recovery rv" style="max-width: 42rem; margin: 2rem auto; display: flex; flex-direction: column; gap: 1rem;">
-        <a href="/" class="btn btn-primary" style="text-align: center;">← Back to homepage</a>
-        <a href="/#catalog" class="btn btn-secondary" style="text-align: center;">Browse the catalog</a>
-        <a href="/search/" class="btn btn-secondary" style="text-align: center;">Search projects</a>
+      <div class="error-recovery rv">
+        <a href="/" class="btn bp">Back to homepage</a>
+        <a href="/#catalog" class="btn bg2">Browse the catalog</a>
+        <a href="/search/" class="btn bg2">Search projects</a>
       </div>
     </div>
   </main>
