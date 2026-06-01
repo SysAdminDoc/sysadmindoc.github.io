@@ -136,7 +136,7 @@ legacy.html           # backup of pre-Astro single-file site
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for planned work, active roadmap tiers, and shipped items.
+See [ROADMAP.md](ROADMAP.md) for planned work. Completed items from the 2026-05-17 sprint are in [COMPLETED.md](COMPLETED.md). Full research evidence is in [RESEARCH_REPORT.md](RESEARCH_REPORT.md).
 
 ## License
 
