@@ -23,7 +23,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## P1 — High-value features, SEO/AEO, resilience, CI
 ### Features / content
-- [ ] **T4** Contact/hire funnel — email + LinkedIn in Connect + footer (NF-8 + R LinkedIn, S). Accept: working mailto/LinkedIn surfaced; hero pill scrolls to #connect.
+- [x] **T4** Contact/hire funnel — email + LinkedIn in Connect + footer (NF-8 + R LinkedIn, S). Accept: working mailto/LinkedIn surfaced; hero pill scrolls to #connect.
 - [ ] **T5** Render dead `featured` content (NF-2, M) — surface authored desc/tags beyond hero reel, or prune. Accept: no orphaned authored data.
 - [ ] **T6** Build-time language-donut fallback (NF-6, M) — bake language mix from `_meta.json`; JS enhances. Accept: donut renders with JS disabled.
 - [x] **T7** Data-layer test runner — `node:test` (NF-12, M) — cover streak/cosine/release-trim/getUtcDayKey; wire `npm test`. Accept: `npm test` green; CI step.
@@ -40,11 +40,11 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T16** Split / non-block monolithic CSS — defer to CSS pass (R, L) *(coordinate with T2, @layer)*.
 ### Accessibility
 - [x] **T17** Wrap CSS scroll-driven animations in `prefers-reduced-motion` guard (R, S).
-- [ ] **T18** Accessible labels + aria-live on hero stat counters (R, S).
+- [x] **T18** Accessible labels + aria-live on hero stat counters (R, S).
 - [ ] **T19** Command-palette listbox ARIA: `<a role=option>` → valid pattern (R, M).
 ### Nav / content
-- [ ] **T20** Remove duplicate InteriorNav `/#catalog` link (R, S).
-- [ ] **T21** Add `/uses/` + `/resume/` to InteriorNav + homepage footer (R, S).
+- [x] **T20** Remove duplicate InteriorNav `/#catalog` link (R, S).
+- [x] **T21** Add `/uses/` + `/resume/` to InteriorNav + homepage footer (R, S).
 ### Build / CI / docs
 - [x] **T22** Deduplicate pre-build validation in deploy.yml (R, S).
 - [ ] **T23** Finish TS-AST helper migration to `scripts/lib/` (R, M).
@@ -58,7 +58,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ### Features
 - [ ] **T29** Live Apps overview + status a11y text (NF-5, M).
 - [ ] **T30** Case-study teasers on homepage Greatest Hits (NF-3, S).
-- [ ] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
+- [x] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
 - [ ] **T32** Terminal history + Tab completion (NF-16, S).
 - [ ] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [ ] **T34** SW stale-while-revalidate navigation (NF-20, M).
@@ -81,24 +81,24 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T48** Cross-origin SW cache TTL (R, M).
 - [x] **T49** `.well-known/security.txt` + `humans.txt` (NF, S).
 ### Accessibility (P2 cluster)
-- [ ] **T50** Section `aria-labelledby` on homepage (R, S).
+- [x] **T50** Section `aria-labelledby` on homepage (R, S).
 - [ ] **T51** Heatmap zero/future cells aria-hidden + enrich streak/peak (R + NF-7, S).
 - [ ] **T52** Journey cards whole-card link / remove dead focus CSS (R + improvement, S).
-- [ ] **T53** Interior footer `div`→`nav` landmark (R, S).
-- [ ] **T54** Remove duplicate catalog aria-live (R, S).
-- [ ] **T55** Visible labels for catalog form controls (R, S).
+- [x] **T53** Interior footer `div`→`nav` landmark (R, S).
+- [x] **T54** Remove duplicate catalog aria-live (R, S).
+- [x] **T55** Visible labels for catalog form controls (R, S).
 - [ ] **T56** Mobile-nav focus-trap tab order (R, S).
 - [ ] **T57** Terminal a11y: role=log, keystroke gating, copy keyboard, video close (R + NF-17, M).
 - [ ] **T58** Theme toggle respects prefers-color-scheme first visit + fix misleading comment (R, S).
 ### Nav / content (P2 cluster)
-- [ ] **T59** 404 page footer (R, S).
-- [ ] **T60** Healthcare-IT empty-state (R, S).
-- [ ] **T61** Expand homepage footer nav (R, S).
+- [x] **T59** 404 page footer (R, S).
+- [x] **T60** Healthcare-IT empty-state (R, S).
+- [x] **T61** Expand homepage footer nav (R, S).
 - [ ] **T62** Extract shared career data (R, M) *(prereq for JSON Resume)*.
-- [ ] **T63** InteriorNav active state for /uses, /resume, /healthcare-it (R, S).
+- [x] **T63** InteriorNav active state for /uses, /resume, /healthcare-it (R, S).
 - [ ] **T64** Clarify ThinkTV/Maven date overlap (R, S).
-- [ ] **T65** Resume contact info (R, S) *(folds into T4 data)*.
-- [ ] **T66** SectionJumpNav on releases + Timeline cross-link (R, S).
+- [x] **T65** Resume contact info (R, S) *(folds into T4 data)*.
+- [x] **T66** SectionJumpNav on releases + Timeline cross-link (R, S).
 - [ ] **T67** Verify TagCloud quick-pick filter activation (R, S).
 ### Build/CI (P2 cluster)
 - [x] **T68** `sw:stamp` → ESM script (R, S).
