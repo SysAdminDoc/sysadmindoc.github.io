@@ -209,6 +209,8 @@ const bodyClass = Astro.url.pathname === '/' ? 'route-home' : 'route-interior';
   <meta name="twitter:description" content={description} />
 
   <link rel="canonical" href={canonical} />
+  <link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
