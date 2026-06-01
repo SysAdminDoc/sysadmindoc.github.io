@@ -1,6 +1,6 @@
         /* Self-hosted Google Fonts — JetBrains Mono + Outfit */
-        @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:swap;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-        @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:swap;src:url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+        @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+        @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
         @font-face{font-family:'Outfit';font-style:normal;font-weight:300 800;font-display:swap;src:url('/fonts/outfit-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
         @font-face{font-family:'Outfit';font-style:normal;font-weight:300 800;font-display:swap;src:url('/fonts/outfit-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 
@@ -12,9 +12,14 @@
             .scroll-progress{animation:scroll-fill linear;animation-timeline:scroll();width:100% !important}
             @keyframes scroll-fill{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
         }
-        /* R40: CSS scroll-driven section reveals — progressive enhancement */
+        /* R40: CSS scroll-driven section reveals — progressive enhancement.
+           Scroll-timeline animations are position- not time-based, so the global
+           prefers-reduced-motion duration override does not neutralize them.
+           Gate the bind on no-preference so reduce-motion users see no scroll motion. */
         @supports (animation-timeline: view()) {
-            .rv{animation:reveal-in linear both;animation-timeline:view();animation-range:entry 0% entry 30%}
+            @media (prefers-reduced-motion: no-preference) {
+                .rv{animation:reveal-in linear both;animation-timeline:view();animation-range:entry 0% entry 30%}
+            }
             @keyframes reveal-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
         }
 
@@ -38,6 +43,8 @@
             /* Focus system */
             --focus-ring:0 0 0 3px rgba(74,222,128,.28);
             --focus-outline:var(--grn);
+            /* Brand the native form controls (checkbox/radio/range/select tick) */
+            accent-color:var(--grn);
             /* Spacing scale (8px grid) */
             --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-7:32px;--sp-8:40px;--sp-9:48px;--sp-10:64px;
             /* Border radius scale */
@@ -338,7 +345,12 @@
         .term-output .cmd-name{color:var(--grn)}.term-output .cmd-desc{color:var(--t2)}.term-output .cmd-val{color:var(--org)}
 
         /* Film Grain */
-        body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+        /* Film grain is a full-viewport fixed compositor layer. Only render it on
+           fine-pointer (desktop) devices -- on touch/low-power screens it costs a
+           layer per scroll frame for a barely-perceptible 3.5% texture. */
+        @media (hover: hover) and (pointer: fine){
+            body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+        }
 
         /* Language Donut */
         .lang-donut-wrap{margin-top:48px;display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
@@ -2563,6 +2575,37 @@ html[data-theme="light"] .fb{
   .btn .ripple,
   .dv::after{
     animation:none!important;
+  }
+}
+/* Windows High Contrast / forced-colors: the OS forces its own palette and drops
+   box-shadow, background-image and custom colors. Minimal, targeted overrides so
+   focus stays visible and shadow-bordered controls keep an edge. Let semantic
+   HTML and system color keywords do the rest -- no separate high-contrast theme. */
+@media(forced-colors:active){
+  :focus-visible{
+    outline:2px solid Highlight;
+    outline-offset:3px;
+  }
+  /* Decorative-only layers (film grain, divider sweep, hero glow) add nothing
+     once the palette is forced -- hide them so they cannot obscure content. */
+  body::after,
+  .dv::after,
+  .hero-stage::before,
+  .hero-stage::after{
+    display:none!important;
+  }
+  /* Controls that rely on background/shadow for their boundary need a real border
+     to stay distinguishable when shadows are stripped. */
+  .btn,
+  button,
+  .card,
+  .ctg,
+  .lb2,
+  .theme-toggle,
+  input,
+  select,
+  textarea{
+    border:1px solid ButtonText;
   }
 }
 @media(max-width:1100px){
