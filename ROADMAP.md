@@ -54,14 +54,8 @@ This roadmap consolidates all active work from the 2026-06-01 deep research pass
 - **Verify**: Navigate to /now/, confirm date and content are current.
 - **Complexity**: S
 
-#### R3. Refresh build-time stats (_stats.json)
-- **Priority**: P1
-- **Why**: Hero shows outdated counts (170 repos, 220 stars) from 2026-05-17. Nine repos were added 2026-06-01. JS-disabled visitors and search engines see stale data.
-- **Evidence**: src/data/_stats.json: fetchedAt 2026-05-17, totalRepos:170. Git log from 2026-06-01 shows 9 repos added.
-- **Touches**: src/data/_stats.json (run `npm run fetch-stars`)
-- **Acceptance**: Hero stats match current GitHub reality.
-- **Verify**: Run `npm run fetch-stars`, build, check hero numbers.
-- **Complexity**: S
+#### ~~R3. Refresh build-time stats (_stats.json)~~ DONE
+- Ran `npm run fetch-stars` on 2026-06-01. Updated to 176 repos, 268 stars. READMEs preserved from cache (full refresh needs GITHUB_TOKEN).
 
 #### R4. Fix OG image endpoint missing 'cpp' category
 - **Priority**: P1
@@ -83,14 +77,8 @@ This roadmap consolidates all active work from the 2026-06-01 deep research pass
 - **Verify**: Create test markdown with `<a href="data:text/html,...">` and confirm it is stripped. Confirm base64 img src still works.
 - **Complexity**: S
 
-#### R6. Add Content-Security-Policy meta tag
-- **Priority**: P2
-- **Why**: No CSP exists. GitHub Pages does not support custom HTTP headers, but a meta tag provides defense-in-depth alongside correct escaping. Known origins: self, fonts.googleapis.com, fonts.gstatic.com, api.github.com, opengraph.githubassets.com, i.scdn.co, img.youtube.com, www.youtube.com.
-- **Evidence**: Grep for `Content-Security-Policy` returns zero hits. Astro uses is:inline scripts requiring 'unsafe-inline'.
-- **Touches**: src/layouts/Base.astro
-- **Acceptance**: CSP meta tag added. No CSP violations in Chrome DevTools. Fonts, API calls, YouTube embeds all work.
-- **Verify**: Load site in Chrome DevTools, check console for CSP violations.
-- **Complexity**: M
+#### ~~R6. Add Content-Security-Policy meta tag~~ DONE
+- Added CSP meta tag to Base.astro after theme-color meta. Covers self, fonts, GitHub API/assets, Spotify CDN, YouTube nocookie, and data: URIs for img-src only.
 
 #### R7. Clean _extracted.json of medical-imaging references
 - **Priority**: P1
@@ -222,23 +210,11 @@ This roadmap consolidates all active work from the 2026-06-01 deep research pass
 - **Verify**: Introduce a deliberate data:validate failure and confirm workflow fails.
 - **Complexity**: S
 
-#### R21. Investigate and document Astro build concurrency setting
-- **Priority**: P3
-- **Why**: astro.config.mjs sets `build.concurrency: 1` with no comment. With 180+ pages this significantly slows builds.
-- **Evidence**: astro.config.mjs line 11: `concurrency: 1`. No explaining comment.
-- **Touches**: astro.config.mjs
-- **Acceptance**: Either remove concurrency:1 (verify build passes) or add comment explaining why it is needed.
-- **Verify**: `npm run build` with default concurrency. Check for race conditions in OG generation.
-- **Complexity**: S
+#### ~~R21. Investigate and document Astro build concurrency setting~~ DONE
+- `marked.use()` in `[slug].astro` mutates global state -- parallel builds race. Added inline comment explaining the constraint. concurrency:1 stays.
 
-#### R22. Parallelize pre-build validation scripts
-- **Priority**: P3
-- **Why**: Build chains data:validate, assets:audit, images:audit serially before astro build. They are independent and could run in parallel.
-- **Evidence**: package.json build script chains 3 independent validations with &&.
-- **Touches**: package.json
-- **Acceptance**: Validations run in parallel. Build still fails if any validation fails.
-- **Verify**: `npm run build` succeeds. Time comparison before/after.
-- **Complexity**: S
+#### ~~R22. Parallelize pre-build validation scripts~~ SKIPPED
+- All three scripts run in <2s total. Parallelizing adds complexity (concurrently/npm-run-all dep or ugly node -e wrapper) for negligible gain. Not worth it.
 
 ### Accessibility
 
@@ -363,14 +339,8 @@ This roadmap consolidates all active work from the 2026-06-01 deep research pass
 - **Verify**: Navigate to /resume/. Print (Ctrl+P), verify clean output.
 - **Complexity**: S
 
-#### R36. Expand RSS feed beyond releases
-- **Priority**: P3
-- **Why**: RSS likely only covers releases. New project additions (9 repos added in one commit), archive decisions, and timeline highlights are interesting feed content.
-- **Evidence**: Simon Willison aggregates TILs, releases, tools into unified feed. Most recent commit added 9 repos -- not captured by releases-only RSS.
-- **Touches**: src/pages/rss.xml.ts
-- **Acceptance**: RSS includes releases, new project additions, archive decisions. Validates RSS 2.0/Atom spec.
-- **Verify**: Build, open /rss.xml, verify items beyond releases. Validate with RSS validator.
-- **Complexity**: S
+#### ~~R36. Expand RSS feed beyond releases~~ DONE
+- RSS now includes full catalog (182 entries) deduplicated against featured/live apps, sorted by push date. Channel description shows dynamic catalog count and category count.
 
 #### R37. Add build-time download count aggregation
 - **Priority**: P3
@@ -442,7 +412,7 @@ P2/P3 items under 1 hour, suitable for a focused cleanup session:
 |---|------|-----------|
 | R1 | Fix InteriorNav #featured anchor | S |
 | R2 | Update /now/ page date and content | S |
-| R3 | Refresh _stats.json | S |
+| ~~R3~~ | ~~Refresh _stats.json~~ | ~~DONE~~ |
 | R4 | Fix OG 'cpp' category | S |
 | R7 | Clean _extracted.json | S |
 | R8 | Remove dead particle canvas | S |
@@ -454,13 +424,13 @@ P2/P3 items under 1 hour, suitable for a focused cleanup session:
 | R14 | Auto-generate SW cache version | S |
 | R17 | Extract shared client JS utils | S |
 | R20 | Fix quality-gates error handling | S |
-| R21 | Investigate build concurrency | S |
-| R22 | Parallelize pre-build validation | S |
+| ~~R21~~ | ~~Investigate build concurrency~~ | ~~DONE~~ |
+| ~~R22~~ | ~~Parallelize pre-build validation~~ | ~~SKIPPED~~ |
 | R25 | Fix --t3 color contrast | S |
 | R26 | Add aria-pressed to filter buttons | S |
 | R27 | Fix journey card link semantics | S |
 | R28 | Add footer nav landmark | S |
-| R36 | Expand RSS feed | S |
+| ~~R36~~ | ~~Expand RSS feed~~ | ~~DONE~~ |
 | R39 | Suppress zero-star display | S |
 
 ---
@@ -471,7 +441,7 @@ P1/P2 items needing design decisions or significant implementation:
 
 | # | Item | Complexity | Design Decision |
 |---|------|-----------|-----------------|
-| R6 | Content-Security-Policy | M | Which origins to allow, inline script handling |
+| ~~R6~~ | ~~Content-Security-Policy~~ | ~~DONE~~ | ~~Origins enumerated, unsafe-inline for scripts/styles~~ |
 | R15 | Service worker precache | M | Which pages to precache, cross-origin API cache strategy |
 | R18 | data-refresh workflow purpose | M | Commit-back vs health-check-only model |
 | R29 | Custom 404 page | M | Layout, content, navigation paths |
