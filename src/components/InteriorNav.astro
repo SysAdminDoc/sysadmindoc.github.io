@@ -1,5 +1,5 @@
 ---
-type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now';
+type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now' | 'uses' | 'resume' | 'healthcare';
 type ContextTone = 'blue' | 'green' | 'amber' | 'slate';
 
 export interface Props {
@@ -24,7 +24,6 @@ const contextClass = `nav-context nav-context-${contextTone}`;
     <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
     <div class="nk" id="navLinks">
       <a href="/#greatest-hits">Hits</a>
-      <a href="/#catalog">Projects</a>
       <a href="/#live">Live</a>
       <a href="/#catalog">Catalog</a>
       <a href="/search/" class={isActive('search') ? 'active' : undefined} aria-current={isActive('search') ? 'page' : undefined}>Search</a>
@@ -32,6 +31,8 @@ const contextClass = `nav-context nav-context-${contextTone}`;
       <a href="/timeline/" class={isActive('timeline') ? 'active' : undefined} aria-current={isActive('timeline') ? 'page' : undefined}>Timeline</a>
       <a href="/archive/" class={isActive('archive') ? 'active' : undefined} aria-current={isActive('archive') ? 'page' : undefined}>Archive</a>
       <a href="/now/" class={isActive('now') ? 'active' : undefined} aria-current={isActive('now') ? 'page' : undefined}>Now</a>
+      <a href="/uses/" class={isActive('uses') ? 'active' : undefined} aria-current={isActive('uses') ? 'page' : undefined}>Uses</a>
+      <a href="/resume/" class={isActive('resume') ? 'active' : undefined} aria-current={isActive('resume') ? 'page' : undefined}>Resume</a>
     </div>
     <div class="nav-actions">
       {contextLabel && (

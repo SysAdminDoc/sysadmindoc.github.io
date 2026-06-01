@@ -45,7 +45,7 @@ const cmdkSections = hasRepos
   cmdkSections={cmdkSections}
 >
   <a href="#main" class="skip-link">Skip to content</a>
-  <InteriorNav contextLabel="Healthcare IT track" contextTone="amber" />
+  <InteriorNav active="healthcare" contextLabel="Healthcare IT track" contextTone="amber" />
 
   <main id="main" class="hcit-page">
     <div class="si page-shell" id="track-overview">
@@ -80,6 +80,18 @@ const cmdkSections = hasRepos
     </div>
     <Divider />
 
+    {!hasRepos && (
+      <>
+        <div class="si" id="clinical-projects">
+          <h2 class="hcit-h2">Projects in this track</h2>
+          <div class="hcit-why rv">
+            <p>Most of this work is <strong>operational and customer-specific</strong> — internal migration tooling, acquisition-PC utilities, and on-site fixes that can't be published as standalone public repos without exposing client environments.</p>
+            <p>The measurable outcomes live in the metrics above and in the <a href="/resume/" class="page-inline-link">resume</a>; the public, forkable pieces surface in the <a href="/#catalog" class="page-inline-link">full catalog</a> under Security, Desktop, and PowerShell. This is intentional, not an empty section.</p>
+          </div>
+        </div>
+        <Divider />
+      </>
+    )}
     {hasRepos && (
       <>
         <div class="si" id="clinical-projects">
@@ -121,7 +133,7 @@ const cmdkSections = hasRepos
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">These tools sit inside a wider portfolio of operational software, browser products, and systems-first utility work shaped by real environments.</p>
       </div>
-      <div class="fl"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></div>
+      <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
     </div>
   </footer>
 </Base>

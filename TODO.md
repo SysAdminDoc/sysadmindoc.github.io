@@ -28,12 +28,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T6** Build-time language-donut fallback (NF-6, M) — bake language mix from `_meta.json`; JS enhances. Accept: donut renders with JS disabled.
 - [x] **T7** Data-layer test runner — `node:test` (NF-12, M) — cover streak/cosine/release-trim/getUtcDayKey; wire `npm test`. Accept: `npm test` green; CI step.
 ### SEO / AEO
-- [ ] **T8** `/llms.txt` build endpoint (NF-27, S) — curated markdown index from projects data; reference in robots.txt.
-- [ ] **T9** BreadcrumbList JSON-LD on project/lang/interior pages (R, M).
-- [ ] **T10** Connected `@graph`: ProfilePage + CollectionPage/ItemList + Person `@id` linking (R + NF-29, M); CollectionPage on lang lanes.
-- [ ] **T11** Enrich project `SoftwareSourceCode` JSON-LD: image/dateModified/keywords (NF-24, S).
-- [ ] **T12** `experimental.clientPrerender` (Speculation Rules) (R + NF-32, S).
-- [ ] **T13** Sitemap config: lastmod/priority/changefreq + exclude json/og routes (NF, M).
+- [x] **T8** `/llms.txt` build endpoint (NF-27, S) — curated markdown index from projects data; reference in robots.txt.
+- [x] **T9** BreadcrumbList JSON-LD on project/lang/interior pages (R, M).
+- [x] **T10** Connected `@graph`: ProfilePage + CollectionPage/ItemList + Person `@id` linking (R + NF-29, M); CollectionPage on lang lanes.
+- [x] **T11** Enrich project `SoftwareSourceCode` JSON-LD: image/dateModified/keywords (NF-24, S).
+- [x] **T12** `experimental.clientPrerender` (Speculation Rules) (R + NF-32, S).
+- [x] **T13** Sitemap config: lastmod/priority/changefreq + exclude json/og routes (NF, M).
 ### Performance
 - [ ] **T14** Extract 44KB inline `__PORTFOLIO_DATA` to external JSON (R, M).
 - [x] **T15** Gate film-grain overlay behind capability media query (R, S).
@@ -74,12 +74,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T42** OG images for interior pages (R, M).
 - [ ] **T43** Last-updated timestamps on /uses, /resume, /healthcare-it (R, S).
 ### Security / privacy
-- [ ] **T44** Remove dns-prefetch for www.youtube.com (R, S).
+- [x] **T44** Remove dns-prefetch for www.youtube.com (R, S).
 - [ ] **T45** Escape star count innerHTML in catalog badge (R, S).
-- [ ] **T46** Verify/clean i.scdn.co preconnect (R, S).
+- [x] **T46** Verify/clean i.scdn.co preconnect (R, S).
 - [ ] **T47** Strip Google Fonts/analytics from docs/archive/legacy.html (R, S).
 - [ ] **T48** Cross-origin SW cache TTL (R, M).
-- [ ] **T49** `.well-known/security.txt` + `humans.txt` (NF, S).
+- [x] **T49** `.well-known/security.txt` + `humans.txt` (NF, S).
 ### Accessibility (P2 cluster)
 - [ ] **T50** Section `aria-labelledby` on homepage (R, S).
 - [ ] **T51** Heatmap zero/future cells aria-hidden + enrich streak/peak (R + NF-7, S).
