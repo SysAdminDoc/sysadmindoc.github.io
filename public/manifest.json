@@ -1,11 +1,19 @@
 {
+  "id": "/?source=pwa",
   "name": "Matt Parker - Portfolio",
   "short_name": "SysAdminDoc",
   "description": "Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.",
   "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
   "display": "standalone",
   "background_color": "#050913",
   "theme_color": "#050913",
+  "categories": ["developer", "productivity", "utilities"],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "icons": [
     {
       "src": "/icon-192.png",
@@ -25,5 +33,11 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
+  ],
+  "shortcuts": [
+    { "name": "Catalog", "short_name": "Catalog", "url": "/?source=pwa#catalog" },
+    { "name": "Search", "short_name": "Search", "url": "/search/?source=pwa" },
+    { "name": "Releases", "short_name": "Releases", "url": "/releases/?source=pwa" },
+    { "name": "Now", "short_name": "Now", "url": "/now/?source=pwa" }
   ]
 }
