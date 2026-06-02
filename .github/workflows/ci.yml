@@ -26,6 +26,17 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Stub generated caches
+        # The _*.json caches are gitignored and only produced by fetch-stars
+        # (which needs a token). On a PR we don't refresh data, so write empty
+        # stubs that satisfy the dynamic imports for type-check + build.
+        shell: bash
+        run: |
+          printf '{}' > src/data/_stars.json
+          printf '{}' > src/data/_meta.json
+          printf '{}' > src/data/_readmes.json
+          printf '[]' > src/data/_releases.json
+          printf '{}' > src/data/_stats.json
       - name: Unit tests
         run: npm test
       - name: Validate + type-check
