@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "npm run data:validate && npm run assets:audit && npm run images:audit && npm run build:ci",
-    "build:ci": "astro build && npm run sw:stamp && npm run search:index",
+    "build:ci": "astro build && node scripts/fix-html-structure.mjs && npm run sw:stamp && npm run search:index",
     "sw:stamp": "node scripts/stamp-sw.mjs",
     "check": "npm run data:validate && npm run assets:audit && npm run images:audit && astro check",
     "preview": "astro preview",
