@@ -50,24 +50,24 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T23** Finish TS-AST helper migration to `scripts/lib/` (R, M).
 - [x] **T24** Sync `package-lock.json` version → 0.17.0 (R, S).
 - [x] **T25** PR build gate — `ci.yml` on `pull_request` (NF-36, S).
-- [ ] **T26** Doc/version reconciliation: CHANGELOG v0.17.0, CLAUDE.md Astro 6 + CSS size, version strings (NF, S).
+- [x] **T26** Doc/version reconciliation: CHANGELOG v0.17.0, CLAUDE.md Astro 6 + CSS size, version strings (NF, S).
 - [ ] **T27** Lighthouse CI advisory budget (NF-34, M).
 - [ ] **T28** Migrate `public/` raster art → `astro:assets <Picture>` AVIF/srcset (NF-22, L) *(stage incrementally; may defer)*.
 
 ## P2 — Depth, polish, hardening
 ### Features
-- [ ] **T29** Live Apps overview + status a11y text (NF-5, M).
+- [x] **T29** Live Apps overview + status a11y text (NF-5, M).
 - [x] **T30** Case-study teasers on homepage Greatest Hits (NF-3, S).
 - [x] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
-- [ ] **T32** Terminal history + Tab completion (NF-16, S).
+- [x] **T32** Terminal history + Tab completion (NF-16, S).
 - [ ] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
 - [ ] **T35** Pagefind facets/metadata (NF-26, M).
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
 ### Data / scripts
-- [ ] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
+- [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
 - [ ] **T38** `@astrojs/rss` migration + content:encoded (NF-25, M).
-- [ ] **T39** Content-drift + featured⊆catalog validator extensions (NF-14/15, S).
+- [x] **T39** Content-drift + featured⊆catalog validator extensions (NF-14/15, S).
 ### SEO/feeds
 - [x] **T40** Dedicated releases feed `/releases.xml` (NF-9, S).
 - [ ] **T41** README code syntax highlighting (Shiki) (NF-23, M).
@@ -99,13 +99,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T64** Clarify ThinkTV/Maven date overlap (R, S).
 - [x] **T65** Resume contact info (R, S) *(folds into T4 data)*.
 - [x] **T66** SectionJumpNav on releases + Timeline cross-link (R, S).
-- [ ] **T67** Verify TagCloud quick-pick filter activation (R, S).
+- [x] **T67** Verify TagCloud quick-pick filter activation (R, S).
 ### Build/CI (P2 cluster)
 - [x] **T68** `sw:stamp` → ESM script (R, S).
 - [x] **T69** `.nvmrc` + engines field (R, S).
 - [x] **T70** Add `.claude/` to .gitignore (R, S).
 - [x] **T71** `semantic:audit` in quality-gates.yml (R, S).
-- [ ] **T72** README layout-tree refresh (R, S) *(folds into T26)*.
+- [x] **T72** README layout-tree refresh (R, S) *(folds into T26)*.
 ### Perf (P2 cluster)
 - [x] **T73** shared.js in SW precache (R, S).
 - [x] **T74** Gate JS scroll-reveal observer vs CSS (R + improvement, S).
@@ -116,7 +116,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T79** content-visibility:auto below-fold (R, M).
 - [ ] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
 - [x] **T81** accent-color token (NF-31, S).
-- [ ] **T82** Cache-shape contract types `generated.d.ts` (NF, S).
+- [x] **T82** Cache-shape contract types `generated.d.ts` (NF, S).
 
 ## P3 — Nice-to-have
 - [ ] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
@@ -129,7 +129,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T90** Resolve unused `cpp` category (R, S).
 - [x] **T91** Dependabot labels (R, S).
 - [x] **T92** deploy.yml cancel-in-progress:true (R, S).
-- [ ] **T93** Document Playwright optional dep (R, S).
+- [x] **T93** Document Playwright optional dep (R, S).
 - [x] **T94** data-refresh.yml lightweight health probe (R, S).
 - [ ] **T95** Migrate inline scripts off CSP `unsafe-inline` (R, L) *(largest; may defer with rationale)*.
 
