@@ -7,8 +7,19 @@ const GITHUB_CACHE_KEY='gh_cache';
 const GITHUB_CACHE_TTL=21600000; // 6h — build-time stats are already baked; live fetch only freshens star counts
 const LIVE_STATUS_CACHE_KEY='live_status_cache';
 const LIVE_STATUS_CACHE_TTL=900000;
-function readJsonCache(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
-function writeJsonCache(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
+// localStorage may be unavailable (private mode, quota, disabled). Fall back to a
+// module-scoped in-memory cache so the TTL still suppresses repeat fetches within
+// a session (the exact users most likely to hit the GitHub rate limit).
+var _memCache={};
+var _hasLS=(function(){try{var k='__ls_probe__';localStorage.setItem(k,'1');localStorage.removeItem(k);return true}catch(e){return false}})();
+function readJsonCache(key){
+    if(!_hasLS)return Object.prototype.hasOwnProperty.call(_memCache,key)?_memCache[key]:null;
+    try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}
+}
+function writeJsonCache(key,value){
+    if(!_hasLS){_memCache[key]=value;return}
+    try{localStorage.setItem(key,JSON.stringify(value))}catch(e){_memCache[key]=value}
+}
 function isFreshCache(entry,ttl){return !!entry&&typeof entry.ts==='number'&&Date.now()-entry.ts<ttl}
 function scheduleIdle(fn,timeout){
     const delay=typeof timeout==='number'?timeout:1200;
