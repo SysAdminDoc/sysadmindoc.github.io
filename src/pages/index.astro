@@ -49,6 +49,43 @@ const catCounts: Record<string, number> = {};
 for (const c of catalog) catCounts[c.category] = (catCounts[c.category] ?? 0) + 1;
 const catalogTotal = catalog.length;
 
+// Build-time language mix from cached _meta.json so the Stack donut renders real
+// data with no JS / offline / rate-limited. main.js refreshes it from the live
+// API on capable clients. Mirrors renderLangDonut() in public/scripts/main.js.
+const donutColors: Record<string, string> = { 'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0' };
+const buildLangCount: Record<string, number> = {};
+let donutTotal = 0;
+for (const c of catalog) {
+  const lang = meta[c.repo]?.language;
+  if (!lang) continue;
+  buildLangCount[lang] = (buildLangCount[lang] ?? 0) + 1;
+  donutTotal += 1;
+}
+const namedLangs = Object.entries(buildLangCount).filter(([k]) => k !== 'Other').sort((a, b) => b[1] - a[1]);
+const donutTop = namedLangs.slice(0, 7);
+const donutTail = namedLangs.slice(7).reduce((s, e) => s + e[1], 0) + (buildLangCount['Other'] ?? 0);
+if (donutTail > 0) donutTop.push(['Other', donutTail]);
+const DONUT_R = 70;
+const DONUT_CIRC = 2 * Math.PI * DONUT_R;
+const DONUT_GAP = 2;
+let donutOffset = 0;
+const donutArcs = donutTop.map(([lang, count]) => {
+  const pct = donutTotal ? count / donutTotal : 0;
+  const arcLen = Math.max(pct * DONUT_CIRC - DONUT_GAP, 0);
+  const arc = {
+    lang,
+    color: donutColors[lang] ?? '#7080a0',
+    dash: `${arcLen.toFixed(1)} ${(DONUT_CIRC - arcLen).toFixed(1)}`,
+    offset: (-donutOffset).toFixed(1),
+    pct: Math.round(pct * 100),
+  };
+  donutOffset += pct * DONUT_CIRC;
+  return arc;
+});
+const donutLead = donutTop[0];
+const donutLeadLang = donutLead ? donutLead[0] : 'Mixed';
+const donutLeadPct = donutLead && donutTotal ? Math.round((donutLead[1] as number) / donutTotal * 100) : 0;
+
 const filterButtons = [
   { key: 'ps', label: 'PowerShell' },
   { key: 'py', label: 'Python' },
@@ -556,21 +593,45 @@ const cmdkSections = [
         </div>
       </div>
       <div class="lang-donut-wrap rv" id="langDonut">
-        <div class="lang-donut-panel">
-          <div class="lang-donut-head">
-            <div class="lang-donut-kicker">Project Mix</div>
-            <p class="lang-donut-copy">Loading the language mix from GitHub so the stack view reflects the live public archive.</p>
-          </div>
-          <div class="lang-donut-fallback" aria-hidden="true">
-            <div class="lang-donut-fallback-ring"></div>
-            <div class="lang-donut-fallback-list">
-              <span>PowerShell</span>
-              <span>Python</span>
-              <span>JavaScript</span>
-              <span>Kotlin</span>
+        {donutTotal > 0 ? (
+          <div class="lang-donut-panel">
+            <div class="lang-donut-head">
+              <div class="lang-donut-kicker">Project Mix</div>
+              <p class="lang-donut-copy">{donutLeadLang} leads the public archive at {donutLeadPct}% of projects, with the rest spread across desktop, web, and Android tooling.</p>
+            </div>
+            <div class="lang-donut-shell">
+              <div class="lang-donut">
+                <svg viewBox="0 0 180 180">
+                  {donutArcs.map((arc) => (
+                    <circle cx="90" cy="90" r={DONUT_R} stroke={arc.color} stroke-dasharray={arc.dash} stroke-dashoffset={arc.offset} opacity=".85" />
+                  ))}
+                </svg>
+                <div class="lang-donut-center"><div class="donut-total">{donutTotal}</div><div class="donut-label">projects</div></div>
+              </div>
+              <div class="lang-legend">
+                {donutArcs.map((arc) => (
+                  <div class="lang-legend-item"><span class="lang-legend-dot" style={`background:${arc.color}`}></span>{arc.lang}<span class="lang-legend-pct">{arc.pct}%</span></div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div class="lang-donut-panel">
+            <div class="lang-donut-head">
+              <div class="lang-donut-kicker">Project Mix</div>
+              <p class="lang-donut-copy">Loading the language mix from GitHub so the stack view reflects the live public archive.</p>
+            </div>
+            <div class="lang-donut-fallback" aria-hidden="true">
+              <div class="lang-donut-fallback-ring"></div>
+              <div class="lang-donut-fallback-list">
+                <span>PowerShell</span>
+                <span>Python</span>
+                <span>JavaScript</span>
+                <span>Kotlin</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
     <div class="skg">
