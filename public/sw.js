@@ -1,5 +1,5 @@
 const CACHE = 'portfolio-v__BUILD_VERSION__';
-const PRECACHE = ['/', '/manifest.json', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/rss.xml', '/scripts/main.js', '/scripts/cmdk.js', '/scripts/theme.js'];
+const PRECACHE = ['/', '/manifest.json', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/rss.xml', '/scripts/main.js', '/scripts/cmdk.js', '/scripts/theme.js', '/scripts/shared.js'];
 const FETCH_TIMEOUT = 10000;
 
 function offlineResponse(status = 503, statusText = 'Offline') {
@@ -49,16 +49,22 @@ self.addEventListener('fetch', (e) => {
     const isNavigation = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
 
     if (isNavigation && sameOrigin) {
+        // Stale-while-revalidate: paint the cached shell instantly for repeat
+        // visits, refresh the cache in the background. A new deploy still surfaces
+        // via the SW update toast (controllerchange reload in main.js).
         e.respondWith(
-            timedFetch(e.request)
-                .then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
-                    }
-                    return response;
-                })
-                .catch(() => cachedOrOffline(e.request, '/'))
+            caches.match(e.request).then((cached) => {
+                const network = timedFetch(e.request)
+                    .then((response) => {
+                        if (response.ok) {
+                            const clone = response.clone();
+                            caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
+                        }
+                        return response;
+                    })
+                    .catch(() => cached || cachedOrOffline(e.request, '/'));
+                return cached || network;
+            })
         );
         return;
     }
