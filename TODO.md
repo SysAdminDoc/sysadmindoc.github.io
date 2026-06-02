@@ -24,8 +24,8 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ## P1 — High-value features, SEO/AEO, resilience, CI
 ### Features / content
 - [x] **T4** Contact/hire funnel — email + LinkedIn in Connect + footer (NF-8 + R LinkedIn, S). Accept: working mailto/LinkedIn surfaced; hero pill scrolls to #connect.
-- [ ] **T5** Render dead `featured` content (NF-2, M) — surface authored desc/tags beyond hero reel, or prune. Accept: no orphaned authored data.
-- [ ] **T6** Build-time language-donut fallback (NF-6, M) — bake language mix from `_meta.json`; JS enhances. Accept: donut renders with JS disabled.
+- [x] **T5** Render dead `featured` content (NF-2, M) — surface authored desc/tags beyond hero reel, or prune. Accept: no orphaned authored data.
+- [x] **T6** Build-time language-donut fallback (NF-6, M) — bake language mix from `_meta.json`; JS enhances. Accept: donut renders with JS disabled.
 - [x] **T7** Data-layer test runner — `node:test` (NF-12, M) — cover streak/cosine/release-trim/getUtcDayKey; wire `npm test`. Accept: `npm test` green; CI step.
 ### SEO / AEO
 - [x] **T8** `/llms.txt` build endpoint (NF-27, S) — curated markdown index from projects data; reference in robots.txt.
@@ -57,7 +57,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ## P2 — Depth, polish, hardening
 ### Features
 - [ ] **T29** Live Apps overview + status a11y text (NF-5, M).
-- [ ] **T30** Case-study teasers on homepage Greatest Hits (NF-3, S).
+- [x] **T30** Case-study teasers on homepage Greatest Hits (NF-3, S).
 - [x] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
 - [ ] **T32** Terminal history + Tab completion (NF-16, S).
 - [ ] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
@@ -69,7 +69,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T38** `@astrojs/rss` migration + content:encoded (NF-25, M).
 - [ ] **T39** Content-drift + featured⊆catalog validator extensions (NF-14/15, S).
 ### SEO/feeds
-- [ ] **T40** Dedicated releases feed `/releases.xml` (NF-9, S).
+- [x] **T40** Dedicated releases feed `/releases.xml` (NF-9, S).
 - [ ] **T41** README code syntax highlighting (Shiki) (NF-23, M).
 - [ ] **T42** OG images for interior pages (R, M).
 - [ ] **T43** Last-updated timestamps on /uses, /resume, /healthcare-it (R, S).
@@ -112,7 +112,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T75** GitHub API cache TTL increase / metered skip (R, S).
 - [ ] **T76** Bound non-essential infinite CSS animations (R, S).
 - [x] **T77** font-display:optional for JetBrains Mono (R, S).
-- [ ] **T78** Remove duplicate `.skip-link` CSS (R, S).
+- [x] **T78** Remove duplicate `.skip-link` CSS (R, S).
 - [ ] **T79** content-visibility:auto below-fold (R, M).
 - [ ] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
 - [x] **T81** accent-color token (NF-31, S).
@@ -122,8 +122,8 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
 - [ ] **T84** Custom PWA install prompt (NF-19, M).
 - [ ] **T85** localStorage resilience / in-memory fallback (NF-21, S).
-- [ ] **T86** manifest launch_handler/id/scope (NF, S).
-- [ ] **T87** JSON Feed `/feed.json` (NF, S).
+- [x] **T86** manifest launch_handler/id/scope (NF, S).
+- [x] **T87** JSON Feed `/feed.json` (NF, S).
 - [ ] **T88** client-local "recently viewed" (NF, M).
 - [ ] **T89** Pin GitHub Actions to SHAs (NF-36, S).
 - [ ] **T90** Resolve unused `cpp` category (R, S).
