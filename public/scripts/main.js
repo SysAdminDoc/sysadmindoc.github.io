@@ -95,10 +95,18 @@ document.addEventListener('click',function(e){
 
 /* ===== LIVE GITHUB API WITH CACHING & PAGINATION ===== */
 let ghData={};
-async function fetchAllRepos(){
+async function fetchAllRepos(conditionalEtag){
     let allRepos=[];
+    let firstEtag=null;
     for(let page=1;page<=10;page++){
-        const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page,void 0,10000);
+        // Conditional request on page 1 (repos are sort=updated, so an unchanged
+        // page 1 means nothing changed). A 304 is free against the rate limit.
+        const opts=(page===1&&conditionalEtag)?{headers:{'If-None-Match':conditionalEtag}}:void 0;
+        const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page,opts,10000);
+        if(page===1){
+            if(r.status===304)return {notModified:true};
+            firstEtag=r.headers.get('etag');
+        }
         if(!r.ok)throw new Error('GitHub API error: '+r.status);
         const repos=await r.json();
         if(!Array.isArray(repos))throw new Error('Unexpected GitHub repo payload');
@@ -106,7 +114,7 @@ async function fetchAllRepos(){
         allRepos=allRepos.concat(repos);
         if(repos.length<100)break;
     }
-    return allRepos;
+    return {repos:allRepos,etag:firstEtag};
 }
 
 async function fetchGitHub(){
@@ -129,7 +137,14 @@ async function fetchGitHub(){
     }
 
     try{
-        const allRepos=await fetchAllRepos();
+        const result=await fetchAllRepos(cached&&cached.etag?cached.etag:null);
+        if(result.notModified){
+            // Nothing changed since the cached fetch — refresh the timestamp so the
+            // TTL resets without re-parsing, and keep the already-applied cached data.
+            if(cached)writeJsonCache(GITHUB_CACHE_KEY,{...cached,ts:Date.now()});
+            return;
+        }
+        const allRepos=result.repos;
         // Match build-time filter: only public, non-fork, non-archived
         const repos=allRepos.filter(r=>!r.fork&&!r.archived&&!r.private);
         let totalStars=0;
@@ -143,7 +158,7 @@ async function fetchGitHub(){
         });
         const count=repos.length;
         ghData=nextGhData;
-        writeJsonCache(GITHUB_CACHE_KEY,{data:ghData,total:count,stars:totalStars,langs:langCount,ts:Date.now()});
+        writeJsonCache(GITHUB_CACHE_KEY,{data:ghData,total:count,stars:totalStars,langs:langCount,etag:result.etag,ts:Date.now()});
         // Only update aggregates if new data actually differs (prevents useless repaint)
         const skipAggregate=hasBaked&&baked.repos===count&&baked.stars===totalStars;
         applyGitHubData(count,totalStars,langCount,{skipAggregate});
