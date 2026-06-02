@@ -386,7 +386,14 @@
     if (event.target === backdrop) close();
   });
 
-  input.addEventListener('input', event => render(event.target.value));
+  // Debounce the filter so rapid typing doesn't run a full-catalog pass on every
+  // keystroke (keeps INP low as the project list grows).
+  let renderDebounce = 0;
+  input.addEventListener('input', event => {
+    const value = event.target.value;
+    clearTimeout(renderDebounce);
+    renderDebounce = setTimeout(() => render(value), 60);
+  });
   input.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
       event.preventDefault();
