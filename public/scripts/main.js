@@ -283,15 +283,24 @@ function renderLangDonut(langCount,repoCount){
         if(!badge)return;
         const dot=document.createElement('span');
         dot.className='status-dot';
+        dot.setAttribute('aria-hidden','true');
+        const srText=document.createElement('span');
+        srText.className='sr-only';
+        srText.textContent='Status: checking';
+        badge.prepend(srText);
         badge.prepend(dot);
+        const setStatus=function(up){
+            dot.classList.add(up?'up':'down');
+            srText.textContent='Status: '+(up?'reachable':'unreachable');
+        };
         if(isFreshCache(cachedStatuses[url],LIVE_STATUS_CACHE_TTL)){
-            dot.classList.add(cachedStatuses[url].up?'up':'down');
+            setStatus(cachedStatuses[url].up);
             return;
         }
         try{
             const target=new URL(url,location.href);
             if(target.origin!==location.origin)return;
-            queue.push({url:target.toString(),dot});
+            queue.push({url:target.toString(),dot,setStatus});
         }catch(e){}
     });
     if(!queue.length||navigator.onLine===false)return;
@@ -302,10 +311,10 @@ function renderLangDonut(langCount,repoCount){
         const timer=controller?setTimeout(()=>controller.abort(),5000):0;
         fetch(item.url,{method:'HEAD',cache:'no-cache',credentials:'same-origin',redirect:'follow',signal:controller?controller.signal:void 0}).then(response=>{
             const isUp=response.ok;
-            item.dot.classList.add(isUp?'up':'down');
+            item.setStatus(isUp);
             cachedStatuses[item.url]={up:isUp,ts:Date.now()};
         }).catch(()=>{
-            item.dot.classList.add('down');
+            item.setStatus(false);
             cachedStatuses[item.url]={up:false,ts:Date.now()};
         }).finally(()=>{
             if(timer)clearTimeout(timer);
@@ -646,6 +655,23 @@ function onTermReady(){
             return'\u2192 /projects/<span class="cmd-val">'+escapeHTML(match.slug)+'/</span>';
         }
     };
+    var cmdHistory=[];
+    var histIdx=-1;
+    function completeInput(value){
+        var trimmed=value.replace(/^\s+/,'');
+        var openMatch=trimmed.match(/^(open)\s+(.+)$/i);
+        if(openMatch){
+            var matches=getProjectMatches(openMatch[2]);
+            if(matches[0])return 'open '+matches[0].slug;
+            return value;
+        }
+        if(!/\s/.test(trimmed)){
+            var names=Object.keys(commands).concat(['echo']);
+            var hit=names.filter(function(n){return n.indexOf(trimmed.toLowerCase())===0;});
+            if(hit.length===1)return hit[0];
+        }
+        return value;
+    }
     function addPrompt(){
         inputLine=document.createElement('div');
         inputLine.className='term-input-line';
@@ -662,10 +688,37 @@ function onTermReady(){
         tbody.appendChild(inputLine);
         inputEl.focus();
         inputEl.addEventListener('keydown',e=>{
+            if(e.key==='ArrowUp'){
+                if(!cmdHistory.length)return;
+                e.preventDefault();
+                if(histIdx===-1)histIdx=cmdHistory.length;
+                histIdx=Math.max(0,histIdx-1);
+                inputEl.value=cmdHistory[histIdx]||'';
+                inputEl.setSelectionRange(inputEl.value.length,inputEl.value.length);
+                return;
+            }
+            if(e.key==='ArrowDown'){
+                if(histIdx===-1)return;
+                e.preventDefault();
+                histIdx++;
+                if(histIdx>=cmdHistory.length){histIdx=-1;inputEl.value='';}
+                else inputEl.value=cmdHistory[histIdx];
+                inputEl.setSelectionRange(inputEl.value.length,inputEl.value.length);
+                return;
+            }
+            if(e.key==='Tab'){
+                e.preventDefault();
+                inputEl.value=completeInput(inputEl.value);
+                inputEl.setSelectionRange(inputEl.value.length,inputEl.value.length);
+                return;
+            }
             if(e.key==='Enter'){
                 const cmd=inputEl.value.trim();
                 inputEl.disabled=true;
                 if(cmd){
+                    cmdHistory.push(cmd);
+                    if(cmdHistory.length>50)cmdHistory.shift();
+                    histIdx=-1;
                     const parts=cmd.split(/\s+/);
                     const base=parts[0].toLowerCase();
                     const args=parts.slice(1);

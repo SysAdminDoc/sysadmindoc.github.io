@@ -528,7 +528,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="live" aria-label="Live apps"><div class="si">
-    <div class="sh rv"><div class="sl">// Live</div><h2 class="st">Open the product surface immediately</h2><p class="sd">Browser-ready apps with no sign-in gate, no install ceremony, and enough polish to judge the experience in a minute.</p></div>
+    <div class="sh rv"><div class="sl">// Live · {liveApps.length} apps</div><h2 class="st">Open the product surface immediately</h2><p class="sd">{liveApps.length} browser-ready apps with no sign-in gate, no install ceremony, and enough polish to judge the experience in a minute. Each card shows a live reachability check.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
     </div>
