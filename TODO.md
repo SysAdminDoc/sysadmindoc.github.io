@@ -47,7 +47,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T21** Add `/uses/` + `/resume/` to InteriorNav + homepage footer (R, S).
 ### Build / CI / docs
 - [x] **T22** Deduplicate pre-build validation in deploy.yml (R, S).
-- [ ] **T23** Finish TS-AST helper migration to `scripts/lib/` (R, M).
+- [x] **T23** Finish TS-AST helper migration to `scripts/lib/` (R, M).
 - [x] **T24** Sync `package-lock.json` version → 0.17.0 (R, S).
 - [x] **T25** PR build gate — `ci.yml` on `pull_request` (NF-36, S).
 - [x] **T26** Doc/version reconciliation: CHANGELOG v0.17.0, CLAUDE.md Astro 6 + CSS size, version strings (NF, S).
@@ -94,7 +94,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T59** 404 page footer (R, S).
 - [x] **T60** Healthcare-IT empty-state (R, S).
 - [x] **T61** Expand homepage footer nav (R, S).
-- [ ] **T62** Extract shared career data (R, M) *(prereq for JSON Resume)*.
+- [x] **T62** Extract shared career data (R, M) *(prereq for JSON Resume)*.
 - [x] **T63** InteriorNav active state for /uses, /resume, /healthcare-it (R, S).
 - [ ] **T64** Clarify ThinkTV/Maven date overlap (R, S).
 - [x] **T65** Resume contact info (R, S) *(folds into T4 data)*.
@@ -119,7 +119,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T82** Cache-shape contract types `generated.d.ts` (NF, S).
 
 ## P3 — Nice-to-have
-- [ ] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
+- [x] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
 - [ ] **T84** Custom PWA install prompt (NF-19, M).
 - [x] **T85** localStorage resilience / in-memory fallback (NF-21, S).
 - [x] **T86** manifest launch_handler/id/scope (NF, S).
