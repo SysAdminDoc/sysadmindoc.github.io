@@ -915,3 +915,44 @@ if('serviceWorker' in navigator){
     if(document.readyState==='complete')registerServiceWorker();
     else window.addEventListener('load',registerServiceWorker,{once:true});
 }
+
+/* ===== PWA INSTALL PROMPT ===== */
+(function(){
+    var DISMISS_KEY='pwa_install_dismissed';
+    var deferredPrompt=null;
+    function dismissed(){try{return localStorage.getItem(DISMISS_KEY)==='1'}catch(e){return false}}
+    function rememberDismiss(){try{localStorage.setItem(DISMISS_KEY,'1')}catch(e){}}
+    function showInstallChip(){
+        if(dismissed()||document.querySelector('.sw-update-toast'))return;
+        var toast=document.createElement('div');
+        toast.className='sw-update-toast';
+        toast.setAttribute('role','status');
+        var message=document.createElement('span');
+        message.textContent='Install this portfolio as an app';
+        var actions=document.createElement('div');
+        actions.className='sw-update-actions';
+        var install=document.createElement('button');
+        install.type='button';
+        install.textContent='Install';
+        var dismiss=document.createElement('button');
+        dismiss.type='button';
+        dismiss.textContent='Not now';
+        actions.append(install,dismiss);
+        toast.append(message,actions);
+        function close(){toast.classList.remove('show');setTimeout(function(){toast.remove()},250)}
+        install.addEventListener('click',function(){
+            if(!deferredPrompt){close();return}
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.finally(function(){deferredPrompt=null;close()});
+        });
+        dismiss.addEventListener('click',function(){rememberDismiss();close()});
+        document.body.appendChild(toast);
+        requestAnimationFrame(function(){toast.classList.add('show')});
+    }
+    window.addEventListener('beforeinstallprompt',function(e){
+        e.preventDefault();
+        deferredPrompt=e;
+        if(!dismissed())scheduleIdle(showInstallChip,3000);
+    });
+    window.addEventListener('appinstalled',function(){deferredPrompt=null;rememberDismiss();var t=document.querySelector('.sw-update-toast');if(t)t.remove()});
+})();
