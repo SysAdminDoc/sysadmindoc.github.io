@@ -321,7 +321,7 @@ const jsonLd = JSON.stringify({
 
   <main id="main" class="project-page">
     <div class="si page-shell">
-      <div class="project-header" id="project-overview">
+      <div class="project-header" id="project-overview" data-pagefind-filter={`Category:${categoryLabel[category] ?? category}`} data-pagefind-meta={`Type:${isLive ? 'Live app' : 'Project'}`}>
         <div class="project-breadcrumbs">
           <a href="/#catalog" class="page-inline-link">Portfolio</a>
           <span>/</span>

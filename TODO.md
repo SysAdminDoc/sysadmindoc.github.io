@@ -62,7 +62,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T32** Terminal history + Tab completion (NF-16, S).
 - [x] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
-- [ ] **T35** Pagefind facets/metadata (NF-26, M).
+- [◑] **T35** Pagefind facets/metadata (NF-26, M) — faceted index shipped (Category filter + Type meta on project pages); visible filter UI deferred (modular-ui component, needs browser verification).
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
 ### Data / scripts
 - [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
