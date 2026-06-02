@@ -123,7 +123,8 @@ for (const filePath of components) {
 
 const dataModules = await listFiles(dataDir, (filePath) => {
   const name = path.basename(filePath);
-  return /\.(ts|json)$/i.test(filePath) && !/^_.*\.json$/i.test(name);
+  // .d.ts files are ambient type declarations, not runtime-imported modules.
+  return /\.(ts|json)$/i.test(filePath) && !/\.d\.ts$/i.test(name) && !/^_.*\.json$/i.test(name);
 });
 for (const filePath of dataModules) {
   const ext = path.extname(filePath);
