@@ -28,6 +28,29 @@ async function cachedOrOffline(request, fallbackPath) {
     return offlineResponse();
 }
 
+const CROSS_ORIGIN_TTL = 24 * 60 * 60 * 1000; // 24h — bound staleness of cached API/CDN responses.
+
+// Cache a cross-origin response stamped with the time it was stored.
+async function putTimestamped(request, response) {
+    try {
+        const cache = await caches.open(CACHE);
+        const headers = new Headers(response.headers);
+        headers.set('sw-cached-at', String(Date.now()));
+        const body = await response.blob();
+        await cache.put(request, new Response(body, { status: response.status, statusText: response.statusText, headers }));
+    } catch (e) { /* ignore cache write failures */ }
+}
+
+// Serve a cached cross-origin response only if it is within the TTL.
+async function freshCachedOrOffline(request) {
+    const cached = await caches.match(request);
+    if (cached) {
+        const at = Number(cached.headers.get('sw-cached-at') || 0);
+        if (!at || Date.now() - at < CROSS_ORIGIN_TTL) return cached;
+    }
+    return offlineResponse();
+}
+
 self.addEventListener('install', (e) => {
     e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
 });
@@ -75,13 +98,10 @@ self.addEventListener('fetch', (e) => {
         e.respondWith(
             timedFetch(e.request)
                 .then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
-                    }
+                    if (response.ok) putTimestamped(e.request, response.clone());
                     return response;
                 })
-                .catch(() => cachedOrOffline(e.request))
+                .catch(() => freshCachedOrOffline(e.request))
         );
         return;
     }
