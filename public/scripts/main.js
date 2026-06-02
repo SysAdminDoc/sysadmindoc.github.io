@@ -4,7 +4,7 @@ function safeText(s){return String(s==null?'':s)}
 // Only allow alphanumeric, dash, underscore, dot in repo slugs (GitHub's own rules)
 function safeRepo(s){return String(s==null?'':s).replace(/[^A-Za-z0-9._-]/g,'')}
 const GITHUB_CACHE_KEY='gh_cache';
-const GITHUB_CACHE_TTL=1800000;
+const GITHUB_CACHE_TTL=21600000; // 6h — build-time stats are already baked; live fetch only freshens star counts
 const LIVE_STATUS_CACHE_KEY='live_status_cache';
 const LIVE_STATUS_CACHE_TTL=900000;
 function readJsonCache(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
@@ -190,7 +190,7 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
             if(s>0&&!el.querySelector('.ca-stars')){
                 const badge=document.createElement('span');
                 badge.className='ca-stars';
-                badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>'+s;
+                badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>'+escapeHTML(s);
                 el.appendChild(badge)}}});
     // Update "All" filter count
     const countAll=document.getElementById('countAll');
@@ -264,7 +264,13 @@ function renderLangDonut(langCount,repoCount){
     wrap.innerHTML='<div class="lang-donut-panel"><div class="lang-donut-head"><div class="lang-donut-kicker">Project Mix</div><p class="lang-donut-copy">'+escapeHTML(leadLang)+' leads the public archive at '+leadPct+'% of projects, with the rest spread across desktop, web, and Android tooling.</p></div><div class="lang-donut-shell"><div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">projects</div></div></div><div class="lang-legend">'+legend+'</div></div></div>';
 }
 
-scheduleIdle(fetchGitHub,1200);
+// Skip the live GitHub refresh on metered/save-data connections — the baked
+// build-time stats are already accurate enough.
+(function(){
+    const conn=navigator.connection||navigator.webkitConnection;
+    const metered=conn&&(conn.saveData===true||/(^|\b)(slow-2g|2g)$/.test(conn.effectiveType||''));
+    if(!metered)scheduleIdle(fetchGitHub,1200);
+})();
 
 /* ===== LIVE APP STATUS CHECKS ===== */
 (function(){
