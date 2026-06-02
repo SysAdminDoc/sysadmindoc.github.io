@@ -96,7 +96,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T61** Expand homepage footer nav (R, S).
 - [x] **T62** Extract shared career data (R, M) *(prereq for JSON Resume)*.
 - [x] **T63** InteriorNav active state for /uses, /resume, /healthcare-it (R, S).
-- [ ] **T64** Clarify ThinkTV/Maven date overlap (R, S).
+- [x] **T64** Clarify ThinkTV/Maven date overlap (R, S) — added "Concurrent with the start of the Maven Imaging role." note to ThinkTV (career card + resume).
 - [x] **T65** Resume contact info (R, S) *(folds into T4 data)*.
 - [x] **T66** SectionJumpNav on releases + Timeline cross-link (R, S).
 - [x] **T67** Verify TagCloud quick-pick filter activation (R, S).
@@ -139,7 +139,6 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
-- **T64** Career date overlap (Maven "Feb 2021–Present" vs ThinkTV "Apr 2014–Feb 2025") — **needs your input.** I won't fabricate dates or an explanation. Options: (a) correct ThinkTV's end date, (b) keep the overlap and add a one-line note ("concurrent/remote"), or (c) leave as-is. See the question posted at the end of the session.
 - **T16** Split / non-block the monolithic ~4000-line CSS — needs critical-CSS extraction + `@layer` restructure; best done as one coordinated pass with a visual-regression net (which itself needs Playwright baselines in CI). Large, design-gated.
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
 - **T28** Migrate `public/` raster art → `astro:assets <Picture>` (AVIF/srcset) — large; needs per-image migration out of `public/` into `src/` imports and CLS verification across cards. Biggest standards win, but a focused pass with visual checks.
