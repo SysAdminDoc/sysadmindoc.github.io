@@ -199,7 +199,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "LocalDesktopStore", name: "LocalDesktopStore", url: "https://github.com/SysAdminDoc/LocalDesktopStore", category: "cs", desc: "Private catalog for Windows desktop apps &mdash; MSI/Inno/NSIS/ZIP" },
   { repo: "PhoneFork", name: "PhoneFork", url: "https://github.com/SysAdminDoc/PhoneFork", category: "cs", desc: "Dual-Samsung Android migration tool for Windows &mdash; local USB migration, no root, account, or cloud" },
   { repo: "Images", name: "Images", url: "https://github.com/SysAdminDoc/Images", category: "cs", desc: "Dark-mode Windows 7 Classic Photo Viewer with live inline rename" },
-  { repo: "VaultBox", name: "VaultBox", url: "https://github.com/SysAdminDoc/VaultBox", category: "cs", desc: "Offline Bitwarden password manager" },
   { repo: "qBittorrent-Vanced", name: "qBittorrent-Vanced", url: "https://github.com/SysAdminDoc/qBittorrent-Vanced", category: "cs", desc: "Customized BitTorrent client" },
   { repo: "WolfPack", name: "WolfPack", url: "https://github.com/SysAdminDoc/WolfPack", category: "cs", desc: "Custom LibreWolf distribution" },
   { repo: "Scour", name: "Scour", url: "https://github.com/SysAdminDoc/Scour", category: "cs", desc: "Windows file cleanup & dedup" },
