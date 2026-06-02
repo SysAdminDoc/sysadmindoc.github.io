@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
+import { parseValue, exportedArray } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
@@ -15,43 +16,6 @@ const stopwords = new Set([
   'open', 'powered', 'privacy', 'project', 'projects', 'repo', 'script', 'source', 'suite', 'system',
   'that', 'the', 'this', 'tool', 'tools', 'using', 'with', 'windows',
 ]);
-
-function propertyName(name) {
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
-  return null;
-}
-
-function parseValue(node, source) {
-  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
-  if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
-  if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
-  if (ts.isArrayLiteralExpression(node)) return node.elements.map((element) => parseValue(element, source));
-  if (ts.isObjectLiteralExpression(node)) {
-    const result = {};
-    for (const property of node.properties) {
-      if (!ts.isPropertyAssignment(property)) continue;
-      const key = propertyName(property.name);
-      if (!key) continue;
-      result[key] = parseValue(property.initializer, source);
-    }
-    return result;
-  }
-  return node.getText(source);
-}
-
-function exportedArray(source, exportName) {
-  for (const statement of source.statements) {
-    if (!ts.isVariableStatement(statement)) continue;
-    for (const declaration of statement.declarationList.declarations) {
-      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== exportName) continue;
-      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) return [];
-      return declaration.initializer.elements
-        .filter((element) => ts.isObjectLiteralExpression(element))
-        .map((element) => parseValue(element, source));
-    }
-  }
-  return [];
-}
 
 function cleanText(value) {
   return String(value ?? '')

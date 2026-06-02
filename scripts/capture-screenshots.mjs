@@ -17,20 +17,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import ts from 'typescript';
+import { stringProperty } from './lib/ts-data-utils.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const projectsPath = join(root, 'src', 'data', 'projects.ts');
-
-function stringProperty(objectLiteral, key) {
-  for (const property of objectLiteral.properties) {
-    if (!ts.isPropertyAssignment(property)) continue;
-    const name = property.name;
-    if (!(ts.isIdentifier(name) || ts.isStringLiteral(name)) || name.text !== key) continue;
-    const value = property.initializer;
-    if (ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)) return value.text;
-  }
-  return null;
-}
 
 function collectLiveEntries() {
   const sourceText = readFileSync(projectsPath, 'utf8');
