@@ -15,6 +15,10 @@ const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 
 const errors = [];
+const warnings = [];
+function warn(message) {
+  warnings.push(message);
+}
 
 function location(source, node) {
   const { line, character } = source.getLineAndCharacterOfPosition(node.getStart(source));
@@ -286,6 +290,15 @@ for (const slug of liveSlugs) {
   if (!catalogLive.has(slug)) fail(`liveApps entry ${slug} must have a matching catalog entry marked live.`);
 }
 
+// Advisory: a featured repo should also live in the searchable catalog so it is
+// reachable via category filters and search, not just the hero showcase.
+const catalogRepoSet = new Set(catalog.map((entry) => entry.repo));
+for (const project of featured) {
+  if (project?.repo && !catalogRepoSet.has(project.repo)) {
+    warn(`featured repo ${project.repo} has no catalog entry — it is absent from search/filters.`);
+  }
+}
+
 skills.forEach((record, index) => {
   requireString('skills', index, record, 'code');
   requireString('skills', index, record, 'name');
@@ -445,6 +458,12 @@ console.log(`  command palette projects: ${commandPaletteProjects.size}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
 console.log(`  proof records: ${Object.keys(proofRecords).length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
+
+if (warnings.length > 0) {
+  console.warn('');
+  console.warn('Advisory warnings (non-blocking):');
+  for (const warning of warnings) console.warn(`  - ${warning}`);
+}
 
 if (errors.length > 0) {
   console.error('');

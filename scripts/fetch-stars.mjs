@@ -10,7 +10,7 @@
 // Auth: reads GITHUB_TOKEN from env. Repo and release refreshes can work without it,
 // but full README refreshes are intentionally skipped unless a token is present.
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getUtcDayKey, computeStreak } from './lib/streak.mjs';
@@ -43,7 +43,11 @@ function readJson(path, fallback) {
 
 function writeJson(path, value, pretty = true) {
   const body = pretty ? JSON.stringify(value, null, 2) : JSON.stringify(value);
-  writeFileSync(path, `${body}\n`);
+  // Atomic write: a crash mid-write leaves the previous file intact instead of a
+  // truncated/partial JSON (rename is atomic within the same directory).
+  const tmp = `${path}.tmp`;
+  writeFileSync(tmp, `${body}\n`);
+  renameSync(tmp, path);
 }
 
 function describeGitHubFailure(res) {
