@@ -35,7 +35,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T12** `experimental.clientPrerender` (Speculation Rules) (R + NF-32, S).
 - [x] **T13** Sitemap config: lastmod/priority/changefreq + exclude json/og routes (NF, M).
 ### Performance
-- [ ] **T14** Extract 44KB inline `__PORTFOLIO_DATA` to external JSON (R, M).
+- [x] **T14** Extract 44KB inline `__PORTFOLIO_DATA` to external JSON (R, M).
 - [x] **T15** Gate film-grain overlay behind capability media query (R, S).
 - [ ] **T16** Split / non-block monolithic CSS — defer to CSS pass (R, L) *(coordinate with T2, @layer)*.
 ### Accessibility
@@ -125,7 +125,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T86** manifest launch_handler/id/scope (NF, S).
 - [x] **T87** JSON Feed `/feed.json` (NF, S).
 - [x] **T88** client-local "recently viewed" (NF, M).
-- [ ] **T89** Pin GitHub Actions to SHAs (NF-36, S).
+- [x] **T89** Pin GitHub Actions to SHAs (NF-36, S).
 - [x] **T90** Resolve unused `cpp` category (R, S).
 - [x] **T91** Dependabot labels (R, S).
 - [x] **T92** deploy.yml cancel-in-progress:true (R, S).
@@ -140,7 +140,6 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
 - **T64** Career date overlap (Maven "Feb 2021–Present" vs ThinkTV "Apr 2014–Feb 2025") — **needs your input.** I won't fabricate dates or an explanation. Options: (a) correct ThinkTV's end date, (b) keep the overlap and add a one-line note ("concurrent/remote"), or (c) leave as-is. See the question posted at the end of the session.
-- **T14** Extract the ~44KB inline `__PORTFOLIO_DATA` to an external cached JSON — needs a lazy-load strategy decision (fetch on first Ctrl+K vs preload) and a build-pipeline change to emit the JSON. Touches Base.astro + cmdk.js. Design-gated.
 - **T16** Split / non-block the monolithic ~4000-line CSS — needs critical-CSS extraction + `@layer` restructure; best done as one coordinated pass with a visual-regression net (which itself needs Playwright baselines in CI). Large, design-gated.
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the `define:vars` data injection, and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk; do after T14.
 - **T27** Lighthouse CI advisory budget — adds `@lhci/cli` + a CI job I can't exercise headlessly here; `audit-a11y.mjs` + the PR gate already cover the gap partially. Needs a CI run to tune thresholds.
@@ -149,7 +148,6 @@ These survived the v0.18.0 drain because they need a judgment call I shouldn't m
 - **T35** Pagefind facets/metadata — the index-level `data-pagefind-filter` attrs are safe, but the site uses custom `<pagefind-*>` components whose filter-UI support I couldn't confirm headlessly; needs a browser check before wiring the UI.
 - **T36** Build-time project ranking — marginal value: the catalog already offers "Most stars" and "Recently updated" sorts that cover the same signal; revisit only if a blended default sort is actually wanted.
 - **T43** Last-updated timestamps on /uses, /resume, /healthcare-it — deferred: hardcoded dates go stale and become a maintenance burden / misleading freshness signal. /now already carries a real date. Revisit if a data-driven `lastReviewed` field is added.
-- **T89** Pin GitHub Actions to commit SHAs — needs a network lookup of each action's exact release SHA; Dependabot's github-actions ecosystem (now grouped/labelled) already manages action updates. Do when SHAs can be resolved.
 
 ## Parked / rejected (carry-forward — see ROADMAP.md "Rejected or Parked")
 Hosted backend search; analytics/visitor tracking; private-repo listing; auto GitHub visibility changes; Notes/TIL feed (NOTES_FEED_POLICY gates unmet); full CSS redesign; client-side embeddings; dependency-graph viz; project comparison tables; CSP data: URI in img-src (accepted); Spotify cookie-setting iframe (privacy — T31 uses static cards only).
