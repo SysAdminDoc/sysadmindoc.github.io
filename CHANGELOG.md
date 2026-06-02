@@ -2,6 +2,14 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.18.1] - 2026-06-02
+
+**Critical fix:** the homepage interactive layer was completely dead. `public/scripts/main.js` loaded from the page slot — i.e. *before* `public/scripts/shared.js` — so its top-level `if (prefersReducedMotion)` (a global defined in shared.js) threw a `ReferenceError` and halted everything below it: the interactive terminal, catalog search/filter/sort, live GitHub star refresh + ETag requests, scroll progress / nav-hide / back-to-top, the language-donut JS enhancement, live-status dots, the PWA install prompt, and service-worker registration. Server-rendered catalog + build-time baked stats masked the failure, so the page looked healthy.
+
+- Load `main.js` homepage-only from the end of the Base layout body, after `shared.js` + `cmdk-data.js`, so its dependencies are defined first.
+- Add a post-build guard in `scripts/fix-html-structure.mjs` that fails the build if `main.js` ever precedes `shared.js` in any page.
+- Bump version so the service-worker cache name changes and repeat visitors evict the broken cached `main.js`.
+
 ## [v0.18.0] - 2026-06-01
 
 Roadmap-drain sprint. Open work is now consolidated in [TODO.md](TODO.md).
