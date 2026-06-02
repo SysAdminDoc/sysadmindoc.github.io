@@ -29,6 +29,7 @@ Roadmap-drain sprint. Open work is now consolidated in [TODO.md](TODO.md).
 
 ### Build / CI
 - PR build+test+a11y gate (`ci.yml`); deduplicated deploy validation via `build:ci`; ESM `sw:stamp`; `.nvmrc` + `engines`; Dependabot labels/grouping; `semantic:audit` in quality gates.
+- **Deploy fixes:** removed `VaultBox` from the catalog after it was made private on GitHub (the public-only catalog audit was failing the deploy); added `scripts/fix-html-structure.mjs` to repair an Astro 6 build quirk that placed the single `</html>` after `</head>` — invalid HTML that made Pagefind index 0 pages and fail the build. Search now indexes all pages again.
 
 ## [v0.17.0] - 2026-06-01
 
