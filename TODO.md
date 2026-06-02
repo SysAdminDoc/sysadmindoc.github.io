@@ -41,7 +41,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ### Accessibility
 - [x] **T17** Wrap CSS scroll-driven animations in `prefers-reduced-motion` guard (R, S).
 - [x] **T18** Accessible labels + aria-live on hero stat counters (R, S).
-- [ ] **T19** Command-palette listbox ARIA: `<a role=option>` → valid pattern (R, M).
+- [x] **T19** Command-palette listbox ARIA: `<a role=option>` → valid pattern (R, M).
 ### Nav / content
 - [x] **T20** Remove duplicate InteriorNav `/#catalog` link (R, S).
 - [x] **T21** Add `/uses/` + `/resume/` to InteriorNav + homepage footer (R, S).
@@ -61,7 +61,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
 - [ ] **T32** Terminal history + Tab completion (NF-16, S).
 - [ ] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
-- [ ] **T34** SW stale-while-revalidate navigation (NF-20, M).
+- [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
 - [ ] **T35** Pagefind facets/metadata (NF-26, M).
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
 ### Data / scripts
@@ -75,21 +75,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T43** Last-updated timestamps on /uses, /resume, /healthcare-it (R, S).
 ### Security / privacy
 - [x] **T44** Remove dns-prefetch for www.youtube.com (R, S).
-- [ ] **T45** Escape star count innerHTML in catalog badge (R, S).
+- [x] **T45** Escape star count innerHTML in catalog badge (R, S).
 - [x] **T46** Verify/clean i.scdn.co preconnect (R, S).
 - [ ] **T47** Strip Google Fonts/analytics from docs/archive/legacy.html (R, S).
 - [ ] **T48** Cross-origin SW cache TTL (R, M).
 - [x] **T49** `.well-known/security.txt` + `humans.txt` (NF, S).
 ### Accessibility (P2 cluster)
 - [x] **T50** Section `aria-labelledby` on homepage (R, S).
-- [ ] **T51** Heatmap zero/future cells aria-hidden + enrich streak/peak (R + NF-7, S).
+- [x] **T51** Heatmap zero/future cells aria-hidden + enrich streak/peak (R + NF-7, S).
 - [ ] **T52** Journey cards whole-card link / remove dead focus CSS (R + improvement, S).
 - [x] **T53** Interior footer `div`→`nav` landmark (R, S).
 - [x] **T54** Remove duplicate catalog aria-live (R, S).
 - [x] **T55** Visible labels for catalog form controls (R, S).
-- [ ] **T56** Mobile-nav focus-trap tab order (R, S).
+- [x] **T56** Mobile-nav focus-trap tab order (R, S).
 - [ ] **T57** Terminal a11y: role=log, keystroke gating, copy keyboard, video close (R + NF-17, M).
-- [ ] **T58** Theme toggle respects prefers-color-scheme first visit + fix misleading comment (R, S).
+- [x] **T58** Theme toggle respects prefers-color-scheme first visit + fix misleading comment (R, S).
 ### Nav / content (P2 cluster)
 - [x] **T59** 404 page footer (R, S).
 - [x] **T60** Healthcare-IT empty-state (R, S).
@@ -107,9 +107,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T71** `semantic:audit` in quality-gates.yml (R, S).
 - [ ] **T72** README layout-tree refresh (R, S) *(folds into T26)*.
 ### Perf (P2 cluster)
-- [ ] **T73** shared.js in SW precache (R, S).
-- [ ] **T74** Gate JS scroll-reveal observer vs CSS (R + improvement, S).
-- [ ] **T75** GitHub API cache TTL increase / metered skip (R, S).
+- [x] **T73** shared.js in SW precache (R, S).
+- [x] **T74** Gate JS scroll-reveal observer vs CSS (R + improvement, S).
+- [x] **T75** GitHub API cache TTL increase / metered skip (R, S).
 - [ ] **T76** Bound non-essential infinite CSS animations (R, S).
 - [x] **T77** font-display:optional for JetBrains Mono (R, S).
 - [ ] **T78** Remove duplicate `.skip-link` CSS (R, S).
