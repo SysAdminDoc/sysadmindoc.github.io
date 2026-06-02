@@ -1,9 +1,10 @@
 ---
 interface Props {
   days: string[];
+  streak?: number;
 }
 
-const { days } = Astro.props;
+const { days, streak = 0 } = Astro.props;
 
 // Build a lookup: date string -> push count
 const dayCounts = new Map<string, number>();
@@ -72,22 +73,34 @@ const dayLabels = [
   { text: 'Fri', y: topPad + 5 * cellStep + cellSize - 2 },
 ];
 
-// Intensity levels: 0 = empty, 1 = low, 2 = mid, 3+ = high
+// Intensity levels: 0 = empty, 1 = low, 2 = mid, 3 = high, 4+ = peak
 function intensityClass(count: number, future: boolean): string {
   if (future) return 'hm-empty';
   if (count === 0) return 'hm-0';
   if (count === 1) return 'hm-1';
   if (count === 2) return 'hm-2';
-  return 'hm-3';
+  if (count === 3) return 'hm-3';
+  return 'hm-4';
 }
 
 const totalActivity = days.length;
+// Busiest single day in the window.
+let peakDate = '';
+let peakCount = 0;
+for (const [date, count] of dayCounts) {
+  if (count > peakCount) { peakCount = count; peakDate = date; }
+}
+const peakLabel = peakDate
+  ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(peakDate))
+  : null;
 ---
 
 {days.length > 0 && (
   <div class="heatmap-wrap">
     <div class="heatmap-head">
       <span class="heatmap-label">{totalActivity} pushes in the last year</span>
+      {streak > 0 && <span class="heatmap-label heatmap-label-sub">{streak}-day streak</span>}
+      {peakLabel && peakCount > 1 && <span class="heatmap-label heatmap-label-sub">busiest {peakLabel} · {peakCount} pushes</span>}
     </div>
     <div class="heatmap-scroll">
       <svg
@@ -132,6 +145,7 @@ const totalActivity = days.length;
       <span class="hm-swatch hm-1"></span>
       <span class="hm-swatch hm-2"></span>
       <span class="hm-swatch hm-3"></span>
+      <span class="hm-swatch hm-4"></span>
       <span class="heatmap-legend-label">More</span>
     </div>
   </div>
