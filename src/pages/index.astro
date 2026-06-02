@@ -664,6 +664,7 @@ const cmdkSections = [
             <span class="career-card-company-sep">·</span>
             <span class="career-card-location">{role.location}</span>
           </div>
+          {role.note && <p class="career-card-note">{role.note}</p>}
           <p class="career-card-summary">{role.summary}</p>
           <ul class="career-card-highlights">
             {role.highlights.map((h) => <li>{h}</li>)}

@@ -11,6 +11,8 @@ export interface CareerRole {
   summary: string;
   highlights: readonly string[];
   stack: readonly string[];
+  /** Optional clarifier shown under the period (e.g. to explain overlapping dates). */
+  note?: string;
 }
 
 export const careerRoles: readonly CareerRole[] = [
@@ -38,6 +40,7 @@ export const careerRoles: readonly CareerRole[] = [
     period: 'Apr 2014 — Feb 2025',
     tag: '~11 years',
     tone: 'previous',
+    note: 'Concurrent with the start of the Maven Imaging role.',
     summary: 'Administered the full network and server stack for a regional PBS station serving Dayton and Cincinnati — physical and virtual Windows Servers, Cisco networking, SCCM, and the broadcast-automation infrastructure that had to stay on-air 24/7.',
     highlights: [
       'Led Hyper-V virtualization initiative, consolidating physical hardware',

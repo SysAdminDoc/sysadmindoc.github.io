@@ -3443,6 +3443,7 @@ html[data-theme="light"] .scroll-progress{
 .career-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--grn);padding:4px 10px;border:1px solid rgba(74,222,128,.3);border-radius:999px;background:var(--grnd);text-transform:uppercase;font-weight:600}
 .career-previous .career-card-tag{color:var(--blue);border-color:rgba(88,166,255,.28);background:var(--blued)}
 .career-card-period{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.career-card-note{font-size:12px;color:var(--t3);font-style:italic;margin:8px 0 0}
 .career-card-role{font-size:20px;font-weight:600;margin:2px 0 0;color:var(--t1);line-height:1.25;letter-spacing:-.005em}
 .career-card-company{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--t2)}
 .career-card-company-name{color:var(--t1);font-weight:500}
