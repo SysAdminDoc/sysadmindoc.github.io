@@ -77,13 +77,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T44** Remove dns-prefetch for www.youtube.com (R, S).
 - [x] **T45** Escape star count innerHTML in catalog badge (R, S).
 - [x] **T46** Verify/clean i.scdn.co preconnect (R, S).
-- [ ] **T47** Strip Google Fonts/analytics from docs/archive/legacy.html (R, S).
-- [ ] **T48** Cross-origin SW cache TTL (R, M).
+- [x] **T47** Strip Google Fonts/analytics from docs/archive/legacy.html (R, S).
+- [x] **T48** Cross-origin SW cache TTL (R, M).
 - [x] **T49** `.well-known/security.txt` + `humans.txt` (NF, S).
 ### Accessibility (P2 cluster)
 - [x] **T50** Section `aria-labelledby` on homepage (R, S).
 - [x] **T51** Heatmap zero/future cells aria-hidden + enrich streak/peak (R + NF-7, S).
-- [ ] **T52** Journey cards whole-card link / remove dead focus CSS (R + improvement, S).
+- [x] **T52** Journey cards whole-card link / remove dead focus CSS (R + improvement, S).
 - [x] **T53** Interior footer `div`→`nav` landmark (R, S).
 - [x] **T54** Remove duplicate catalog aria-live (R, S).
 - [x] **T55** Visible labels for catalog form controls (R, S).
@@ -121,12 +121,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ## P3 — Nice-to-have
 - [ ] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
 - [ ] **T84** Custom PWA install prompt (NF-19, M).
-- [ ] **T85** localStorage resilience / in-memory fallback (NF-21, S).
+- [x] **T85** localStorage resilience / in-memory fallback (NF-21, S).
 - [x] **T86** manifest launch_handler/id/scope (NF, S).
 - [x] **T87** JSON Feed `/feed.json` (NF, S).
 - [ ] **T88** client-local "recently viewed" (NF, M).
 - [ ] **T89** Pin GitHub Actions to SHAs (NF-36, S).
-- [ ] **T90** Resolve unused `cpp` category (R, S).
+- [x] **T90** Resolve unused `cpp` category (R, S).
 - [x] **T91** Dependabot labels (R, S).
 - [x] **T92** deploy.yml cancel-in-progress:true (R, S).
 - [x] **T93** Document Playwright optional dep (R, S).
