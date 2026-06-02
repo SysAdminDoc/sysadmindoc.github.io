@@ -29,13 +29,23 @@ function walk(dir) {
 }
 
 let fixed = 0;
+const orderViolations = [];
 for (const file of walk(dist)) {
   const html = readFileSync(file, 'utf8');
   const bodyIdx = html.indexOf('<body');
   if (bodyIdx < 0) continue;
+
+  // Guard: main.js reads globals defined in shared.js at top level, so shared.js
+  // MUST load first. If main.js ever precedes shared.js the whole homepage
+  // interactive layer throws a ReferenceError (silent — masked by SSR fallbacks).
+  const mainIdx = html.indexOf('/scripts/main.js');
+  const sharedIdx = html.indexOf('/scripts/shared.js');
+  if (mainIdx >= 0 && (sharedIdx < 0 || mainIdx < sharedIdx)) {
+    orderViolations.push(file.replace(dist, '').replace(/\\/g, '/'));
+  }
+
   const head = html.slice(0, bodyIdx);
   if (!head.includes('</html>')) continue;
-
   const newHead = head.replace(/<\/html>\s*/i, '');
   let rest = html.slice(bodyIdx);
   if (!/<\/html>\s*$/i.test(rest)) rest = rest.replace(/\s*$/, '') + '</html>';
@@ -43,4 +53,10 @@ for (const file of walk(dist)) {
   fixed += 1;
 }
 
-console.log(`fix-html-structure: repaired ${fixed} file(s)`);
+if (orderViolations.length) {
+  console.error('fix-html-structure: main.js loads before shared.js (would ReferenceError) in:');
+  for (const v of orderViolations) console.error(`  - ${v}`);
+  process.exit(1);
+}
+
+console.log(`fix-html-structure: repaired ${fixed} file(s); script order OK`);
