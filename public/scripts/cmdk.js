@@ -152,7 +152,7 @@
           ? ((row.categoryLabel || row.category) ? (row.categoryLabel || row.category) + ' project' : 'Open the project detail page.')
           : 'Open this route.');
       output.push(
-        '<a class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" href="' + escapeHtml(row.href || row.url) + '"' + (row.external ? ' target="_blank" rel="noopener"' : '') + '>'
+        '<div class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" data-href="' + escapeHtml(row.href || row.url) + '"' + (row.external ? ' data-external="true"' : '') + '>'
         + '<span class="cmdk-dot" style="background:' + dotColor + ';color:' + dotColor + '"></span>'
         + '<span class="cmdk-copy">'
         + '<span class="cmdk-title-row">'
@@ -161,7 +161,7 @@
         + '</span>'
         + '<span class="cmdk-subtitle">' + highlightMatch(subtitle, query) + '</span>'
         + '</span>'
-        + '</a>',
+        + '</div>',
       );
     });
     return output.join('');
@@ -407,10 +407,10 @@
       event.preventDefault();
       const target = list.querySelectorAll('.cmdk-item')[selected];
       if (!target) return;
-      const href = target.getAttribute('href');
+      const href = target.getAttribute('data-href');
       if (!href) return;
-      if (target.target === '_blank') {
-        window.open(target.href, '_blank', 'noopener');
+      if (target.getAttribute('data-external') === 'true') {
+        window.open(href, '_blank', 'noopener');
       } else {
         navigateTo(href);
       }
@@ -423,12 +423,14 @@
     if (!item) return;
     const index = Number(item.getAttribute('data-idx'));
     if (!Number.isNaN(index)) setSelected(index);
-    if (item.target === '_blank') {
+    const href = item.getAttribute('data-href') || '';
+    if (item.getAttribute('data-external') === 'true') {
+      if (href) window.open(href, '_blank', 'noopener');
       close({ restoreFocus: false });
       return;
     }
     event.preventDefault();
-    navigateTo(item.getAttribute('href') || '');
+    navigateTo(href);
     close({ restoreFocus: false });
   });
   list.addEventListener('mouseover', event => {
