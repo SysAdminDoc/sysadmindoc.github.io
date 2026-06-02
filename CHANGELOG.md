@@ -2,6 +2,38 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.18.0] - 2026-06-01
+
+Roadmap-drain sprint. Open work is now consolidated in [TODO.md](TODO.md).
+
+### Reliability & data
+- Corrected the contribution-streak algorithm (was reporting a positive streak with no recent push); extracted pure helpers and added a `node:test` unit suite (`npm test`).
+- Atomic generated-cache writes (temp-then-rename) in `fetch-stars`.
+- Build-time language-mix donut so the Stack section renders real data with no JS / offline / rate-limited.
+- Shared `generated.d.ts` cache contracts; advisory validator warning when a featured repo has no catalog entry.
+
+### Accessibility
+- `@media (forced-colors: active)` support for Windows High Contrast; reduced-motion guard on CSS scroll-driven reveals and the JS reveal observer.
+- Command palette uses `div[role=option]` (valid listbox); hero stats labelled live region; homepage section landmarks; catalog form labels; live-status dots expose reachable/unreachable; mobile-nav focus order; footer `<nav>` landmarks across interior pages.
+- Static a11y audit (`npm run a11y:audit`) wired into CI.
+
+### SEO / AEO / feeds
+- Connected JSON-LD `@graph` (Person `@id`, ProfilePage, BreadcrumbList, lang CollectionPage); richer project schema.
+- `/llms.txt`, `/releases.xml`, `/feed.json` (JSON Feed 1.1); sitemap priority/changefreq + machine-route exclusions; Speculation-Rules prerendering.
+- `/.well-known/security.txt`, `humans.txt`.
+
+### Features & UX
+- Contact funnel (email + LinkedIn) in Connect + footer; expanded footer nav; Uses/Resume in InteriorNav.
+- Terminal command history + Tab completion; case-study markers on Greatest Hits; heatmap streak/peak + 4th intensity bucket.
+- Service worker stale-while-revalidate navigation; richer PWA manifest (id/scope/shortcuts/launch_handler); 6h GitHub cache TTL + metered-connection skip.
+
+### Build / CI
+- PR build+test+a11y gate (`ci.yml`); deduplicated deploy validation via `build:ci`; ESM `sw:stamp`; `.nvmrc` + `engines`; Dependabot labels/grouping; `semantic:audit` in quality gates.
+
+## [v0.17.0] - 2026-06-01
+
+Drained the 42-item v0.17.0 roadmap across 13 commits: CSP + sanitize-html hardening, focus/heading/ARIA accessibility fixes, self-hosted fonts and service-worker hygiene, custom 404, View Transitions, JSON-LD, `/uses` and `/resume` pages, case studies, contribution heatmap, native command-palette dialog, expanded RSS, complete light theme, and a premium design-token polish pass. See [COMPLETED.md](COMPLETED.md) and [ROADMAP.md](ROADMAP.md).
+
 ## [v0.16.15] - 2026-05-17
 
 **Evaluate local semantic indexing.**

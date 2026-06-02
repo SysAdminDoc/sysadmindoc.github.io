@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.16.15-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.18.0-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -38,11 +38,15 @@ npm run semantic:audit # report similar-project and cross-category catalog revie
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
+npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
+npm run test          # node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
 npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
+
+`npm run capture-screenshots` additionally requires Playwright (`npm i -D playwright && npx playwright install chromium`); it is an optional, dynamically-imported dependency used only for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
@@ -50,7 +54,7 @@ npm run preview       # serve dist/
 
 All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg` and a thumbnail in `public/screenshots/thumbs/<slug>.jpg`.
 
-- Featured: show on the bento grid at the top
+- Featured: surface in the hero signature reel, command palette, and feeds
 - Live Apps: for GitHub Pages demos
 - Catalog: full searchable repo list (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
@@ -92,40 +96,37 @@ src/
 │   ├── proof.ts
 │   ├── archive.ts
 │   ├── catalog-policy.json
+│   ├── generated.d.ts # type contracts for the _*.json caches
 │   └── _*.json      # generated GitHub cache files (gitignored)
 ├── layouts/Base.astro
 ├── pages/
 │   ├── index.astro
-│   ├── now.astro
-│   ├── projects.json.ts
-│   ├── releases.json.ts
-│   ├── search.astro
-│   ├── releases.astro
-│   ├── timeline.astro
-│   ├── archive.astro
-│   ├── rss.xml.ts
-│   ├── lang/[slug].astro
+│   ├── now.astro · uses.astro · resume.astro · healthcare-it.astro · 404.astro
+│   ├── projects.json.ts · releases.json.ts · feed.json.ts
+│   ├── search.astro · releases.astro · timeline.astro · archive.astro
+│   ├── rss.xml.ts · releases.xml.ts · llms.txt.ts
+│   ├── lang/[slug].astro · lang/_langs.ts
 │   ├── og/[slug].png.ts
 │   └── projects/[slug].astro
 └── styles/global.css
 public/
-├── manifest.json
-├── robots.txt
-├── sw.js
+├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
+├── .well-known/security.txt
 ├── screenshots/      # captured live-app masters plus thumbs/
-└── scripts/          # theme.js, main.js, cmdk.js
+└── scripts/          # shared.js, theme.js, main.js, cmdk.js
 scripts/
-├── fetch-stars.mjs        # GitHub data refresh (build-time)
+├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
-├── audit-assets.mjs
-├── audit-performance.mjs
-├── audit-image-pipeline.mjs
-├── generate-screenshot-thumbnails.mjs
+├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
+├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-semantic-index.mjs
+├── generate-screenshot-thumbnails.mjs
 ├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
-└── generate-data.mjs      # one-off migration helper
+├── stamp-sw.mjs           # stamps the SW cache version at build
+└── lib/                   # shared TS-AST + streak helpers
+test/                  # node:test unit suite
 SEARCH_DECISION.md    # Pagefind vs client-side search decision
 PERFORMANCE_AUDIT.md  # Lighthouse, bfcache, and service-worker update review
 IMAGE_PIPELINE.md     # screenshot, thumbnail, README image, and OG card policy
@@ -136,7 +137,7 @@ legacy.html           # backup of pre-Astro single-file site
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for planned work. Completed items from the 2026-05-17 sprint are in [COMPLETED.md](COMPLETED.md). Full research evidence is in [RESEARCH_REPORT.md](RESEARCH_REPORT.md).
+Open work is tracked in [TODO.md](TODO.md) (single source of truth). Evidence and rationale live in [ROADMAP.md](ROADMAP.md) and [RESEARCH_FEATURE_PLAN.md](RESEARCH_FEATURE_PLAN.md); completed items from earlier sprints are in [COMPLETED.md](COMPLETED.md).
 
 ## License
 
