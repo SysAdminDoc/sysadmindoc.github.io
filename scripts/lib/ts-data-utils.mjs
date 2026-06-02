@@ -41,6 +41,46 @@ export function sourceFile(filePath, sourceText) {
 }
 
 /**
+ * Recursively convert a TS literal AST node into a plain JS value
+ * (strings, booleans, arrays, and object literals). Falls back to the
+ * node's source text for anything else.
+ */
+export function parseValue(node, source) {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+  if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
+  if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
+  if (ts.isArrayLiteralExpression(node)) return node.elements.map((element) => parseValue(element, source));
+  if (ts.isObjectLiteralExpression(node)) {
+    const result = {};
+    for (const property of node.properties) {
+      if (!ts.isPropertyAssignment(property)) continue;
+      const key = propertyName(property.name);
+      if (!key) continue;
+      result[key] = parseValue(property.initializer, source);
+    }
+    return result;
+  }
+  return node.getText(source);
+}
+
+/**
+ * Return the object-literal elements of an exported array as plain JS values.
+ */
+export function exportedArray(source, exportName) {
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== exportName) continue;
+      if (!declaration.initializer || !ts.isArrayLiteralExpression(declaration.initializer)) return [];
+      return declaration.initializer.elements
+        .filter((element) => ts.isObjectLiteralExpression(element))
+        .map((element) => parseValue(element, source));
+    }
+  }
+  return [];
+}
+
+/**
  * Read `src/data/projects.ts` and return the `slug` values from the
  * `liveApps` array.  Calls `fail` for structural problems so the
  * caller's error list stays consistent.
