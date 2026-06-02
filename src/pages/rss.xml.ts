@@ -1,4 +1,6 @@
 import type { APIContext } from 'astro';
+import rss from '@astrojs/rss';
+import sanitizeHtml from 'sanitize-html';
 import { featured, liveApps, catalog } from '../data/projects';
 import { categoryLabels } from '../data/categories';
 
@@ -13,87 +15,59 @@ try {
   meta = (mod.default ?? mod) as typeof meta;
 } catch { /* no cache yet */ }
 
-const escapeXml = (s: string) =>
-  s.replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!);
 const getItemDate = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
+const cleanDesc = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 export async function GET(context: APIContext) {
   const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
-  const pubDate = new Date(stats.fetchedAt || Date.now()).toUTCString();
 
   const seen = new Set<string>();
-  const rawItems: { title: string; link: string; desc: string; cat: string; slug: string }[] = [];
-
+  const raw: { title: string; slug: string; desc: string; cat: string }[] = [];
   for (const p of featured) {
     if (seen.has(p.repo)) continue;
     seen.add(p.repo);
-    rawItems.push({
-      title: p.name,
-      link: `${site}/projects/${p.repo}/`,
-      desc: p.desc.replace(/&[a-z]+;/gi, ' '),
-      cat: 'Featured',
-      slug: p.repo,
-    });
+    raw.push({ title: p.name, slug: p.repo, desc: p.desc, cat: 'Featured' });
   }
   for (const a of liveApps) {
     if (seen.has(a.slug)) continue;
     seen.add(a.slug);
-    rawItems.push({
-      title: `${a.name} (live)`,
-      link: `${site}/projects/${a.slug}/`,
-      desc: a.desc.replace(/&[a-z]+;/gi, ' '),
-      cat: 'Live App',
-      slug: a.slug,
-    });
+    raw.push({ title: `${a.name} (live)`, slug: a.slug, desc: a.desc, cat: 'Live App' });
   }
   for (const c of catalog) {
     if (seen.has(c.repo)) continue;
     seen.add(c.repo);
-    rawItems.push({
-      title: c.name,
-      link: `${site}/projects/${c.repo}/`,
-      desc: c.desc.replace(/&[a-z]+;/gi, ' '),
-      cat: categoryLabels[c.category] ?? c.category,
-      slug: c.repo,
-    });
+    raw.push({ title: c.name, slug: c.repo, desc: c.desc, cat: categoryLabels[c.category] ?? c.category });
   }
 
-  const items = rawItems.map((item) => {
-    const itemDate = getItemDate(item.slug);
-    return {
-      ...item,
-      itemDate,
-      pubDate: new Date(itemDate).toUTCString(),
-    };
-  }).sort((a, b) => new Date(b.itemDate).getTime() - new Date(a.itemDate).getTime());
+  const items = raw
+    .map((item) => ({ ...item, date: getItemDate(item.slug) }))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map((item) => {
+      const link = `${site}/projects/${item.slug}/`;
+      const description = cleanDesc(item.desc);
+      // Full-content body for readers that render content:encoded.
+      const contentHtml = sanitizeHtml(
+        `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on the portfolio →</a></p>`,
+        { allowedTags: ['p', 'a', 'strong', 'em', 'code'], allowedAttributes: { a: ['href'] } },
+      );
+      return {
+        title: item.title,
+        link,
+        pubDate: new Date(item.date),
+        description,
+        categories: [item.cat],
+        content: contentHtml,
+      };
+    });
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Matt Parker — Projects</title>
-    <link>${site}</link>
-    <description>Open-source projects, live web apps, and the full catalog by Matt Parker — ${catalog.length}+ projects across ${Object.keys(categoryLabels).length} categories.</description>
-    <language>en-us</language>
-    <lastBuildDate>${pubDate}</lastBuildDate>
-    <atom:link href="${site}/rss.xml" rel="self" type="application/rss+xml" />
-${items
-  .map(
-    (i) => `    <item>
-      <title>${escapeXml(i.title)}</title>
-      <link>${escapeXml(i.link)}</link>
-      <description>${escapeXml(i.desc)}</description>
-      <category>${escapeXml(i.cat)}</category>
-      <pubDate>${escapeXml(i.pubDate)}</pubDate>
-      <guid isPermaLink="true">${escapeXml(i.link)}</guid>
-    </item>`
-  )
-  .join('\n')}
-  </channel>
-</rss>
-`;
-
-  return new Response(body, {
-    headers: { 'Content-Type': 'application/rss+xml; charset=UTF-8' },
+  return rss({
+    title: 'Matt Parker — Projects',
+    description: `Open-source projects, live web apps, and the full catalog by Matt Parker — ${catalog.length}+ projects across ${Object.keys(categoryLabels).length} categories.`,
+    site,
+    items,
+    xmlns: { content: 'http://purl.org/rss/1.0/modules/content/' },
+    customData: '<language>en-us</language>',
+    trailingSlash: false,
   });
 }
