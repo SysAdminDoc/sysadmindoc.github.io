@@ -57,7 +57,9 @@
 })();
 
 /* Theme toggle — dark (default) vs light.
- * Persists to localStorage. Respects prefers-color-scheme only on first visit. */
+ * Dark is the intentional brand default; the OS prefers-color-scheme is NOT
+ * auto-applied on first visit by design. Light is an explicit opt-in via the
+ * toggle and is persisted to localStorage. */
 (function () {
   const KEY = 'theme-pref';
   const btn = document.getElementById('themeToggle');
@@ -140,7 +142,8 @@
   document.addEventListener('keydown', e => {
     if(e.key === 'Escape' && navLinks.classList.contains('open')){ setMobileNav(false); return; }
     if(e.key === 'Tab' && navLinks.classList.contains('open')){
-      var focusable = Array.from(navLinks.querySelectorAll(focusableSelector)).concat(mobileToggle);
+      // Toggle button sits visually at the top, so it is the first focus stop.
+      var focusable = [mobileToggle].concat(Array.from(navLinks.querySelectorAll(focusableSelector)));
       if(!focusable.length) return;
       var first = focusable[0], last = focusable[focusable.length - 1];
       if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
@@ -174,7 +177,14 @@
     return;
   }
 
-  if(revealItems.length){
+  // When the browser supports CSS scroll-driven animations, the .rv reveal is
+  // handled in CSS (animation-timeline: view()). Skip the JS observer for .rv to
+  // avoid running both animations at once; keep it as the fallback elsewhere.
+  const cssScrollReveal = typeof window.CSS === 'object'
+    && typeof CSS.supports === 'function'
+    && CSS.supports('animation-timeline: view()');
+
+  if(revealItems.length && !cssScrollReveal){
     const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if(!entry.isIntersecting) return;
