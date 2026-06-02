@@ -31,6 +31,7 @@
     "catalog:audit": "node scripts/audit-catalog.mjs"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.2.1",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^6.3.3",

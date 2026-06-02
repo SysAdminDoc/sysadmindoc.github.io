@@ -66,7 +66,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
 ### Data / scripts
 - [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
-- [ ] **T38** `@astrojs/rss` migration + content:encoded (NF-25, M).
+- [x] **T38** `@astrojs/rss` migration + content:encoded (NF-25, M).
 - [x] **T39** Content-drift + featured⊆catalog validator extensions (NF-14/15, S).
 ### SEO/feeds
 - [x] **T40** Dedicated releases feed `/releases.xml` (NF-9, S).
@@ -88,7 +88,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T54** Remove duplicate catalog aria-live (R, S).
 - [x] **T55** Visible labels for catalog form controls (R, S).
 - [x] **T56** Mobile-nav focus-trap tab order (R, S).
-- [ ] **T57** Terminal a11y: role=log, keystroke gating, copy keyboard, video close (R + NF-17, M).
+- [x] **T57** Terminal a11y: role=log, keystroke gating, copy keyboard, video close (R + NF-17, M).
 - [x] **T58** Theme toggle respects prefers-color-scheme first visit + fix misleading comment (R, S).
 ### Nav / content (P2 cluster)
 - [x] **T59** 404 page footer (R, S).
