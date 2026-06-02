@@ -396,10 +396,21 @@ function playVideo(trigger){
     iframe.allowFullscreen=true;
     iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
     frameWrap.appendChild(iframe);
+    // Keyboard-operable close button restores the thumbnail (escape from the embed).
+    const closeBtn=document.createElement('button');
+    closeBtn.type='button';
+    closeBtn.className='video-close';
+    closeBtn.setAttribute('aria-label','Close video and return to thumbnail');
+    closeBtn.style.cssText='position:absolute;top:8px;right:8px;z-index:2;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.62);color:#fff;cursor:pointer';
+    closeBtn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
+    closeBtn.addEventListener('click',()=>{
+        frameWrap.replaceWith(trigger);
+        if(typeof trigger.focus==='function')trigger.focus();
+    });
+    frameWrap.appendChild(closeBtn);
     trigger.replaceWith(frameWrap);
     requestAnimationFrame(()=>{
-        if(typeof iframe.focus==='function')iframe.focus();
-        else frameWrap.focus();
+        if(typeof closeBtn.focus==='function')closeBtn.focus();
     });
 }
 document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
@@ -620,6 +631,8 @@ function onTermReady(){
     const tbody=document.getElementById('termBody');
     const hint=document.getElementById('termHint');
     if(!term||!tbody)return;
+    tbody.setAttribute('role','log');
+    tbody.setAttribute('aria-live','polite');
     term.classList.add('interactive');
     if(hint)term.setAttribute('aria-describedby','termHint');
     let active=false;
@@ -756,6 +769,9 @@ function onTermReady(){
                     if(output==='__CLEAR__'){tbody.innerHTML='';addPrompt();return}
                     const outDiv=document.createElement('div');
                     outDiv.className='term-output';
+                    outDiv.tabIndex=0;
+                    outDiv.setAttribute('role','button');
+                    outDiv.setAttribute('aria-label','Command output — press Enter to copy');
                     outDiv.innerHTML=output;
                     tbody.appendChild(outDiv);
                 }
@@ -764,13 +780,22 @@ function onTermReady(){
             }
         });
     }
-    // Click-to-copy terminal output
-    tbody.addEventListener('click',function(e){
-        const output=getClosestTarget(e.target,'.term-output');
+    // Copy terminal output — click or keyboard (Enter/Space on a focused line).
+    function copyOutput(output){
         if(!output)return;
         const text=output.textContent.trim();
         if(!text)return;
         navigator.clipboard.writeText(text).then(showCopyToast).catch(function(){});
+    }
+    tbody.addEventListener('click',function(e){
+        copyOutput(getClosestTarget(e.target,'.term-output'));
+    });
+    tbody.addEventListener('keydown',function(e){
+        if(e.key!=='Enter'&&e.key!==' ')return;
+        const output=getClosestTarget(e.target,'.term-output');
+        if(!output)return;
+        e.preventDefault();
+        copyOutput(output);
     });
     function activate(){
         if(active)return;active=true;
@@ -783,11 +808,12 @@ function onTermReady(){
         addPrompt();
     }
     term.addEventListener('click',activate);
-    term.addEventListener('keydown',e=>{if(e.key==='Enter'&&!active)activate()});
-    document.addEventListener('keydown',e=>{
-        if(!active&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&e.key.length===1){
-            const focused=document.activeElement;
-            if(focused&&isTextEntryTarget(focused))return;
+    // Activation is scoped to the focused terminal (tabindex=0) so it never
+    // hijacks global keystrokes / screen-reader browse-mode keys.
+    term.addEventListener('keydown',e=>{
+        if(active)return;
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();return}
+        if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
             activate();
             if(inputEl)inputEl.value=e.key;
         }
