@@ -2,7 +2,7 @@
 import type { Featured, LiveApp, CatalogEntry, Skill } from './types';
 
 export const featured: Featured[] = [
-  { repo: "win11-nvme-driver-patcher", name: "win11-nvme-driver-patcher", lang: "ps", langLabel: "PS", desc: "GUI to enable Windows Server 2025 NVMe driver on Windows 11 &mdash; ~80% IOPS improvement on modern SSDs.", tags: ["PowerShell","WPF","Driver"], bento: "hero" },
+  { repo: "win11-nvme-driver-patcher", name: "win11-nvme-driver-patcher", lang: "ps", langLabel: "PS", desc: "GUI to enable Windows Server 2025 NVMe driver on Windows 11 &mdash; ~80% IOPS improvement on modern SSDs.", tags: ["PowerShell","WPF","Driver"] },
   { repo: "Network_Security_Auditor", name: "Network_Security_Auditor", lang: "ps", langLabel: "PS", desc: "67 automated checks across 8 security domains with MITRE ATT&amp;CK mapping and multi-tier compliance reports.", tags: ["PowerShell","Security","MITRE"] },
   { repo: "LibreSpot", name: "LibreSpot", lang: "ps", langLabel: "PS", desc: "Spotify customization &mdash; automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.", tags: ["PowerShell","Spotify","Themes"] },
   { repo: "HostShield", name: "HostShield", lang: "kt", langLabel: "Kt", desc: "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.", tags: ["Kotlin","Android","Ad Blocker"] },
