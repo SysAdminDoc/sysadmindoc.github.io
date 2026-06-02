@@ -7,7 +7,6 @@ export interface Featured {
   langLabel: string; // badge text e.g. "PS"
   desc: string;
   tags: string[];
-  bento?: 'hero' | 'normal';
 }
 
 export interface GreatestHit {
