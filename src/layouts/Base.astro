@@ -1,25 +1,6 @@
 ---
 import '../styles/global.css';
-import { catalog, featured, liveApps } from '../data/projects';
-import { categoryLabels } from '../data/categories';
-
-type CmdkSection = {
-  label: string;
-  href: string;
-  desc?: string;
-  badge?: string;
-};
-
-type CmdkProject = {
-  slug: string;
-  name: string;
-  desc: string;
-  type: 'featured' | 'live' | 'catalog';
-  url: string;
-  category?: string;
-  categoryLabel?: string;
-  searchTerms?: string[];
-};
+import type { CmdkSection } from '../data/cmdk';
 
 export interface Props {
   title?: string;
@@ -29,54 +10,6 @@ export interface Props {
   cmdkSections?: readonly CmdkSection[];
 }
 
-const normalizeCmdkDesc = (value: string) => value.replace(/&[a-z]+;/gi, ' ');
-const cmdkProjectMap = new Map<string, CmdkProject>();
-function upsertCmdkProject(slug: string, next: CmdkProject) {
-  const existing = cmdkProjectMap.get(slug);
-  const searchTerms = Array.from(
-    new Set([...(existing?.searchTerms ?? []), ...(next.searchTerms ?? [])].filter(Boolean)),
-  );
-  cmdkProjectMap.set(slug, {
-    ...existing,
-    ...next,
-    category: next.category ?? existing?.category,
-    categoryLabel: next.categoryLabel ?? existing?.categoryLabel,
-    searchTerms: searchTerms.length ? searchTerms : undefined,
-  });
-}
-for (const project of catalog) {
-  upsertCmdkProject(project.repo, {
-    slug: project.repo,
-    name: project.name,
-    desc: normalizeCmdkDesc(project.desc),
-    type: 'catalog',
-    url: `/projects/${project.repo}/`,
-    category: project.category,
-    categoryLabel: categoryLabels[project.category] ?? project.category,
-    searchTerms: [project.category, categoryLabels[project.category] ?? project.category],
-  });
-}
-for (const app of liveApps) {
-  upsertCmdkProject(app.slug, {
-    slug: app.slug,
-    name: app.name,
-    desc: normalizeCmdkDesc(app.desc),
-    type: 'live',
-    url: `/projects/${app.slug}/`,
-    searchTerms: ['Live Apps', 'Live App', 'Browser'],
-  });
-}
-for (const project of featured) {
-  upsertCmdkProject(project.repo, {
-    slug: project.repo,
-    name: project.name,
-    desc: normalizeCmdkDesc(project.desc),
-    type: 'featured',
-    url: `/projects/${project.repo}/`,
-    searchTerms: project.tags,
-  });
-}
-const cmdkProjects = Array.from(cmdkProjectMap.values());
 const defaultCmdkSections: CmdkSection[] = [
   { label: 'Home', href: '/', desc: 'Return to the portfolio overview and first-run poster view.', badge: 'HOME' },
   { label: 'Highlights', href: '/#greatest-hits', desc: 'Start with the shortest path through the strongest work.', badge: 'START' },
@@ -91,82 +24,6 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'Resume', href: '/resume/', desc: 'Printable career summary with skills and experience.', badge: 'PAGE' },
   { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context, imaging systems, and production-first tooling.', badge: 'TRACK' },
 ];
-const cmdkQuickLinks = [
-  {
-    label: 'Full-Text Search',
-    url: '/search/',
-    desc: 'Search rendered project pages, README excerpts, language tracks, release history, and archive decisions.',
-    badge: 'PAGE',
-    tone: 'green',
-    searchTerms: ['pagefind', 'full text', 'readme search', 'site search'],
-  },
-  {
-    label: 'Releases',
-    url: '/releases/',
-    desc: 'Chronological release stream across the most active projects in the archive.',
-    badge: 'PAGE',
-    tone: 'blue',
-    searchTerms: ['shipping', 'updates', 'release stream'],
-  },
-  {
-    label: 'Timeline',
-    url: '/timeline/',
-    desc: 'Year-in-review view generated from releases, repository movement, and changelog entries.',
-    badge: 'PAGE',
-    tone: 'blue',
-    searchTerms: ['year in review', 'history', 'momentum', 'timeline'],
-  },
-  {
-    label: 'Archive Decisions',
-    url: '/archive/',
-    desc: 'Public-safe anti-portfolio notes for retired, moved, held, or superseded project surfaces.',
-    badge: 'PAGE',
-    tone: 'amber',
-    searchTerms: ['archive', 'retired projects', 'anti portfolio', 'removed projects'],
-  },
-  {
-    label: 'Now',
-    url: '/now/',
-    desc: 'Current build queue, focus areas, and the latest signals from the portfolio.',
-    badge: 'PAGE',
-    tone: 'green',
-    searchTerms: ['current focus', 'working on now'],
-  },
-  {
-    label: 'Uses',
-    url: '/uses/',
-    desc: 'Development environment, tools, languages, frameworks, and design conventions.',
-    badge: 'PAGE',
-    tone: 'blue',
-    searchTerms: ['setup', 'tools', 'stack', 'environment', 'uses.tech'],
-  },
-  {
-    label: 'Resume',
-    url: '/resume/',
-    desc: 'Printable career summary with skills, experience, and technology stacks.',
-    badge: 'PAGE',
-    tone: 'blue',
-    searchTerms: ['cv', 'career', 'hire', 'experience', 'printable'],
-  },
-  {
-    label: 'Healthcare IT Track',
-    url: '/healthcare-it/',
-    desc: 'Operational context, imaging systems, and the environment that shaped the work.',
-    badge: 'TRACK',
-    tone: 'amber',
-    searchTerms: ['clinical', 'medical imaging', 'healthcare'],
-  },
-  {
-    label: 'GitHub Workspace',
-    url: 'https://github.com/SysAdminDoc',
-    desc: 'Browse the source, issues, and project history directly in GitHub.',
-    badge: 'SOURCE',
-    tone: 'slate',
-    external: true,
-    searchTerms: ['source', 'github', 'issues'],
-  },
-] as const;
-
 const {
   title = 'Matt Parker — Senior Technical Support Manager & Builder',
   description = 'Portfolio of Matt Parker — 15+ years in enterprise IT, six years in medical imaging (DICOM/PACS), plus open-source projects across PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
@@ -292,9 +149,12 @@ if (isHome) {
       </div>
     </div>
   </dialog>
-  <script is:inline define:vars={{ allProjects: cmdkProjects, quickLinks: cmdkQuickLinks, sections: cmdkSections }}>
-    window.__PORTFOLIO_DATA = { allProjects, quickLinks, sections };
+  {/* Only the small, page-specific sections are inlined; the large project +
+      quick-link dataset is served once as a cached /cmdk-data.js (loaded next). */}
+  <script is:inline define:vars={{ sections: cmdkSections }}>
+    window.__PORTFOLIO_DATA = Object.assign(window.__PORTFOLIO_DATA || {}, { sections });
   </script>
+  <script src="/cmdk-data.js" is:inline></script>
   <script src="/scripts/shared.js" is:inline></script>
   <script src="/scripts/cmdk.js" is:inline></script>
   <script src="/scripts/theme.js" is:inline></script>
