@@ -60,7 +60,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T30** Case-study teasers on homepage Greatest Hits (NF-3, S).
 - [x] **T31** Resolve "music/Slunder" broken promise — static cards or remove copy (NF-4, M) *(privacy decision)*.
 - [x] **T32** Terminal history + Tab completion (NF-16, S).
-- [ ] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
+- [x] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
 - [ ] **T35** Pagefind facets/metadata (NF-26, M).
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
@@ -110,17 +110,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T73** shared.js in SW precache (R, S).
 - [x] **T74** Gate JS scroll-reveal observer vs CSS (R + improvement, S).
 - [x] **T75** GitHub API cache TTL increase / metered skip (R, S).
-- [ ] **T76** Bound non-essential infinite CSS animations (R, S).
+- [x] **T76** Bound non-essential infinite CSS animations (R, S).
 - [x] **T77** font-display:optional for JetBrains Mono (R, S).
 - [x] **T78** Remove duplicate `.skip-link` CSS (R, S).
 - [ ] **T79** content-visibility:auto below-fold (R, M).
-- [ ] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
+- [x] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
 - [x] **T81** accent-color token (NF-31, S).
 - [x] **T82** Cache-shape contract types `generated.d.ts` (NF, S).
 
 ## P3 — Nice-to-have
 - [x] **T83** JSON Resume export `/resume.json` + optional PDF (NF-10, M).
-- [ ] **T84** Custom PWA install prompt (NF-19, M).
+- [x] **T84** Custom PWA install prompt (NF-19, M).
 - [x] **T85** localStorage resilience / in-memory fallback (NF-21, S).
 - [x] **T86** manifest launch_handler/id/scope (NF, S).
 - [x] **T87** JSON Feed `/feed.json` (NF, S).

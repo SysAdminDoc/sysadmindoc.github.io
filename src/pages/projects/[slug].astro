@@ -305,6 +305,17 @@ const jsonLd = JSON.stringify({
 ---
 <Base title={title} description={desc} ogImage={ogImage} ogImageAlt={`${name} social preview card`} cmdkSections={cmdkSections}>
   <script is:inline type="application/ld+json" set:html={jsonLd} />
+  <script is:inline define:vars={{ slug }}>
+    // Record this project as recently viewed (client-local only; surfaced in the
+    // command palette). No network, no cookies.
+    try {
+      var k = 'recently_viewed';
+      var list = JSON.parse(localStorage.getItem(k) || '[]');
+      list = (Array.isArray(list) ? list : []).filter(function (s) { return s !== slug; });
+      list.unshift(slug);
+      localStorage.setItem(k, JSON.stringify(list.slice(0, 8)));
+    } catch (e) { /* storage unavailable */ }
+  </script>
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={name} contextTone="slate" />
 
