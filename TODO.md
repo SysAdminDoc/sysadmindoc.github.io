@@ -232,12 +232,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: Weekly quality summaries show semantic-audit PASS/ATTENTION, artifacts remain uploaded, and any quality-gate issue body includes semantic candidates when present without turning advisory catalog-maintenance hints into automatic failures.
   - Verify: Run `quality-gates.yml` manually; inspect the job summary and uploaded issue/update body when semantic output is present.
 
-- [ ] **T122** 🤖 P1 — Triage stale Dependabot PRs against current `main` before merge.
+- [x] **T122** 🤖 P1 — Triage stale Dependabot PRs against current `main` before merge.
   - Why: One open Dependabot PR is based on an old v0.17.0 package surface and failing checks; blindly merging it can revert newer scripts, overrides, or version metadata.
   - Evidence: PR #9 (`dependabot/npm_and_yarn/content-safety-1c56996e79`) is open, last updated 2026-06-01, and its branch `package.json` says `"version": "0.17.0"` while `main` is `0.18.3`; PR #9 check `verify` failed in run `26789217704`; PR #12 (Astro 6.4.4) and PR #13 (GitHub Actions group) are current/mergeable with passing checks.
   - Touches: GitHub PR triage, Dependabot config only if stale branch recreation needs policy changes; no source edits unless the build machine chooses to merge/update a verified PR.
+  - Done: PR #13 was rebased to current `main`, passed CI run `26956714943`, and merged as `78bbef5`; PR #9 was inspected to confirm the stale `0.17.0` branch surface, rebased to current `main` and then the post-#13 base, passed CI runs `26956714047` and `26956895664`, and merged as `3ab0f4a`; PR #12 was rebased and passed CI run `26956897052`, then conflicted after the marked/package-lock merge, so the Astro 6.4.4 upgrade was regenerated on current `main`, validated locally, pushed as `460e04c`, and PR #12 was closed as superseded with notes.
   - Acceptance: PR #9 is closed/recreated or rebased from current `main` before consideration; PR #12/#13 are either merged after full validation or intentionally deferred with notes; no dependency PR is merged from a branch that would regress `package.json` version/scripts/overrides.
-  - Verify: `gh pr view 9 --json statusCheckRollup,updatedAt,url`; inspect the candidate branch `package.json`; after triage, confirm no open Dependabot PR has stale version/scripts relative to `main`.
+  - Verify: `gh pr list --repo SysAdminDoc/sysadmindoc.github.io --author app/dependabot --state open` returned `[]`; `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` passed on the combined dependency state with `marked` 18.0.4, Astro 6.4.4, the current profile-feed scripts, and the `yaml-language-server` override intact.
 
 ---
 
