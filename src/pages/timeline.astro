@@ -387,54 +387,7 @@ const pageOg = interiorOgPageBySlug.timeline;
     </div>
   </footer>
 
-  <script>
-    // @ts-nocheck
-    (() => {
-      const form = document.getElementById('timelineFilters');
-      const status = document.getElementById('timelineStatus');
-      const reset = document.getElementById('timelineReset');
-      const events = Array.from(document.querySelectorAll('[data-timeline-event]'));
-      if (!form || !status || events.length === 0) return;
-      const controls = {
-        year: document.getElementById('timelineYear'),
-        platform: document.getElementById('timelinePlatform'),
-        category: document.getElementById('timelineCategory'),
-        language: document.getElementById('timelineLanguage'),
-      };
-      const getValue = (key) => controls[key]?.value || 'all';
-      const setValue = (key, value) => {
-        const control = controls[key];
-        if (!control) return;
-        const hasValue = Array.from(control.options).some((option) => option.value === value);
-        control.value = hasValue ? value : 'all';
-      };
-      const apply = () => {
-        const filters = {
-          year: getValue('year'),
-          platform: getValue('platform'),
-          category: getValue('category'),
-          language: getValue('language'),
-        };
-        let visible = 0;
-        events.forEach((event) => {
-          const show =
-            (filters.year === 'all' || event.dataset.year === filters.year) &&
-            (filters.platform === 'all' || event.dataset.platform === filters.platform) &&
-            (filters.category === 'all' || event.dataset.category === filters.category) &&
-            (filters.language === 'all' || event.dataset.language === filters.language);
-          event.hidden = !show;
-          if (show) visible += 1;
-        });
-        status.textContent = `${visible} of ${events.length} timeline events shown.`;
-      };
-      form.addEventListener('change', apply);
-      reset?.addEventListener('click', () => {
-        Object.keys(controls).forEach((key) => setValue(key, 'all'));
-        apply();
-      });
-      apply();
-    })();
-  </script>
+  <script src="/scripts/timeline.js" is:inline></script>
 </Base>
 
 <style is:global>

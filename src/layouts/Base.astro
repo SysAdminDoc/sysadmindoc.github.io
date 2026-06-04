@@ -83,7 +83,7 @@ if (isHome) {
   <meta name="description" content={description} />
   <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#050913" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
   <meta name="generator" content={Astro.generator} />
 
   <meta property="og:title" content={title} />
@@ -108,7 +108,8 @@ if (isHome) {
   <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
   <style is:inline set:html={criticalCss}></style>
   <link rel="preload" href={globalCssUrl} as="style" />
-  <link rel="stylesheet" href={globalCssUrl} media="print" data-async-style onload="this.setAttribute('media','all')" />
+  <link rel="stylesheet" href={globalCssUrl} media="print" data-async-style />
+  <script src="/scripts/head-init.js" is:inline></script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -127,9 +128,6 @@ if (isHome) {
     <link rel="stylesheet" href={globalCssUrl} />
     <style>.rv,.card-enter{opacity:1!important;transform:none!important}</style>
   </noscript>
-
-  {/* Theme init must run BEFORE first paint to avoid FOUC. Inline, sync, tiny. */}
-  <script is:inline>try{var t=localStorage.getItem('theme-pref');var isLight=t==='light';document.documentElement.dataset.theme=isLight?'light':'dark';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',isLight?'#f5f1e8':'#050913')}catch(e){document.documentElement.dataset.theme='dark'}</script>
 
 </head>
 <body class={bodyClass}>
@@ -156,11 +154,9 @@ if (isHome) {
       </div>
     </div>
   </dialog>
-  {/* Only the small, page-specific sections are inlined; the large project +
+  {/* Page-specific command-palette sections are inert JSON; the large project +
       quick-link dataset is served once as a cached /cmdk-data.js (loaded next). */}
-  <script is:inline define:vars={{ sections: cmdkSections }}>
-    window.__PORTFOLIO_DATA = Object.assign(window.__PORTFOLIO_DATA || {}, { sections });
-  </script>
+  <script is:inline type="application/json" id="cmdk-sections-data" set:html={JSON.stringify(cmdkSections)} />
   <script src="/cmdk-data.js" is:inline></script>
   <script src="/scripts/shared.js" is:inline></script>
   <script src="/scripts/cmdk.js" is:inline></script>

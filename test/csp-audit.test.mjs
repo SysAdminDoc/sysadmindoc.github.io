@@ -18,27 +18,23 @@ test('csp audit inventories current inline script blockers without failing defau
   const output = runAudit();
 
   assert.match(output, /CSP preflight audit/);
-  assert.match(output, /script-src: 'self' 'unsafe-inline'/);
-  assert.match(output, /executable inline scripts: 7/);
-  assert.match(output, /JSON-LD\/data script blocks: 6/);
-  assert.match(output, /inline event handlers: 1/);
-  assert.match(output, /first-paint theme initialization/);
-  assert.match(output, /page-specific command-palette section data; hash=dynamic/);
-  assert.match(output, /recently viewed project tracking; hash=dynamic/);
-  assert.match(output, /async global stylesheet media swap/);
+  assert.match(output, /script-src: 'self'/);
+  assert.match(output, /script unsafe-inline active: no/);
+  assert.match(output, /executable inline scripts: 0/);
+  assert.match(output, /JSON-LD\/data script blocks: 7/);
+  assert.match(output, /inline event handlers: 0/);
+  assert.match(output, /script-src unsafe-inline required today: no/);
   assert.match(output, /CSP preflight audit passed/);
 });
 
-test('csp audit strict candidate mode fails on known unsafe-inline blockers', () => {
+test('csp audit strict candidate mode passes with script-src self after script migration', () => {
   const result = spawnSync(process.execPath, [scriptPath, '--candidate-script-src', "'self'", '--strict'], {
     cwd: repoRoot,
     encoding: 'utf8',
   });
 
-  assert.notEqual(result.status, 0);
+  assert.equal(result.status, 0);
   assert.match(result.stdout, /Candidate script-src: 'self'/);
-  assert.match(result.stdout, /BLOCKED - 8 current executable inline surface/);
-  assert.match(result.stdout, /recently viewed project tracking/);
-  assert.match(result.stdout, /timeline filter controls/);
-  assert.match(result.stderr, /candidate script-src 'self' would block 8 current inline surface/);
+  assert.match(result.stdout, /PASS - candidate allows all current executable inline script surfaces/);
+  assert.equal(result.stderr, '');
 });

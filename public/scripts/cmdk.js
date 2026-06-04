@@ -1,8 +1,20 @@
 /* Command palette (⌘K / Ctrl+K)
  * Shared across the whole site for project search, route jumps, and quick links. */
 (function(){
-  const data = window.__PORTFOLIO_DATA;
-  if (!data) return;
+  function readJsonScript(id) {
+    const node = document.getElementById(id);
+    if (!node) return null;
+    try {
+      return JSON.parse(node.textContent || 'null');
+    } catch (error) {
+      return null;
+    }
+  }
+
+  const sections = readJsonScript('cmdk-sections-data');
+  const data = Object.assign(window.__PORTFOLIO_DATA || {}, Array.isArray(sections) ? { sections } : {});
+  window.__PORTFOLIO_DATA = data;
+  if (!Array.isArray(data.allProjects) && !Array.isArray(data.quickLinks) && !Array.isArray(data.sections)) return;
 
   const backdrop = document.getElementById('cmdk');
   const input = document.getElementById('cmdkInput');

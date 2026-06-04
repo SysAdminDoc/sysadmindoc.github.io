@@ -104,12 +104,13 @@ Post-v0.17.0 deep audit across 5 dimensions (feature completeness, performance, 
 
 ### Performance
 
-- [ ] P0 -- Extract __PORTFOLIO_DATA inline script into external JSON file
-  - Why: Base.astro serializes ~44KB of JSON (full project catalog for command palette) into every single HTML page via define:vars. 199 pages x 44KB = 8.8MB of raw HTML payload. Defeats CDN caching of the data.
-  - Evidence: Base.astro lines 260-261: define:vars injects allProjects, quickLinks, sections into every page. Measured 45,265 chars per page in dist.
+- [x] P0 -- Extract __PORTFOLIO_DATA inline script into external JSON file
+  - Why: Base.astro formerly serialized ~44KB of JSON (full project catalog for command palette) into every single HTML page via define:vars. 199 pages x 44KB = 8.8MB of raw HTML payload. Defeated CDN caching of the data.
+  - Evidence: The pre-extraction layout injected allProjects, quickLinks, and sections into every page. Measured 45,265 chars per page in dist before the large dataset moved to `/cmdk-data.js`.
   - Touches: src/layouts/Base.astro (lines 260-261), public/scripts/cmdk.js (line 4)
   - Acceptance: No inline __PORTFOLIO_DATA script in any page HTML. Command palette still works after fetching external JSON. Each page HTML shrinks by ~44KB.
   - Verify: Build and compare dist/index.html size before vs after. Confirm cmdk opens and searches correctly.
+  - Done: The large project and quick-link dataset is served from cached `/cmdk-data.js`; T95 converted the remaining per-page section payload from executable `define:vars` into inert `application/json` read by `public/scripts/cmdk.js`.
   - Complexity: M
 
 - [ ] P1 -- Stop divider animation running infinite off-screen with will-change
@@ -270,12 +271,13 @@ Post-v0.17.0 deep audit across 5 dimensions (feature completeness, performance, 
   - Verify: Inspect SW cache in DevTools > Application > Cache Storage.
   - Complexity: M
 
-- [ ] P2 -- Migrate unsafe-inline scripts to external files (medium-term CSP hardening)
-  - Why: CSP includes script-src 'unsafe-inline' because of theme init (Base.astro:232), define:vars (Base.astro:260), and Pagefind init (search.astro:100). This weakens CSP XSS protection. Removing unsafe-inline requires externalizing these inline scripts.
-  - Evidence: CSP at Base.astro:191 has script-src 'self' 'unsafe-inline'. Three inline scripts require it.
-  - Touches: src/layouts/Base.astro lines 232, 260; src/pages/search.astro lines 100-117
+- [x] P2 -- Migrate unsafe-inline scripts to external files (medium-term CSP hardening)
+  - Why: CSP included script-src 'unsafe-inline' because of theme init, page data injection, Pagefind init, and later route helpers. This weakened CSP XSS protection.
+  - Evidence: T135 inventoried seven executable inline scripts plus one inline event handler before T95.
+  - Touches: src/layouts/Base.astro; src/components/SectionJumpNav.astro; src/pages/projects/[slug].astro; src/pages/search.astro; src/pages/resume.astro; src/pages/timeline.astro; public/scripts/*.js; scripts/audit-csp.mjs
   - Acceptance: Inline scripts migrated to external files and unsafe-inline removed from CSP. No FOUC.
-  - Verify: Remove unsafe-inline from CSP, test all pages for script execution.
+  - Verify: `npm run csp:audit`; strict candidate `node scripts/audit-csp.mjs --candidate-script-src "'self'" --strict`; rendered route interaction checks.
+  - Done: Active CSP now uses `script-src 'self'`; executable inline scripts and inline event handlers are zero. Style-side `unsafe-inline` remains documented separately because inline Astro style blocks/attributes still require it.
   - Complexity: L
 
 ### Accessibility
@@ -774,7 +776,7 @@ P0-P2 items needing design decisions or significant implementation:
 | CSS @layer organization | L | Layer order, cascade behavior audit, visual regression |
 | Technology tag filtering | L | Tag taxonomy, data model extension, URL state |
 | README table of contents | M | Heading extraction, collapsible details, threshold |
-| Migrate unsafe-inline scripts (CSP) | L | Theme FOUC prevention, data injection pattern |
+| Style-side CSP unsafe-inline follow-up | L | Inline Astro style blocks, style attributes, visual regression budget |
 | Cross-origin cache TTL in SW | M | TTL value, eviction strategy, freshness check |
 | OG images for interior pages | M | Shipped through shared interior OG metadata plus the existing Satori/Resvg endpoint |
 

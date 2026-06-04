@@ -28,60 +28,8 @@ for (let index = 2; index < process.argv.length; index += 1) {
   }
 }
 
-const executableAllowlist = [
-  {
-    file: 'src/layouts/Base.astro',
-    label: 'first-paint theme initialization',
-    fingerprint: "localStorage.getItem('theme-pref')",
-    decision: 'hash or externalize with a no-FOUC fallback before removing unsafe-inline',
-  },
-  {
-    file: 'src/layouts/Base.astro',
-    label: 'page-specific command-palette section data',
-    fingerprint: 'window.__PORTFOLIO_DATA',
-    decision: 'externalize or replace define:vars with a JSON script plus external loader',
-  },
-  {
-    file: 'src/components/SectionJumpNav.astro',
-    label: 'section jump active-state and smooth-scroll behavior',
-    fingerprint: 'mountJumpNav',
-    decision: 'move to a shared self-hosted script before strict script-src',
-  },
-  {
-    file: 'src/pages/projects/[slug].astro',
-    label: 'recently viewed project tracking',
-    fingerprint: 'recently_viewed',
-    decision: 'move to a shared self-hosted script or hash the rendered block',
-  },
-  {
-    file: 'src/pages/search.astro',
-    label: 'Pagefind query bootstrap',
-    fingerprint: 'PagefindComponents',
-    decision: 'move to a self-hosted search bootstrap script',
-  },
-  {
-    file: 'src/pages/resume.astro',
-    label: 'resume print button handler',
-    fingerprint: 'resumePrint',
-    decision: 'move to a self-hosted route helper script',
-  },
-  {
-    file: 'src/pages/timeline.astro',
-    label: 'timeline filter controls',
-    fingerprint: 'timelineFilters',
-    decision: 'move to a self-hosted route helper script',
-  },
-];
-
-const eventHandlerAllowlist = [
-  {
-    file: 'src/layouts/Base.astro',
-    attribute: 'onload',
-    fingerprint: 'data-async-style',
-    label: 'async global stylesheet media swap',
-    decision: 'move to shared.js or replace with a non-handler loading pattern',
-  },
-];
+const executableAllowlist = [];
+const eventHandlerAllowlist = [];
 
 function toPosix(value) {
   return value.replaceAll(path.sep, '/');
@@ -308,7 +256,7 @@ const directives = parseCsp(activeCsp);
 const scriptSrc = directives.get('script-src') ?? directives.get('default-src') ?? [];
 const styleSrc = directives.get('style-src') ?? directives.get('default-src') ?? [];
 const executableInline = scripts.filter((script) => script.executable);
-const jsonLdScripts = scripts.filter((script) => script.type === 'json-ld');
+const jsonDataScripts = scripts.filter((script) => script.type === 'json-ld' || script.type === 'data-json');
 const externalScripts = scripts.filter((script) => script.attrs.src);
 const selfHostedScripts = externalScripts.filter((script) => script.sourceKind === 'self-hosted');
 const thirdPartyScripts = externalScripts.filter((script) => script.sourceKind === 'third-party');
@@ -360,7 +308,7 @@ console.log(`  style unsafe-inline active: ${directiveAllowsUnsafeInline(styleSr
 console.log('');
 console.log('Inline script inventory');
 console.log(`  executable inline scripts: ${executableInline.length}`);
-console.log(`  JSON-LD/data script blocks: ${jsonLdScripts.length}`);
+console.log(`  JSON-LD/data script blocks: ${jsonDataScripts.length}`);
 console.log(`  self-hosted external scripts: ${selfHostedScripts.length}`);
 console.log(`  third-party external scripts: ${thirdPartyScripts.length}`);
 for (const script of executableInline) printScript(script);
@@ -398,6 +346,9 @@ if (options.strict && unknownExecutable.length > 0) {
 }
 if (options.strict && unknownEventHandlers.length > 0) {
   failures.push(`${unknownEventHandlers.length} inline event handler(s) are outside the CSP audit allowlist.`);
+}
+if (options.strict && directiveAllowsUnsafeInline(scriptSrc)) {
+  failures.push("script-src still allows 'unsafe-inline'.");
 }
 if (options.strict && candidate && candidateBlockers.length > 0) {
   failures.push(`candidate script-src ${candidate.join(' ')} would block ${candidateBlockers.length} current inline surface(s).`);
