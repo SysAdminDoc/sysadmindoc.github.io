@@ -45,6 +45,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 - Install: `npm install`
 - Refresh profile feed cache: `npm run profile-feed:sync`
+- Unit tests: `npm test`
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
@@ -63,10 +64,10 @@ The site must remain public-safe. It should not expose private repository names,
 
 Current verification baseline:
 
-- `npm run check` passed with 45 Astro files, 0 errors, 0 warnings, and 0 hints.
+- `npm run check` passed with 46 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and 1200x630 PNG OG metadata checks.
 - `npm run build` passed, including profile feed sync, image pipeline auditing, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
-- `npm test` passed with 12 node tests.
+- `npm test` passed with 12 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf` ran against local preview for `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`; all samples restored from bfcache and had no horizontal overflow or console/network errors. Search, archive, project, and desktop homepage samples stayed under LCP/CLS/lab event-timing thresholds; mobile homepage LCP is the remaining warning.
 - `npm run data:validate` passed.
@@ -77,6 +78,12 @@ Current verification baseline:
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
+
+Windows/VMware local workflow:
+
+- Run npm and Astro commands from a normal local clone or worktree path such as `C:\Users\--\repos\sysadmindoc.github.io`.
+- Do not treat raw `\\vmware-host\Shared Folders\...` or mapped VMware shared-folder builds as canonical validation. Raw UNC execution can fall back to `C:\Windows`; mapped shared-folder execution has produced corrupted Astro/Vite paths.
+- Editing through a shared folder is acceptable, but copy/sync the work to a normal local path before `npm test`, `npm run check`, `npm run build`, or deploy triage.
 
 ## Data Model
 
@@ -198,3 +205,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped public machine-readable indexes. Added `/projects.json` and `/releases.json` with schema versions, freshness timestamps, counts, public URLs, and build-time GitHub metadata for future tooling.
 - 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
+- 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.

@@ -175,12 +175,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: `npm test` now runs `scripts/ensure-project-cwd.mjs` before an explicit `node --test "test/**/*.test.mjs"` target.
   - Verify: Valid repo run still reports 12 tests; `node C:\Users\--\repos\sysadmindoc.github.io\scripts\ensure-project-cwd.mjs` from `C:\Windows` fails fast instead of allowing ambient discovery.
 
-- [ ] **T115** 🤖 P2 — Document or guard the Windows/VMware shared-folder build workflow.
+- [x] **T115** 🤖 P2 — Document or guard the Windows/VMware shared-folder build workflow.
   - Why: The repository can be edited from the VMware shared folder, but local npm/Astro execution from that path is unreliable enough to confuse validation and build triage.
   - Evidence: Direct npm execution from the raw UNC path produced the Windows UNC current-directory fallback; temporary `cmd pushd` mapping fixed smaller scripts, but `npm run build` from the mapped shared-folder path failed in Vite/Astro with a corrupted path like `Z:\repos\sysadmindoc.github.io\ Folders\repos\sysadmindoc.github.io\src\pages\404.astro`.
   - Touches: `README.md`, `CLAUDE.md`, or `PROJECT_CONTEXT.md`; optionally a non-invasive script guard that warns when `process.cwd()` is a VMware shared-folder/mapped-drive path.
-  - Acceptance: Maintainers have a documented Windows runbook: edit on the shared folder if desired, but run npm/Astro from a normal local clone/worktree path without spaces; build failures from VMware path mapping are no longer mistaken for product regressions.
-  - Verify: Follow the documented workflow on a local path and run `npm run check` plus `npm run build`; run from the unsafe path and confirm docs/guard explain the expected failure mode.
+  - Done: `README.md` and `PROJECT_CONTEXT.md` now document the safe local-build workflow: edit through a shared folder if needed, but run npm/Astro validation from a normal local clone/worktree path.
+  - Verify: Follow the documented local path workflow and run `npm test`, `npm run check`, and `npm run build`; the T114 cwd guard documents/fails the raw UNC fallback mode.
 
 - [ ] **T116** 🤖 P2 — Resolve the dev-only `yaml` advisory in the Astro check dependency chain.
   - Why: Production dependency audit is clean, but the full dev audit still reports five moderate vulnerabilities through the type-checking stack, which will keep audit-driven workflows noisy.

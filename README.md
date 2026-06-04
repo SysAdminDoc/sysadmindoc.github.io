@@ -42,7 +42,7 @@ npm run data:summary  # summarize generated GitHub metadata freshness and integr
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
-npm run test          # node:test unit suite (pure data/script helpers)
+npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
 npm run build         # validate data, then output to dist/
@@ -52,6 +52,10 @@ npm run preview       # serve dist/
 `npm run capture-screenshots` additionally requires Playwright (`npm i -D playwright && npx playwright install chromium`); it is an optional, dynamically-imported dependency used only for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
+
+### Windows / VMware shared folders
+
+Use a normal local clone or worktree path, such as `C:\Users\--\repos\sysadmindoc.github.io`, for npm and Astro commands. Editing from a VMware shared folder is fine, but run `npm test`, `npm run check`, and `npm run build` from the local clone. Raw UNC paths like `\\vmware-host\Shared Folders\...` can make Windows fall back to `C:\Windows`, and mapped shared-folder paths have produced corrupted Astro/Vite paths during local builds.
 
 ## Edit content
 
@@ -80,10 +84,11 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 5. Audits stale screenshots and unreferenced source/public modules
 6. Requires the workflow `GITHUB_TOKEN`
 7. Refreshes generated GitHub data for that workflow run
-8. Uploads a generated-data freshness summary artifact
-9. Runs `npm run check`
-10. Builds the Astro site
-11. Publishes to GitHub Pages
+8. Syncs the profile-feed cache used by `src/data/portfolio.ts`
+9. Uploads a generated-data freshness summary artifact
+10. Runs Astro type checks
+11. Builds the Astro site
+12. Publishes to GitHub Pages
 
 The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
 
@@ -128,6 +133,7 @@ scripts/
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-semantic-index.mjs
+├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
 ├── generate-screenshot-thumbnails.mjs
 ├── summarize-generated-data.mjs
 ├── capture-screenshots.mjs
