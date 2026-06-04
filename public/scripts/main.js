@@ -627,6 +627,8 @@ document.querySelectorAll('.fb[data-filter]').forEach(b=>{
 let _searchDebounce=0;
 const _searchEl=document.getElementById('searchInput');
 if(_searchEl)_searchEl.addEventListener('input',e=>{currentSearch=e.target.value;clearTimeout(_searchDebounce);_searchDebounce=setTimeout(applyFilters,80)});
+const _catalogSearchForm=document.getElementById('catalogSearchForm');
+if(_catalogSearchForm)_catalogSearchForm.addEventListener('submit',e=>{e.preventDefault();clearTimeout(_searchDebounce);if(_searchEl)currentSearch=_searchEl.value;applyFilters()});
 
 const _sortEl=document.getElementById('sortSelect');
 if(_sortEl)_sortEl.addEventListener('change',e=>{currentSort=e.target.value;sortCatalog(currentSort);applyFilters()});
