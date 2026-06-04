@@ -7,9 +7,12 @@ export interface Props {
   stars?: number;
   pushedAt?: string;
   updatedAt?: string;
+  isNew?: boolean;
+  isRecent?: boolean;
+  hasDownload?: boolean;
   index?: number;
 }
-const { entry, stars, pushedAt, updatedAt, index = 0 } = Astro.props;
+const { entry, stars, pushedAt, updatedAt, isNew = false, isRecent = false, hasDownload = false, index = 0 } = Astro.props;
 const categoryLabels: Record<string, string> = {
   ps: 'PowerShell',
   py: 'Python',
@@ -68,10 +71,13 @@ const ariaParts = [
   data-repo={entry.repo}
   data-name={entry.name}
   data-desc={entry.desc}
-  data-terms={`${entry.repo} ${entry.category} ${categoryLabel} ${entry.live ? ' live browser' : ''}`}
+  data-terms={`${entry.repo} ${entry.category} ${categoryLabel} ${entry.live ? ' live browser' : ''} ${isNew ? ' new fresh' : ''} ${isRecent ? ' recently updated current' : ''} ${hasDownload ? ' download release has-download' : ''}`}
   data-stars={stars ?? 0}
   data-pushed={pushedAt ?? ''}
   data-updated={updatedAt ?? pushedAt ?? ''}
+  data-new={isNew ? 'true' : 'false'}
+  data-recent={isRecent ? 'true' : 'false'}
+  data-has-download={hasDownload ? 'true' : 'false'}
   data-index={index}
 >
   <span class={`cdo ${entry.category}`}></span>
@@ -99,6 +105,8 @@ const ariaParts = [
         <span class="live-star">{stars}</span>
       </span>
     )}
+    {isNew && <span class="lb2 ca-chip ca-chip-new">NEW</span>}
+    {hasDownload && <span class="lb2 ca-chip ca-chip-download">DOWNLOAD</span>}
     {entry.live && <span class="lb2">LIVE</span>}
   </span>
 </a>

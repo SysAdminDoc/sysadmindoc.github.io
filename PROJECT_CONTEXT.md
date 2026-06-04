@@ -1,9 +1,9 @@
 # Project Context
 
-Last consolidated: 2026-05-17
+Last consolidated: 2026-06-04
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.16.15
+Current tracked version: v0.18.2
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -28,6 +28,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
+- The homepage catalog has URL-backed `view=` slices for all/new/recently updated/has-download. New/recent derive from ignored `_meta.json` freshness against the generated stats timestamp; has-download derives from ignored `_releases.json` download totals.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
@@ -60,9 +61,11 @@ The site must remain public-safe. It should not expose private repository names,
 
 Current verification baseline:
 
-- `npm run check` passed.
+- `npm run check` passed with 45 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and 1200x630 PNG OG metadata checks.
-- `npm run build` passed, including image pipeline auditing and Pagefind index generation.
+- `npm run build` passed, including image pipeline auditing and Pagefind index generation over 198 HTML pages.
+- `npm test` passed with 9 node tests.
+- Focused Chrome CDP browser verification of the homepage catalog views passed: 181 all / 147 new / 173 recently updated / 20 has-download, URL hydration for `view=recent&cat=web&q=Nuke`, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf` ran against local preview for `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`; all samples restored from bfcache and had no horizontal overflow or console/network errors. Search, archive, project, and desktop homepage samples stayed under LCP/CLS/lab event-timing thresholds; mobile homepage LCP is the remaining warning.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
