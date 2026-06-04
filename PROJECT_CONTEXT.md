@@ -30,7 +30,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
-- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side.
+- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` now reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, and unique contiguous ranks.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
@@ -61,7 +61,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Capture screenshots: `npm run capture-screenshots` after installing Playwright browser dependencies
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
-- Summarize generated GitHub metadata and profile-feed cache health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
+- Summarize generated GitHub metadata, profile-feed cache health, and Recommended ranking health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
 
@@ -82,6 +82,7 @@ Current verification baseline:
 - `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
 - `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green. Manual workflow_dispatch run `26956410354` also passed on `ab7cb90` and uploaded the profile-feed summary fields/checks.
 - Dependabot PR triage completed on 2026-06-04: GitHub Actions group merged as `78bbef5`, `marked` 18.0.4 merged as `3ab0f4a` after rebasing the stale PR #9 branch, Astro 6.4.4 was regenerated on current `main` and pushed as `460e04c` after PR #12 conflicted, PR #12 was closed as superseded, and no open Dependabot PRs remain.
+- `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale` passed on 2026-06-04 with 177 ranked projects, 12 top ranking explanation rows, normalized weights, finite scores/parts, usable repo/name identities, and unique contiguous ranks.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -180,11 +181,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the Dependabot T122 triage:
+Highest-priority workflow/research work after the T123 ranking-summary pass:
 
-1. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
-2. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
-3. `T118` -- Add README-cache refresh quality signals to generated data summaries.
+1. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+2. `T118` -- Add README-cache refresh quality signals to generated data summaries.
+3. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -222,6 +223,7 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Fixed the shared `.rv` reveal contract for interior pages. `theme.js` now always observes reveal blocks and `.rv.vis` cancels the CSS scroll-timeline animation so Chrome support detection cannot leave content opacity-zero.
 - 2026-06-04: Shipped profile-feed coverage in the data-health path. The scheduled/manual data refresh now runs `profile-feed:sync`, and `data:summary` reports/fails on profile-feed missing/fallback/stale cache states alongside GitHub metadata freshness.
 - 2026-06-04: Triaged stale Dependabot PRs against current `main`. Rebased and merged the GitHub Actions group and `marked` 18.0.4 updates after fresh CI, regenerated Astro 6.4.4 on current `main` after the Dependabot package-lock branch conflicted, and closed the superseded Astro PR with notes.
+- 2026-06-04: Added generated Recommended ranking visibility and drift guards. `data:summary` now reports top ranked projects with score parts and checks ranking weights, row coverage, identities, finite scores, and unique contiguous ranks.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
