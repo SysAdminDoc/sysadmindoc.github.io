@@ -150,6 +150,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T102** P1 — critical-CSS inline for hero (the real mobile-LCP lever, NOT @layer) + re-baseline stale PERFORMANCE_AUDIT.md (v0.16.12). Done with T16; 2026-06-04 audit shows mobile homepage LCP 668ms.
 - [ ] **T103** P1 — forced-colors gap: SVG data-viz (heatmap/donut/skill rings) unreadable in WHCM.
 - [ ] **T104** P2 — CI gate stubs empty data; commit src/data/_fixtures and render real shapes pre-merge.
+  - Research note: After the T118/T126 passes, PR CI still starts from ad hoc `{}` / `[]` generated-cache stubs before `npm run check` and `npm run build:ci`; keep this item focused on schema-valid fixture caches that exercise profile feed, README cache, release rows, ranking, and rendered JSON-LD with realistic shapes instead of adding another empty-stub variant.
 - [ ] **T105** P2 — promote a11y audit to blocking --strict subset; mirror test + a11y into deploy.yml.
 - [ ] **T106** P2 — axe-core/Playwright a11y job + Playwright visual-regression baselines for future visual-regression-sensitive CSS/image changes.
 - [ ] **T107** P2 — README TOC + reading-time on project pages (heading IDs already generated, orphaned) (NF-A4).
@@ -264,7 +265,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 - [ ] **T125** 🤖 P2 — Add a Pagefind facet/index contract audit after static search generation.
   - Why: Visible facets depend on generated Pagefind index metadata, not only Astro source, so source-only checks can pass even if the built search bundle stops exposing Category filters.
-  - Evidence: Project pages tag `data-pagefind-filter="Category:..."`; `/search/` renders the official filter pane; `package.json` has `search:index` but no script asserting `dist/pagefind` exposes the expected Category values or faceted results.
+  - Evidence: Project pages tag `data-pagefind-filter="Category:..."`; `/search/` renders the official filter pane; Pagefind's filter docs state that `data-pagefind-filter` associates pages with filter keys/values and can capture inline values; `package.json` has `search:index` but no script asserting `dist/pagefind` exposes the expected Category values or faceted results.
   - Touches: `package.json`, a new or existing script under `scripts/`, and possibly `PROJECT_CONTEXT.md`.
   - Acceptance: A post-build `search:audit` proves the Category facet exists, has expected category labels, and faceted empty-term search returns public project pages; counts are compared against rendered/catalog category data with only intentional tolerance.
   - Verify: `npm run build && npm run search:audit`.
@@ -283,7 +284,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 - [ ] **T127** 🤖 P3 — Add JSON Feed icon/favicon metadata and feed validation.
   - Why: `/feed.json` is advertised and live, but omits optional JSON Feed publisher metadata that helps feed readers avoid scraping the homepage, and no explicit feed validator protects required top-level/item fields.
-  - Evidence: Cycle 5 live checks showed `/feed.json` returns JSON Feed 1.1 with 177 items, but `src/pages/feed.json.ts` does not emit `icon` or `favicon`.
+  - Evidence: Cycle 5 live checks showed `/feed.json` returns JSON Feed 1.1 with 177 items, but `src/pages/feed.json.ts` does not emit `icon` or `favicon`; the JSON Feed 1.1 spec defines `icon` and `favicon` as feed-level image URLs and requires stable item `id` plus at least one content field per item.
   - Touches: `src/pages/feed.json.ts`; optionally a `feed:audit` script or T119 smoke assertions.
   - Acceptance: JSON Feed includes absolute `icon` and `favicon` URLs, and validation checks `version`, `title`, `home_page_url`, `feed_url`, non-empty `items`, item `id`, item `url`, and one content field without requiring optional `date_published`.
   - Verify: `npm run build`; inspect `dist/feed.json` or run the feed audit against it.
@@ -305,6 +306,24 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added `scripts/audit-css.mjs` and wired `npm run css:audit` into both `npm run check` and `npm run build`. The audit extracts selector lists from `critical.css` and `global.css`, checks the shared first-viewport nav/hero/proof/stage selectors plus selected mobile overrides, and includes `--self-test` coverage that proves a removed shared selector is reported.
   - Acceptance: A CSS audit extracts expected first-viewport class selectors, allows intentional critical-only/global-only exceptions, and fails when a shared hero/first-viewport selector or selected mobile override is missing from either stylesheet without requiring byte-for-byte declaration equality.
   - Verify: `npm run css:audit`; `npm run css:audit -- --self-test`; `npm test`; `npm run check`; `npm run build`; `npm run a11y:audit`.
+
+---
+
+## 🔬 Researcher Queue (Cycle 7 — 2026-06-04) — see [docs/research-2026-06-04-cycle-7.md](docs/research-2026-06-04-cycle-7.md)
+
+- [ ] **T130** 🤖 P2 — Add a build-output contract audit for public machine-readable endpoints.
+  - Why: The project now audits generated data and rendered JSON-LD, but public consumers also depend on `/projects.json`, `/releases.json`, `/cmdk-data.js`, `/llms.txt`, and the feed/index discovery links in rendered HTML; today those contracts are protected mainly by manual live checks and T119's proposed post-deploy smoke.
+  - Evidence: `src/pages/projects.json.ts` and `src/pages/releases.json.ts` expose custom `schemaVersion: 1` JSON APIs; `src/pages/cmdk-data.js.ts` emits a JavaScript assignment consumed synchronously by `Base.astro`; `src/pages/llms.txt.ts` claims the llms.txt convention; `src/layouts/Base.astro` advertises RSS, release RSS, JSON Feed, project index, and release index alternates; `package.json` has `schema:audit` for HTML JSON-LD but no pre-deploy audit for these machine-readable endpoint files.
+  - Touches: A new `scripts/audit-public-endpoints.mjs` or an expanded build-output audit, `package.json`, and possibly `PROJECT_CONTEXT.md`.
+  - Acceptance: After `astro build`, the audit parses `dist/projects.json` and `dist/releases.json` for schema version, generated timestamp, counts, absolute URLs, and non-empty rows; parses `/cmdk-data.js` enough to prove `allProjects` and `quickLinks` are populated; validates `/llms.txt` has the expected H1, blockquote, H2 file-list shape and useful links; and confirms representative HTML exposes the alternate feed/index discovery links.
+  - Verify: `npm run build && npm run endpoints:audit`.
+
+- [ ] **T131** 🤖 P2 — Bring build-output audits into the weekly quality-gates workflow.
+  - Why: T126 moved rendered JSON-LD validation into `build:ci`, and T125/T130 will add more build-output checks, but the scheduled weekly quality workflow still stops at source/data/Astro checks and will not catch built HTML/search/API drift until a deploy or PR build runs.
+  - Evidence: `.github/workflows/quality-gates.yml` runs production audit, catalog audit, semantic audit, `data:validate`, `assets:audit`, and `npm run check`; `package.json` runs `schema:audit` only inside `build:ci` after `astro build`, HTML repair, service-worker stamping, and Pagefind indexing; GitHub Actions job summaries can present compact Markdown results through `GITHUB_STEP_SUMMARY`.
+  - Touches: `.github/workflows/quality-gates.yml`; optionally compact machine-readable summaries from `schema:audit`, `search:audit`, or `endpoints:audit`.
+  - Acceptance: Weekly `workflow_dispatch`/schedule runs the build-output audit path without deploying, publishes schema/search/endpoint status in the job summary, uploads the relevant logs, and includes build-output failures in the issue/update body and fail gate without hiding advisory semantic-audit context from T121.
+  - Verify: Run `quality-gates.yml` manually; inspect the job summary, uploaded logs, and issue body when a build-output audit is intentionally failed.
 
 ---
 
