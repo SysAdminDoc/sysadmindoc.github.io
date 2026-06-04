@@ -33,7 +33,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Project detail pages use the catalog category as the Pagefind Category source of truth, with featured-language data remaining presentation context only.
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Catalog cards render visible `Recommended #N` rationale text and attach it through `aria-describedby` while the default sort is active; non-Recommended sorts hide the visible rationale. Project detail related links use the same rank map and expose their own ranking rationale. Explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
-- `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
+- `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages. `npm run endpoints:audit` validates those JSON APIs plus `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links from built `dist`.
 - `/feed.json` is a JSON Feed 1.1 project feed with absolute `icon` and `favicon` URLs. `npm run feed:audit` validates the built feed metadata, icon assets, item IDs/URLs, content fields, uniqueness, and dates.
 - Rendered JSON-LD is audited from built `dist/**/*.html` by `npm run schema:audit`. The audit parses every `application/ld+json` block, requires schema.org context, confirms the Base WebSite/Person graph on every HTML page, and checks representative homepage, language, and project routes for expected graph types and stable anchors.
 - Generated Pagefind output is audited from `dist/pagefind` by `npm run search:audit`. The audit loads the generated Pagefind API, requires the Category facet, compares Category counts against rendered project pages and homepage catalog cards, checks expected labels, and verifies filter-only Category searches return public project routes.
@@ -46,7 +46,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
 - A weekly/manual quality-gates workflow reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue when either gate fails.
-- `build:ci` runs Astro build, HTML repair, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
+- `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
 - The GitHub Pages deploy workflow captures the built artifact contract after `build:ci`, publishes the Pages artifact, then runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
 ## Key Commands
@@ -58,6 +58,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
 - Audit generated search index: `npm run search:audit` after `npm run search:index` or `npm run build`
+- Audit built public endpoints: `npm run endpoints:audit` after `npm run build`
 - Audit built JSON Feed: `npm run feed:audit` after `npm run build`
 - Smoke live Pages artifacts: `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
@@ -81,9 +82,11 @@ Current verification baseline:
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
 - `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
-- `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, JSON Feed audit, service-worker stamp v0.18.3, Pagefind index generation over 194 HTML pages, the generated search audit, and the rendered JSON-LD audit.
+- `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, public endpoint audit, JSON Feed audit, service-worker stamp v0.18.3, Pagefind index generation over 194 HTML pages, the generated search audit, and the rendered JSON-LD audit.
+- `npm run endpoints:audit` passed with 177 project-index rows, 60 release-index rows, 20 release repositories, 177 command-palette project rows, 9 quick links, 42 `llms.txt` links, and 5 alternate discovery links.
 - `npm run feed:audit` passed with 177 feed items, 177 `content_text` items, absolute `icon` `https://sysadmindoc.github.io/icon-512.png`, and absolute `favicon` `https://sysadmindoc.github.io/favicon.svg`.
 - `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177 --retries 2 --retry-ms 5000` passed against live Pages with the stamped `portfolio-v0.18.3` service worker, profile-feed-backed `/projects.json`, 60 releases, 177 JSON Feed items, and sitemap-index 200.
+- Deploy workflow run `26962751614` passed on commit `246abd0`, including the post-deploy `Smoke deployed artifacts` step.
 - `npm run search:audit` passed with 194 indexed HTML pages, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered public project results checked. Category counts were Android 19, Desktop 19, Extension 23, Guide 4, Media 6, Other 5, PowerShell 30, Python 41, Security 3, and Web 27.
 - `npm run schema:audit` passed with 194 HTML pages scanned, 378 JSON-LD blocks parsed, 757 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 3 representative routes checked.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
@@ -201,11 +204,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T119 live-smoke pass:
+Highest-priority workflow/research work after the T130 endpoint audit:
 
-1. `T130` -- Add a pre-deploy machine-readable endpoint audit.
-2. `T133` -- Normalize cache headers for generated public endpoint artifacts.
-3. `T131` -- Bring build-output audits into the weekly quality-gates workflow.
+1. `T133` -- Normalize cache headers for generated public endpoint artifacts.
+2. `T131` -- Bring build-output audits into the weekly quality-gates workflow.
+3. `T132` -- Scope Pagefind indexing to intentional content regions.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -256,3 +259,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Added generated Pagefind search auditing to the build path. `search:audit` loads `dist/pagefind/pagefind.js`, verifies Category filters/counts against rendered project/catalog output, checks filter-only Category searches, and caught/fixed the `VideoSubtitleRemover` featured-language versus catalog-category drift.
 - 2026-06-04: Added JSON Feed metadata and auditing. `/feed.json` now emits absolute icon/favicon URLs, and `feed:audit` validates the built feed's version, root URLs, shipped icon assets, non-empty unique items, content fields, and dates.
 - 2026-06-04: Added post-deploy live artifact smoke checks. The deploy workflow captures built version/count contracts and checks live Pages for the stamped service worker, profile-feed project index, release index, JSON Feed, and sitemap after deployment.
+- 2026-06-04: Added public endpoint contract auditing. `endpoints:audit` validates built `/projects.json`, `/releases.json`, `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links before deploy.
