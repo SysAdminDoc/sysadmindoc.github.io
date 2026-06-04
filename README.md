@@ -30,6 +30,8 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 ```bash
 npm install
 npm run profile-feed:sync # optional: refresh ignored profile projects cache from raw GitHub
+npm run generated:fixtures:check # audit tracked PR-CI generated-data fixtures
+npm run generated:fixtures # install fixture caches into ignored src/data/_*.json files
 npm run fetch-stars   # optional: refresh star cache from GitHub
 npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
@@ -69,6 +71,8 @@ Use a normal local clone or worktree path, such as `C:\Users\--\repos\sysadmindo
 ## Edit content
 
 Rendered project entries are adapted from the public SysAdminDoc profile feed into **[src/data/portfolio.ts](src/data/portfolio.ts)**. The ignored cache lives at `src/data/_profile-projects.json` and is refreshed by `npm run profile-feed:sync`, which runs automatically before `npm run check` and `npm run build`.
+
+Pull-request CI does not use GitHub metadata credentials. It installs tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `npm run generated:fixtures`, then runs `npm run check` with `PROFILE_PROJECTS_OFFLINE=1` so the profile-feed sync preserves the fixture cache instead of replacing it over the network.
 
 The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, and a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`.
 
@@ -147,6 +151,7 @@ public/
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
 ├── sync-profile-feed.mjs  # raw profile projects.json cache for rendered catalog
+├── install-generated-fixtures.mjs # audited PR-CI fixture cache installer
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
