@@ -21,6 +21,10 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'SoftwareSourceCode', 'BreadcrumbList'],
     checks: checkProjectRoute,
   }],
+  ['/projects/StormviewRadar/', {
+    types: ['WebSite', 'Person', 'SoftwareSourceCode', 'SoftwareApplication', 'BreadcrumbList'],
+    checks: checkLiveProjectRoute,
+  }],
   ['/uses/', {
     types: ['WebSite', 'Person', 'WebPage'],
     checks: checkReviewedInteriorRoute,
@@ -182,6 +186,7 @@ function checkProjectRoute(nodes, route) {
   requireBaseGraph(nodes, route);
   const sourceCode = requireType(nodes, 'SoftwareSourceCode', route);
   const breadcrumb = requireType(nodes, 'BreadcrumbList', route);
+  if (sourceCode['@id'] !== `${siteUrl}${route}#source`) fail(`${route} SoftwareSourceCode @id drifted`);
   if (sourceCode.author?.['@id'] !== personId) fail(`${route} SoftwareSourceCode author must reference ${personId}`);
   if (!String(sourceCode.codeRepository ?? '').startsWith('https://github.com/SysAdminDoc/')) {
     fail(`${route} SoftwareSourceCode codeRepository must point at SysAdminDoc GitHub`);
@@ -189,12 +194,65 @@ function checkProjectRoute(nodes, route) {
   if (!String(sourceCode.image ?? '').startsWith(`${siteUrl}/og/`)) {
     fail(`${route} SoftwareSourceCode image must be an absolute site OG URL`);
   }
+  if (sourceCode.datePublished && Number.isNaN(new Date(sourceCode.datePublished).getTime())) {
+    fail(`${route} SoftwareSourceCode datePublished is not parseable`);
+  }
   if (sourceCode.dateModified && Number.isNaN(new Date(sourceCode.dateModified).getTime())) {
     fail(`${route} SoftwareSourceCode dateModified is not parseable`);
+  }
+  if (sourceCode.license && !String(sourceCode.license).startsWith('https://spdx.org/licenses/')) {
+    fail(`${route} SoftwareSourceCode license must be an SPDX URL`);
   }
   requireContiguousListItems(breadcrumb.itemListElement, route, 'BreadcrumbList');
   const leaf = breadcrumb.itemListElement.at(-1);
   if (leaf?.item !== `${siteUrl}${route}`) fail(`${route} BreadcrumbList leaf item must match route`);
+}
+
+function checkLiveProjectRoute(nodes, route) {
+  checkProjectRoute(nodes, route);
+  const sourceCode = requireType(nodes, 'SoftwareSourceCode', route);
+  const softwareApplication = requireType(nodes, 'SoftwareApplication', route);
+  const expectedAppId = `${siteUrl}${route}#software-application`;
+  if (softwareApplication['@id'] !== expectedAppId) fail(`${route} SoftwareApplication @id drifted`);
+  if (sourceCode.targetProduct?.['@id'] !== expectedAppId) {
+    fail(`${route} SoftwareSourceCode targetProduct must reference ${expectedAppId}`);
+  }
+  if (softwareApplication.author?.['@id'] !== personId) {
+    fail(`${route} SoftwareApplication author must reference ${personId}`);
+  }
+  if (!String(softwareApplication.url ?? '').startsWith('https://')) {
+    fail(`${route} SoftwareApplication url must be an absolute HTTPS URL`);
+  }
+  if (!String(softwareApplication.applicationCategory ?? '').trim()) {
+    fail(`${route} SoftwareApplication applicationCategory is missing`);
+  }
+  if (softwareApplication.operatingSystem !== 'Web') {
+    fail(`${route} SoftwareApplication operatingSystem must be Web`);
+  }
+  if (softwareApplication.isAccessibleForFree !== true) {
+    fail(`${route} SoftwareApplication must be marked free to access`);
+  }
+  if (softwareApplication.offers?.['@type'] !== 'Offer') {
+    fail(`${route} SoftwareApplication offers must be an Offer`);
+  }
+  if (Number(softwareApplication.offers?.price) !== 0 || softwareApplication.offers?.priceCurrency !== 'USD') {
+    fail(`${route} SoftwareApplication offers must advertise price 0 USD`);
+  }
+  if (!sourceCode.datePublished || Number.isNaN(new Date(sourceCode.datePublished).getTime())) {
+    fail(`${route} SoftwareSourceCode datePublished is missing or not parseable`);
+  }
+  if (!softwareApplication.datePublished || Number.isNaN(new Date(softwareApplication.datePublished).getTime())) {
+    fail(`${route} SoftwareApplication datePublished is missing or not parseable`);
+  }
+  if (sourceCode.datePublished !== softwareApplication.datePublished) {
+    fail(`${route} SoftwareApplication datePublished must match SoftwareSourceCode`);
+  }
+  if (!sourceCode.license || !String(sourceCode.license).startsWith('https://spdx.org/licenses/')) {
+    fail(`${route} SoftwareSourceCode license is missing or not an SPDX URL`);
+  }
+  if (softwareApplication.license !== sourceCode.license) {
+    fail(`${route} SoftwareApplication license must match SoftwareSourceCode`);
+  }
 }
 
 function checkReviewedInteriorRoute(nodes, route) {

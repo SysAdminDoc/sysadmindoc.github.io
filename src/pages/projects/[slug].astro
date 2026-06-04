@@ -87,8 +87,15 @@ try {
 } catch {}
 const projectReleases = allReleases.filter((r) => r.repo === slug).slice(0, 5);
 
-// Tech-stack chips — derived from repo language (_meta.json) plus catalog category.
-let metaMap: Record<string, { stars: number; pushedAt: string; updatedAt: string; language: string | null }> = {};
+// Tech-stack chips and schema metadata — derived from repo metadata (_meta.json) plus catalog category.
+let metaMap: Record<string, {
+  stars: number;
+  createdAt?: string | null;
+  pushedAt: string;
+  updatedAt: string;
+  language: string | null;
+  licenseSpdx?: string | null;
+}> = {};
 try {
   const mod = await import('../../data/_meta.json');
   metaMap = (mod.default ?? mod) as any;
@@ -213,27 +220,75 @@ const ogImage = `/og/${slug}.png`;
 const langMap: Record<string, string> = { ps: 'PowerShell', py: 'Python', web: 'JavaScript', ext: 'JavaScript', kt: 'Kotlin', cs: 'C#', cpp: 'C++', media: 'Python', sec: 'JavaScript', guide: '', fork: '', other: '' };
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
 const personRef = { '@id': 'https://sysadmindoc.github.io/#matt-parker' };
+const plainDescription = desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
+const projectUrl = `${siteUrl}/projects/${slug}/`;
+const sourceCodeId = `${projectUrl}#source`;
+const softwareApplicationId = `${projectUrl}#software-application`;
+const repoMeta = metaMap[slug] ?? {};
+function isoDateTime(value?: string | null) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+function normalizedLicenseSpdx(value?: string | null) {
+  if (!value || value === 'NOASSERTION') return null;
+  return value;
+}
+const dateModified = isoDateTime(lastTouchedAt);
+const datePublished = isoDateTime(repoMeta.createdAt);
+const licenseSpdx = normalizedLicenseSpdx(repoMeta.licenseSpdx);
+const licenseUrl = licenseSpdx ? `https://spdx.org/licenses/${licenseSpdx}.html` : null;
 // Breadcrumb mirrors the visual trail: Portfolio / [lane] / project.
 const breadcrumbItems = [
   { name: 'Portfolio', item: `${siteUrl}/` },
   ...(relatedTrack ? [{ name: relatedTrack.label, item: `${siteUrl}${relatedTrack.href}` }] : []),
-  { name, item: `${siteUrl}/projects/${slug}/` },
+  { name, item: projectUrl },
 ].map((entry, i) => ({ '@type': 'ListItem', position: i + 1, name: entry.name, item: entry.item }));
+const sourceCodeNode: Record<string, unknown> = {
+  '@type': 'SoftwareSourceCode',
+  '@id': sourceCodeId,
+  name,
+  description: plainDescription,
+  codeRepository: ghUrl,
+  programmingLanguage: language ?? langMap[category] ?? '',
+  author: personRef,
+  image: `${siteUrl}${ogImage}`,
+  ...(techChips.length ? { keywords: techChips.join(', ') } : {}),
+  ...(datePublished ? { datePublished } : {}),
+  ...(dateModified ? { dateModified } : {}),
+  ...(licenseUrl ? { license: licenseUrl } : {}),
+  ...(liveUrl ? { url: liveUrl } : {}),
+};
+const softwareApplicationNode: Record<string, unknown> | null = isLive && liveUrl ? {
+  '@type': 'SoftwareApplication',
+  '@id': softwareApplicationId,
+  name,
+  description: plainDescription,
+  url: liveUrl,
+  applicationCategory: `${categoryLabel[category] ?? category} application`,
+  operatingSystem: 'Web',
+  isAccessibleForFree: true,
+  author: personRef,
+  image: `${siteUrl}${ogImage}`,
+  offers: {
+    '@type': 'Offer',
+    price: 0,
+    priceCurrency: 'USD',
+  },
+  ...(techChips.length ? { keywords: techChips.join(', ') } : {}),
+  ...(datePublished ? { datePublished } : {}),
+  ...(dateModified ? { dateModified } : {}),
+  ...(licenseUrl ? { license: licenseUrl } : {}),
+  ...(latestRelease?.tag ? { softwareVersion: latestRelease.tag } : {}),
+} : null;
+if (softwareApplicationNode) {
+  sourceCodeNode.targetProduct = { '@id': softwareApplicationId };
+}
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'SoftwareSourceCode',
-      name,
-      description: desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim(),
-      codeRepository: ghUrl,
-      programmingLanguage: language ?? langMap[category] ?? '',
-      author: personRef,
-      image: `${siteUrl}${ogImage}`,
-      ...(techChips.length ? { keywords: techChips.join(', ') } : {}),
-      ...(lastTouchedAt ? { dateModified: new Date(lastTouchedAt).toISOString() } : {}),
-      ...(liveUrl ? { url: liveUrl } : {}),
-    },
+    sourceCodeNode,
+    ...(softwareApplicationNode ? [softwareApplicationNode] : []),
     { '@type': 'BreadcrumbList', itemListElement: breadcrumbItems },
   ],
 });
