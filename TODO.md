@@ -141,7 +141,10 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T92** deploy.yml cancel-in-progress:true (R, S).
 - [x] **T93** Document Playwright optional dep (R, S).
 - [x] **T94** data-refresh.yml lightweight health probe (R, S).
-- [ ] **T95** Migrate inline scripts off CSP `unsafe-inline` (R, L) *(largest; may defer with rationale)*.
+- [x] **T95** Migrate inline scripts off CSP `unsafe-inline` (R, L).
+  - Done: Removed `script-src 'unsafe-inline'` from the active CSP and externalized the seven executable inline/script-handler surfaces named by T135: first-paint theme/init plus async stylesheet media swap, page-specific command-palette section hydration, section jump navigation, recent-project tracking, Pagefind query bootstrap, resume printing, and timeline filtering.
+  - Implementation: `public/scripts/head-init.js` runs synchronously in `<head>` for no-FOUC theme selection and the global stylesheet media swap; route helpers live in `public/scripts/section-jump-nav.js`, `project-page.js`, `search-page.js`, `resume.js`, and `timeline.js`; page-specific command-palette sections now render as inert `application/json` and are merged by `public/scripts/cmdk.js`.
+  - Verify: `npm run csp:audit` reports zero executable inline scripts, zero inline event handlers, seven JSON-LD/data script blocks, and active `script-src 'self'`; strict candidate mode with `script-src 'self'` passes. `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, `npm run audit:perf -- --base http://127.0.0.1:4322 --strict --lcp 60000 --event 500 --out .tmp/perf-t95.json`, source/built HTML inline-script probes, and a focused Chrome CDP route interaction probe passed.
 
 ---
 
@@ -170,7 +173,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T110** P2 — language-donut population parity (build vs JS flicker) (IMP-2) + skill rings vs real distribution (IMP-3).
 - [ ] **T111** P2 — root-cause Astro 6 `</html>` emission now that Astro 6.4.4 is on `main` (compressHTML bisect); convert `fix-html-structure` to assert-or-noop on a fixed Astro version.
   - Research note: Deploy run `26960045875` on Astro 6.4.4 still logged `fix-html-structure: repaired 194 file(s); script order OK`, so the upstream/`compressHTML` root cause remains active and the fixer is still mutating every built HTML page.
-- [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; CSP theme-init hash (partial T95); catalog DOM-size budget gate.
+- [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; style-src unsafe-inline follow-up; catalog DOM-size budget gate.
 
 ---
 
@@ -389,7 +392,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Why: T95 is still the largest deferred security item, and the current inline-script surface has shifted enough that removing `unsafe-inline` without an inventory can break theme initialization, async stylesheet loading, section navigation, search bootstrapping, recent-view tracking, resume printing, and timeline filtering.
   - Evidence: `src/layouts/Base.astro:86` still emits a CSP meta tag with `script-src 'self' 'unsafe-inline'`; `src/layouts/Base.astro:111` uses an inline `onload` handler for the async stylesheet swap; executable inline script blocks remain in `src/layouts/Base.astro:132`, `src/layouts/Base.astro:161-163`, `src/components/SectionJumpNav.astro:31-118`, `src/pages/projects/[slug].astro:341-351`, `src/pages/search.astro:110-127`, `src/pages/resume.astro:91-95`, and `src/pages/timeline.astro:388+`; JSON-LD blocks in `Base.astro`, `lang/[slug].astro`, and `projects/[slug].astro` need to be classified separately from executable JavaScript; `rg` found no `csp` audit script in `package.json`, `scripts/`, or workflows. MDN documents that `script-src` covers inline scripts and inline event handlers, and that hashes for inline script blocks do not automatically allow event handlers; web.dev recommends hash-based CSP for statically served HTML.
   - Touches: A new audit such as `scripts/audit-csp.mjs`, `package.json`, possibly `PROJECT_CONTEXT.md`, and later T95 implementation files once the inventory is stable.
-  - Done: Added `scripts/audit-csp.mjs`, `npm run csp:audit`, and regression tests for the current source inventory. The audit reports the active CSP meta policy, seven executable inline scripts, one inline event handler, six JSON-LD/data script blocks, six self-hosted external scripts, 15 inline style blocks, 16 style attributes, stable SHA-256 hashes for hashable inline script blocks, and dynamic decisions for `define:vars` blocks. Strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers instead of silently greenlighting T95.
+  - Done: Added `scripts/audit-csp.mjs`, `npm run csp:audit`, and regression tests for the pre-T95 source inventory. The initial audit reported the active CSP meta policy, seven executable inline scripts, one inline event handler, six JSON-LD/data script blocks, six self-hosted external scripts, 15 inline style blocks, 16 style attributes, stable SHA-256 hashes for hashable inline script blocks, and dynamic decisions for `define:vars` blocks. Strict candidate mode failed on the eight then-current `script-src 'unsafe-inline'` blockers instead of silently greenlighting T95; after T95, strict candidate mode passes with zero executable inline scripts and zero inline event handlers.
   - Acceptance: The audit parses source or built HTML, reports the active CSP policy, inventories executable inline scripts, inline event handlers, external self-hosted scripts, JSON-LD blocks, inline styles/style attributes, and current `unsafe-inline` dependencies; computes SHA-256 hashes for stable hashable inline script blocks; separates dynamic blocks that need externalization or a nonce/hash decision; and can fail in strict mode when a new executable inline block or inline event handler appears outside an allowlist.
   - Verify: `node --check scripts/audit-csp.mjs`; `npm run csp:audit`; `node scripts/audit-csp.mjs --candidate-script-src "'self'" --strict` failed as expected with eight current inline blockers before the wrapper treated that failure as success; `npm test`; `npm run check`; `npm run build`; `npm run a11y:audit`; `rtk git diff --check`.
 
@@ -423,7 +426,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
-- **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
+- None currently. T95 shipped the remaining script-side CSP hardening; style-side `unsafe-inline` remains intentionally separate because inline Astro style blocks and style attributes still exist.
 
 ## Parked / rejected (carry-forward — see ROADMAP.md "Rejected or Parked")
 Hosted backend search; analytics/visitor tracking; private-repo listing; auto GitHub visibility changes; Notes/TIL feed (NOTES_FEED_POLICY gates unmet); full CSS redesign; client-side embeddings; dependency-graph viz; project comparison tables; CSP data: URI in img-src (accepted); Spotify cookie-setting iframe (privacy — T31 uses static cards only).

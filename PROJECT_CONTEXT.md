@@ -214,7 +214,7 @@ The Lighthouse CI budget uses `scripts/run-lhci.mjs` to execute `npm exec --pack
 
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 
-`npm run csp:audit` is the preflight gate before T95 removes `script-src 'unsafe-inline'`. It scans Astro/HTML source for the active CSP meta tag, executable inline scripts, inline event handlers, JSON-LD/data scripts, self-hosted external scripts, inline style blocks/attributes, and stable SHA-256 hashes. Strict candidate mode, for example `npm run csp:audit -- --candidate-script-src "'self'" --strict`, is expected to fail until the seven known inline scripts plus the async stylesheet `onload` handler are externalized, hashed, or otherwise resolved.
+`npm run csp:audit` is the source gate for CSP script hardening. It scans Astro/HTML source for the active CSP meta tag, executable inline scripts, inline event handlers, JSON-LD/data scripts, self-hosted external scripts, inline style blocks/attributes, and current unsafe-inline dependencies. After T95, active `script-src` is `'self'`, executable inline scripts and inline event handlers must remain zero, and strict candidate mode with `script-src 'self'` is expected to pass. Style-side `unsafe-inline` is still active because Astro style blocks and style attributes remain.
 
 ## Tooling and Local Instruction Files
 
@@ -231,13 +231,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T79 content-visibility pass:
+Highest-priority workflow/research work after the T95 CSP script migration:
 
-1. `T95` -- Migrate inline scripts off CSP `unsafe-inline`.
-2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-3. `T98` -- Page-level JSON-LD on the 8 interior routes.
+1. `T98` -- Page-level JSON-LD on the 8 interior routes.
+2. `T99` -- SoftwareApplication node plus license/datePublished for live-app project pages.
+3. `T100` -- Greatest Hits case-study coverage parity and validator.
 
-Next open checklist item in document order is `T95` CSP `unsafe-inline` migration.
+Next open checklist item in document order is `T98` page-level JSON-LD on the eight interior routes.
 
 ## Definition of Done for Future Changes
 
@@ -296,3 +296,4 @@ Next open checklist item in document order is `T95` CSP `unsafe-inline` migratio
 - 2026-06-04: Shipped interior-page OG cards. `src/data/interior-og-pages.ts` now drives generated social cards for the key secondary routes through the existing Satori/Resvg endpoint, and `images:audit` plus unit tests guard required slugs, route wiring, and project-card collisions. Built PNG probes confirmed all eight generated cards are 1200x630; Browser preview verified `/search/` and `/healthcare-it/` metadata, PNG responses, no overflow, and clean console logs.
 - 2026-06-04: Shipped interior freshness signals. `src/data/page-freshness.ts` centralizes reviewed dates for `/uses/`, `/resume/`, and `/healthcare-it/`; the pages render visible `Last updated` timestamps and reviewed `WebPage.dateModified` JSON-LD, with schema audit coverage and browser verification.
 - 2026-06-04: Reintroduced below-fold homepage render containment for T79. `global.css` applies guarded `content-visibility:auto` to ten sections with intrinsic-size fallbacks and a print opt-out; unit, headless Chrome CDP, build, and performance checks guard against near-fold blanking, overflow, and bfcache regressions.
+- 2026-06-04: Shipped T95 CSP script hardening. `script-src 'unsafe-inline'` was removed; first-paint theme/global-style initialization and route helpers now load from self-hosted scripts; command-palette page sections are inert JSON; `npm run csp:audit` and strict candidate mode report zero executable inline scripts and zero inline event handlers. Verification covered unit/check/build/a11y gates, built HTML inline-script probes, the strict performance audit on `127.0.0.1:4322`, and focused Chrome CDP interactions for theme init, command palette data, Pagefind bootstrap, section jumps, recent-project tracking, resume print, and timeline filters.
