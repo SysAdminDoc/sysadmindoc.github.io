@@ -17,7 +17,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts
-- **Catalog discovery views** — URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
+- **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
@@ -68,10 +68,10 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 
 - Featured: surface in the hero signature reel, command palette, and feeds
 - Live Apps: for GitHub Pages demos
-- Catalog: full searchable repo list (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
+- Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The `view=` URL state combines with `cat=`, `q=`, and `sort=`.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -110,6 +110,7 @@ src/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
+│   ├── project-ranking.mjs # build-time catalog and related-project scoring
 │   ├── projects.ts  # curated fallback, featured, live-app screenshots, skills
 │   ├── proof.ts
 │   ├── archive.ts

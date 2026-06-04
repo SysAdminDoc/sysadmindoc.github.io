@@ -30,6 +30,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
+- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
@@ -177,10 +178,10 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority work after the T28 live-card image migration:
+Highest-priority work after the T36 ranking pass:
 
-1. `T36` -- Build-time project ranking signal.
-2. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
+1. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
+2. `T122` -- Triage stale Dependabot PRs against current `main`.
 3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
 
 ## Definition of Done for Future Changes
@@ -212,6 +213,7 @@ Highest-priority work after the T28 live-card image migration:
 - 2026-05-17: Shipped public machine-readable indexes. Added `/projects.json` and `/releases.json` with schema versions, freshness timestamps, counts, public URLs, and build-time GitHub metadata for future tooling.
 - 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
+- 2026-06-04: Shipped build-time project ranking. Added `src/data/project-ranking.mjs` plus unit coverage, changed the homepage default catalog sort to `Recommended`, and reused the same score map for project-page related links.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.

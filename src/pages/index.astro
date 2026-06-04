@@ -9,6 +9,12 @@ import TagCloud from '../components/TagCloud.astro';
 import Heatmap from '../components/Heatmap.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
+import {
+  computeProjectRankings,
+  formatProjectRankingLabel,
+  getReleaseDownloadTotals,
+  rankCatalogEntries,
+} from '../data/project-ranking.mjs';
 import { careerRoles } from '../data/career';
 
 // Build-time: load cached star counts + aggregate stats + per-repo metadata (fetch-stars.mjs).
@@ -44,12 +50,20 @@ try {
   releases = (mod.default ?? mod) as typeof releases;
 } catch {}
 const latestRelease = releases[0];
+const releaseDownloadTotals = getReleaseDownloadTotals(releases);
 const releaseDownloadRepos = new Set(
-  releases
-    .filter((release) => Number(release.downloads ?? 0) > 0)
-    .map((release) => release.repo),
+  [...releaseDownloadTotals.entries()]
+    .filter(([, downloads]) => downloads > 0)
+    .map(([repo]) => repo),
 );
 const freshnessReference = new Date(stats.fetchedAt ?? stats.lastPushedAt ?? Date.now()).getTime();
+const projectRankings = computeProjectRankings(catalog, {
+  stars,
+  meta,
+  releaseDownloadTotals,
+  referenceDate: stats.fetchedAt ?? stats.lastPushedAt ?? Date.now(),
+});
+const rankedCatalog = rankCatalogEntries(catalog, projectRankings);
 const dayMs = 24 * 60 * 60 * 1000;
 function ageDays(iso?: string | null): number | null {
   if (!iso) return null;
@@ -523,7 +537,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="catalog" aria-label="Project catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and freshness signals that help you decide what is active before you click through.</p></div>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and a build-time ranking that blends stars, freshness, and release-download activity before you click through.</p></div>
     <div class="catalog-controls rv">
       <div class="search-wrap">
         <label class="sr-only" for="searchInput">Search projects</label>
@@ -532,7 +546,7 @@ const cmdkSections = [
       </div>
       <label class="sr-only" for="sortSelect">Sort projects</label>
       <select class="sort-select" id="sortSelect" aria-label="Sort projects">
-        <option value="default">Default order</option>
+        <option value="default">Recommended</option>
         <option value="stars">Most stars</option>
         <option value="name">A-Z</option>
         <option value="name-desc">Z-A</option>
@@ -552,16 +566,20 @@ const cmdkSections = [
       ))}
     </div>
     <div class="catalog-feedback rv">
-      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the full archive: {catalogTotal} public projects.</div>
+      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the ranked archive: {catalogTotal} public projects.</div>
       <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>
     </div>
     <div class="cg" id="catalogGrid">
-      {catalog.map((entry, index) => {
+      {rankedCatalog.map((entry, index) => {
         const viewState = catalogViewState.get(entry.repo);
+        const ranking = projectRankings.get(entry.repo);
         return (
           <CatalogEntry
             entry={entry}
             index={index}
+            rank={ranking?.rank}
+            rankScore={ranking?.score}
+            rankLabel={formatProjectRankingLabel(ranking)}
             stars={stars[entry.repo]}
             pushedAt={meta[entry.repo]?.pushedAt}
             updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt}

@@ -11,8 +11,23 @@ export interface Props {
   isRecent?: boolean;
   hasDownload?: boolean;
   index?: number;
+  rank?: number;
+  rankScore?: number;
+  rankLabel?: string;
 }
-const { entry, stars, pushedAt, updatedAt, isNew = false, isRecent = false, hasDownload = false, index = 0 } = Astro.props;
+const {
+  entry,
+  stars,
+  pushedAt,
+  updatedAt,
+  isNew = false,
+  isRecent = false,
+  hasDownload = false,
+  index = 0,
+  rank,
+  rankScore,
+  rankLabel = '',
+} = Astro.props;
 const categoryLabels: Record<string, string> = {
   ps: 'PowerShell',
   py: 'Python',
@@ -79,6 +94,9 @@ const ariaParts = [
   data-recent={isRecent ? 'true' : 'false'}
   data-has-download={hasDownload ? 'true' : 'false'}
   data-index={index}
+  data-rank={rankScore?.toFixed(4) ?? '0'}
+  data-rank-position={rank ?? index + 1}
+  data-rank-label={rankLabel}
 >
   <span class={`cdo ${entry.category}`}></span>
   <span class="ca-copy">

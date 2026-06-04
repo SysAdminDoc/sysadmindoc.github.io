@@ -15,8 +15,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Re-baselined the local performance audit after the CSS split: mobile homepage LCP is 668ms with CLS 0, bfcache restored, and no horizontal overflow.
 - Added an advisory Lighthouse CI budget: `npm run lhci:audit` wraps a pinned transient LHCI CLI for CI/Linux, checks homepage and project-page category/metric/resource budgets as warnings, and the PR CI uploads filesystem reports.
 - Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output with AVIF/WebP srcsets and JPEG fallback from tracked `src/assets/screenshots/thumbs/` inputs, while preserving stable public screenshot/thumb URLs for project pages and JSON feeds.
+- Added a deterministic build-time catalog ranking signal that blends stars, 180-day freshness decay, and release-download activity. The homepage `Recommended` sort now uses that signal by default, and project detail related links use the same ranking map.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 - Verified the live-card image migration with a fresh local preview: 22 `<picture>` blocks, 22 AVIF/WebP source sets, AVIF selected by the browser, no stale `/screenshots/thumbs/` card references, no console warnings/errors, and no 390px horizontal overflow.
+- Verified the ranking pass with `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, direct built-HTML probes, and a Browser preview check that changed sort order to A-Z and restored the ranked `Recommended` order without console warnings or mobile overflow.
 
 ## [v0.18.2] - 2026-06-04
 

@@ -5,6 +5,7 @@ import InteriorNav from '../../components/InteriorNav.astro';
 import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { featured, liveApps, catalog } from '../../data/portfolio';
+import { computeProjectRankings, getReleaseDownloadTotals, rankCatalogEntries } from '../../data/project-ranking.mjs';
 import { healthcareIT } from '../../data/curated';
 import { projectProof } from '../../data/proof';
 import { existsSync } from 'node:fs';
@@ -171,7 +172,7 @@ if (rawMd && rawMd.trim().length > 0) {
 }
 
 // Per-project releases (from cached _releases.json)
-let allReleases: Array<{ repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }> = [];
+let allReleases: Array<{ repo: string; tag: string; name: string; publishedAt: string; url: string; downloads?: number; bodyFirst: string }> = [];
 try {
   const mod = await import('../../data/_releases.json');
   allReleases = (mod.default ?? mod) as any;
@@ -183,6 +184,14 @@ let metaMap: Record<string, { stars: number; pushedAt: string; updatedAt: string
 try {
   const mod = await import('../../data/_meta.json');
   metaMap = (mod.default ?? mod) as any;
+} catch {}
+let rankingStats = {
+  fetchedAt: null as string | null,
+  lastPushedAt: null as string | null,
+};
+try {
+  const mod = await import('../../data/_stats.json');
+  rankingStats = { ...rankingStats, ...(mod.default ?? mod) };
 } catch {}
 const language = metaMap[slug]?.language ?? null;
 const categoryLabel: Record<string, string> = {
@@ -243,15 +252,22 @@ const projectFacts = [
   },
 ];
 
-// Related: same category, excluding self + archived. Ranked by stars then freshness.
-const related = catalog
+const releaseDownloadTotals = getReleaseDownloadTotals(allReleases);
+const projectRankings = computeProjectRankings(catalog, {
+  stars,
+  meta: metaMap,
+  releaseDownloadTotals,
+  referenceDate: rankingStats.fetchedAt ?? rankingStats.lastPushedAt ?? Date.now(),
+});
+
+// Related: same category, excluding self. Ranked by the same build-time blend as the catalog default.
+const related = rankCatalogEntries(catalog
   .filter((c) => c.category === category && c.repo !== slug)
   .map((c) => ({
     ...c,
     _stars: stars[c.repo] ?? 0,
     _pushed: metaMap[c.repo]?.pushedAt ?? '0',
-  }))
-  .sort((a, b) => (b._stars - a._stars) || (new Date(b._pushed).getTime() - new Date(a._pushed).getTime()))
+  })), projectRankings)
   .slice(0, 4);
 const cmdkSections = [
   { label: 'Overview', href: '#project-overview', desc: 'Project snapshot, delivery details, and primary actions.', badge: 'PROJECT' },
@@ -541,7 +557,7 @@ const jsonLd = JSON.stringify({
           <div class="project-section-head">
             <div>
               <h2 class="project-section-title">More from this lane</h2>
-              <p class="project-section-copy">More work from the same lane, ranked by stars first and then by how recently it moved.</p>
+              <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p>
             </div>
           </div>
         <div class="cg" style="margin-top:24px">

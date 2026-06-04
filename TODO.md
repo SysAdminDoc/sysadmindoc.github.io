@@ -65,7 +65,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
 - [◑] **T35** Pagefind facets/metadata (NF-26, M) — faceted index shipped (Category filter + Type meta on project pages); visible filter UI deferred. Pagefind v1.5.2 documents `<pagefind-filter-pane>` plus faceted mode, so the next pass should browser-verify the official component before custom UI.
-- [ ] **T36** Build-time project ranking signal (NF-13, M).
+- [x] **T36** Build-time project ranking signal (NF-13, M) — default catalog order now uses a deterministic build-time blend of stars, 180-day freshness decay, and release-download activity; project-page related links use the same rank map, with explicit star/name/recent sorts preserved.
 ### Data / scripts
 - [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
 - [x] **T38** `@astrojs/rss` migration + content:encoded (NF-25, M).
@@ -249,7 +249,6 @@ These survived the v0.18.0 drain because they need a judgment call I shouldn't m
 - **T41** README code syntax highlighting (Shiki) — build-time highlighter would emit inline `style`/CSS-var spans that the README `sanitize-html` allowlist strips; allowing `style` on README-derived content needs a security review. Dep + security-gated.
 - **T42** OG images for interior pages — satori template work whose visual output can't be verified headlessly; the `og/[slug].png.ts` scaffold can be generalized once someone can eyeball the cards.
 - **T35** Pagefind facets/metadata — **faceted index shipped** (Category filter + Type meta on project pages; verified 198 pages / 1 filter). Remaining: wire the visible filter pill into the custom `<pagefind-*>` modular-ui search page — needs a browser check of that component's filter API.
-- **T36** Build-time project ranking — marginal value: the catalog already offers "Most stars" and "Recently updated" sorts that cover the same signal; revisit only if a blended default sort is actually wanted.
 - **T43** Last-updated timestamps on /uses, /resume, /healthcare-it — deferred: hardcoded dates go stale and become a maintenance burden / misleading freshness signal. /now already carries a real date. Revisit if a data-driven `lastReviewed` field is added.
 
 ## Parked / rejected (carry-forward — see ROADMAP.md "Rejected or Parked")

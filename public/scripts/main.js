@@ -437,6 +437,7 @@ document.querySelectorAll('.catalog-view[data-view]').forEach(button=>{
 });
 
 function getSortLabel(value){
+    if(value==='default')return'Recommended';
     if(value==='stars')return'Most stars';
     if(value==='name')return'A-Z';
     if(value==='name-desc')return'Z-A';
@@ -547,8 +548,16 @@ function applyFilters(){
 function sortCatalog(method){
     if(!grid)return;
     const items=Array.from(grid.querySelectorAll('.ca'));
+    const readNumber=(item,key)=>{
+        const value=Number(item.dataset[key]);
+        return Number.isFinite(value)?value:0;
+    };
     items.sort((a,b)=>{
-        if(method==='default')return(parseInt(a.dataset.index,10)||0)-(parseInt(b.dataset.index,10)||0);
+        if(method==='default'){
+            const rankDelta=readNumber(b,'rank')-readNumber(a,'rank');
+            if(Math.abs(rankDelta)>0.0001)return rankDelta;
+            return(readNumber(a,'rankPosition')||readNumber(a,'index'))-(readNumber(b,'rankPosition')||readNumber(b,'index'));
+        }
         if(method==='stars')return(parseInt(b.dataset.stars)||0)-(parseInt(a.dataset.stars)||0);
         if(method==='name')return a.dataset.name.localeCompare(b.dataset.name);
         if(method==='name-desc')return b.dataset.name.localeCompare(a.dataset.name);
