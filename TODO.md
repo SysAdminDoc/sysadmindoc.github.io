@@ -369,6 +369,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 11 — 2026-06-04) — see [docs/research-2026-06-04-cycle-11.md](docs/research-2026-06-04-cycle-11.md)
+
+- [ ] **T135** 🤖 P2 — Add a CSP preflight audit before removing `script-src 'unsafe-inline'`.
+  - Why: T95 is still the largest deferred security item, and the current inline-script surface has shifted enough that removing `unsafe-inline` without an inventory can break theme initialization, async stylesheet loading, section navigation, search bootstrapping, recent-view tracking, resume printing, and timeline filtering.
+  - Evidence: `src/layouts/Base.astro:86` still emits a CSP meta tag with `script-src 'self' 'unsafe-inline'`; `src/layouts/Base.astro:111` uses an inline `onload` handler for the async stylesheet swap; executable inline script blocks remain in `src/layouts/Base.astro:132`, `src/layouts/Base.astro:161-163`, `src/components/SectionJumpNav.astro:31-118`, `src/pages/projects/[slug].astro:341-351`, `src/pages/search.astro:110-127`, `src/pages/resume.astro:91-95`, and `src/pages/timeline.astro:388+`; JSON-LD blocks in `Base.astro`, `lang/[slug].astro`, and `projects/[slug].astro` need to be classified separately from executable JavaScript; `rg` found no `csp` audit script in `package.json`, `scripts/`, or workflows. MDN documents that `script-src` covers inline scripts and inline event handlers, and that hashes for inline script blocks do not automatically allow event handlers; web.dev recommends hash-based CSP for statically served HTML.
+  - Touches: A new audit such as `scripts/audit-csp.mjs`, `package.json`, possibly `PROJECT_CONTEXT.md`, and later T95 implementation files once the inventory is stable.
+  - Acceptance: The audit parses source or built HTML, reports the active CSP policy, inventories executable inline scripts, inline event handlers, external self-hosted scripts, JSON-LD blocks, inline styles/style attributes, and current `unsafe-inline` dependencies; computes SHA-256 hashes for stable hashable inline script blocks; separates dynamic blocks that need externalization or a nonce/hash decision; and can fail in strict mode when a new executable inline block or inline event handler appears outside an allowlist.
+  - Verify: `npm run csp:audit`; then run a strict/candidate mode such as `npm run csp:audit -- --candidate-script-src "'self'" --strict` and confirm it reports the known blockers before failing rather than silently greenlighting T95.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
