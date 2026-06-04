@@ -41,6 +41,7 @@ npm run semantic:audit # report similar-project and cross-category catalog revie
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
+npm run feed:audit     # verify built JSON Feed metadata and item contracts
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
@@ -72,7 +73,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category, and `npm run search:audit` checks the built Category filter contract after indexing.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category, and `npm run search:audit` checks the built Category filter contract after indexing. `/feed.json` is JSON Feed 1.1 with absolute icon metadata and is guarded by `npm run feed:audit`.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -143,6 +144,7 @@ scripts/
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
 ├── audit-a11y.mjs         # static WCAG audit over dist/
+├── audit-feed.mjs         # built JSON Feed metadata/item contract audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-semantic-index.mjs
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
