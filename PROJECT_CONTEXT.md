@@ -46,8 +46,9 @@ The site must remain public-safe. It should not expose private repository names,
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
-- A weekly/manual quality-gates workflow reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue when either gate fails.
+- A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, local data/assets/Astro checks, and non-deploying build-output audits. It uploads command logs and opens or updates a GitHub issue when production, catalog, or build-output gates fail.
 - `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
+- The weekly quality-gates workflow now runs the `build:ci` path without deploying, then emits dedicated endpoint, JSON Feed, Pagefind search, and rendered JSON-LD audit logs. The job summary reports those statuses alongside the advisory semantic audit, and build-output failures feed the quality-gate issue and fail gate.
 - The GitHub Pages deploy workflow captures the built artifact contract after `build:ci`, publishes the Pages artifact, then runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
 ## Key Commands
@@ -205,11 +206,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T133 cache-policy pass:
+Highest-priority workflow/research work after the T121/T131 weekly quality-gate pass:
 
-1. `T131` -- Bring build-output audits into the weekly quality-gates workflow.
-2. `T132` -- Scope Pagefind indexing to intentional content regions.
-3. `T134` -- Add a forced-colors browser audit for SVG data-visualization surfaces.
+1. `T132` -- Scope Pagefind indexing to intentional content regions.
+2. `T134` -- Add a forced-colors browser audit for SVG data-visualization surfaces.
+3. `T120` -- Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -262,3 +263,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Added post-deploy live artifact smoke checks. The deploy workflow captures built version/count contracts and checks live Pages for the stamped service worker, profile-feed project index, release index, JSON Feed, and sitemap after deployment.
 - 2026-06-04: Added public endpoint contract auditing. `endpoints:audit` validates built `/projects.json`, `/releases.json`, `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links before deploy.
 - 2026-06-04: Normalized generated endpoint cache policy. Shared endpoint header helpers now declare bounded source cache policies for generated JSON/feed/text/script endpoints and unhashed OG image routes, and live smoke records the effective GitHub Pages `max-age=600` policy.
+- 2026-06-04: Added build-output coverage to weekly quality gates. The workflow now runs `build:ci` without deploying, publishes endpoint/feed/search/schema status in the job summary, uploads dedicated logs, includes build-output failures in the quality-gate issue body, and keeps semantic-audit output advisory.
