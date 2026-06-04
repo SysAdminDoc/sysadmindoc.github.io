@@ -18,7 +18,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
-- **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
+- **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
@@ -41,6 +41,7 @@ npm run semantic:audit # report similar-project and cross-category catalog revie
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
+npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON Feed metadata and item contracts
 npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
@@ -147,6 +148,7 @@ scripts/
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
 ├── audit-a11y.mjs         # static WCAG audit over dist/
+├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
 ├── audit-feed.mjs         # built JSON Feed metadata/item contract audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
