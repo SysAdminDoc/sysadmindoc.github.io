@@ -72,7 +72,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T39** Content-drift + featured⊆catalog validator extensions (NF-14/15, S).
 ### SEO/feeds
 - [x] **T40** Dedicated releases feed `/releases.xml` (NF-9, S).
-- [ ] **T41** README code syntax highlighting (Shiki) (NF-23, M).
+- [x] **T41** README code syntax highlighting (Shiki) (NF-23, M).
+  - Done: Project README rendering now uses `src/data/readme-rendering.mjs`, a dedicated `Marked` instance, `sanitize-html`, and Shiki `github-dark-default` tokenization for common README fence languages. Shiki token colors are converted to fixed CSS classes in `global.css`; sanitized README output keeps `pre`/`code`/`span` classes but does not allow README-sourced `style` or event-handler attributes.
+  - Verify: `node --check src/data/readme-rendering.mjs`; `npm test`; `npm run check`; `npm run build`; generated HTML probe on `dist/projects/UserScriptHunt/index.html` found 8 README code blocks, 18 Shiki token spans, and 0 README article style/event attributes; `npm run a11y:audit`; `npm audit --omit=dev`; `npm run csp:audit`; Browser preview on `http://127.0.0.1:4321/projects/UserScriptHunt/#project-readme` found 2 highlighted Shiki blocks, 2 plain fallback blocks, visible token colors, 0 horizontal overflow, 0 README style/event attributes, and 0 console errors.
 - [ ] **T42** OG images for interior pages (R, M).
 - [ ] **T43** Last-updated timestamps on /uses, /resume, /healthcare-it (R, S).
 ### Security / privacy
@@ -416,7 +418,6 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
-- **T41** README code syntax highlighting (Shiki) — build-time highlighter would emit inline `style`/CSS-var spans that the README `sanitize-html` allowlist strips; allowing `style` on README-derived content needs a security review. Dep + security-gated.
 - **T42** OG images for interior pages — satori template work whose visual output can't be verified headlessly; the `og/[slug].png.ts` scaffold can be generalized once someone can eyeball the cards.
 - **T43** Last-updated timestamps on /uses, /resume, /healthcare-it — deferred: hardcoded dates go stale and become a maintenance burden / misleading freshness signal. /now already carries a real date. Revisit if a data-driven `lastReviewed` field is added.
 

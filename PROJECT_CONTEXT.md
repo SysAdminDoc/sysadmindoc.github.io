@@ -32,6 +32,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. Searchable routes tag their meaningful `<main>` content with `data-pagefind-body`, so Pagefind indexes intentional page content while excluding repeated Base layout UI such as the global command palette; `/404.html` stays untagged. `npm run build` runs Astro, `npm run search:index`, and `npm run search:audit`, which writes the static search bundle to `dist/pagefind` and verifies tagged page counts plus generated Category filters/results against rendered project/catalog data.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
 - Project detail pages use the catalog category as the Pagefind Category source of truth, with featured-language data remaining presentation context only.
+- Project detail README rendering lives in `src/data/readme-rendering.mjs`. It uses a per-render `Marked` instance, keeps existing GitHub raw/blob link rewriting, sanitizes remote README HTML with `sanitize-html`, and applies Shiki `github-dark-default` fenced-code highlighting through fixed token classes rather than README-sourced inline `style` attributes.
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Catalog cards render visible `Recommended #N` rationale text and attach it through `aria-describedby` while the default sort is active; non-Recommended sorts hide the visible rationale. Project detail related links use the same rank map and expose their own ranking rationale. Explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages. `npm run endpoints:audit` validates those JSON APIs plus `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links from built `dist`.
@@ -191,6 +192,8 @@ Live-app thumbnails are derived assets. Run `npm run screenshots:thumbs` after c
 
 The project parses remote README content through `marked` and `sanitize-html`, so markdown parser and sanitizer advisories are high-priority even though the site is static.
 
+README code highlighting is build-time only. Shiki token output is converted to allowlisted classes on `pre`, `code`, and `span`; remote README `style` attributes and event-handler attributes remain stripped by the sanitizer.
+
 Production dependency advisories found on 2026-05-17 were remediated:
 
 - `sanitize-html` upgraded to 2.17.4.
@@ -223,13 +226,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T135 CSP preflight pass:
+Highest-priority workflow/research work after the T41 README highlighting pass:
 
-1. `T41` -- README code syntax highlighting.
-2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-3. `T95` -- Remove CSP `unsafe-inline` for scripts after the T135 blocker inventory is resolved.
+1. `T42` -- OG images for interior pages.
+2. `T43` -- Last-updated timestamps on `/uses`, `/resume`, `/healthcare-it`.
+3. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
 
-Next open checklist item in document order is `T41` README code syntax highlighting.
+Next open checklist item in document order is `T42` OG images for interior pages.
 
 ## Definition of Done for Future Changes
 
@@ -284,3 +287,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Scoped Pagefind indexing to intentional page content. Searchable routes now tag their main content with `data-pagefind-body`, `/404.html` remains outside the index, the global command palette is excluded from indexed regions, and `search:audit` verifies the tagged route count before Category facet checks.
 - 2026-06-04: Added advisory performance/bfcache coverage to weekly quality gates. The workflow serves built `dist/` locally after `build:ci`, runs the custom strict performance audit, uploads preview/performance logs plus `.tmp/performance-audit-ci.json`, and adds route-level performance rows to the job summary. Manual run `26966906202` passed and uploaded artifact `7417914733`.
 - 2026-06-04: Added the CSP preflight audit for T95. `npm run csp:audit` inventories the active CSP, seven known executable inline scripts, one inline event handler, three JSON-LD/data script blocks, six self-hosted external scripts, and inline style surfaces; strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers.
+- 2026-06-04: Shipped README code highlighting. Project pages now render cached README fences through Shiki with fixed CSS classes while preserving sanitizer stripping for remote README inline styles and event handlers.
