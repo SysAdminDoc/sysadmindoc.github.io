@@ -58,7 +58,7 @@ npm run preview       # serve dist/
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
-`npm run lhci:audit` is canonical in CI/Linux. On local Windows it exits cleanly by default because Chrome launcher cleanup can fail with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` to force a local attempt. Use `npm run audit:perf` for local Windows performance/bfcache smoke checks.
+`npm run lhci:audit` is canonical in CI/Linux. On local Windows it exits cleanly by default because Chrome launcher cleanup can fail with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` to force a local attempt. Use `npm run audit:perf` for local Windows performance/bfcache smoke checks. Weekly quality gates also run `npm run audit:perf -- --strict --lcp 60000 --event 500` against a local preview, upload `.tmp/performance-audit-ci.json`, and publish a compact route summary; LCP is recorded there but budgeted by LHCI.
 
 ### Windows / VMware shared folders
 
