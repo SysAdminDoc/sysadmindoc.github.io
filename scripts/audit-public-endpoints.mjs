@@ -284,7 +284,7 @@ function auditLlmsTxt(text) {
   if (!nonEmpty[0]?.startsWith('# ')) fail('llms.txt first non-empty line must be an H1.');
   if (!nonEmpty.some((line) => line.startsWith('> '))) fail('llms.txt must include a blockquote summary.');
 
-  const requiredSections = ['Featured projects', 'Live apps', 'Pages', 'Feeds'];
+  const requiredSections = ['Featured projects', 'Live apps', 'Pages', 'Language lanes', 'Feeds', 'Machine-readable endpoints'];
   for (const section of requiredSections) {
     if (!lines.some((line) => line.trim() === `## ${section}`)) {
       fail(`llms.txt is missing "## ${section}".`);
@@ -293,6 +293,7 @@ function auditLlmsTxt(text) {
 
   const linkPattern = /^- \[([^\]]+)\]\(([^)]+)\):\s+(.+)$/;
   let linkCount = 0;
+  const urls = new Set();
   for (const [index, line] of lines.entries()) {
     if (!line.startsWith('- ')) continue;
     const match = linkPattern.exec(line);
@@ -304,9 +305,44 @@ function auditLlmsTxt(text) {
     if (!label.trim()) fail(`llms.txt list item on line ${index + 1} has an empty label.`);
     if (!desc.trim()) fail(`llms.txt list item on line ${index + 1} has an empty description.`);
     parseUrl(url, `llms.txt link on line ${index + 1}`);
+    urls.add(url);
     linkCount += 1;
   }
-  if (linkCount < 20) fail(`llms.txt should expose at least 20 useful links, found ${linkCount}.`);
+  const requiredUrls = [
+    '/',
+    '/search/',
+    '/releases/',
+    '/now/',
+    '/uses/',
+    '/resume/',
+    '/healthcare-it/',
+    '/timeline/',
+    '/archive/',
+    '/lang/powershell/',
+    '/lang/python/',
+    '/lang/javascript/',
+    '/lang/web/',
+    '/lang/kotlin/',
+    '/lang/cs/',
+    '/lang/security/',
+    '/feed.json',
+    '/rss.xml',
+    '/atom.xml',
+    '/releases.xml',
+    '/projects.json',
+    '/releases.json',
+    '/resume.json',
+    '/cmdk-data.js',
+    '/sitemap-index.xml',
+    '/llms.txt',
+  ].map((url) => `${siteUrl}${url}`);
+  for (const url of requiredUrls) {
+    if (!urls.has(url)) fail(`llms.txt is missing required link ${url}.`);
+  }
+  if (/All\s+\d+\+\s+public projects/i.test(text)) {
+    fail('llms.txt catalog count must be exact, not plus-suffixed.');
+  }
+  if (linkCount < 50) fail(`llms.txt should expose at least 50 useful links, found ${linkCount}.`);
   return { llmsLinks: linkCount };
 }
 
