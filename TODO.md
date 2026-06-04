@@ -212,7 +212,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] Minify public JS.
     - Done: Added `scripts/minify-public-scripts.mjs` and wired `npm run scripts:minify` into `build:ci` after Astro copies `public/scripts` into `dist/scripts`. The minifier uses esbuild syntax/whitespace minification only, preserving identifier names so cross-file globals stay stable while source files remain readable. Current built output shrinks 10 scripts from 91.0 KB to 67.6 KB.
     - Verify: `node --check scripts/minify-public-scripts.mjs`; `node --test test/public-script-minify.test.mjs`; `npm run scripts:minify`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; minified `dist/scripts/*.js` parse check; `npm run a11y:audit`; `git diff --check`; local Playwright fallback smoke after the in-app Browser attach timed out confirmed minified home/search/project/resume/timeline routes loaded without console warnings, framework overlays, or horizontal overflow; homepage catalog search, theme toggle, command palette, and timeline filter interactions worked.
-  - [ ] `llms.txt` completeness.
+  - [x] `llms.txt` completeness.
+    - Done: Expanded `/llms.txt` into a fuller AI-readable site map generated from shared project/page data. It now covers featured projects, live apps, reviewed pages from `interiorOgPages`, exact-count catalog access, language lanes from `LANGS`, feed endpoints, and machine-readable endpoint routes including `resume.json`, `cmdk-data.js`, sitemap, and self-link. The public endpoint audit now requires the expanded sections, required URLs, exact catalog count copy, and at least 50 useful links.
+    - Verify: `node --check scripts/audit-public-endpoints.mjs`; `node --test test/llms-completeness.test.mjs`; `node --test test/atom-feed.test.mjs`; `npm run build:ci` passed with `llms.txt links: 59`.
   - [ ] Beyond Code enrich + CLAUDE.md sync.
   - [ ] `style-src` `unsafe-inline` follow-up.
   - [ ] Catalog DOM-size budget gate.
