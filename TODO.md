@@ -158,6 +158,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T109** P2 — iOS PWA install path (NF-A6) + prefers-contrast block; drop/deprioritize WebSite SearchAction (NF-A7) unless there is a non-Google consumer, because Google removed the sitelinks search box feature in November 2024.
 - [ ] **T110** P2 — language-donut population parity (build vs JS flicker) (IMP-2) + skill rings vs real distribution (IMP-3).
 - [ ] **T111** P2 — root-cause Astro 6 `</html>` emission now that Astro 6.4.4 is on `main` (compressHTML bisect); convert `fix-html-structure` to assert-or-noop on a fixed Astro version.
+  - Research note: Deploy run `26960045875` on Astro 6.4.4 still logged `fix-html-structure: repaired 194 file(s); script order OK`, so the upstream/`compressHTML` root cause remains active and the fixer is still mutating every built HTML page.
 - [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; CSP theme-init hash (partial T95); catalog DOM-size budget gate.
 
 ---
@@ -256,12 +257,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: The generated data summary or dedicated audit emits top-N rank rows with repo, rank, score parts, stars, days since update, and release downloads; it asserts normalized weights, finite scores, unique ranks, and usable names/repos without pinning a brittle full-order snapshot.
   - Verify: `npm run profile-feed:sync`, `npm run fetch-stars`, and `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale` passed with status `fresh`, 177 ranked projects, top 12 ranking rows, and all ranking checks green. `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` also passed.
 
-- [ ] **T124** 🤖 P2 — Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
+- [x] **T124** 🤖 P2 — Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
   - Why: `Recommended` is now the default sort, but the UI does not explain why a specific card is high in the list for keyboard, screen-reader, or trust-oriented browsing.
   - Evidence: `formatProjectRankingLabel()` already builds useful explanations; `CatalogEntry.astro` stores that label as `data-rank-label`; related links in `src/pages/projects/[slug].astro` use the same ranking map but expose no comparable rank context.
   - Touches: `src/components/CatalogEntry.astro`, `src/pages/index.astro`, `src/pages/projects/[slug].astro`, `public/scripts/main.js`, and CSS/docs as needed.
+  - Done: Catalog cards now render a `Recommended #N` rationale when the default sort is active and attach it through `aria-describedby`; non-Recommended sorts hide the visible rationale through `#catalogGrid[data-sort]`; project detail related cards render the same rationale with their own accessible description IDs. `shared.js` also promotes deferred `global.css` links to `media=all` as a runtime fallback so below-fold catalog layout is not stuck on critical-only CSS if the link `onload` swap does not fire.
   - Acceptance: The existing rank label is exposed through visible or accessible card context when `Recommended` is active; related-link ranking context is not a silent algorithm; desktop and 390px mobile layouts do not overflow or become noisy.
-  - Verify: Browser check desktop/mobile, `npm run a11y:audit`, and `npm run build`.
+  - Verify: In-app Browser preview on `http://127.0.0.1:4327/` passed at 1280x720: 177 visible catalog rank rationales, 177 valid `aria-describedby` links, A-Z sort set `data-sort="name"` and hid all rank labels, related cards exposed 4 visible ranking rationales with valid descriptions, console warnings/errors were empty, and no horizontal overflow was detected. Browser viewport `390x844` passed with 375px document width, catalog and related rank text inside cards, and A-Z hiding all mobile rank labels. `git diff --check`, `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` passed.
 
 - [ ] **T125** 🤖 P2 — Add a Pagefind facet/index contract audit after static search generation.
   - Why: Visible facets depend on generated Pagefind index metadata, not only Astro source, so source-only checks can pass even if the built search bundle stops exposing Category filters.
@@ -324,6 +326,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: `.github/workflows/quality-gates.yml`; optionally compact machine-readable summaries from `schema:audit`, `search:audit`, or `endpoints:audit`.
   - Acceptance: Weekly `workflow_dispatch`/schedule runs the build-output audit path without deploying, publishes schema/search/endpoint status in the job summary, uploads the relevant logs, and includes build-output failures in the issue/update body and fail gate without hiding advisory semantic-audit context from T121.
   - Verify: Run `quality-gates.yml` manually; inspect the job summary, uploaded logs, and issue body when a build-output audit is intentionally failed.
+
+---
+
+## 🔬 Researcher Queue (Cycle 8 — 2026-06-04) — see [docs/research-2026-06-04-cycle-8.md](docs/research-2026-06-04-cycle-8.md)
+
+- [ ] **T132** 🤖 P2 — Scope Pagefind indexing to intentional content regions.
+  - Why: The built search index currently starts at every `<body>` because no page declares `data-pagefind-body`, so repeated global UI such as the command palette dialog and layout copy can be indexed alongside actual project/page content.
+  - Evidence: Deploy run `26960045875` logged `Did not find a data-pagefind-body element on the site`, then indexed 194 pages, 21,262 words, and 1 filter; `Base.astro` renders the command-palette dialog and quick-link copy on every page; Pagefind's indexing docs say it starts at `<body>` by default and narrows to tagged `data-pagefind-body` regions when present.
+  - Touches: `src/layouts/Base.astro`, project/interior page templates, possibly `src/pages/search.astro`, and T125's future `search:audit` expectations.
+  - Acceptance: Every route intended for search has one or more meaningful `data-pagefind-body` regions, repeated global UI is excluded or outside those regions, Pagefind no longer logs the whole-body fallback, intended project/language/interior pages remain indexed, and Category filters still work after T125.
+  - Verify: `npm run build && npm run search:index`; confirm Pagefind does not print the whole-body fallback, page/filter counts match the intentional route set, and searches for command-palette-only terms such as `Esc` do not return repeated unrelated pages.
 
 ---
 

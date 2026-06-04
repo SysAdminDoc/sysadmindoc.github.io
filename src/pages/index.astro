@@ -12,6 +12,7 @@ import { fallbackRepoCount } from '../data/derived';
 import { homepageProofHighlights, projectProof } from '../data/proof';
 import {
   computeProjectRankings,
+  formatProjectRankingDisplayLabel,
   formatProjectRankingLabel,
   getReleaseDownloadTotals,
   rankCatalogEntries,
@@ -591,7 +592,7 @@ const cmdkSections = [
       <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the ranked archive: {catalogTotal} public projects.</div>
       <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>
     </div>
-    <div class="cg" id="catalogGrid">
+    <div class="cg" id="catalogGrid" data-sort="default">
       {rankedCatalog.map((entry, index) => {
         const viewState = catalogViewState.get(entry.repo);
         const ranking = projectRankings.get(entry.repo);
@@ -602,6 +603,7 @@ const cmdkSections = [
             rank={ranking?.rank}
             rankScore={ranking?.score}
             rankLabel={formatProjectRankingLabel(ranking)}
+            rankDisplayLabel={formatProjectRankingDisplayLabel(ranking)}
             stars={stars[entry.repo]}
             pushedAt={meta[entry.repo]?.pushedAt}
             updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt}

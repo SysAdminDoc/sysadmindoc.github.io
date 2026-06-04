@@ -547,6 +547,7 @@ function applyFilters(){
 
 function sortCatalog(method){
     if(!grid)return;
+    grid.dataset.sort=method||'default';
     const items=Array.from(grid.querySelectorAll('.ca'));
     const readNumber=(item,key)=>{
         const value=Number(item.dataset[key]);
