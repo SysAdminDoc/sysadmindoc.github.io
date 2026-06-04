@@ -46,9 +46,9 @@ The site must remain public-safe. It should not expose private repository names,
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
-- A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, and non-deploying build-output audits. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, or build-output gates fail.
+- A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
 - `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
-- The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, then emits dedicated endpoint, JSON Feed, Pagefind search, and rendered JSON-LD audit logs. The job summary reports those statuses alongside the advisory semantic audit, and generated-data, local validation, or build-output failures feed the quality-gate issue and fail gate.
+- The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, emits dedicated endpoint, JSON Feed, Pagefind search, rendered JSON-LD, and performance/bfcache audit logs, and publishes route-level performance rows from `.tmp/performance-audit-ci.json`. Generated-data, local validation, or build-output failures feed the hard fail gate; performance remains advisory while still surfacing in the job summary and quality-gate issue body. The first CI performance baseline uses `--lcp 60000 --event 500`: LCP is recorded but budgeted by LHCI, while this custom audit enforces bfcache, overflow, CLS, event, console, and network regressions.
 - The GitHub Pages deploy workflow captures the built artifact contract after `build:ci`, publishes the Pages artifact, then runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
 ## Key Commands
@@ -64,6 +64,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Audit built JSON Feed: `npm run feed:audit` after `npm run build`
 - Smoke live Pages artifacts: `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
+- Summarize a performance audit JSON report: `node scripts/summarize-performance-audit.mjs .tmp/performance-audit-ci.json`
 - Advisory Lighthouse CI budget against built `dist/` in CI/Linux: `npm run lhci:audit`
 - Regenerate live-app card thumbnails: `npm run screenshots:thumbs`
 - Audit image pipeline: `npm run images:audit`
@@ -95,6 +96,7 @@ Current verification baseline:
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
+- `npm run audit:perf -- --base http://127.0.0.1:4321 --strict --lcp 60000 --event 500 --out .tmp/performance-audit-ci.json` passed after the weekly performance-gate wiring; the generated summary covered 5 route samples with route, viewport, LCP, CLS, event, long-task, bfcache, overflow, and issue-count rows. Default and 5s-LCP local runs before the explicit baseline showed advisory LCP/event fluctuations while bfcache and overflow stayed clean.
 - Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
 - Manual `quality-gates.yml` workflow_dispatch run `26964197962` passed on commit `7a71c5e` after the weekly build-output gate addition. The uploaded `quality-gate-reports` artifact contained generated-data, local-check, endpoint, feed, search, schema, and semantic logs; inspected logs confirmed endpoint/feed/search/schema audits and Astro check passed. The prior run `26964002378` failed before the fix because the clean runner had no ignored generated `_*.json` caches before `npm run check`.
 - In-app browser verification after the live-card thumbnail migration passed at 1280x720 and 390x844: 22 live cards rendered with `<picture>`, 22 AVIF/WebP source sets were present, the browser selected AVIF assets, no stale `/screenshots/thumbs/` card references remained in the fresh preview DOM, mobile had no horizontal overflow, and console warnings/errors were empty.
@@ -208,7 +210,7 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T132 Pagefind body-scope pass:
+Highest-priority workflow/research work after the T136 performance workflow pass:
 
 1. `T134` -- Add a forced-colors browser audit for SVG data-visualization surfaces.
 2. `T120` -- Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
@@ -267,3 +269,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Normalized generated endpoint cache policy. Shared endpoint header helpers now declare bounded source cache policies for generated JSON/feed/text/script endpoints and unhashed OG image routes, and live smoke records the effective GitHub Pages `max-age=600` policy.
 - 2026-06-04: Added build-output coverage to weekly quality gates. The workflow now refreshes generated data before local checks, runs `build:ci` without deploying, publishes endpoint/feed/search/schema status in the job summary, uploads dedicated logs, includes generated-data/local/build-output failures in the quality-gate issue body, and keeps semantic-audit output advisory.
 - 2026-06-04: Scoped Pagefind indexing to intentional page content. Searchable routes now tag their main content with `data-pagefind-body`, `/404.html` remains outside the index, the global command palette is excluded from indexed regions, and `search:audit` verifies the tagged route count before Category facet checks.
+- 2026-06-04: Added advisory performance/bfcache coverage to weekly quality gates. The workflow serves built `dist/` locally after `build:ci`, runs the custom strict performance audit, uploads preview/performance logs plus `.tmp/performance-audit-ci.json`, and adds route-level performance rows to the job summary.
