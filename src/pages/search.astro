@@ -2,13 +2,15 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
 
+const pageOg = interiorOgPageBySlug.search;
 const cmdkSections = [
   { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search with Category filtering across rendered portfolio pages and README excerpts.', badge: 'PAGEFIND' },
   { label: 'Fallbacks', href: '#search-fallbacks', desc: 'No-JS links into the catalog, timeline, release stream, and archive decisions.', badge: 'LINKS' },
 ];
 ---
-<Base title="Search - Matt Parker" description="Full-text static search across portfolio projects, rendered README excerpts, and public pages." cmdkSections={cmdkSections}>
+<Base title="Search - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
   <script src="/pagefind/pagefind-component-ui.js" type="module" is:inline></script>
   <a href="#main" class="skip-link">Skip to content</a>

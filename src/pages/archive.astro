@@ -4,8 +4,10 @@ import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { archiveEntries } from '../data/archive';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import type { ArchiveStatus } from '../data/types';
 
+const pageOg = interiorOgPageBySlug.archive;
 const publicLinkCount = archiveEntries.reduce((total, entry) => total + entry.links.length, 0);
 const sensitiveCount = archiveEntries.filter((entry) => entry.sensitive).length;
 const linkedEntryCount = archiveEntries.filter((entry) => entry.links.length > 0).length;
@@ -36,7 +38,7 @@ const cmdkSections = [
   { label: 'Entries', href: '#archive-entries', desc: 'Retired, moved, held, or superseded project decisions.', badge: `${archiveEntries.length}` },
 ] as const;
 ---
-<Base title="Archive - Matt Parker" description="Public-safe archive of retired, moved, held, and superseded portfolio project decisions." cmdkSections={cmdkSections}>
+<Base title="Archive - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="archive" contextLabel="Archive decisions" contextTone="amber" />
 

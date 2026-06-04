@@ -52,6 +52,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Astro-managed live-card thumbnails** -- Added tracked `src/assets/screenshots/thumbs/` inputs, rendered Live Apps cards through Astro `<Picture>` with AVIF/WebP srcsets and JPEG fallback, and extended screenshot generation/audits to keep public and Astro thumbnail copies in lockstep. _(Source: TODO T28)_
 - [x] **Build-time project ranking signal** -- Added a pure ranking helper plus unit coverage for the deterministic blend of stars, 180-day freshness decay, and release-download activity; homepage `Recommended` order and project related links now use the same rank map. _(Source: TODO T36)_
 - [x] **Visible Pagefind category facets** -- Enabled Pagefind faceted mode on `/search/` and rendered the official filter pane so the static full-text search can be narrowed by indexed project category without custom client search code. _(Source: TODO T35)_
+- [x] **Interior-page OG cards** -- Generalized the existing Satori/Resvg `/og/[slug].png` endpoint with shared interior-page metadata so key secondary pages publish differentiated 1200x630 PNG social cards. _(Source: TODO T42)_
 
 ### Research Infrastructure (2026-05-17)
 

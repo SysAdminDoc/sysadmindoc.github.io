@@ -7,6 +7,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added `npm run profile-feed:sync`, a build-time raw GitHub cache for `SysAdminDoc/SysAdminDoc` `projects.json` with local fallback preservation.
 - Rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes through `src/data/portfolio.ts`, with curated featured/live-app overlays from local data.
 - Suppressed and non-portfolio feed rows are excluded from generated routes; feed-omitted local-only rows no longer render, and the `DuplicateFF` archive entry now links to GitHub instead of a removed project page.
+- Added differentiated generated OG cards for key interior pages. `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/` now publish page-specific `/og/*.png` cards through the existing Satori/Resvg endpoint.
 - Added `npm run csp:audit`, a source CSP preflight that inventories unsafe-inline script/style blockers, computes stable inline-script hashes, classifies JSON-LD/data scripts, and fails strict candidate mode before T95 removes `script-src 'unsafe-inline'`.
 - Added class-based Shiki highlighting for cached project README code fences while keeping remote README inline styles and event-handler attributes stripped by `sanitize-html`.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
