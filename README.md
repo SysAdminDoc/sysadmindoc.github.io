@@ -47,6 +47,7 @@ npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-versi
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
+npm run lhci:summary   # summarize LHCI filesystem warning reports for GitHub summaries
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
@@ -59,7 +60,7 @@ npm run preview       # serve dist/
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
-`npm run lhci:audit` is canonical in CI/Linux. On local Windows it exits cleanly by default because Chrome launcher cleanup can fail with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` to force a local attempt. Use `npm run audit:perf` for local Windows performance/bfcache smoke checks. Weekly quality gates also run `npm run audit:perf -- --strict --lcp 60000 --event 500` against a local preview, upload `.tmp/performance-audit-ci.json`, and publish a compact route summary; LCP is recorded there but budgeted by LHCI.
+`npm run lhci:audit` is canonical in CI/Linux. On local Windows it exits cleanly by default because Chrome launcher cleanup can fail with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` to force a local attempt. `npm run lhci:summary -- --out .tmp/lhci/summary.md` reads LHCI filesystem reports and writes the advisory warning table that PR CI appends to the job summary. Use `npm run audit:perf` for local Windows performance/bfcache smoke checks. Weekly quality gates also run `npm run audit:perf -- --strict --lcp 60000 --event 500` against a local preview, upload `.tmp/performance-audit-ci.json`, and publish a compact route summary; LCP is recorded there but budgeted by LHCI.
 
 ### Windows / VMware shared folders
 
@@ -102,7 +103,7 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 
 The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
 
-[.github/workflows/ci.yml](.github/workflows/ci.yml) also runs an advisory Lighthouse CI budget after the PR build and uploads the filesystem reports as `lighthouse-ci-reports`.
+[.github/workflows/ci.yml](.github/workflows/ci.yml) also runs an advisory Lighthouse CI budget after the PR build, appends a compact warning table to the job summary, and uploads the filesystem reports plus `summary.md` as `lighthouse-ci-reports`.
 
 [.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, advisory semantic-audit status, generated data refresh, data validation, asset/reference checks, Astro diagnostics, non-deploying build-output audits for endpoint/feed/search/schema contracts, and forced-colors data-visualization coverage. If production audit, catalog drift, generated-data refresh, local validation, or build-output audits fail, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
 
@@ -156,6 +157,7 @@ scripts/
 ├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
 ├── audit-semantic-index.mjs
+├── summarize-lhci.mjs     # LHCI filesystem warning summary for CI job output
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
 ├── generate-screenshot-thumbnails.mjs
 ├── summarize-generated-data.mjs

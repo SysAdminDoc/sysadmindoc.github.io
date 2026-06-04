@@ -226,12 +226,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 3 — 2026-06-04) — see [docs/research-2026-06-04-cycle-3.md](docs/research-2026-06-04-cycle-3.md)
 
-- [ ] **T120** 🤖 P2 — Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
+- [x] **T120** 🤖 P2 — Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
   - Why: T27 added an advisory LHCI budget, but the current CI job is `continue-on-error` and uploads filesystem reports without surfacing the warning list in the GitHub job summary, so regressions can be missed unless someone downloads the artifact.
   - Evidence: `.github/workflows/ci.yml:46-55` runs `npm run lhci:audit` with `continue-on-error: true` and uploads `.tmp/lhci`; `lighthouserc.cjs:17-34` uses warning assertions plus `target: 'filesystem'`; `PROJECT_CONTEXT.md:75` records real warnings from run `26952960465` (homepage performance score 0.7, TBT 1988.5ms, third-party count 3) that are not visible in the workflow summary.
   - Touches: `.github/workflows/ci.yml`, `scripts/run-lhci.mjs` or a small `scripts/summarize-lhci.mjs`.
+  - Done: Added `scripts/summarize-lhci.mjs` and `npm run lhci:summary`, which load `lighthouserc.cjs`, read LHCI filesystem `manifest.json`/`*.report.json` output, recompute warning assertions per representative route, and emit a Markdown table with route, audit id, observed value, and threshold. PR/manual CI now runs that summary after advisory LHCI, appends it to `GITHUB_STEP_SUMMARY`, and keeps `.tmp/lhci/summary.md` in the existing `lighthouse-ci-reports` artifact.
   - Acceptance: PR/manual CI job summaries list each LHCI warning with route, audit id, observed value, and threshold while preserving the advisory/non-blocking behavior.
-  - Verify: Trigger `ci.yml` manually or on a PR; inspect the job summary without downloading artifacts and confirm LHCI warnings are visible.
+  - Verify: `npm run lhci:summary -- --dir .tmp/downloaded-lhci-reports --out .tmp/lhci-summary-test.md` produced the historical three-warning table for `/` (`categories:performance`, `total-blocking-time`, and `resource-summary:third-party:count`); `npm run lhci:summary -- --dir .tmp/no-such-lhci-dir --out .tmp/lhci-summary-empty.md` produced an explicit no-report summary; `npm test`; `npm run check`; `npm run build`.
 
 - [x] **T121** 🤖 P2 — Include semantic-audit status in weekly quality summaries and issues.
   - Why: `semantic:audit` is intentionally advisory, but the weekly workflow currently runs it and then hides the result from the summary, issue body, and fail-condition logic.

@@ -47,6 +47,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 6
         run: npm run lhci:audit
+      - name: Summarize Lighthouse warnings
+        if: always()
+        run: |
+          npm run lhci:summary -- --out .tmp/lhci/summary.md
+          cat .tmp/lhci/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
