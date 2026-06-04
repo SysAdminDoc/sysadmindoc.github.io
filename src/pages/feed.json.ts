@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
+import { endpointHeaders } from '../data/endpoint-headers';
 
 // JSON Feed 1.1 (jsonfeed.org) mirror of the project feed for modern feed
 // clients/automation. RSS (/rss.xml) remains the primary advertised feed.
@@ -51,6 +52,6 @@ export async function GET(context: APIContext) {
   };
 
   return new Response(JSON.stringify(feed, null, 2), {
-    headers: { 'Content-Type': 'application/feed+json; charset=UTF-8' },
+    headers: endpointHeaders('application/feed+json; charset=UTF-8'),
   });
 }

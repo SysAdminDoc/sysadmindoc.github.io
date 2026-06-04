@@ -346,12 +346,24 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 9 — 2026-06-04) — see [docs/research-2026-06-04-cycle-9.md](docs/research-2026-06-04-cycle-9.md)
 
-- [ ] **T133** 🤖 P2 — Normalize cache headers for generated public endpoint artifacts.
+- [x] **T133** 🤖 P2 — Normalize cache headers for generated public endpoint artifacts.
   - Why: The site now exposes multiple public machine-readable endpoints, but only some set explicit cache policy; inconsistent defaults make freshness expectations unclear for feed readers, command-palette data, and machine consumers.
   - Evidence: `src/pages/projects.json.ts` and `src/pages/releases.json.ts` return `Cache-Control: public, max-age=300`; `src/pages/feed.json.ts`, `src/pages/releases.xml.ts`, `src/pages/llms.txt.ts`, and `src/pages/cmdk-data.js.ts` return content without explicit cache headers; `Base.astro` comments describe `/cmdk-data.js` as cached page-independent data; MDN documents `max-age` freshness, `no-cache` revalidation, and recommends explicit `Cache-Control` when caching behavior matters; Astro endpoints return `Response` objects where headers can be set.
   - Touches: Feed/text/script endpoint files under `src/pages/`, optionally a shared endpoint response helper, and T130's future endpoint audit.
+  - Done: Added shared endpoint header helpers in `src/data/endpoint-headers.ts`. Generated JSON/feed/text/script endpoints now declare `Cache-Control: public, max-age=300`; generated OG images use a bounded `public, max-age=86400` policy instead of long immutable caching on unhashed `/og/*.png` routes. `endpoints:audit` now verifies the source-declared content type/cache policy for 9 endpoint sources, and `smoke:live` verifies the effective GitHub Pages content type/cache headers for the live generated artifacts it fetches.
   - Acceptance: Public generated endpoints have a documented cache policy: short bounded freshness or revalidation for data/feed/text files that can change each deploy, long immutable policy only for hashed/static assets, and the endpoint audit verifies expected `Content-Type` plus cache policy from built artifacts or live smoke.
-  - Verify: `npm run build && npm run endpoints:audit`; optionally `Invoke-WebRequest https://sysadmindoc.github.io/feed.json`, `/releases.xml`, `/llms.txt`, and `/cmdk-data.js` to confirm live headers after deploy.
+  - Verify: `npm run endpoints:audit` passed with 9 source header policies checked. `npm run images:audit` passed after the OG header helper change. `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177 --retries 2 --retry-ms 5000` passed and confirmed live GitHub Pages serves generated artifacts with `max-age=600`. Full verification: `npm test`; `npm run check`; `npm run build`; standalone `npm run endpoints:audit`; `git diff --check`; `npm run a11y:audit`.
+
+---
+
+## 🔬 Researcher Queue (Cycle 10 — 2026-06-04) — see [docs/research-2026-06-04-cycle-10.md](docs/research-2026-06-04-cycle-10.md)
+
+- [ ] **T134** 🤖 P2 — Add a forced-colors browser audit for SVG data-visualization surfaces.
+  - Why: T103 names the forced-colors visual defect, but the current a11y gate is static HTML only and cannot detect computed forced-color paint, SVG fill/stroke collapse, missing outlines, or chart-region visibility regressions in Windows High Contrast style modes.
+  - Evidence: `scripts/audit-a11y.mjs` only checks static HTML rules and explicitly defers computed contrast/Playwright coverage; `src/styles/global.css` has a targeted `@media(forced-colors:active)` block for focus, decorative layers, and control borders but no overrides for `.heatmap-svg`, `.hm-*`, `.lang-donut`, or `.sk-ring`; the heatmap uses `rgba()` SVG fills/background swatches, the language donut emits literal SVG `stroke` colors, and skill rings use custom-property SVG strokes. MDN documents that forced colors affect SVG `fill` and `stroke`, background images, and shadows; W3C WCAG 2.2 explains that chart lines/shapes/slices needed to understand a graph are graphical objects with non-text contrast requirements; Playwright can emulate `forcedColors: 'active'`.
+  - Touches: A new browser-based audit script such as `scripts/audit-forced-colors.mjs`, `package.json`, and optionally `.github/workflows/quality-gates.yml`; pair with T103 CSS fixes rather than replacing them.
+  - Acceptance: The audit builds or serves the static output, emulates `forcedColors: 'active'`, visits the homepage data-viz sections at desktop and mobile widths, verifies the heatmap, language donut, and skill rings remain visible/non-blank with discernible boundaries or text equivalents, and fails with a compact region-level summary when a target is transparent, collapsed into the canvas, or hidden by forced palette rules.
+  - Verify: `npm run build && npm run forced-colors:audit`; include the new audit in `npm run a11y:audit` or a weekly gate once stable, and keep T103's manual WHCM spot check as a final visual confirmation.
 
 ---
 
