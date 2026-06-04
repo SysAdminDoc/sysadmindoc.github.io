@@ -216,6 +216,31 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 3 — 2026-06-04) — see [docs/research-2026-06-04-cycle-3.md](docs/research-2026-06-04-cycle-3.md)
+
+- [ ] **T120** 🤖 P2 — Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
+  - Why: T27 added an advisory LHCI budget, but the current CI job is `continue-on-error` and uploads filesystem reports without surfacing the warning list in the GitHub job summary, so regressions can be missed unless someone downloads the artifact.
+  - Evidence: `.github/workflows/ci.yml:46-55` runs `npm run lhci:audit` with `continue-on-error: true` and uploads `.tmp/lhci`; `lighthouserc.cjs:17-34` uses warning assertions plus `target: 'filesystem'`; `PROJECT_CONTEXT.md:75` records real warnings from run `26952960465` (homepage performance score 0.7, TBT 1988.5ms, third-party count 3) that are not visible in the workflow summary.
+  - Touches: `.github/workflows/ci.yml`, `scripts/run-lhci.mjs` or a small `scripts/summarize-lhci.mjs`.
+  - Acceptance: PR/manual CI job summaries list each LHCI warning with route, audit id, observed value, and threshold while preserving the advisory/non-blocking behavior.
+  - Verify: Trigger `ci.yml` manually or on a PR; inspect the job summary without downloading artifacts and confirm LHCI warnings are visible.
+
+- [ ] **T121** 🤖 P2 — Include semantic-audit status in weekly quality summaries and issues.
+  - Why: `semantic:audit` is intentionally advisory, but the weekly workflow currently runs it and then hides the result from the summary, issue body, and fail-condition logic.
+  - Evidence: `.github/workflows/quality-gates.yml:51-63` captures `semantic_audit.exit_code`; `.github/workflows/quality-gates.yml:68-87` summarizes production/catalog/local checks only; `.github/workflows/quality-gates.yml:92-139` opens issues only for production/catalog drift; `.github/workflows/quality-gates.yml:140-141` ignores the semantic result in the fail gate; `PROJECT_CONTEXT.md:144` says semantic audit is advisory catalog-maintenance signal.
+  - Touches: `.github/workflows/quality-gates.yml`; optionally `scripts/audit-semantic-index.mjs` if a compact machine-readable summary is useful.
+  - Acceptance: Weekly quality summaries show semantic-audit PASS/ATTENTION, artifacts remain uploaded, and any quality-gate issue body includes semantic candidates when present without turning advisory catalog-maintenance hints into automatic failures.
+  - Verify: Run `quality-gates.yml` manually; inspect the job summary and uploaded issue/update body when semantic output is present.
+
+- [ ] **T122** 🤖 P1 — Triage stale Dependabot PRs against current `main` before merge.
+  - Why: One open Dependabot PR is based on an old v0.17.0 package surface and failing checks; blindly merging it can revert newer scripts, overrides, or version metadata.
+  - Evidence: PR #9 (`dependabot/npm_and_yarn/content-safety-1c56996e79`) is open, last updated 2026-06-01, and its branch `package.json` says `"version": "0.17.0"` while `main` is `0.18.3`; PR #9 check `verify` failed in run `26789217704`; PR #12 (Astro 6.4.4) and PR #13 (GitHub Actions group) are current/mergeable with passing checks.
+  - Touches: GitHub PR triage, Dependabot config only if stale branch recreation needs policy changes; no source edits unless the build machine chooses to merge/update a verified PR.
+  - Acceptance: PR #9 is closed/recreated or rebased from current `main` before consideration; PR #12/#13 are either merged after full validation or intentionally deferred with notes; no dependency PR is merged from a branch that would regress `package.json` version/scripts/overrides.
+  - Verify: `gh pr view 9 --json statusCheckRollup,updatedAt,url`; inspect the candidate branch `package.json`; after triage, confirm no open Dependabot PR has stale version/scripts relative to `main`.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
