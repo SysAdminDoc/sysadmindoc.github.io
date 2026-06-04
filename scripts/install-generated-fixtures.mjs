@@ -130,10 +130,14 @@ function auditFixtureSet(fixtures) {
       continue;
     }
     if (repoMeta.stars !== stars[repo]) fail(`_meta.json ${repo}.stars must match _stars.json.`);
+    if (!parseableDate(repoMeta.createdAt)) fail(`_meta.json ${repo}.createdAt must be a parseable date.`);
     if (!parseableDate(repoMeta.pushedAt)) fail(`_meta.json ${repo}.pushedAt must be a parseable date.`);
     if (!parseableDate(repoMeta.updatedAt)) fail(`_meta.json ${repo}.updatedAt must be a parseable date.`);
     if (!(repoMeta.language === null || nonEmptyString(repoMeta.language))) {
       fail(`_meta.json ${repo}.language must be null or a non-empty string.`);
+    }
+    if (!(repoMeta.licenseSpdx === null || (nonEmptyString(repoMeta.licenseSpdx) && /^[A-Za-z0-9+.-]+$/.test(repoMeta.licenseSpdx)))) {
+      fail(`_meta.json ${repo}.licenseSpdx must be null or an SPDX-like identifier.`);
     }
     if (!nonEmptyString(readmes[repo])) fail(`_readmes.json ${repo} must be a non-empty string.`);
   }
