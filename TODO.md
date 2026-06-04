@@ -209,7 +209,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] Catalog no-JS `<form>`.
     - Done: The homepage catalog search is now a real `GET` form targeting `/search/` with the query field named `q`. JavaScript intercepts submit for in-page filtering and immediately syncs the current input value before applying filters; no-JS users get a `<noscript>` submit button that lands on `/search/?q=...`.
     - Verify: `node --check public/scripts/main.js`; `node --test test/catalog-noscript-form.test.mjs`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; `npm run a11y:audit`; `git diff --check`; local Playwright fallback checks after the in-app Browser attach timed out confirmed JS submit stays on `/` with URL-backed `q=` state and no console warnings, while JavaScript-disabled submit navigates to `/search/?q=python` with no horizontal overflow.
-  - [ ] Minify public JS.
+  - [x] Minify public JS.
+    - Done: Added `scripts/minify-public-scripts.mjs` and wired `npm run scripts:minify` into `build:ci` after Astro copies `public/scripts` into `dist/scripts`. The minifier uses esbuild syntax/whitespace minification only, preserving identifier names so cross-file globals stay stable while source files remain readable. Current built output shrinks 10 scripts from 91.0 KB to 67.6 KB.
+    - Verify: `node --check scripts/minify-public-scripts.mjs`; `node --test test/public-script-minify.test.mjs`; `npm run scripts:minify`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; minified `dist/scripts/*.js` parse check; `npm run a11y:audit`; `git diff --check`; local Playwright fallback smoke after the in-app Browser attach timed out confirmed minified home/search/project/resume/timeline routes loaded without console warnings, framework overlays, or horizontal overflow; homepage catalog search, theme toggle, command palette, and timeline filter interactions worked.
   - [ ] `llms.txt` completeness.
   - [ ] Beyond Code enrich + CLAUDE.md sync.
   - [ ] `style-src` `unsafe-inline` follow-up.
