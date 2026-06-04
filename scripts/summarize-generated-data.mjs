@@ -97,6 +97,15 @@ function formatMetric(value, digits = 2) {
   return rounded == null ? 'unknown' : String(rounded);
 }
 
+function finiteNumberOrNull(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function formatPercent(value) {
+  return Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : 'unknown';
+}
+
 function normalizeRankingProject(project) {
   const repo = String(project?.repo ?? '').trim();
   const title = String(project?.title ?? project?.name ?? repo).trim();
@@ -119,6 +128,8 @@ const [stars, stats, meta, releases, readmes] = await Promise.all([
 ]);
 const profileFeedResult = await readJsonOptional('_profile-projects.json');
 const profileFeed = profileFeedResult.value;
+const readmeRefreshResult = await readJsonOptional('_readme-refresh.json');
+const readmeRefreshRaw = readmeRefreshResult.value;
 
 const starEntries = Object.keys(stars).length;
 const metaEntries = Object.keys(meta).length;
@@ -138,6 +149,23 @@ const profileFeedStatus = !profileFeed
   : profileProjects.length === 0 || profileSource?.startsWith('local fallback:')
     ? 'fallback'
     : 'active';
+const readmeRefreshTargetRepos = finiteNumberOrNull(readmeRefreshRaw?.totalPublicRepos);
+const readmeRefreshAttempted = finiteNumberOrNull(readmeRefreshRaw?.attempted);
+const readmeRefreshMisses = finiteNumberOrNull(readmeRefreshRaw?.misses);
+const readmeRefreshCacheEntries = finiteNumberOrNull(readmeRefreshRaw?.cacheEntries);
+const readmeRefreshCoverage =
+  readmeRefreshTargetRepos && readmeRefreshTargetRepos > 0 ? readmeEntries / readmeRefreshTargetRepos : null;
+const readmeRefreshMissRate =
+  readmeRefreshAttempted && readmeRefreshAttempted > 0 && readmeRefreshMisses != null
+    ? readmeRefreshMisses / readmeRefreshAttempted
+    : null;
+const readmeRefreshStatus = !readmeRefreshRaw
+  ? 'missing'
+  : readmeRefreshRaw.rateLimited
+    ? 'rate-limited'
+    : readmeRefreshRaw.skippedReason
+      ? 'skipped'
+      : 'refreshed';
 const rankingEntries = profileProjects.map(normalizeRankingProject).filter((project) => project.repo);
 const rankingMap = computeProjectRankings(rankingEntries, {
   stars,
@@ -200,6 +228,42 @@ const checks = [
   {
     label: 'README cache is non-empty',
     ok: readmeEntries > 0,
+  },
+  {
+    label: 'README refresh telemetry exists',
+    ok: Boolean(readmeRefreshRaw),
+  },
+  {
+    label: 'README refresh schema is current',
+    ok: readmeRefreshRaw?.schema === 'sysadmindoc.readme-refresh.v1',
+  },
+  {
+    label: 'README refresh cacheEntries matches README cache',
+    ok: readmeRefreshCacheEntries != null && readmeRefreshCacheEntries === readmeEntries,
+  },
+  {
+    label: 'README refresh did not hit rate limit',
+    ok: Boolean(readmeRefreshRaw) && readmeRefreshRaw.rateLimited === false,
+  },
+  {
+    label: 'README refresh attempted all public repos when token-backed',
+    ok:
+      Boolean(readmeRefreshRaw) &&
+      (readmeRefreshRaw.tokenPresent === false ||
+        (readmeRefreshAttempted != null &&
+          readmeRefreshTargetRepos != null &&
+          readmeRefreshAttempted === readmeRefreshTargetRepos)),
+  },
+  {
+    label: 'README cache covers at least 75% of public repos',
+    ok: readmeRefreshCoverage != null && readmeRefreshCoverage >= 0.75,
+  },
+  {
+    label: 'README miss rate <= 25% when refresh attempted',
+    ok:
+      Boolean(readmeRefreshRaw) &&
+      (readmeRefreshRaw.tokenPresent === false ||
+        (readmeRefreshMissRate != null && readmeRefreshMissRate <= 0.25)),
   },
   {
     label: `generated data age <= ${options.maxAgeHours}h`,
@@ -271,6 +335,28 @@ const summary = {
   lastPushedRepo: stats.lastPushedRepo ?? null,
   lastPushedAt: isoOrUnknown(stats.lastPushedAt),
   latestRelease: stats.latestRelease ?? null,
+  readmeRefresh: {
+    status: readmeRefreshStatus,
+    error: readmeRefreshResult.error,
+    schema: readmeRefreshRaw?.schema ?? null,
+    generatedAt: isoOrUnknown(readmeRefreshRaw?.generatedAt),
+    source: typeof readmeRefreshRaw?.source === 'string' ? readmeRefreshRaw.source : null,
+    tokenPresent: typeof readmeRefreshRaw?.tokenPresent === 'boolean' ? readmeRefreshRaw.tokenPresent : null,
+    targetRepos: readmeRefreshTargetRepos,
+    attempted: readmeRefreshAttempted,
+    refreshed: finiteNumberOrNull(readmeRefreshRaw?.refreshed),
+    misses: readmeRefreshMisses,
+    preserved: finiteNumberOrNull(readmeRefreshRaw?.preserved),
+    unattempted: finiteNumberOrNull(readmeRefreshRaw?.unattempted),
+    missing: finiteNumberOrNull(readmeRefreshRaw?.missing),
+    cacheEntries: readmeRefreshCacheEntries,
+    cacheCoverage: roundMetric(readmeRefreshCoverage, 4),
+    missRate: roundMetric(readmeRefreshMissRate, 4),
+    rateLimited: typeof readmeRefreshRaw?.rateLimited === 'boolean' ? readmeRefreshRaw.rateLimited : null,
+    skippedReason: readmeRefreshRaw?.skippedReason ?? null,
+    trimmed: finiteNumberOrNull(readmeRefreshRaw?.trimmed),
+    failureSamples: Array.isArray(readmeRefreshRaw?.failureSamples) ? readmeRefreshRaw.failureSamples : [],
+  },
   profileFeed: {
     status: profileFeedStatus,
     error: profileFeedResult.error,
@@ -331,6 +417,28 @@ const markdown = [
   `- Metadata entries: ${metaEntries}`,
   `- README entries: ${readmeEntries}`,
   `- Release entries: ${releaseEntries}`,
+  '',
+  '## README Refresh',
+  '',
+  `- Status: ${summary.readmeRefresh.status}`,
+  `- Source: ${summary.readmeRefresh.source ?? 'unknown'}`,
+  `- Generated: ${summary.readmeRefresh.generatedAt}`,
+  `- Token-backed: ${summary.readmeRefresh.tokenPresent ?? 'unknown'}`,
+  `- Target repos: ${summary.readmeRefresh.targetRepos ?? 'unknown'}`,
+  `- Attempted: ${summary.readmeRefresh.attempted ?? 'unknown'}`,
+  `- Refreshed: ${summary.readmeRefresh.refreshed ?? 'unknown'}`,
+  `- Misses: ${summary.readmeRefresh.misses ?? 'unknown'}`,
+  `- Preserved cached entries: ${summary.readmeRefresh.preserved ?? 'unknown'}`,
+  `- Unattempted repos: ${summary.readmeRefresh.unattempted ?? 'unknown'}`,
+  `- Missing cache entries: ${summary.readmeRefresh.missing ?? 'unknown'}`,
+  `- Cache coverage: ${formatPercent(summary.readmeRefresh.cacheCoverage)}`,
+  `- Miss rate: ${formatPercent(summary.readmeRefresh.missRate)}`,
+  `- Rate limited: ${summary.readmeRefresh.rateLimited ?? 'unknown'}`,
+  ...(summary.readmeRefresh.skippedReason ? [`- Skipped reason: ${summary.readmeRefresh.skippedReason}`] : []),
+  ...(summary.readmeRefresh.error ? [`- Telemetry error: ${summary.readmeRefresh.error}`] : []),
+  ...(summary.readmeRefresh.failureSamples.length > 0
+    ? [`- Failure samples: ${summary.readmeRefresh.failureSamples.join(' | ')}`]
+    : []),
   '',
   '## Profile Feed',
   '',
