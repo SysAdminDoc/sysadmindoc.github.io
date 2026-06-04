@@ -16,7 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
-- **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with visible Category facets
+- **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
@@ -40,6 +40,7 @@ npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives a
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
+npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
@@ -71,7 +72,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category, and `npm run search:audit` checks the built Category filter contract after indexing.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -142,6 +143,7 @@ scripts/
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
 ├── audit-a11y.mjs         # static WCAG audit over dist/
+├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-semantic-index.mjs
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
 ├── generate-screenshot-thumbnails.mjs

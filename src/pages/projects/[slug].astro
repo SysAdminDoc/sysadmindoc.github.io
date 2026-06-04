@@ -47,7 +47,7 @@ const catalogMatch = catalog.find((c) => c.repo === slug);
 
 const name = featuredMatch?.name ?? liveMatch?.name ?? catalogMatch?.name ?? slug;
 const desc = featuredMatch?.desc ?? liveMatch?.desc ?? catalogMatch?.desc ?? '';
-const category = featuredMatch?.lang ?? catalogMatch?.category ?? 'web';
+const category = catalogMatch?.category ?? featuredMatch?.lang ?? 'web';
 
 const ghUrl = `https://github.com/SysAdminDoc/${slug}`;
 const liveUrl = liveMatch?.url;

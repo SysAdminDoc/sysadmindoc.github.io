@@ -1,0 +1,272 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const root = process.cwd();
+const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
+const pagefindDir = path.join(distDir, 'pagefind');
+const requiredCategoryLabels = [
+  'Android',
+  'Desktop',
+  'Extension',
+  'Guide',
+  'Media',
+  'Other',
+  'PowerShell',
+  'Python',
+  'Security',
+  'Web',
+];
+const projectFilterLabelsByCategory = {
+  ps: 'PowerShell',
+  py: 'Python',
+  web: 'Web',
+  ext: 'Extension',
+  kt: 'Android',
+  sec: 'Security',
+  media: 'Media',
+  cs: 'Desktop',
+  guide: 'Guide',
+  fork: 'Fork',
+  other: 'Other',
+  cpp: 'C++',
+};
+
+const errors = [];
+
+function fail(message) {
+  errors.push(message);
+}
+
+async function collectHtmlFiles(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const filePath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await collectHtmlFiles(filePath));
+    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      files.push(filePath);
+    }
+  }
+  return files;
+}
+
+function decodeHtmlAttribute(value) {
+  return String(value ?? '').replace(/&(#x[0-9a-f]+|#\d+|amp|apos|quot|lt|gt);/gi, (match, entity) => {
+    const normalized = entity.toLowerCase();
+    if (normalized === 'amp') return '&';
+    if (normalized === 'apos') return "'";
+    if (normalized === 'quot') return '"';
+    if (normalized === 'lt') return '<';
+    if (normalized === 'gt') return '>';
+    if (normalized.startsWith('#x')) return String.fromCodePoint(Number.parseInt(normalized.slice(2), 16));
+    if (normalized.startsWith('#')) return String.fromCodePoint(Number.parseInt(normalized.slice(1), 10));
+    return match;
+  });
+}
+
+function normalizeLabel(value) {
+  return decodeHtmlAttribute(value).replace(/\s+/g, ' ').trim();
+}
+
+function extractAttribute(tag, name) {
+  const pattern = new RegExp(`\\b${name}=("([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i');
+  const match = pattern.exec(tag);
+  return match ? decodeHtmlAttribute(match[2] ?? match[3] ?? match[4] ?? '') : null;
+}
+
+function increment(map, key) {
+  map.set(key, (map.get(key) ?? 0) + 1);
+}
+
+function sortedEntries(map) {
+  return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+}
+
+function compareCounts(label, actual, expected) {
+  const keys = new Set([...actual.keys(), ...expected.keys()]);
+  for (const key of Array.from(keys).sort()) {
+    const actualCount = actual.get(key) ?? 0;
+    const expectedCount = expected.get(key) ?? 0;
+    if (actualCount !== expectedCount) {
+      fail(`${label} count for ${key} is ${actualCount}; expected ${expectedCount}.`);
+    }
+  }
+}
+
+function routeSlugFromProjectFile(filePath) {
+  const relative = path.relative(path.join(distDir, 'projects'), filePath).replaceAll(path.sep, '/');
+  if (relative.startsWith('../') || relative === '..') return null;
+  const match = /^([^/]+)\/index\.html$/.exec(relative);
+  return match?.[1] ?? null;
+}
+
+async function readJson(filePath, label) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, 'utf8'));
+  } catch (error) {
+    fail(`${label} is missing or invalid: ${error.message}`);
+    return null;
+  }
+}
+
+async function loadPagefind() {
+  const nativeFetch = globalThis.fetch;
+  globalThis.fetch = async (resource) => {
+    const url = resource instanceof URL
+      ? resource
+      : new URL(typeof resource === 'object' && resource && 'url' in resource ? resource.url : String(resource));
+
+    if (url.protocol === 'file:') {
+      return new Response(await fs.readFile(fileURLToPath(url)));
+    }
+    if (typeof nativeFetch === 'function') return nativeFetch(resource);
+    throw new Error(`Pagefind audit cannot fetch ${url.href}`);
+  };
+
+  const pagefindPath = path.join(pagefindDir, 'pagefind.js');
+  const pagefindBasePath = pathToFileURL(`${pagefindDir}${path.sep}`).href;
+  const pagefind = await import(pathToFileURL(pagefindPath).href);
+  await pagefind.options({ basePath: pagefindBasePath, baseUrl: '/' });
+  await pagefind.init();
+  return pagefind;
+}
+
+const htmlFiles = await collectHtmlFiles(distDir).catch((error) => {
+  fail(`Unable to scan ${path.relative(root, distDir) || distDir}: ${error.message}`);
+  return [];
+});
+const projectFiles = htmlFiles.filter((filePath) => routeSlugFromProjectFile(filePath));
+const pagefindEntry = await readJson(path.join(pagefindDir, 'pagefind-entry.json'), 'dist/pagefind/pagefind-entry.json');
+const indexedPageCount = Object.values(pagefindEntry?.languages ?? {}).reduce((sum, language) => sum + Number(language?.page_count ?? 0), 0);
+if (indexedPageCount !== htmlFiles.length) {
+  fail(`Pagefind entry reports ${indexedPageCount} indexed pages; dist contains ${htmlFiles.length} HTML pages.`);
+}
+
+const renderedCategoryCounts = new Map();
+const renderedProjectSlugs = new Set();
+const categoryBySlug = new Map();
+for (const filePath of projectFiles) {
+  const slug = routeSlugFromProjectFile(filePath);
+  if (!slug) continue;
+  renderedProjectSlugs.add(slug);
+  const html = await fs.readFile(filePath, 'utf8');
+  const labels = new Set();
+  for (const match of html.matchAll(/\bdata-pagefind-filter=(["'])Category:([\s\S]*?)\1/gi)) {
+    const label = normalizeLabel(match[2]);
+    if (label) labels.add(label);
+  }
+  if (labels.size !== 1) {
+    fail(`/projects/${slug}/ must expose exactly one Category Pagefind filter; found ${labels.size}.`);
+    continue;
+  }
+  const [label] = labels;
+  categoryBySlug.set(slug, label);
+  increment(renderedCategoryCounts, label);
+}
+
+const indexHtml = await fs.readFile(path.join(distDir, 'index.html'), 'utf8').catch((error) => {
+  fail(`dist/index.html is missing or unreadable: ${error.message}`);
+  return '';
+});
+const catalogCategoryCounts = new Map();
+const catalogSlugs = new Set();
+for (const match of indexHtml.matchAll(/<a\b[^>]*\bclass=(["'])[^"']*\bca\b[^"']*\1[^>]*>/gi)) {
+  const tag = match[0];
+  const repo = extractAttribute(tag, 'data-repo');
+  const category = extractAttribute(tag, 'data-f');
+  if (!repo || !category) continue;
+  catalogSlugs.add(repo);
+  const label = projectFilterLabelsByCategory[category];
+  if (!label) {
+    fail(`Homepage catalog card ${repo} has unsupported category code ${category}.`);
+    continue;
+  }
+  increment(catalogCategoryCounts, label);
+}
+
+const missingProjectRoutes = Array.from(catalogSlugs).filter((slug) => !renderedProjectSlugs.has(slug)).sort();
+const missingCatalogCards = Array.from(renderedProjectSlugs).filter((slug) => !catalogSlugs.has(slug)).sort();
+if (missingProjectRoutes.length > 0) fail(`Catalog cards without rendered project routes: ${missingProjectRoutes.join(', ')}.`);
+if (missingCatalogCards.length > 0) fail(`Rendered project routes without catalog cards: ${missingCatalogCards.join(', ')}.`);
+compareCounts('Homepage catalog', catalogCategoryCounts, renderedCategoryCounts);
+
+const pagefind = await loadPagefind().catch((error) => {
+  fail(`Unable to load generated Pagefind API: ${error.message}`);
+  return null;
+});
+const pagefindFilters = pagefind ? await pagefind.filters().catch((error) => {
+  fail(`Unable to read generated Pagefind filters: ${error.message}`);
+  return null;
+}) : null;
+const pagefindCategoryCounts = new Map(Object.entries(pagefindFilters?.Category ?? {}).map(([key, value]) => [key, Number(value)]));
+if (pagefindCategoryCounts.size === 0) {
+  fail('Generated Pagefind index does not expose a Category filter.');
+}
+compareCounts('Pagefind Category filter', pagefindCategoryCounts, renderedCategoryCounts);
+
+for (const label of requiredCategoryLabels) {
+  if (!renderedCategoryCounts.has(label)) {
+    fail(`Rendered project pages are missing expected Category label ${label}.`);
+  }
+  if (!pagefindCategoryCounts.has(label)) {
+    fail(`Generated Pagefind index is missing expected Category label ${label}.`);
+  }
+}
+
+let filteredResultCount = 0;
+if (pagefind && pagefindCategoryCounts.size > 0) {
+  for (const [label, expectedCount] of sortedEntries(renderedCategoryCounts)) {
+    const result = await pagefind.search(null, { filters: { Category: label } }).catch((error) => {
+      fail(`Filtered empty search for Category:${label} failed: ${error.message}`);
+      return null;
+    });
+    if (!result) continue;
+    if (result.results.length !== expectedCount) {
+      fail(`Filtered empty search for Category:${label} returned ${result.results.length} results; expected ${expectedCount}.`);
+      continue;
+    }
+    const urls = new Set();
+    for (const item of result.results) {
+      const data = await item.data();
+      const url = String(data?.url ?? '');
+      const match = /^\/projects\/([^/]+)\/?$/.exec(url);
+      if (!match) {
+        fail(`Filtered empty search for Category:${label} returned non-project URL ${url || '(missing)'}.`);
+        continue;
+      }
+      if (!renderedProjectSlugs.has(match[1])) {
+        fail(`Filtered empty search for Category:${label} returned unknown project route ${url}.`);
+      }
+      if (categoryBySlug.get(match[1]) !== label) {
+        fail(`Filtered empty search for Category:${label} returned ${url}, which is rendered as ${categoryBySlug.get(match[1])}.`);
+      }
+      urls.add(url);
+    }
+    if (urls.size !== expectedCount) {
+      fail(`Filtered empty search for Category:${label} returned ${urls.size} unique project URLs; expected ${expectedCount}.`);
+    }
+    filteredResultCount += result.results.length;
+  }
+}
+await pagefind?.destroy?.();
+
+if (errors.length > 0) {
+  console.error('Search index audit failed:');
+  for (const error of errors) console.error(`  - ${error}`);
+  process.exit(1);
+}
+
+console.log('Search index audit');
+console.log(`  HTML pages indexed: ${indexedPageCount}`);
+console.log(`  Rendered project pages: ${renderedProjectSlugs.size}`);
+console.log(`  Homepage catalog cards: ${catalogSlugs.size}`);
+console.log(`  Category filters checked: ${pagefindCategoryCounts.size}`);
+console.log(`  Filtered project results checked: ${filteredResultCount}`);
+console.log('  Category counts:');
+for (const [label, count] of sortedEntries(renderedCategoryCounts)) {
+  console.log(`    ${label}: ${count}`);
+}
+console.log('Search index audit passed.');
