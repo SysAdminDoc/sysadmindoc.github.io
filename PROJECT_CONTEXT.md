@@ -21,7 +21,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
-- First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with a `noscript` fallback.
+- First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
@@ -30,7 +30,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
-- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
+- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Catalog cards render visible `Recommended #N` rationale text and attach it through `aria-describedby` while the default sort is active; non-Recommended sorts hide the visible rationale. Project detail related links use the same rank map and expose their own ranking rationale. Explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - Rendered JSON-LD is audited from built `dist/**/*.html` by `npm run schema:audit`. The audit parses every `application/ld+json` block, requires schema.org context, confirms the Base WebSite/Person graph on every HTML page, and checks representative homepage, language, and project routes for expected graph types and stable anchors.
@@ -91,6 +91,7 @@ Current verification baseline:
 - Dependabot PR triage completed on 2026-06-04: GitHub Actions group merged as `78bbef5`, `marked` 18.0.4 merged as `3ab0f4a` after rebasing the stale PR #9 branch, Astro 6.4.4 was regenerated on current `main` and pushed as `460e04c` after PR #12 conflicted, PR #12 was closed as superseded, and no open Dependabot PRs remain.
 - `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale` passed on 2026-06-04 with 177 ranked projects, 12 top ranking explanation rows, normalized weights, finite scores/parts, usable repo/name identities, and unique contiguous ranks.
 - `npm run data:summary -- --out .tmp/data-refresh-t118-token --max-age-hours 36 --fail-on-stale` passed on 2026-06-04 after a token-backed `npm run fetch-stars`: README Refresh status `refreshed`, attempted 176, refreshed 175, misses 1, cache coverage 99.4%, miss rate 0.6%, rate limited false, and all README refresh checks passing. A no-token preservation run also passed and reported status `skipped`, 167 preserved entries, 94.9% cache coverage, and missing-token reason.
+- In-app Browser verification after the accessible Recommended-rationale pass passed at 1280x720 and 390x844: 177 catalog rank rationales rendered with valid `aria-describedby` targets, related cards rendered 4 rank rationales with valid descriptions, A-Z sort hid all rank labels, console warnings/errors were empty, the async global stylesheet promoted to `media=all`, and the 390px viewport kept catalog and related rank text inside cards with no horizontal overflow.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -190,11 +191,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T126 rendered JSON-LD audit:
+Highest-priority workflow/research work after the T124 accessible Recommended-rationale pass:
 
-1. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
-2. `T125` -- Add a Pagefind facet/index contract audit after static search generation.
-3. `T127` -- Add JSON Feed icon/favicon metadata and feed validation.
+1. `T125` -- Add a Pagefind facet/index contract audit after static search generation.
+2. `T127` -- Add JSON Feed icon/favicon metadata and feed validation.
+3. `T119` -- Add a post-deploy live artifact smoke check.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -241,3 +242,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Added first-viewport CSS parity auditing. `npm run css:audit` now guards the shared nav/hero/proof/stage selectors and selected mobile overrides across `critical.css` and `global.css`, and the audit is part of both `npm run check` and `npm run build`.
 - 2026-06-04: Added README refresh quality telemetry to generated-data health. `fetch-stars` now writes `_readme-refresh.json`, and `data:summary` reports/gates README refresh attempts, misses, preserved entries, cache coverage, miss rate, rate-limit state, skipped reason, and failure samples.
 - 2026-06-04: Added rendered JSON-LD auditing to the build path. `schema:audit` parses built HTML schema blocks, verifies Base WebSite/Person graph coverage, and checks representative homepage/language/project route graph contracts before publish.
+- 2026-06-04: Surfaced Recommended ranking rationale accessibly. Catalog and related cards now render visible rank explanations with valid `aria-describedby` wiring, non-Recommended catalog sorts hide the rationale, and `shared.js` includes a fallback that promotes the deferred global stylesheet to `media=all`.
