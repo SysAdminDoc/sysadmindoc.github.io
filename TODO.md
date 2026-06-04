@@ -265,12 +265,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: The existing rank label is exposed through visible or accessible card context when `Recommended` is active; related-link ranking context is not a silent algorithm; desktop and 390px mobile layouts do not overflow or become noisy.
   - Verify: In-app Browser preview on `http://127.0.0.1:4327/` passed at 1280x720: 177 visible catalog rank rationales, 177 valid `aria-describedby` links, A-Z sort set `data-sort="name"` and hid all rank labels, related cards exposed 4 visible ranking rationales with valid descriptions, console warnings/errors were empty, and no horizontal overflow was detected. Browser viewport `390x844` passed with 375px document width, catalog and related rank text inside cards, and A-Z hiding all mobile rank labels. `git diff --check`, `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` passed.
 
-- [ ] **T125** 🤖 P2 — Add a Pagefind facet/index contract audit after static search generation.
+- [x] **T125** 🤖 P2 — Add a Pagefind facet/index contract audit after static search generation.
   - Why: Visible facets depend on generated Pagefind index metadata, not only Astro source, so source-only checks can pass even if the built search bundle stops exposing Category filters.
   - Evidence: Project pages tag `data-pagefind-filter="Category:..."`; `/search/` renders the official filter pane; Pagefind's filter docs state that `data-pagefind-filter` associates pages with filter keys/values and can capture inline values; `package.json` has `search:index` but no script asserting `dist/pagefind` exposes the expected Category values or faceted results.
   - Touches: `package.json`, a new or existing script under `scripts/`, and possibly `PROJECT_CONTEXT.md`.
+  - Done: Added `scripts/audit-search-index.mjs` and `npm run search:audit`, then wired it into `build:ci` immediately after `search:index`. The audit loads the generated Pagefind JS API from `dist/pagefind`, verifies the Category facet exists, compares filter counts against rendered project pages and homepage catalog cards, checks expected labels, and runs filter-only Category searches that must return public project routes. Project detail pages now prefer `catalogMatch.category` over featured language for the Pagefind Category source of truth, fixing the `VideoSubtitleRemover` Media/Python drift the audit exposed.
   - Acceptance: A post-build `search:audit` proves the Category facet exists, has expected category labels, and faceted empty-term search returns public project pages; counts are compared against rendered/catalog category data with only intentional tolerance.
-  - Verify: `npm run build && npm run search:audit`.
+  - Verify: `npm test`; `npm run check`; `npm run build`; standalone `npm run search:audit`. The build-integrated and standalone audits passed with 194 indexed HTML pages, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered project results checked.
 
 ---
 
