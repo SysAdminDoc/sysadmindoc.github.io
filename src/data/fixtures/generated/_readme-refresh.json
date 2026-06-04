@@ -1,0 +1,18 @@
+{
+  "schema": "sysadmindoc.readme-refresh.v1",
+  "generatedAt": "2026-06-04T14:52:18.000Z",
+  "source": "fixture",
+  "tokenPresent": false,
+  "totalPublicRepos": 16,
+  "attempted": 16,
+  "refreshed": 16,
+  "misses": 0,
+  "preserved": 0,
+  "unattempted": 0,
+  "missing": 0,
+  "rateLimited": false,
+  "failureSamples": [],
+  "skippedReason": null,
+  "cacheEntries": 16,
+  "trimmed": 0
+}

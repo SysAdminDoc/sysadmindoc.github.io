@@ -18,6 +18,8 @@
     "test": "node scripts/ensure-project-cwd.mjs && node --test \"test/**/*.test.mjs\"",
     "fetch-stars": "node scripts/fetch-stars.mjs",
     "profile-feed:sync": "node scripts/sync-profile-feed.mjs",
+    "generated:fixtures": "node scripts/install-generated-fixtures.mjs",
+    "generated:fixtures:check": "node scripts/install-generated-fixtures.mjs --check",
     "capture-screenshots": "node scripts/capture-screenshots.mjs",
     "data:validate": "node scripts/validate-project-data.mjs",
     "data:summary": "node scripts/summarize-generated-data.mjs",

@@ -1,0 +1,594 @@
+{
+  "schema": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/schemas/profile-projects.v1.json",
+  "generatedAt": "2026-06-04T14:52:00.000Z",
+  "source": "fixture",
+  "feedSourceUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
+  "cachedAt": "2026-06-04T14:52:00.000Z",
+  "publicRepoCount": 16,
+  "projectCount": 16,
+  "suppressedCount": 0,
+  "projects": [
+    {
+      "repo": "OpenCut",
+      "title": "OpenCut",
+      "category": "python",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "AI-powered video editing automation for Premiere Pro",
+      "repoUrl": "https://github.com/SysAdminDoc/OpenCut",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/OpenCut/releases/latest",
+      "downloadKind": "download",
+      "primaryAction": {
+        "kind": "release",
+        "label": "Download",
+        "url": "https://github.com/SysAdminDoc/OpenCut/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "Python",
+      "stars": 19,
+      "latestReleaseTag": "v1.25.1",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/OpenCut/releases/tag/v1.25.1",
+      "releaseAssetKinds": [
+        "exe",
+        "zip"
+      ],
+      "pushedAt": "2026-06-04T14:51:46Z",
+      "updatedAt": "2026-06-04T14:49:57Z",
+      "topics": [
+        "ai",
+        "automation",
+        "video-editing"
+      ],
+      "featured": true,
+      "featuredRank": 1
+    },
+    {
+      "repo": "Astra-Deck",
+      "title": "Astra-Deck",
+      "category": "extensions",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Premium YouTube enhancement extension - 150+ features for Chrome and Firefox",
+      "repoUrl": "https://github.com/SysAdminDoc/Astra-Deck",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/Astra-Deck/releases/latest",
+      "downloadKind": "crx-xpi",
+      "primaryAction": {
+        "kind": "release",
+        "label": "CRX/XPI",
+        "url": "https://github.com/SysAdminDoc/Astra-Deck/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "JavaScript",
+      "stars": 10,
+      "latestReleaseTag": "v4.46.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.0",
+      "releaseAssetKinds": [
+        "crx",
+        "userscript",
+        "xpi",
+        "zip"
+      ],
+      "pushedAt": "2026-06-04T14:31:50Z",
+      "updatedAt": "2026-06-04T13:47:15Z",
+      "topics": [
+        "ad-free",
+        "javascript",
+        "youtube"
+      ],
+      "featured": true,
+      "featuredRank": 2
+    },
+    {
+      "repo": "project-nomad-desktop",
+      "title": "project-nomad-desktop",
+      "category": "python",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Offline survival command center with maps, AI chat, NukeMap, and supply tracking",
+      "repoUrl": "https://github.com/SysAdminDoc/project-nomad-desktop",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/project-nomad-desktop/releases/latest",
+      "downloadKind": "download",
+      "primaryAction": {
+        "kind": "release",
+        "label": "Download",
+        "url": "https://github.com/SysAdminDoc/project-nomad-desktop/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "Python",
+      "stars": 11,
+      "latestReleaseTag": "v7.32.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/project-nomad-desktop/releases/tag/v7.32.0",
+      "releaseAssetKinds": [
+        "exe",
+        "other"
+      ],
+      "pushedAt": "2026-05-19T03:33:34Z",
+      "updatedAt": "2026-05-19T03:33:37Z",
+      "topics": [
+        "ai",
+        "offline",
+        "python"
+      ],
+      "featured": true,
+      "featuredRank": 3
+    },
+    {
+      "repo": "AppManagerNG",
+      "title": "AppManagerNG",
+      "category": "android",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Power-user package manager - continuation of MuntashirAkon/AppManager",
+      "repoUrl": "https://github.com/SysAdminDoc/AppManagerNG",
+      "liveUrl": null,
+      "downloadUrl": null,
+      "downloadKind": "repo",
+      "primaryAction": {
+        "kind": "repo",
+        "label": "Repo",
+        "url": "https://github.com/SysAdminDoc/AppManagerNG"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": false,
+      "language": "Java",
+      "stars": 19,
+      "latestReleaseTag": "v0.5.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0",
+      "releaseAssetKinds": [
+        "apk",
+        "other"
+      ],
+      "pushedAt": "2026-06-04T13:54:54Z",
+      "updatedAt": "2026-06-04T13:54:58Z",
+      "topics": [
+        "android",
+        "package-manager",
+        "java"
+      ],
+      "featured": true,
+      "featuredRank": 4
+    },
+    {
+      "repo": "ScriptVault",
+      "title": "ScriptVault",
+      "category": "extensions",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Chrome MV3 userscript manager with Monaco editing and GM API support",
+      "repoUrl": "https://github.com/SysAdminDoc/ScriptVault",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/ScriptVault/releases/latest",
+      "downloadKind": "zip",
+      "primaryAction": {
+        "kind": "release",
+        "label": "ZIP",
+        "url": "https://github.com/SysAdminDoc/ScriptVault/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "JavaScript",
+      "stars": 3,
+      "latestReleaseTag": "v3.11.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.11.0",
+      "releaseAssetKinds": [
+        "zip"
+      ],
+      "pushedAt": "2026-06-04T14:47:17Z",
+      "updatedAt": "2026-06-04T14:50:04Z",
+      "topics": [
+        "chrome-extension",
+        "javascript",
+        "userscript"
+      ],
+      "featured": true,
+      "featuredRank": 5
+    },
+    {
+      "repo": "OpenLumen",
+      "title": "OpenLumen",
+      "category": "android",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Open-source CF.Lumen successor for Android display color filtering",
+      "repoUrl": "https://github.com/SysAdminDoc/OpenLumen",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/OpenLumen/releases/latest",
+      "downloadKind": "apk",
+      "primaryAction": {
+        "kind": "release",
+        "label": "APK",
+        "url": "https://github.com/SysAdminDoc/OpenLumen/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "Kotlin",
+      "stars": 3,
+      "latestReleaseTag": "v0.5.1",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/OpenLumen/releases/tag/v0.5.1",
+      "releaseAssetKinds": [
+        "apk",
+        "other"
+      ],
+      "pushedAt": "2026-06-03T05:06:03Z",
+      "updatedAt": "2026-06-03T17:37:11Z",
+      "topics": [
+        "android",
+        "kotlin",
+        "display"
+      ],
+      "featured": true,
+      "featuredRank": 6
+    },
+    {
+      "repo": "Keepr",
+      "title": "Keepr",
+      "category": "desktop",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Offline-first Google Keep clone with Tauri, React, Rust, and SQLite",
+      "repoUrl": "https://github.com/SysAdminDoc/Keepr",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/Keepr/releases/latest",
+      "downloadKind": "exe",
+      "primaryAction": {
+        "kind": "release",
+        "label": "EXE",
+        "url": "https://github.com/SysAdminDoc/Keepr/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "TypeScript",
+      "stars": 1,
+      "latestReleaseTag": "v0.16.2",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.16.2",
+      "releaseAssetKinds": [
+        "exe",
+        "zip"
+      ],
+      "pushedAt": "2026-05-27T09:50:54Z",
+      "updatedAt": "2026-05-30T21:03:17Z",
+      "topics": [
+        "notes",
+        "tauri",
+        "typescript"
+      ],
+      "featured": true,
+      "featuredRank": 7
+    },
+    {
+      "repo": "Droidsmith",
+      "title": "Droidsmith",
+      "category": "android",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Cross-platform ADB GUI for managing Android devices over USB and WiFi",
+      "repoUrl": "https://github.com/SysAdminDoc/Droidsmith",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/Droidsmith/releases/latest",
+      "downloadKind": "exe",
+      "primaryAction": {
+        "kind": "release",
+        "label": "EXE",
+        "url": "https://github.com/SysAdminDoc/Droidsmith/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "Rust",
+      "stars": 1,
+      "latestReleaseTag": "v0.1.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0",
+      "releaseAssetKinds": [
+        "exe",
+        "other"
+      ],
+      "pushedAt": "2026-06-02T04:02:40Z",
+      "updatedAt": "2026-06-03T17:41:55Z",
+      "topics": [
+        "adb",
+        "android",
+        "rust"
+      ],
+      "featured": true,
+      "featuredRank": 8
+    },
+    {
+      "repo": "SwiftFloris",
+      "title": "SwiftFloris",
+      "category": "android",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "SwiftKey-inspired keyboard built on FlorisBoard's foundation",
+      "repoUrl": "https://github.com/SysAdminDoc/SwiftFloris",
+      "liveUrl": null,
+      "downloadUrl": null,
+      "downloadKind": "repo",
+      "primaryAction": {
+        "kind": "repo",
+        "label": "Repo",
+        "url": "https://github.com/SysAdminDoc/SwiftFloris"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": false,
+      "language": "Kotlin",
+      "stars": 4,
+      "latestReleaseTag": "v1.8.172",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.8.172",
+      "releaseAssetKinds": [
+        "apk"
+      ],
+      "pushedAt": "2026-06-04T14:51:42Z",
+      "updatedAt": "2026-06-04T14:38:42Z",
+      "topics": [
+        "android",
+        "keyboard",
+        "kotlin"
+      ],
+      "featured": true,
+      "featuredRank": 9
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "title": "VideoSubtitleRemover",
+      "category": "media",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Remove hardcoded subtitles from video",
+      "repoUrl": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/latest",
+      "downloadKind": "zip",
+      "primaryAction": {
+        "kind": "release",
+        "label": "Download",
+        "url": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "Python",
+      "stars": 17,
+      "latestReleaseTag": "v3.16.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.16.0",
+      "releaseAssetKinds": [
+        "zip"
+      ],
+      "pushedAt": "2026-06-03T16:23:52Z",
+      "updatedAt": "2026-06-03T17:25:01Z",
+      "topics": [
+        "ai",
+        "python",
+        "video"
+      ],
+      "featured": true,
+      "featuredRank": 10
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "title": "Network_Security_Auditor",
+      "category": "powershell",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "67 automated checks across 8 security domains with MITRE ATT&CK mapping",
+      "repoUrl": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/latest",
+      "downloadKind": "script",
+      "primaryAction": {
+        "kind": "release",
+        "label": "Download",
+        "url": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "PowerShell",
+      "stars": 6,
+      "latestReleaseTag": "v4.1.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v4.1.0",
+      "releaseAssetKinds": [
+        "script"
+      ],
+      "pushedAt": "2026-05-26T19:01:15Z",
+      "updatedAt": "2026-05-26T19:01:22Z",
+      "topics": [
+        "mitre",
+        "powershell",
+        "security-audit"
+      ],
+      "featured": true,
+      "featuredRank": 11
+    },
+    {
+      "repo": "pfSenseSuite",
+      "title": "pfSenseSuite",
+      "category": "security",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "pfSense scripts and customizations toolkit",
+      "repoUrl": "https://github.com/SysAdminDoc/pfSenseSuite",
+      "liveUrl": null,
+      "downloadUrl": null,
+      "downloadKind": "repo",
+      "primaryAction": {
+        "kind": "repo",
+        "label": "Repo",
+        "url": "https://github.com/SysAdminDoc/pfSenseSuite"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": false,
+      "language": "JavaScript",
+      "stars": 2,
+      "latestReleaseTag": "v3.4.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/pfSenseSuite/releases/tag/v3.4.0",
+      "releaseAssetKinds": [
+        "source-archive"
+      ],
+      "pushedAt": "2026-05-26T19:18:03Z",
+      "updatedAt": "2026-05-26T19:18:09Z",
+      "topics": [
+        "network",
+        "pfsense",
+        "security"
+      ],
+      "featured": true,
+      "featuredRank": 12
+    },
+    {
+      "repo": "StormviewRadar",
+      "title": "StormviewRadar",
+      "category": "web",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Open-source weather radar viewer",
+      "repoUrl": "https://github.com/SysAdminDoc/StormviewRadar",
+      "liveUrl": "https://sysadmindoc.github.io/StormviewRadar/",
+      "downloadUrl": null,
+      "downloadKind": null,
+      "primaryAction": {
+        "kind": "live",
+        "label": "Launch",
+        "url": "https://sysadmindoc.github.io/StormviewRadar/"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": true,
+      "language": "HTML",
+      "stars": 0,
+      "latestReleaseTag": null,
+      "latestReleaseUrl": null,
+      "releaseAssetKinds": [],
+      "pushedAt": "2026-05-26T19:01:26Z",
+      "updatedAt": "2026-05-26T19:01:33Z",
+      "topics": [
+        "javascript",
+        "radar",
+        "weather"
+      ],
+      "featured": true,
+      "featuredRank": 13
+    },
+    {
+      "repo": "octopus-factory",
+      "title": "octopus-factory",
+      "category": "misc",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Recipe-driven autonomous coding pipeline for multi-agent build, audit, and release workflows",
+      "repoUrl": "https://github.com/SysAdminDoc/octopus-factory",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/octopus-factory/releases/latest",
+      "downloadKind": null,
+      "primaryAction": {
+        "kind": "repo",
+        "label": "Repo",
+        "url": "https://github.com/SysAdminDoc/octopus-factory"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": false,
+      "language": "Shell",
+      "stars": 1,
+      "latestReleaseTag": "v0.6.0",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/octopus-factory/releases/tag/v0.6.0",
+      "releaseAssetKinds": [
+        "source-archive"
+      ],
+      "pushedAt": "2026-04-26T02:11:10Z",
+      "updatedAt": "2026-04-26T02:22:06Z",
+      "topics": [
+        "autonomous-coding",
+        "multi-agent",
+        "workflow-automation"
+      ],
+      "featured": true,
+      "featuredRank": 14
+    },
+    {
+      "repo": "sysadmindoc.github.io",
+      "title": "sysadmindoc.github.io",
+      "category": "guides",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "repoUrl": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "liveUrl": "https://sysadmindoc.github.io/",
+      "downloadUrl": null,
+      "downloadKind": "repo",
+      "primaryAction": {
+        "kind": "live",
+        "label": "Launch",
+        "url": "https://sysadmindoc.github.io/"
+      },
+      "hasDownload": false,
+      "hasLiveDemo": true,
+      "language": "Astro",
+      "stars": 0,
+      "latestReleaseTag": null,
+      "latestReleaseUrl": null,
+      "releaseAssetKinds": [],
+      "pushedAt": "2026-06-04T14:48:45Z",
+      "updatedAt": "2026-06-04T14:50:21Z",
+      "topics": [
+        "github-pages",
+        "portfolio",
+        "astro"
+      ],
+      "featured": true,
+      "featuredRank": 15
+    },
+    {
+      "repo": "win11-nvme-driver-patcher",
+      "title": "win11-nvme-driver-patcher",
+      "category": "powershell",
+      "includeInReadme": true,
+      "includeInPortfolio": true,
+      "suppressed": false,
+      "description": "GUI to enable Windows Server 2025 NVMe driver on Windows 11",
+      "repoUrl": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
+      "liveUrl": null,
+      "downloadUrl": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher/releases/latest",
+      "downloadKind": "download",
+      "primaryAction": {
+        "kind": "release",
+        "label": "Download",
+        "url": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher/releases/latest"
+      },
+      "hasDownload": true,
+      "hasLiveDemo": false,
+      "language": "C#",
+      "stars": 41,
+      "latestReleaseTag": "v4.6.1",
+      "latestReleaseUrl": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher/releases/tag/v4.6.1",
+      "releaseAssetKinds": [
+        "exe"
+      ],
+      "pushedAt": "2026-05-26T19:01:39Z",
+      "updatedAt": "2026-05-30T21:12:01Z",
+      "topics": [
+        "driver",
+        "nvme",
+        "powershell"
+      ],
+      "featured": true,
+      "featuredRank": 16
+    }
+  ],
+  "suppressed": []
+}
