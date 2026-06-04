@@ -183,7 +183,8 @@ Highest-priority workflow/research work after the T35 search facet and T36 ranki
 
 1. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
 2. `T122` -- Triage stale Dependabot PRs against current `main`.
-3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+3. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
+4. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
