@@ -80,7 +80,7 @@ Current verification baseline:
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
 - `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
-- `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green.
+- `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green. Manual workflow_dispatch run `26956410354` also passed on `ab7cb90` and uploaded the profile-feed summary fields/checks.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
