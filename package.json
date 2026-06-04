@@ -25,6 +25,7 @@
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
+    "csp:audit": "node scripts/audit-csp.mjs",
     "schema:audit": "node scripts/audit-schema.mjs",
     "images:audit": "node scripts/audit-image-pipeline.mjs",
     "screenshots:thumbs": "node scripts/generate-screenshot-thumbnails.mjs",

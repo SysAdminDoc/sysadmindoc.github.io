@@ -206,6 +206,8 @@ The Lighthouse CI budget uses `scripts/run-lhci.mjs` to execute `npm exec --pack
 
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 
+`npm run csp:audit` is the preflight gate before T95 removes `script-src 'unsafe-inline'`. It scans Astro/HTML source for the active CSP meta tag, executable inline scripts, inline event handlers, JSON-LD/data scripts, self-hosted external scripts, inline style blocks/attributes, and stable SHA-256 hashes. Strict candidate mode, for example `npm run csp:audit -- --candidate-script-src "'self'" --strict`, is expected to fail until the seven known inline scripts plus the async stylesheet `onload` handler are externalized, hashed, or otherwise resolved.
+
 ## Tooling and Local Instruction Files
 
 The repo has ignored local `AGENTS.md`, `CLAUDE.md`, and `CODEX_CHANGELOG.md` files. They are useful for local workflow but not canonical public project state.
@@ -221,11 +223,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T137 generated-fixture pass:
+Highest-priority workflow/research work after the T135 CSP preflight pass:
 
-1. `T135` -- Add a CSP preflight audit before removing `script-src 'unsafe-inline'`.
-2. `T41` -- README code syntax highlighting.
-3. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+1. `T41` -- README code syntax highlighting.
+2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+3. `T95` -- Remove CSP `unsafe-inline` for scripts after the T135 blocker inventory is resolved.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -281,3 +283,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Added build-output coverage to weekly quality gates. The workflow now refreshes generated data before local checks, runs `build:ci` without deploying, publishes endpoint/feed/search/schema status in the job summary, uploads dedicated logs, includes generated-data/local/build-output failures in the quality-gate issue body, and keeps semantic-audit output advisory.
 - 2026-06-04: Scoped Pagefind indexing to intentional page content. Searchable routes now tag their main content with `data-pagefind-body`, `/404.html` remains outside the index, the global command palette is excluded from indexed regions, and `search:audit` verifies the tagged route count before Category facet checks.
 - 2026-06-04: Added advisory performance/bfcache coverage to weekly quality gates. The workflow serves built `dist/` locally after `build:ci`, runs the custom strict performance audit, uploads preview/performance logs plus `.tmp/performance-audit-ci.json`, and adds route-level performance rows to the job summary. Manual run `26966906202` passed and uploaded artifact `7417914733`.
+- 2026-06-04: Added the CSP preflight audit for T95. `npm run csp:audit` inventories the active CSP, seven known executable inline scripts, one inline event handler, three JSON-LD/data script blocks, six self-hosted external scripts, and inline style surfaces; strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers.
