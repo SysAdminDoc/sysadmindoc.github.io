@@ -215,7 +215,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] `llms.txt` completeness.
     - Done: Expanded `/llms.txt` into a fuller AI-readable site map generated from shared project/page data. It now covers featured projects, live apps, reviewed pages from `interiorOgPages`, exact-count catalog access, language lanes from `LANGS`, feed endpoints, and machine-readable endpoint routes including `resume.json`, `cmdk-data.js`, sitemap, and self-link. The public endpoint audit now requires the expanded sections, required URLs, exact catalog count copy, and at least 50 useful links.
     - Verify: `node --check scripts/audit-public-endpoints.mjs`; `node --test test/llms-completeness.test.mjs`; `node --test test/atom-feed.test.mjs`; `npm run build:ci` passed with `llms.txt links: 59`.
-  - [ ] Beyond Code enrich + CLAUDE.md sync.
+  - [x] Beyond Code enrich + CLAUDE.md sync.
+    - Done: Added a static Beyond Code overview row above the drone videos using the existing `beyond-card` styles. The cards summarize the 4 click-to-play aerial clips, route music-generation context to the internal `/projects/SlunderStudio/` page, and document the lightweight media boundary without restoring the removed Spotify iframe/embed. Homepage hash restoration now reveals contained below-fold sections and repeats the fragment scroll so direct `/#beyond` and section-jump links survive late catalog rendering. Synced the ignored local `CLAUDE.md` architecture notes to the current Beyond Code behavior and source-size counts.
+    - Verify: `node --test test/beyond-code.test.mjs`; `node --check public/scripts/main.js`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; `npm run a11y:audit`; `git diff --check`; browser smoke for `/#beyond`, responsive Beyond cards, and the SlunderStudio card link.
   - [ ] `style-src` `unsafe-inline` follow-up.
   - [ ] Catalog DOM-size budget gate.
 

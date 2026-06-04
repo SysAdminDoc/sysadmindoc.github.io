@@ -383,6 +383,29 @@ const aerialClips = [
   {id:'PnlsSqa8DtQ', title:'Venice Jetty', desc:'Aerial view of the Venice, Florida jetty'},
   {id:'FVroPKvYgKQ', title:'Nokomis Beach, Florida', desc:'Drone flight over Nokomis Beach'},
 ] as const;
+const beyondCards = [
+  {
+    kicker: 'Aerial footage',
+    value: `${aerialClips.length} flights`,
+    copy: 'Coastal Florida drone clips stay click-to-play so the page stays quiet until a visitor chooses a video.',
+    href: '#beyond-video',
+    cta: 'Watch clips',
+  },
+  {
+    kicker: 'Media tooling',
+    value: 'SlunderStudio',
+    copy: 'The music-generation work is represented through its public project page instead of a third-party music embed.',
+    href: '/projects/SlunderStudio/',
+    cta: 'Open project',
+  },
+  {
+    kicker: 'Boundary',
+    value: 'No autoplay embeds',
+    copy: 'Creative context stays lightweight: internal project routes, outbound source links, and click-to-load video only.',
+    href: '/archive/',
+    cta: 'Read decisions',
+  },
+] as const;
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
@@ -399,7 +422,7 @@ const cmdkSections = [
   { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
   { label: 'Philosophy', href: '#philosophy', desc: 'The product standards behind every project.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
-  { label: 'Beyond Code', href: '#beyond', desc: 'Aerial drone footage and the work outside the terminal.', badge: 'SECTION' },
+  { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative tooling beyond the terminal.', badge: 'SECTION' },
   { label: 'Connect', href: '#connect', desc: 'Best ways to collaborate and what to bring.', badge: 'SECTION' },
   { label: 'Full-Text Search', href: '/search/', desc: 'Search rendered project pages, README excerpts, and route copy.', badge: 'PAGE' },
   { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
@@ -832,7 +855,18 @@ const cmdkSections = [
   <Divider />
 
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Drone footage and everything outside the terminal.</p></div>
+    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Aerial footage, creative tooling, and the same lightweight media posture as the rest of the portfolio.</p></div>
+
+    <div class="beyond-overview rv" aria-label="Beyond code highlights">
+      {beyondCards.map((card) => (
+        <a href={card.href} class="beyond-card">
+          <span class="beyond-card-kicker">{card.kicker}</span>
+          <strong class="beyond-card-value">{card.value}</strong>
+          <p class="beyond-card-copy">{card.copy}</p>
+          <span class="beyond-card-cta">{card.cta}</span>
+        </a>
+      ))}
+    </div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
