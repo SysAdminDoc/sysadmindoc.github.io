@@ -119,7 +119,9 @@ src/
 │   ├── lang/[slug].astro · lang/_langs.ts
 │   ├── og/[slug].png.ts
 │   └── projects/[slug].astro
-└── styles/global.css
+└── styles/
+    ├── critical.css # inline first-viewport nav/hero CSS
+    └── global.css   # full stylesheet, preloaded and applied asynchronously
 public/
 ├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
 ├── .well-known/security.txt
