@@ -43,6 +43,21 @@ async function readJson(fileName) {
   }
 }
 
+async function readJsonOptional(fileName) {
+  const filePath = path.join(dataDir, fileName);
+  try {
+    return {
+      value: JSON.parse(await fs.readFile(filePath, 'utf8')),
+      error: null,
+    };
+  } catch (error) {
+    return {
+      value: null,
+      error: `Unable to read ${path.relative(root, filePath)}: ${error.message}`,
+    };
+  }
+}
+
 function isoOrUnknown(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? 'unknown' : date.toISOString();
@@ -65,6 +80,8 @@ const [stars, stats, meta, releases, readmes] = await Promise.all([
   readJson('_releases.json'),
   readJson('_readmes.json'),
 ]);
+const profileFeedResult = await readJsonOptional('_profile-projects.json');
+const profileFeed = profileFeedResult.value;
 
 const starEntries = Object.keys(stars).length;
 const metaEntries = Object.keys(meta).length;
@@ -72,6 +89,18 @@ const readmeEntries = Object.keys(readmes).length;
 const releaseEntries = Array.isArray(releases) ? releases.length : 0;
 const fetchedAgeHours = ageHours(stats.fetchedAt);
 const fresh = fetchedAgeHours <= options.maxAgeHours;
+const profileProjects = Array.isArray(profileFeed?.projects) ? profileFeed.projects : [];
+const profileProjectCount = Number.isFinite(profileFeed?.projectCount)
+  ? profileFeed.projectCount
+  : profileProjects.length;
+const profileCachedAgeHours = ageHours(profileFeed?.cachedAt);
+const profileCacheFresh = profileCachedAgeHours <= options.maxAgeHours;
+const profileSource = typeof profileFeed?.source === 'string' ? profileFeed.source : null;
+const profileFeedStatus = !profileFeed
+  ? 'missing'
+  : profileProjects.length === 0 || profileSource?.startsWith('local fallback:')
+    ? 'fallback'
+    : 'active';
 
 const checks = [
   {
@@ -98,6 +127,30 @@ const checks = [
     label: `generated data age <= ${options.maxAgeHours}h`,
     ok: fresh,
   },
+  {
+    label: 'profile feed cache exists',
+    ok: Boolean(profileFeed),
+  },
+  {
+    label: 'profile feed cache is active',
+    ok: profileFeedStatus === 'active',
+  },
+  {
+    label: 'profile feed has portfolio projects',
+    ok: profileProjects.length > 0,
+  },
+  {
+    label: 'profile feed projectCount matches projects length',
+    ok: Number.isFinite(profileFeed?.projectCount) && profileFeed.projectCount === profileProjects.length,
+  },
+  {
+    label: 'profile feed source URL is set',
+    ok: typeof profileFeed?.feedSourceUrl === 'string' && profileFeed.feedSourceUrl.length > 0,
+  },
+  {
+    label: `profile feed cache age <= ${options.maxAgeHours}h`,
+    ok: profileCacheFresh,
+  },
 ];
 
 const failedChecks = checks.filter((check) => !check.ok);
@@ -120,6 +173,20 @@ const summary = {
   lastPushedRepo: stats.lastPushedRepo ?? null,
   lastPushedAt: isoOrUnknown(stats.lastPushedAt),
   latestRelease: stats.latestRelease ?? null,
+  profileFeed: {
+    status: profileFeedStatus,
+    error: profileFeedResult.error,
+    schema: profileFeed?.schema ?? null,
+    source: profileSource,
+    feedSourceUrl: profileFeed?.feedSourceUrl ?? null,
+    generatedAt: isoOrUnknown(profileFeed?.generatedAt),
+    cachedAt: isoOrUnknown(profileFeed?.cachedAt),
+    cachedAgeHours: Number.isFinite(profileCachedAgeHours) ? Number(profileCachedAgeHours.toFixed(2)) : null,
+    publicRepoCount: profileFeed?.publicRepoCount ?? null,
+    projectCount: profileProjectCount,
+    projectsLength: profileProjects.length,
+    suppressedCount: profileFeed?.suppressedCount ?? null,
+  },
   checks,
 };
 
@@ -147,6 +214,19 @@ const markdown = [
   `- Metadata entries: ${metaEntries}`,
   `- README entries: ${readmeEntries}`,
   `- Release entries: ${releaseEntries}`,
+  '',
+  '## Profile Feed',
+  '',
+  `- Status: ${summary.profileFeed.status}`,
+  `- Source: ${summary.profileFeed.source ?? 'unknown'}`,
+  `- Source URL: ${summary.profileFeed.feedSourceUrl ?? 'unknown'}`,
+  `- Source generated: ${summary.profileFeed.generatedAt}`,
+  `- Cache refreshed: ${summary.profileFeed.cachedAt}`,
+  `- Cache age: ${summary.profileFeed.cachedAgeHours ?? 'unknown'} hours (limit ${options.maxAgeHours})`,
+  `- Public repos upstream: ${summary.profileFeed.publicRepoCount ?? 'unknown'}`,
+  `- Portfolio projects cached: ${summary.profileFeed.projectCount}`,
+  `- Suppressed upstream rows: ${summary.profileFeed.suppressedCount ?? 'unknown'}`,
+  ...(summary.profileFeed.error ? [`- Cache error: ${summary.profileFeed.error}`] : []),
   '',
   '## Freshness Signals',
   '',

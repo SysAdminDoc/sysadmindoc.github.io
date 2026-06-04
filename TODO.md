@@ -193,12 +193,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 2 — 2026-06-04) — see [docs/research-2026-06-04-cycle-2.md](docs/research-2026-06-04-cycle-2.md)
 
-- [ ] **T117** 🤖 P1 — Make the scheduled GitHub data health check exercise the profile-feed path.
+- [x] **T117** 🤖 P1 — Make the scheduled GitHub data health check exercise the profile-feed path.
   - Why: v0.18.3 moved the catalog to the external profile feed, but the daily data-health workflow still only refreshes GitHub stars/metadata, so it no longer exercises the full production data path it claims to cover.
   - Evidence: `.github/workflows/deploy.yml:42-45` now runs `fetch-stars` and `profile-feed:sync`; `.github/workflows/data-refresh.yml:8-13` says the scheduled job exercises the exact production data path, but `.github/workflows/data-refresh.yml:39-43` runs only `fetch-stars` before `data:summary`; live `/projects.json` now reports `source.profileFeedUrl = https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json`.
   - Touches: `.github/workflows/data-refresh.yml`, `scripts/summarize-generated-data.mjs`, possibly `scripts/sync-profile-feed.mjs` output/schema.
-  - Acceptance: The scheduled/manual data-health workflow runs `npm run profile-feed:sync`; the generated summary reports profile-feed active/source/generated/cached status; `--fail-on-stale` can fail when profile-feed data is missing or stale.
-  - Verify: `gh workflow run data-refresh.yml --repo SysAdminDoc/sysadmindoc.github.io`; inspect the run summary/artifact for profile-feed fields and a passing conclusion.
+  - Done: `data-refresh.yml` now runs `npm run profile-feed:sync`, and `data:summary` reports/gates profile-feed active/fallback state, source URL, source-generated timestamp, cache-refreshed timestamp, cache age, portfolio project count, and suppressed upstream rows.
+  - Verify: Local `npm run fetch-stars && npm run profile-feed:sync && npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed with profile feed status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green. Next scheduled/manual workflow run should show the same fields in the job summary/artifact.
 
 - [ ] **T118** 🤖 P2 — Add README-cache refresh quality signals to the generated data summary.
   - Why: Project detail pages and semantic search depend on cached README text, but the health summary only checks that the README cache is non-empty; stale preserved entries, miss spikes, or rate-limit fallback can pass silently.
