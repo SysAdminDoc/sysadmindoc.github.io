@@ -47,7 +47,9 @@ npm run data:validate # validate project data, screenshots, policy, and command 
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
 npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
-npm run csp:audit     # verify CSP script/style inventory and strict script-src readiness
+npm run csp:audit     # verify source CSP script/style inventory and strict script-src readiness
+npm run csp:audit:style # report current style-src 'self' blockers without failing
+npm run csp:audit:dist # verify rendered dist/ CSP inventory after a build
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
@@ -169,7 +171,7 @@ scripts/
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs
-├── audit-csp.mjs          # source CSP/unsafe-inline inventory and strict script-src gate
+├── audit-csp.mjs          # source/built CSP inventory plus script/style candidate gates
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
 ├── audit-feed.mjs         # built JSON/Atom Feed metadata/item contract audit

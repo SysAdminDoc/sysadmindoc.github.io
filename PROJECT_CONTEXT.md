@@ -246,7 +246,7 @@ The Lighthouse CI budget uses `scripts/run-lhci.mjs` to execute `npm exec --pack
 
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 
-`npm run csp:audit` is the source gate for CSP script hardening. It scans Astro/HTML source for the active CSP meta tag, executable inline scripts, inline event handlers, JSON-LD/data scripts, self-hosted external scripts, inline style blocks/attributes, and current unsafe-inline dependencies. After T95, active `script-src` is `'self'`, executable inline scripts and inline event handlers must remain zero, and strict candidate mode with `script-src 'self'` is expected to pass. Style-side `unsafe-inline` is still active because Astro style blocks and style attributes remain.
+`npm run csp:audit` is the source gate for CSP script hardening. It scans Astro/HTML source for the active CSP meta tag, executable inline scripts, inline event handlers, JSON-LD/data scripts, self-hosted external scripts, inline style blocks/attributes, and current unsafe-inline dependencies. After T95, active `script-src` is `'self'`, executable inline scripts and inline event handlers must remain zero, and strict candidate mode with `script-src 'self'` is expected to pass. Style-side `unsafe-inline` is still active because inline style surfaces remain; `npm run csp:audit:style` reports the source-side `style-src 'self'` blockers, while `npm run csp:audit:dist` verifies rendered HTML CSP inventory after a build.
 
 ## Tooling and Local Instruction Files
 
@@ -263,11 +263,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T112 terminal, Atom feed, catalog no-JS form, public JS minification, `llms.txt` completeness, and Beyond Code passes:
+Highest-priority workflow/research work after the T112 terminal, Atom feed, catalog no-JS form, public JS minification, `llms.txt` completeness, Beyond Code, and style-CSP follow-up passes:
 
-1. `T112` -- P3 cluster: style-src follow-up and catalog DOM-size budget. Terminal commands, Atom feed, catalog no-JS form, public JS minification, `llms.txt` completeness, and Beyond Code enrichment are complete.
+1. `T112` -- P3 cluster: catalog DOM-size budget. Terminal commands, Atom feed, catalog no-JS form, public JS minification, `llms.txt` completeness, Beyond Code enrichment, and style-side CSP audit follow-up are complete.
 
-Next open checklist item in document order is the `T112` `style-src` `unsafe-inline` follow-up subitem.
+Next open checklist item in document order is the `T112` Catalog DOM-size budget gate subitem.
 
 ## Definition of Done for Future Changes
 
@@ -321,6 +321,7 @@ Next open checklist item in document order is the `T112` `style-src` `unsafe-inl
 - 2026-06-04: Added T112 public JS minification. `build:ci` now minifies copied `dist/scripts/*.js` output with esbuild syntax/whitespace minification, preserving source readability and shared classic-script global names.
 - 2026-06-04: Completed T112 `llms.txt` coverage. The endpoint now includes reviewed pages, language lanes, feeds, machine-readable indexes, sitemap, self-link, and exact catalog count; `endpoints:audit` enforces the expanded contract.
 - 2026-06-04: Enriched T112 Beyond Code. The homepage now shows static Beyond cards for aerial footage, SlunderStudio, and the no-autoplay media boundary above click-to-load drone videos; direct homepage hash restoration was hardened for below-fold sections, and the ignored local `CLAUDE.md` was synced to the current behavior and source-size counts.
+- 2026-06-04: Added the T112 style-side CSP follow-up. `scripts/audit-csp.mjs` now supports `--candidate-style-src` and built-output `--dist` scans; `npm run csp:audit:style` reports 31 source `style-src 'self'` blockers, and rendered `dist/` candidate reporting found 1,012 inline style surfaces that still require the active `style-src 'unsafe-inline'` policy.
 - 2026-06-04: Added post-deploy live artifact smoke checks. The deploy workflow captures built version/count contracts and checks live Pages for the stamped service worker, profile-feed project index, release index, JSON Feed, and sitemap after deployment.
 - 2026-06-04: Added public endpoint contract auditing. `endpoints:audit` validates built `/projects.json`, `/releases.json`, `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links before deploy.
 - 2026-06-04: Normalized generated endpoint cache policy. Shared endpoint header helpers now declare bounded source cache policies for generated JSON/feed/text/script endpoints and unhashed OG image routes, and live smoke records the effective GitHub Pages `max-age=600` policy.

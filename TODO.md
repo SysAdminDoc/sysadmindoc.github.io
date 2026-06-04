@@ -218,7 +218,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] Beyond Code enrich + CLAUDE.md sync.
     - Done: Added a static Beyond Code overview row above the drone videos using the existing `beyond-card` styles. The cards summarize the 4 click-to-play aerial clips, route music-generation context to the internal `/projects/SlunderStudio/` page, and document the lightweight media boundary without restoring the removed Spotify iframe/embed. Homepage hash restoration now reveals contained below-fold sections and repeats the fragment scroll so direct `/#beyond` and section-jump links survive late catalog rendering. Synced the ignored local `CLAUDE.md` architecture notes to the current Beyond Code behavior and source-size counts.
     - Verify: `node --test test/beyond-code.test.mjs`; `node --check public/scripts/main.js`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; `npm run a11y:audit`; `git diff --check`; browser smoke for `/#beyond`, responsive Beyond cards, and the SlunderStudio card link.
-  - [ ] `style-src` `unsafe-inline` follow-up.
+  - [x] `style-src` `unsafe-inline` follow-up.
+    - Done: Extended `scripts/audit-csp.mjs` with `--candidate-style-src` and `--dist` modes, added `npm run csp:audit:style` and `npm run csp:audit:dist`, and regression-tested the current style-side posture. The active policy still keeps `style-src 'unsafe-inline'`; source candidate mode reports 31 blockers, and built `dist/` candidate mode reports 1,012 rendered inline style surfaces, so removal is now explicitly gated instead of implied by script-side CSP hardening.
+    - Verify: `node --check scripts/audit-csp.mjs`; `npm run csp:audit`; `npm run csp:audit:style`; `npm run csp:audit:dist`; `node scripts/audit-csp.mjs --dist --candidate-style-src "'self'"`; `node --test test/csp-audit.test.mjs`.
   - [ ] Catalog DOM-size budget gate.
 
 ---

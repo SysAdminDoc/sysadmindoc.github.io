@@ -26,6 +26,8 @@
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
     "csp:audit": "node scripts/audit-csp.mjs",
+    "csp:audit:style": "node scripts/audit-csp.mjs --candidate-style-src \"'self'\"",
+    "csp:audit:dist": "node scripts/audit-csp.mjs --dist",
     "schema:audit": "node scripts/audit-schema.mjs",
     "scripts:minify": "node scripts/minify-public-scripts.mjs",
     "images:audit": "node scripts/audit-image-pipeline.mjs",
