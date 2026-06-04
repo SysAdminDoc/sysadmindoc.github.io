@@ -1,4 +1,4 @@
-import { catalog, featured, liveApps } from './projects';
+import { catalog, featured, liveApps } from './portfolio';
 
 const repoSlugs = new Set<string>([
   ...featured.map((project) => project.repo),

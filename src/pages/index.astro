@@ -7,7 +7,7 @@ import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import TagCloud from '../components/TagCloud.astro';
 import Heatmap from '../components/Heatmap.astro';
-import { featured, liveApps, catalog, skills } from '../data/projects';
+import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
 import { careerRoles } from '../data/career';
 
@@ -59,14 +59,14 @@ function ageDays(iso?: string | null): number | null {
 }
 const catalogViewState = new Map(
   catalog.map((entry) => {
-    const updatedAt = meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt;
+    const updatedAt = entry.updatedAt ?? entry.pushedAt ?? meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt;
     const days = ageDays(updatedAt);
     return [
       entry.repo,
       {
         isNew: days !== null && days <= 30,
         isRecent: days !== null && days <= 90,
-        hasDownload: releaseDownloadRepos.has(entry.repo),
+        hasDownload: Boolean(entry.hasDownload || releaseDownloadRepos.has(entry.repo)),
       },
     ] as const;
   }),

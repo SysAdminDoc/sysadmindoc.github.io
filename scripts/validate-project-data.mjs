@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
+import { validateProfileFeed } from './lib/profile-feed.mjs';
 import { propertyName, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
@@ -12,6 +13,7 @@ const categoriesPath = path.join(root, 'src', 'data', 'categories.ts');
 const proofPath = path.join(root, 'src', 'data', 'proof.ts');
 const archivePath = path.join(root, 'src', 'data', 'archive.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
+const profileFeedPath = path.join(root, 'src', 'data', '_profile-projects.json');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 
 const errors = [];
@@ -218,6 +220,37 @@ const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
 const proofRecords = exportedObject(proofSource, 'projectProof');
 const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
+let profileFeedProjectCount = null;
+const profileCategoryMap = {
+  powershell: 'ps',
+  python: 'py',
+  web: 'web',
+  extensions: 'ext',
+  android: 'kt',
+  security: 'sec',
+  media: 'media',
+  desktop: 'cs',
+  guides: 'guide',
+  misc: 'other',
+};
+
+try {
+  const profileFeed = JSON.parse(await fs.readFile(profileFeedPath, 'utf8'));
+  if (Array.isArray(profileFeed.projects) && profileFeed.projects.length > 0) {
+    const profileProjects = validateProfileFeed(profileFeed);
+    profileFeedProjectCount = profileProjects.length;
+    for (const [index, project] of profileProjects.entries()) {
+      const mappedCategory = profileCategoryMap[project.category];
+      if (!mappedCategory || !allowedLangs.has(mappedCategory)) {
+        fail(`profile feed project ${index} category "${project.category}" does not map to a Lang value.`);
+      }
+    }
+  }
+} catch (error) {
+  if (error?.code !== 'ENOENT') {
+    fail(`Profile feed cache ${path.relative(root, profileFeedPath)} is invalid: ${error.message}`);
+  }
+}
 
 validateUnique('featured', featured, 'repo');
 validateUnique('liveApps', liveApps, 'slug');
@@ -452,9 +485,10 @@ for (const slug of portfolioRefs) {
 console.log('Project data validation');
 console.log(`  featured: ${featured.length}`);
 console.log(`  live apps: ${liveApps.length}`);
-console.log(`  catalog: ${catalog.length}`);
-console.log(`  unique project routes: ${portfolioRefs.size}`);
-console.log(`  command palette projects: ${commandPaletteProjects.size}`);
+console.log(`  local fallback catalog: ${catalog.length}`);
+console.log(`  local fallback project routes: ${portfolioRefs.size}`);
+console.log(`  local fallback command palette projects: ${commandPaletteProjects.size}`);
+if (profileFeedProjectCount !== null) console.log(`  rendered profile feed projects: ${profileFeedProjectCount}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
 console.log(`  proof records: ${Object.keys(proofRecords).length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
