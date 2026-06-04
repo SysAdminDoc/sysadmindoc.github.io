@@ -33,7 +33,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
-- Live-app card previews use Sharp-generated 640x400 thumbnails under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts.
+- Live-app card previews render Sharp-generated 640x400 thumbnail inputs from `src/assets/screenshots/thumbs/` through Astro `<Picture>` with AVIF/WebP srcsets and JPEG fallback. Stable public copies remain under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts and public JSON URLs.
 - `SEMANTIC_INDEX_DECISION.md` records the local semantic-indexing decision. User-facing search stays static through Pagefind; `npm run semantic:audit` is an offline advisory catalog-maintenance report.
 - `NOTES_FEED_POLICY.md` is the current decision record for the conditional `/til` or notes feed. No notes route or notes RSS should be added until a tracked, reviewed, public-safe source corpus exists.
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
@@ -67,16 +67,16 @@ The site must remain public-safe. It should not expose private repository names,
 Current verification baseline:
 
 - `npm run check` passed with 46 Astro files, 0 errors, 0 warnings, and 0 hints.
-- `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and 1200x630 PNG OG metadata checks.
-- `npm run build` passed, including profile feed sync, image pipeline auditing, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
+- `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
+- `npm run build` passed, including profile feed sync, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
 - `npm test` passed with 12 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
 - Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
-- In-app browser verification after the critical-CSS split passed at 1280x720 and 390x900: async `global.css` swapped to `media="all"`, 177 catalog cards rendered, theme toggle worked, command palette opened, and console warnings/errors were empty.
+- In-app browser verification after the live-card thumbnail migration passed at 1280x720 and 390x844: 22 live cards rendered with `<picture>`, 22 AVIF/WebP source sets were present, the browser selected AVIF assets, no stale `/screenshots/thumbs/` card references remained in the fresh preview DOM, mobile had no horizontal overflow, and console warnings/errors were empty.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
-- `npm run images:audit` passed; 22 screenshot masters and 22 thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
+- `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
 - `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
 - `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
@@ -135,11 +135,11 @@ Catalog reconciliation from 2026-05-17 live GitHub scan:
 
 `scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
 
-`scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes full masters to `public/screenshots/` plus card thumbnails to `public/screenshots/thumbs/`. `npm run screenshots:thumbs` regenerates thumbnails from existing masters. Screenshots are tracked, and `npm run assets:audit` now fails when a screenshot or thumbnail is missing for a live app or when either artifact is no longer tied to a live app slug.
+`scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes full masters to `public/screenshots/`, stable public card thumbnails to `public/screenshots/thumbs/`, and Astro `<Picture>` thumbnail inputs to `src/assets/screenshots/thumbs/`. `npm run screenshots:thumbs` regenerates both thumbnail copies from existing masters. Screenshots are tracked, and `npm run assets:audit` now fails when a screenshot, public thumbnail, or Astro thumbnail input is missing for a live app or when any artifact is no longer tied to a live app slug.
 
 Historical non-sensitive screenshots can be documented under `archive/screenshots/`; sensitive, private, medical-imaging, or internal screenshots should not be retained there.
 
-Live-app thumbnails are derived assets. Run `npm run screenshots:thumbs` after changing screenshot masters, then run `npm run images:audit` and `npm run assets:audit` before committing.
+Live-app thumbnails are derived assets. Run `npm run screenshots:thumbs` after changing screenshot masters, then run `npm run images:audit` and `npm run assets:audit` before committing. The public and `src/assets/` thumbnail copies must stay byte-identical.
 
 `scripts/audit-semantic-index.mjs` builds a deterministic local token-similarity report from public project metadata and ignored cached README text. It is advisory only and is meant for category drift, duplicate positioning, and related-project review. It must not become hosted inference, visitor tracking, or a committed private text/embedding dump without a new reviewed decision.
 
@@ -177,9 +177,9 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority work after the T27 Lighthouse CI pass:
+Highest-priority work after the T28 live-card image migration:
 
-1. `T28` -- Incrementally migrate `public/` raster art to `astro:assets` / `<Picture>` with AVIF/srcset output and CLS/visual checks.
+1. `T36` -- Build-time project ranking signal.
 2. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
 3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
 
@@ -215,3 +215,4 @@ Highest-priority work after the T27 Lighthouse CI pass:
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
+- 2026-06-04: Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output. The build now emits AVIF/WebP srcsets from tracked `src/assets/screenshots/thumbs/` inputs while preserving stable public screenshot and thumbnail URLs.

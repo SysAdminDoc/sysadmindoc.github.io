@@ -20,7 +20,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Catalog discovery views** — URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
-- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails and OG PNG metadata validation
+- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
@@ -35,8 +35,8 @@ npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
 npm run data:validate # validate project data, screenshots, policy, and command palette coverage
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
-npm run images:audit  # validate screenshot masters, thumbnails, and OG PNG metadata
-npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives
+npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
+npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
@@ -64,7 +64,7 @@ Use a normal local clone or worktree path, such as `C:\Users\--\repos\sysadmindo
 
 Rendered project entries are adapted from the public SysAdminDoc profile feed into **[src/data/portfolio.ts](src/data/portfolio.ts)**. The ignored cache lives at `src/data/_profile-projects.json` and is refreshed by `npm run profile-feed:sync`, which runs automatically before `npm run check` and `npm run build`.
 
-The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg` and a thumbnail in `public/screenshots/thumbs/<slug>.jpg`.
+The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, and a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`.
 
 - Featured: surface in the hero signature reel, command palette, and feeds
 - Live Apps: for GitHub Pages demos
@@ -103,6 +103,8 @@ The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml
 
 ```
 src/
+├── assets/
+│   └── screenshots/thumbs/ # Astro <Picture> inputs for live-app card thumbnails
 ├── components/      # cards, tag cloud, dividers, greatest-hits modules
 ├── data/
 │   ├── types.ts     # TypeScript schemas
@@ -130,7 +132,7 @@ src/
 public/
 ├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
 ├── .well-known/security.txt
-├── screenshots/      # captured live-app masters plus thumbs/
+├── screenshots/      # public captured live-app masters plus stable thumbs/
 └── scripts/          # shared.js, theme.js, main.js, cmdk.js
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
