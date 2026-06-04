@@ -67,6 +67,45 @@ html[data-theme="light"]{
   --shadow-strong:0 28px 66px rgba(29,42,70,.16);
   color-scheme:light;
 }
+@media(prefers-contrast:more){
+  :root{
+    --glass-border:rgba(255,255,255,.24);
+    --brdb:rgba(124,184,255,.46);
+    --t2:#dfe8f5;
+    --t3:#c5d2e2;
+    --border-soft:rgba(255,255,255,.24);
+    --border-strong:rgba(124,184,255,.42);
+    --focus-ring:0 0 0 4px rgba(74,222,128,.42);
+  }
+  html[data-theme="light"]{
+    --glass-border:rgba(29,42,70,.24);
+    --brdb:rgba(53,107,191,.42);
+    --t2:#26364f;
+    --t3:#43536b;
+    --border-soft:rgba(29,42,70,.28);
+    --border-strong:rgba(53,107,191,.42);
+    --focus-ring:0 0 0 4px rgba(16,115,64,.28);
+  }
+  #nav,
+  .ng,
+  .theme-toggle,
+  .nav-search,
+  .btn,
+  .hero-proof-link,
+  .hero-pulse .pulse-item,
+  .hero-stage,
+  .term{
+    border-color:var(--border-strong);
+  }
+  .hr,
+  .hd,
+  .sd,
+  .hsl,
+  .pulse-copy,
+  .pulse-source{
+    color:var(--t2);
+  }
+}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;background:var(--bg)}
 body{
@@ -146,6 +185,11 @@ html[data-theme="light"] #nav{
   background:rgba(248,244,234,.76);
   border-bottom-color:var(--border-soft);
   box-shadow:0 8px 28px rgba(29,42,70,.1);
+}
+@media(prefers-contrast:more){
+  #nav{
+    border-bottom-color:var(--border-strong);
+  }
 }
 .scroll-progress{
   position:fixed;
