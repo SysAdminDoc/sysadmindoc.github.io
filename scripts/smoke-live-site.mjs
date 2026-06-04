@@ -205,6 +205,17 @@ async function checkLiveArtifacts(baseUrl, expected) {
   if (!/<rss\b/i.test(rssXml.body)) throw new Error('/rss.xml did not return an RSS document.');
   summary.push('project RSS: 200');
 
+  const atomXml = await fetchText(baseUrl, '/atom.xml', 'application/atom+xml,application/xml,text/xml,*/*');
+  requireHeader(atomXml, '/atom.xml', { contentTypes: ['application/atom+xml', 'application/xml', 'text/xml'], cacheControl: 'max-age=600' });
+  if (!/<feed\b[^>]*\bxmlns=["']http:\/\/www\.w3\.org\/2005\/Atom["']/i.test(atomXml.body)) {
+    throw new Error('/atom.xml did not return an Atom document.');
+  }
+  const atomEntries = atomXml.body.match(/<entry\b/gi)?.length ?? 0;
+  if (atomEntries !== expected.feedItems) {
+    throw new Error(`/atom.xml entry count drifted: expected ${expected.feedItems}, got ${atomEntries}.`);
+  }
+  summary.push(`project Atom entries: ${atomEntries}`);
+
   const llms = await fetchText(baseUrl, '/llms.txt', 'text/plain,*/*');
   requireHeader(llms, '/llms.txt', { contentTypes: ['text/plain'], cacheControl: 'max-age=600' });
   if (!llms.body.trimStart().startsWith('# ')) throw new Error('/llms.txt did not return the expected markdown H1.');

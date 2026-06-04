@@ -12,6 +12,7 @@ const generatedImageCacheControl = 'public, max-age=86400';
 const discoveryLinks = [
   { href: '/rss.xml', type: 'application/rss+xml', label: 'recent projects RSS' },
   { href: '/releases.xml', type: 'application/rss+xml', label: 'releases RSS' },
+  { href: '/atom.xml', type: 'application/atom+xml', label: 'projects Atom feed' },
   { href: '/feed.json', type: 'application/feed+json', label: 'JSON Feed' },
   { href: '/projects.json', type: 'application/json', label: 'project index JSON' },
   { href: '/releases.json', type: 'application/json', label: 'release index JSON' },
@@ -21,6 +22,7 @@ const endpointHeaderSources = [
   { route: '/releases.json', file: 'src/pages/releases.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/resume.json', file: 'src/pages/resume.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/feed.json', file: 'src/pages/feed.json.ts', helper: 'endpointHeaders', contentType: 'application/feed+json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/atom.xml', file: 'src/pages/atom.xml.ts', helper: 'endpointHeaders', contentType: 'application/atom+xml; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/releases.xml', file: 'src/pages/releases.xml.ts', helper: 'endpointHeaders', contentType: 'application/rss+xml; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/llms.txt', file: 'src/pages/llms.txt.ts', helper: 'endpointHeaders', contentType: 'text/plain; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/cmdk-data.js', file: 'src/pages/cmdk-data.js.ts', helper: 'endpointHeaders', contentType: 'text/javascript; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
