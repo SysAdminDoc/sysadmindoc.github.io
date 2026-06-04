@@ -30,6 +30,7 @@
     "audit:perf": "node scripts/audit-performance.mjs",
     "lhci:audit": "node scripts/run-lhci.mjs",
     "a11y:audit": "node scripts/audit-a11y.mjs",
+    "forced-colors:audit": "node scripts/audit-forced-colors.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
     "search:audit": "node scripts/audit-search-index.mjs",

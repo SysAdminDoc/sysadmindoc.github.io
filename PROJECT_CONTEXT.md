@@ -46,9 +46,9 @@ The site must remain public-safe. It should not expose private repository names,
 - Project data validation is handled by `scripts/validate-project-data.mjs` and shared category labels live in `src/data/categories.ts`.
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
-- A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
+- A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, forced-colors data-visualization coverage, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
 - `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
-- The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, emits dedicated endpoint, JSON Feed, Pagefind search, rendered JSON-LD, and performance/bfcache audit logs, and publishes route-level performance rows from `.tmp/performance-audit-ci.json`. Generated-data, local validation, or build-output failures feed the hard fail gate; performance remains advisory while still surfacing in the job summary and quality-gate issue body. The first CI performance baseline uses `--lcp 60000 --event 500`: LCP is recorded but budgeted by LHCI, while this custom audit enforces bfcache, overflow, CLS, event, console, and network regressions.
+- The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, emits dedicated endpoint, JSON Feed, Pagefind search, rendered JSON-LD, forced-colors data-visualization, and performance/bfcache audit logs, and publishes route-level performance rows from `.tmp/performance-audit-ci.json`. Generated-data, local validation, or build-output failures feed the hard fail gate; performance remains advisory while still surfacing in the job summary and quality-gate issue body. The first CI performance baseline uses `--lcp 60000 --event 500`: LCP is recorded but budgeted by LHCI, while this custom audit enforces bfcache, overflow, CLS, event, console, and network regressions.
 - The GitHub Pages deploy workflow captures the built artifact contract after `build:ci`, publishes the Pages artifact, then runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
 ## Key Commands
@@ -62,6 +62,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Audit generated search index: `npm run search:audit` after `npm run search:index` or `npm run build`
 - Audit built public endpoints: `npm run endpoints:audit` after `npm run build`
 - Audit built JSON Feed: `npm run feed:audit` after `npm run build`
+- Audit forced-colors data visualizations: `npm run forced-colors:audit` after `npm run build`
 - Smoke live Pages artifacts: `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
 - Summarize a performance audit JSON report: `node scripts/summarize-performance-audit.mjs .tmp/performance-audit-ci.json`
@@ -93,6 +94,7 @@ Current verification baseline:
 - Deploy workflow run `26964196179` passed on commit `7a71c5e`, including the post-deploy `Smoke deployed artifacts` step.
 - `npm run search:audit` passed with 194 HTML pages scanned, 193 `data-pagefind-body` pages indexed, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered public project results checked. Category counts were Android 19, Desktop 19, Extension 23, Guide 4, Media 6, Other 5, PowerShell 30, Python 41, Security 3, and Web 27.
 - `npm run schema:audit` passed with 194 HTML pages scanned, 378 JSON-LD blocks parsed, 757 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 3 representative routes checked.
+- `npm run forced-colors:audit` passed on the current build with emulated `forced-colors: active`: desktop and mobile checks painted 364/364 heatmap cells, 8/8 language-donut segments, and 8 skill rings with visible text/boundary coverage.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
@@ -211,10 +213,10 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T136 performance workflow pass:
+Highest-priority workflow/research work after the T134 forced-colors audit pass:
 
-1. `T134` -- Add a forced-colors browser audit for SVG data-visualization surfaces.
-2. `T120` -- Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
+1. `T120` -- Publish Lighthouse CI warning summaries in PR/job output, not only artifacts.
+2. `T135` -- Add a CSP preflight audit before removing `script-src 'unsafe-inline'`.
 3. `T41` -- README code syntax highlighting.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.

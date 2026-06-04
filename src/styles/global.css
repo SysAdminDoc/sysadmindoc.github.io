@@ -2643,6 +2643,50 @@ html[data-theme="light"] .fb{
   textarea{
     border:1px solid ButtonText;
   }
+  .heatmap-svg .hm-month,
+  .heatmap-svg .hm-day{
+    fill:CanvasText;
+  }
+  .heatmap-svg rect{
+    stroke:CanvasText;
+    stroke-width:1px;
+  }
+  .heatmap-svg .hm-empty,
+  .heatmap-svg .hm-0{
+    fill:Canvas;
+    stroke:GrayText;
+  }
+  .heatmap-svg .hm-1,
+  .heatmap-svg .hm-2,
+  .heatmap-svg .hm-3,
+  .heatmap-svg .hm-4{
+    fill:Highlight;
+    stroke:CanvasText;
+  }
+  .hm-swatch{
+    border:1px solid CanvasText;
+    background:Canvas!important;
+  }
+  .hm-swatch.hm-1,
+  .hm-swatch.hm-2,
+  .hm-swatch.hm-3,
+  .hm-swatch.hm-4,
+  .lang-legend-dot{
+    background:Highlight!important;
+  }
+  .lang-legend-dot{
+    border:1px solid CanvasText;
+  }
+  .lang-donut circle,
+  .sk-ring .ring-fg{
+    stroke:Highlight!important;
+  }
+  .sk-ring .ring-bg{
+    stroke:GrayText!important;
+  }
+  .sk-ring-label{
+    color:CanvasText!important;
+  }
 }
 @media(max-width:1100px){
   .page-shell{
