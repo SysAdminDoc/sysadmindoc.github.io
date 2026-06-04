@@ -21,7 +21,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
-- Global styling in `src/styles/global.css`.
+- First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with a `noscript` fallback.
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
@@ -69,7 +69,8 @@ Current verification baseline:
 - `npm run build` passed, including profile feed sync, image pipeline auditing, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
 - `npm test` passed with 12 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
-- `npm run audit:perf` ran against local preview for `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`; all samples restored from bfcache and had no horizontal overflow or console/network errors. Search, archive, project, and desktop homepage samples stayed under LCP/CLS/lab event-timing thresholds; mobile homepage LCP is the remaining warning.
+- `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
+- In-app browser verification after the critical-CSS split passed at 1280x720 and 390x900: async `global.css` swapped to `media="all"`, 177 catalog cards rendered, theme toggle worked, command palette opened, and console warnings/errors were empty.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters and 22 thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
@@ -206,3 +207,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
+- 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.

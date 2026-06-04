@@ -44,9 +44,9 @@ R1 (InteriorNav anchor), R2 (/now update), R3 (stats refresh), R4 (OG cpp), R5 (
 
 ## Standing Issues (carried forward)
 
-**Mobile homepage LCP warning (3156ms vs 2500ms threshold)**
+**Mobile homepage LCP warning**
 - Priority: P2
-- Status: Partially addressed by font self-hosting (R42) and fetchpriority on hero avatar. Still documented in PERFORMANCE_AUDIT.md as next performance follow-up.
+- Status: Resolved in the T16/T102 critical-CSS pass. `PERFORMANCE_AUDIT.md` now records the 2026-06-04 v0.18.3 baseline with mobile homepage LCP at 668ms.
 
 **NOTES_FEED_POLICY.md activation criteria (7 gates)**
 - Priority: Parked
