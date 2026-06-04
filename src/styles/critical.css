@@ -130,7 +130,7 @@ button{font:inherit}
   outline:2px solid var(--t1);
   outline-offset:3px;
 }
-nav{
+#nav{
   position:fixed;
   top:0;
   left:0;
@@ -142,7 +142,7 @@ nav{
   border-bottom:1px solid rgba(255,255,255,.07);
   box-shadow:0 16px 46px rgba(0,0,0,.2);
 }
-html[data-theme="light"] nav{
+html[data-theme="light"] #nav{
   background:rgba(248,244,234,.76);
   border-bottom-color:var(--border-soft);
   box-shadow:0 8px 28px rgba(29,42,70,.1);
