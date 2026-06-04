@@ -152,7 +152,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T106** P2 — axe-core/Playwright a11y job + Playwright visual-regression baselines for future visual-regression-sensitive CSS/image changes.
 - [ ] **T107** P2 — README TOC + reading-time on project pages (heading IDs already generated, orphaned) (NF-A4).
 - [ ] **T108** P2 — homepage SectionJumpNav (reuse existing component + cmdkSections) (NF-A5).
-- [ ] **T109** P2 — iOS PWA install path (NF-A6) + WebSite SearchAction (NF-A7) + prefers-contrast block.
+- [ ] **T109** P2 — iOS PWA install path (NF-A6) + prefers-contrast block; drop/deprioritize WebSite SearchAction (NF-A7) unless there is a non-Google consumer, because Google removed the sitelinks search box feature in November 2024.
 - [ ] **T110** P2 — language-donut population parity (build vs JS flicker) (IMP-2) + skill rings vs real distribution (IMP-3).
 - [ ] **T111** P2 — root-cause Astro 6 </html> emission (compressHTML bisect); convert fix-html-structure to assert-or-noop on a fixed Astro version.
 - [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; CSP theme-init hash (partial T95); catalog DOM-size budget gate.
@@ -209,10 +209,10 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 - [ ] **T119** 🤖 P2 — Add a post-deploy live artifact smoke check.
   - Why: The v0.18.3 deploy failure was caught before publish, but release confidence still depends on manual checks that live `sw.js` and `projects.json` reflect the just-built source after Pages deployment.
-  - Evidence: `.github/workflows/deploy.yml:65-74` ends after `actions/deploy-pages`; this research cycle manually verified `https://sysadmindoc.github.io/sw.js` changed to `portfolio-v0.18.3` and live `/projects.json` became profile-feed backed with 177 projects after T113/T114 landed; GitHub's Pages deploy action exposes the deployed `page_url` for follow-up checks.
+  - Evidence: `.github/workflows/deploy.yml:65-74` ends after `actions/deploy-pages`; manual checks verified `https://sysadmindoc.github.io/sw.js` changed to `portfolio-v0.18.3` and live `/projects.json` became profile-feed backed with 177 projects after T113/T114 landed; Cycle 5 live probes also confirmed `/releases.json` has 60 releases, `/feed.json` has 177 JSON Feed items, and `/sitemap-index.xml` returns 200 after deploy run `26956526605`; GitHub's Pages deploy action exposes the deployed `page_url` for follow-up checks.
   - Touches: `.github/workflows/deploy.yml`; optionally `scripts/smoke-live-site.mjs`.
-  - Acceptance: A post-deploy job fetches the deployed Pages URL and asserts the service worker cache version matches `package.json`, `/projects.json` has `source.profileFeedUrl` when profile-feed mode is active, and project count is non-zero/within the expected profile-feed range.
-  - Verify: `gh run view <deploy-run> --repo SysAdminDoc/sysadmindoc.github.io --json conclusion,url`; inspect the post-deploy smoke step logs for SW/version/projects assertions.
+  - Acceptance: A post-deploy job fetches the deployed Pages URL and asserts the service worker cache version matches `package.json`, `/projects.json` has `source.profileFeedUrl` and a non-zero/expected project count, `/releases.json` has `schemaVersion` and release count, `/feed.json` has JSON Feed 1.1 shape and item count, and `/sitemap-index.xml` returns 200.
+  - Verify: `gh run view <deploy-run> --repo SysAdminDoc/sysadmindoc.github.io --json conclusion,url`; inspect the post-deploy smoke step logs for SW/version/projects/releases/feed/sitemap assertions.
 
 ---
 
@@ -244,12 +244,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 4 — 2026-06-04) — see [docs/research-2026-06-04-cycle-4.md](docs/research-2026-06-04-cycle-4.md)
 
-- [ ] **T123** 🤖 P1 — Add a generated ranking report and drift guard for the `Recommended` catalog order.
+- [x] **T123** 🤖 P1 — Add a generated ranking report and drift guard for the `Recommended` catalog order.
   - Why: The homepage default order and project-page related links now depend on a build-time ranking algorithm whose behavior is otherwise visible only by inspecting rendered card order.
   - Evidence: `src/data/project-ranking.mjs` blends stars, 180-day freshness, and release downloads; `test/project-ranking.test.mjs` covers small fixtures only; `scripts/summarize-generated-data.mjs` does not report ranking distribution over the generated 177-project catalog.
   - Touches: `scripts/summarize-generated-data.mjs` or a small `ranking:audit` script; possibly `package.json` and `PROJECT_CONTEXT.md` for the generated-data contract.
+  - Done: `scripts/summarize-generated-data.mjs` now imports the shared project-ranking helper, computes rankings over profile-feed projects with generated stars/meta/releases, writes `summary.json.ranking`, emits a `Recommended Ranking` markdown section with top rows and score parts, and adds integrity checks for normalized weights, portfolio row coverage, usable identities, finite scores/parts, and unique contiguous ranks.
   - Acceptance: The generated data summary or dedicated audit emits top-N rank rows with repo, rank, score parts, stars, days since update, and release downloads; it asserts normalized weights, finite scores, unique ranks, and usable names/repos without pinning a brittle full-order snapshot.
-  - Verify: `npm run profile-feed:sync && npm run fetch-stars && npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` reports finite ranking data and top-N explanation.
+  - Verify: `npm run profile-feed:sync`, `npm run fetch-stars`, and `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale` passed with status `fresh`, 177 ranked projects, top 12 ranking rows, and all ranking checks green. `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` also passed.
 
 - [ ] **T124** 🤖 P2 — Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
   - Why: `Recommended` is now the default sort, but the UI does not explain why a specific card is high in the list for keyboard, screen-reader, or trust-oriented browsing.
@@ -264,6 +265,24 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: `package.json`, a new or existing script under `scripts/`, and possibly `PROJECT_CONTEXT.md`.
   - Acceptance: A post-build `search:audit` proves the Category facet exists, has expected category labels, and faceted empty-term search returns public project pages; counts are compared against rendered/catalog category data with only intentional tolerance.
   - Verify: `npm run build && npm run search:audit`.
+
+---
+
+## 🔬 Researcher Queue (Cycle 5 — 2026-06-04) — see [docs/research-2026-06-04-cycle-5.md](docs/research-2026-06-04-cycle-5.md)
+
+- [ ] **T126** 🤖 P2 — Add a rendered JSON-LD audit before expanding T98/T99.
+  - Why: Base, language, and project pages already emit manual JSON-LD, and T98/T99 will expand that surface; no current validator parses rendered graph output or catches malformed JSON, missing stable `@id`s, or route/type coverage drift.
+  - Evidence: `src/layouts/Base.astro` emits WebSite/Person/ProfilePage JSON-LD; `src/pages/lang/[slug].astro` emits CollectionPage/ItemList/BreadcrumbList; `src/pages/projects/[slug].astro` emits SoftwareSourceCode/BreadcrumbList; existing source/data validators do not inspect built `application/ld+json` blocks.
+  - Touches: New `schema:audit` script or equivalent build-output validator; possibly `package.json`, `PROJECT_CONTEXT.md`, and CI wiring.
+  - Acceptance: Built HTML JSON-LD blocks parse successfully, use schema.org context, and representative homepage/language/project routes expose expected graph types and stable anchors without overfitting every rich-result rule.
+  - Verify: `npm run build && npm run schema:audit`.
+
+- [ ] **T127** 🤖 P3 — Add JSON Feed icon/favicon metadata and feed validation.
+  - Why: `/feed.json` is advertised and live, but omits optional JSON Feed publisher metadata that helps feed readers avoid scraping the homepage, and no explicit feed validator protects required top-level/item fields.
+  - Evidence: Cycle 5 live checks showed `/feed.json` returns JSON Feed 1.1 with 177 items, but `src/pages/feed.json.ts` does not emit `icon` or `favicon`.
+  - Touches: `src/pages/feed.json.ts`; optionally a `feed:audit` script or T119 smoke assertions.
+  - Acceptance: JSON Feed includes absolute `icon` and `favicon` URLs, and validation checks `version`, `title`, `home_page_url`, `feed_url`, non-empty `items`, item `id`, item `url`, and one content field without requiring optional `date_published`.
+  - Verify: `npm run build`; inspect `dist/feed.json` or run the feed audit against it.
 
 ---
 
