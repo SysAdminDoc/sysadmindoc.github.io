@@ -6,6 +6,7 @@
 // - src/data/_meta.json
 // - src/data/_releases.json
 // - src/data/_readmes.json
+// - src/data/_readme-refresh.json
 //
 // Auth: reads GITHUB_TOKEN from env. Repo and release refreshes can work without it,
 // but full README refreshes are intentionally skipped unless a token is present.
@@ -32,6 +33,7 @@ const statsPath = join(dataDir, '_stats.json');
 const metaPath = join(dataDir, '_meta.json');
 const releasesPath = join(dataDir, '_releases.json');
 const readmesPath = join(dataDir, '_readmes.json');
+const readmeRefreshPath = join(dataDir, '_readme-refresh.json');
 
 function readJson(path, fallback) {
   try {
@@ -288,9 +290,52 @@ async function main() {
   const readmes = Object.fromEntries(
     Object.entries(existingReadmes).filter(([name, value]) => repoNames.has(name) && typeof value === 'string'),
   );
+  const readmeRefreshedRepos = new Set();
+
+  function writeReadmeRefreshSummary({
+    source,
+    attempted,
+    refreshed,
+    misses,
+    rateLimited,
+    failureSamples = [],
+    skippedReason = null,
+    trimmed = 0,
+  }) {
+    const cacheEntries = Object.keys(readmes).length;
+    const preserved = Object.keys(readmes).filter((name) => !readmeRefreshedRepos.has(name)).length;
+    const unattempted = Math.max(0, publicRepos.length - attempted);
+    const missing = Math.max(0, publicRepos.length - cacheEntries);
+    writeJson(readmeRefreshPath, {
+      schema: 'sysadmindoc.readme-refresh.v1',
+      generatedAt: new Date().toISOString(),
+      source,
+      tokenPresent: Boolean(token),
+      totalPublicRepos: publicRepos.length,
+      attempted,
+      refreshed,
+      misses,
+      preserved,
+      unattempted,
+      missing,
+      rateLimited,
+      failureSamples,
+      skippedReason,
+      cacheEntries,
+      trimmed,
+    });
+  }
 
   if (!token) {
     writeJson(readmesPath, readmes, false);
+    writeReadmeRefreshSummary({
+      source: 'preserved-without-token',
+      attempted: 0,
+      refreshed: 0,
+      misses: 0,
+      rateLimited: false,
+      skippedReason: 'missing-token',
+    });
     console.log(`Wrote ${readmesPath}: preserved ${Object.keys(readmes).length} cached READMEs (skipped refresh without GITHUB_TOKEN).`);
     return;
   }
@@ -298,6 +343,7 @@ async function main() {
   let readmeOk = 0;
   let readmeMiss = 0;
   let readmeRateLimited = false;
+  let readmeTrimmed = 0;
   const readmeFailures = [];
   const CONCURRENCY = 8;
   let cursor = 0;
@@ -314,7 +360,10 @@ async function main() {
           { headers: { ...headers, Accept: 'application/vnd.github.raw' } },
           `README for ${repo.name}`,
         );
-        readmes[repo.name] = markdown.length > 120_000 ? `${markdown.slice(0, 120_000)}\n\n…` : markdown;
+        const trimmed = markdown.length > 120_000;
+        readmes[repo.name] = trimmed ? `${markdown.slice(0, 120_000)}\n\n…` : markdown;
+        if (trimmed) readmeTrimmed += 1;
+        readmeRefreshedRepos.add(repo.name);
         readmeOk += 1;
       } catch (error) {
         readmeMiss += 1;
@@ -330,6 +379,15 @@ async function main() {
 
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
   writeJson(readmesPath, readmes, false);
+  writeReadmeRefreshSummary({
+    source: 'github-api',
+    attempted: readmeOk + readmeMiss,
+    refreshed: readmeOk,
+    misses: readmeMiss,
+    rateLimited: readmeRateLimited,
+    failureSamples: readmeFailures,
+    trimmed: readmeTrimmed,
+  });
   const readmeSummary = readmeRateLimited
     ? `rate limit hit after ${readmeOk} refreshes; preserved cache for the remaining repos`
     : `${readmeMiss} misses, cache preserved for prior successes`;

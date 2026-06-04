@@ -30,7 +30,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
-- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` now reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, and unique contiguous ranks.
+- The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
@@ -63,7 +63,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
 - Audit first-viewport critical/full CSS selector parity: `npm run css:audit`
-- Summarize generated GitHub metadata, profile-feed cache health, and Recommended ranking health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
+- Summarize generated GitHub metadata, README refresh quality, profile-feed cache health, and Recommended ranking health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
 
@@ -87,6 +87,7 @@ Current verification baseline:
 - `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green. Manual workflow_dispatch run `26956410354` also passed on `ab7cb90` and uploaded the profile-feed summary fields/checks.
 - Dependabot PR triage completed on 2026-06-04: GitHub Actions group merged as `78bbef5`, `marked` 18.0.4 merged as `3ab0f4a` after rebasing the stale PR #9 branch, Astro 6.4.4 was regenerated on current `main` and pushed as `460e04c` after PR #12 conflicted, PR #12 was closed as superseded, and no open Dependabot PRs remain.
 - `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale` passed on 2026-06-04 with 177 ranked projects, 12 top ranking explanation rows, normalized weights, finite scores/parts, usable repo/name identities, and unique contiguous ranks.
+- `npm run data:summary -- --out .tmp/data-refresh-t118-token --max-age-hours 36 --fail-on-stale` passed on 2026-06-04 after a token-backed `npm run fetch-stars`: README Refresh status `refreshed`, attempted 176, refreshed 175, misses 1, cache coverage 99.4%, miss rate 0.6%, rate limited false, and all README refresh checks passing. A no-token preservation run also passed and reported status `skipped`, 167 preserved entries, 94.9% cache coverage, and missing-token reason.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -138,11 +139,11 @@ Catalog reconciliation from 2026-05-17 live GitHub scan:
 
 ## Generated Data and Automation
 
-`scripts/fetch-stars.mjs` fetches public GitHub repo metadata, releases, README excerpts, and star counts. It preserves existing generated caches when unauthenticated rate limits would otherwise wipe data. Full README refreshes require a token.
+`scripts/fetch-stars.mjs` fetches public GitHub repo metadata, releases, README excerpts, and star counts. It preserves existing generated caches when unauthenticated rate limits would otherwise wipe data. Full README refreshes require a token. Each run writes ignored `_readme-refresh.json` telemetry so skipped, rate-limited, partial, or high-miss README refreshes are visible without changing the existing `_readmes.json` repo-to-markdown cache consumed by project pages and semantic audit.
 
 `scripts/sync-profile-feed.mjs` fetches `https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json` into the ignored `src/data/_profile-projects.json` cache. If the fetch fails and a valid cache exists, it preserves the cache. If no cache exists, it writes an empty fallback cache so Astro can use local `projects.ts` data.
 
-`scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
+`scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The summary includes README refresh attempts, refreshed count, misses, preserved cache entries, unattempted repos, missing cache entries, coverage, miss rate, rate-limit status, skipped reason, and failure samples from `_readme-refresh.json`. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
 
 `scripts/capture-screenshots.mjs` captures live app screenshots with Playwright and writes full masters to `public/screenshots/`, stable public card thumbnails to `public/screenshots/thumbs/`, and Astro `<Picture>` thumbnail inputs to `src/assets/screenshots/thumbs/`. `npm run screenshots:thumbs` regenerates both thumbnail copies from existing masters. Screenshots are tracked, and `npm run assets:audit` now fails when a screenshot, public thumbnail, or Astro thumbnail input is missing for a live app or when any artifact is no longer tied to a live app slug.
 
@@ -186,11 +187,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T129 CSS parity audit:
+Highest-priority workflow/research work after the T118 README refresh summary pass:
 
-1. `T118` -- Add README-cache refresh quality signals to generated data summaries.
-2. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
-3. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
+1. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
+2. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
+3. `T125` -- Add a Pagefind facet/index contract audit after static search generation.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -235,3 +236,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
 - 2026-06-04: Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output. The build now emits AVIF/WebP srcsets from tracked `src/assets/screenshots/thumbs/` inputs while preserving stable public screenshot and thumbnail URLs.
 - 2026-06-04: Added first-viewport CSS parity auditing. `npm run css:audit` now guards the shared nav/hero/proof/stage selectors and selected mobile overrides across `critical.css` and `global.css`, and the audit is part of both `npm run check` and `npm run build`.
+- 2026-06-04: Added README refresh quality telemetry to generated-data health. `fetch-stars` now writes `_readme-refresh.json`, and `data:summary` reports/gates README refresh attempts, misses, preserved entries, cache coverage, miss rate, rate-limit state, skipped reason, and failure samples.
