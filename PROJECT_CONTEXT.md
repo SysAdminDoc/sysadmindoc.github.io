@@ -28,7 +28,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/timeline/` is generated from ignored GitHub release and metadata caches plus tracked changelog entries, then filtered client-side by year, platform, category, and language.
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
-- `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
+- `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
@@ -67,14 +67,15 @@ The site must remain public-safe. It should not expose private repository names,
 
 Current verification baseline:
 
-- `npm run check` passed with 46 Astro files, 0 errors, 0 warnings, and 0 hints.
+- `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
 - `npm run build` passed, including profile feed sync, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
-- `npm test` passed with 12 node tests and an explicit repository-root guard.
+- `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
 - Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
 - In-app browser verification after the live-card thumbnail migration passed at 1280x720 and 390x844: 22 live cards rendered with `<picture>`, 22 AVIF/WebP source sets were present, the browser selected AVIF assets, no stale `/screenshots/thumbs/` card references remained in the fresh preview DOM, mobile had no horizontal overflow, and console warnings/errors were empty.
+- In-app browser verification after the Pagefind facet pass passed at 1280px and 390px: anchored `/search/?q=python` set the search shell to `rv vis`/opacity 1, rendered 10 Category checkboxes, selecting the Python facet reduced results from 71 to 42, console logs were empty, and the mobile layout had no horizontal overflow.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
@@ -178,11 +179,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority work after the T36 ranking pass:
+Highest-priority workflow/research work after the T35 search facet and T36 ranking passes:
 
 1. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
 2. `T122` -- Triage stale Dependabot PRs against current `main`.
 3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+
+Next open checklist item in document order is `T41` README code syntax highlighting.
 
 ## Definition of Done for Future Changes
 
@@ -214,6 +217,8 @@ Highest-priority work after the T36 ranking pass:
 - 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
 - 2026-06-04: Shipped build-time project ranking. Added `src/data/project-ranking.mjs` plus unit coverage, changed the homepage default catalog sort to `Recommended`, and reused the same score map for project-page related links.
+- 2026-06-04: Shipped visible Pagefind category facets. `/search/` now enables Pagefind faceted mode and renders the official Category filter pane beside full-text results while keeping the static index and no-JS fallbacks.
+- 2026-06-04: Fixed the shared `.rv` reveal contract for interior pages. `theme.js` now always observes reveal blocks and `.rv.vis` cancels the CSS scroll-timeline animation so Chrome support detection cannot leave content opacity-zero.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
