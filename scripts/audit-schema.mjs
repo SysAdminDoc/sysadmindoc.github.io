@@ -21,6 +21,18 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'SoftwareSourceCode', 'BreadcrumbList'],
     checks: checkProjectRoute,
   }],
+  ['/uses/', {
+    types: ['WebSite', 'Person', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/resume/', {
+    types: ['WebSite', 'Person', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/healthcare-it/', {
+    types: ['WebSite', 'Person', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
 ]);
 
 function fail(message) {
@@ -163,6 +175,19 @@ function checkProjectRoute(nodes, route) {
   requireContiguousListItems(breadcrumb.itemListElement, route, 'BreadcrumbList');
   const leaf = breadcrumb.itemListElement.at(-1);
   if (leaf?.item !== `${siteUrl}${route}`) fail(`${route} BreadcrumbList leaf item must match route`);
+}
+
+function checkReviewedInteriorRoute(nodes, route) {
+  requireBaseGraph(nodes, route);
+  const webPage = requireType(nodes, 'WebPage', route);
+  if (webPage['@id'] !== `${siteUrl}${route}#webpage`) fail(`${route} WebPage @id drifted`);
+  if (webPage.url !== `${siteUrl}${route}`) fail(`${route} WebPage url drifted`);
+  if (webPage.isPartOf?.['@id'] !== websiteId) fail(`${route} WebPage isPartOf must reference ${websiteId}`);
+  if (webPage.about?.['@id'] !== personId) fail(`${route} WebPage about must reference ${personId}`);
+  if (webPage.reviewedBy?.['@id'] !== personId) fail(`${route} WebPage reviewedBy must reference ${personId}`);
+  if (!webPage.dateModified || Number.isNaN(new Date(webPage.dateModified).getTime())) {
+    fail(`${route} WebPage dateModified is missing or not parseable`);
+  }
 }
 
 const htmlFiles = await collectHtmlFiles(distDir);

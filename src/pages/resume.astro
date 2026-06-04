@@ -2,16 +2,29 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { skills } from '../data/projects';
 import { careerRoles } from '../data/career';
 
+const title = 'Resume - Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
+const pageFreshness = pageFreshnessBySlug.resume;
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+});
 const cmdkSections = [
   { label: 'Overview', href: '#resume-header', desc: 'Name, title, location, and core skills.', badge: 'RESUME' },
   { label: 'Experience', href: '#resume-experience', desc: 'Career history with highlights and technology stacks.', badge: `${careerRoles.length} ROLES` },
 ];
 ---
-<Base title="Resume - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="resume" contextLabel="Resume" contextTone="blue" />
 
@@ -22,6 +35,7 @@ const cmdkSections = [
           <h1>Matt Parker</h1>
           <p class="resume-title-line">Senior Technical Support Manager</p>
           <p class="resume-location">Sarasota, FL</p>
+          <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
         </div>
         <div class="resume-actions no-print">
           <button type="button" class="btn bp" id="resumePrint" aria-label="Print this page">Print / Save PDF</button>

@@ -2410,6 +2410,31 @@ html[data-theme="light"] .fb{
 .page-shell .page-head .sd{
   max-width:64ch;
 }
+.page-updated{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:18px 0 0;
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.08em;
+  line-height:1.5;
+  text-transform:uppercase;
+}
+.page-updated span::after{
+  content:'/';
+  margin-left:8px;
+  color:var(--border-strong);
+}
+.page-updated time{
+  color:var(--t1);
+  font-weight:600;
+  letter-spacing:0;
+  text-transform:none;
+}
 .error-recovery{max-width:28rem;margin:2.5rem auto 0;display:flex;flex-direction:column;gap:.75rem;text-align:center}
 .page-stat-grid{
   display:grid;

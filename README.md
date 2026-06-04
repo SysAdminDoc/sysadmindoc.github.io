@@ -18,6 +18,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
+- **Interior freshness signals** — reviewed `/uses/`, `/resume/`, and `/healthcare-it/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
@@ -125,6 +126,7 @@ src/
 │   ├── categories.ts
 │   ├── endpoint-headers.ts # generated endpoint cache/content-type helpers
 │   ├── interior-og-pages.ts # generated social-card metadata for interior routes
+│   ├── page-freshness.ts # reviewed timestamps and WebPage schema helpers for interior routes
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
 │   ├── project-ranking.mjs # build-time catalog and related-project scoring
 │   ├── readme-rendering.mjs # sanitized README HTML + class-based Shiki code highlighting
