@@ -8,6 +8,7 @@ const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 const thumbsDir = path.join(screenshotsDir, 'thumbs');
+const astroThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
 const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
 const baseLayoutPath = path.join(root, 'src', 'layouts', 'Base.astro');
 const maxFullBytes = 350_000;
@@ -45,12 +46,15 @@ const liveSlugs = await collectLiveSlugs(projectsPath, fail);
 const liveSlugSet = new Set(liveSlugs);
 const fullFiles = await listJpegs(screenshotsDir);
 const thumbFiles = await listJpegs(thumbsDir);
+const astroThumbFiles = await listJpegs(astroThumbsDir);
 const fullSlugSet = new Set(fullFiles.map(fileSlug));
 const thumbSlugSet = new Set(thumbFiles.map(fileSlug));
+const astroThumbSlugSet = new Set(astroThumbFiles.map(fileSlug));
 
 for (const slug of liveSlugs) {
   if (!fullSlugSet.has(slug)) fail(`Missing full screenshot: public/screenshots/${slug}.jpg`);
   if (!thumbSlugSet.has(slug)) fail(`Missing thumbnail screenshot: public/screenshots/thumbs/${slug}.jpg`);
+  if (!astroThumbSlugSet.has(slug)) fail(`Missing Astro asset thumbnail: src/assets/screenshots/thumbs/${slug}.jpg`);
 }
 
 for (const slug of [...fullSlugSet].filter((slug) => !liveSlugSet.has(slug)).sort()) {
@@ -58,6 +62,9 @@ for (const slug of [...fullSlugSet].filter((slug) => !liveSlugSet.has(slug)).sor
 }
 for (const slug of [...thumbSlugSet].filter((slug) => !liveSlugSet.has(slug)).sort()) {
   fail(`Stale thumbnail is not tied to a live app: public/screenshots/thumbs/${slug}.jpg`);
+}
+for (const slug of [...astroThumbSlugSet].filter((slug) => !liveSlugSet.has(slug)).sort()) {
+  fail(`Stale Astro asset thumbnail is not tied to a live app: src/assets/screenshots/thumbs/${slug}.jpg`);
 }
 
 let fullTotal = 0;
@@ -68,6 +75,7 @@ let largestThumb = { slug: '', bytes: 0 };
 for (const slug of liveSlugs) {
   const fullPath = path.join(screenshotsDir, `${slug}.jpg`);
   const thumbPath = path.join(thumbsDir, `${slug}.jpg`);
+  const astroThumbPath = path.join(astroThumbsDir, `${slug}.jpg`);
 
   if (fullSlugSet.has(slug)) {
     const full = await inspectImage(fullPath);
@@ -85,6 +93,16 @@ for (const slug of liveSlugs) {
     if (thumb.bytes > largestThumb.bytes) largestThumb = { slug, bytes: thumb.bytes };
     if (thumb.bytes > maxThumbBytes) fail(`Thumbnail exceeds ${formatBytes(maxThumbBytes)}: public/screenshots/thumbs/${slug}.jpg (${formatBytes(thumb.bytes)})`);
     if (thumb.width !== 640 || thumb.height !== 400) fail(`Thumbnail must be 640x400: public/screenshots/thumbs/${slug}.jpg (${thumb.width}x${thumb.height})`);
+  }
+
+  if (astroThumbSlugSet.has(slug)) {
+    const astroThumb = await inspectImage(astroThumbPath);
+    if (astroThumb.bytes > maxThumbBytes) fail(`Astro asset thumbnail exceeds ${formatBytes(maxThumbBytes)}: src/assets/screenshots/thumbs/${slug}.jpg (${formatBytes(astroThumb.bytes)})`);
+    if (astroThumb.width !== 640 || astroThumb.height !== 400) fail(`Astro asset thumbnail must be 640x400: src/assets/screenshots/thumbs/${slug}.jpg (${astroThumb.width}x${astroThumb.height})`);
+    if (thumbSlugSet.has(slug)) {
+      const [publicThumb, assetThumb] = await Promise.all([fs.readFile(thumbPath), fs.readFile(astroThumbPath)]);
+      if (!publicThumb.equals(assetThumb)) fail(`Astro asset thumbnail differs from public thumbnail: src/assets/screenshots/thumbs/${slug}.jpg`);
+    }
   }
 }
 
@@ -110,6 +128,7 @@ console.log('Image pipeline audit');
 console.log(`  live apps checked: ${liveSlugs.length}`);
 console.log(`  full screenshot total: ${formatBytes(fullTotal)}`);
 console.log(`  thumbnail total: ${formatBytes(thumbTotal)}`);
+console.log(`  Astro asset thumbnails: ${astroThumbSlugSet.size}`);
 console.log(`  largest full: ${largestFull.slug} (${formatBytes(largestFull.bytes)})`);
 console.log(`  largest thumbnail: ${largestThumb.slug} (${formatBytes(largestThumb.bytes)})`);
 console.log('  OG endpoint: 1200x630 PNG via Satori + Resvg');
