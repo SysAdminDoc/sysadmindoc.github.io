@@ -64,7 +64,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T32** Terminal history + Tab completion (NF-16, S).
 - [x] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
-- [◑] **T35** Pagefind facets/metadata (NF-26, M) — faceted index shipped (Category filter + Type meta on project pages); visible filter UI deferred. Pagefind v1.5.2 documents `<pagefind-filter-pane>` plus faceted mode, so the next pass should browser-verify the official component before custom UI.
+- [x] **T35** Pagefind facets/metadata (NF-26, M) — `/search/` now runs Pagefind in faceted mode and renders the official `<pagefind-filter-pane>` with an open Category filter, preserving static Pagefind results and README excerpt search.
 - [x] **T36** Build-time project ranking signal (NF-13, M) — default catalog order now uses a deterministic build-time blend of stars, 180-day freshness decay, and release-download activity; project-page related links use the same rank map, with explicit star/name/recent sorts preserved.
 ### Data / scripts
 - [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
@@ -248,7 +248,6 @@ These survived the v0.18.0 drain because they need a judgment call I shouldn't m
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
 - **T41** README code syntax highlighting (Shiki) — build-time highlighter would emit inline `style`/CSS-var spans that the README `sanitize-html` allowlist strips; allowing `style` on README-derived content needs a security review. Dep + security-gated.
 - **T42** OG images for interior pages — satori template work whose visual output can't be verified headlessly; the `og/[slug].png.ts` scaffold can be generalized once someone can eyeball the cards.
-- **T35** Pagefind facets/metadata — **faceted index shipped** (Category filter + Type meta on project pages; verified 198 pages / 1 filter). Remaining: wire the visible filter pill into the custom `<pagefind-*>` modular-ui search page — needs a browser check of that component's filter API.
 - **T43** Last-updated timestamps on /uses, /resume, /healthcare-it — deferred: hardcoded dates go stale and become a maintenance burden / misleading freshness signal. /now already carries a real date. Revisit if a data-driven `lastReviewed` field is added.
 
 ## Parked / rejected (carry-forward — see ROADMAP.md "Rejected or Parked")

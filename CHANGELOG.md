@@ -16,9 +16,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added an advisory Lighthouse CI budget: `npm run lhci:audit` wraps a pinned transient LHCI CLI for CI/Linux, checks homepage and project-page category/metric/resource budgets as warnings, and the PR CI uploads filesystem reports.
 - Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output with AVIF/WebP srcsets and JPEG fallback from tracked `src/assets/screenshots/thumbs/` inputs, while preserving stable public screenshot/thumb URLs for project pages and JSON feeds.
 - Added a deterministic build-time catalog ranking signal that blends stars, 180-day freshness decay, and release-download activity. The homepage `Recommended` sort now uses that signal by default, and project detail related links use the same ranking map.
+- Added visible Pagefind Category facets on `/search/` by enabling faceted mode and rendering the official `<pagefind-filter-pane>` alongside full-text results.
+- Fixed the shared `.rv` reveal path so the JavaScript observer still marks interior-route sections visible on browsers that report CSS scroll-timeline support; `.rv.vis` now cancels the CSS animation to avoid conflicting reveal paths.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 - Verified the live-card image migration with a fresh local preview: 22 `<picture>` blocks, 22 AVIF/WebP source sets, AVIF selected by the browser, no stale `/screenshots/thumbs/` card references, no console warnings/errors, and no 390px horizontal overflow.
 - Verified the ranking pass with `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, direct built-HTML probes, and a Browser preview check that changed sort order to A-Z and restored the ranked `Recommended` order without console warnings or mobile overflow.
+- Verified the Pagefind facet pass with `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, built-HTML probes, a headless Chrome screenshot, and a Browser preview check: anchored `/search/?q=python` set the search shell to `rv vis`/opacity 1, rendered 10 Category checkboxes, selecting Python reduced results from 71 to 42, console logs stayed clean, and mobile width had no horizontal overflow at 390px.
 
 ## [v0.18.2] - 2026-06-04
 

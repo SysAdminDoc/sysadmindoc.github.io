@@ -177,14 +177,9 @@
     return;
   }
 
-  // When the browser supports CSS scroll-driven animations, the .rv reveal is
-  // handled in CSS (animation-timeline: view()). Skip the JS observer for .rv to
-  // avoid running both animations at once; keep it as the fallback elsewhere.
-  const cssScrollReveal = typeof window.CSS === 'object'
-    && typeof CSS.supports === 'function'
-    && CSS.supports('animation-timeline: view()');
-
-  if(revealItems.length && !cssScrollReveal){
+  // CSS scroll-driven animation remains a progressive enhancement, but the JS
+  // observer is still the durable visibility contract for interior routes.
+  if(revealItems.length){
     const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if(!entry.isIntersecting) return;

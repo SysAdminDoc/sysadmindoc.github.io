@@ -16,7 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
-- **Static full-text search** — Pagefind index over rendered project pages and README excerpts
+- **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with visible Category facets
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
@@ -71,7 +71,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 

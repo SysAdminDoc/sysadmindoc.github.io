@@ -4,7 +4,7 @@ import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 
 const cmdkSections = [
-  { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search across rendered portfolio pages and README excerpts.', badge: 'PAGEFIND' },
+  { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search with Category filtering across rendered portfolio pages and README excerpts.', badge: 'PAGEFIND' },
   { label: 'Fallbacks', href: '#search-fallbacks', desc: 'No-JS links into the catalog, timeline, release stream, and archive decisions.', badge: 'LINKS' },
 ];
 ---
@@ -31,9 +31,9 @@ const cmdkSections = [
           <div class="page-stat-copy">Pagefind indexes the built HTML after Astro and ships a static bundle with the site.</div>
         </div>
         <div class="page-stat">
-          <div class="page-stat-value">README</div>
+          <div class="page-stat-value">Category</div>
           <div class="page-stat-label">Content Indexed</div>
-          <div class="page-stat-copy">Project detail pages include sanitized README excerpts, so search can find terms beyond card descriptions.</div>
+          <div class="page-stat-copy">Project detail pages expose Category facets, so broad searches can be narrowed without leaving the static search page.</div>
         </div>
         <div class="page-stat">
           <div class="page-stat-value">Ctrl K</div>
@@ -44,10 +44,20 @@ const cmdkSections = [
 
       <div class="search-shell rv">
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
-          <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload></pagefind-config>
-          <pagefind-input placeholder="Search projects, README excerpts, releases, timeline entries..." autofocus></pagefind-input>
-          <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
-          <pagefind-results max-sub-results="4"></pagefind-results>
+          <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload faceted></pagefind-config>
+          <div class="search-input-row">
+            <pagefind-input placeholder="Search projects, README excerpts, releases, timeline entries..." autofocus></pagefind-input>
+          </div>
+          <div class="search-result-layout">
+            <aside class="search-filter-panel" aria-label="Search filters">
+              <div class="search-filter-kicker">Filter</div>
+              <pagefind-filter-pane open="category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
+            </aside>
+            <div class="search-results-panel">
+              <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
+              <pagefind-results max-sub-results="4"></pagefind-results>
+            </div>
+          </div>
           <pagefind-keyboard-hints></pagefind-keyboard-hints>
         </div>
         <p class="search-loading" id="pagefindLoading">Loading the static search index...</p>
@@ -126,8 +136,14 @@ const cmdkSections = [
   .search-shell{width:100%;min-width:0;max-width:100%;margin-top:28px;padding:22px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft);overflow:hidden}
   .search-loading{margin:14px 0 0;color:var(--t3);font-size:14px;line-height:1.6}
   .search-noscript{margin-top:18px}
-  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0;max-width:100%}
-  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-keyboard-hints{display:block;min-width:0;max-width:100%}
+  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:13px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
+  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane,.portfolio-pagefind pagefind-keyboard-hints{display:block;min-width:0;max-width:100%}
+  .search-input-row{min-width:0}
+  .search-result-layout{display:grid;grid-template-columns:minmax(180px,236px) minmax(0,1fr);gap:18px;align-items:start;min-width:0}
+  .search-filter-panel{display:grid;gap:8px;min-width:0}
+  .search-filter-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .search-results-panel{display:grid;gap:10px;min-width:0}
+  .portfolio-pagefind .pf-filter-pane{box-shadow:none}
   .portfolio-pagefind .pf-result-link{color:var(--t1);text-decoration:none}
   .portfolio-pagefind .pf-result-link:hover{color:var(--grn)}
   .portfolio-pagefind .pf-result-card{box-shadow:none}
@@ -144,6 +160,7 @@ const cmdkSections = [
   @media(max-width:980px){.search-fallback-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:640px){
     .search-shell{padding:16px}
+    .search-result-layout{grid-template-columns:1fr}
     .search-section-head{align-items:start;flex-direction:column}
     .search-fallback-grid{grid-template-columns:1fr}
   }
