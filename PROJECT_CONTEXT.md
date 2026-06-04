@@ -40,6 +40,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
 - A weekly/manual quality-gates workflow reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue when either gate fails.
+- PR CI runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
 
 ## Key Commands
 
@@ -50,6 +51,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
+- Advisory Lighthouse CI budget against built `dist/` in CI/Linux: `npm run lhci:audit`
 - Regenerate live-app card thumbnails: `npm run screenshots:thumbs`
 - Audit image pipeline: `npm run images:audit`
 - Audit local semantic project similarity: `npm run semantic:audit -- --limit 12`
@@ -155,6 +157,8 @@ Production dependency advisories found on 2026-05-17 were remediated:
 
 Full `npm audit --audit-level=moderate` is clean. The prior dev-only `yaml` advisory in the `@astrojs/check` language-server chain is mitigated with an npm override that keeps `yaml-language-server` on patched `yaml@2.8.3` without downgrading `@astrojs/check`.
 
+The Lighthouse CI budget uses `scripts/run-lhci.mjs` to execute `npm exec --package=@lhci/cli@0.15.1` instead of a committed dev dependency. A direct `@lhci/cli` install currently pulls vulnerable/deprecated transitive packages into `package-lock.json`, so keep it transient until upstream resolves that dependency tree. Local Windows runs skip by default because Chrome launcher cleanup currently fails with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` only when explicitly testing that runner locally.
+
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 
 ## Tooling and Local Instruction Files
@@ -170,18 +174,19 @@ Current reconciliation:
 
 ## Roadmap State
 
-Canonical roadmap: `ROADMAP.md`.
+Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority work after this research pass:
+Highest-priority work after the T27 Lighthouse CI pass:
 
-1. No active unchecked roadmap items remain.
-2. Continue future roadmap from the parked/rejected section only if new evidence changes scope.
+1. `T28` -- Incrementally migrate `public/` raster art to `astro:assets` / `<Picture>` with AVIF/srcset output and CLS/visual checks.
+2. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
+3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
 
 ## Definition of Done for Future Changes
 
 - Preserve public/private boundaries.
 - Update `PROJECT_CONTEXT.md` when durable project facts change.
-- Update `ROADMAP.md` when roadmap items are completed, rejected, or reprioritized.
+- Update `TODO.md` when roadmap items are completed, rejected, or reprioritized.
 - Run `npm run check`.
 - Run `npm run build` for source, data, routing, or rendering changes.
 - For dependency or README rendering changes, run `npm audit --omit=dev` and inspect project page rendering.
@@ -208,3 +213,4 @@ Highest-priority work after this research pass:
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
+- 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage, search, archive, and project-detail routes with warning-only category, metric, and resource-size assertions.

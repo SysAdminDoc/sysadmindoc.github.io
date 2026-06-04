@@ -53,7 +53,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T24** Sync `package-lock.json` version → 0.17.0 (R, S).
 - [x] **T25** PR build gate — `ci.yml` on `pull_request` (NF-36, S).
 - [x] **T26** Doc/version reconciliation: CHANGELOG v0.17.0, CLAUDE.md Astro 6 + CSS size, version strings (NF, S).
-- [ ] **T27** Lighthouse CI advisory budget (NF-34, M).
+- [x] **T27** Lighthouse CI advisory budget (NF-34, M) — `lighthouserc.cjs` samples homepage/search/archive/project routes, applies advisory Lighthouse/category/resource budgets, stores filesystem reports, and PR CI uploads them without blocking the job.
 - [ ] **T28** Migrate `public/` raster art → `astro:assets <Picture>` AVIF/srcset (NF-22, L) *(stage incrementally; may defer)*.
 
 ## P2 — Depth, polish, hardening
@@ -222,7 +222,6 @@ These survived the v0.18.0 drain because they need a judgment call I shouldn't m
 
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
 - **T28** Migrate `public/` raster art → `astro:assets <Picture>` (AVIF/srcset) — large; needs per-image migration out of `public/` into `src/` imports and CLS verification across cards. Biggest standards win, but a focused pass with visual checks.
-- **T27** Lighthouse CI advisory budget — adds `@lhci/cli` + a CI job I can't exercise headlessly here; `audit-a11y.mjs` + the PR gate already cover the gap partially. Needs a CI run to tune thresholds.
 - **T41** README code syntax highlighting (Shiki) — build-time highlighter would emit inline `style`/CSS-var spans that the README `sanitize-html` allowlist strips; allowing `style` on README-derived content needs a security review. Dep + security-gated.
 - **T42** OG images for interior pages — satori template work whose visual output can't be verified headlessly; the `og/[slug].png.ts` scaffold can be generalized once someone can eyeball the cards.
 - **T35** Pagefind facets/metadata — **faceted index shipped** (Category filter + Type meta on project pages; verified 198 pages / 1 filter). Remaining: wire the visible filter pill into the custom `<pagefind-*>` modular-ui search page — needs a browser check of that component's filter API.
