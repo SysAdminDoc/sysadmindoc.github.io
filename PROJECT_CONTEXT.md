@@ -33,6 +33,7 @@ The site must remain public-safe. It should not expose private repository names,
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
+- Rendered JSON-LD is audited from built `dist/**/*.html` by `npm run schema:audit`. The audit parses every `application/ld+json` block, requires schema.org context, confirms the Base WebSite/Person graph on every HTML page, and checks representative homepage, language, and project routes for expected graph types and stable anchors.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
 - Live-app card previews render Sharp-generated 640x400 thumbnail inputs from `src/assets/screenshots/thumbs/` through Astro `<Picture>` with AVIF/WebP srcsets and JPEG fallback. Stable public copies remain under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts and public JSON URLs.
@@ -42,7 +43,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
 - A weekly/manual quality-gates workflow reports production audit and catalog drift, uploads logs, and opens or updates a GitHub issue when either gate fails.
-- PR CI runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
+- `build:ci` runs Astro build, HTML repair, service-worker stamping, Pagefind indexing, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, uploads filesystem reports from `.tmp/lhci`, and does not fail the job on budget warnings.
 
 ## Key Commands
 
@@ -63,6 +64,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
 - Audit first-viewport critical/full CSS selector parity: `npm run css:audit`
+- Audit rendered JSON-LD in built HTML: `npm run schema:audit` after `npm run build:ci` or `npm run build`
 - Summarize generated GitHub metadata, README refresh quality, profile-feed cache health, and Recommended ranking health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
@@ -72,7 +74,8 @@ Current verification baseline:
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
 - `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
-- `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
+- `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, Pagefind index generation over 194 HTML pages, and the rendered JSON-LD audit.
+- `npm run schema:audit` passed with 194 HTML pages scanned, 378 JSON-LD blocks parsed, 757 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 3 representative routes checked.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
@@ -187,11 +190,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T118 README refresh summary pass:
+Highest-priority workflow/research work after the T126 rendered JSON-LD audit:
 
-1. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
-2. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
-3. `T125` -- Add a Pagefind facet/index contract audit after static search generation.
+1. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
+2. `T125` -- Add a Pagefind facet/index contract audit after static search generation.
+3. `T127` -- Add JSON Feed icon/favicon metadata and feed validation.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -237,3 +240,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output. The build now emits AVIF/WebP srcsets from tracked `src/assets/screenshots/thumbs/` inputs while preserving stable public screenshot and thumbnail URLs.
 - 2026-06-04: Added first-viewport CSS parity auditing. `npm run css:audit` now guards the shared nav/hero/proof/stage selectors and selected mobile overrides across `critical.css` and `global.css`, and the audit is part of both `npm run check` and `npm run build`.
 - 2026-06-04: Added README refresh quality telemetry to generated-data health. `fetch-stars` now writes `_readme-refresh.json`, and `data:summary` reports/gates README refresh attempts, misses, preserved entries, cache coverage, miss rate, rate-limit state, skipped reason, and failure samples.
+- 2026-06-04: Added rendered JSON-LD auditing to the build path. `schema:audit` parses built HTML schema blocks, verifies Base WebSite/Person graph coverage, and checks representative homepage/language/project route graph contracts before publish.
