@@ -5,7 +5,13 @@ import InteriorNav from '../../components/InteriorNav.astro';
 import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { featured, liveApps, catalog } from '../../data/portfolio';
-import { computeProjectRankings, getReleaseDownloadTotals, rankCatalogEntries } from '../../data/project-ranking.mjs';
+import {
+  computeProjectRankings,
+  formatProjectRankingDisplayLabel,
+  formatProjectRankingLabel,
+  getReleaseDownloadTotals,
+  rankCatalogEntries,
+} from '../../data/project-ranking.mjs';
 import { healthcareIT } from '../../data/curated';
 import { projectProof } from '../../data/proof';
 import { existsSync } from 'node:fs';
@@ -268,7 +274,18 @@ const related = rankCatalogEntries(catalog
     _stars: stars[c.repo] ?? 0,
     _pushed: metaMap[c.repo]?.pushedAt ?? '0',
   })), projectRankings)
-  .slice(0, 4);
+  .slice(0, 4)
+  .map((entry) => {
+    const ranking = projectRankings.get(entry.repo);
+    return {
+      ...entry,
+      _rank: ranking?.rank,
+      _rankScore: ranking?.score,
+      _rankLabel: formatProjectRankingLabel(ranking),
+      _rankDisplayLabel: formatProjectRankingDisplayLabel(ranking),
+      _rankId: `related-rank-${entry.repo.replace(/[^A-Za-z0-9_-]/g, '-')}`,
+    };
+  });
 const cmdkSections = [
   { label: 'Overview', href: '#project-overview', desc: 'Project snapshot, delivery details, and primary actions.', badge: 'PROJECT' },
   { label: hasScreenshot ? 'Live Preview' : 'Preview', href: '#project-preview', desc: hasScreenshot && isLive ? 'Captured product surface from the live build.' : 'Generated fallback card until a live capture is available.', badge: 'VISUAL' },
@@ -562,7 +579,14 @@ const jsonLd = JSON.stringify({
           </div>
         <div class="cg" style="margin-top:24px">
           {related.map((r) => (
-            <a href={`/projects/${r.repo}/`} class="ca">
+            <a
+              href={`/projects/${r.repo}/`}
+              class="ca"
+              aria-describedby={r._rankDisplayLabel ? r._rankId : undefined}
+              data-rank={r._rankScore?.toFixed(4) ?? '0'}
+              data-rank-position={r._rank ?? ''}
+              data-rank-label={r._rankLabel}
+            >
               <span class={`cdo ${r.category}`}></span>
               <span class="ca-copy">
                 <span class="cna">
@@ -570,6 +594,11 @@ const jsonLd = JSON.stringify({
                   <span class="ca-kind">{categoryLabel[r.category] ?? r.category}</span>
                 </span>
                 <span class="cds" set:html={r.desc}></span>
+                {r._rankDisplayLabel && (
+                  <span class="ca-rank ca-rank-related" id={r._rankId} title={r._rankLabel || r._rankDisplayLabel}>
+                    {r._rankDisplayLabel}
+                  </span>
+                )}
               </span>
               <span class="ca-side">
                 {r._pushed !== '0' && (

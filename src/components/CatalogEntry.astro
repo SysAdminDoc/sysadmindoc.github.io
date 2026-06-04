@@ -14,6 +14,7 @@ export interface Props {
   rank?: number;
   rankScore?: number;
   rankLabel?: string;
+  rankDisplayLabel?: string;
 }
 const {
   entry,
@@ -27,6 +28,7 @@ const {
   rank,
   rankScore,
   rankLabel = '',
+  rankDisplayLabel = '',
 } = Astro.props;
 const categoryLabels: Record<string, string> = {
   ps: 'PowerShell',
@@ -70,6 +72,9 @@ const pushedDateLabel = pushedAt
   : '';
 const categoryLabel = categoryLabels[entry.category] ?? entry.category;
 const descText = String(entry.desc ?? '').replace(/<[^>]+>/g, '').trim();
+const rankDescriptionId = rankDisplayLabel
+  ? `rank-${entry.repo.replace(/[^A-Za-z0-9_-]/g, '-')}`
+  : undefined;
 const ariaParts = [
   entry.name,
   categoryLabel,
@@ -82,6 +87,7 @@ const ariaParts = [
   href={`/projects/${entry.repo}/`}
   class="ca"
   aria-label={ariaParts.join('. ')}
+  aria-describedby={rankDescriptionId}
   data-f={entry.category}
   data-repo={entry.repo}
   data-name={entry.name}
@@ -105,6 +111,11 @@ const ariaParts = [
       <span class="ca-kind">{categoryLabel}</span>
     </span>
     <span class="cds" set:html={entry.desc}></span>
+    {rankDisplayLabel && (
+      <span class="ca-rank" id={rankDescriptionId} title={rankLabel || rankDisplayLabel}>
+        {rankDisplayLabel}
+      </span>
+    )}
   </span>
   <span class="ca-side">
     {age && pushedAt && (

@@ -155,3 +155,9 @@ export function formatProjectRankingLabel(ranking) {
   else if (ranking.hasDownload) parts.push('downloadable release');
   return `Rank ${ranking.rank}: ${parts.join(', ') || 'baseline catalog signal'}`;
 }
+
+export function formatProjectRankingDisplayLabel(ranking) {
+  if (!ranking) return '';
+  const detail = formatProjectRankingLabel(ranking).replace(/^Rank\s+\d+:\s*/, '');
+  return `Recommended #${ranking.rank}: ${detail || 'baseline catalog signal'}`;
+}
