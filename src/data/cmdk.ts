@@ -1,7 +1,7 @@
 // Command-palette dataset shared by the layout (page-specific sections) and the
 // /cmdk-data.js endpoint (the large, page-independent project + quick-link data
 // served once and cached, instead of inlined on every page).
-import { catalog, featured, liveApps } from './projects';
+import { catalog, featured, liveApps } from './portfolio';
 import { categoryLabels } from './categories';
 
 export type CmdkSection = {

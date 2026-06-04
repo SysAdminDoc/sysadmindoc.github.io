@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.18.3] - 2026-06-04
+
+- Added `npm run profile-feed:sync`, a build-time raw GitHub cache for `SysAdminDoc/SysAdminDoc` `projects.json` with local fallback preservation.
+- Rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes through `src/data/portfolio.ts`, with curated featured/live-app overlays from local data.
+- Suppressed and non-portfolio feed rows are excluded from generated routes; feed-omitted local-only rows no longer render, and the `DuplicateFF` archive entry now links to GitHub instead of a removed project page.
+- Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
+
 ## [v0.18.2] - 2026-06-04
 
 - Added catalog view buttons for All, New, Recently updated, and Has download. Counts derive from the tracked catalog, cached GitHub metadata, and release download totals.

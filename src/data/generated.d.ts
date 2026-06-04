@@ -30,6 +30,7 @@ export interface GeneratedRelease {
   name: string;
   publishedAt: string;
   url: string;
+  downloads?: number;
   bodyFirst: string;
 }
 

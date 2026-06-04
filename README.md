@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.18.2-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.18.3-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -10,8 +10,9 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 ## Stack
 
 - **Astro 6** — static site generator with focused client-side enhancements for the homepage experience
-- **Schema-checked TypeScript** data layer ([src/data/projects.ts](src/data/projects.ts))
-- **Content collections**: featured (9), live apps (22), catalog (181), skills (8)
+- **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
+- **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`
+- **Content collections**: featured (9), live apps (22), catalog (177 feed-backed / 181 local fallback), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
@@ -28,6 +29,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 
 ```bash
 npm install
+npm run profile-feed:sync # optional: refresh ignored profile projects cache from raw GitHub
 npm run fetch-stars   # optional: refresh star cache from GitHub
 npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
@@ -53,14 +55,16 @@ npm run preview       # serve dist/
 
 ## Edit content
 
-All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg` and a thumbnail in `public/screenshots/thumbs/<slug>.jpg`.
+Rendered project entries are adapted from the public SysAdminDoc profile feed into **[src/data/portfolio.ts](src/data/portfolio.ts)**. The ignored cache lives at `src/data/_profile-projects.json` and is refreshed by `npm run profile-feed:sync`, which runs automatically before `npm run check` and `npm run build`.
+
+The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg` and a thumbnail in `public/screenshots/thumbs/<slug>.jpg`.
 
 - Featured: surface in the hero signature reel, command palette, and feeds
 - Live Apps: for GitHub Pages demos
 - Catalog: full searchable repo list (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the catalog array plus generated GitHub metadata. The `view=` URL state combines with `cat=`, `q=`, and `sort=`.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The `view=` URL state combines with `cat=`, `q=`, and `sort=`.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -93,7 +97,8 @@ src/
 ├── data/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
-│   ├── projects.ts  # all content (EDIT THIS)
+│   ├── portfolio.ts # feed adapter + local fallback/overlays
+│   ├── projects.ts  # curated fallback, featured, live-app screenshots, skills
 │   ├── proof.ts
 │   ├── archive.ts
 │   ├── catalog-policy.json
@@ -117,6 +122,7 @@ public/
 └── scripts/          # shared.js, theme.js, main.js, cmdk.js
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
+├── sync-profile-feed.mjs  # raw profile projects.json cache for rendered catalog
 ├── audit-catalog.mjs      # public repo drift audit
 ├── validate-project-data.mjs
 ├── audit-assets.mjs · audit-performance.mjs · audit-image-pipeline.mjs

@@ -35,6 +35,18 @@ export interface CatalogEntry {
   category: Lang;
   desc: string;
   live?: boolean;
+  hasDownload?: boolean;
+  pushedAt?: string | null;
+  updatedAt?: string | null;
+  latestReleaseTag?: string | null;
+  latestReleaseUrl?: string | null;
+  releaseAssetKinds?: string[];
+  topics?: string[];
+  primaryAction?: {
+    kind: string;
+    label: string;
+    url: string;
+  } | null;
 }
 
 export interface Skill {
