@@ -1,13 +1,12 @@
 import { categoryLabels } from './categories';
+import { buildSkillsWithMetrics } from './skill-metrics.mjs';
 import {
   catalog as localCatalog,
   featured as localFeatured,
   liveApps as localLiveApps,
-  skills,
+  skills as localSkills,
 } from './projects';
 import type { CatalogEntry, Featured, Lang, LiveApp } from './types';
-
-export { skills };
 
 type ProfilePrimaryAction = {
   kind?: string | null;
@@ -197,6 +196,7 @@ export const profileFeedInfo = {
   suppressedCount: profileFeed?.suppressedCount ?? null,
 };
 
+export const catalog: CatalogEntry[] = buildCatalog();
 export const featured: Featured[] = buildFeatured();
 export const liveApps: LiveApp[] = buildLiveApps();
-export const catalog: CatalogEntry[] = buildCatalog();
+export const skills = buildSkillsWithMetrics(localSkills, catalog);

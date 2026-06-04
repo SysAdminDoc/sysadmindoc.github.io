@@ -55,6 +55,12 @@ export interface Skill {
   sub: string;
   ringTarget: number; // stroke-dashoffset — lower = more filled
   color: string; // css var name e.g. "--blue"
+  metric?: {
+    count: number;
+    total: number;
+    percent: number;
+    label: string;
+  };
 }
 
 export interface ProjectProofSource {

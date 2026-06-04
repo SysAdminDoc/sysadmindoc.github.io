@@ -13,6 +13,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`
 - **Content collections**: featured (9), live apps (22), catalog (177 feed-backed / 181 local fallback), skills (8)
+- **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **README rendering** — GFM through `marked`, sanitized remote HTML, class-based Shiki highlighting, reading-time metadata, and heading outlines
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
