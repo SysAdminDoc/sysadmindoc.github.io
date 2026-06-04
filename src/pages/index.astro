@@ -7,6 +7,7 @@ import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import TagCloud from '../components/TagCloud.astro';
 import Heatmap from '../components/Heatmap.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
 import { homepageProofHighlights, projectProof } from '../data/proof';
@@ -390,10 +391,9 @@ const latestReleaseName = latestRelease ? latestRelease.name ?? projectNameMap.g
 const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.lastPushedRepo) ?? stats.lastPushedRepo : null;
 const cmdkSections = [
   { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
-  { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
-  { label: 'Full-Text Search', href: '/search/', desc: 'Search rendered project pages, README excerpts, and route copy.', badge: 'PAGE' },
   { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
-  { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
+  { label: 'Project Mix', href: '#volume', desc: 'Category footprint and quick-pick routes into the catalog.', badge: 'SECTION' },
+  { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
   { label: 'About', href: '#about', desc: 'Background, operating style, and what drives the work.', badge: 'SECTION' },
   { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
@@ -401,6 +401,8 @@ const cmdkSections = [
   { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Aerial drone footage and the work outside the terminal.', badge: 'SECTION' },
   { label: 'Connect', href: '#connect', desc: 'Best ways to collaborate and what to bring.', badge: 'SECTION' },
+  { label: 'Full-Text Search', href: '/search/', desc: 'Search rendered project pages, README excerpts, and route copy.', badge: 'PAGE' },
+  { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
 ] as const;
 ---
 <Base cmdkSections={cmdkSections}>
@@ -537,6 +539,12 @@ const cmdkSections = [
       </div>
     </div>
   </section>
+
+  <div class="home-jump-shell">
+    <div class="si">
+      <SectionJumpNav items={cmdkSections} label="Portfolio Sections" />
+    </div>
+  </div>
 
   {stats.pushDays.length > 0 && (
     <section class="heatmap-section rv"><div class="si">
