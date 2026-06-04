@@ -381,7 +381,7 @@ function renderLangDonut(langCount,repoCount){
 
 /* ===== NAV ===== */
 const secs=document.querySelectorAll('section[id]');const nla=document.querySelectorAll('.nk a');
-const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
+const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
 secs.forEach(s=>so.observe(s));
 
 /* ===== SCROLL PROGRESS BAR + NAV HIDE-ON-SCROLL-DOWN ===== */
@@ -744,8 +744,54 @@ function onTermReady(){
         });
         return exact.concat(partial).slice(0,3);
     }
+    function terminalRoute(path,label){
+        setTimeout(()=>window.location.assign(path),350);
+        return '\u2192 <span class="cmd-val">'+escapeHTML(label||path)+'</span>';
+    }
+    function revealHomepageScrollSections(){
+        document.querySelectorAll('#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect').forEach(function(el){
+            el.style.contentVisibility='visible';
+        });
+    }
+    function scrollToTerminalTarget(selector,label){
+        setTimeout(function(){
+            const target=document.querySelector(selector);
+            if(!target)return;
+            if(inputEl)inputEl.blur();
+            window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL=Date.now()+1600;
+            revealHomepageScrollSections();
+            const jump=function(){target.scrollIntoView({block:'start',behavior:'auto'});};
+            const syncHash=function(){if(selector.charAt(0)==='#')history.replaceState(null,'',selector);};
+            jump();
+            syncHash();
+            setTimeout(function(){
+                jump();
+                syncHash();
+            },350);
+            setTimeout(function(){
+                jump();
+                syncHash();
+            },900);
+        },120);
+        return '\u2192 <span class="cmd-val">'+escapeHTML(label||selector)+'</span>';
+    }
+    function runThemeCommand(args){
+        const raw=Array.isArray(args)&&args.length?String(args[0]).toLowerCase():'';
+        const root=document.documentElement;
+        const btn=document.getElementById('themeToggle');
+        const current=root.dataset.theme==='light'?'light':'dark';
+        if(!raw){
+            return 'Current theme: <span class="cmd-val">'+current+'</span>\nUsage: <span class="cmd-name">theme</span> light|dark|toggle';
+        }
+        if(raw!=='light'&&raw!=='dark'&&raw!=='toggle'){
+            return 'Unknown theme: <span class="cmd-val">'+escapeHTML(raw)+'</span>. Use light, dark, or toggle.';
+        }
+        const next=raw==='toggle'?(current==='dark'?'light':'dark'):raw;
+        if(btn&&current!==next)btn.click();
+        return 'Theme set to <span class="cmd-val">'+next+'</span>';
+    }
     const commands={
-        help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Project stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">open</span>      Open a project page\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
+        help:()=>'<span class="cmd-name">help</span>      Available commands\n<span class="cmd-name">whoami</span>    Who is Matt Parker\n<span class="cmd-name">skills</span>    Languages & tools\n<span class="cmd-name">repos</span>     Project stats\n<span class="cmd-name">ls</span>        List featured projects\n<span class="cmd-name">open</span>      Open a project page\n<span class="cmd-name">contact</span>   Jump to Connect\n<span class="cmd-name">uses</span>      Open the setup page\n<span class="cmd-name">theme</span>     light | dark | toggle\n<span class="cmd-name">uptime</span>    Time on this page\n<span class="cmd-name">date</span>      Current date & time\n<span class="cmd-name">neofetch</span>  System info\n<span class="cmd-name">clear</span>     Clear terminal\n<span class="cmd-name">echo</span>      Echo text back',
         whoami:()=>'<span class="cmd-val">Matt Parker</span> - Sr. Systems Administrator & Builder\nHealthcare IT | Medical Imaging | Open Source\nPhilosophy: Dark theme. Works on first launch.',
         skills:()=>'<span class="cmd-name">PowerShell</span>  WPF, Automation\n<span class="cmd-name">Python</span>      PyQt6, CLI Tools\n<span class="cmd-name">JavaScript</span>  Userscripts, Web Apps\n<span class="cmd-name">Kotlin</span>      Android Apps\n<span class="cmd-name">C#</span>          WinForms, .NET\n<span class="cmd-name">C++</span>         Desktop Apps\n<span class="cmd-name">HTML/CSS</span>    Single-file Apps',
         repos:()=>{const r=document.getElementById('statRepos');const s=document.getElementById('statStars');return'<span class="cmd-val">'+(r?r.textContent:'--')+'</span> public projects\n<span class="cmd-val">'+(s?s.textContent:'--')+'</span> total stars'},
@@ -761,6 +807,11 @@ function onTermReady(){
         cat:()=>'Try <span class="cmd-name">neofetch</span>, <span class="cmd-name">whoami</span>, or <span class="cmd-name">open</span> &lt;project-name&gt;.',
         pwd:()=>'/home/matt/portfolio',
         git:()=>'<span class="cmd-val">github.com/SysAdminDoc</span> \u2014 '+(document.getElementById('statRepos')?document.getElementById('statRepos').textContent:'--')+' projects',
+        contact:()=>scrollToTerminalTarget('#connect','Connect section'),
+        uses:()=>terminalRoute('/uses/','/uses/'),
+        theme:runThemeCommand,
+        dark:()=>runThemeCommand(['dark']),
+        light:()=>runThemeCommand(['light']),
         open:(args)=>{
             const query=Array.isArray(args)?args.join(' ').trim():'';
             if(!query)return'Usage: open &lt;project-name&gt;';
