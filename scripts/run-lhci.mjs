@@ -14,7 +14,9 @@ if (isLocalWindows && !runLocalWindows) {
   process.exit(0);
 }
 
-mkdirSync(lhciTempDir, { recursive: true });
+if (process.platform === 'win32') {
+  mkdirSync(lhciTempDir, { recursive: true });
+}
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const args = [
@@ -32,9 +34,13 @@ const child = spawn(npmCommand, args, {
   stdio: 'inherit',
   env: {
     ...process.env,
-    TEMP: lhciTempDir,
-    TMP: lhciTempDir,
-    TMPDIR: lhciTempDir,
+    ...(process.platform === 'win32'
+      ? {
+          TEMP: lhciTempDir,
+          TMP: lhciTempDir,
+          TMPDIR: lhciTempDir,
+        }
+      : {}),
   },
 });
 
