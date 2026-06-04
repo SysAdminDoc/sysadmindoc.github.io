@@ -11,6 +11,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
 - Documented the safe Windows/VMware workflow: use shared folders for editing if needed, but run npm/Astro validation from a normal local clone/worktree path.
 - Added an npm override for the Astro check dependency chain so `yaml-language-server` resolves patched `yaml@2.8.3`; full moderate-severity audit is clean.
+- Split first-viewport CSS into `src/styles/critical.css`; the full hashed `global.css` asset now preloads and applies through a non-blocking print-media swap with a `noscript` fallback.
+- Re-baselined the local performance audit after the CSS split: mobile homepage LCP is 668ms with CLS 0, bfcache restored, and no horizontal overflow.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 
 ## [v0.18.2] - 2026-06-04

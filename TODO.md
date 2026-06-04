@@ -39,7 +39,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ### Performance
 - [x] **T14** Extract 44KB inline `__PORTFOLIO_DATA` to external JSON (R, M).
 - [x] **T15** Gate film-grain overlay behind capability media query (R, S).
-- [ ] **T16** Split / non-block monolithic CSS — defer to CSS pass (R, L) *(coordinate with T2, @layer)*.
+- [x] **T16** Split / non-block monolithic CSS (R, L) — `Base.astro` now inlines first-viewport `critical.css`, preloads the hashed `global.css` asset, loads it through a print-media swap, and keeps a `noscript` stylesheet fallback.
 ### Accessibility
 - [x] **T17** Wrap CSS scroll-driven animations in `prefers-reduced-motion` guard (R, S).
 - [x] **T18** Accessible labels + aria-live on hero stat counters (R, S).
@@ -145,11 +145,11 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T99** P1 — SoftwareApplication node + license/datePublished for live-app project pages (NF-A3).
 - [ ] **T100** P1 — Greatest Hits case-study coverage 3/8 → parity + validator (IMP-4).
 - [ ] **T101** P1 — reconcile hero "176+" vs catalog "181" headline count (IMP-1).
-- [ ] **T102** P1 — critical-CSS inline for hero (the real mobile-LCP lever, NOT @layer) + re-baseline stale PERFORMANCE_AUDIT.md (v0.16.12).
+- [x] **T102** P1 — critical-CSS inline for hero (the real mobile-LCP lever, NOT @layer) + re-baseline stale PERFORMANCE_AUDIT.md (v0.16.12). Done with T16; 2026-06-04 audit shows mobile homepage LCP 668ms.
 - [ ] **T103** P1 — forced-colors gap: SVG data-viz (heatmap/donut/skill rings) unreadable in WHCM.
 - [ ] **T104** P2 — CI gate stubs empty data; commit src/data/_fixtures and render real shapes pre-merge.
 - [ ] **T105** P2 — promote a11y audit to blocking --strict subset; mirror test + a11y into deploy.yml.
-- [ ] **T106** P2 — axe-core/Playwright a11y job + Playwright visual-regression baselines (unblocks T16/T28).
+- [ ] **T106** P2 — axe-core/Playwright a11y job + Playwright visual-regression baselines (unblocks T28 and future visual-regression-sensitive CSS changes).
 - [ ] **T107** P2 — README TOC + reading-time on project pages (heading IDs already generated, orphaned) (NF-A4).
 - [ ] **T108** P2 — homepage SectionJumpNav (reuse existing component + cmdkSections) (NF-A5).
 - [ ] **T109** P2 — iOS PWA install path (NF-A6) + WebSite SearchAction (NF-A7) + prefers-contrast block.
@@ -220,7 +220,6 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
-- **T16** Split / non-block the monolithic ~4000-line CSS — needs critical-CSS extraction + `@layer` restructure; best done as one coordinated pass with a visual-regression net (which itself needs Playwright baselines in CI). Large, design-gated.
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
 - **T28** Migrate `public/` raster art → `astro:assets <Picture>` (AVIF/srcset) — large; needs per-image migration out of `public/` into `src/` imports and CLS verification across cards. Biggest standards win, but a focused pass with visual checks.
 - **T27** Lighthouse CI advisory budget — adds `@lhci/cli` + a CI job I can't exercise headlessly here; `audit-a11y.mjs` + the PR gate already cover the gap partially. Needs a CI run to tune thresholds.
