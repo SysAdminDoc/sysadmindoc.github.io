@@ -231,10 +231,11 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: PR/manual CI job summaries list each LHCI warning with route, audit id, observed value, and threshold while preserving the advisory/non-blocking behavior.
   - Verify: Trigger `ci.yml` manually or on a PR; inspect the job summary without downloading artifacts and confirm LHCI warnings are visible.
 
-- [ ] **T121** 🤖 P2 — Include semantic-audit status in weekly quality summaries and issues.
+- [x] **T121** 🤖 P2 — Include semantic-audit status in weekly quality summaries and issues.
   - Why: `semantic:audit` is intentionally advisory, but the weekly workflow currently runs it and then hides the result from the summary, issue body, and fail-condition logic.
   - Evidence: `.github/workflows/quality-gates.yml:51-63` captures `semantic_audit.exit_code`; `.github/workflows/quality-gates.yml:68-87` summarizes production/catalog/local checks only; `.github/workflows/quality-gates.yml:92-139` opens issues only for production/catalog drift; `.github/workflows/quality-gates.yml:140-141` ignores the semantic result in the fail gate; `PROJECT_CONTEXT.md:144` says semantic audit is advisory catalog-maintenance signal.
   - Touches: `.github/workflows/quality-gates.yml`; optionally `scripts/audit-semantic-index.mjs` if a compact machine-readable summary is useful.
+  - Done: Weekly quality summaries now show semantic-audit PASS/ATTENTION, and any quality-gate issue body includes the latest semantic-audit log as an advisory-only section while the fail gate still ignores semantic advisory status.
   - Acceptance: Weekly quality summaries show semantic-audit PASS/ATTENTION, artifacts remain uploaded, and any quality-gate issue body includes semantic candidates when present without turning advisory catalog-maintenance hints into automatic failures.
   - Verify: Run `quality-gates.yml` manually; inspect the job summary and uploaded issue/update body when semantic output is present.
 
@@ -324,10 +325,11 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: After `astro build`, the audit parses `dist/projects.json` and `dist/releases.json` for schema version, generated timestamp, counts, absolute URLs, and non-empty rows; parses `/cmdk-data.js` enough to prove `allProjects` and `quickLinks` are populated; validates `/llms.txt` has the expected H1, blockquote, H2 file-list shape and useful links; and confirms representative HTML exposes the alternate feed/index discovery links.
   - Verify: `npm run endpoints:audit` passed with 177 project-index rows, 60 release-index rows, 20 release repositories, 177 command-palette project rows, 9 quick links, 42 `llms.txt` links, and 5 alternate discovery links. Full verification: `npm test`; `npm run check`; `npm run build`; standalone `npm run endpoints:audit`; `git diff --check`; `npm run a11y:audit`.
 
-- [ ] **T131** 🤖 P2 — Bring build-output audits into the weekly quality-gates workflow.
+- [x] **T131** 🤖 P2 — Bring build-output audits into the weekly quality-gates workflow.
   - Why: T126 moved rendered JSON-LD validation into `build:ci`, and T125/T130 will add more build-output checks, but the scheduled weekly quality workflow still stops at source/data/Astro checks and will not catch built HTML/search/API drift until a deploy or PR build runs.
   - Evidence: `.github/workflows/quality-gates.yml` runs production audit, catalog audit, semantic audit, `data:validate`, `assets:audit`, and `npm run check`; `package.json` runs `schema:audit` only inside `build:ci` after `astro build`, HTML repair, service-worker stamping, and Pagefind indexing; GitHub Actions job summaries can present compact Markdown results through `GITHUB_STEP_SUMMARY`.
   - Touches: `.github/workflows/quality-gates.yml`; optionally compact machine-readable summaries from `schema:audit`, `search:audit`, or `endpoints:audit`.
+  - Done: Weekly quality gates now refresh generated metadata, sync the profile-feed cache, run `npm run build:ci` without deploying, then re-run endpoint, JSON Feed, Pagefind search, and rendered JSON-LD audits into dedicated logs. Job summaries publish build path, endpoint, feed, search, and schema status; artifacts include every build-output log; quality-gate issues include build-output failures plus advisory semantic context; and the final fail gate now treats build-output failures as blocking.
   - Acceptance: Weekly `workflow_dispatch`/schedule runs the build-output audit path without deploying, publishes schema/search/endpoint status in the job summary, uploads the relevant logs, and includes build-output failures in the issue/update body and fail gate without hiding advisory semantic-audit context from T121.
   - Verify: Run `quality-gates.yml` manually; inspect the job summary, uploaded logs, and issue body when a build-output audit is intentionally failed.
 

@@ -103,7 +103,7 @@ The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml
 
 [.github/workflows/ci.yml](.github/workflows/ci.yml) also runs an advisory Lighthouse CI budget after the PR build and uploads the filesystem reports as `lighthouse-ci-reports`.
 
-[.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, data validation, asset/reference checks, and Astro diagnostics. If production audit or catalog drift fails, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
+[.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, advisory semantic-audit status, data validation, asset/reference checks, Astro diagnostics, and non-deploying build-output audits for endpoint/feed/search/schema contracts. If production audit, catalog drift, or build-output audits fail, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
 
 ## Layout
 
