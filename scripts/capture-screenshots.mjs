@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Capture screenshots of every live web app using Playwright.
-// Writes public/screenshots/<slug>.jpg as the detail capture and
-// public/screenshots/thumbs/<slug>.jpg as the card thumbnail.
+// Writes public/screenshots/<slug>.jpg as the detail capture,
+// public/screenshots/thumbs/<slug>.jpg as the stable public card thumbnail, and
+// src/assets/screenshots/thumbs/<slug>.jpg as the Astro-managed <Picture> input.
 //
 // Usage:
 //   npm install --no-save playwright   # one-time install
@@ -63,8 +64,10 @@ try {
 
 const outDir = join(root, 'public', 'screenshots');
 const thumbDir = join(outDir, 'thumbs');
+const astroThumbDir = join(root, 'src', 'assets', 'screenshots', 'thumbs');
 mkdirSync(outDir, { recursive: true });
 mkdirSync(thumbDir, { recursive: true });
+mkdirSync(astroThumbDir, { recursive: true });
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({
@@ -80,6 +83,7 @@ const CONCURRENCY = 4;
 async function captureOne({ slug, url }) {
   const out = join(outDir, `${slug}.jpg`);
   const thumb = join(thumbDir, `${slug}.jpg`);
+  const astroThumb = join(astroThumbDir, `${slug}.jpg`);
   const page = await ctx.newPage();
   try {
     const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -107,10 +111,12 @@ async function captureOne({ slug, url }) {
 
     const screenshot = await page.screenshot({ type: 'jpeg', quality: 78, fullPage: false });
     writeFileSync(out, screenshot);
-    await sharp(screenshot)
+    const thumbnail = await sharp(screenshot)
       .resize({ width: 640, height: 400, fit: 'cover' })
       .jpeg({ quality: 68, mozjpeg: true })
-      .toFile(thumb);
+      .toBuffer();
+    writeFileSync(thumb, thumbnail);
+    writeFileSync(astroThumb, thumbnail);
     ok += 1;
     console.log(`✓ ${slug}`);
   } catch (error) {

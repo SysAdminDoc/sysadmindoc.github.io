@@ -248,6 +248,7 @@
 
         /* Live App Thumbnails */
         .lc2-thumb{height:90px;margin:-20px -20px 10px;border-radius:13px 13px 0 0;overflow:hidden;background:var(--bg3)}
+        .lc2-thumb picture{display:block;width:100%;height:100%}
         .lc2-thumb img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.5;transition:opacity .3s;filter:saturate(.7)}
         .lc2:hover .lc2-thumb img{opacity:.7;filter:saturate(1)}
 
@@ -444,6 +445,7 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 
 /* LIVE preview fallback when opengraph.githubassets.com 429s */
 .lc2-thumb{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bg2),var(--bg3));border-radius:8px;aspect-ratio:1200/628}
+.lc2-thumb picture{display:block;width:100%;height:100%}
 .lc2-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .lc2-thumb.thumb-fallback{background:linear-gradient(135deg,var(--blued),var(--purd));position:relative}
 .lc2-thumb.thumb-fallback::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(88,166,255,.2),transparent 60%),radial-gradient(circle at 70% 70%,rgba(192,132,252,.2),transparent 60%)}
@@ -3492,6 +3494,11 @@ html[data-theme="light"] .scroll-progress{
 .lc2 .lc2-thumb img{
   opacity:.78;
   filter:saturate(.86) contrast(1.04);
+}
+.lc2 .lc2-thumb picture{
+  display:block;
+  width:100%;
+  height:100%;
 }
 .lc2:hover .lc2-thumb img,
 .lc2:focus-visible .lc2-thumb img{

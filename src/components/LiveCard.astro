@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+import type { LocalImageProps } from 'astro:assets';
 import type { LiveApp } from '../data/types';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -7,13 +9,16 @@ import process from 'node:process';
 export interface Props {
   app: LiveApp;
 }
+type LocalImage = LocalImageProps['src'];
+const thumbnailAssets = import.meta.glob<{ default: LocalImage }>('../assets/screenshots/thumbs/*.jpg', { eager: true });
 const { app } = Astro.props;
 const publicDir = join(process.cwd(), 'public');
 const screenshotPath = join(publicDir, 'screenshots', `${app.slug}.jpg`);
 const screenshotThumbPath = join(publicDir, 'screenshots', 'thumbs', `${app.slug}.jpg`);
 const hasScreenshot = existsSync(screenshotPath);
 const hasScreenshotThumb = existsSync(screenshotThumbPath);
-const previewSrc = hasScreenshotThumb ? `/screenshots/thumbs/${app.slug}.jpg` : `/screenshots/${app.slug}.jpg`;
+const thumbnailAsset = thumbnailAssets[`../assets/screenshots/thumbs/${app.slug}.jpg`]?.default;
+const fallbackPreviewSrc = hasScreenshotThumb ? `/screenshots/thumbs/${app.slug}.jpg` : `/screenshots/${app.slug}.jpg`;
 const descText = String(app.desc ?? '')
   .replace(/<[^>]+>/g, '')
   .replace(/&amp;/g, '&')
@@ -35,7 +40,23 @@ try {
 >
   {hasScreenshot ? (
     <div class="lc2-thumb lc2-thumb-static" aria-hidden="true">
-      <img src={previewSrc} alt="" loading="lazy" decoding="async" width={hasScreenshotThumb ? 640 : 1280} height={hasScreenshotThumb ? 400 : 800} />
+      {thumbnailAsset ? (
+        <Picture
+          src={thumbnailAsset}
+          alt={`${app.name} screenshot preview`}
+          formats={['avif', 'webp']}
+          widths={[320, 480, 640]}
+          sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 33vw"
+          loading="lazy"
+          decoding="async"
+          width={640}
+          height={400}
+          quality={66}
+          pictureAttributes={{ class: 'lc2-picture' }}
+        />
+      ) : (
+        <img src={fallbackPreviewSrc} alt="" loading="lazy" decoding="async" width={hasScreenshotThumb ? 640 : 1280} height={hasScreenshotThumb ? 400 : 800} />
+      )}
       <span class="lc2-preview-label">Captured preview</span>
     </div>
   ) : (
