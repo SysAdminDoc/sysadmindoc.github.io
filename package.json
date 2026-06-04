@@ -29,6 +29,7 @@
     "semantic:audit": "node scripts/audit-semantic-index.mjs",
     "audit:perf": "node scripts/audit-performance.mjs",
     "lhci:audit": "node scripts/run-lhci.mjs",
+    "lhci:summary": "node scripts/summarize-lhci.mjs",
     "a11y:audit": "node scripts/audit-a11y.mjs",
     "forced-colors:audit": "node scripts/audit-forced-colors.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
