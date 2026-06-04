@@ -98,6 +98,7 @@ const viewCounts = {
 const catCounts: Record<string, number> = {};
 for (const c of catalog) catCounts[c.category] = (catCounts[c.category] ?? 0) + 1;
 const catalogTotal = catalog.length;
+const publicProjectCount = catalogTotal;
 
 // Build-time language mix from cached _meta.json so the Stack donut renders real
 // data with no JS / offline / rate-limited. main.js refreshes it from the live
@@ -227,7 +228,7 @@ const journeyMilestones = [
   {
     title: 'Full Stack & Beyond',
     eyebrow: 'Portfolio depth',
-    desc: `${stats.totalRepos}+ public projects across six languages — Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes, desktop software, and a broad archive that still stays grounded in practical use cases.`,
+    desc: `${publicProjectCount}+ public projects across six languages — Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes, desktop software, and a broad archive that still stays grounded in practical use cases.`,
     href: '#catalog',
     cta: 'Open the full catalog',
     meta: 'The complete archive, filters included.',
@@ -325,7 +326,7 @@ const stackRoutes = [
 const aboutSignals = [
   { label: 'Day Job', value: 'Maven Imaging', meta: 'Senior Technical Support Manager — PACS migrations, DR panel deployments, cloud transitions, and international clinical support.' },
   { label: 'Reach', value: '3-continent support', meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia — plus HIPAA-regulated clients stateside.' },
-  { label: 'Public Archive', value: `${stats.totalRepos}+ projects`, meta: 'Fifteen-plus years of IT, compounded into a working body of PowerShell, Python, JavaScript, Kotlin, C#, and C++ tools.' },
+  { label: 'Public Archive', value: `${publicProjectCount}+ projects`, meta: 'Fifteen-plus years of IT, compounded into a working body of PowerShell, Python, JavaScript, Kotlin, C#, and C++ tools.' },
 ] as const;
 const aboutLinks = [
   { href: '/healthcare-it/', label: 'See the Healthcare Track', meta: 'The operational context, environments, and system work that shaped the portfolio.' },
@@ -368,7 +369,7 @@ const philosophyPrinciples = [
   },
   {
     title: 'Open by Default',
-    desc: `Everything ships in public. ${stats.totalRepos}+ projects and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
+    desc: `Everything ships in public. ${publicProjectCount}+ projects and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
     note: 'Trust comes faster when the work is inspectable and easy to try.',
     bg: 'var(--orgd)',
     accent: 'var(--org)',
@@ -456,7 +457,7 @@ const cmdkSections = [
         <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
         <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
-          <div class="hs-item"><div class="hsn" id="statRepos" data-live>{stats.totalRepos}</div><div class="hsl">Projects</div></div>
+          <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
           <div class="hs-item"><div class="hsn" id="statLive">{liveApps.length}</div><div class="hsl">Live Apps</div></div>
         </div>
@@ -692,7 +693,7 @@ const cmdkSections = [
       <div class="about-copy rv">
         <div class="about-kicker">Systems operator first. Product finisher by habit.</div>
         <p class="atp">I'm the <strong>Senior Technical Support Manager</strong> at <strong>Maven Imaging</strong> &mdash; where I&rsquo;ve architected 10+ PACS migrations (including a million-file Candelis legacy transfer when vendor tooling gave up), restored 54 customer cloud accounts through a cross-vendor transition, and support medical imaging clinics across the Caribbean, East Africa, and East Asia. Before this I spent 11 years as Systems Administrator at <strong>ThinkTV</strong> (PBS affiliate) running Windows servers, Cisco networking, Hyper-V, and SCCM, with four years at a Dayton MSP before that.</p>
-        <p class="atp">When a vendor tool fails at the worst possible moment, I write the replacement. That habit has produced a full set of in-house utilities &mdash; a custom DICOM C-Store sender, a PC-provisioning kit, an acquisition-PC network scanner, a service-watcher script that keeps overnight transfers alive &mdash; on top of the <strong id="aboutReposText">{stats.totalRepos}+</strong> <strong>public projects</strong> on GitHub across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them &mdash; the DICOM migration toolchain and the acquisition-PC network scanner among them &mdash; went from side-project to company-wide production tools.</p>
+        <p class="atp">When a vendor tool fails at the worst possible moment, I write the replacement. That habit has produced a full set of in-house utilities &mdash; a custom DICOM C-Store sender, a PC-provisioning kit, an acquisition-PC network scanner, a service-watcher script that keeps overnight transfers alive &mdash; on top of the <strong id="aboutReposText">{publicProjectCount}+</strong> <strong>public projects</strong> on GitHub across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them &mdash; the DICOM migration toolchain and the acquisition-PC network scanner among them &mdash; went from side-project to company-wide production tools.</p>
         <div class="about-signals" aria-label="Profile highlights">
           {aboutSignals.map((signal) => (
             <div class="about-signal">
@@ -718,7 +719,7 @@ const cmdkSections = [
             <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"JavaScript"</span><span class="tcm">,</span> <span class="ts">"Kotlin"</span><span class="tcm">,</span> <span class="ts">"C#"</span><span class="tcm">,</span> <span class="ts">"C++"</span></div>
             <div>&nbsp;&nbsp;<span class="tcm">],</span></div>
             <div>&nbsp;&nbsp;<span class="tk">"philosophy"</span><span class="tcm">:</span> <span class="ts">"Works on first launch. Dark theme."</span><span class="tcm">,</span></div>
-              <div>&nbsp;&nbsp;<span class="tk">"projects"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">{stats.totalRepos}</span><span class="tcm">,</span></div>
+              <div>&nbsp;&nbsp;<span class="tk">"projects"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">{publicProjectCount}</span><span class="tcm">,</span></div>
             <div>&nbsp;&nbsp;<span class="tk">"available"</span><span class="tcm">:</span> <span class="tv">true</span></div>
             <div><span class="tcm">&#125;</span></div>
           </div>

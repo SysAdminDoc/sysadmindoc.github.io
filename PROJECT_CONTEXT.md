@@ -34,6 +34,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. Searchable routes tag their meaningful `<main>` content with `data-pagefind-body`, so Pagefind indexes intentional page content while excluding repeated Base layout UI such as the global command palette; `/404.html` stays untagged. `npm run build` runs Astro, `npm run search:index`, and `npm run search:audit`, which writes the static search bundle to `dist/pagefind` and verifies tagged page counts plus generated Category filters/results against rendered project/catalog data.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
+- Homepage public project counts use the rendered catalog count (`catalog.length`) as the single visible source of truth. `_stats.totalRepos` remains GitHub metadata health input, but hero stats, about/philosophy/journey copy, catalog totals, `/projects.json`, and `/cmdk-data.js` should align with the active catalog count; the live GitHub refresh must not overwrite visible project counts with the raw public-repo API total.
 - Project detail pages use the catalog category as the Pagefind Category source of truth, with featured-language data remaining presentation context only.
 - Project detail JSON-LD emits a stable `SoftwareSourceCode` node with generated `datePublished` and SPDX `license` when repo metadata is available. Browser-ready live-app pages additionally emit a linked `SoftwareApplication` node with `operatingSystem: "Web"`, category-derived `applicationCategory`, `isAccessibleForFree: true`, a free USD `Offer`, matching license/date fields, and a `targetProduct` reference from the source-code node.
 - Project detail README rendering lives in `src/data/readme-rendering.mjs`. It uses a per-render `Marked` instance, keeps existing GitHub raw/blob link rewriting, sanitizes remote README HTML with `sanitize-html`, and applies Shiki `github-dark-default` fenced-code highlighting through fixed token classes rather than README-sourced inline `style` attributes.
@@ -234,13 +235,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T100 Greatest Hits case-study pass:
+Highest-priority workflow/research work after the T101 count-source pass:
 
-1. `T101` -- Reconcile hero "176+" vs catalog "181" headline count.
-2. `T105` -- Promote the a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-3. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
+1. `T105` -- Promote the a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+2. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
+3. `T107` -- README TOC and reading-time on project pages.
 
-Next open checklist item in document order is `T101` hero/catalog count reconciliation.
+Next open checklist item in document order is `T105` strict a11y/deploy mirroring.
 
 ## Definition of Done for Future Changes
 
@@ -303,3 +304,4 @@ Next open checklist item in document order is `T101` hero/catalog count reconcil
 - 2026-06-04: Shipped T98 interior page-level JSON-LD. `src/data/page-freshness.ts` now drives reviewed schema for all eight interior OG routes; `/resume/` emits `ProfilePage`, `/search/` emits `SearchResultsPage`, collection routes emit `CollectionPage`, and `/healthcare-it/` emits `AboutPage`. The rendered schema audit parsed 386 JSON-LD blocks, 765 graph nodes, and checked 11 representative routes.
 - 2026-06-04: Shipped T99 live-app schema. `fetch-stars` now captures repo `createdAt` and normalized SPDX license metadata; project pages emit license/datePublished on `SoftwareSourceCode`; live-app pages emit linked `SoftwareApplication` nodes with free USD offers. The rendered schema audit parsed 386 JSON-LD blocks, 787 graph nodes, and checked 12 representative routes including `StormviewRadar`.
 - 2026-06-04: Shipped T100 Greatest Hits case-study parity. `projectProof` now carries case-study blocks for all 8 Greatest Hits repos, `npm run data:validate` gates the curated list against proof coverage and case-study shape, and the built homepage/project-page probe confirmed 8 case-study badges plus rendered Case Study/Key Decisions/Outcomes sections on the newly filled project pages.
+- 2026-06-04: Shipped T101 project-count reconciliation. Homepage/public copy now uses `catalog.length` for the visible project count, the live GitHub refresh preserves that rendered count while updating stars and card metadata, and a source regression test guards against reintroducing `_stats.totalRepos` into homepage count copy.

@@ -129,8 +129,9 @@ async function fetchGitHub(){
     const cached=readJsonCache(GITHUB_CACHE_KEY);
     if(cached&&cached.data){
         ghData=cached.data;
-        const skipAggregate=hasBaked&&baked.repos===cached.total&&baked.stars===cached.stars;
-        applyGitHubData(cached.total,cached.stars,cached.langs||null,{skipAggregate});
+        const projectCount=getFallbackRepoCount()||cached.displayTotal||cached.total;
+        const skipAggregate=hasBaked&&baked.repos===projectCount&&baked.stars===cached.stars;
+        applyGitHubData(projectCount,cached.stars,cached.langs||null,{skipAggregate});
         if(isFreshCache(cached,GITHUB_CACHE_TTL)||navigator.onLine===false)return;
     }else if(navigator.onLine===false){
         return;
@@ -157,11 +158,12 @@ async function fetchGitHub(){
             langCount[l]=(langCount[l]||0)+1;
         });
         const count=repos.length;
+        const projectCount=getFallbackRepoCount()||count;
         ghData=nextGhData;
-        writeJsonCache(GITHUB_CACHE_KEY,{data:ghData,total:count,stars:totalStars,langs:langCount,etag:result.etag,ts:Date.now()});
-        // Only update aggregates if new data actually differs (prevents useless repaint)
-        const skipAggregate=hasBaked&&baked.repos===count&&baked.stars===totalStars;
-        applyGitHubData(count,totalStars,langCount,{skipAggregate});
+        writeJsonCache(GITHUB_CACHE_KEY,{data:ghData,total:count,displayTotal:projectCount,stars:totalStars,langs:langCount,etag:result.etag,ts:Date.now()});
+        // Only animate aggregates if new data actually differs (prevents useless repaint)
+        const skipAggregate=hasBaked&&baked.repos===projectCount&&baked.stars===totalStars;
+        applyGitHubData(projectCount,totalStars,langCount,{skipAggregate});
     }catch(e){
         // If API fails and nothing was baked, try cache fallback once more
         if(!cached&&!hasBaked){
@@ -179,22 +181,25 @@ function fadeUpdateStat(el,value){
     el.classList.add('stat-updating');
     setTimeout(function(){el.textContent=value;el.classList.remove('stat-updating')},200);
 }
+function setStatText(el,value,animate){
+    if(!el)return;
+    if(animate){fadeUpdateStat(el,value);return}
+    if(el.textContent!==String(value))el.textContent=value;
+}
+function syncAggregateStats(repoCount,totalStars,animate){
+    setStatText(document.getElementById('statRepos'),repoCount,animate);
+    setStatText(document.getElementById('statStars'),totalStars,animate);
+    setStatText(document.getElementById('termRepos'),repoCount,false);
+    setStatText(document.getElementById('termStars'),totalStars,false);
+    setStatText(document.getElementById('aboutRepos'),repoCount,animate);
+    const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
+    setStatText(document.getElementById('philRepos'),repoCount,animate);
+    setStatText(document.getElementById('journeyRepos'),repoCount,animate);
+}
 function applyGitHubData(repoCount,totalStars,langCount,opts){
     opts=opts||{};
-    // Hero stats — skip if build-time value is identical (prevents flicker)
-    if(!opts.skipAggregate){
-        fadeUpdateStat(document.getElementById('statRepos'),repoCount);
-        fadeUpdateStat(document.getElementById('statStars'),totalStars);
-        // Terminal
-        const tr=document.getElementById('termRepos');if(tr)tr.textContent=repoCount;
-        const ts2=document.getElementById('termStars');if(ts2)ts2.textContent=totalStars;
-        // About
-        fadeUpdateStat(document.getElementById('aboutRepos'),repoCount);
-        const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
-        // Philosophy & Journey
-        fadeUpdateStat(document.getElementById('philRepos'),repoCount);
-        fadeUpdateStat(document.getElementById('journeyRepos'),repoCount);
-    }
+    // Aggregate project count follows the rendered catalog, not the raw GitHub repo count.
+    syncAggregateStats(repoCount,totalStars,!opts.skipAggregate);
     // Live apps count
     const liveApps=document.querySelectorAll('#live .lc2').length;
     const sl=document.getElementById('statLive');if(sl)sl.textContent=liveApps;
