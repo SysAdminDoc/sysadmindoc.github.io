@@ -206,7 +206,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] `/atom.xml`.
     - Done: Added an Atom 1.0 project feed at `/atom.xml`, advertised it from Base alternate links and `llms.txt`, precached it beside `/rss.xml`, and extended endpoint, feed, smoke, and source-contract audits to validate Atom discovery, cache/content type policy, item-count parity with JSON Feed, self-link metadata, entry URLs, dates, and content.
     - Verify: `node --check src/pages/atom.xml.ts`; `node --check scripts/audit-feed.mjs`; `node --check scripts/audit-public-endpoints.mjs`; `node --check scripts/smoke-live-site.mjs`; `node --test test/atom-feed.test.mjs`.
-  - [ ] Catalog no-JS `<form>`.
+  - [x] Catalog no-JS `<form>`.
+    - Done: The homepage catalog search is now a real `GET` form targeting `/search/` with the query field named `q`. JavaScript intercepts submit for in-page filtering and immediately syncs the current input value before applying filters; no-JS users get a `<noscript>` submit button that lands on `/search/?q=...`.
+    - Verify: `node --check public/scripts/main.js`; `node --test test/catalog-noscript-form.test.mjs`; `npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci`; `npm run a11y:audit`; `git diff --check`; local Playwright fallback checks after the in-app Browser attach timed out confirmed JS submit stays on `/` with URL-backed `q=` state and no console warnings, while JavaScript-disabled submit navigates to `/search/?q=python` with no horizontal overflow.
   - [ ] Minify public JS.
   - [ ] `llms.txt` completeness.
   - [ ] Beyond Code enrich + CLAUDE.md sync.
