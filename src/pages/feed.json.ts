@@ -35,6 +35,8 @@ export async function GET(context: APIContext) {
     title: 'Matt Parker — Projects',
     home_page_url: `${site}/`,
     feed_url: `${site}/feed.json`,
+    icon: `${site}/icon-512.png`,
+    favicon: `${site}/favicon.svg`,
     description: `Open-source projects, live web apps, and the full catalog — ${catalog.length}+ projects.`,
     language: 'en-US',
     authors: [{ name: 'Matt Parker', url: 'https://github.com/SysAdminDoc' }],
