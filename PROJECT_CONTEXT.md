@@ -60,7 +60,8 @@ The site must remain public-safe. It should not expose private repository names,
 - Deployment target is GitHub Pages through GitHub Actions.
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
 - A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, forced-colors data-visualization coverage, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
-- `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, publishes a compact warning table to the job summary, uploads filesystem reports plus `.tmp/lhci/summary.md`, and does not fail the job on budget warnings.
+- `build:ci` runs Astro build, the HTML structure verifier, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, publishes a compact warning table to the job summary, uploads filesystem reports plus `.tmp/lhci/summary.md`, and does not fail the job on budget warnings.
+- `scripts/fix-html-structure.mjs` is now an assert/no-op verifier by default. The original invalid-output trigger was JSON-LD emitted between `</head>` and `<body>`; the layout now keeps JSON-LD at the top of `<body>`. Current Astro 6.4.4 output with `compressHTML:true` emits valid `</body></html>` order on both fixture and live profile builds, so the script fails instead of mutating if the legacy early-`</html>` bug returns; `--repair` is reserved for explicit legacy-output recovery.
 - Browser accessibility and visual-regression coverage lives in `playwright.audits.config.mjs` and `tests/playwright/portfolio-audits.spec.mjs`. `npm run audit:playwright` serves built `dist/`, runs axe-core checks on `/`, `/search/?q=python`, `/archive/`, `/projects/project-nomad-desktop/`, plus hydrated command-palette and terminal states, then compares desktop/mobile viewport screenshots against Linux-generated baselines under `tests/playwright/__screenshots__/chromium/`. PR CI installs Chromium after the strict static a11y gate, runs this Playwright audit, and uploads `.tmp/playwright-report` plus `.tmp/playwright-results`.
 - Top navigation styling is scoped to `#nav` in both `critical.css` and `global.css`. Do not reintroduce bare `nav` selectors for fixed positioning, backdrop, safe-area padding, or light-theme chrome because interior and section jump navigation use semantic `nav` elements that must remain in normal flow.
 - Contrast accessibility has two layers: `forced-colors: active` uses system colors for Windows High Contrast style modes, and `prefers-contrast: more` strengthens text, borders, focus halos, top navigation, cards, jump links, and install/update toast boundaries without creating a separate theme.
@@ -76,6 +77,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Unit tests: `npm test`
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
+- Verify built HTML structure: `node scripts/fix-html-structure.mjs` after `astro build`; use `--repair` only for explicit legacy-output recovery.
 - Build search index only: `npm run search:index` after `astro build`
 - Audit generated search index: `npm run search:audit` after `npm run search:index` or `npm run build`
 - Audit built public endpoints: `npm run endpoints:audit` after `npm run build`
@@ -104,7 +106,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 Current verification baseline:
 
-- `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
+- `npm run check` passed with 52 Astro files, 0 errors, 0 warnings, and 0 hints.
 - The generated fixture path passed from a clean ignored-cache state: `npm run generated:fixtures:check`; `npm run generated:fixtures`; `PROFILE_PROJECTS_OFFLINE=1 npm run check`; `npm test`; `npm run build:ci`; standalone `npm run endpoints:audit`; `npm run feed:audit`; `npm run search:audit`; `npm run schema:audit`; `npm run a11y:audit`; and `rtk git diff --check`. The fixture build rendered 16 profile projects, 9 releases, all 10 Pagefind Category labels, and source-only plus live-app representative JSON-LD project routes.
 - `npm run audit:playwright` passed in the official `mcr.microsoft.com/playwright:v1.60.0-noble` Linux image after regenerating baselines with fixture data. The suite ran 14 tests: 4 route-level axe checks, command-palette axe, terminal axe, and 8 desktop/mobile visual baselines for home, search, archive, and project detail viewports. The T108 Docker verification repeated fixture install, offline check, `build:ci`, `audit:playwright:update`, and `audit:playwright` with 14/14 passing after the homepage jump-nav visual change.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, 8 interior OG pages, and 1200x630 PNG OG metadata checks.
@@ -120,6 +122,7 @@ Current verification baseline:
 - `npm run forced-colors:audit` passed on the current build with emulated `forced-colors: active`: desktop and mobile checks painted 364/364 heatmap cells, 8/8 language-donut segments, and 8 skill rings with visible text/boundary coverage.
 - T109 browser verification used a local Playwright iPhone/Safari profile with `prefers-contrast: more`: the manual `ios-install` toast appeared with Add to Home Screen/Open as Web App guidance, Apple standalone metadata was present, the top-nav contrast border used `rgba(124, 184, 255, 0.42)`, and mobile overflow was 0.
 - T110 verification covered stack-metric parity with `node --check public/scripts/main.js`, `npm test` (47 tests), `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`, `npm run build:ci`, `npm run a11y:audit`, `npm run forced-colors:audit`, `git diff --check`, a local Playwright bad-cache probe for the rendered portfolio language donut and derived skill metrics, and official Docker/Linux generated-fixture `audit:playwright` with 14/14 passing.
+- T111 verification confirmed the legacy Astro early-`</html>` repair is no longer reproducible: fixture and live profile-feed builds on Astro 6.4.4 with `compressHTML:true` scanned 194 HTML files and repaired 0. The verifier path passed `node --check scripts/fix-html-structure.mjs`, `node --test test/html-structure.test.mjs`, `npm test` (51 tests), `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`, and `npm run build:ci`.
 - Manual `quality-gates.yml` workflow_dispatch run `26967664484` passed on commit `cdf87fd` after the forced-colors data-viz audit addition. The forced-colors build-output step reported PASS for desktop and mobile, the summary reported Forced-colors data visualizations PASS, and the uploaded `quality-gate-reports` artifact ID was `7418247524`.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
@@ -248,12 +251,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T110 stack-metric parity pass:
+Highest-priority workflow/research work after the T111 HTML structure verifier pass:
 
-1. `T111` -- Root-cause Astro 6 HTML repair and convert the fixer to assert-or-noop when safe.
-2. `T112` -- P3 cluster: terminal commands, Atom feed, no-JS catalog form, public JS minification, llms completeness, Beyond Code enrichments, style-src follow-up, and catalog DOM-size budget.
+1. `T112` -- P3 cluster: terminal commands, Atom feed, no-JS catalog form, public JS minification, llms completeness, Beyond Code enrichments, style-src follow-up, and catalog DOM-size budget.
 
-Next open checklist item in document order is `T111` Astro 6 HTML repair root-cause analysis and fixer assert/no-op conversion.
+Next open checklist item in document order is `T112` P3 terminal/feed/no-JS/minification/llms/Beyond-Code/style/Catalog-DOM cluster.
 
 ## Definition of Done for Future Changes
 
@@ -323,3 +325,4 @@ Next open checklist item in document order is `T111` Astro 6 HTML repair root-ca
 - 2026-06-04: Shipped T108 homepage SectionJumpNav. The homepage now reuses `cmdkSections` for a `Portfolio Sections` jump nav, includes `Project Mix` / `#volume` in the shared map, filters non-fragment command-palette routes out of the in-page nav, and scopes fixed top-nav CSS to `#nav` so semantic section navs remain in normal flow.
 - 2026-06-04: Shipped T109 iOS PWA install and contrast support. The homepage install prompt now has a Safari Add to Home Screen path, `Base.astro` emits Apple standalone metadata, `prefers-contrast: more` strengthens text/border/focus surfaces in critical and full CSS, and `WebSite` `SearchAction` remains intentionally omitted after current Google Search Central verification.
 - 2026-06-04: Shipped T110 stack-metric parity. The hydrated language donut now reads the rendered portfolio project population with `_meta.json` language metadata before using raw GitHub fallback counts, and skill rings now derive visible lane counts, percentages, accessible labels, and ring targets from the rendered catalog categories.
+- 2026-06-04: Shipped T111 HTML structure verifier cleanup. Current Astro 6.4.4 fixture and live profile builds no longer emit the early `</html>` quirk, so `fix-html-structure` now asserts valid output without mutating by default while keeping explicit `--repair` for legacy recovery.
