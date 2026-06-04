@@ -72,6 +72,7 @@ Current verification baseline:
 - `npm test` passed with 12 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
+- Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
 - In-app browser verification after the critical-CSS split passed at 1280x720 and 390x900: async `global.css` swapped to `media="all"`, 177 catalog cards rendered, theme toggle worked, command palette opened, and console warnings/errors were empty.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
