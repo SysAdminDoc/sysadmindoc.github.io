@@ -296,12 +296,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: Homepage proof highlights are declared in typed data, each selected repo resolves to a valid `projectProof` record, each metric/copy/source is non-empty and bounded for mobile layout, and the homepage render loop consumes the validated data instead of hardcoded local constants.
   - Verify: `npm run data:validate`; `npm test`; `npm run check`; `npm run build`; `npm run a11y:audit`; Browser preview at `http://127.0.0.1:4326/?proof-data=1` showed 3 data-driven proof links, `hn -> hero-proof-strip -> hr -> hd`, proof strip bottom at 465px in a 720px viewport, no horizontal overflow, and no console errors; `npm run audit:perf -- --base http://127.0.0.1:4326 --out .tmp/perf-t128.json` passed Home mobile at 390px with LCP 972ms, CLS 0, bfcache yes, and no horizontal overflow.
 
-- [ ] **T129** 🤖 P2 — Add a critical/global CSS parity audit for first-viewport selectors.
+- [x] **T129** 🤖 P2 — Add a critical/global CSS parity audit for first-viewport selectors.
   - Why: The first-viewport CSS split now requires shared hero/proof selectors to be represented in both `critical.css` and `global.css`; missing one side can create first-paint layout shifts or async-style behavior that only appears after the full stylesheet loads.
   - Evidence: Current proof-strip styles duplicate `.hero-proof-strip`, `.hero-proof`, `.hero-proof-label`, `.hero-proof-value`, and `.hero-proof-copy` in both `src/styles/critical.css` and `src/styles/global.css`, including mobile overrides, but no script audits selector parity after T16 split the first-viewport CSS path.
   - Touches: `scripts/audit-assets.mjs` or a new `scripts/audit-css.mjs`, `package.json`, `src/styles/critical.css`, and `src/styles/global.css`.
+  - Done: Added `scripts/audit-css.mjs` and wired `npm run css:audit` into both `npm run check` and `npm run build`. The audit extracts selector lists from `critical.css` and `global.css`, checks the shared first-viewport nav/hero/proof/stage selectors plus selected mobile overrides, and includes `--self-test` coverage that proves a removed shared selector is reported.
   - Acceptance: A CSS audit extracts expected first-viewport class selectors, allows intentional critical-only/global-only exceptions, and fails when a shared hero/first-viewport selector or selected mobile override is missing from either stylesheet without requiring byte-for-byte declaration equality.
-  - Verify: `npm run assets:audit` or `npm run css:audit`; confirm a deliberately removed shared selector is reported.
+  - Verify: `npm run css:audit`; `npm run css:audit -- --self-test`; `npm test`; `npm run check`; `npm run build`; `npm run a11y:audit`.
 
 ---
 
