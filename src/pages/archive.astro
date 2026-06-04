@@ -5,9 +5,21 @@ import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { archiveEntries } from '../data/archive';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import type { ArchiveStatus } from '../data/types';
 
+const title = 'Archive - Matt Parker';
 const pageOg = interiorOgPageBySlug.archive;
+const pageFreshness = pageFreshnessBySlug.archive;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
 const publicLinkCount = archiveEntries.reduce((total, entry) => total + entry.links.length, 0);
 const sensitiveCount = archiveEntries.filter((entry) => entry.sensitive).length;
 const linkedEntryCount = archiveEntries.filter((entry) => entry.links.length > 0).length;
@@ -38,7 +50,8 @@ const cmdkSections = [
   { label: 'Entries', href: '#archive-entries', desc: 'Retired, moved, held, or superseded project decisions.', badge: `${archiveEntries.length}` },
 ] as const;
 ---
-<Base title="Archive - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="archive" contextLabel="Archive decisions" contextTone="amber" />
 

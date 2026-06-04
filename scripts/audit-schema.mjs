@@ -26,11 +26,31 @@ const representativeRoutes = new Map([
     checks: checkReviewedInteriorRoute,
   }],
   ['/resume/', {
+    types: ['WebSite', 'Person', 'ProfilePage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/search/', {
+    types: ['WebSite', 'Person', 'SearchResultsPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/timeline/', {
+    types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/archive/', {
+    types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/now/', {
     types: ['WebSite', 'Person', 'WebPage'],
     checks: checkReviewedInteriorRoute,
   }],
   ['/healthcare-it/', {
-    types: ['WebSite', 'Person', 'WebPage'],
+    types: ['WebSite', 'Person', 'AboutPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
+  ['/releases/', {
+    types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
     checks: checkReviewedInteriorRoute,
   }],
 ]);
@@ -185,6 +205,9 @@ function checkReviewedInteriorRoute(nodes, route) {
   if (webPage.isPartOf?.['@id'] !== websiteId) fail(`${route} WebPage isPartOf must reference ${websiteId}`);
   if (webPage.about?.['@id'] !== personId) fail(`${route} WebPage about must reference ${personId}`);
   if (webPage.reviewedBy?.['@id'] !== personId) fail(`${route} WebPage reviewedBy must reference ${personId}`);
+  if (hasType([webPage], 'ProfilePage') && webPage.mainEntity?.['@id'] !== personId) {
+    fail(`${route} ProfilePage mainEntity must reference ${personId}`);
+  }
   if (!webPage.dateModified || Number.isNaN(new Date(webPage.dateModified).getTime())) {
     fail(`${route} WebPage dateModified is missing or not parseable`);
   }

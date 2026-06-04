@@ -17,6 +17,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
   title,
   description: pageOg.description,
   lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
 });
 const cmdkSections = [
   { label: 'Overview', href: '#uses-overview', desc: 'What this page covers and why it exists.', badge: 'USES' },

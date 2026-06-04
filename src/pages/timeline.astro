@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import type { Lang } from '../data/types';
@@ -237,9 +238,21 @@ const cmdkSections = [
   { label: 'Year Review', href: '#year-review', desc: 'Roll-up cards generated from release, project, and changelog evidence.', badge: 'YEARS' },
   { label: 'Events', href: '#timeline-events', desc: 'Filterable project timeline by year, platform, category, and language.', badge: 'FILTERS' },
 ] as const;
+const title = 'Timeline — Matt Parker';
 const pageOg = interiorOgPageBySlug.timeline;
+const pageFreshness = pageFreshnessBySlug.timeline;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
 ---
-<Base title="Timeline — Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="timeline" contextLabel="Timeline" contextTone="blue" />
 

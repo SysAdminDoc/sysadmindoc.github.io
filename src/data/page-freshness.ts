@@ -3,6 +3,8 @@ export interface ReviewedInteriorPage {
   route: `/${string}/`;
   label: string;
   lastReviewed: string;
+  schemaTypes: string[];
+  visibleFreshness: boolean;
 }
 
 export const reviewedInteriorPages: ReviewedInteriorPage[] = [
@@ -11,18 +13,64 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     route: '/uses/',
     label: 'Uses',
     lastReviewed: '2026-06-04',
+    schemaTypes: ['WebPage'],
+    visibleFreshness: true,
   },
   {
     slug: 'resume',
     route: '/resume/',
     label: 'Resume',
     lastReviewed: '2026-06-04',
+    schemaTypes: ['ProfilePage', 'WebPage'],
+    visibleFreshness: true,
+  },
+  {
+    slug: 'search',
+    route: '/search/',
+    label: 'Search',
+    lastReviewed: '2026-06-04',
+    schemaTypes: ['SearchResultsPage', 'WebPage'],
+    visibleFreshness: false,
+  },
+  {
+    slug: 'timeline',
+    route: '/timeline/',
+    label: 'Timeline',
+    lastReviewed: '2026-06-04',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: false,
+  },
+  {
+    slug: 'archive',
+    route: '/archive/',
+    label: 'Archive Decisions',
+    lastReviewed: '2026-06-04',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: false,
+  },
+  {
+    slug: 'now',
+    route: '/now/',
+    label: 'Now',
+    lastReviewed: '2026-06-04',
+    schemaTypes: ['WebPage'],
+    visibleFreshness: false,
   },
   {
     slug: 'healthcare-it',
     route: '/healthcare-it/',
     label: 'Healthcare IT',
     lastReviewed: '2026-06-04',
+    schemaTypes: ['AboutPage', 'WebPage'],
+    visibleFreshness: true,
+  },
+  {
+    slug: 'releases',
+    route: '/releases/',
+    label: 'Releases',
+    lastReviewed: '2026-06-04',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: false,
   },
 ];
 
@@ -49,24 +97,32 @@ export function reviewedWebPageJsonLd({
   title,
   description,
   lastReviewed,
+  schemaTypes = ['WebPage'],
 }: {
   siteUrl: string;
   route: string;
   title: string;
   description: string;
   lastReviewed: string;
+  schemaTypes?: string[];
 }) {
   const url = `${siteUrl}${route}`;
-  return JSON.stringify({
+  const types = schemaTypes.length === 1 ? schemaTypes[0] : schemaTypes;
+  const personId = `${siteUrl}/#matt-parker`;
+  const node: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'WebPage',
+    '@type': types,
     '@id': `${url}#webpage`,
     url,
     name: title,
     description,
     dateModified: reviewedDateTime(lastReviewed),
     isPartOf: { '@id': `${siteUrl}/#website` },
-    about: { '@id': `${siteUrl}/#matt-parker` },
-    reviewedBy: { '@id': `${siteUrl}/#matt-parker` },
-  });
+    about: { '@id': personId },
+    reviewedBy: { '@id': personId },
+  };
+  if (schemaTypes.includes('ProfilePage')) {
+    node.mainEntity = { '@id': personId };
+  }
+  return JSON.stringify(node);
 }
