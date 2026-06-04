@@ -341,6 +341,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 9 — 2026-06-04) — see [docs/research-2026-06-04-cycle-9.md](docs/research-2026-06-04-cycle-9.md)
+
+- [ ] **T133** 🤖 P2 — Normalize cache headers for generated public endpoint artifacts.
+  - Why: The site now exposes multiple public machine-readable endpoints, but only some set explicit cache policy; inconsistent defaults make freshness expectations unclear for feed readers, command-palette data, and machine consumers.
+  - Evidence: `src/pages/projects.json.ts` and `src/pages/releases.json.ts` return `Cache-Control: public, max-age=300`; `src/pages/feed.json.ts`, `src/pages/releases.xml.ts`, `src/pages/llms.txt.ts`, and `src/pages/cmdk-data.js.ts` return content without explicit cache headers; `Base.astro` comments describe `/cmdk-data.js` as cached page-independent data; MDN documents `max-age` freshness, `no-cache` revalidation, and recommends explicit `Cache-Control` when caching behavior matters; Astro endpoints return `Response` objects where headers can be set.
+  - Touches: Feed/text/script endpoint files under `src/pages/`, optionally a shared endpoint response helper, and T130's future endpoint audit.
+  - Acceptance: Public generated endpoints have a documented cache policy: short bounded freshness or revalidation for data/feed/text files that can change each deploy, long immutable policy only for hashed/static assets, and the endpoint audit verifies expected `Content-Type` plus cache policy from built artifacts or live smoke.
+  - Verify: `npm run build && npm run endpoints:audit`; optionally `Invoke-WebRequest https://sysadmindoc.github.io/feed.json`, `/releases.xml`, `/llms.txt`, and `/cmdk-data.js` to confirm live headers after deploy.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
