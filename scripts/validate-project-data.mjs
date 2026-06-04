@@ -219,6 +219,7 @@ const liveApps = exportedArray(projectsSource, 'liveApps');
 const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
 const proofRecords = exportedObject(proofSource, 'projectProof');
+const homepageProofHighlights = exportedArray(proofSource, 'homepageProofHighlights');
 const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
 let profileFeedProjectCount = null;
 const profileCategoryMap = {
@@ -256,6 +257,7 @@ validateUnique('featured', featured, 'repo');
 validateUnique('liveApps', liveApps, 'slug');
 validateUnique('catalog', catalog, 'repo');
 validateUnique('skills', skills, 'code');
+validateUnique('homepageProofHighlights', homepageProofHighlights, 'repo');
 validateUnique('archiveEntries', archiveEntries, 'id');
 
 for (const lang of allowedLangs) {
@@ -389,6 +391,79 @@ for (const [slug, proof] of Object.entries(proofRecords)) {
   }
 }
 
+function validateHomepageProofSource(index, proof, source) {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    fail(`homepageProofHighlights[${index}].source must be an object selector.`);
+    return;
+  }
+
+  const kind = source.kind;
+  if (typeof kind !== 'string' || kind.trim().length === 0) {
+    fail(`homepageProofHighlights[${index}].source.kind must be a non-empty string.`);
+    return;
+  }
+
+  const keys = Object.keys(source);
+  const expectedKeys = kind === 'caseStudyContext' ? new Set(['kind']) : new Set(['kind', 'index']);
+  for (const key of keys) {
+    if (!expectedKeys.has(key)) {
+      fail(`homepageProofHighlights[${index}].source.${key} is not valid for ${kind}.`);
+    }
+  }
+
+  if (kind === 'caseStudyContext') {
+    if (typeof proof?.caseStudy?.context !== 'string' || proof.caseStudy.context.trim().length === 0) {
+      fail(`homepageProofHighlights[${index}].source references missing caseStudy.context.`);
+    }
+    return;
+  }
+
+  if (!Number.isInteger(source.index) || source.index < 0) {
+    fail(`homepageProofHighlights[${index}].source.index must be a non-negative integer for ${kind}.`);
+    return;
+  }
+
+  if (kind === 'buildEvidence') {
+    const value = proof?.buildEvidence?.[source.index];
+    if (typeof value !== 'string' || value.trim().length === 0) {
+      fail(`homepageProofHighlights[${index}].source references missing buildEvidence[${source.index}].`);
+    }
+    return;
+  }
+
+  if (kind === 'caseStudyOutcome') {
+    const value = proof?.caseStudy?.outcomes?.[source.index];
+    if (typeof value !== 'string' || value.trim().length === 0) {
+      fail(`homepageProofHighlights[${index}].source references missing caseStudy.outcomes[${source.index}].`);
+    }
+    return;
+  }
+
+  fail(`homepageProofHighlights[${index}].source.kind "${kind}" is not supported.`);
+}
+
+if (homepageProofHighlights.length === 0) {
+  fail('homepageProofHighlights must contain at least one proof highlight.');
+}
+if (homepageProofHighlights.length > 4) {
+  fail(`homepageProofHighlights must contain at most 4 highlights for the mobile hero strip, got ${homepageProofHighlights.length}.`);
+}
+homepageProofHighlights.forEach((highlight, index) => {
+  const repo = requireString('homepageProofHighlights', index, highlight, 'repo');
+  validateRepoName('homepageProofHighlights', index, 'repo', repo);
+  if (repo && !portfolioRefs.has(repo)) fail(`homepageProofHighlights[${index}].repo ${repo} must refer to a project route.`);
+  const proof = proofRecords[repo];
+  if (repo && !proof) fail(`homepageProofHighlights[${index}].repo ${repo} must have a projectProof record.`);
+
+  const label = requireString('homepageProofHighlights', index, highlight, 'label');
+  const value = requireString('homepageProofHighlights', index, highlight, 'value');
+  const copy = requireString('homepageProofHighlights', index, highlight, 'copy');
+  if (label.length > 32) fail(`homepageProofHighlights[${index}].label must be 32 characters or fewer for mobile layout.`);
+  if (value.length > 24) fail(`homepageProofHighlights[${index}].value must be 24 characters or fewer for mobile layout.`);
+  if (copy.length > 96) fail(`homepageProofHighlights[${index}].copy must be 96 characters or fewer for mobile layout.`);
+  validateHomepageProofSource(index, proof, highlight.source);
+});
+
 const allowedArchiveStatuses = new Set(['moved', 'held', 'removed', 'superseded', 'archived']);
 for (const [index, entry] of archiveEntries.entries()) {
   const id = requireString('archiveEntries', index, entry, 'id');
@@ -491,6 +566,7 @@ console.log(`  local fallback command palette projects: ${commandPaletteProjects
 if (profileFeedProjectCount !== null) console.log(`  rendered profile feed projects: ${profileFeedProjectCount}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
 console.log(`  proof records: ${Object.keys(proofRecords).length}`);
+console.log(`  homepage proof highlights: ${homepageProofHighlights.length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
 
 if (warnings.length > 0) {
