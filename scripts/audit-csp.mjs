@@ -9,6 +9,8 @@ const sourceDirs = ['src'];
 const options = {
   strict: false,
   candidateScriptSrc: null,
+  candidateStyleSrc: null,
+  distDir: null,
 };
 
 for (let index = 2; index < process.argv.length; index += 1) {
@@ -20,8 +22,21 @@ for (let index = 2; index < process.argv.length; index += 1) {
     options.candidateScriptSrc = process.argv[index];
   } else if (arg.startsWith('--candidate-script-src=')) {
     options.candidateScriptSrc = arg.slice('--candidate-script-src='.length);
+  } else if (arg === '--candidate-style-src') {
+    index += 1;
+    options.candidateStyleSrc = process.argv[index];
+  } else if (arg.startsWith('--candidate-style-src=')) {
+    options.candidateStyleSrc = arg.slice('--candidate-style-src='.length);
+  } else if (arg === '--dist') {
+    const next = process.argv[index + 1];
+    if (next && !next.startsWith('--')) {
+      index += 1;
+      options.distDir = next;
+    } else {
+      options.distDir = 'dist';
+    }
   } else if (arg === '--help' || arg === '-h') {
-    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--strict]');
+    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--candidate-style-src <tokens>] [--dist [dir]] [--strict]');
     process.exit(0);
   } else {
     throw new Error(`Unknown argument: ${arg}`);
@@ -135,6 +150,14 @@ function scriptAllowedByCandidate(record, tokens) {
   return tokens.includes(`'${record.hash}'`) || tokens.includes(record.hash);
 }
 
+function styleAllowedByCandidate(record, tokens) {
+  if (directiveAllowsUnsafeInline(tokens)) return true;
+  if (record.kind === 'style-block' && record.hash) {
+    return tokens.includes(`'${record.hash}'`) || tokens.includes(record.hash);
+  }
+  return false;
+}
+
 function auditSourceFile(filePath, text) {
   const rel = toPosix(path.relative(root, filePath));
   const cspMetas = [];
@@ -229,18 +252,24 @@ function auditSourceFile(filePath, text) {
   while ((styleMatch = stylePattern.exec(text)) !== null) {
     const attrs = parseAttrs(styleMatch[1]);
     styleBlocks.push({
+      kind: 'style-block',
       file: rel,
       line: lineFor(text, styleMatch.index),
       dynamic: Boolean(attrs['set:html']),
       bytes: styleMatch[2].length,
       attrs,
+      hash: !attrs['set:html'] && styleMatch[2].trim() ? sha256Csp(styleMatch[2]) : null,
     });
   }
 
   return { cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes };
 }
 
-const files = (await Promise.all(sourceDirs.map((dir) => collectFiles(path.join(root, dir))))).flat();
+const scanRoots = options.distDir ? [options.distDir] : sourceDirs;
+const files = (await Promise.all(scanRoots.map((dir) => collectFiles(path.resolve(root, dir))))).flat();
+if (options.distDir && files.length === 0) {
+  throw new Error(`No built HTML files found under ${options.distDir}. Run the build before using --dist.`);
+}
 const sourceAudits = [];
 for (const filePath of files) {
   sourceAudits.push(auditSourceFile(filePath, await fs.readFile(filePath, 'utf8')));
@@ -267,6 +296,7 @@ for (const handler of eventHandlers) handler.allowlist = findEventAllowlist(hand
 const unknownExecutable = executableInline.filter((script) => !script.allowlist);
 const unknownEventHandlers = eventHandlers.filter((handler) => !handler.allowlist);
 const candidate = candidateTokens(options.candidateScriptSrc);
+const candidateStyle = candidateTokens(options.candidateStyleSrc);
 const candidateBlockers = candidate
   ? [
       ...executableInline
@@ -277,9 +307,29 @@ const candidateBlockers = candidate
         .map((handler) => ({ kind: 'event-handler', record: handler })),
     ]
   : [];
+const candidateStyleBlockers = candidateStyle
+  ? [
+      ...styleBlocks
+        .filter((style) => !styleAllowedByCandidate(style, candidateStyle))
+        .map((style) => ({ kind: 'style-block', record: style })),
+      ...styleAttributes
+        .filter((style) => !styleAllowedByCandidate({ ...style, kind: 'style-attribute' }, candidateStyle))
+        .map((style) => ({ kind: 'style-attribute', record: style })),
+    ]
+  : [];
 
 function formatLocation(record) {
   return `${record.file}:${record.line}`;
+}
+
+function printCandidateBlockers(blockers, labelFor, max = 80) {
+  const shown = blockers.slice(0, max);
+  for (const blocker of shown) {
+    console.log(`  - ${blocker.kind}: ${formatLocation(blocker.record)} ${labelFor(blocker)}`);
+  }
+  if (blockers.length > shown.length) {
+    console.log(`  ... ${blockers.length - shown.length} more blocker(s) omitted`);
+  }
 }
 
 function printScript(script) {
@@ -298,7 +348,7 @@ function printEvent(handler) {
 }
 
 console.log('CSP preflight audit');
-console.log(`  source files scanned: ${files.length}`);
+console.log(`  ${options.distDir ? 'built HTML files' : 'source files'} scanned: ${files.length}`);
 console.log(`  CSP meta tags: ${cspMetas.length}`);
 if (activeCsp) console.log(`  active CSP: ${activeCsp}`);
 console.log(`  script-src: ${scriptSrc.join(' ') || '(inherits default-src)'}`);
@@ -330,13 +380,29 @@ if (candidate) {
     console.log('  PASS - candidate allows all current executable inline script surfaces.');
   } else {
     console.log(`  BLOCKED - ${candidateBlockers.length} current executable inline surface(s) would be blocked.`);
-    for (const blocker of candidateBlockers) {
+    printCandidateBlockers(candidateBlockers, (blocker) => {
       const record = blocker.record;
-      const label = blocker.kind === 'inline-script'
+      return blocker.kind === 'inline-script'
         ? record.allowlist?.label ?? 'unclassified inline script'
         : record.allowlist?.label ?? `${record.tagName}.${record.attribute}`;
-      console.log(`  - ${blocker.kind}: ${formatLocation(record)} ${label}`);
-    }
+    });
+  }
+}
+
+if (candidateStyle) {
+  console.log('');
+  console.log(`Candidate style-src: ${candidateStyle.join(' ')}`);
+  if (candidateStyleBlockers.length === 0) {
+    console.log('  PASS - candidate allows all current inline style surfaces.');
+  } else {
+    console.log(`  BLOCKED - ${candidateStyleBlockers.length} current inline style surface(s) would be blocked.`);
+    printCandidateBlockers(candidateStyleBlockers, (blocker) => {
+      const record = blocker.record;
+      if (blocker.kind === 'style-block') {
+        return record.hash ? `hash='${record.hash}'` : 'hash=dynamic';
+      }
+      return `${record.tagName}.style`;
+    });
   }
 }
 
@@ -352,6 +418,9 @@ if (options.strict && directiveAllowsUnsafeInline(scriptSrc)) {
 }
 if (options.strict && candidate && candidateBlockers.length > 0) {
   failures.push(`candidate script-src ${candidate.join(' ')} would block ${candidateBlockers.length} current inline surface(s).`);
+}
+if (options.strict && candidateStyle && candidateStyleBlockers.length > 0) {
+  failures.push(`candidate style-src ${candidateStyle.join(' ')} would block ${candidateStyleBlockers.length} current inline style surface(s).`);
 }
 
 if (failures.length > 0) {
