@@ -56,6 +56,66 @@ export const projectProof: Record<string, ProjectProof> = {
       ],
     },
   },
+  UniversalConverterX: {
+    problem:
+      'Power users need broad local file conversion without uploading private files to SaaS tools or chaining fragile one-off converters together.',
+    buildEvidence: [
+      'Greatest Hits positions the project as a 1000+ format desktop converter with media, document, archive, PDF, subtitle, font, ebook, and OCR coverage.',
+      'The catalog keeps it in the Desktop lane so visitors can compare it with other local-first Windows tooling.',
+      'Repository source and README are linked for anyone who needs to inspect the converter shell before using it on local files.',
+    ],
+    platforms: ['Windows', 'WinUI 3', 'Sidecar conversion engines'],
+    installPath: 'Use the repository README and releases for the current Windows build and supported converter backends.',
+    knownLimitations:
+      'Actual format coverage depends on bundled or configured sidecar engines, so unsupported codecs and malformed files still need specialist tools.',
+    sources: [
+      { label: 'Repository', url: 'https://github.com/SysAdminDoc/UniversalConverterX' },
+      { label: 'README', url: 'https://github.com/SysAdminDoc/UniversalConverterX#readme' },
+    ],
+    caseStudy: {
+      context: 'Most file-conversion workflows become a trail of ad-heavy websites, trialware, and format-specific utilities. UniversalConverterX turns that category into a local desktop command center: one interface, sidecar engines where they make sense, and no need to hand private files to a remote service.',
+      decisions: [
+        'Used a desktop shell around proven sidecar engines instead of trying to reimplement every codec and parser from scratch.',
+        'Grouped conversion families by user intent - media, documents, archives, subtitles, fonts, ebooks, OCR - so breadth does not become a flat, unsearchable list.',
+        'Kept conversion local by default, preserving the portfolio rule that utility tools should not require an account, cloud upload, or subscription.',
+      ],
+      outcomes: [
+        'Gives the portfolio a flagship desktop utility that demonstrates orchestration across many external toolchains.',
+        'Turns the "1000+ formats" claim into a project-level story instead of leaving it as a single Greatest Hits sentence.',
+        'The sidecar-engine pattern is reusable for other local media, document, and repair workflows.',
+      ],
+    },
+  },
+  HostShield: {
+    problem:
+      'Android users need ad and tracker blocking that can work on both rooted and stock devices without forcing a custom ROM or cloud DNS account.',
+    buildEvidence: [
+      'Greatest Hits describes a dual-mode hosts-based blocker with root and VPN paths for Android.',
+      'The catalog places it in the Android lane, where it anchors the privacy and device-control side of the portfolio.',
+      'The source repository is linked so users can inspect blocking behavior before installing network-adjacent code.',
+    ],
+    platforms: ['Android', 'Kotlin', 'Root hosts mode', 'VPN mode'],
+    installPath: 'Use the repository README and releases for the current APK build and device-mode guidance.',
+    knownLimitations:
+      'Blocking quality depends on list freshness, Android VPN restrictions, and whether the device grants root or VPN permissions.',
+    sources: [
+      { label: 'Repository', url: 'https://github.com/SysAdminDoc/HostShield' },
+      { label: 'README', url: 'https://github.com/SysAdminDoc/HostShield#readme' },
+    ],
+    caseStudy: {
+      context: 'Mobile ad blocking usually splits into two camps: rooted users who can edit hosts files, and everyone else who must rely on VPN-style filtering. HostShield is built around that real device split, so the same app can serve both power users and stock Android users without pretending one path fits all.',
+      decisions: [
+        'Designed root and VPN modes as first-class paths instead of treating stock-device support as a degraded fallback.',
+        'Kept the interface AMOLED-dark and direct, matching the way Android utility users expect to leave the app running for long sessions.',
+        'Focused on local blocking behavior and transparent source review rather than routing users through a hosted filtering account.',
+      ],
+      outcomes: [
+        'Adds a clear privacy-and-control case study to the Android side of Greatest Hits.',
+        'Shows how the portfolio handles privileged-device workflows without assuming every user has root.',
+        'Creates a reusable pattern for Android tools that need both advanced and stock-device execution paths.',
+      ],
+    },
+  },
   Network_Security_Auditor: {
     problem:
       'Small teams need repeatable Windows and network security evidence without turning every audit into a manual checklist exercise.',
@@ -103,6 +163,19 @@ export const projectProof: Record<string, ProjectProof> = {
       { label: 'Repository', url: 'https://github.com/SysAdminDoc/project-nomad-desktop' },
       { label: 'README', url: 'https://github.com/SysAdminDoc/project-nomad-desktop#readme' },
     ],
+    caseStudy: {
+      context: 'Preparedness tooling is least useful when it assumes the internet is still available. Project Nomad takes the opposite stance: maps, route references, local data tables, and command-center workflows should be preloaded before a field use case or outage, then remain usable without a live service.',
+      decisions: [
+        'Built around offline-first data surfaces so the app can still answer basic planning questions when connectivity is gone.',
+        'Grouped maps, routes, tables, AI chat, and situation-room workflows into one desktop command center instead of scattering them across browser tabs.',
+        'Kept the repository public so the offline architecture and data assumptions can be inspected rather than treated as a black box.',
+      ],
+      outcomes: [
+        'Turns the offline survival command-center claim into a reviewable case study for the portfolio.',
+        'Demonstrates the same local-first bias as the utility apps, but at a larger planning-workflow scale.',
+        'Gives visitors a concrete example of organizing hundreds of routes and dozens of tables into a usable field interface.',
+      ],
+    },
   },
   'Astra-Deck': {
     problem:
@@ -121,6 +194,49 @@ export const projectProof: Record<string, ProjectProof> = {
       { label: 'README', url: 'https://github.com/SysAdminDoc/Astra-Deck#readme' },
       { label: 'Releases', url: 'https://github.com/SysAdminDoc/Astra-Deck/releases' },
     ],
+    caseStudy: {
+      context: 'Browser power users often accumulate a fragile pile of userscripts for shortcuts, playback control, cleanup, and layout polish. Astra-Deck consolidates that into one maintained extension surface for YouTube, with Chrome and Firefox paths instead of a single-browser assumption.',
+      decisions: [
+        'Treated cross-browser packaging as a core requirement so the project can serve both Chrome and Firefox users.',
+        'Grouped many small quality-of-life enhancements into one coherent control surface instead of asking users to install a stack of scripts.',
+        'Published release artifacts and README guidance so browser code can be reviewed and installed from the project page path.',
+      ],
+      outcomes: [
+        'Makes the extension lane more than a collection of one-off scripts by giving it a flagship case study.',
+        'Supports the Greatest Hits claim of 150+ enhancements with a deeper explanation of maintenance and packaging choices.',
+        'Creates a pattern for future browser tools that need shortcuts, content-script behavior, and release-backed installs.',
+      ],
+    },
+  },
+  OpenCut: {
+    problem:
+      'Video creators need AI-assisted editing automation without sending footage, captions, or cleanup passes through a cloud service.',
+    buildEvidence: [
+      'Greatest Hits describes local-first Premiere Pro automation for captions, audio cleanup, and visual effects with no cloud keys.',
+      'The catalog presents it as a desktop workflow, while NovaCut covers the Android editor side of the media tooling story.',
+      'Repository source and README links let visitors inspect the automation approach before trusting it with creative assets.',
+    ],
+    platforms: ['Desktop video workflow', 'Premiere Pro automation', 'Local AI tooling'],
+    installPath: 'Use the repository README for the current local setup and host-application integration path.',
+    knownLimitations:
+      'Host-application automation depends on local Premiere Pro behavior, available models/tools, and media-project complexity.',
+    sources: [
+      { label: 'Repository', url: 'https://github.com/SysAdminDoc/OpenCut' },
+      { label: 'README', url: 'https://github.com/SysAdminDoc/OpenCut#readme' },
+    ],
+    caseStudy: {
+      context: 'AI video tooling often assumes uploaded footage, paid API keys, and a black-box processing queue. OpenCut keeps the workflow local: automate repetitive Premiere Pro editing tasks, clean audio, generate captions, and apply visual effects without turning creative source files into cloud payloads.',
+      decisions: [
+        'Framed the project as workflow automation instead of a replacement editor, so it can improve an existing Premiere Pro process.',
+        'Kept the strongest features local-first: captions, cleanup, and effects should run without requiring cloud credentials.',
+        'Positioned OpenCut beside NovaCut so the portfolio shows both desktop video automation and a standalone Android editor.',
+      ],
+      outcomes: [
+        'Adds a desktop media-production case study to Greatest Hits instead of relying only on the Android NovaCut story.',
+        'Makes the no-cloud/no-keys claim explicit and reviewable on the project page.',
+        'Shows how AI-assisted tooling can be useful while still respecting local files and user control.',
+      ],
+    },
   },
   NovaCut: {
     problem:
