@@ -35,6 +35,8 @@
     "lhci:summary": "node scripts/summarize-lhci.mjs",
     "a11y:audit": "node scripts/audit-a11y.mjs --strict",
     "a11y:audit:advisory": "node scripts/audit-a11y.mjs",
+    "audit:playwright": "playwright test --config=playwright.audits.config.mjs",
+    "audit:playwright:update": "playwright test --config=playwright.audits.config.mjs --update-snapshots",
     "forced-colors:audit": "node scripts/audit-forced-colors.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
@@ -56,6 +58,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.60.0",
     "@types/sanitize-html": "^2.16.1",
     "lightningcss": "^1.32.0",
     "pagefind": "^1.5.2",

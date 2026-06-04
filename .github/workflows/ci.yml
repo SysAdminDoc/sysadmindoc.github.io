@@ -54,3 +54,16 @@ jobs:
           if-no-files-found: ignore
       - name: Accessibility audit
         run: npm run a11y:audit
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Browser accessibility and visual audit
+        run: npm run audit:playwright
+      - name: Upload Playwright reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-audit-reports
+          path: |
+            .tmp/playwright-report
+            .tmp/playwright-results
+          if-no-files-found: ignore
