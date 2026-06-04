@@ -38,6 +38,8 @@ npm run profile-feed:sync # optional: refresh ignored profile projects cache fro
 npm run generated:fixtures:check # audit tracked PR-CI generated-data fixtures
 npm run generated:fixtures # install fixture caches into ignored src/data/_*.json files
 npm run fetch-stars   # optional: refresh star cache from GitHub
+npm run build:ci      # build plus HTML structure, endpoint, feed, search, and schema audits
+node scripts/fix-html-structure.mjs # verify built HTML structure; --repair is legacy recovery only
 npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
 npm run data:validate # validate project data, screenshots, policy, and command palette coverage
