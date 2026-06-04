@@ -10,7 +10,7 @@ module.exports = {
       url: urls,
       numberOfRuns: 1,
       settings: {
-        chromeFlags: '--no-sandbox --disable-dev-shm-usage --disable-gpu',
+        chromeFlags: '--headless=new --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu',
       },
     },
     assert: {
