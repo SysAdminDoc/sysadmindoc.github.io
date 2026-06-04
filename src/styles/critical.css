@@ -727,6 +727,21 @@ html[data-theme="light"] nav{
   font-size:13px;
   line-height:1.8;
 }
+.term-input-line{
+  display:flex;
+  align-items:center;
+  min-height:32px;
+  font-family:var(--mono);
+  font-size:13px;
+}
+.term-input{
+  min-height:32px;
+  padding:4px 0;
+  background:none;
+  border:0;
+  color:var(--t1);
+  font:inherit;
+}
 .term-hint{
   color:var(--t3);
   font-family:var(--mono);

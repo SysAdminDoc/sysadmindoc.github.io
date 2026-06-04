@@ -56,6 +56,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Dependabot is configured for weekly npm and GitHub Actions dependency updates.
 - A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, forced-colors data-visualization coverage, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
 - `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, publishes a compact warning table to the job summary, uploads filesystem reports plus `.tmp/lhci/summary.md`, and does not fail the job on budget warnings.
+- Browser accessibility and visual-regression coverage lives in `playwright.audits.config.mjs` and `tests/playwright/portfolio-audits.spec.mjs`. `npm run audit:playwright` serves built `dist/`, runs axe-core checks on `/`, `/search/?q=python`, `/archive/`, `/projects/project-nomad-desktop/`, plus hydrated command-palette and terminal states, then compares desktop/mobile viewport screenshots against Linux-generated baselines under `tests/playwright/__screenshots__/chromium/`. PR CI installs Chromium after the strict static a11y gate, runs this Playwright audit, and uploads `.tmp/playwright-report` plus `.tmp/playwright-results`.
 - The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, emits dedicated endpoint, JSON Feed, Pagefind search, rendered JSON-LD, forced-colors data-visualization, and performance/bfcache audit logs, and publishes route-level performance rows from `.tmp/performance-audit-ci.json`. Generated-data, local validation, or build-output failures feed the hard fail gate; performance remains advisory while still surfacing in the job summary and quality-gate issue body. The first CI performance baseline uses `--lcp 60000 --event 500`: LCP is recorded but budgeted by LHCI, while this custom audit enforces bfcache, overflow, CLS, event, console, and network regressions.
 - The GitHub Pages deploy workflow runs unit tests, production/catalog/data/assets/image checks, live generated-data refresh, Astro checks, `build:ci`, and the strict static accessibility gate before uploading the Pages artifact. It then captures the built artifact contract and runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
@@ -74,6 +75,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Audit built JSON Feed: `npm run feed:audit` after `npm run build`
 - Audit forced-colors data visualizations: `npm run forced-colors:audit` after `npm run build`
 - Audit static accessibility: `npm run a11y:audit` after `npm run build` (strict/blocking); `npm run a11y:audit:advisory` keeps the non-blocking inventory mode.
+- Audit browser accessibility and visual baselines: `npm run audit:playwright` after `npm run build:ci`; update baselines with `npm run audit:playwright:update` after deliberate visual changes.
 - Smoke live Pages artifacts: `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
 - Summarize a performance audit JSON report: `node scripts/summarize-performance-audit.mjs .tmp/performance-audit-ci.json`
@@ -97,6 +99,7 @@ Current verification baseline:
 
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - The generated fixture path passed from a clean ignored-cache state: `npm run generated:fixtures:check`; `npm run generated:fixtures`; `PROFILE_PROJECTS_OFFLINE=1 npm run check`; `npm test`; `npm run build:ci`; standalone `npm run endpoints:audit`; `npm run feed:audit`; `npm run search:audit`; `npm run schema:audit`; `npm run a11y:audit`; and `rtk git diff --check`. The fixture build rendered 16 profile projects, 9 releases, all 10 Pagefind Category labels, and source-only plus live-app representative JSON-LD project routes.
+- `npm run audit:playwright` passed in the official `mcr.microsoft.com/playwright:v1.60.0-noble` Linux image after regenerating baselines with fixture data. The suite ran 14 tests: 4 route-level axe checks, command-palette axe, terminal axe, and 8 desktop/mobile visual baselines for home, search, archive, and project detail viewports.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, 8 interior OG pages, and 1200x630 PNG OG metadata checks.
 - `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
 - `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, public endpoint audit, JSON Feed audit, service-worker stamp v0.18.3, Pagefind detecting `data-pagefind-body` and indexing 193 of 194 HTML pages, the generated search audit, and the rendered JSON-LD audit.
@@ -236,13 +239,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T105 strict a11y gate pass:
+Highest-priority workflow/research work after the T106 Playwright audit pass:
 
-1. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
-2. `T107` -- README TOC and reading-time on project pages.
-3. `T108` -- Homepage SectionJumpNav.
+1. `T107` -- README TOC and reading-time on project pages.
+2. `T108` -- Homepage SectionJumpNav.
+3. `T109` -- iOS PWA install path and prefers-contrast follow-up.
 
-Next open checklist item in document order is `T106` axe-core/Playwright accessibility and visual-regression baselines.
+Next open checklist item in document order is `T107` README TOC and reading-time on project pages.
 
 ## Definition of Done for Future Changes
 
@@ -307,3 +310,4 @@ Next open checklist item in document order is `T106` axe-core/Playwright accessi
 - 2026-06-04: Shipped T100 Greatest Hits case-study parity. `projectProof` now carries case-study blocks for all 8 Greatest Hits repos, `npm run data:validate` gates the curated list against proof coverage and case-study shape, and the built homepage/project-page probe confirmed 8 case-study badges plus rendered Case Study/Key Decisions/Outcomes sections on the newly filled project pages.
 - 2026-06-04: Shipped T101 project-count reconciliation. Homepage/public copy now uses `catalog.length` for the visible project count, the live GitHub refresh preserves that rendered count while updating stars and card metadata, and a source regression test guards against reintroducing `_stats.totalRepos` into homepage count copy.
 - 2026-06-04: Shipped T105 strict static accessibility gating. `npm run a11y:audit` now runs the conservative HTML audit in `--strict` mode, PR CI treats it as blocking, deploy runs `npm test` plus strict a11y before Pages artifact upload, and `npm run a11y:audit:advisory` preserves the old inventory-only mode.
+- 2026-06-04: Shipped T106 Playwright browser accessibility and visual baselines. `npm run audit:playwright` now runs axe-core over representative built routes and hydrated command-palette/terminal states, compares eight desktop/mobile viewport baselines generated in the Playwright 1.60 Linux image, and PR CI runs the gate after the strict static a11y audit. The pass also fixed a serious axe `target-size` finding on the hydrated terminal input.
