@@ -20,6 +20,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `src/data/portfolio.ts` is the rendered portfolio adapter. It consumes the ignored profile feed cache at `src/data/_profile-projects.json`, maps profile categories into site categories, excludes suppressed/non-portfolio rows, and preserves local curated featured/live-app overlays.
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Key interior-page social-card metadata lives in `src/data/interior-og-pages.ts`. The existing `src/pages/og/[slug].png.ts` Satori/Resvg endpoint now emits project social cards plus registered cards for `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/`; `npm run images:audit` guards required slugs, page wiring, 1200x630 PNG output, and project-slug collisions.
+- Reviewed freshness metadata for `/uses/`, `/resume/`, and `/healthcare-it/` lives in `src/data/page-freshness.ts`. Those pages render visible `Last updated` timestamps from that data and emit reviewed `WebPage` JSON-LD with `dateModified`; `npm run schema:audit` treats the three routes as representative schema checks.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
@@ -100,7 +101,7 @@ Current verification baseline:
 - Deploy workflow run `26962751614` passed on commit `246abd0`, including the post-deploy `Smoke deployed artifacts` step.
 - Deploy workflow run `26964196179` passed on commit `7a71c5e`, including the post-deploy `Smoke deployed artifacts` step.
 - `npm run search:audit` passed with 194 HTML pages scanned, 193 `data-pagefind-body` pages indexed, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered public project results checked. Category counts were Android 19, Desktop 19, Extension 23, Guide 4, Media 6, Other 5, PowerShell 30, Python 41, Security 3, and Web 27.
-- `npm run schema:audit` passed with 194 HTML pages scanned, 378 JSON-LD blocks parsed, 757 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 3 representative routes checked.
+- `npm run schema:audit` passed with 194 HTML pages scanned, 381 JSON-LD blocks parsed, 760 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 6 representative routes checked.
 - `npm run forced-colors:audit` passed on the current build with emulated `forced-colors: active`: desktop and mobile checks painted 364/364 heatmap cells, 8/8 language-donut segments, and 8 skill rings with visible text/boundary coverage.
 - Manual `quality-gates.yml` workflow_dispatch run `26967664484` passed on commit `cdf87fd` after the forced-colors data-viz audit addition. The forced-colors build-output step reported PASS for desktop and mobile, the summary reported Forced-colors data visualizations PASS, and the uploaded `quality-gate-reports` artifact ID was `7418247524`.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
@@ -227,13 +228,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T42 interior OG pass:
+Highest-priority workflow/research work after the T43 freshness pass:
 
-1. `T43` -- Last-updated timestamps on `/uses`, `/resume`, `/healthcare-it`.
+1. `T79` -- content-visibility:auto below-fold.
 2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-3. `T79` -- content-visibility:auto below-fold.
+3. `T80` -- View Transitions micro-polish.
 
-Next open checklist item in document order is `T43` last-updated timestamps on `/uses`, `/resume`, and `/healthcare-it`.
+Next open checklist item in document order is `T79` content-visibility:auto below-fold.
 
 ## Definition of Done for Future Changes
 
@@ -287,6 +288,7 @@ Next open checklist item in document order is `T43` last-updated timestamps on `
 - 2026-06-04: Added build-output coverage to weekly quality gates. The workflow now refreshes generated data before local checks, runs `build:ci` without deploying, publishes endpoint/feed/search/schema status in the job summary, uploads dedicated logs, includes generated-data/local/build-output failures in the quality-gate issue body, and keeps semantic-audit output advisory.
 - 2026-06-04: Scoped Pagefind indexing to intentional page content. Searchable routes now tag their main content with `data-pagefind-body`, `/404.html` remains outside the index, the global command palette is excluded from indexed regions, and `search:audit` verifies the tagged route count before Category facet checks.
 - 2026-06-04: Added advisory performance/bfcache coverage to weekly quality gates. The workflow serves built `dist/` locally after `build:ci`, runs the custom strict performance audit, uploads preview/performance logs plus `.tmp/performance-audit-ci.json`, and adds route-level performance rows to the job summary. Manual run `26966906202` passed and uploaded artifact `7417914733`.
-- 2026-06-04: Added the CSP preflight audit for T95. `npm run csp:audit` inventories the active CSP, seven known executable inline scripts, one inline event handler, three JSON-LD/data script blocks, six self-hosted external scripts, and inline style surfaces; strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers.
+- 2026-06-04: Added the CSP preflight audit for T95. `npm run csp:audit` inventories the active CSP, seven known executable inline scripts, one inline event handler, six JSON-LD/data script blocks, six self-hosted external scripts, and inline style surfaces; strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers.
 - 2026-06-04: Shipped README code highlighting. Project pages now render cached README fences through Shiki with fixed CSS classes while preserving sanitizer stripping for remote README inline styles and event handlers.
 - 2026-06-04: Shipped interior-page OG cards. `src/data/interior-og-pages.ts` now drives generated social cards for the key secondary routes through the existing Satori/Resvg endpoint, and `images:audit` plus unit tests guard required slugs, route wiring, and project-card collisions. Built PNG probes confirmed all eight generated cards are 1200x630; Browser preview verified `/search/` and `/healthcare-it/` metadata, PNG responses, no overflow, and clean console logs.
+- 2026-06-04: Shipped interior freshness signals. `src/data/page-freshness.ts` centralizes reviewed dates for `/uses/`, `/resume/`, and `/healthcare-it/`; the pages render visible `Last updated` timestamps and reviewed `WebPage.dateModified` JSON-LD, with schema audit coverage and browser verification.

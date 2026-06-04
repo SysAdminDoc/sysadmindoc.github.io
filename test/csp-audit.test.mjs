@@ -20,7 +20,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /CSP preflight audit/);
   assert.match(output, /script-src: 'self' 'unsafe-inline'/);
   assert.match(output, /executable inline scripts: 7/);
-  assert.match(output, /JSON-LD\/data script blocks: 3/);
+  assert.match(output, /JSON-LD\/data script blocks: 6/);
   assert.match(output, /inline event handlers: 1/);
   assert.match(output, /first-paint theme initialization/);
   assert.match(output, /page-specific command-palette section data; hash=dynamic/);

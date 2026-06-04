@@ -6,9 +6,21 @@ import SectionJumpNav from '../components/SectionJumpNav.astro';
 import StarSvg from '../components/StarSvg.astro';
 import { healthcareIT } from '../data/curated';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { catalog, featured, liveApps } from '../data/portfolio';
 
+const title = 'Healthcare IT — Matt Parker';
 const pageOg = interiorOgPageBySlug['healthcare-it'];
+const pageFreshness = pageFreshnessBySlug['healthcare-it'];
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+});
 let stars: Record<string, number> = {};
 try { const mod = await import('../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
 
@@ -41,12 +53,13 @@ const cmdkSections = hasRepos
     ];
 ---
 <Base
-  title="Healthcare IT — Matt Parker"
+  title={title}
   description={pageOg.description}
   ogImage={pageOg.ogImage}
   ogImageAlt={pageOg.ogImageAlt}
   cmdkSections={cmdkSections}
 >
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="healthcare" contextLabel="Healthcare IT track" contextTone="amber" />
 
@@ -56,6 +69,7 @@ const cmdkSections = hasRepos
         <div class="sl">// Track</div>
         <h1 class="st hcit-title">Healthcare IT</h1>
         <p class="sd hcit-intro">{healthcareIT.intro}</p>
+        <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
 
       <div class="hcit-stats page-stat-grid rv">

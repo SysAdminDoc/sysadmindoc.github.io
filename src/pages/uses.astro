@@ -3,15 +3,28 @@ import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { uses } from '../data/uses';
 
+const title = 'Uses - Matt Parker';
 const pageOg = interiorOgPageBySlug.uses;
+const pageFreshness = pageFreshnessBySlug.uses;
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+});
 const cmdkSections = [
   { label: 'Overview', href: '#uses-overview', desc: 'What this page covers and why it exists.', badge: 'USES' },
   { label: 'Setup', href: '#uses-setup', desc: 'Editor, terminal, AI tools, languages, frameworks, devops, hardware, and design.', badge: `${uses.length} CATEGORIES` },
 ];
 ---
-<Base title="Uses - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="uses" contextLabel="Uses" contextTone="blue" />
 
@@ -24,6 +37,7 @@ const cmdkSections = [
           The development environment, tools, languages, and design conventions behind every project in the portfolio.
           Inspired by <a href="https://uses.tech" target="_blank" rel="noopener" class="uses-link">uses.tech</a>.
         </p>
+        <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
 
       <div class="uses-overview page-stat-grid rv">
