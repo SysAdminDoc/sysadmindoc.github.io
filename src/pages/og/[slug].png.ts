@@ -5,6 +5,7 @@ import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { imageEndpointHeaders } from '../../data/endpoint-headers';
+import { getInteriorOgPage, interiorOgPages } from '../../data/interior-og-pages';
 import { featured, liveApps, catalog } from '../../data/portfolio';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -48,6 +49,7 @@ export async function getStaticPaths() {
     seen.add(slug);
     paths.push({ params: { slug } });
   };
+  interiorOgPages.forEach((page) => add(page.slug));
   featured.forEach((p) => add(p.repo));
   liveApps.forEach((a) => add(a.slug));
   catalog.forEach((c) => add(c.repo));
@@ -66,19 +68,89 @@ function decodeEntities(s: string) {
     .replace(/&[a-z]+;/gi, ' ');
 }
 
-export async function GET({ params }: APIContext) {
-  const slug = params.slug!;
+type CardBadge = {
+  label: string;
+  color: string;
+  background: string;
+  border: string;
+};
+
+type CardModel = {
+  slug: string;
+  name: string;
+  desc: string;
+  accent: string;
+  catLabel: string;
+  command: string;
+  footer: string;
+  badges: CardBadge[];
+};
+
+function projectCard(slug: string): CardModel {
   const f = featured.find((p) => p.repo === slug);
   const l = liveApps.find((a) => a.slug === slug);
   const c = catalog.find((x) => x.repo === slug);
-
   const name = f?.name ?? l?.name ?? c?.name ?? slug;
   const desc = decodeEntities(f?.desc ?? l?.desc ?? c?.desc ?? '');
   const category = f?.lang ?? c?.category ?? 'web';
   const accent = accentByCat[category] || '#58a6ff';
   const catLabel = labelByCat[category] || category.toUpperCase();
-  const isLive = !!l;
-  const isFeatured = !!f;
+  const badges: CardBadge[] = [];
+  if (f) {
+    badges.push({
+      label: 'FEATURED',
+      color: '#facc15',
+      background: '#facc1522',
+      border: '#facc1555',
+    });
+  }
+  if (l) {
+    badges.push({
+      label: 'LIVE',
+      color: '#4ade80',
+      background: '#4ade8022',
+      border: '#4ade8055',
+    });
+  }
+
+  return {
+    slug,
+    name,
+    desc,
+    accent,
+    catLabel,
+    command: `cat ${slug.slice(0, 40)}`,
+    footer: 'Matt Parker  ·  github.com/SysAdminDoc',
+    badges,
+  };
+}
+
+function cardForSlug(slug: string): CardModel {
+  const page = getInteriorOgPage(slug);
+  if (!page) return projectCard(slug);
+
+  return {
+    slug: page.slug,
+    name: page.title,
+    desc: page.description,
+    accent: page.accent,
+    catLabel: page.label,
+    command: page.command,
+    footer: `${page.route}  ·  sysadmindoc.github.io`,
+    badges: [
+      {
+        label: 'INTERIOR PAGE',
+        color: '#e8edf5',
+        background: '#e8edf522',
+        border: '#e8edf555',
+      },
+    ],
+  };
+}
+
+export async function GET({ params }: APIContext) {
+  const slug = params.slug!;
+  const card = cardForSlug(slug);
 
   const svg = await satori(
     {
@@ -88,7 +160,7 @@ export async function GET({ params }: APIContext) {
           width: 1200, height: 630, display: 'flex', flexDirection: 'column',
           background: '#0a0e17', color: '#e8edf5', padding: 60,
           fontFamily: 'JetBrains Mono',
-          backgroundImage: `radial-gradient(ellipse at 80% 20%, ${accent}22, transparent 60%), radial-gradient(ellipse at 10% 90%, #c084fc15, transparent 60%)`,
+          backgroundImage: `radial-gradient(ellipse at 80% 20%, ${card.accent}22, transparent 60%), radial-gradient(ellipse at 10% 90%, #c084fc15, transparent 60%)`,
         },
         children: [
           // Top: prompt + category
@@ -97,15 +169,15 @@ export async function GET({ params }: APIContext) {
             props: {
               style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#4ade80', fontSize: 22 },
               children: [
-                { type: 'div', props: { children: `matt@sysadmin:~$ cat ${slug.slice(0, 40)}` } },
+                { type: 'div', props: { children: `matt@sysadmin:~$ ${card.command}` } },
                 {
                   type: 'div',
                   props: {
                     style: {
-                      padding: '6px 14px', borderRadius: 8, background: `${accent}22`,
-                      border: `1px solid ${accent}55`, color: accent, fontSize: 16, letterSpacing: 2,
+                      padding: '6px 14px', borderRadius: 8, background: `${card.accent}22`,
+                      border: `1px solid ${card.accent}55`, color: card.accent, fontSize: 16, letterSpacing: 2,
                     },
-                    children: catLabel.toUpperCase(),
+                    children: card.catLabel.toUpperCase(),
                   },
                 },
               ],
@@ -120,15 +192,15 @@ export async function GET({ params }: APIContext) {
                 {
                   type: 'div',
                   props: {
-                    style: { fontSize: 72, fontWeight: 700, color: '#e8edf5', lineHeight: 1.05, letterSpacing: -1, maxWidth: 1080, overflow: 'hidden' },
-                    children: name,
+                    style: { fontSize: 72, fontWeight: 700, color: '#e8edf5', lineHeight: 1.05, letterSpacing: 0, maxWidth: 1080, overflow: 'hidden' },
+                    children: card.name,
                   },
                 },
                 {
                   type: 'div',
                   props: {
                     style: { fontSize: 28, color: '#8b9cc0', lineHeight: 1.4, maxWidth: 1080, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
-                    children: desc,
+                    children: card.desc,
                   },
                 },
               ],
@@ -140,15 +212,18 @@ export async function GET({ params }: APIContext) {
             props: {
               style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#8b9cc0', fontSize: 22 },
               children: [
-                { type: 'div', props: { children: 'Matt Parker  ·  github.com/SysAdminDoc' } },
+                { type: 'div', props: { children: card.footer } },
                 {
                   type: 'div',
                   props: {
                     style: { display: 'flex', gap: 12 },
-                    children: [
-                      isFeatured && { type: 'div', props: { style: { padding: '6px 14px', borderRadius: 6, background: '#facc1522', color: '#facc15', border: '1px solid #facc1555', fontSize: 16 }, children: 'FEATURED' } },
-                      isLive && { type: 'div', props: { style: { padding: '6px 14px', borderRadius: 6, background: '#4ade8022', color: '#4ade80', border: '1px solid #4ade8055', fontSize: 16 }, children: 'LIVE' } },
-                    ].filter(Boolean),
+                    children: card.badges.map((badge) => ({
+                      type: 'div',
+                      props: {
+                        style: { padding: '6px 14px', borderRadius: 6, background: badge.background, color: badge.color, border: `1px solid ${badge.border}`, fontSize: 16 },
+                        children: badge.label,
+                      },
+                    })),
                   },
                 },
               ],

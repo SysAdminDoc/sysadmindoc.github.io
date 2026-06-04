@@ -2,10 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import sharp from 'sharp';
-import { collectLiveSlugs } from './lib/ts-data-utils.mjs';
+import { collectLiveSlugs, collectPortfolioRepos, exportedArray, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
+const interiorOgPagesPath = path.join(root, 'src', 'data', 'interior-og-pages.ts');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
 const thumbsDir = path.join(screenshotsDir, 'thumbs');
 const astroThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
@@ -13,6 +14,7 @@ const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
 const baseLayoutPath = path.join(root, 'src', 'layouts', 'Base.astro');
 const maxFullBytes = 350_000;
 const maxThumbBytes = 80_000;
+const requiredInteriorOgSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases'];
 const errors = [];
 
 function fail(message) {
@@ -43,6 +45,8 @@ async function inspectImage(filePath) {
 }
 
 const liveSlugs = await collectLiveSlugs(projectsPath, fail);
+const projectsSourceText = await fs.readFile(projectsPath, 'utf8');
+const portfolioRefs = collectPortfolioRepos(projectsPath, projectsSourceText);
 const liveSlugSet = new Set(liveSlugs);
 const fullFiles = await listJpegs(screenshotsDir);
 const thumbFiles = await listJpegs(thumbsDir);
@@ -108,8 +112,38 @@ for (const slug of liveSlugs) {
 
 const ogSource = await fs.readFile(ogEndpointPath, 'utf8');
 const baseSource = await fs.readFile(baseLayoutPath, 'utf8');
+const interiorOgSourceText = await fs.readFile(interiorOgPagesPath, 'utf8');
+const interiorOgPages = exportedArray(sourceFile(interiorOgPagesPath, interiorOgSourceText), 'interiorOgPages');
+const interiorOgSlugSet = new Set(interiorOgPages.map((page) => page.slug));
+
+for (const slug of requiredInteriorOgSlugs) {
+  if (!interiorOgSlugSet.has(slug)) fail(`Missing required interior OG page slug: ${slug}`);
+}
+
+for (const page of interiorOgPages) {
+  if (!page.slug || !page.route || !page.title || !page.description || !page.label || !page.accent || !page.command || !page.ogImage || !page.ogImageAlt) {
+    fail(`Interior OG page is missing required metadata: ${page.slug || '(missing slug)'}`);
+    continue;
+  }
+  if (page.ogImage !== `/og/${page.slug}.png`) fail(`Interior OG image path must match slug for ${page.slug}: ${page.ogImage}`);
+  if (portfolioRefs.has(page.slug)) fail(`Interior OG slug collides with a project OG slug: ${page.slug}`);
+  const routePath = path.join(root, 'src', 'pages', `${String(page.route).replace(/^\/|\/$/g, '')}.astro`);
+  const routeSource = await fs.readFile(routePath, 'utf8').catch(() => null);
+  if (!routeSource) {
+    fail(`Interior OG route file is missing for ${page.route}`);
+    continue;
+  }
+  if (!routeSource.includes('interiorOgPageBySlug')) fail(`Interior route does not import shared OG metadata: ${page.route}`);
+  if (!routeSource.includes('ogImage={pageOg.ogImage}') || !routeSource.includes('ogImageAlt={pageOg.ogImageAlt}')) {
+    fail(`Interior route does not pass generated OG metadata into Base: ${page.route}`);
+  }
+}
+
 if (!/satori/i.test(ogSource) || !/new\s+Resvg/.test(ogSource)) {
   fail('OG endpoint must continue using Satori + Resvg for static PNG generation.');
+}
+if (!/interiorOgPages/.test(ogSource) || !/getInteriorOgPage/.test(ogSource)) {
+  fail('OG endpoint must include interior page social-card paths.');
 }
 if (!/width:\s*1200/.test(ogSource) || !/height:\s*630/.test(ogSource)) {
   fail('OG endpoint must keep 1200x630 social-card dimensions.');
@@ -131,6 +165,7 @@ console.log(`  thumbnail total: ${formatBytes(thumbTotal)}`);
 console.log(`  Astro asset thumbnails: ${astroThumbSlugSet.size}`);
 console.log(`  largest full: ${largestFull.slug} (${formatBytes(largestFull.bytes)})`);
 console.log(`  largest thumbnail: ${largestThumb.slug} (${formatBytes(largestThumb.bytes)})`);
+console.log(`  interior OG pages: ${interiorOgPages.length}`);
 console.log('  OG endpoint: 1200x630 PNG via Satori + Resvg');
 console.log('  social metadata: image/png with alt text');
 

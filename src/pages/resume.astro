@@ -1,15 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { skills } from '../data/projects';
 import { careerRoles } from '../data/career';
 
+const pageOg = interiorOgPageBySlug.resume;
 const cmdkSections = [
   { label: 'Overview', href: '#resume-header', desc: 'Name, title, location, and core skills.', badge: 'RESUME' },
   { label: 'Experience', href: '#resume-experience', desc: 'Career history with highlights and technology stacks.', badge: `${careerRoles.length} ROLES` },
 ];
 ---
-<Base title="Resume - Matt Parker" description="Printable resume for Matt Parker — 15+ years in enterprise IT, six years in medical imaging, plus open-source development." cmdkSections={cmdkSections}>
+<Base title="Resume - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="resume" contextLabel="Resume" contextTone="blue" />
 

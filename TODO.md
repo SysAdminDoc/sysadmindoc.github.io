@@ -4,7 +4,7 @@
 >
 > Completed work moves to [COMPLETED.md](COMPLETED.md) and is summarized in [CHANGELOG.md](CHANGELOG.md). Do not re-add shipped items here.
 >
-> Last consolidated: 2026-06-01 · Baseline: `npm run check` green (37 files, 0 errors).
+> Last consolidated: 2026-06-04 · Baseline: `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit` green.
 
 Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in parentheses.
 
@@ -75,7 +75,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T41** README code syntax highlighting (Shiki) (NF-23, M).
   - Done: Project README rendering now uses `src/data/readme-rendering.mjs`, a dedicated `Marked` instance, `sanitize-html`, and Shiki `github-dark-default` tokenization for common README fence languages. Shiki token colors are converted to fixed CSS classes in `global.css`; sanitized README output keeps `pre`/`code`/`span` classes but does not allow README-sourced `style` or event-handler attributes.
   - Verify: `node --check src/data/readme-rendering.mjs`; `npm test`; `npm run check`; `npm run build`; generated HTML probe on `dist/projects/UserScriptHunt/index.html` found 8 README code blocks, 18 Shiki token spans, and 0 README article style/event attributes; `npm run a11y:audit`; `npm audit --omit=dev`; `npm run csp:audit`; Browser preview on `http://127.0.0.1:4321/projects/UserScriptHunt/#project-readme` found 2 highlighted Shiki blocks, 2 plain fallback blocks, visible token colors, 0 horizontal overflow, 0 README style/event attributes, and 0 console errors.
-- [ ] **T42** OG images for interior pages (R, M).
+- [x] **T42** OG images for interior pages (R, M).
+  - Done: Added `src/data/interior-og-pages.ts` as the shared interior-page social-card registry and generalized `src/pages/og/[slug].png.ts` so the existing Satori/Resvg endpoint emits differentiated 1200x630 PNG cards for `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/` while preserving project OG routes. Each routed page now passes its generated `ogImage` and `ogImageAlt` through `Base`.
+  - Verify: `npm test` includes interior OG source-contract coverage; `npm run images:audit` now checks the eight interior slugs, route metadata wiring, and project-slug collision guard; full build generated `dist/og/{uses,resume,search,timeline,archive,now,healthcare-it,releases}.png`; PNG probes confirmed 1200x630 output; visual inspection covered `dist/og/search.png` and `dist/og/healthcare-it.png`; Browser preview verified `/search/` and `/healthcare-it/` publish the new absolute OG/Twitter image URLs, return `image/png` 200 for their PNG routes, have no horizontal overflow, and emit no console warnings/errors.
 - [ ] **T43** Last-updated timestamps on /uses, /resume, /healthcare-it (R, S).
 ### Security / privacy
 - [x] **T44** Remove dns-prefetch for www.youtube.com (R, S).
@@ -418,7 +420,6 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
 
 - **T95** Remove CSP `unsafe-inline` for scripts — requires externalizing the theme-init (FOUC risk), the remaining `define:vars` (now just page sections, much smaller after T14), and Pagefind init, plus nonce/hashing. Largest, highest-regression-risk.
-- **T42** OG images for interior pages — satori template work whose visual output can't be verified headlessly; the `og/[slug].png.ts` scaffold can be generalized once someone can eyeball the cards.
 - **T43** Last-updated timestamps on /uses, /resume, /healthcare-it — deferred: hardcoded dates go stale and become a maintenance burden / misleading freshness signal. /now already carries a real date. Revisit if a data-driven `lastReviewed` field is added.
 
 ## Parked / rejected (carry-forward — see ROADMAP.md "Rejected or Parked")

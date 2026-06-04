@@ -21,7 +21,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
-- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
+- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated project/interior OG PNG validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages + GH Actions** — split data refresh, type checking, build, deploy, and post-deploy live smoke checks
@@ -124,6 +124,7 @@ src/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
 │   ├── endpoint-headers.ts # generated endpoint cache/content-type helpers
+│   ├── interior-og-pages.ts # generated social-card metadata for interior routes
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
 │   ├── project-ranking.mjs # build-time catalog and related-project scoring
 │   ├── readme-rendering.mjs # sanitized README HTML + class-based Shiki code highlighting
