@@ -377,10 +377,11 @@
         /* Copy Toast */
         .copy-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(74,222,128,.12);color:var(--grn);font-family:var(--mono);font-size:13px;padding:8px 20px;border-radius:8px;border-left:3px solid var(--grn);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:10000;box-shadow:0 4px 20px rgba(74,222,128,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(74,222,128,.2);border-left:3px solid var(--grn)}
         .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-        .sw-update-toast{position:fixed;right:18px;bottom:18px;display:flex;align-items:center;gap:14px;max-width:min(420px,calc(100vw - 36px));padding:14px 14px 14px 16px;border:1px solid var(--border);border-radius:8px;background:var(--surface-1);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.45;box-shadow:var(--shadow-strong);opacity:0;transform:translateY(14px);transition:opacity .25s ease,transform .25s ease;z-index:10001}
+        .sw-update-toast{position:fixed;right:18px;bottom:18px;display:flex;align-items:center;gap:14px;max-width:min(420px,calc(100vw - 36px));padding:14px 14px 14px 16px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.45;box-shadow:var(--shadow-strong);opacity:0;transform:translateY(14px);transition:opacity .25s ease,transform .25s ease;z-index:10001}
         .sw-update-toast.show{opacity:1;transform:translateY(0)}
+        .sw-update-message{min-width:0}
         .sw-update-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
-        .sw-update-actions button{min-height:34px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--t1);font:inherit;cursor:pointer}
+        .sw-update-actions button{min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-2);color:var(--t1);font:inherit;cursor:pointer}
         .sw-update-actions button:first-child{border-color:var(--grn);background:var(--grnd);color:var(--grn)}
         .sw-update-actions button:hover,.sw-update-actions button:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring);outline:0}
         .sw-update-actions button:disabled{cursor:wait;opacity:.72}
@@ -2052,6 +2053,73 @@ html[data-theme="light"]{
   --shadow-soft:0 20px 44px rgba(29,42,70,.12);
   --shadow-strong:0 28px 66px rgba(29,42,70,.16);
 }
+@media(prefers-contrast:more){
+  :root{
+    --glass-border:rgba(255,255,255,.24);
+    --glass-hover:rgba(146,169,205,.16);
+    --brdb:rgba(124,184,255,.46);
+    --t2:#dfe8f5;
+    --t3:#c5d2e2;
+    --border-soft:rgba(255,255,255,.24);
+    --border-strong:rgba(124,184,255,.42);
+    --shadow-soft:0 24px 56px rgba(0,0,0,.28);
+    --shadow-strong:0 36px 90px rgba(0,0,0,.44);
+    --focus-ring:0 0 0 4px rgba(74,222,128,.42);
+  }
+  html[data-theme="light"]{
+    --glass-border:rgba(29,42,70,.24);
+    --glass-hover:rgba(70,83,112,.13);
+    --brdb:rgba(53,107,191,.42);
+    --t2:#26364f;
+    --t3:#43536b;
+    --border-soft:rgba(29,42,70,.28);
+    --border-strong:rgba(53,107,191,.42);
+    --shadow-soft:0 20px 44px rgba(29,42,70,.16);
+    --shadow-strong:0 28px 66px rgba(29,42,70,.22);
+    --focus-ring:0 0 0 4px rgba(16,115,64,.28);
+  }
+  #nav,
+  .ng,
+  .theme-toggle,
+  .nav-search,
+  .btn,
+  .card,
+  .pc,
+  .lc2,
+  .ca,
+  .skc,
+  .video-card,
+  .cnc,
+  .prc,
+  .career-card,
+  .hero-proof-link,
+  .hero-pulse .pulse-item,
+  .page-jump-link,
+  .cmdk,
+  .term,
+  .sw-update-toast{
+    border-color:var(--border-strong);
+  }
+  .hr,
+  .hd,
+  .sd,
+  .hsl,
+  .cde,
+  .lcd,
+  .atp,
+  .jdesc,
+  .prd,
+  .connect-msg,
+  .pulse-copy,
+  .pulse-source{
+    color:var(--t2);
+  }
+  .ctg,
+  .page-jump-badge,
+  .sw-update-actions button{
+    border-color:var(--border-soft);
+  }
+}
 body{
   text-rendering:optimizeLegibility;
   line-height:1.65;
@@ -2066,6 +2134,11 @@ body::before{
 }
 html[data-theme="light"] #nav{
   background:rgba(248,244,234,.76);
+}
+@media(prefers-contrast:more){
+  #nav{
+    border-bottom-color:var(--border-strong);
+  }
 }
 .ni{
   padding:0 28px;
@@ -3982,6 +4055,11 @@ html[data-theme="light"] .theme-toggle{
 html[data-theme="light"] #nav{
   border-bottom-color:var(--border-soft);
   box-shadow:0 8px 28px rgba(29,42,70,.1);
+}
+@media(prefers-contrast:more){
+  #nav{
+    border-bottom-color:var(--border-strong);
+  }
 }
 
 /* Hero stat borders — rgba(255,255,255,.08) invisible */

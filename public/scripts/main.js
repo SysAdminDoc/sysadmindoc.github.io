@@ -1017,20 +1017,42 @@ if('serviceWorker' in navigator){
 (function(){
     var DISMISS_KEY='pwa_install_dismissed';
     var deferredPrompt=null;
+    function isIosDevice(){
+        var ua=navigator.userAgent||'';
+        return /iPad|iPhone|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    }
+    function isStandalone(){
+        return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+    }
+    function isIosSafari(){
+        var ua=navigator.userAgent||'';
+        return /Safari/i.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+    }
     function dismissed(){try{return localStorage.getItem(DISMISS_KEY)==='1'}catch(e){return false}}
     function rememberDismiss(){try{localStorage.setItem(DISMISS_KEY,'1')}catch(e){}}
-    function showInstallChip(){
-        if(dismissed()||document.querySelector('.sw-update-toast'))return;
+    function canShowInstallPrompt(){
+        return !dismissed()&&!isStandalone()&&!document.querySelector('.sw-update-toast');
+    }
+    function showInstallChip(mode){
+        if(!canShowInstallPrompt())return;
+        var isIos=mode==='ios';
         var toast=document.createElement('div');
         toast.className='sw-update-toast';
+        toast.dataset.kind=isIos?'ios-install':'pwa-install';
         toast.setAttribute('role','status');
+        toast.setAttribute('aria-live','polite');
         var message=document.createElement('span');
-        message.textContent='Install this portfolio as an app';
+        message.className='sw-update-message';
+        message.textContent=isIos
+            ? (isIosSafari()
+                ? 'Install on iPhone: Share, Add to Home Screen, Open as Web App, Add.'
+                : 'Open in Safari to install: Share, Add to Home Screen, Open as Web App, Add.')
+            : 'Install this portfolio as an app';
         var actions=document.createElement('div');
         actions.className='sw-update-actions';
         var install=document.createElement('button');
         install.type='button';
-        install.textContent='Install';
+        install.textContent=isIos?'Got it':'Install';
         var dismiss=document.createElement('button');
         dismiss.type='button';
         dismiss.textContent='Not now';
@@ -1038,6 +1060,7 @@ if('serviceWorker' in navigator){
         toast.append(message,actions);
         function close(){toast.classList.remove('show');setTimeout(function(){toast.remove()},250)}
         install.addEventListener('click',function(){
+            if(isIos){rememberDismiss();close();return}
             if(!deferredPrompt){close();return}
             deferredPrompt.prompt();
             deferredPrompt.userChoice.finally(function(){deferredPrompt=null;close()});
@@ -1047,9 +1070,16 @@ if('serviceWorker' in navigator){
         requestAnimationFrame(function(){toast.classList.add('show')});
     }
     window.addEventListener('beforeinstallprompt',function(e){
+        if(isStandalone())return;
         e.preventDefault();
         deferredPrompt=e;
-        if(!dismissed())scheduleIdle(showInstallChip,3000);
+        if(!dismissed())scheduleIdle(function(){showInstallChip('chromium')},3000);
     });
     window.addEventListener('appinstalled',function(){deferredPrompt=null;rememberDismiss();var t=document.querySelector('.sw-update-toast');if(t)t.remove()});
+    function scheduleIosInstallHint(){
+        if(!isIosDevice()||isStandalone()||dismissed())return;
+        scheduleIdle(function(){showInstallChip('ios')},4500);
+    }
+    if(document.readyState==='complete')scheduleIosInstallHint();
+    else window.addEventListener('load',scheduleIosInstallHint,{once:true});
 })();
