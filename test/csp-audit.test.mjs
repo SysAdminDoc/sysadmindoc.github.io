@@ -21,7 +21,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /script-src: 'self'/);
   assert.match(output, /script unsafe-inline active: no/);
   assert.match(output, /executable inline scripts: 0/);
-  assert.match(output, /JSON-LD\/data script blocks: 7/);
+  assert.match(output, /JSON-LD\/data script blocks: 12/);
   assert.match(output, /inline event handlers: 0/);
   assert.match(output, /script-src unsafe-inline required today: no/);
   assert.match(output, /CSP preflight audit passed/);

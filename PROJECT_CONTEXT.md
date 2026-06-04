@@ -20,7 +20,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `src/data/portfolio.ts` is the rendered portfolio adapter. It consumes the ignored profile feed cache at `src/data/_profile-projects.json`, maps profile categories into site categories, excludes suppressed/non-portfolio rows, and preserves local curated featured/live-app overlays.
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Key interior-page social-card metadata lives in `src/data/interior-og-pages.ts`. The existing `src/pages/og/[slug].png.ts` Satori/Resvg endpoint now emits project social cards plus registered cards for `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/`; `npm run images:audit` guards required slugs, page wiring, 1200x630 PNG output, and project-slug collisions.
-- Reviewed freshness metadata for `/uses/`, `/resume/`, and `/healthcare-it/` lives in `src/data/page-freshness.ts`. Those pages render visible `Last updated` timestamps from that data and emit reviewed `WebPage` JSON-LD with `dateModified`; `npm run schema:audit` treats the three routes as representative schema checks.
+- Page-level reviewed schema metadata lives in `src/data/page-freshness.ts` for `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/`. Those eight routes emit reviewed JSON-LD with `dateModified`, stable page `@id`s, `isPartOf`, `about`, and `reviewedBy`; `/resume/` is a `ProfilePage`, `/search/` is a `SearchResultsPage`, timeline/archive/releases are `CollectionPage`s, and `/healthcare-it/` is an `AboutPage`. Visible `Last updated` timestamps intentionally remain scoped to `/uses/`, `/resume/`, and `/healthcare-it/`.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
@@ -41,7 +41,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages. `npm run endpoints:audit` validates those JSON APIs plus `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links from built `dist`.
 - Generated JSON/feed/text/script endpoints use `endpointHeaders()` from `src/data/endpoint-headers.ts`, which declares `Cache-Control: public, max-age=300`. Generated OG image endpoints use `imageEndpointHeaders()` with bounded `public, max-age=86400` caching because `/og/*.png` routes are not hashed. GitHub Pages may still serve deployed static artifacts with its platform cache policy; current live smoke observed `max-age=600`.
 - `/feed.json` is a JSON Feed 1.1 project feed with absolute `icon` and `favicon` URLs. `npm run feed:audit` validates the built feed metadata, icon assets, item IDs/URLs, content fields, uniqueness, and dates.
-- Rendered JSON-LD is audited from built `dist/**/*.html` by `npm run schema:audit`. The audit parses every `application/ld+json` block, requires schema.org context, confirms the Base WebSite/Person graph on every HTML page, and checks representative homepage, language, and project routes for expected graph types and stable anchors.
+- Rendered JSON-LD is audited from built `dist/**/*.html` by `npm run schema:audit`. The audit parses every `application/ld+json` block, requires schema.org context, confirms the Base WebSite/Person graph on every HTML page, and checks 11 representative routes: homepage, language, project, and all eight interior reviewed-schema routes.
 - Generated Pagefind output is audited from `dist/pagefind` by `npm run search:audit`. The audit loads the generated Pagefind API, requires every non-404 HTML route to expose `data-pagefind-body`, confirms `/404.html` is excluded, compares the Pagefind page count to the tagged route set, requires the Category facet, compares Category counts against rendered project pages and homepage catalog cards, checks expected labels, and verifies filter-only Category searches return public project routes.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
@@ -102,7 +102,7 @@ Current verification baseline:
 - Deploy workflow run `26962751614` passed on commit `246abd0`, including the post-deploy `Smoke deployed artifacts` step.
 - Deploy workflow run `26964196179` passed on commit `7a71c5e`, including the post-deploy `Smoke deployed artifacts` step.
 - `npm run search:audit` passed with 194 HTML pages scanned, 193 `data-pagefind-body` pages indexed, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered public project results checked. Category counts were Android 19, Desktop 19, Extension 23, Guide 4, Media 6, Other 5, PowerShell 30, Python 41, Security 3, and Web 27.
-- `npm run schema:audit` passed with 194 HTML pages scanned, 381 JSON-LD blocks parsed, 760 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 6 representative routes checked.
+- `npm run schema:audit` passed with 194 HTML pages scanned, 386 JSON-LD blocks parsed, 765 graph nodes parsed, Base WebSite/Person graph coverage on 194 pages, and 11 representative routes checked.
 - `npm run forced-colors:audit` passed on the current build with emulated `forced-colors: active`: desktop and mobile checks painted 364/364 heatmap cells, 8/8 language-donut segments, and 8 skill rings with visible text/boundary coverage.
 - Manual `quality-gates.yml` workflow_dispatch run `26967664484` passed on commit `cdf87fd` after the forced-colors data-viz audit addition. The forced-colors build-output step reported PASS for desktop and mobile, the summary reported Forced-colors data visualizations PASS, and the uploaded `quality-gate-reports` artifact ID was `7418247524`.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
@@ -231,13 +231,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T95 CSP script migration:
+Highest-priority workflow/research work after the T98 interior JSON-LD pass:
 
-1. `T98` -- Page-level JSON-LD on the 8 interior routes.
-2. `T99` -- SoftwareApplication node plus license/datePublished for live-app project pages.
-3. `T100` -- Greatest Hits case-study coverage parity and validator.
+1. `T99` -- SoftwareApplication node plus license/datePublished for live-app project pages.
+2. `T100` -- Greatest Hits case-study coverage parity and validator.
+3. `T101` -- Reconcile hero "176+" vs catalog "181" headline count.
 
-Next open checklist item in document order is `T98` page-level JSON-LD on the eight interior routes.
+Next open checklist item in document order is `T99` SoftwareApplication node plus license/datePublished for live-app project pages.
 
 ## Definition of Done for Future Changes
 
@@ -297,3 +297,4 @@ Next open checklist item in document order is `T98` page-level JSON-LD on the ei
 - 2026-06-04: Shipped interior freshness signals. `src/data/page-freshness.ts` centralizes reviewed dates for `/uses/`, `/resume/`, and `/healthcare-it/`; the pages render visible `Last updated` timestamps and reviewed `WebPage.dateModified` JSON-LD, with schema audit coverage and browser verification.
 - 2026-06-04: Reintroduced below-fold homepage render containment for T79. `global.css` applies guarded `content-visibility:auto` to ten sections with intrinsic-size fallbacks and a print opt-out; unit, headless Chrome CDP, build, and performance checks guard against near-fold blanking, overflow, and bfcache regressions.
 - 2026-06-04: Shipped T95 CSP script hardening. `script-src 'unsafe-inline'` was removed; first-paint theme/global-style initialization and route helpers now load from self-hosted scripts; command-palette page sections are inert JSON; `npm run csp:audit` and strict candidate mode report zero executable inline scripts and zero inline event handlers. Verification covered unit/check/build/a11y gates, built HTML inline-script probes, the strict performance audit on `127.0.0.1:4322`, and focused Chrome CDP interactions for theme init, command palette data, Pagefind bootstrap, section jumps, recent-project tracking, resume print, and timeline filters.
+- 2026-06-04: Shipped T98 interior page-level JSON-LD. `src/data/page-freshness.ts` now drives reviewed schema for all eight interior OG routes; `/resume/` emits `ProfilePage`, `/search/` emits `SearchResultsPage`, collection routes emit `CollectionPage`, and `/healthcare-it/` emits `AboutPage`. The rendered schema audit parsed 386 JSON-LD blocks, 765 graph nodes, and checked 11 representative routes.

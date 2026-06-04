@@ -3,9 +3,21 @@ import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { featured, liveApps, catalog } from '../data/portfolio';
 
+const title = 'Releases — Matt Parker';
 const pageOg = interiorOgPageBySlug.releases;
+const pageFreshness = pageFreshnessBySlug.releases;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
 let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
 try {
   const mod = await import('../data/_releases.json');
@@ -52,7 +64,8 @@ const cmdkSections = [
   { label: 'Timeline', href: '#release-timeline', desc: 'Chronological release history grouped by month across active projects.', badge: 'TIMELINE' },
 ];
 ---
-<Base title="Releases — Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="releases" contextLabel="Release stream" contextTone="blue" />
 

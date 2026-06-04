@@ -20,6 +20,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
   title,
   description: pageOg.description,
   lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
 });
 let stars: Record<string, number> = {};
 try { const mod = await import('../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
