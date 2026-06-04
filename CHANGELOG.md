@@ -8,6 +8,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes through `src/data/portfolio.ts`, with curated featured/live-app overlays from local data.
 - Suppressed and non-portfolio feed rows are excluded from generated routes; feed-omitted local-only rows no longer render, and the `DuplicateFF` archive entry now links to GitHub instead of a removed project page.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
+- Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 
 ## [v0.18.2] - 2026-06-04
