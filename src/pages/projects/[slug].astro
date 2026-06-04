@@ -18,7 +18,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import process from 'node:process';
 import { LANGS } from '../lang/_langs';
-import { renderProjectReadmeHtml } from '../../data/readme-rendering.mjs';
+import { renderProjectReadme } from '../../data/readme-rendering.mjs';
 
 export async function getStaticPaths() {
   // One page per unique repo across featured + liveApps + catalog
@@ -74,10 +74,17 @@ try {
   readmes = (mod.default ?? mod) as Record<string, string>;
 } catch {}
 let readmeHtml: string | null = null;
+let readmeOutline: Array<{ depth: number; id: string; text: string }> = [];
+let readmeReadingTime: { words: number; minutes: number; label: string } | null = null;
 const rawMd = readmes[slug];
 if (rawMd && rawMd.trim().length > 0) {
-  readmeHtml = await renderProjectReadmeHtml(rawMd, slug!);
+  const renderedReadme = await renderProjectReadme(rawMd, slug!);
+  readmeHtml = renderedReadme?.html ?? null;
+  readmeOutline = renderedReadme?.outline ?? [];
+  readmeReadingTime = renderedReadme?.readingTime ?? null;
 }
+const readmeTocItems = readmeOutline.filter((item) => item.depth >= 1 && item.depth <= 4);
+const showReadmeToc = readmeTocItems.length >= 3;
 
 // Per-project releases (from cached _releases.json)
 let allReleases: Array<{ repo: string; tag: string; name: string; publishedAt: string; url: string; downloads?: number; bodyFirst: string }> = [];
@@ -137,6 +144,7 @@ const relatedTrack = inHealthcareTrack
 const lastTouchedAt = metaMap[slug]?.updatedAt ?? metaMap[slug]?.pushedAt ?? null;
 const latestRelease = projectReleases[0] ?? null;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const compactNumber = new Intl.NumberFormat('en-US');
 const projectFacts = [
   {
     label: 'Delivery',
@@ -463,8 +471,27 @@ const jsonLd = JSON.stringify({
             <div>
               <h2 class="project-section-title">README</h2>
               <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p>
+              {readmeReadingTime && (
+                <div class="project-readme-meta" aria-label="README summary">
+                  <span>{readmeReadingTime.label}</span>
+                  <span>{compactNumber.format(readmeReadingTime.words)} words</span>
+                  {readmeTocItems.length > 0 && <span>{readmeTocItems.length} sections</span>}
+                </div>
+              )}
             </div>
           </div>
+          {showReadmeToc && (
+            <details class="project-readme-toc" open>
+              <summary>Contents</summary>
+              <ol>
+                {readmeTocItems.map((item) => (
+                  <li class={`project-readme-toc-depth-${Math.min(item.depth, 4)}`}>
+                    <a href={`#${item.id}`}>{item.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
           <article class="project-readme" set:html={readmeHtml}></article>
           <p class="project-readme-hint" style="margin-top:24px">
             Read on GitHub → <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>
@@ -608,6 +635,9 @@ const jsonLd = JSON.stringify({
   .project-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
   .project-section-title{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);margin-bottom:8px}
   .project-section-copy{max-width:58ch;color:var(--t3);font-size:14px;line-height:1.7}
+  .project-readme-meta{display:flex;flex-wrap:wrap;gap:10px 0;margin-top:12px;font-family:var(--mono);font-size:11px;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+  .project-readme-meta span{display:inline-flex;align-items:center;min-height:28px;padding-right:12px}
+  .project-readme-meta span+span{padding-left:12px;border-left:1px solid var(--glass-border)}
   .project-readme-wrap{max-width:1000px;margin:0 auto}
   .project-panel{padding:30px;border-radius:30px;border:1px solid var(--border-soft);background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .project-readme-hint{color:var(--t3);font-size:14px;margin-bottom:20px}
@@ -632,6 +662,17 @@ const jsonLd = JSON.stringify({
   .project-proof-sources a{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent}
   .project-proof-sources a:hover{border-color:var(--grn)}
   .project-proof-sources span{font-size:12px;color:var(--t3);line-height:1.5}
+  .project-readme-toc{max-width:860px;margin:0 auto 24px;padding:14px 18px;border:1px solid var(--glass-border);border-radius:10px;background:var(--bg2)}
+  .project-readme-toc summary{min-height:32px;display:flex;align-items:center;cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--t1)}
+  .project-readme-toc summary::marker{color:var(--grn)}
+  .project-readme-toc ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
+  .project-readme-toc li{margin:0}
+  .project-readme-toc a{display:flex;align-items:center;min-height:32px;color:var(--t2);text-decoration:none;line-height:1.4;border-bottom:0;transition:color .2s}
+  .project-readme-toc a:hover{color:var(--grn)}
+  .project-readme-toc a:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px;border-radius:4px}
+  .project-readme-toc-depth-2 a{padding-left:14px}
+  .project-readme-toc-depth-3 a{padding-left:28px}
+  .project-readme-toc-depth-4 a{padding-left:42px}
   .project-readme{color:var(--t2);line-height:1.7;font-size:16px;max-width:860px;margin:0 auto;word-wrap:break-word}
   .project-readme h1,.project-readme h2,.project-readme h3,.project-readme h4{color:var(--t1);font-family:var(--mono);margin:32px 0 14px;line-height:1.3}
   .project-readme h1[id],.project-readme h2[id],.project-readme h3[id],.project-readme h4[id],.project-readme h5[id],.project-readme h6[id]{scroll-margin-top:96px}
