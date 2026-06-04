@@ -41,6 +41,8 @@ jobs:
         run: node -e "if (!process.env.GITHUB_TOKEN) { console.error('GITHUB_TOKEN is required for generated data refresh.'); process.exit(1); }"
       - name: Fetch GitHub star counts
         run: npm run fetch-stars
+      - name: Sync profile feed cache
+        run: npm run profile-feed:sync
       - name: Summarize generated data
         run: npm run data:summary -- --out data-refresh-summary --max-age-hours 36 --fail-on-stale
       - name: Publish generated data summary
