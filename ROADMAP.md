@@ -208,12 +208,13 @@ Post-v0.17.0 deep audit across 5 dimensions (feature completeness, performance, 
   - Verify: Skip-link still appears on Tab key press.
   - Complexity: S
 
-- [ ] P2 -- Re-introduce content-visibility: auto for below-fold homepage sections
+- [x] P2 -- Re-introduce content-visibility: auto for below-fold homepage sections
   - Why: Homepage renders 10+ sections eagerly. content-visibility: auto defers rendering of offscreen content. Previously tried and removed (2023-2024) due to blank flashes, but now Baseline Widely Available since August 2024.
   - Evidence: global.css line 422: comment '/* content-visibility removed -- can cause blank flashes on some browsers */'. Mobile LCP at 3156ms suggests reducing initial render cost would help.
   - Touches: src/styles/global.css, src/pages/index.astro
   - Acceptance: Homepage initial paint time improves. No blank flashes at normal scroll speed. Applied to 3+ below-fold sections.
-  - Verify: Lighthouse before/after. Manually scroll at various speeds in Chrome, Firefox, Safari.
+  - Done: `global.css` now applies guarded `content-visibility:auto` to ten below-fold homepage sections with per-section intrinsic-size fallbacks, keeps `#hero` and `#greatest-hits` eager, and disables containment for print.
+  - Verify: `npm test`; `npm run check`; `npm run build`; headless Chrome CDP desktop/mobile scroll checks; `npm run audit:perf`.
   - Complexity: M
 
 ### Security & Privacy

@@ -54,6 +54,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Visible Pagefind category facets** -- Enabled Pagefind faceted mode on `/search/` and rendered the official filter pane so the static full-text search can be narrowed by indexed project category without custom client search code. _(Source: TODO T35)_
 - [x] **Interior-page OG cards** -- Generalized the existing Satori/Resvg `/og/[slug].png` endpoint with shared interior-page metadata so key secondary pages publish differentiated 1200x630 PNG social cards. _(Source: TODO T42)_
 - [x] **Interior freshness signals** -- Added a shared reviewed-date data source, visible `Last updated` rows, and reviewed `WebPage.dateModified` schema for `/uses/`, `/resume/`, and `/healthcare-it/`. _(Source: TODO T43)_
+- [x] **Below-fold homepage render containment** -- Reintroduced guarded `content-visibility:auto` for ten below-fold homepage sections with intrinsic-size fallbacks and browser/performance verification. _(Source: TODO T79)_
 
 ### Research Infrastructure (2026-05-17)
 

@@ -459,7 +459,29 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
   .htag{flex-wrap:wrap;justify-content:center}
 }
 
-/* content-visibility removed — can cause blank flashes on some browsers */
+/* Homepage below-fold render containment. Hero and first follow-up sections stay eager. */
+@supports (content-visibility:auto){
+  :where(#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect){
+    content-visibility:auto;
+    contain-intrinsic-size:auto var(--cv-intrinsic-size,900px);
+  }
+  #live{--cv-intrinsic-size:820px}
+  #volume{--cv-intrinsic-size:560px}
+  #catalog{--cv-intrinsic-size:5200px}
+  #skills{--cv-intrinsic-size:980px}
+  #about{--cv-intrinsic-size:860px}
+  #career{--cv-intrinsic-size:1120px}
+  #philosophy{--cv-intrinsic-size:860px}
+  #journey{--cv-intrinsic-size:920px}
+  #beyond{--cv-intrinsic-size:780px}
+  #connect{--cv-intrinsic-size:980px}
+}
+@media print{
+  :where(#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect){
+    content-visibility:visible;
+    contain-intrinsic-size:none;
+  }
+}
 
 /* Command palette — native <dialog> */
 .cmdk-backdrop{border:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;padding:0;display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;overscroll-behavior:contain}
