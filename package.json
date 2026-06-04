@@ -15,7 +15,7 @@
     "check": "npm run profile-feed:sync && npm run data:validate && npm run assets:audit && npm run images:audit && astro check",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test",
+    "test": "node scripts/ensure-project-cwd.mjs && node --test \"test/**/*.test.mjs\"",
     "fetch-stars": "node scripts/fetch-stars.mjs",
     "profile-feed:sync": "node scripts/sync-profile-feed.mjs",
     "capture-screenshots": "node scripts/capture-screenshots.mjs",

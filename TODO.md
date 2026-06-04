@@ -168,12 +168,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: `deploy.yml` now runs `npm run profile-feed:sync` after `fetch-stars` and before `npx astro check`, matching the local `npm run check` setup path.
   - Verify: `npm run check`; post-push `Deploy portfolio` run on `main`; `Invoke-WebRequest https://sysadmindoc.github.io/sw.js`; `Invoke-RestMethod https://sysadmindoc.github.io/projects.json`.
 
-- [ ] **T114** 🤖 P1 — Make `npm test` explicit and current-working-directory safe.
+- [x] **T114** 🤖 P1 — Make `npm test` explicit and current-working-directory safe.
   - Why: The bare `node --test` script can silently test the wrong directory when npm is invoked from an unsafe Windows UNC context, producing a false green build signal.
   - Evidence: `package.json:18` is `"test": "node --test"`; Node's test runner discovers files from its active working directory when no explicit glob is supplied; on this machine, running npm directly from `\\vmware-host\Shared Folders\...` fell back to `C:\Windows` and executed unrelated Windows tests, while `cmd /c pushd "\\vmware-host\Shared Folders\repos\sysadmindoc.github.io" && npm test` ran the 12 repo tests correctly.
   - Touches: `package.json`; optionally a small `scripts/ensure-project-cwd.mjs` guard or an explicit `node --test "test/**/*.test.mjs"` pattern.
-  - Acceptance: `npm test` always targets the repo tests or fails fast when launched from the wrong cwd; no command can return green after testing `C:\Windows` or another unrelated directory.
-  - Verify: Valid repo run still reports 12 tests; intentionally launch from a non-repo cwd and confirm the guard fails rather than discovering unrelated tests.
+  - Done: `npm test` now runs `scripts/ensure-project-cwd.mjs` before an explicit `node --test "test/**/*.test.mjs"` target.
+  - Verify: Valid repo run still reports 12 tests; `node C:\Users\--\repos\sysadmindoc.github.io\scripts\ensure-project-cwd.mjs` from `C:\Windows` fails fast instead of allowing ambient discovery.
 
 - [ ] **T115** 🤖 P2 — Document or guard the Windows/VMware shared-folder build workflow.
   - Why: The repository can be edited from the VMware shared folder, but local npm/Astro execution from that path is unreliable enough to confuse validation and build triage.
