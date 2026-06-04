@@ -99,6 +99,7 @@ async function fetchText(baseUrl, pathname, accept) {
   }
   return {
     body,
+    cacheControl: response.headers.get('cache-control') ?? '',
     contentType: response.headers.get('content-type') ?? '',
     status: response.status,
   };
@@ -128,16 +129,28 @@ function requireDate(value, label) {
   }
 }
 
+function requireHeader(response, pathname, { contentTypes, cacheControl }) {
+  if (contentTypes.length > 0 && !contentTypes.some((type) => response.contentType.toLowerCase().startsWith(type))) {
+    throw new Error(`${pathname} returned Content-Type "${response.contentType || '(missing)'}"; expected one of ${contentTypes.join(', ')}.`);
+  }
+  if (cacheControl && !new RegExp(`\\b${cacheControl}\\b`, 'i').test(response.cacheControl)) {
+    throw new Error(`${pathname} returned Cache-Control "${response.cacheControl || '(missing)'}"; expected ${cacheControl}.`);
+  }
+}
+
 async function checkLiveArtifacts(baseUrl, expected) {
   const summary = [];
 
   const sw = await fetchText(baseUrl, '/sw.js', 'application/javascript,text/plain,*/*');
+  requireHeader(sw, '/sw.js', { contentTypes: ['application/javascript', 'text/javascript', 'text/plain'], cacheControl: 'max-age=600' });
   const cacheName = `portfolio-v${expected.version}`;
   if (!sw.body.includes(cacheName)) throw new Error(`/sw.js does not contain ${cacheName}.`);
   if (sw.body.includes('__BUILD_VERSION__')) throw new Error('/sw.js still contains the unstamped __BUILD_VERSION__ placeholder.');
   summary.push(`service worker cache: ${cacheName}`);
 
-  const projects = parseJson((await fetchText(baseUrl, '/projects.json', 'application/json')).body, '/projects.json');
+  const projectsResponse = await fetchText(baseUrl, '/projects.json', 'application/json');
+  requireHeader(projectsResponse, '/projects.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
+  const projects = parseJson(projectsResponse.body, '/projects.json');
   if (projects.schemaVersion !== 1) throw new Error('/projects.json schemaVersion must be 1.');
   if (!projects.source?.profileFeedUrl) throw new Error('/projects.json source.profileFeedUrl is missing.');
   requireAbsoluteUrl(projects.source.profileFeedUrl, '/projects.json source.profileFeedUrl');
@@ -151,7 +164,9 @@ async function checkLiveArtifacts(baseUrl, expected) {
   }
   summary.push(`projects: ${projectCount} (${projects.source.data})`);
 
-  const releases = parseJson((await fetchText(baseUrl, '/releases.json', 'application/json')).body, '/releases.json');
+  const releasesResponse = await fetchText(baseUrl, '/releases.json', 'application/json');
+  requireHeader(releasesResponse, '/releases.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
+  const releases = parseJson(releasesResponse.body, '/releases.json');
   if (releases.schemaVersion !== 1) throw new Error('/releases.json schemaVersion must be 1.');
   requireDate(releases.generatedAt, '/releases.json generatedAt');
   const releaseCount = Number(releases.counts?.releases);
@@ -163,7 +178,9 @@ async function checkLiveArtifacts(baseUrl, expected) {
   }
   summary.push(`releases: ${releaseCount}`);
 
-  const feed = parseJson((await fetchText(baseUrl, '/feed.json', 'application/feed+json,application/json')).body, '/feed.json');
+  const feedResponse = await fetchText(baseUrl, '/feed.json', 'application/feed+json,application/json');
+  requireHeader(feedResponse, '/feed.json', { contentTypes: ['application/feed+json', 'application/json'], cacheControl: 'max-age=600' });
+  const feed = parseJson(feedResponse.body, '/feed.json');
   if (feed.version !== 'https://jsonfeed.org/version/1.1') throw new Error('/feed.json version must be JSON Feed 1.1.');
   requireAbsoluteUrl(feed.home_page_url, '/feed.json home_page_url');
   requireAbsoluteUrl(feed.feed_url, '/feed.json feed_url');
@@ -178,9 +195,33 @@ async function checkLiveArtifacts(baseUrl, expected) {
   }
   summary.push(`JSON Feed items: ${feedItems.length}`);
 
+  const releasesXml = await fetchText(baseUrl, '/releases.xml', 'application/rss+xml,application/xml,text/xml,*/*');
+  requireHeader(releasesXml, '/releases.xml', { contentTypes: ['application/rss+xml', 'application/xml', 'text/xml'], cacheControl: 'max-age=600' });
+  if (!/<rss\b/i.test(releasesXml.body)) throw new Error('/releases.xml did not return an RSS document.');
+  summary.push('release RSS: 200');
+
+  const rssXml = await fetchText(baseUrl, '/rss.xml', 'application/rss+xml,application/xml,text/xml,*/*');
+  requireHeader(rssXml, '/rss.xml', { contentTypes: ['application/rss+xml', 'application/xml', 'text/xml'], cacheControl: 'max-age=600' });
+  if (!/<rss\b/i.test(rssXml.body)) throw new Error('/rss.xml did not return an RSS document.');
+  summary.push('project RSS: 200');
+
+  const llms = await fetchText(baseUrl, '/llms.txt', 'text/plain,*/*');
+  requireHeader(llms, '/llms.txt', { contentTypes: ['text/plain'], cacheControl: 'max-age=600' });
+  if (!llms.body.trimStart().startsWith('# ')) throw new Error('/llms.txt did not return the expected markdown H1.');
+  summary.push('llms.txt: 200');
+
+  const cmdk = await fetchText(baseUrl, '/cmdk-data.js', 'application/javascript,text/javascript,*/*');
+  requireHeader(cmdk, '/cmdk-data.js', { contentTypes: ['application/javascript', 'text/javascript'], cacheControl: 'max-age=600' });
+  if (!cmdk.body.startsWith('window.__PORTFOLIO_DATA=Object.assign(')) {
+    throw new Error('/cmdk-data.js did not return the expected command-palette payload wrapper.');
+  }
+  summary.push('cmdk-data.js: 200');
+
   const sitemap = await fetchText(baseUrl, '/sitemap-index.xml', 'application/xml,text/xml,*/*');
+  requireHeader(sitemap, '/sitemap-index.xml', { contentTypes: ['application/xml', 'text/xml'], cacheControl: 'max-age=600' });
   if (!/<sitemapindex\b/i.test(sitemap.body)) throw new Error('/sitemap-index.xml did not return a sitemap index document.');
   summary.push('sitemap index: 200');
+  summary.push('live cache-control: max-age=600');
 
   return summary;
 }

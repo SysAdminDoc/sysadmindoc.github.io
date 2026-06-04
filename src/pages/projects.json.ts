@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { categoryLabels } from '../data/categories';
+import { endpointHeaders } from '../data/endpoint-headers';
 import { catalog, featured, liveApps, profileFeedInfo } from '../data/portfolio';
 
 export const prerender = true;
@@ -44,10 +45,7 @@ const slugs = Array.from(
 
 function json(data: unknown) {
   return new Response(`${JSON.stringify(data, null, 2)}\n`, {
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Cache-Control': 'public, max-age=300',
-    },
+    headers: endpointHeaders('application/json; charset=UTF-8'),
   });
 }
 

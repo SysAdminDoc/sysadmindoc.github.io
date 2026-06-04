@@ -6,6 +6,8 @@ const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const siteUrl = 'https://sysadmindoc.github.io';
 const errors = [];
+const generatedEndpointCacheControl = 'public, max-age=300';
+const generatedImageCacheControl = 'public, max-age=86400';
 
 const discoveryLinks = [
   { href: '/rss.xml', type: 'application/rss+xml', label: 'recent projects RSS' },
@@ -13,6 +15,17 @@ const discoveryLinks = [
   { href: '/feed.json', type: 'application/feed+json', label: 'JSON Feed' },
   { href: '/projects.json', type: 'application/json', label: 'project index JSON' },
   { href: '/releases.json', type: 'application/json', label: 'release index JSON' },
+];
+const endpointHeaderSources = [
+  { route: '/projects.json', file: 'src/pages/projects.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/releases.json', file: 'src/pages/releases.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/resume.json', file: 'src/pages/resume.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/feed.json', file: 'src/pages/feed.json.ts', helper: 'endpointHeaders', contentType: 'application/feed+json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/releases.xml', file: 'src/pages/releases.xml.ts', helper: 'endpointHeaders', contentType: 'application/rss+xml; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/llms.txt', file: 'src/pages/llms.txt.ts', helper: 'endpointHeaders', contentType: 'text/plain; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/cmdk-data.js', file: 'src/pages/cmdk-data.js.ts', helper: 'endpointHeaders', contentType: 'text/javascript; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/rss.xml', file: 'src/pages/rss.xml.ts', helper: 'withEndpointCache', cacheControl: generatedEndpointCacheControl },
+  { route: '/og/[slug].png', file: 'src/pages/og/[slug].png.ts', helper: 'imageEndpointHeaders', contentType: 'image/png', cacheControl: generatedImageCacheControl },
 ];
 
 function fail(message) {
@@ -317,6 +330,44 @@ function auditDiscoveryLinks(html) {
   return { discoveryCount: alternates.length };
 }
 
+async function auditSourceHeaderPolicies() {
+  const helperSource = await fs.readFile(path.join(root, 'src', 'data', 'endpoint-headers.ts'), 'utf8').catch((error) => {
+    fail(`src/data/endpoint-headers.ts is missing or unreadable: ${error.message}`);
+    return '';
+  });
+  if (!helperSource.includes(`GENERATED_ENDPOINT_CACHE_CONTROL = '${generatedEndpointCacheControl}'`)) {
+    fail(`GENERATED_ENDPOINT_CACHE_CONTROL must be ${generatedEndpointCacheControl}.`);
+  }
+  if (!helperSource.includes(`GENERATED_IMAGE_CACHE_CONTROL = '${generatedImageCacheControl}'`)) {
+    fail(`GENERATED_IMAGE_CACHE_CONTROL must be ${generatedImageCacheControl}.`);
+  }
+
+  let checked = 0;
+  for (const expectation of endpointHeaderSources) {
+    const source = await fs.readFile(path.join(root, expectation.file), 'utf8').catch((error) => {
+      fail(`${expectation.file} is missing or unreadable: ${error.message}`);
+      return '';
+    });
+    if (!source.includes("../data/endpoint-headers") && !source.includes('../../data/endpoint-headers')) {
+      fail(`${expectation.file} must import the shared endpoint header policy for ${expectation.route}.`);
+    }
+    if (expectation.contentType) {
+      const escaped = expectation.contentType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = new RegExp(`${expectation.helper}\\(['"]${escaped}['"]\\)`);
+      if (!pattern.test(source)) {
+        fail(`${expectation.file} must declare ${expectation.route} as ${expectation.contentType} through ${expectation.helper}().`);
+      }
+    } else if (!source.includes(`${expectation.helper}(`)) {
+      fail(`${expectation.file} must apply ${expectation.helper}() to ${expectation.route}.`);
+    }
+    if (/max-age=31536000|immutable/i.test(source)) {
+      fail(`${expectation.file} must not use long immutable caching for unhashed generated endpoint ${expectation.route}.`);
+    }
+    checked += 1;
+  }
+  return { sourceHeaderPolicies: checked };
+}
+
 const projectsIndex = await readJson('projects.json');
 const releasesIndex = await readJson('releases.json');
 const cmdkSource = await readText('cmdk-data.js');
@@ -328,6 +379,7 @@ const releasesSummary = auditReleasesIndex(releasesIndex);
 const cmdkSummary = auditCmdkData(cmdkSource);
 const llmsSummary = auditLlmsTxt(llmsText);
 const discoverySummary = auditDiscoveryLinks(indexHtml);
+const headerSummary = await auditSourceHeaderPolicies();
 
 if (errors.length > 0) {
   console.error('Public endpoint audit failed:');
@@ -343,4 +395,5 @@ console.log(`  cmdk-data.js projects: ${cmdkSummary.cmdkProjects}`);
 console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
 console.log(`  llms.txt links: ${llmsSummary.llmsLinks}`);
 console.log(`  alternate discovery links: ${discoverySummary.discoveryCount}`);
+console.log(`  source header policies: ${headerSummary.sourceHeaderPolicies}`);
 console.log('Public endpoint audit passed.');

@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { endpointHeaders } from '../data/endpoint-headers';
 import { featured, liveApps, catalog } from '../data/portfolio';
 
 // Curated, AI-readable index following the llms.txt convention (llmstxt.org):
@@ -46,6 +47,6 @@ export async function GET(context: APIContext) {
   lines.push('');
 
   return new Response(lines.join('\n'), {
-    headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
+    headers: endpointHeaders('text/plain; charset=UTF-8'),
   });
 }
