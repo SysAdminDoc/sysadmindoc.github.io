@@ -26,6 +26,57 @@ function scheduleIdle(fn,timeout){
     if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout:delay});return}
     setTimeout(fn,Math.min(delay,1000));
 }
+const HOMEPAGE_SCROLL_SECTION_SELECTOR='#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect';
+const HOMEPAGE_HASH_RESTORE_DELAYS=[0,250,750,1400,2400,3600];
+const HOMEPAGE_INITIAL_HASH=window.location.hash;
+let homepageHashRestoreToken=0;
+function revealHomepageScrollSections(){
+    document.querySelectorAll(HOMEPAGE_SCROLL_SECTION_SELECTOR).forEach(function(el){
+        el.style.contentVisibility='visible';
+    });
+}
+function restoreHomepageHashTarget(hashOverride){
+    const hash=hashOverride||window.location.hash;
+    if(!hash)return;
+    var id='';
+    try{id=decodeURIComponent(hash.replace(/^#/,''))}catch(e){id=hash.replace(/^#/,'')}
+    if(!id)return;
+    var target=document.getElementById(id);
+    if(!(target instanceof HTMLElement))return;
+    if(target.closest(HOMEPAGE_SCROLL_SECTION_SELECTOR)||target.matches(HOMEPAGE_SCROLL_SECTION_SELECTOR)){
+        revealHomepageScrollSections();
+    }
+    window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL=Date.now()+1600;
+    if(window.location.hash!==hash&&history.replaceState){
+        history.replaceState(null,'',window.location.pathname+window.location.search+hash);
+    }
+    target.scrollIntoView({block:'start',behavior:'auto'});
+    requestAnimationFrame(function(){
+        const top=target.getBoundingClientRect().top;
+        const expected=parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||72;
+        if(Math.abs(top-expected)>160)target.scrollIntoView({block:'start',behavior:'auto'});
+    });
+}
+function scheduleHomepageHashRestore(hashOverride){
+    const hash=hashOverride||window.location.hash;
+    if(!hash)return;
+    const token=++homepageHashRestoreToken;
+    window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL=Date.now()+5200;
+    HOMEPAGE_HASH_RESTORE_DELAYS.forEach(function(delay){
+        setTimeout(function(){
+            if(token!==homepageHashRestoreToken)return;
+            restoreHomepageHashTarget(hash);
+        },delay);
+    });
+}
+function cancelHomepageHashRestore(){homepageHashRestoreToken++}
+['wheel','touchstart','keydown'].forEach(function(type){
+    window.addEventListener(type,cancelHomepageHashRestore,{passive:true});
+});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){scheduleHomepageHashRestore(HOMEPAGE_INITIAL_HASH||window.location.hash)},{once:true});
+else scheduleHomepageHashRestore(HOMEPAGE_INITIAL_HASH||window.location.hash);
+window.addEventListener('load',function(){scheduleHomepageHashRestore(HOMEPAGE_INITIAL_HASH||window.location.hash)},{once:true});
+window.addEventListener('hashchange',function(){scheduleHomepageHashRestore(window.location.hash)});
 function fetchWithTimeout(resource,options,timeoutMs){
     if(typeof AbortController==='undefined')return fetch(resource,options);
     const controller=new AbortController();
@@ -749,11 +800,6 @@ function onTermReady(){
     function terminalRoute(path,label){
         setTimeout(()=>window.location.assign(path),350);
         return '\u2192 <span class="cmd-val">'+escapeHTML(label||path)+'</span>';
-    }
-    function revealHomepageScrollSections(){
-        document.querySelectorAll('#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect').forEach(function(el){
-            el.style.contentVisibility='visible';
-        });
     }
     function scrollToTerminalTarget(selector,label){
         setTimeout(function(){
