@@ -152,7 +152,7 @@ Production dependency advisories found on 2026-05-17 were remediated:
 - Transitive `postcss` resolved to 8.5.14.
 - CI now runs `npm run audit:prod`, which gates high/critical production advisories.
 
-Full `npm audit` still reports dev-only moderate findings in the `@astrojs/check` language-server chain. That is documented but does not affect production dependencies.
+Full `npm audit --audit-level=moderate` is clean. The prior dev-only `yaml` advisory in the `@astrojs/check` language-server chain is mitigated with an npm override that keeps `yaml-language-server` on patched `yaml@2.8.3` without downgrading `@astrojs/check`.
 
 No hardcoded credential was found by the broad secret-pattern scan. Matches were expected source references such as `GITHUB_TOKEN` handling in `scripts/fetch-stars.mjs`, package names, or documentation text.
 

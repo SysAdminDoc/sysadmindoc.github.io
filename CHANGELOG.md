@@ -10,6 +10,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
 - Documented the safe Windows/VMware workflow: use shared folders for editing if needed, but run npm/Astro validation from a normal local clone/worktree path.
+- Added an npm override for the Astro check dependency chain so `yaml-language-server` resolves patched `yaml@2.8.3`; full moderate-severity audit is clean.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 
 ## [v0.18.2] - 2026-06-04

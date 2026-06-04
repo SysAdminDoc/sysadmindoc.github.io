@@ -182,12 +182,12 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: `README.md` and `PROJECT_CONTEXT.md` now document the safe local-build workflow: edit through a shared folder if needed, but run npm/Astro validation from a normal local clone/worktree path.
   - Verify: Follow the documented local path workflow and run `npm test`, `npm run check`, and `npm run build`; the T114 cwd guard documents/fails the raw UNC fallback mode.
 
-- [ ] **T116** 🤖 P2 — Resolve the dev-only `yaml` advisory in the Astro check dependency chain.
+- [x] **T116** 🤖 P2 — Resolve the dev-only `yaml` advisory in the Astro check dependency chain.
   - Why: Production dependency audit is clean, but the full dev audit still reports five moderate vulnerabilities through the type-checking stack, which will keep audit-driven workflows noisy.
   - Evidence: `npm audit --omit=dev --audit-level=high` returned 0 vulnerabilities; `npm audit --audit-level=moderate` reported `GHSA-48c2-rrv3-qjmp` because `@astrojs/check@0.9.9 -> @astrojs/language-server@2.16.8 -> volar-service-yaml@0.0.70 -> yaml-language-server@1.20.0 -> yaml@2.7.1`; GitHub Advisory says `yaml` is patched at `2.8.3`; `yaml-language-server@1.23.0` depends on `yaml@2.8.3`, but current `volar-service-yaml` pins `~1.20.0`.
   - Touches: `package.json`, `package-lock.json`; possibly an npm override or a wait-for-upstream note if the override conflicts with Astro language-server behavior.
-  - Acceptance: `npm audit --audit-level=moderate` is clean without downgrading `@astrojs/check` or breaking `npm run check`; if upstream cannot be safely overridden yet, the chosen mitigation is documented with a tracked follow-up.
-  - Verify: `npm run check`; `npm audit --audit-level=moderate`; inspect `npm ls yaml @astrojs/check @astrojs/language-server yaml-language-server`.
+  - Done: Added an npm override so `yaml-language-server` resolves nested `yaml` to patched `2.8.3` without downgrading `@astrojs/check`.
+  - Verify: `npm run check`; `npm audit --audit-level=moderate`; `npm ls yaml @astrojs/check @astrojs/language-server yaml-language-server volar-service-yaml`.
 
 ---
 
