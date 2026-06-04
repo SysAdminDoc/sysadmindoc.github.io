@@ -2,8 +2,28 @@
 
 > ⚠ **Open work is now tracked in [TODO.md](TODO.md) (single source of truth).** This file is retained as the **evidence/rationale archive** for the v0.18.0 audit — full Why/Evidence/Verify detail keyed by `R…` IDs lives here.
 
-Last updated: 2026-06-01
-Current version: v0.17.0
+> ## ▶ Implementer Instructions (for the build machine)
+> This roadmap is fed continuously by an automated research machine. On every
+> pass, the implementing machine should:
+> 1. `git pull --rebase` to get the latest researched items before starting.
+> 2. Work the open 🤖 items top-down by priority (P0 → P3). Build them properly:
+>    multi-file structure, real error handling, no runtime auto-install hacks,
+>    version strings synced, docs/CHANGELOG updated in the same commit.
+> 3. In ADDITION to building items, run a FULL UX AUDIT each pass — do not skip
+>    it even when the queue is full. Walk every screen / page / dialog / form /
+>    table / empty-loading-error-disabled state across light/dark/high-contrast
+>    themes. Check: onboarding, navigation clarity, spacing/contrast/alignment,
+>    clipping/overflow, hierarchy, microcopy, destructive-action guards,
+>    keyboard + screen-reader accessibility, and trust signals. Fix what you
+>    find, or file it back as a new 🤖 roadmap item if it is larger than a pass.
+> 4. Check off ✅ each item you complete (leave it in place with the checkmark),
+>    commit per logical change with a "why" message, and push.
+> 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
+>    headings — the research machine owns those. Never force-push.
+
+Last researched: 2026-06-04 (Cycle 1)
+Last updated: 2026-06-04
+Current version: v0.18.3
 
 ## Status: 42 of 42 v0.17.0 items shipped — roadmap fully drained
 
