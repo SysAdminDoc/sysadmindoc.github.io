@@ -50,6 +50,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Non-blocking global CSS and critical first paint** -- Added `src/styles/critical.css`, inlined it from `Base.astro`, and loaded the monolithic hashed `global.css` asset through preload plus a print-media swap. Re-baselined the performance audit with mobile homepage LCP at 668ms. _(Source: TODO T16/T102)_
 - [x] **Advisory Lighthouse CI budget** -- Added `lighthouserc.cjs`, `npm run lhci:audit`, PR CI report upload, and warning-only budgets for sampled homepage/project-detail routes. _(Source: TODO T27)_
 - [x] **Astro-managed live-card thumbnails** -- Added tracked `src/assets/screenshots/thumbs/` inputs, rendered Live Apps cards through Astro `<Picture>` with AVIF/WebP srcsets and JPEG fallback, and extended screenshot generation/audits to keep public and Astro thumbnail copies in lockstep. _(Source: TODO T28)_
+- [x] **Build-time project ranking signal** -- Added a pure ranking helper plus unit coverage for the deterministic blend of stars, 180-day freshness decay, and release-download activity; homepage `Recommended` order and project related links now use the same rank map. _(Source: TODO T36)_
 
 ### Research Infrastructure (2026-05-17)
 
