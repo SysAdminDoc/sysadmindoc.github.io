@@ -52,5 +52,5 @@ jobs:
           name: lighthouse-ci-reports
           path: .tmp/lhci
           if-no-files-found: ignore
-      - name: Accessibility audit (advisory)
-        run: npm run a11y:audit || echo "a11y audit reported issues (advisory)"
+      - name: Accessibility audit
+        run: npm run a11y:audit
