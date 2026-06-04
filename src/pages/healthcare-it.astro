@@ -5,8 +5,10 @@ import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import StarSvg from '../components/StarSvg.astro';
 import { healthcareIT } from '../data/curated';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { catalog, featured, liveApps } from '../data/portfolio';
 
+const pageOg = interiorOgPageBySlug['healthcare-it'];
 let stars: Record<string, number> = {};
 try { const mod = await import('../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
 
@@ -40,8 +42,9 @@ const cmdkSections = hasRepos
 ---
 <Base
   title="Healthcare IT — Matt Parker"
-  description="Tools I've built specifically for healthcare facilities running medical imaging systems: PACS migration and X-ray acquisition."
-  ogImage="/og.png"
+  description={pageOg.description}
+  ogImage={pageOg.ogImage}
+  ogImageAlt={pageOg.ogImageAlt}
   cmdkSections={cmdkSections}
 >
   <a href="#main" class="skip-link">Skip to content</a>

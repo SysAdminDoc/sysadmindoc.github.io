@@ -2,14 +2,16 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { uses } from '../data/uses';
 
+const pageOg = interiorOgPageBySlug.uses;
 const cmdkSections = [
   { label: 'Overview', href: '#uses-overview', desc: 'What this page covers and why it exists.', badge: 'USES' },
   { label: 'Setup', href: '#uses-setup', desc: 'Editor, terminal, AI tools, languages, frameworks, devops, hardware, and design.', badge: `${uses.length} CATEGORIES` },
 ];
 ---
-<Base title="Uses - Matt Parker" description="Development environment, tools, languages, frameworks, and design preferences behind the portfolio." cmdkSections={cmdkSections}>
+<Base title="Uses - Matt Parker" description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="uses" contextLabel="Uses" contextTone="blue" />
 

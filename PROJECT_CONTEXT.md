@@ -19,6 +19,7 @@ The site must remain public-safe. It should not expose private repository names,
 - TypeScript data layer under `src/data/`.
 - `src/data/portfolio.ts` is the rendered portfolio adapter. It consumes the ignored profile feed cache at `src/data/_profile-projects.json`, maps profile categories into site categories, excludes suppressed/non-portfolio rows, and preserves local curated featured/live-app overlays.
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
+- Key interior-page social-card metadata lives in `src/data/interior-og-pages.ts`. The existing `src/pages/og/[slug].png.ts` Satori/Resvg endpoint now emits project social cards plus registered cards for `/uses/`, `/resume/`, `/search/`, `/timeline/`, `/archive/`, `/now/`, `/healthcare-it/`, and `/releases/`; `npm run images:audit` guards required slugs, page wiring, 1200x630 PNG output, and project-slug collisions.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
@@ -90,7 +91,7 @@ Current verification baseline:
 
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - The generated fixture path passed from a clean ignored-cache state: `npm run generated:fixtures:check`; `npm run generated:fixtures`; `PROFILE_PROJECTS_OFFLINE=1 npm run check`; `npm test`; `npm run build:ci`; standalone `npm run endpoints:audit`; `npm run feed:audit`; `npm run search:audit`; `npm run schema:audit`; `npm run a11y:audit`; and `rtk git diff --check`. The fixture build rendered 16 profile projects, 9 releases, all 10 Pagefind Category labels, and the representative `win11-nvme-driver-patcher` JSON-LD project route.
-- `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
+- `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, 8 interior OG pages, and 1200x630 PNG OG metadata checks.
 - `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
 - `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, public endpoint audit, JSON Feed audit, service-worker stamp v0.18.3, Pagefind detecting `data-pagefind-body` and indexing 193 of 194 HTML pages, the generated search audit, and the rendered JSON-LD audit.
 - `npm run endpoints:audit` passed with 177 project-index rows, 60 release-index rows, 20 release repositories, 177 command-palette project rows, 9 quick links, 42 `llms.txt` links, 5 alternate discovery links, and 9 source header policies.
@@ -226,13 +227,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T41 README highlighting pass:
+Highest-priority workflow/research work after the T42 interior OG pass:
 
-1. `T42` -- OG images for interior pages.
-2. `T43` -- Last-updated timestamps on `/uses`, `/resume`, `/healthcare-it`.
-3. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+1. `T43` -- Last-updated timestamps on `/uses`, `/resume`, `/healthcare-it`.
+2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+3. `T79` -- content-visibility:auto below-fold.
 
-Next open checklist item in document order is `T42` OG images for interior pages.
+Next open checklist item in document order is `T43` last-updated timestamps on `/uses`, `/resume`, and `/healthcare-it`.
 
 ## Definition of Done for Future Changes
 
@@ -288,3 +289,4 @@ Next open checklist item in document order is `T42` OG images for interior pages
 - 2026-06-04: Added advisory performance/bfcache coverage to weekly quality gates. The workflow serves built `dist/` locally after `build:ci`, runs the custom strict performance audit, uploads preview/performance logs plus `.tmp/performance-audit-ci.json`, and adds route-level performance rows to the job summary. Manual run `26966906202` passed and uploaded artifact `7417914733`.
 - 2026-06-04: Added the CSP preflight audit for T95. `npm run csp:audit` inventories the active CSP, seven known executable inline scripts, one inline event handler, three JSON-LD/data script blocks, six self-hosted external scripts, and inline style surfaces; strict candidate mode fails on the eight current `script-src 'unsafe-inline'` blockers.
 - 2026-06-04: Shipped README code highlighting. Project pages now render cached README fences through Shiki with fixed CSS classes while preserving sanitizer stripping for remote README inline styles and event handlers.
+- 2026-06-04: Shipped interior-page OG cards. `src/data/interior-og-pages.ts` now drives generated social cards for the key secondary routes through the existing Satori/Resvg endpoint, and `images:audit` plus unit tests guard required slugs, route wiring, and project-card collisions. Built PNG probes confirmed all eight generated cards are 1200x630; Browser preview verified `/search/` and `/healthcare-it/` metadata, PNG responses, no overflow, and clean console logs.

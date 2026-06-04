@@ -84,12 +84,13 @@ Post-v0.17.0 deep audit across 5 dimensions (feature completeness, performance, 
   - Verify: Submit homepage URL to Google Rich Results Test. Confirm schemas validate.
   - Complexity: M
 
-- [ ] P2 -- Generate unique OG images for key interior pages
+- [x] P2 -- Generate unique OG images for key interior pages
   - Why: Non-project pages (/uses, /resume, /search, /timeline, /archive, /now) all share generic /og.png fallback. No differentiated social preview cards.
   - Evidence: Base.astro line 176 defaults ogImage to '/og.png'. Only projects/[slug].astro overrides with per-project OG images.
   - Touches: public/og.png, src/layouts/Base.astro, potentially new OG endpoints
   - Acceptance: Every key interior page has a functioning, differentiated OG image.
-  - Verify: Share /search/, /timeline/, /releases/ URLs on social media and confirm distinct preview cards.
+  - Done: `src/data/interior-og-pages.ts` now defines social-card metadata for /uses, /resume, /search, /timeline, /archive, /now, /healthcare-it, and /releases. `src/pages/og/[slug].png.ts` generates those paths through the existing Satori/Resvg endpoint, and the routed pages pass generated `ogImage`/`ogImageAlt` metadata into `Base`.
+  - Verify: `npm test`; `npm run images:audit`; `npm run build`; generated PNG probe for all eight interior routes; visual inspection of `dist/og/search.png` and `dist/og/healthcare-it.png`.
   - Complexity: M
 
 - [ ] P3 -- Add last-updated timestamps to interior pages for freshness signals
@@ -773,7 +774,7 @@ P0-P2 items needing design decisions or significant implementation:
 | README table of contents | M | Heading extraction, collapsible details, threshold |
 | Migrate unsafe-inline scripts (CSP) | L | Theme FOUC prevention, data injection pattern |
 | Cross-origin cache TTL in SW | M | TTL value, eviction strategy, freshness check |
-| OG images for interior pages | M | Per-page satori template or generic with title |
+| OG images for interior pages | M | Shipped through shared interior OG metadata plus the existing Satori/Resvg endpoint |
 
 ---
 
