@@ -39,6 +39,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Project detail README rendering lives in `src/data/readme-rendering.mjs`. It uses a per-render `Marked` instance, keeps existing GitHub raw/blob link rewriting, sanitizes remote README HTML with `sanitize-html`, and applies Shiki `github-dark-default` fenced-code highlighting through fixed token classes rather than README-sourced inline `style` attributes.
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Catalog cards render visible `Recommended #N` rationale text and attach it through `aria-describedby` while the default sort is active; non-Recommended sorts hide the visible rationale. Project detail related links use the same rank map and expose their own ranking rationale. Explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, unique contiguous ranks, profile-feed health, and README refresh quality.
 - The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. `homepageProofHighlights` selects the current quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`; `projectProof` supplies the source text, and `npm run data:validate` enforces selected repos, source selectors, count bounds, duplicate highlights, and mobile-length copy. Matching `critical.css`/`global.css` rules keep first-paint layout stable.
+- Greatest Hits case-study coverage is data-gated. All 8 `greatestHits` entries in `src/data/curated.ts` have a matching `projectProof.caseStudy` in `src/data/proof.ts`, and `npm run data:validate` parses the curated list, validates each Greatest Hits row, requires a proof record, validates `caseStudy.context`/`decisions`/`outcomes`, and reports the current coverage count.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages. `npm run endpoints:audit` validates those JSON APIs plus `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links from built `dist`.
 - Generated JSON/feed/text/script endpoints use `endpointHeaders()` from `src/data/endpoint-headers.ts`, which declares `Cache-Control: public, max-age=300`. Generated OG image endpoints use `imageEndpointHeaders()` with bounded `public, max-age=86400` caching because `/og/*.png` routes are not hashed. GitHub Pages may still serve deployed static artifacts with its platform cache policy; current live smoke observed `max-age=600`.
 - `/feed.json` is a JSON Feed 1.1 project feed with absolute `icon` and `favicon` URLs. `npm run feed:audit` validates the built feed metadata, icon assets, item IDs/URLs, content fields, uniqueness, and dates.
@@ -158,8 +159,9 @@ The local fallback and curated overlay data live in `src/data/projects.ts`:
 - `src/data/proof.ts`: optional source-backed proof sections for project detail pages.
 - `src/data/archive.ts`: public-safe archive decisions for retired, moved, held, removed, or superseded project surfaces.
 
-`npm run data:validate` parses the TypeScript data source and the optional profile feed cache, then fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, malformed proof records, unsafe archive entries, or invalid profile-feed category mappings. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
+`npm run data:validate` parses the TypeScript data source and the optional profile feed cache, then fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, malformed proof records, missing Greatest Hits case-study coverage, unsafe archive entries, or invalid profile-feed category mappings. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
 Homepage proof-highlight validation is part of `npm run data:validate`; it fails on invalid selected repos, duplicate proof highlights, missing `projectProof` records, unsupported source selectors, and label/value/copy lengths that exceed the mobile hero bounds.
+Greatest Hits validation is also part of `npm run data:validate`; it parses `src/data/curated.ts`, requires each Greatest Hits repo to exist in rendered portfolio references, requires a matching `projectProof` record, validates optional `caseStudy` shape for all proof records, and currently reports 8/8 Greatest Hits case studies across 9 proof records.
 
 Derived data in `src/data/derived.ts` computes fallback repository count from unique feed-backed project references. The count currently excludes suppressed/non-portfolio feed rows and can diverge from live GitHub if caches are stale.
 
@@ -232,13 +234,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T99 live-app schema pass:
+Highest-priority workflow/research work after the T100 Greatest Hits case-study pass:
 
-1. `T100` -- Greatest Hits case-study coverage parity and validator.
-2. `T101` -- Reconcile hero "176+" vs catalog "181" headline count.
-3. `T105` -- Promote the a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+1. `T101` -- Reconcile hero "176+" vs catalog "181" headline count.
+2. `T105` -- Promote the a11y audit to a blocking strict subset and mirror test/a11y into deploy.
+3. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
 
-Next open checklist item in document order is `T100` Greatest Hits case-study coverage parity and validator.
+Next open checklist item in document order is `T101` hero/catalog count reconciliation.
 
 ## Definition of Done for Future Changes
 
@@ -300,3 +302,4 @@ Next open checklist item in document order is `T100` Greatest Hits case-study co
 - 2026-06-04: Shipped T95 CSP script hardening. `script-src 'unsafe-inline'` was removed; first-paint theme/global-style initialization and route helpers now load from self-hosted scripts; command-palette page sections are inert JSON; `npm run csp:audit` and strict candidate mode report zero executable inline scripts and zero inline event handlers. Verification covered unit/check/build/a11y gates, built HTML inline-script probes, the strict performance audit on `127.0.0.1:4322`, and focused Chrome CDP interactions for theme init, command palette data, Pagefind bootstrap, section jumps, recent-project tracking, resume print, and timeline filters.
 - 2026-06-04: Shipped T98 interior page-level JSON-LD. `src/data/page-freshness.ts` now drives reviewed schema for all eight interior OG routes; `/resume/` emits `ProfilePage`, `/search/` emits `SearchResultsPage`, collection routes emit `CollectionPage`, and `/healthcare-it/` emits `AboutPage`. The rendered schema audit parsed 386 JSON-LD blocks, 765 graph nodes, and checked 11 representative routes.
 - 2026-06-04: Shipped T99 live-app schema. `fetch-stars` now captures repo `createdAt` and normalized SPDX license metadata; project pages emit license/datePublished on `SoftwareSourceCode`; live-app pages emit linked `SoftwareApplication` nodes with free USD offers. The rendered schema audit parsed 386 JSON-LD blocks, 787 graph nodes, and checked 12 representative routes including `StormviewRadar`.
+- 2026-06-04: Shipped T100 Greatest Hits case-study parity. `projectProof` now carries case-study blocks for all 8 Greatest Hits repos, `npm run data:validate` gates the curated list against proof coverage and case-study shape, and the built homepage/project-page probe confirmed 8 case-study badges plus rendered Case Study/Key Decisions/Outcomes sections on the newly filled project pages.

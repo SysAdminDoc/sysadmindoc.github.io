@@ -10,6 +10,7 @@ const owner = 'SysAdminDoc';
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const typesPath = path.join(root, 'src', 'data', 'types.ts');
 const categoriesPath = path.join(root, 'src', 'data', 'categories.ts');
+const curatedPath = path.join(root, 'src', 'data', 'curated.ts');
 const proofPath = path.join(root, 'src', 'data', 'proof.ts');
 const archivePath = path.join(root, 'src', 'data', 'archive.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
@@ -196,10 +197,11 @@ async function fileExists(filePath) {
   }
 }
 
-const [projectsText, typesText, categoriesText, proofText, archiveText, policyText] = await Promise.all([
+const [projectsText, typesText, categoriesText, curatedText, proofText, archiveText, policyText] = await Promise.all([
   fs.readFile(projectsPath, 'utf8'),
   fs.readFile(typesPath, 'utf8'),
   fs.readFile(categoriesPath, 'utf8'),
+  fs.readFile(curatedPath, 'utf8'),
   fs.readFile(proofPath, 'utf8'),
   fs.readFile(archivePath, 'utf8'),
   fs.readFile(policyPath, 'utf8'),
@@ -208,6 +210,7 @@ const [projectsText, typesText, categoriesText, proofText, archiveText, policyTe
 const projectsSource = sourceFile(projectsPath, projectsText);
 const typesSource = sourceFile(typesPath, typesText);
 const categoriesSource = sourceFile(categoriesPath, categoriesText);
+const curatedSource = sourceFile(curatedPath, curatedText);
 const proofSource = sourceFile(proofPath, proofText);
 const archiveSource = sourceFile(archivePath, archiveText);
 const policy = JSON.parse(policyText);
@@ -218,6 +221,7 @@ const featured = exportedArray(projectsSource, 'featured');
 const liveApps = exportedArray(projectsSource, 'liveApps');
 const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
+const greatestHits = exportedArray(curatedSource, 'greatestHits');
 const proofRecords = exportedObject(proofSource, 'projectProof');
 const homepageProofHighlights = exportedArray(proofSource, 'homepageProofHighlights');
 const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
@@ -257,6 +261,7 @@ validateUnique('featured', featured, 'repo');
 validateUnique('liveApps', liveApps, 'slug');
 validateUnique('catalog', catalog, 'repo');
 validateUnique('skills', skills, 'code');
+validateUnique('greatestHits', greatestHits, 'repo');
 validateUnique('homepageProofHighlights', homepageProofHighlights, 'repo');
 validateUnique('archiveEntries', archiveEntries, 'id');
 
@@ -389,7 +394,36 @@ for (const [slug, proof] of Object.entries(proofRecords)) {
       }
     });
   }
+  if (hasOwn(proof, 'caseStudy')) {
+    if (!proof.caseStudy || typeof proof.caseStudy !== 'object' || Array.isArray(proof.caseStudy)) {
+      fail(`projectProof.${slug}.caseStudy must be an object when present.`);
+    } else {
+      requireString(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'context');
+      requireStringArray(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'decisions');
+      requireStringArray(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'outcomes');
+    }
+  }
 }
+
+let greatestHitCaseStudyCount = 0;
+greatestHits.forEach((hit, index) => {
+  const repo = requireString('greatestHits', index, hit, 'repo');
+  validateRepoName('greatestHits', index, 'repo', repo);
+  requireString('greatestHits', index, hit, 'name');
+  requireString('greatestHits', index, hit, 'why');
+  requireString('greatestHits', index, hit, 'tag');
+  if (repo && !portfolioRefs.has(repo)) fail(`greatestHits[${index}].repo ${repo} must refer to a project route.`);
+  const proof = proofRecords[repo];
+  if (!proof) {
+    fail(`greatestHits[${index}].repo ${repo} must have a projectProof record.`);
+    return;
+  }
+  if (!proof.caseStudy) {
+    fail(`greatestHits[${index}].repo ${repo} must have projectProof.${repo}.caseStudy.`);
+    return;
+  }
+  greatestHitCaseStudyCount += 1;
+});
 
 function validateHomepageProofSource(index, proof, source) {
   if (!source || typeof source !== 'object' || Array.isArray(source)) {
@@ -566,6 +600,7 @@ console.log(`  local fallback command palette projects: ${commandPaletteProjects
 if (profileFeedProjectCount !== null) console.log(`  rendered profile feed projects: ${profileFeedProjectCount}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
 console.log(`  proof records: ${Object.keys(proofRecords).length}`);
+console.log(`  greatest hit case studies: ${greatestHitCaseStudyCount}/${greatestHits.length}`);
 console.log(`  homepage proof highlights: ${homepageProofHighlights.length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
 
