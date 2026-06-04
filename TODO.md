@@ -199,7 +199,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Root cause traced to the older layout emitting JSON-LD between `</head>` and `<body>`; commit `b4b39bf` moved that JSON-LD to the top of `<body>` while adding the repair script. Re-ran both fixture-backed and live profile-feed builds on current Astro 6.4.4 with `compressHTML:true`; both emitted valid `</body></html>` order and `fix-html-structure` repaired 0 files. The old 194-file repair note is stale against the current layout/build output.
   - Done: Converted `scripts/fix-html-structure.mjs` into a default no-write verifier that fails on early `</html>`, missing final `</html>`, or homepage script-order regressions. An explicit `--repair` mode remains only for legacy-output recovery, and `--dist` supports isolated test/audit directories.
   - Verify: `node --check scripts/fix-html-structure.mjs`; `node --test test/html-structure.test.mjs`; `node scripts/fix-html-structure.mjs` scanned 194 files and repaired 0; non-offline `npm run profile-feed:sync && npx astro build && node scripts/fix-html-structure.mjs` rendered 177 profile projects / 194 pages and repaired 0; `npm test` (51 tests); `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `npm run build:ci` passed with verifier output `verify OK; scanned 194 file(s); repaired 0 file(s); script order OK`.
-- [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; style-src unsafe-inline follow-up; catalog DOM-size budget gate.
+- [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; `/atom.xml`; catalog no-JS `<form>`; minify public JS; `llms.txt` completeness; Beyond Code enrich + CLAUDE.md sync; `style-src` `unsafe-inline` follow-up; catalog DOM-size budget gate.
+  - [x] Terminal `contact`, `uses`, and `theme` commands.
+    - Done: Homepage terminal help now advertises `contact`, `uses`, and `theme light|dark|toggle`. `contact` jumps to `#connect` and reveals below-fold `content-visibility:auto` sections before scrolling so deep sections land accurately; the section observer temporarily suppresses hash rewrites during terminal-driven jumps. `uses` routes to `/uses/`, and `theme` delegates to the existing theme toggle so labels, meta color, and `theme-pref` persistence stay centralized.
+    - Verify: `node --check public/scripts/main.js`; `node --test test/terminal-commands.test.mjs`; `npm run build:ci`; headless browser probes confirmed `contact` ends at `#connect` with visible Connect geometry, `uses` navigates to `/uses/`, `theme light` persists `theme-pref=light`, console warnings/errors stay empty, and horizontal overflow stays 0.
+  - [ ] `/atom.xml`.
+  - [ ] Catalog no-JS `<form>`.
+  - [ ] Minify public JS.
+  - [ ] `llms.txt` completeness.
+  - [ ] Beyond Code enrich + CLAUDE.md sync.
+  - [ ] `style-src` `unsafe-inline` follow-up.
+  - [ ] Catalog DOM-size budget gate.
 
 ---
 

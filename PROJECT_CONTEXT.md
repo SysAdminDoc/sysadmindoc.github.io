@@ -26,6 +26,7 @@ The site must remain public-safe. It should not expose private repository names,
 - First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
 - Homepage below-fold render containment is scoped in `src/styles/global.css`: guarded `content-visibility:auto` applies to ten named sections from `#live` through `#connect`, each with a per-section intrinsic-size fallback; `#hero` and `#greatest-hits` stay eager.
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
+- Homepage terminal commands include navigational `contact`, `uses`, and theme-control `theme light|dark|toggle` / `light` / `dark` aliases. Terminal theme commands delegate to the shared `#themeToggle` button in `public/scripts/theme.js` so theme labels, meta color, and `theme-pref` persistence remain centralized. Terminal jumps to deep homepage sections reveal the guarded below-fold `content-visibility:auto` sections before scrolling and temporarily suppress section-observer hash rewrites so `contact` reliably lands on `#connect`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
 - PR CI installs tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `scripts/install-generated-fixtures.mjs`. The installer audits star/meta/README key parity, stats totals, non-empty releases, README refresh telemetry, profile-feed metadata, finite ranking inputs, repo `createdAt`, and nullable SPDX license metadata before copying into ignored `src/data/_*.json` files. The fixture set covers all Pagefind Category labels plus source-only and live-app representative JSON-LD project routes; `build:ci` verifies those rendered contracts. CI then runs `npm run check` with `PROFILE_PROJECTS_OFFLINE=1` so `profile-feed:sync` preserves the fixture cache without network replacement.
@@ -123,6 +124,7 @@ Current verification baseline:
 - T109 browser verification used a local Playwright iPhone/Safari profile with `prefers-contrast: more`: the manual `ios-install` toast appeared with Add to Home Screen/Open as Web App guidance, Apple standalone metadata was present, the top-nav contrast border used `rgba(124, 184, 255, 0.42)`, and mobile overflow was 0.
 - T110 verification covered stack-metric parity with `node --check public/scripts/main.js`, `npm test` (47 tests), `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`, `npm run build:ci`, `npm run a11y:audit`, `npm run forced-colors:audit`, `git diff --check`, a local Playwright bad-cache probe for the rendered portfolio language donut and derived skill metrics, and official Docker/Linux generated-fixture `audit:playwright` with 14/14 passing.
 - T111 verification confirmed the legacy Astro early-`</html>` repair is no longer reproducible: fixture and live profile-feed builds on Astro 6.4.4 with `compressHTML:true` scanned 194 HTML files and repaired 0. The verifier path passed `node --check scripts/fix-html-structure.mjs`, `node --test test/html-structure.test.mjs`, `npm test` (51 tests), `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`, and `npm run build:ci`.
+- T112 terminal-command verification covered `node --check public/scripts/main.js`, `node --test test/terminal-commands.test.mjs`, `npm run build:ci`, and headless browser probes against local preview: `contact` ends at `#connect` with the Connect section in view, terminal output shows `-> Connect section`, below-fold content-visibility sections are revealed for accurate geometry, `theme light` sets `data-theme=light` and persists `theme-pref=light`, `uses` navigates to `/uses/`, console warnings/errors are empty, and horizontal overflow stays 0.
 - Manual `quality-gates.yml` workflow_dispatch run `26967664484` passed on commit `cdf87fd` after the forced-colors data-viz audit addition. The forced-colors build-output step reported PASS for desktop and mobile, the summary reported Forced-colors data visualizations PASS, and the uploaded `quality-gate-reports` artifact ID was `7418247524`.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
@@ -251,11 +253,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T111 HTML structure verifier pass:
+Highest-priority workflow/research work after the T112 terminal command pass:
 
-1. `T112` -- P3 cluster: terminal commands, Atom feed, no-JS catalog form, public JS minification, llms completeness, Beyond Code enrichments, style-src follow-up, and catalog DOM-size budget.
+1. `T112` -- P3 cluster: Atom feed, no-JS catalog form, public JS minification, llms completeness, Beyond Code enrichments, style-src follow-up, and catalog DOM-size budget. Terminal commands are complete.
 
-Next open checklist item in document order is `T112` P3 terminal/feed/no-JS/minification/llms/Beyond-Code/style/Catalog-DOM cluster.
+Next open checklist item in document order is the `T112` `/atom.xml` subitem.
 
 ## Definition of Done for Future Changes
 
@@ -303,6 +305,7 @@ Next open checklist item in document order is `T112` P3 terminal/feed/no-JS/mini
 - 2026-06-04: Surfaced Recommended ranking rationale accessibly. Catalog and related cards now render visible rank explanations with valid `aria-describedby` wiring, non-Recommended catalog sorts hide the rationale, and `shared.js` includes a fallback that promotes the deferred global stylesheet to `media=all`.
 - 2026-06-04: Added generated Pagefind search auditing to the build path. `search:audit` loads `dist/pagefind/pagefind.js`, verifies Category filters/counts against rendered project/catalog output, checks filter-only Category searches, and caught/fixed the `VideoSubtitleRemover` featured-language versus catalog-category drift.
 - 2026-06-04: Added JSON Feed metadata and auditing. `/feed.json` now emits absolute icon/favicon URLs, and `feed:audit` validates the built feed's version, root URLs, shipped icon assets, non-empty unique items, content fields, and dates.
+- 2026-06-04: Added T112 terminal commands. Homepage terminal help now advertises `contact`, `uses`, and `theme`; `contact` reveals contained below-fold sections and locks observer hash rewrites before landing on `#connect`, `uses` routes to `/uses/`, and `theme` delegates to the shared theme toggle.
 - 2026-06-04: Added post-deploy live artifact smoke checks. The deploy workflow captures built version/count contracts and checks live Pages for the stamped service worker, profile-feed project index, release index, JSON Feed, and sitemap after deployment.
 - 2026-06-04: Added public endpoint contract auditing. `endpoints:audit` validates built `/projects.json`, `/releases.json`, `/cmdk-data.js`, `/llms.txt`, and rendered alternate discovery links before deploy.
 - 2026-06-04: Normalized generated endpoint cache policy. Shared endpoint header helpers now declare bounded source cache policies for generated JSON/feed/text/script endpoints and unhashed OG image routes, and live smoke records the effective GitHub Pages `max-age=600` policy.
