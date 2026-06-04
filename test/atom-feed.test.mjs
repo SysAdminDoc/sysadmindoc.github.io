@@ -25,6 +25,6 @@ test('Atom project feed is routed, advertised, cached, and audited', async () =>
   assert.match(feedAudit, /atom\.xml entry count .* must match feed\.json item count/);
   assert.match(smoke, /fetchText\(baseUrl, '\/atom\.xml'/);
   assert.match(smoke, /project Atom entries/);
-  assert.match(llms, /\[Atom\]\(\$\{site\}\/atom\.xml\): Standards-based XML project feed/);
+  assert.match(llms, /title: 'Atom', route: '\/atom\.xml', description: 'Standards-based XML project feed/);
   assert.match(sw, /'\/rss\.xml', '\/atom\.xml'/);
 });
