@@ -285,12 +285,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Acceptance: Built HTML JSON-LD blocks parse successfully, use schema.org context, and representative homepage/language/project routes expose expected graph types and stable anchors without overfitting every rich-result rule.
   - Verify: `npm run schema:audit` passed on the current build with 194 HTML pages, 378 JSON-LD blocks, 757 graph nodes, 194 pages carrying the Base WebSite/Person graph, and 3 representative routes checked. `npm test`; `npm run check`; `npm run build` passed with `schema:audit` inside `build:ci`; `npm run a11y:audit`.
 
-- [ ] **T127** 🤖 P3 — Add JSON Feed icon/favicon metadata and feed validation.
+- [x] **T127** 🤖 P3 — Add JSON Feed icon/favicon metadata and feed validation.
   - Why: `/feed.json` is advertised and live, but omits optional JSON Feed publisher metadata that helps feed readers avoid scraping the homepage, and no explicit feed validator protects required top-level/item fields.
   - Evidence: Cycle 5 live checks showed `/feed.json` returns JSON Feed 1.1 with 177 items, but `src/pages/feed.json.ts` does not emit `icon` or `favicon`; the JSON Feed 1.1 spec defines `icon` and `favicon` as feed-level image URLs and requires stable item `id` plus at least one content field per item.
   - Touches: `src/pages/feed.json.ts`; optionally a `feed:audit` script or T119 smoke assertions.
+  - Done: `/feed.json` now emits absolute `icon` and `favicon` URLs using the shipped `icon-512.png` and `favicon.svg` assets. Added `scripts/audit-feed.mjs` and `npm run feed:audit`; `build:ci` runs the audit after HTML repair and before service-worker stamping. The audit parses built `dist/feed.json`, checks JSON Feed version/root URLs/icon assets, requires non-empty unique items, verifies item IDs/URLs, and requires each item to expose `content_html` or `content_text` without requiring `date_published`.
   - Acceptance: JSON Feed includes absolute `icon` and `favicon` URLs, and validation checks `version`, `title`, `home_page_url`, `feed_url`, non-empty `items`, item `id`, item `url`, and one content field without requiring optional `date_published`.
-  - Verify: `npm run build`; inspect `dist/feed.json` or run the feed audit against it.
+  - Verify: `npm test`; `npm run check`; `npm run build`; standalone `npm run feed:audit`; `git diff --check`; `npm run a11y:audit`. The build-integrated and standalone feed audits passed with 177 feed items, 177 `content_text` items, `https://sysadmindoc.github.io/icon-512.png`, and `https://sysadmindoc.github.io/favicon.svg`.
 
 ## 🔬 Researcher Queue (Cycle 6 — 2026-06-04) — see [docs/research-2026-06-04-cycle-6.md](docs/research-2026-06-04-cycle-6.md)
 
