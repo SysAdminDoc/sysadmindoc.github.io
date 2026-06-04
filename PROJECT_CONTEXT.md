@@ -57,7 +57,7 @@ The site must remain public-safe. It should not expose private repository names,
 - A weekly/manual quality-gates workflow reports production audit, public catalog drift, advisory semantic-audit status, generated data refresh, local data/assets/Astro checks, non-deploying build-output audits, forced-colors data-visualization coverage, and an advisory performance/bfcache audit against local built output. It uploads command logs and opens or updates a GitHub issue when production, catalog, generated-data, local validation, build-output, or advisory performance checks need attention.
 - `build:ci` runs Astro build, HTML repair, public endpoint auditing, JSON Feed auditing, service-worker stamping, Pagefind indexing, the generated search audit, and the rendered JSON-LD audit. PR CI then runs an advisory Lighthouse CI budget after `build:ci`, publishes a compact warning table to the job summary, uploads filesystem reports plus `.tmp/lhci/summary.md`, and does not fail the job on budget warnings.
 - The weekly quality-gates workflow now refreshes generated data before local checks, runs the `build:ci` path without deploying, emits dedicated endpoint, JSON Feed, Pagefind search, rendered JSON-LD, forced-colors data-visualization, and performance/bfcache audit logs, and publishes route-level performance rows from `.tmp/performance-audit-ci.json`. Generated-data, local validation, or build-output failures feed the hard fail gate; performance remains advisory while still surfacing in the job summary and quality-gate issue body. The first CI performance baseline uses `--lcp 60000 --event 500`: LCP is recorded but budgeted by LHCI, while this custom audit enforces bfcache, overflow, CLS, event, console, and network regressions.
-- The GitHub Pages deploy workflow captures the built artifact contract after `build:ci`, publishes the Pages artifact, then runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
+- The GitHub Pages deploy workflow runs unit tests, production/catalog/data/assets/image checks, live generated-data refresh, Astro checks, `build:ci`, and the strict static accessibility gate before uploading the Pages artifact. It then captures the built artifact contract and runs `npm run smoke:live` against the deployed `page_url` to confirm the live service-worker version, profile-feed project index, release index, JSON Feed, and sitemap index match the just-built output.
 
 ## Key Commands
 
@@ -73,6 +73,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Audit built public endpoints: `npm run endpoints:audit` after `npm run build`
 - Audit built JSON Feed: `npm run feed:audit` after `npm run build`
 - Audit forced-colors data visualizations: `npm run forced-colors:audit` after `npm run build`
+- Audit static accessibility: `npm run a11y:audit` after `npm run build` (strict/blocking); `npm run a11y:audit:advisory` keeps the non-blocking inventory mode.
 - Smoke live Pages artifacts: `npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177`
 - Local performance smoke audit after starting preview: `npm run audit:perf -- --base http://127.0.0.1:4321`
 - Summarize a performance audit JSON report: `node scripts/summarize-performance-audit.mjs .tmp/performance-audit-ci.json`
@@ -235,13 +236,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T101 count-source pass:
+Highest-priority workflow/research work after the T105 strict a11y gate pass:
 
-1. `T105` -- Promote the a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-2. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
-3. `T107` -- README TOC and reading-time on project pages.
+1. `T106` -- Add axe-core/Playwright a11y job and Playwright visual-regression baselines.
+2. `T107` -- README TOC and reading-time on project pages.
+3. `T108` -- Homepage SectionJumpNav.
 
-Next open checklist item in document order is `T105` strict a11y/deploy mirroring.
+Next open checklist item in document order is `T106` axe-core/Playwright accessibility and visual-regression baselines.
 
 ## Definition of Done for Future Changes
 
@@ -305,3 +306,4 @@ Next open checklist item in document order is `T105` strict a11y/deploy mirrorin
 - 2026-06-04: Shipped T99 live-app schema. `fetch-stars` now captures repo `createdAt` and normalized SPDX license metadata; project pages emit license/datePublished on `SoftwareSourceCode`; live-app pages emit linked `SoftwareApplication` nodes with free USD offers. The rendered schema audit parsed 386 JSON-LD blocks, 787 graph nodes, and checked 12 representative routes including `StormviewRadar`.
 - 2026-06-04: Shipped T100 Greatest Hits case-study parity. `projectProof` now carries case-study blocks for all 8 Greatest Hits repos, `npm run data:validate` gates the curated list against proof coverage and case-study shape, and the built homepage/project-page probe confirmed 8 case-study badges plus rendered Case Study/Key Decisions/Outcomes sections on the newly filled project pages.
 - 2026-06-04: Shipped T101 project-count reconciliation. Homepage/public copy now uses `catalog.length` for the visible project count, the live GitHub refresh preserves that rendered count while updating stars and card metadata, and a source regression test guards against reintroducing `_stats.totalRepos` into homepage count copy.
+- 2026-06-04: Shipped T105 strict static accessibility gating. `npm run a11y:audit` now runs the conservative HTML audit in `--strict` mode, PR CI treats it as blocking, deploy runs `npm test` plus strict a11y before Pages artifact upload, and `npm run a11y:audit:advisory` preserves the old inventory-only mode.

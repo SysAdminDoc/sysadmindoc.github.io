@@ -10,7 +10,11 @@
 //
 // Usage:
 //   node scripts/audit-a11y.mjs            # advisory, always exits 0
-//   node scripts/audit-a11y.mjs --strict   # exits 1 if any violation is found
+//   node scripts/audit-a11y.mjs --strict   # blocking subset, exits 1 if any violation is found
+//
+// `npm run a11y:audit` intentionally runs with --strict so CI/deploy fail on
+// this conservative static subset. Use `npm run a11y:audit:advisory` for local
+// inventory-only runs while expanding the rule set.
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
