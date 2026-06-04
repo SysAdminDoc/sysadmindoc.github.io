@@ -58,12 +58,33 @@ export interface GeneratedProfileFeedCache {
   suppressed?: GeneratedProfileProject[];
 }
 
+export interface GeneratedReadmeRefresh {
+  schema: string;
+  generatedAt: string;
+  source: string;
+  tokenPresent: boolean;
+  totalPublicRepos: number;
+  attempted: number;
+  refreshed: number;
+  misses: number;
+  preserved: number;
+  unattempted: number;
+  missing: number;
+  rateLimited: boolean;
+  failureSamples: string[];
+  skippedReason: string | null;
+  cacheEntries: number;
+  trimmed: number;
+}
+
 /** _stars.json — repo slug → star count */
 export type GeneratedStars = Record<string, number>;
 /** _meta.json — repo slug → metadata */
 export type GeneratedMeta = Record<string, GeneratedRepoMeta>;
 /** _readmes.json — repo slug → raw README markdown */
 export type GeneratedReadmes = Record<string, string>;
+/** _readme-refresh.json — README refresh quality telemetry */
+export type GeneratedReadmeRefreshSummary = GeneratedReadmeRefresh;
 /** _releases.json — most recent releases across the archive */
 export type GeneratedReleases = GeneratedRelease[];
 /** _profile-projects.json — public profile feed cache for rendered portfolio rows */
