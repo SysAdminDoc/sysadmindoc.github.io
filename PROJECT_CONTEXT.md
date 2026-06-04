@@ -81,6 +81,7 @@ Current verification baseline:
 - `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
 - `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
 - `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green. Manual workflow_dispatch run `26956410354` also passed on `ab7cb90` and uploaded the profile-feed summary fields/checks.
+- Dependabot PR triage completed on 2026-06-04: GitHub Actions group merged as `78bbef5`, `marked` 18.0.4 merged as `3ab0f4a` after rebasing the stale PR #9 branch, Astro 6.4.4 was regenerated on current `main` and pushed as `460e04c` after PR #12 conflicted, PR #12 was closed as superseded, and no open Dependabot PRs remain.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -152,8 +153,8 @@ The project parses remote README content through `marked` and `sanitize-html`, s
 Production dependency advisories found on 2026-05-17 were remediated:
 
 - `sanitize-html` upgraded to 2.17.4.
-- `marked` upgraded to 18.0.3.
-- Astro upgraded to 6.3.3.
+- `marked` upgraded to 18.0.4.
+- Astro upgraded to 6.4.4.
 - Transitive `devalue` resolved to 5.8.1.
 - Transitive `postcss` resolved to 8.5.14.
 - CI now runs `npm run audit:prod`, which gates high/critical production advisories.
@@ -179,11 +180,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T35 search facet and T36 ranking passes:
+Highest-priority workflow/research work after the Dependabot T122 triage:
 
-1. `T122` -- Triage stale Dependabot PRs against current `main`.
-2. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
-3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+1. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
+2. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+3. `T118` -- Add README-cache refresh quality signals to generated data summaries.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -220,6 +221,7 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Shipped visible Pagefind category facets. `/search/` now enables Pagefind faceted mode and renders the official Category filter pane beside full-text results while keeping the static index and no-JS fallbacks.
 - 2026-06-04: Fixed the shared `.rv` reveal contract for interior pages. `theme.js` now always observes reveal blocks and `.rv.vis` cancels the CSS scroll-timeline animation so Chrome support detection cannot leave content opacity-zero.
 - 2026-06-04: Shipped profile-feed coverage in the data-health path. The scheduled/manual data refresh now runs `profile-feed:sync`, and `data:summary` reports/fails on profile-feed missing/fallback/stale cache states alongside GitHub metadata freshness.
+- 2026-06-04: Triaged stale Dependabot PRs against current `main`. Rebased and merged the GitHub Actions group and `marked` 18.0.4 updates after fresh CI, regenerated Astro 6.4.4 on current `main` after the Dependabot package-lock branch conflicted, and closed the superseded Astro PR with notes.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
