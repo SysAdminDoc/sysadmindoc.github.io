@@ -64,7 +64,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T32** Terminal history + Tab completion (NF-16, S).
 - [x] **T33** Conditional GitHub requests (ETag→304) (NF-18, M).
 - [x] **T34** SW stale-while-revalidate navigation (NF-20, M).
-- [◑] **T35** Pagefind facets/metadata (NF-26, M) — faceted index shipped (Category filter + Type meta on project pages); visible filter UI deferred (modular-ui component, needs browser verification).
+- [◑] **T35** Pagefind facets/metadata (NF-26, M) — faceted index shipped (Category filter + Type meta on project pages); visible filter UI deferred. Pagefind v1.5.2 documents `<pagefind-filter-pane>` plus faceted mode, so the next pass should browser-verify the official component before custom UI.
 - [ ] **T36** Build-time project ranking signal (NF-13, M).
 ### Data / scripts
 - [x] **T37** fetch-stars atomic writes + integrity checks + release-body fallback (R + NF-11, M).
@@ -156,6 +156,38 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T110** P2 — language-donut population parity (build vs JS flicker) (IMP-2) + skill rings vs real distribution (IMP-3).
 - [ ] **T111** P2 — root-cause Astro 6 </html> emission (compressHTML bisect); convert fix-html-structure to assert-or-noop on a fixed Astro version.
 - [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; CSP theme-init hash (partial T95); catalog DOM-size budget gate.
+
+---
+
+## 🔬 Researcher Queue (Cycle 1 — 2026-06-04) — see [docs/research-2026-06-04-cycle-1.md](docs/research-2026-06-04-cycle-1.md)
+
+- [ ] **T113** 🤖 P0 — Restore v0.18.3 deploy by generating the profile-feed cache before Astro type checks.
+  - Why: `main` currently contains v0.18.3 source, but the latest GitHub Pages deploy failed before build, leaving the public site on v0.18.2 artifacts.
+  - Evidence: Deploy run `26941334995` failed at `npx astro check` with `src/data/portfolio.ts:60:28 Cannot find module './_profile-projects.json'`; `.github/workflows/deploy.yml:35-57` runs `data:validate`, `fetch-stars`, then `npx astro check`/`build:ci`, while `package.json:12-15` only runs `profile-feed:sync` in local `build`/`check`; live `https://sysadmindoc.github.io/sw.js` still says `portfolio-v0.18.2` and live `projects.json` has `profileFeedUrl: null`.
+  - Touches: `.github/workflows/deploy.yml`; possibly `src/data/generated.d.ts`, a committed fixture, or a CI-only cache-generation/stub policy.
+  - Acceptance: The deploy workflow creates or types the profile-feed cache before `astro check`; the next `Deploy portfolio` run on `main` succeeds; live `/sw.js` is stamped `portfolio-v0.18.3` or newer; live `/projects.json` reports the profile-feed-backed source fields expected by v0.18.3.
+  - Verify: `gh run view <new-deploy-run> --repo SysAdminDoc/sysadmindoc.github.io --json conclusion,url`; `Invoke-WebRequest https://sysadmindoc.github.io/sw.js`; `Invoke-RestMethod https://sysadmindoc.github.io/projects.json`.
+
+- [ ] **T114** 🤖 P1 — Make `npm test` explicit and current-working-directory safe.
+  - Why: The bare `node --test` script can silently test the wrong directory when npm is invoked from an unsafe Windows UNC context, producing a false green build signal.
+  - Evidence: `package.json:18` is `"test": "node --test"`; Node's test runner discovers files from its active working directory when no explicit glob is supplied; on this machine, running npm directly from `\\vmware-host\Shared Folders\...` fell back to `C:\Windows` and executed unrelated Windows tests, while `cmd /c pushd "\\vmware-host\Shared Folders\repos\sysadmindoc.github.io" && npm test` ran the 12 repo tests correctly.
+  - Touches: `package.json`; optionally a small `scripts/ensure-project-cwd.mjs` guard or an explicit `node --test "test/**/*.test.mjs"` pattern.
+  - Acceptance: `npm test` always targets the repo tests or fails fast when launched from the wrong cwd; no command can return green after testing `C:\Windows` or another unrelated directory.
+  - Verify: Valid repo run still reports 12 tests; intentionally launch from a non-repo cwd and confirm the guard fails rather than discovering unrelated tests.
+
+- [ ] **T115** 🤖 P2 — Document or guard the Windows/VMware shared-folder build workflow.
+  - Why: The repository can be edited from the VMware shared folder, but local npm/Astro execution from that path is unreliable enough to confuse validation and build triage.
+  - Evidence: Direct npm execution from the raw UNC path produced the Windows UNC current-directory fallback; temporary `cmd pushd` mapping fixed smaller scripts, but `npm run build` from the mapped shared-folder path failed in Vite/Astro with a corrupted path like `Z:\repos\sysadmindoc.github.io\ Folders\repos\sysadmindoc.github.io\src\pages\404.astro`.
+  - Touches: `README.md`, `CLAUDE.md`, or `PROJECT_CONTEXT.md`; optionally a non-invasive script guard that warns when `process.cwd()` is a VMware shared-folder/mapped-drive path.
+  - Acceptance: Maintainers have a documented Windows runbook: edit on the shared folder if desired, but run npm/Astro from a normal local clone/worktree path without spaces; build failures from VMware path mapping are no longer mistaken for product regressions.
+  - Verify: Follow the documented workflow on a local path and run `npm run check` plus `npm run build`; run from the unsafe path and confirm docs/guard explain the expected failure mode.
+
+- [ ] **T116** 🤖 P2 — Resolve the dev-only `yaml` advisory in the Astro check dependency chain.
+  - Why: Production dependency audit is clean, but the full dev audit still reports five moderate vulnerabilities through the type-checking stack, which will keep audit-driven workflows noisy.
+  - Evidence: `npm audit --omit=dev --audit-level=high` returned 0 vulnerabilities; `npm audit --audit-level=moderate` reported `GHSA-48c2-rrv3-qjmp` because `@astrojs/check@0.9.9 -> @astrojs/language-server@2.16.8 -> volar-service-yaml@0.0.70 -> yaml-language-server@1.20.0 -> yaml@2.7.1`; GitHub Advisory says `yaml` is patched at `2.8.3`; `yaml-language-server@1.23.0` depends on `yaml@2.8.3`, but current `volar-service-yaml` pins `~1.20.0`.
+  - Touches: `package.json`, `package-lock.json`; possibly an npm override or a wait-for-upstream note if the override conflicts with Astro language-server behavior.
+  - Acceptance: `npm audit --audit-level=moderate` is clean without downgrading `@astrojs/check` or breaking `npm run check`; if upstream cannot be safely overridden yet, the chosen mitigation is documented with a tracked follow-up.
+  - Verify: `npm run check`; `npm audit --audit-level=moderate`; inspect `npm ls yaml @astrojs/check @astrojs/language-server yaml-language-server`.
 
 ---
 
