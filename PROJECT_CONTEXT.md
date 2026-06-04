@@ -61,7 +61,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Capture screenshots: `npm run capture-screenshots` after installing Playwright browser dependencies
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
-- Summarize generated GitHub metadata: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
+- Summarize generated GitHub metadata and profile-feed cache health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
 
@@ -80,7 +80,7 @@ Current verification baseline:
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
 - `npm run semantic:audit -- --limit 12` passed; 173 projects and 165 usable cached README texts were checked locally without hosted inference or runtime tracking.
-- `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale` passed against the current generated cache.
+- `npm run data:summary -- --out .tmp/data-refresh-t117 --max-age-hours 36 --fail-on-stale` passed against the current generated cache and profile feed: profile status `active`, cache age 0h, 177 portfolio projects, and all profile-feed checks green.
 - `npm run audit:prod` passed with 0 production vulnerabilities.
 - Live GitHub scan reported 178 active public repositories, including 170 active public non-forks and 8 active public forks.
 - `npm run catalog:audit` passed with no unreviewed active public repo drift.
@@ -181,10 +181,9 @@ Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and date
 
 Highest-priority workflow/research work after the T35 search facet and T36 ranking passes:
 
-1. `T117` -- Make the scheduled GitHub data health check exercise the profile-feed path.
-2. `T122` -- Triage stale Dependabot PRs against current `main`.
-3. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
-4. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
+1. `T122` -- Triage stale Dependabot PRs against current `main`.
+2. `T123` -- Add a generated ranking report and drift guard for the `Recommended` catalog order.
+3. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -220,6 +219,7 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Shipped build-time project ranking. Added `src/data/project-ranking.mjs` plus unit coverage, changed the homepage default catalog sort to `Recommended`, and reused the same score map for project-page related links.
 - 2026-06-04: Shipped visible Pagefind category facets. `/search/` now enables Pagefind faceted mode and renders the official Category filter pane beside full-text results while keeping the static index and no-JS fallbacks.
 - 2026-06-04: Fixed the shared `.rv` reveal contract for interior pages. `theme.js` now always observes reveal blocks and `.rv.vis` cancels the CSS scroll-timeline animation so Chrome support detection cannot leave content opacity-zero.
+- 2026-06-04: Shipped profile-feed coverage in the data-health path. The scheduled/manual data refresh now runs `profile-feed:sync`, and `data:summary` reports/fails on profile-feed missing/fallback/stale cache states alongside GitHub metadata freshness.
 - 2026-06-04: Restored GitHub Pages deploy for v0.18.3 by syncing the profile-feed cache before Astro type checks, hardened `npm test` with an explicit cwd guard and test glob, and documented the safe Windows/VMware local-build workflow.
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.

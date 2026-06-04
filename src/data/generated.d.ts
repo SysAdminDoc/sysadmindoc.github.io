@@ -1,9 +1,9 @@
 // Shape contracts for the build-time generated caches written by
-// scripts/fetch-stars.mjs (src/data/_*.json). Consumers (index.astro,
-// projects/[slug].astro, rss.xml.ts, releases.xml.ts, summarize-generated-data)
-// can reference these so a producer field rename is a type error, not a silent
-// undefined at runtime. The JSON files are gitignored; these types document the
-// agreed shape regardless of whether a cache is present.
+// scripts/fetch-stars.mjs and scripts/sync-profile-feed.mjs (src/data/_*.json).
+// Consumers (index.astro, projects/[slug].astro, rss.xml.ts, releases.xml.ts,
+// summarize-generated-data) can reference these so a producer field rename is a
+// type error, not a silent undefined at runtime. The JSON files are gitignored;
+// these types document the agreed shape regardless of whether a cache is present.
 
 export interface GeneratedStats {
   totalRepos: number;
@@ -34,6 +34,30 @@ export interface GeneratedRelease {
   bodyFirst: string;
 }
 
+export interface GeneratedProfileProject {
+  repo: string;
+  title: string;
+  category: string;
+  description: string;
+  repoUrl: string;
+  includeInPortfolio?: boolean;
+  suppressed?: boolean;
+  [key: string]: unknown;
+}
+
+export interface GeneratedProfileFeedCache {
+  schema: string | null;
+  generatedAt: string | null;
+  source: string | null;
+  feedSourceUrl: string;
+  cachedAt: string;
+  publicRepoCount: number | null;
+  projectCount: number;
+  suppressedCount: number | null;
+  projects: GeneratedProfileProject[];
+  suppressed?: GeneratedProfileProject[];
+}
+
 /** _stars.json — repo slug → star count */
 export type GeneratedStars = Record<string, number>;
 /** _meta.json — repo slug → metadata */
@@ -42,3 +66,5 @@ export type GeneratedMeta = Record<string, GeneratedRepoMeta>;
 export type GeneratedReadmes = Record<string, string>;
 /** _releases.json — most recent releases across the archive */
 export type GeneratedReleases = GeneratedRelease[];
+/** _profile-projects.json — public profile feed cache for rendered portfolio rows */
+export type GeneratedProfileFeed = GeneratedProfileFeedCache;
