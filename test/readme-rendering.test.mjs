@@ -1,8 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  getReadmeReadingTime,
   getReadmeHighlighter,
   normalizeReadmeCodeLang,
+  renderProjectReadme,
   renderProjectReadmeHtml,
 } from '../src/data/readme-rendering.mjs';
 
@@ -43,6 +45,50 @@ test('README renderer preserves sanitizer boundaries while keeping Shiki spans',
   assert.match(html, /src="https:\/\/raw\.githubusercontent\.com\/SysAdminDoc\/DemoRepo\/HEAD\/docs\/screen\.png"/);
   assert.match(html, /class="readme-code-inner language-powershell"/);
   assert.match(html, /class="shiki-c-blue"/);
+});
+
+test('README renderer returns heading outline and reading-time metadata', async () => {
+  const markdown = [
+    '# Demo',
+    '',
+    'Intro words for the project overview.',
+    '',
+    '## Install',
+    '',
+    'Clone the repo and run the setup command.',
+    '',
+    '### Install',
+    '',
+    'Duplicate headings receive stable suffixed anchors.',
+    '',
+    '## Usage',
+    '',
+    'Run the app.',
+  ].join('\n');
+
+  const result = await renderProjectReadme(markdown, 'DemoRepo');
+
+  assert.ok(result);
+  assert.match(result.html, /<h2 id="install">Install<\/h2>/);
+  assert.match(result.html, /<h3 id="install-2">Install<\/h3>/);
+  assert.deepEqual(result.outline, [
+    { depth: 1, id: 'demo', text: 'Demo' },
+    { depth: 2, id: 'install', text: 'Install' },
+    { depth: 3, id: 'install-2', text: 'Install' },
+    { depth: 2, id: 'usage', text: 'Usage' },
+  ]);
+  assert.equal(result.readingTime.label, '1 min read');
+  assert.ok(result.readingTime.words > 0);
+});
+
+test('README reading-time helper rounds up by technical-document word count', () => {
+  const words = Array.from({ length: 221 }, (_, index) => `word${index}`).join(' ');
+
+  assert.deepEqual(getReadmeReadingTime(words), {
+    words: 221,
+    minutes: 2,
+    label: '2 min read',
+  });
 });
 
 test('README renderer falls back cleanly for unknown fence languages', async () => {

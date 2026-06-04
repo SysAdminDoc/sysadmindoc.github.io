@@ -14,7 +14,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`
 - **Content collections**: featured (9), live apps (22), catalog (177 feed-backed / 181 local fallback), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
-- **README rendering** — GFM through `marked`, sanitized remote HTML, and class-based Shiki highlighting for fenced code
+- **README rendering** — GFM through `marked`, sanitized remote HTML, class-based Shiki highlighting, reading-time metadata, and heading outlines
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
@@ -131,7 +131,7 @@ src/
 │   ├── page-freshness.ts # reviewed timestamps and WebPage schema helpers for interior routes
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
 │   ├── project-ranking.mjs # build-time catalog and related-project scoring
-│   ├── readme-rendering.mjs # sanitized README HTML + class-based Shiki code highlighting
+│   ├── readme-rendering.mjs # sanitized README HTML + Shiki code, reading-time, and outline metadata
 │   ├── projects.ts  # curated fallback, featured, live-app screenshots, skills
 │   ├── proof.ts
 │   ├── archive.ts

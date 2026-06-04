@@ -42,6 +42,7 @@ const SHIKI_SPAN_CLASSES = [
   'shiki-f-bold',
   'shiki-f-underline',
 ];
+const README_WORDS_PER_MINUTE = 220;
 
 const LANGUAGE_ALIASES = new Map([
   ['astro', 'html'],
@@ -102,6 +103,30 @@ function stripHtml(value) {
   return String(value).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function stripMarkdownForReading(value) {
+  return String(value)
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z0-9#]+;/gi, ' ')
+    .replace(/[#>*_~[\]()`|:-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function getReadmeReadingTime(rawMd) {
+  const text = stripMarkdownForReading(rawMd);
+  const words = text ? text.split(/\s+/).length : 0;
+  const minutes = Math.max(1, Math.ceil(words / README_WORDS_PER_MINUTE));
+  return {
+    words,
+    minutes,
+    label: `${minutes} min read`,
+  };
+}
+
 function isAbsoluteReadmeRef(value) {
   return /^(?:https?:|data:|\/\/|#|mailto:)/i.test(value);
 }
@@ -137,7 +162,7 @@ export function renderHighlightedCode(code, rawLang, highlighter) {
   }
 }
 
-export async function renderProjectReadmeHtml(rawMd, slug, options = {}) {
+export async function renderProjectReadme(rawMd, slug, options = {}) {
   if (!rawMd || rawMd.trim().length === 0) return null;
 
   const highlighter = options.highlighter ?? await getReadmeHighlighter();
@@ -178,19 +203,22 @@ export async function renderProjectReadmeHtml(rawMd, slug, options = {}) {
 
   const rendered = await marked.parse(rawMd);
   const headingCounts = new Map();
+  const outline = [];
   const renderedWithHeadingIds = String(rendered).replace(/<h([1-6])>([\s\S]*?)<\/h\1>/g, (_match, level, inner) => {
     const depth = Number(level);
-    const baseId = stripHtml(inner)
+    const text = stripHtml(inner);
+    const baseId = text
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || 'section';
     const seen = headingCounts.get(baseId) ?? 0;
     headingCounts.set(baseId, seen + 1);
     const id = seen === 0 ? baseId : `${baseId}-${seen + 1}`;
+    outline.push({ depth, id, text });
     return `<h${depth} id="${escapeAttr(id)}">${inner}</h${depth}>`;
   });
 
-  return sanitizeHtml(renderedWithHeadingIds, {
+  const html = sanitizeHtml(renderedWithHeadingIds, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'picture', 'source', 'details', 'summary', 'kbd', 'del', 'input']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
@@ -247,4 +275,15 @@ export async function renderProjectReadmeHtml(rawMd, slug, options = {}) {
       },
     },
   });
+
+  return {
+    html,
+    outline,
+    readingTime: getReadmeReadingTime(rawMd),
+  };
+}
+
+export async function renderProjectReadmeHtml(rawMd, slug, options = {}) {
+  const result = await renderProjectReadme(rawMd, slug, options);
+  return result?.html ?? null;
 }

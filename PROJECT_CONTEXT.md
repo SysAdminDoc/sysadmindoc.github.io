@@ -239,13 +239,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T106 Playwright audit pass:
+Highest-priority workflow/research work after the T107 README navigation pass:
 
-1. `T107` -- README TOC and reading-time on project pages.
-2. `T108` -- Homepage SectionJumpNav.
-3. `T109` -- iOS PWA install path and prefers-contrast follow-up.
+1. `T108` -- Homepage SectionJumpNav.
+2. `T109` -- iOS PWA install path and prefers-contrast follow-up.
+3. `T110` -- Language-donut build/JS parity and skill-ring distribution alignment.
 
-Next open checklist item in document order is `T107` README TOC and reading-time on project pages.
+Next open checklist item in document order is `T108` homepage SectionJumpNav.
 
 ## Definition of Done for Future Changes
 
@@ -311,3 +311,4 @@ Next open checklist item in document order is `T107` README TOC and reading-time
 - 2026-06-04: Shipped T101 project-count reconciliation. Homepage/public copy now uses `catalog.length` for the visible project count, the live GitHub refresh preserves that rendered count while updating stars and card metadata, and a source regression test guards against reintroducing `_stats.totalRepos` into homepage count copy.
 - 2026-06-04: Shipped T105 strict static accessibility gating. `npm run a11y:audit` now runs the conservative HTML audit in `--strict` mode, PR CI treats it as blocking, deploy runs `npm test` plus strict a11y before Pages artifact upload, and `npm run a11y:audit:advisory` preserves the old inventory-only mode.
 - 2026-06-04: Shipped T106 Playwright browser accessibility and visual baselines. `npm run audit:playwright` now runs axe-core over representative built routes and hydrated command-palette/terminal states, compares eight desktop/mobile viewport baselines generated in the Playwright 1.60 Linux image, and PR CI runs the gate after the strict static a11y audit. The pass also fixed a serious axe `target-size` finding on the hydrated terminal input.
+- 2026-06-04: Shipped T107 README reading aids. `renderProjectReadme` now returns sanitized HTML plus heading outline and reading-time metadata, project pages show a README summary and collapsible Contents control for 3+ headings, and the `project-nomad-desktop` generated-data fixture exercises that branch in build and Playwright audits.
