@@ -31,6 +31,7 @@ The site must remain public-safe. It should not expose private repository names,
 - `/search/` is a Pagefind Component UI-backed full-text search page with Pagefind faceted mode enabled and the official Category filter pane visible beside results. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
 - The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
 - The catalog's default `Recommended` order is computed at build time in `src/data/project-ranking.mjs`: log-normalized stars, 180-day freshness half-life, and release-download activity are blended into a deterministic score. Project detail related links use the same rank map; explicit Most stars, A-Z, Z-A, and Recently updated sorts remain client-side. `npm run data:summary` now reports the top ranked rows and guards normalized weights, finite scores/score parts, usable project identities, and unique contiguous ranks.
+- The homepage hero has a first-viewport proof strip sourced from `src/data/proof.ts`. It currently highlights quantified outcomes for `win11-nvme-driver-patcher`, `Network_Security_Auditor`, and `NovaCut`, links to their project pages, and relies on matching `critical.css`/`global.css` rules to avoid first-paint layout drift.
 - `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
@@ -76,6 +77,7 @@ Current verification baseline:
 - Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
 - In-app browser verification after the live-card thumbnail migration passed at 1280x720 and 390x844: 22 live cards rendered with `<picture>`, 22 AVIF/WebP source sets were present, the browser selected AVIF assets, no stale `/screenshots/thumbs/` card references remained in the fresh preview DOM, mobile had no horizontal overflow, and console warnings/errors were empty.
 - In-app browser verification after the Pagefind facet pass passed at 1280px and 390px: anchored `/search/?q=python` set the search shell to `rv vis`/opacity 1, rendered 10 Category checkboxes, selecting the Python facet reduced results from 71 to 42, console logs were empty, and the mobile layout had no horizontal overflow.
+- In-app Browser verification after the homepage proof-strip pass passed at 1280x720: the DOM order was `hn -> hero-proof-strip -> hr -> hd`, the proof strip bottom was 465px in the 720px viewport, console errors were empty, horizontal overflow was 0, and proof-link navigation reached `/projects/NovaCut/`. `npm run audit:perf -- --base http://127.0.0.1:4326 --out .tmp/perf-t97.json` also passed with Home mobile at 390px reporting LCP 696ms, CLS 0, bfcache yes, and no horizontal overflow.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
 - `npm run images:audit` passed; 22 screenshot masters, 22 public thumbnails, and 22 Astro asset thumbnails were checked, full screenshot total was 1595.2 KB, thumbnail total was 230.9 KB, and OG output remained 1200x630 PNG through Satori + Resvg.
@@ -181,11 +183,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T123 ranking-summary pass:
+Highest-priority workflow/research work after the T97 proof-strip pass:
 
-1. `T97` -- Add an above-the-fold proof strip of quantified outcomes from `proof.ts`.
-2. `T118` -- Add README-cache refresh quality signals to generated data summaries.
-3. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
+1. `T128` -- Move homepage proof-strip highlight selection into validated data.
+2. `T129` -- Add a critical/global CSS parity audit for first-viewport selectors.
+3. `T118` -- Add README-cache refresh quality signals to generated data summaries.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -220,6 +222,7 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.
 - 2026-06-04: Shipped build-time project ranking. Added `src/data/project-ranking.mjs` plus unit coverage, changed the homepage default catalog sort to `Recommended`, and reused the same score map for project-page related links.
 - 2026-06-04: Shipped visible Pagefind category facets. `/search/` now enables Pagefind faceted mode and renders the official Category filter pane beside full-text results while keeping the static index and no-JS fallbacks.
+- 2026-06-04: Shipped the homepage proof strip. The hero now renders three source-backed quantified outcomes from `projectProof` above the long intro copy, links each proof to its project page, and keeps first-paint/mobile layout covered by critical and full CSS.
 - 2026-06-04: Fixed the shared `.rv` reveal contract for interior pages. `theme.js` now always observes reveal blocks and `.rv.vis` cancels the CSS scroll-timeline animation so Chrome support detection cannot leave content opacity-zero.
 - 2026-06-04: Shipped profile-feed coverage in the data-health path. The scheduled/manual data refresh now runs `profile-feed:sync`, and `data:summary` reports/fails on profile-feed missing/fallback/stale cache states alongside GitHub metadata freshness.
 - 2026-06-04: Triaged stale Dependabot PRs against current `main`. Rebased and merged the GitHub Actions group and `marked` 18.0.4 updates after fresh CI, regenerated Astro 6.4.4 on current `main` after the Dependabot package-lock branch conflicted, and closed the superseded Astro PR with notes.
