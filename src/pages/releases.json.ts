@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { endpointHeaders } from '../data/endpoint-headers';
 import { catalog, featured, liveApps } from '../data/portfolio';
 
 export const prerender = true;
@@ -42,10 +43,7 @@ catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
 
 function json(data: unknown) {
   return new Response(`${JSON.stringify(data, null, 2)}\n`, {
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Cache-Control': 'public, max-age=300',
-    },
+    headers: endpointHeaders('application/json; charset=UTF-8'),
   });
 }
 

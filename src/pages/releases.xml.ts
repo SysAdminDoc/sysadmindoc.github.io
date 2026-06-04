@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { endpointHeaders } from '../data/endpoint-headers';
 import { featured, liveApps, catalog } from '../data/portfolio';
 
 // Dedicated feed of release EVENTS (distinct from rss.xml, which is a project
@@ -55,6 +56,6 @@ ${items
 `;
 
   return new Response(body, {
-    headers: { 'Content-Type': 'application/rss+xml; charset=UTF-8' },
+    headers: endpointHeaders('application/rss+xml; charset=UTF-8'),
   });
 }

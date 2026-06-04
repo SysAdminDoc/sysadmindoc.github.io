@@ -18,7 +18,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
-- **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds for tooling
+- **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
@@ -115,6 +115,7 @@ src/
 ├── data/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
+│   ├── endpoint-headers.ts # generated endpoint cache/content-type helpers
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
 │   ├── project-ranking.mjs # build-time catalog and related-project scoring
 │   ├── projects.ts  # curated fallback, featured, live-app screenshots, skills

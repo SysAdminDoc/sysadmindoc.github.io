@@ -114,7 +114,7 @@ if (!/satori/i.test(ogSource) || !/new\s+Resvg/.test(ogSource)) {
 if (!/width:\s*1200/.test(ogSource) || !/height:\s*630/.test(ogSource)) {
   fail('OG endpoint must keep 1200x630 social-card dimensions.');
 }
-if (!/['"]Content-Type['"]\s*:\s*['"]image\/png['"]/.test(ogSource)) {
+if (!/['"]Content-Type['"]\s*:\s*['"]image\/png['"]/.test(ogSource) && !/imageEndpointHeaders\(['"]image\/png['"]\)/.test(ogSource)) {
   fail('OG endpoint must return Content-Type: image/png.');
 }
 if (!/property="og:image:type"\s+content="image\/png"/.test(baseSource)) {

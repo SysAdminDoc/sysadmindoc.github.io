@@ -4,6 +4,7 @@ import { Resvg } from '@resvg/resvg-js';
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { imageEndpointHeaders } from '../../data/endpoint-headers';
 import { featured, liveApps, catalog } from '../../data/portfolio';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -169,9 +170,6 @@ export async function GET({ params }: APIContext) {
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
 
   return new Response(new Uint8Array(png), {
-    headers: {
-      'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    },
+    headers: imageEndpointHeaders('image/png'),
   });
 }

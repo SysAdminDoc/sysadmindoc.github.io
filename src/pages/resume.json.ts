@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { careerRoles } from '../data/career';
+import { endpointHeaders } from '../data/endpoint-headers';
 import { skills } from '../data/projects';
 
 // JSON Resume (jsonresume.org/schema) export for ATS/parser ingestion.
@@ -34,6 +35,6 @@ export async function GET(_context: APIContext) {
   };
 
   return new Response(JSON.stringify(resume, null, 2), {
-    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    headers: endpointHeaders('application/json; charset=UTF-8'),
   });
 }

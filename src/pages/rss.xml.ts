@@ -3,6 +3,7 @@ import rss from '@astrojs/rss';
 import sanitizeHtml from 'sanitize-html';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
+import { withEndpointCache } from '../data/endpoint-headers';
 
 let stats: { lastPushedAt?: string | null; fetchedAt?: string | null } = {};
 try {
@@ -61,7 +62,7 @@ export async function GET(context: APIContext) {
       };
     });
 
-  return rss({
+  return withEndpointCache(await rss({
     title: 'Matt Parker — Projects',
     description: `Open-source projects, live web apps, and the full catalog by Matt Parker — ${catalog.length}+ projects across ${Object.keys(categoryLabels).length} categories.`,
     site,
@@ -69,5 +70,5 @@ export async function GET(context: APIContext) {
     xmlns: { content: 'http://purl.org/rss/1.0/modules/content/' },
     customData: '<language>en-us</language>',
     trailingSlash: false,
-  });
+  }));
 }
