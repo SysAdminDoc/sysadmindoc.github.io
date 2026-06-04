@@ -191,6 +191,31 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 2 — 2026-06-04) — see [docs/research-2026-06-04-cycle-2.md](docs/research-2026-06-04-cycle-2.md)
+
+- [ ] **T117** 🤖 P1 — Make the scheduled GitHub data health check exercise the profile-feed path.
+  - Why: v0.18.3 moved the catalog to the external profile feed, but the daily data-health workflow still only refreshes GitHub stars/metadata, so it no longer exercises the full production data path it claims to cover.
+  - Evidence: `.github/workflows/deploy.yml:42-45` now runs `fetch-stars` and `profile-feed:sync`; `.github/workflows/data-refresh.yml:8-13` says the scheduled job exercises the exact production data path, but `.github/workflows/data-refresh.yml:39-43` runs only `fetch-stars` before `data:summary`; live `/projects.json` now reports `source.profileFeedUrl = https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json`.
+  - Touches: `.github/workflows/data-refresh.yml`, `scripts/summarize-generated-data.mjs`, possibly `scripts/sync-profile-feed.mjs` output/schema.
+  - Acceptance: The scheduled/manual data-health workflow runs `npm run profile-feed:sync`; the generated summary reports profile-feed active/source/generated/cached status; `--fail-on-stale` can fail when profile-feed data is missing or stale.
+  - Verify: `gh workflow run data-refresh.yml --repo SysAdminDoc/sysadmindoc.github.io`; inspect the run summary/artifact for profile-feed fields and a passing conclusion.
+
+- [ ] **T118** 🤖 P2 — Add README-cache refresh quality signals to the generated data summary.
+  - Why: Project detail pages and semantic search depend on cached README text, but the health summary only checks that the README cache is non-empty; stale preserved entries, miss spikes, or rate-limit fallback can pass silently.
+  - Evidence: `scripts/fetch-stars.mjs:288-338` preserves existing README cache entries when no token, read misses, or rate-limit fallback occur; `scripts/summarize-generated-data.mjs:71-95` only checks `readmeEntries > 0`; project detail pages import `_readmes.json` at `src/pages/projects/[slug].astro:65-71`, and semantic indexing weights cached README text at `scripts/audit-semantic-index.mjs:108-115`.
+  - Touches: `scripts/fetch-stars.mjs`, `scripts/summarize-generated-data.mjs`, `src/data/generated.d.ts`; possibly `PROJECT_CONTEXT.md` for the generated-data contract.
+  - Acceptance: The generated summary records README refresh attempts, successes, misses, preserved-cache count, and rate-limit status; deploy/data-health summaries make stale or degraded README refresh visible instead of only reporting total entries.
+  - Verify: Run `npm run fetch-stars` with and without `GITHUB_TOKEN`, then `npm run data:summary -- --out data-refresh-summary --max-age-hours 36 --fail-on-stale`; inspect `summary.md`/`summary.json` for README refresh quality fields.
+
+- [ ] **T119** 🤖 P2 — Add a post-deploy live artifact smoke check.
+  - Why: The v0.18.3 deploy failure was caught before publish, but release confidence still depends on manual checks that live `sw.js` and `projects.json` reflect the just-built source after Pages deployment.
+  - Evidence: `.github/workflows/deploy.yml:65-74` ends after `actions/deploy-pages`; this research cycle manually verified `https://sysadmindoc.github.io/sw.js` changed to `portfolio-v0.18.3` and live `/projects.json` became profile-feed backed with 177 projects after T113/T114 landed; GitHub's Pages deploy action exposes the deployed `page_url` for follow-up checks.
+  - Touches: `.github/workflows/deploy.yml`; optionally `scripts/smoke-live-site.mjs`.
+  - Acceptance: A post-deploy job fetches the deployed Pages URL and asserts the service worker cache version matches `package.json`, `/projects.json` has `source.profileFeedUrl` when profile-feed mode is active, and project count is non-zero/within the expected profile-feed range.
+  - Verify: `gh run view <deploy-run> --repo SysAdminDoc/sysadmindoc.github.io --json conclusion,url`; inspect the post-deploy smoke step logs for SW/version/projects assertions.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.
