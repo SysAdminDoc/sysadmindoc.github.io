@@ -19,6 +19,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added visible Pagefind Category facets on `/search/` by enabling faceted mode and rendering the official `<pagefind-filter-pane>` alongside full-text results.
 - Added a source-backed first-viewport homepage proof strip with quantified outcomes from `projectProof` for the NVMe driver path, Network Security Auditor, and NovaCut.
 - Moved homepage proof-strip highlight selections into typed `homepageProofHighlights` data and extended project-data validation to check selected repos, mobile-length copy, duplicate highlights, count bounds, and proof source selectors.
+- Added `npm run css:audit` to check shared first-viewport selectors across `critical.css` and `global.css`; `npm run check` and `npm run build` now run it before Astro validation/build output.
 - Fixed the shared `.rv` reveal path so the JavaScript observer still marks interior-route sections visible on browsers that report CSS scroll-timeline support; `.rv.vis` now cancels the CSS animation to avoid conflicting reveal paths.
 - Extended the scheduled GitHub data health check to exercise the profile-feed cache path and report/gate profile-feed active/source/generated/cached status in `npm run data:summary`.
 - Triaged stale Dependabot PRs against current `main`: merged the GitHub Actions group update, rebased and merged `marked` 18.0.4 after replacing its stale failing branch status with current CI, regenerated the Astro 6.4.4 upgrade on current `main` after the Dependabot package-lock branch conflicted, and closed the superseded Astro PR with notes.
@@ -32,6 +33,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Verified the ranking-summary pass with `npm run profile-feed:sync`, `npm run fetch-stars`, `npm run data:summary -- --out .tmp/data-refresh-t123 --max-age-hours 36 --fail-on-stale`, `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit`; the summary reported 177 ranked projects, top 12 rows, normalized weights, finite scores/parts, and unique contiguous ranks.
 - Verified the homepage proof-strip pass with `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, built HTML probes, an in-app Browser preview check with no console errors and working proof-link navigation, and `npm run audit:perf -- --base http://127.0.0.1:4326 --out .tmp/perf-t97.json`; Home mobile at 390px passed with LCP 696ms, CLS 0, bfcache yes, and no horizontal overflow.
 - Verified the proof-highlight data pass with `npm run data:validate`, `npm test`, `npm run check`, `npm run build`, `npm run a11y:audit`, Browser preview proof-strip checks, and `npm run audit:perf -- --base http://127.0.0.1:4326 --out .tmp/perf-t128.json`; Home mobile at 390px passed with LCP 972ms, CLS 0, bfcache yes, and no horizontal overflow.
+- Verified the CSS parity audit with `npm run css:audit`, `npm run css:audit -- --self-test`, `npm test`, `npm run check`, `npm run build`, and `npm run a11y:audit`; the audit checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`.
 
 ## [v0.18.2] - 2026-06-04
 

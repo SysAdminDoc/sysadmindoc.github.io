@@ -62,6 +62,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Capture screenshots: `npm run capture-screenshots` after installing Playwright browser dependencies
 - Validate project data: `npm run data:validate`
 - Audit assets and source references: `npm run assets:audit`
+- Audit first-viewport critical/full CSS selector parity: `npm run css:audit`
 - Summarize generated GitHub metadata, profile-feed cache health, and Recommended ranking health: `npm run data:summary -- --out .tmp/data-refresh --max-age-hours 48 --fail-on-stale`
 - Audit public repo drift: `npm run catalog:audit`
 - Audit production advisories: `npm run audit:prod`
@@ -70,7 +71,8 @@ Current verification baseline:
 
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
-- `npm run build` passed, including profile feed sync, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
+- `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
+- `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
@@ -184,11 +186,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T128 proof-highlight data pass:
+Highest-priority workflow/research work after the T129 CSS parity audit:
 
-1. `T129` -- Add a critical/global CSS parity audit for first-viewport selectors.
-2. `T118` -- Add README-cache refresh quality signals to generated data summaries.
-3. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
+1. `T118` -- Add README-cache refresh quality signals to generated data summaries.
+2. `T126` -- Add a rendered JSON-LD audit before expanding T98/T99.
+3. `T124` -- Surface the `Recommended` ranking rationale accessibly in catalog and related-link UI.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 
@@ -232,3 +234,4 @@ Next open checklist item in document order is `T41` README code syntax highlight
 - 2026-06-04: Split the first-viewport CSS path. `critical.css` is inlined for nav/hero first paint, while the full hashed `global.css` bundle preloads and applies asynchronously; the local performance audit now passes with mobile homepage LCP at 668ms.
 - 2026-06-04: Added an advisory Lighthouse CI budget with filesystem reports for PR CI. `lighthouserc.cjs` samples homepage and project-detail routes with warning-only category, metric, and resource-size assertions.
 - 2026-06-04: Migrated Live Apps card thumbnails to Astro-managed `<Picture>` output. The build now emits AVIF/WebP srcsets from tracked `src/assets/screenshots/thumbs/` inputs while preserving stable public screenshot and thumbnail URLs.
+- 2026-06-04: Added first-viewport CSS parity auditing. `npm run css:audit` now guards the shared nav/hero/proof/stage selectors and selected mobile overrides across `critical.css` and `global.css`, and the audit is part of both `npm run check` and `npm run build`.
