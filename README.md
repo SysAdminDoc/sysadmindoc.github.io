@@ -38,7 +38,7 @@ npm run assets:audit  # detect stale screenshots and unreferenced source/public 
 npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
 npm run semantic:audit # report similar-project and cross-category catalog review hints
-npm run data:summary  # summarize generated GitHub metadata freshness and integrity
+npm run data:summary  # summarize GitHub metadata/profile-feed freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
