@@ -44,6 +44,26 @@ function getFallbackRepoCount(){
     });
     return repos.size;
 }
+function countLanguageTotal(langCount){
+    if(!langCount)return 0;
+    return Object.values(langCount).reduce(function(total,value){
+        const count=Number(value);
+        return total+(Number.isFinite(count)&&count>0?count:0);
+    },0);
+}
+function getPortfolioLanguageSummary(){
+    const projects=window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects)?window.__PORTFOLIO_DATA.allProjects:[];
+    if(!projects.length)return null;
+    const langCount={};
+    let total=0;
+    projects.forEach(function(project){
+        const lang=safeText(project&&project.language).trim();
+        if(!lang)return;
+        langCount[lang]=(langCount[lang]||0)+1;
+        total+=1;
+    });
+    return total>0?{langs:langCount,total}:null;
+}
 /* ===== SHARED MOUSE STATE ===== */
 const isMobile=innerWidth<768;
 const mouseState={x:-1000,y:-1000,moved:false};
@@ -237,8 +257,11 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
     document.querySelectorAll('.ca[data-repo]').forEach(el=>{
         if(parseInt(el.dataset.stars)>=5)el.classList.add('starred');
     });
-    // Language donut
-    if(langCount)renderLangDonut(langCount,repoCount);
+    // Language donut: keep hydration aligned with the rendered portfolio, not the
+    // raw public GitHub repo set, so the chart does not flicker to another basis.
+    const portfolioLangs=getPortfolioLanguageSummary();
+    if(portfolioLangs)renderLangDonut(portfolioLangs.langs,portfolioLangs.total);
+    else if(langCount)renderLangDonut(langCount,countLanguageTotal(langCount)||repoCount);
 }
 
 function updateFilterCounts(){

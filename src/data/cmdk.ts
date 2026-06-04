@@ -4,6 +4,15 @@
 import { catalog, featured, liveApps } from './portfolio';
 import { categoryLabels } from './categories';
 
+type RepoMeta = Record<string, { language?: string | null }>;
+let repoMeta: RepoMeta = {};
+try {
+  const mod = await import('./_meta.json');
+  repoMeta = (mod.default ?? mod) as RepoMeta;
+} catch {
+  repoMeta = {};
+}
+
 export type CmdkSection = {
   label: string;
   href: string;
@@ -19,6 +28,7 @@ export type CmdkProject = {
   url: string;
   category?: string;
   categoryLabel?: string;
+  language?: string | null;
   searchTerms?: string[];
 };
 
@@ -36,6 +46,7 @@ function buildCmdkProjects(): CmdkProject[] {
       ...next,
       category: next.category ?? existing?.category,
       categoryLabel: next.categoryLabel ?? existing?.categoryLabel,
+      language: next.language ?? existing?.language ?? null,
       searchTerms: searchTerms.length ? searchTerms : undefined,
     });
   };
@@ -49,6 +60,7 @@ function buildCmdkProjects(): CmdkProject[] {
       url: `/projects/${project.repo}/`,
       category: project.category,
       categoryLabel: categoryLabels[project.category] ?? project.category,
+      language: repoMeta[project.repo]?.language ?? null,
       searchTerms: [project.category, categoryLabels[project.category] ?? project.category],
     });
   }
