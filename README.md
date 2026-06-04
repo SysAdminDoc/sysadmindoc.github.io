@@ -38,7 +38,7 @@ npm run profile-feed:sync # optional: refresh ignored profile projects cache fro
 npm run generated:fixtures:check # audit tracked PR-CI generated-data fixtures
 npm run generated:fixtures # install fixture caches into ignored src/data/_*.json files
 npm run fetch-stars   # optional: refresh star cache from GitHub
-npm run build:ci      # build plus HTML structure, endpoint, feed, search, and schema audits
+npm run build:ci      # build plus HTML structure, endpoint, feed, DOM-size, search, and schema audits
 npm run scripts:minify # minify copied dist/scripts output after Astro build
 node scripts/fix-html-structure.mjs # verify built HTML structure; --repair is legacy recovery only
 npm run catalog:audit # compare public GitHub repos with portfolio data
@@ -50,6 +50,7 @@ npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives a
 npm run csp:audit     # verify source CSP script/style inventory and strict script-src readiness
 npm run csp:audit:style # report current style-src 'self' blockers without failing
 npm run csp:audit:dist # verify rendered dist/ CSP inventory after a build
+npm run dom:audit     # verify built homepage/catalog DOM-size budgets
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
@@ -94,7 +95,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Skills: animated ring charts in the Stack section
 - Beyond Code: static creative overview cards, an internal SlunderStudio project route, and click-to-load drone videos with no Spotify embed
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -175,6 +176,7 @@ scripts/
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
 ├── audit-feed.mjs         # built JSON/Atom Feed metadata/item contract audit
+├── audit-dom-size.mjs     # built homepage/catalog DOM-size budget audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
