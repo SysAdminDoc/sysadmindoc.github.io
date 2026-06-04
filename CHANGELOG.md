@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.18.2] - 2026-06-04
+
+- Added catalog view buttons for All, New, Recently updated, and Has download. Counts derive from the tracked catalog, cached GitHub metadata, and release download totals.
+- Added `NEW` and `DOWNLOAD` catalog chips plus URL-backed `view=` state that combines with category filters, search, and sort.
+- Fixed initial catalog URL hydration feedback so deep links apply filters immediately instead of overwriting the filtered result count.
+- Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 181 all / 147 new / 173 recent / 20 downloads, with no mobile horizontal overflow at 390px.
+
 ## [v0.18.1] - 2026-06-02
 
 **Critical fix:** the homepage interactive layer was completely dead. `public/scripts/main.js` loaded from the page slot — i.e. *before* `public/scripts/shared.js` — so its top-level `if (prefersReducedMotion)` (a global defined in shared.js) threw a `ReferenceError` and halted everything below it: the interactive terminal, catalog search/filter/sort, live GitHub star refresh + ETag requests, scroll progress / nav-hide / back-to-top, the language-donut JS enhancement, live-status dots, the PWA install prompt, and service-worker registration. Server-rendered catalog + build-time baked stats masked the failure, so the page looked healthy.

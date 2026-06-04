@@ -38,12 +38,45 @@ try {
   meta = (mod.default ?? mod) as typeof meta;
 } catch {}
 
-let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
+let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; downloads?: number; bodyFirst: string }[] = [];
 try {
   const mod = await import('../data/_releases.json');
   releases = (mod.default ?? mod) as typeof releases;
 } catch {}
 const latestRelease = releases[0];
+const releaseDownloadRepos = new Set(
+  releases
+    .filter((release) => Number(release.downloads ?? 0) > 0)
+    .map((release) => release.repo),
+);
+const freshnessReference = new Date(stats.fetchedAt ?? stats.lastPushedAt ?? Date.now()).getTime();
+const dayMs = 24 * 60 * 60 * 1000;
+function ageDays(iso?: string | null): number | null {
+  if (!iso) return null;
+  const value = new Date(iso).getTime();
+  if (!Number.isFinite(value) || !Number.isFinite(freshnessReference)) return null;
+  return Math.max(0, Math.floor((freshnessReference - value) / dayMs));
+}
+const catalogViewState = new Map(
+  catalog.map((entry) => {
+    const updatedAt = meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt;
+    const days = ageDays(updatedAt);
+    return [
+      entry.repo,
+      {
+        isNew: days !== null && days <= 30,
+        isRecent: days !== null && days <= 90,
+        hasDownload: releaseDownloadRepos.has(entry.repo),
+      },
+    ] as const;
+  }),
+);
+const viewCounts = {
+  all: catalog.length,
+  new: [...catalogViewState.values()].filter((state) => state.isNew).length,
+  recent: [...catalogViewState.values()].filter((state) => state.isRecent).length,
+  download: [...catalogViewState.values()].filter((state) => state.hasDownload).length,
+};
 
 // Derive category counts from catalog data (fixes hardcoded-count gotcha)
 const catCounts: Record<string, number> = {};
@@ -506,6 +539,12 @@ const cmdkSections = [
         <option value="recent">Recently updated</option>
       </select>
     </div>
+    <div class="cf catalog-views rv" id="viewBtns" role="group" aria-label="Catalog views">
+      <button type="button" class="fb catalog-view act" data-view="all" data-label="All views" aria-pressed="true">All <span class="fc">{viewCounts.all}</span></button>
+      <button type="button" class="fb catalog-view" data-view="new" data-label="New projects" aria-pressed="false">New <span class="fc">{viewCounts.new}</span></button>
+      <button type="button" class="fb catalog-view" data-view="recent" data-label="Recently updated" aria-pressed="false">Recently updated <span class="fc">{viewCounts.recent}</span></button>
+      <button type="button" class="fb catalog-view" data-view="download" data-label="Has download" aria-pressed="false">Has download <span class="fc">{viewCounts.download}</span></button>
+    </div>
     <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
       <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{catalogTotal}</span></button>
       {filterButtons.map((f) => (
@@ -517,7 +556,21 @@ const cmdkSections = [
       <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>
     </div>
     <div class="cg" id="catalogGrid">
-      {catalog.map((entry, index) => <CatalogEntry entry={entry} index={index} stars={stars[entry.repo]} pushedAt={meta[entry.repo]?.pushedAt} updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt} />)}
+      {catalog.map((entry, index) => {
+        const viewState = catalogViewState.get(entry.repo);
+        return (
+          <CatalogEntry
+            entry={entry}
+            index={index}
+            stars={stars[entry.repo]}
+            pushedAt={meta[entry.repo]?.pushedAt}
+            updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt}
+            isNew={viewState?.isNew}
+            isRecent={viewState?.isRecent}
+            hasDownload={viewState?.hasDownload}
+          />
+        );
+      })}
     </div>
     <div class="no-results" id="noResults" hidden>
       <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>

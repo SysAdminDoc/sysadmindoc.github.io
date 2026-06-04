@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.18.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.18.2-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -11,11 +11,12 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 
 - **Astro 6** — static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** data layer ([src/data/projects.ts](src/data/projects.ts))
-- **Content collections**: featured (9), live apps (22), catalog (173), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (181), skills (8)
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **Generated timeline** — year-in-review page built from release, push, and changelog evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts
+- **Catalog discovery views** — URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — static `projects.json` and `releases.json` feeds for tooling
 - **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails and OG PNG metadata validation
@@ -59,7 +60,7 @@ All project entries live in **[src/data/projects.ts](src/data/projects.ts)** and
 - Catalog: full searchable repo list (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category filter counts auto-compute from the catalog array.
+Category and catalog-view counts auto-compute from the catalog array plus generated GitHub metadata. The `view=` URL state combines with `cat=`, `q=`, and `sort=`.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 

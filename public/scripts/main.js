@@ -421,6 +421,7 @@ document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
 const grid=document.getElementById('catalogGrid');
 const allItems=grid?Array.from(grid.querySelectorAll('.ca')):[];
 let currentFilter='all';
+let currentView='all';
 let currentSearch='';
 let currentSort='default';
 const catalogStatus=document.getElementById('catalogStatus');
@@ -429,6 +430,10 @@ const catalogResetEmpty=document.getElementById('catalogResetEmpty');
 const filterLabels={};
 document.querySelectorAll('.fb[data-filter]').forEach(button=>{
     filterLabels[button.dataset.filter]=button.dataset.label||button.textContent.trim();
+});
+const viewLabels={};
+document.querySelectorAll('.catalog-view[data-view]').forEach(button=>{
+    viewLabels[button.dataset.view]=button.dataset.label||button.textContent.trim();
 });
 
 function getSortLabel(value){
@@ -442,24 +447,35 @@ function getSortLabel(value){
 function updateCatalogFeedback(visible){
     const q=currentSearch.trim();
     const filterLabel=filterLabels[currentFilter]||'All projects';
+    const viewLabel=viewLabels[currentView]||'All views';
     const sortLabel=getSortLabel(currentSort);
     const parts=[];
-    if(currentFilter==='all'&&!q){
+    if(currentFilter==='all'&&currentView==='all'&&!q){
         parts.push('Showing '+visible+' of '+allItems.length+' projects');
     }else{
         parts.push('Showing '+visible+' result'+(visible!==1?'s':''));
+        if(currentView!=='all')parts.push('in '+viewLabel);
         if(currentFilter!=='all')parts.push('in '+filterLabel);
         if(q)parts.push('for "'+q+'"');
     }
     if(sortLabel)parts.push('sorted by '+sortLabel);
     if(catalogStatus)catalogStatus.textContent=parts.join(' ') + '.';
-    const hasCustomState=currentFilter!=='all'||!!q||currentSort!=='default';
+    const hasCustomState=currentFilter!=='all'||currentView!=='all'||!!q||currentSort!=='default';
     if(catalogReset)catalogReset.hidden=!hasCustomState;
     if(catalogResetEmpty)catalogResetEmpty.hidden=!hasCustomState;
 }
 
+function syncViewButtons(){
+    document.querySelectorAll('.catalog-view').forEach(button=>{
+        const active=button.dataset.view===currentView;
+        button.classList.toggle('act',active);
+        button.setAttribute('aria-pressed',active?'true':'false');
+    });
+}
+
 function syncFilterButtons(){
     document.querySelectorAll('.fb').forEach(button=>{
+        if(!button.dataset.filter)return;
         const active=button.dataset.filter===currentFilter;
         button.classList.toggle('act',active);
         button.setAttribute('aria-pressed',active?'true':'false');
@@ -468,12 +484,14 @@ function syncFilterButtons(){
 
 function resetCatalog(){
     currentFilter='all';
+    currentView='all';
     currentSearch='';
     currentSort='default';
     const input=document.getElementById('searchInput');
     const select=document.getElementById('sortSelect');
     if(input)input.value='';
     if(select)select.value='default';
+    syncViewButtons();
     syncFilterButtons();
     sortCatalog('default');
     applyFilters();
@@ -498,9 +516,14 @@ function applyFilters(){
     let visible=0;
     allItems.forEach(item=>{
         const matchFilter=currentFilter==='all'||item.dataset.f===currentFilter;
+        const matchView=
+            currentView==='all'||
+            (currentView==='new'&&item.dataset.new==='true')||
+            (currentView==='recent'&&item.dataset.recent==='true')||
+            (currentView==='download'&&item.dataset.hasDownload==='true');
         const searchBody=(item.dataset.name+' '+item.dataset.desc+' '+(item.dataset.terms||'')).toLowerCase();
         const matchSearch=!q||searchBody.includes(q);
-        const show=matchFilter&&matchSearch;
+        const show=matchFilter&&matchView&&matchSearch;
         item.classList.toggle('hid',!show);
         const nameEl=item.querySelector('.cna');
         const descEl=item.querySelector('.cds');
@@ -513,6 +536,7 @@ function applyFilters(){
     // Sync filter state to URL for shareability
     try{
         const url=new URL(location.href);
+        if(currentView&&currentView!=='all')url.searchParams.set('view',currentView);else url.searchParams.delete('view');
         if(currentFilter&&currentFilter!=='all')url.searchParams.set('cat',currentFilter);else url.searchParams.delete('cat');
         if(q)url.searchParams.set('q',currentSearch);else url.searchParams.delete('q');
         if(currentSort&&currentSort!=='default')url.searchParams.set('sort',currentSort);else url.searchParams.delete('sort');
@@ -534,7 +558,16 @@ function sortCatalog(method){
     items.forEach(item=>grid.appendChild(item));
 }
 
-document.querySelectorAll('.fb').forEach(b=>{
+document.querySelectorAll('.catalog-view').forEach(b=>{
+    b.setAttribute('aria-pressed',b.classList.contains('act')?'true':'false');
+    b.addEventListener('click',()=>{
+        currentView=b.dataset.view;
+        syncViewButtons();
+        applyFilters();
+    });
+});
+
+document.querySelectorAll('.fb[data-filter]').forEach(b=>{
     // a11y: filter buttons should expose pressed state for screen readers
     b.setAttribute('aria-pressed',b.classList.contains('act')?'true':'false');
     b.addEventListener('click',()=>{
@@ -564,9 +597,17 @@ if(_sortEl)_sortEl.addEventListener('change',e=>{currentSort=e.target.value;sort
 (function hydrateFromUrl(){
     try{
         const params=new URLSearchParams(location.search);
+        const view=params.get('view');
         const cat=params.get('cat');
         const q=params.get('q');
         const sort=params.get('sort');
+        if(view){
+            const btn=document.querySelector('.catalog-view[data-view="'+view.replace(/[^a-z0-9-]/gi,'')+'"]');
+            if(btn){
+                currentView=btn.dataset.view;
+                syncViewButtons();
+            }
+        }
         if(cat){
             const btn=document.querySelector('.fb[data-filter="'+cat.replace(/[^a-z0-9]/gi,'')+'"]');
             if(btn)btn.click();
@@ -586,9 +627,9 @@ if(_sortEl)_sortEl.addEventListener('change',e=>{currentSort=e.target.value;sort
     }catch(e){}
 })();
 
-// Initialize filter counts on load
+// Initialize filter counts and apply any URL-backed state on load.
 updateFilterCounts();
-updateCatalogFeedback(allItems.length);
+applyFilters();
 
 /* ===== ANIMATED SLIDING NAV INDICATOR ===== */
 (function(){
