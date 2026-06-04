@@ -429,16 +429,20 @@ try {
   for (const test of tests) {
     results.push(await runTest(port, test));
   }
+  const resultsWithFailures = results.map((result) => ({
+    ...result,
+    failures: resultFailures(result),
+  }));
 
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
   await fs.writeFile(
     outputPath,
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), baseUrl, thresholds, results }, null, 2)}\n`,
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), baseUrl, thresholds, results: resultsWithFailures }, null, 2)}\n`,
   );
 
   console.log(`Portfolio performance audit (${baseUrl})`);
-  for (const result of results) {
-    const failures = resultFailures(result);
+  for (const result of resultsWithFailures) {
+    const failures = result.failures || [];
     const status = failures.length ? 'WARN' : 'PASS';
     console.log(
       `  ${status} ${result.label}: LCP ${result.lcpMs}ms, CLS ${result.cls}, max event ${result.maxEventMs}ms, max long task ${result.maxLongTaskMs}ms, bfcache ${result.bfcacheRestored ? 'yes' : 'no'}`,
@@ -447,7 +451,7 @@ try {
   }
   console.log(`  JSON: ${path.relative(root, outputPath)}`);
 
-  if (strict && results.some((result) => resultFailures(result).length > 0)) exitCode = 1;
+  if (strict && resultsWithFailures.some((result) => result.failures.length > 0)) exitCode = 1;
 } finally {
   chrome.kill();
   await fs.rm(userDataDir, { recursive: true, force: true }).catch(() => {});

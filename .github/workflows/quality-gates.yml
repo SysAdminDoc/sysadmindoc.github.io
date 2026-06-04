@@ -181,6 +181,78 @@ jobs:
           echo "search_exit_code=$search_code" >> "$GITHUB_OUTPUT"
           echo "schema_exit_code=$schema_code" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Run performance audit report (advisory)
+        id: performance_audit
+        shell: bash
+        run: |
+          set +e
+          mkdir -p .tmp
+
+          if [ "${{ steps.build_output_audits.outputs.build_exit_code }}" != "0" ]; then
+            {
+              echo "Skipped performance audit because build:ci did not complete successfully."
+              echo "See build-output-audits.log for the build failure."
+            } > performance-audit.log
+            cat performance-audit.log
+            echo "exit_code=skipped" >> "$GITHUB_OUTPUT"
+            echo "status=SKIPPED" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base_url="http://127.0.0.1:4321"
+          npm run preview -- --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
+          preview_pid=$!
+          cleanup() {
+            if kill -0 "$preview_pid" 2>/dev/null; then
+              kill "$preview_pid" 2>/dev/null || true
+              wait "$preview_pid" 2>/dev/null || true
+            fi
+          }
+          trap cleanup EXIT
+
+          ready=0
+          for _ in {1..45}; do
+            if curl -fsS "$base_url" >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            if ! kill -0 "$preview_pid" 2>/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$ready" -ne 1 ]; then
+            {
+              echo "Preview server did not become ready at $base_url."
+              echo ""
+              echo "Preview log:"
+              cat preview.log
+            } > performance-audit.log
+            perf_code=1
+          else
+            npm run audit:perf -- --base "$base_url" --strict --lcp 60000 --event 500 --out .tmp/performance-audit-ci.json > performance-audit.log 2>&1
+            perf_code=$?
+          fi
+
+          cat performance-audit.log
+          if [ -f .tmp/performance-audit-ci.json ]; then
+            node scripts/summarize-performance-audit.mjs .tmp/performance-audit-ci.json > performance-summary.md || true
+          else
+            {
+              echo "## Performance/bfcache audit"
+              echo ""
+              echo "No JSON report was produced. See performance-audit.log and preview.log."
+            } > performance-summary.md
+          fi
+
+          echo "exit_code=$perf_code" >> "$GITHUB_OUTPUT"
+          if [ "$perf_code" -eq 0 ]; then
+            echo "status=PASS" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=ATTENTION" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
       - name: Publish quality summary
         shell: bash
         run: |
@@ -198,9 +270,14 @@ jobs:
             echo "  - JSON Feed: ${{ steps.build_output_audits.outputs.feed_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Pagefind search: ${{ steps.build_output_audits.outputs.search_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Rendered JSON-LD: ${{ steps.build_output_audits.outputs.schema_exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "- Performance/bfcache audit (advisory): ${{ steps.performance_audit.outputs.status }}"
             echo ""
             echo "See the uploaded quality-gate-reports artifact for command logs."
+            echo ""
           } >> "$GITHUB_STEP_SUMMARY"
+          if [ -f performance-summary.md ]; then
+            cat performance-summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Upload quality gate reports
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -220,9 +297,13 @@ jobs:
             search-index.log
             search-audit.log
             schema-audit.log
+            preview.log
+            performance-audit.log
+            performance-summary.md
+            .tmp/performance-audit-ci.json
           if-no-files-found: error
       - name: Open or update quality gate issue
-        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.generated_data.outputs.exit_code != '0' || steps.local_checks.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0'
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.generated_data.outputs.exit_code != '0' || steps.local_checks.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0' || steps.performance_audit.outputs.exit_code != '0'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -243,10 +324,12 @@ jobs:
               ['Pagefind search index', 'search-index.log'],
               ['Pagefind search audit', 'search-audit.log'],
               ['Rendered JSON-LD', 'schema-audit.log'],
+              ['Performance/bfcache audit (advisory)', 'performance-audit.log'],
+              ['Performance/bfcache summary', 'performance-summary.md'],
               ['Semantic index audit (advisory only)', 'semantic-audit.log'],
             ];
             const body = [
-              'The scheduled portfolio quality gates detected a production dependency, public catalog drift, generated-data, local validation, or build-output audit issue.',
+              'The scheduled portfolio quality gates detected a production dependency, public catalog drift, generated-data, local validation, build-output audit, or advisory performance/bfcache issue.',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
@@ -257,7 +340,7 @@ jobs:
                 '```',
                 '',
               ]),
-              'Close this issue after the underlying dependency, catalog drift, generated-data, local validation, or build-output contract problem is fixed and the workflow is green.',
+              'Close this issue after the underlying dependency, catalog drift, generated-data, local validation, build-output contract, or performance/bfcache problem is fixed and the workflow is green.',
             ].join('\n');
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
