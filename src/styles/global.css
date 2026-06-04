@@ -344,8 +344,8 @@
         /* Aurora removed for performance */
 
         /* Interactive Terminal */
-        .term-input-line{display:flex;align-items:center;font-family:var(--mono);font-size:13px;margin-top:2px}
-        .term-input{background:none;border:none;color:var(--t1);font-family:var(--mono);font-size:13px;flex:1;outline:none;caret-color:var(--grn);padding:0;width:0}
+        .term-input-line{display:flex;align-items:center;min-height:32px;font-family:var(--mono);font-size:13px;margin-top:2px}
+        .term-input{min-height:32px;background:none;border:none;color:var(--t1);font-family:var(--mono);font-size:13px;flex:1;outline:none;caret-color:var(--grn);padding:4px 0;width:0}
         .term-hint{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;padding:8px;opacity:0;transition:opacity .5s}.term.interactive .term-hint{opacity:1}
         .term-output{color:var(--t2);font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap}
         .term-output .cmd-name{color:var(--grn)}.term-output .cmd-desc{color:var(--t2)}.term-output .cmd-val{color:var(--org)}
