@@ -61,6 +61,12 @@ function describeGitHubFailure(res) {
   return `${res.status} ${res.statusText}`;
 }
 
+function normalizedLicenseSpdx(repo) {
+  const spdx = repo?.license?.spdx_id;
+  if (typeof spdx !== 'string' || !spdx.trim() || spdx === 'NOASSERTION') return null;
+  return spdx;
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -158,9 +164,11 @@ async function main() {
     stars[repo.name] = repo.stargazers_count;
     meta[repo.name] = {
       stars: repo.stargazers_count,
+      createdAt: repo.created_at,
       pushedAt: repo.pushed_at,
       updatedAt: repo.updated_at,
       language: repo.language || null,
+      licenseSpdx: normalizedLicenseSpdx(repo),
     };
     totalRepos += 1;
     totalStars += repo.stargazers_count;

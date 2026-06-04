@@ -19,9 +19,11 @@ export interface GeneratedStats {
 
 export interface GeneratedRepoMeta {
   stars: number;
+  createdAt: string;
   pushedAt: string;
   updatedAt: string;
   language: string | null;
+  licenseSpdx: string | null;
 }
 
 export interface GeneratedRelease {
