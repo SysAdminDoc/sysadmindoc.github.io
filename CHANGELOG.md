@@ -13,7 +13,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added an npm override for the Astro check dependency chain so `yaml-language-server` resolves patched `yaml@2.8.3`; full moderate-severity audit is clean.
 - Split first-viewport CSS into `src/styles/critical.css`; the full hashed `global.css` asset now preloads and applies through a non-blocking print-media swap with a `noscript` fallback.
 - Re-baselined the local performance audit after the CSS split: mobile homepage LCP is 668ms with CLS 0, bfcache restored, and no horizontal overflow.
-- Added an advisory Lighthouse CI budget: `npm run lhci:audit` wraps a pinned transient LHCI CLI for CI/Linux, checks route-level category/metric/resource budgets as warnings, and the PR CI uploads filesystem reports.
+- Added an advisory Lighthouse CI budget: `npm run lhci:audit` wraps a pinned transient LHCI CLI for CI/Linux, checks homepage and project-page category/metric/resource budgets as warnings, and the PR CI uploads filesystem reports.
 - Verified `npm run check`, `npm run build`, `npm test`, and a focused Chrome CDP browser check: 177 cards, 129 download rows, feed source metadata, no suppressed or local-only cards, `DuplicateFF` 404, and no mobile overflow at 390px.
 
 ## [v0.18.2] - 2026-06-04

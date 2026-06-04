@@ -48,7 +48,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Catalog freshness and download views** -- Added URL-backed New, Recently updated, and Has download catalog slices derived from cached GitHub metadata and release downloads; verified build, unit tests, and focused browser behavior. _(Source: SysAdminDoc ROADMAP NF6)_
 - [x] **Profile feed-backed catalog rendering** -- Added build-time profile feed sync and rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes from the public SysAdminDoc `projects.json` feed while preserving local curated overlays and fallback data. _(Source: SysAdminDoc ROADMAP P1)_
 - [x] **Non-blocking global CSS and critical first paint** -- Added `src/styles/critical.css`, inlined it from `Base.astro`, and loaded the monolithic hashed `global.css` asset through preload plus a print-media swap. Re-baselined the performance audit with mobile homepage LCP at 668ms. _(Source: TODO T16/T102)_
-- [x] **Advisory Lighthouse CI budget** -- Added `lighthouserc.cjs`, `npm run lhci:audit`, PR CI report upload, and warning-only budgets for sampled homepage/search/archive/project routes. _(Source: TODO T27)_
+- [x] **Advisory Lighthouse CI budget** -- Added `lighthouserc.cjs`, `npm run lhci:audit`, PR CI report upload, and warning-only budgets for sampled homepage/project-detail routes. _(Source: TODO T27)_
 
 ### Research Infrastructure (2026-05-17)
 
