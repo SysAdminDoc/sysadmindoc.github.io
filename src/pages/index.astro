@@ -9,6 +9,7 @@ import TagCloud from '../components/TagCloud.astro';
 import Heatmap from '../components/Heatmap.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
+import { projectProof } from '../data/proof';
 import {
   computeProjectRankings,
   formatProjectRankingLabel,
@@ -173,6 +174,29 @@ const heroSignals = [
     label: 'Strongest lanes',
     value: heroSignalCategories,
     meta: `Current mix: ${heroDomainText}.`,
+  },
+] as const;
+const heroProofItems = [
+  {
+    repo: 'win11-nvme-driver-patcher',
+    label: 'NVMe driver path',
+    value: '80% IOPS',
+    copy: 'Restore-point rollback for Windows 11 storage testing.',
+    source: projectProof['win11-nvme-driver-patcher'].caseStudy?.context ?? projectProof['win11-nvme-driver-patcher'].buildEvidence[1],
+  },
+  {
+    repo: 'Network_Security_Auditor',
+    label: 'Security audits',
+    value: '67 checks',
+    copy: 'Offline Windows and network evidence across eight domains.',
+    source: projectProof.Network_Security_Auditor.buildEvidence[0],
+  },
+  {
+    repo: 'NovaCut',
+    label: 'Android editor',
+    value: '40+ effects',
+    copy: 'Compose and Media3 editing surface with release-backed delivery.',
+    source: projectProof.NovaCut.buildEvidence[0],
   },
 ] as const;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
@@ -430,6 +454,15 @@ const cmdkSections = [
         <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="56" height="56" decoding="async" fetchpriority="high">
         <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Open for thoughtful collaboration</a>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
+        <div class="hero-proof-strip" aria-label="Source-backed project outcomes">
+          {heroProofItems.map((proof) => (
+            <a href={`/projects/${proof.repo}/`} class="hero-proof" title={proof.source} aria-label={`${proof.value} ${proof.label}. ${proof.copy} Source: ${proof.source}`}>
+              <span class="hero-proof-label">{proof.label}</span>
+              <strong class="hero-proof-value">{proof.value}</strong>
+              <span class="hero-proof-copy">{proof.copy}</span>
+            </a>
+          ))}
+        </div>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
         <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
