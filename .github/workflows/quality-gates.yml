@@ -57,14 +57,64 @@ jobs:
           cat semantic-audit.log
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Run generated data refresh report
+        id: generated_data
+        shell: bash
+        run: |
+          set +e
+          first_failure=0
+
+          npm run fetch-stars > fetch-stars.log 2>&1
+          fetch_code=$?
+          cat fetch-stars.log
+          if [ "$first_failure" -eq 0 ] && [ "$fetch_code" -ne 0 ]; then
+            first_failure="$fetch_code"
+          fi
+
+          npm run profile-feed:sync > profile-feed-sync.log 2>&1
+          profile_code=$?
+          cat profile-feed-sync.log
+          if [ "$first_failure" -eq 0 ] && [ "$profile_code" -ne 0 ]; then
+            first_failure="$profile_code"
+          fi
+
+          echo "exit_code=$first_failure" >> "$GITHUB_OUTPUT"
+          echo "fetch_exit_code=$fetch_code" >> "$GITHUB_OUTPUT"
+          echo "profile_exit_code=$profile_code" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Run local quality checks
         id: local_checks
         shell: bash
         run: |
-          set -eo pipefail
-          npm run data:validate 2>&1 | tee data-validate.log
-          npm run assets:audit 2>&1 | tee assets-audit.log
-          npm run check 2>&1 | tee astro-check.log
+          set +e
+          first_failure=0
+
+          npm run data:validate > data-validate.log 2>&1
+          data_code=$?
+          cat data-validate.log
+          if [ "$first_failure" -eq 0 ] && [ "$data_code" -ne 0 ]; then
+            first_failure="$data_code"
+          fi
+
+          npm run assets:audit > assets-audit.log 2>&1
+          assets_code=$?
+          cat assets-audit.log
+          if [ "$first_failure" -eq 0 ] && [ "$assets_code" -ne 0 ]; then
+            first_failure="$assets_code"
+          fi
+
+          npm run check > astro-check.log 2>&1
+          check_code=$?
+          cat astro-check.log
+          if [ "$first_failure" -eq 0 ] && [ "$check_code" -ne 0 ]; then
+            first_failure="$check_code"
+          fi
+
+          echo "exit_code=$first_failure" >> "$GITHUB_OUTPUT"
+          echo "data_exit_code=$data_code" >> "$GITHUB_OUTPUT"
+          echo "assets_exit_code=$assets_code" >> "$GITHUB_OUTPUT"
+          echo "check_exit_code=$check_code" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Run build-output audit report
         id: build_output_audits
         shell: bash
@@ -90,14 +140,6 @@ jobs:
               first_failure="$code"
             fi
           }
-
-          run_report "Refresh generated GitHub metadata" fetch-stars.log npm run fetch-stars
-          fetch_code=$?
-          record_failure "$fetch_code"
-
-          run_report "Sync profile feed cache" profile-feed-sync.log npm run profile-feed:sync
-          profile_code=$?
-          record_failure "$profile_code"
 
           run_report "Run build-output audit path" build-output-audits.log npm run build:ci
           build_code=$?
@@ -133,8 +175,6 @@ jobs:
           record_failure "$schema_code"
 
           echo "exit_code=$first_failure" >> "$GITHUB_OUTPUT"
-          echo "fetch_exit_code=$fetch_code" >> "$GITHUB_OUTPUT"
-          echo "profile_exit_code=$profile_code" >> "$GITHUB_OUTPUT"
           echo "build_exit_code=$build_code" >> "$GITHUB_OUTPUT"
           echo "endpoints_exit_code=$endpoints_code" >> "$GITHUB_OUTPUT"
           echo "feed_exit_code=$feed_code" >> "$GITHUB_OUTPUT"
@@ -150,9 +190,9 @@ jobs:
             echo "- Production dependency audit: ${{ steps.prod_audit.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "- Public catalog drift audit: ${{ steps.catalog_audit.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "- Semantic index audit (advisory): ${{ steps.semantic_audit.outputs.exit_code == '0' && 'PASS' || 'ATTENTION' }}"
-            echo "- Local data/assets/Astro checks: PASS"
+            echo "- Generated data refresh: ${{ steps.generated_data.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "- Local data/assets/Astro checks: ${{ steps.local_checks.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "- Build-output audit path: ${{ steps.build_output_audits.outputs.exit_code == '0' && 'PASS' || 'FAIL' }}"
-            echo "  - Generated data refresh: ${{ steps.build_output_audits.outputs.fetch_exit_code == '0' && steps.build_output_audits.outputs.profile_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Build path: ${{ steps.build_output_audits.outputs.build_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Endpoint contracts: ${{ steps.build_output_audits.outputs.endpoints_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - JSON Feed: ${{ steps.build_output_audits.outputs.feed_exit_code == '0' && 'PASS' || 'FAIL' }}"
@@ -182,7 +222,7 @@ jobs:
             schema-audit.log
           if-no-files-found: error
       - name: Open or update quality gate issue
-        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0'
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.generated_data.outputs.exit_code != '0' || steps.local_checks.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -192,6 +232,11 @@ jobs:
             const sections = [
               ['Production audit', 'prod-audit.log'],
               ['Catalog audit', 'catalog-audit.log'],
+              ['Generated GitHub metadata refresh', 'fetch-stars.log'],
+              ['Profile feed sync', 'profile-feed-sync.log'],
+              ['Data validation', 'data-validate.log'],
+              ['Asset audit', 'assets-audit.log'],
+              ['Astro check', 'astro-check.log'],
               ['Build-output audit path', 'build-output-audits.log'],
               ['Endpoint contracts', 'endpoints-audit.log'],
               ['JSON Feed', 'feed-audit.log'],
@@ -201,7 +246,7 @@ jobs:
               ['Semantic index audit (advisory only)', 'semantic-audit.log'],
             ];
             const body = [
-              'The scheduled portfolio quality gates detected a production dependency, public catalog drift, or build-output audit issue.',
+              'The scheduled portfolio quality gates detected a production dependency, public catalog drift, generated-data, local validation, or build-output audit issue.',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
@@ -212,7 +257,7 @@ jobs:
                 '```',
                 '',
               ]),
-              'Close this issue after the underlying dependency, catalog drift, or build-output contract problem is fixed and the workflow is green.',
+              'Close this issue after the underlying dependency, catalog drift, generated-data, local validation, or build-output contract problem is fixed and the workflow is green.',
             ].join('\n');
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -237,5 +282,5 @@ jobs:
               });
             }
       - name: Fail on reported gate failures
-        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0' || steps.local_checks.outcome == 'failure'
+        if: steps.prod_audit.outputs.exit_code != '0' || steps.catalog_audit.outputs.exit_code != '0' || steps.generated_data.outputs.exit_code != '0' || steps.local_checks.outputs.exit_code != '0' || steps.build_output_audits.outputs.exit_code != '0'
         run: exit 1
