@@ -237,7 +237,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: `.github/workflows/quality-gates.yml`; optionally `scripts/audit-semantic-index.mjs` if a compact machine-readable summary is useful.
   - Done: Weekly quality summaries now show semantic-audit PASS/ATTENTION, and any quality-gate issue body includes the latest semantic-audit log as an advisory-only section while the fail gate still ignores semantic advisory status.
   - Acceptance: Weekly quality summaries show semantic-audit PASS/ATTENTION, artifacts remain uploaded, and any quality-gate issue body includes semantic candidates when present without turning advisory catalog-maintenance hints into automatic failures.
-  - Verify: Run `quality-gates.yml` manually; inspect the job summary and uploaded issue/update body when semantic output is present.
+  - Verify: Manual `quality-gates.yml` workflow_dispatch run `26964197962` passed on `7a71c5e`; `quality-gate-reports` included `semantic-audit.log` with advisory output.
 
 - [x] **T122** 🤖 P1 — Triage stale Dependabot PRs against current `main` before merge.
   - Why: One open Dependabot PR is based on an old v0.17.0 package surface and failing checks; blindly merging it can revert newer scripts, overrides, or version metadata.
@@ -331,7 +331,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: `.github/workflows/quality-gates.yml`; optionally compact machine-readable summaries from `schema:audit`, `search:audit`, or `endpoints:audit`.
   - Done: Weekly quality gates now refresh generated metadata and sync the profile-feed cache before local checks, run `npm run build:ci` without deploying, then re-run endpoint, JSON Feed, Pagefind search, and rendered JSON-LD audits into dedicated logs. Job summaries publish generated-data, local-check, build path, endpoint, feed, search, and schema status; artifacts include every relevant log; quality-gate issues include generated-data, local validation, and build-output failures plus advisory semantic context; and the final fail gate treats generated-data, local validation, and build-output failures as blocking.
   - Acceptance: Weekly `workflow_dispatch`/schedule runs the build-output audit path without deploying, publishes schema/search/endpoint status in the job summary, uploads the relevant logs, and includes build-output failures in the issue/update body and fail gate without hiding advisory semantic-audit context from T121.
-  - Verify: Run `quality-gates.yml` manually; inspect the job summary, uploaded logs, and issue body when a build-output audit is intentionally failed.
+  - Verify: Manual `quality-gates.yml` workflow_dispatch run `26964197962` passed on `7a71c5e`; the `quality-gate-reports` artifact included generated-data, local-check, endpoint, feed, search, schema, and semantic logs. Downloaded artifact logs confirmed `endpoints:audit`, `feed:audit`, `search:audit`, `schema:audit`, and Astro check passed. The issue-update failure path is covered by the workflow condition/body but was not forced live to avoid opening a false alert.
 
 ---
 
