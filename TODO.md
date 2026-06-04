@@ -140,7 +140,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 ## Post-v0.18.0 research (2026-06-02) — see [RESEARCH_2026-06-02.md](RESEARCH_2026-06-02.md) for full evidence
 
 - [x] **T96** P0 — homepage interactivity dead (main.js ran before shared.js → ReferenceError). Fixed v0.18.1: main.js homepage-only after shared.js + build guard + SW cache bump. **Verified live.**
-- [ ] **T97** P1 — above-the-fold proof strip of quantified outcomes from proof.ts (NF-A1).
+- [x] **T97** P1 — above-the-fold proof strip of quantified outcomes from proof.ts (NF-A1).
+  - Done: Homepage hero now imports `projectProof` and renders a first-viewport `hero-proof-strip` with source-backed quantified outcomes for the NVMe driver path, Network Security Auditor, and NovaCut. The strip links to the corresponding project pages, exposes proof source text through labels/titles, and has matching critical/full CSS with stable desktop and mobile layouts.
+  - Verify: `npm test`; `npm run check`; `npm run build`; `npm run a11y:audit`; Browser preview at `http://127.0.0.1:4326/` showed the body order `hn -> hero-proof-strip -> hr -> hd`, proof strip bottom at 465px in a 720px viewport, no horizontal overflow, no console errors, and proof-link navigation to `/projects/NovaCut/`; `npm run audit:perf -- --base http://127.0.0.1:4326 --out .tmp/perf-t97.json` passed Home mobile at 390px with LCP 696ms, CLS 0, bfcache yes, and no horizontal overflow.
 - [ ] **T98** P1 — page-level JSON-LD on the 8 interior routes (ProfilePage on /resume etc.) (NF-A2).
 - [ ] **T99** P1 — SoftwareApplication node + license/datePublished for live-app project pages (NF-A3).
 - [ ] **T100** P1 — Greatest Hits case-study coverage 3/8 → parity + validator (IMP-4).
@@ -154,7 +156,7 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T108** P2 — homepage SectionJumpNav (reuse existing component + cmdkSections) (NF-A5).
 - [ ] **T109** P2 — iOS PWA install path (NF-A6) + prefers-contrast block; drop/deprioritize WebSite SearchAction (NF-A7) unless there is a non-Google consumer, because Google removed the sitelinks search box feature in November 2024.
 - [ ] **T110** P2 — language-donut population parity (build vs JS flicker) (IMP-2) + skill rings vs real distribution (IMP-3).
-- [ ] **T111** P2 — root-cause Astro 6 </html> emission (compressHTML bisect); convert fix-html-structure to assert-or-noop on a fixed Astro version.
+- [ ] **T111** P2 — root-cause Astro 6 `</html>` emission now that Astro 6.4.4 is on `main` (compressHTML bisect); convert `fix-html-structure` to assert-or-noop on a fixed Astro version.
 - [ ] **T112** P3 — cluster: terminal contact/uses/theme cmds; /atom.xml; catalog no-JS <form>; minify public JS; llms.txt completeness; Beyond Code enrich + CLAUDE.md sync; CSP theme-init hash (partial T95); catalog DOM-size budget gate.
 
 ---
@@ -283,6 +285,22 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: `src/pages/feed.json.ts`; optionally a `feed:audit` script or T119 smoke assertions.
   - Acceptance: JSON Feed includes absolute `icon` and `favicon` URLs, and validation checks `version`, `title`, `home_page_url`, `feed_url`, non-empty `items`, item `id`, item `url`, and one content field without requiring optional `date_published`.
   - Verify: `npm run build`; inspect `dist/feed.json` or run the feed audit against it.
+
+## 🔬 Researcher Queue (Cycle 6 — 2026-06-04) — see [docs/research-2026-06-04-cycle-6.md](docs/research-2026-06-04-cycle-6.md)
+
+- [ ] **T128** 🤖 P2 — Move homepage proof-strip highlight selection into validated data.
+  - Why: T97 now renders from `projectProof`, but the selected homepage metrics/copy are page-local constants, which makes trust-sensitive proof claims easier to drift from source-backed project proof records.
+  - Evidence: T97 defines local `heroProofItems` in `src/pages/index.astro` with `80% IOPS`, `67 checks`, and `40+ effects`; `scripts/validate-project-data.mjs` validates generic `projectProof` records and source URLs but not homepage highlight slugs, short metrics, mobile-length copy, or source resolution.
+  - Touches: `src/data/proof.ts`, `src/data/types.ts`, `scripts/validate-project-data.mjs`, and `src/pages/index.astro` after T97 lands.
+  - Acceptance: Homepage proof highlights are declared in typed data, each selected repo resolves to a valid `projectProof` record, each metric/copy/source is non-empty and bounded for mobile layout, and the homepage render loop consumes the validated data instead of hardcoded local constants.
+  - Verify: `npm run data:validate && npm run build`; browser check the proof strip at desktop and 390px mobile.
+
+- [ ] **T129** 🤖 P2 — Add a critical/global CSS parity audit for first-viewport selectors.
+  - Why: The first-viewport CSS split now requires shared hero/proof selectors to be represented in both `critical.css` and `global.css`; missing one side can create first-paint layout shifts or async-style behavior that only appears after the full stylesheet loads.
+  - Evidence: Current worktree T97 edits duplicate `.hero-proof-strip`, `.hero-proof`, `.hero-proof-label`, `.hero-proof-value`, and `.hero-proof-copy` in both `src/styles/critical.css` and `src/styles/global.css`, including mobile overrides, but no script audits selector parity after T16 split the first-viewport CSS path.
+  - Touches: `scripts/audit-assets.mjs` or a new `scripts/audit-css.mjs`, `package.json`, `src/styles/critical.css`, and `src/styles/global.css`.
+  - Acceptance: A CSS audit extracts expected first-viewport class selectors, allows intentional critical-only/global-only exceptions, and fails when a shared hero/first-viewport selector or selected mobile override is missing from either stylesheet without requiring byte-for-byte declaration equality.
+  - Verify: `npm run assets:audit` or `npm run css:audit`; confirm a deliberately removed shared selector is reported.
 
 ---
 
