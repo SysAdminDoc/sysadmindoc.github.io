@@ -42,6 +42,7 @@ export async function GET(context: APIContext) {
 
   lines.push('## Feeds');
   lines.push(`- [RSS](${site}/rss.xml): Recent projects feed.`);
+  lines.push(`- [Atom](${site}/atom.xml): Standards-based XML project feed.`);
   lines.push(`- [Project index (JSON)](${site}/projects.json): Machine-readable project list.`);
   lines.push(`- [Release index (JSON)](${site}/releases.json): Machine-readable release list.`);
   lines.push('');

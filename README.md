@@ -52,7 +52,7 @@ npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
-npm run feed:audit     # verify built JSON Feed metadata and item contracts
+npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
 npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
@@ -90,7 +90,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `/feed.json` is JSON Feed 1.1 with absolute icon metadata and is guarded by `npm run feed:audit`.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows and validates ranking weights/scores/ranks. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -112,7 +112,7 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 11. Builds the Astro site
 12. Captures the build artifact contract for live smoke checks
 13. Publishes to GitHub Pages
-14. Checks the live Pages URL for the stamped service worker, project/release/feed counts, profile-feed source, JSON Feed shape, and sitemap index
+14. Checks the live Pages URL for the stamped service worker, project/release/feed counts, profile-feed source, JSON/Atom Feed shape, and sitemap index
 
 The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
 
@@ -146,7 +146,7 @@ src/
 ├── pages/
 │   ├── index.astro
 │   ├── now.astro · uses.astro · resume.astro · healthcare-it.astro · 404.astro
-│   ├── projects.json.ts · releases.json.ts · feed.json.ts
+│   ├── projects.json.ts · releases.json.ts · feed.json.ts · atom.xml.ts
 │   ├── search.astro · releases.astro · timeline.astro · archive.astro
 │   ├── rss.xml.ts · releases.xml.ts · llms.txt.ts
 │   ├── lang/[slug].astro · lang/_langs.ts
@@ -170,7 +170,7 @@ scripts/
 ├── audit-csp.mjs          # source CSP/unsafe-inline inventory and strict script-src gate
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
-├── audit-feed.mjs         # built JSON Feed metadata/item contract audit
+├── audit-feed.mjs         # built JSON/Atom Feed metadata/item contract audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check

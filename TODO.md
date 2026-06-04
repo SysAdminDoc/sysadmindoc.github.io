@@ -203,7 +203,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - [x] Terminal `contact`, `uses`, and `theme` commands.
     - Done: Homepage terminal help now advertises `contact`, `uses`, and `theme light|dark|toggle`. `contact` jumps to `#connect` and reveals below-fold `content-visibility:auto` sections before scrolling so deep sections land accurately; the section observer temporarily suppresses hash rewrites during terminal-driven jumps. `uses` routes to `/uses/`, and `theme` delegates to the existing theme toggle so labels, meta color, and `theme-pref` persistence stay centralized.
     - Verify: `node --check public/scripts/main.js`; `node --test test/terminal-commands.test.mjs`; `npm run build:ci`; headless browser probes confirmed `contact` ends at `#connect` with visible Connect geometry, `uses` navigates to `/uses/`, `theme light` persists `theme-pref=light`, console warnings/errors stay empty, and horizontal overflow stays 0.
-  - [ ] `/atom.xml`.
+  - [x] `/atom.xml`.
+    - Done: Added an Atom 1.0 project feed at `/atom.xml`, advertised it from Base alternate links and `llms.txt`, precached it beside `/rss.xml`, and extended endpoint, feed, smoke, and source-contract audits to validate Atom discovery, cache/content type policy, item-count parity with JSON Feed, self-link metadata, entry URLs, dates, and content.
+    - Verify: `node --check src/pages/atom.xml.ts`; `node --check scripts/audit-feed.mjs`; `node --check scripts/audit-public-endpoints.mjs`; `node --check scripts/smoke-live-site.mjs`; `node --test test/atom-feed.test.mjs`.
   - [ ] Catalog no-JS `<form>`.
   - [ ] Minify public JS.
   - [ ] `llms.txt` completeness.
