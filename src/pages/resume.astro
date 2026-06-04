@@ -17,6 +17,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
   title,
   description: pageOg.description,
   lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
 });
 const cmdkSections = [
   { label: 'Overview', href: '#resume-header', desc: 'Name, title, location, and core skills.', badge: 'RESUME' },
