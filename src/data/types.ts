@@ -77,6 +77,19 @@ export interface ProjectProof {
   };
 }
 
+export type HomepageProofSourceSelector =
+  | { kind: 'buildEvidence'; index: number }
+  | { kind: 'caseStudyContext' }
+  | { kind: 'caseStudyOutcome'; index: number };
+
+export interface HomepageProofHighlight {
+  repo: string;
+  label: string;
+  value: string;
+  copy: string;
+  source: HomepageProofSourceSelector;
+}
+
 export type ArchiveStatus = 'moved' | 'held' | 'removed' | 'superseded' | 'archived';
 
 export interface ArchiveLink {

@@ -1,4 +1,28 @@
-import type { ProjectProof } from './types';
+import type { HomepageProofHighlight, ProjectProof } from './types';
+
+export const homepageProofHighlights: HomepageProofHighlight[] = [
+  {
+    repo: 'win11-nvme-driver-patcher',
+    label: 'NVMe driver path',
+    value: '80% IOPS',
+    copy: 'Restore-point rollback for Windows 11 storage testing.',
+    source: { kind: 'caseStudyContext' },
+  },
+  {
+    repo: 'Network_Security_Auditor',
+    label: 'Security audits',
+    value: '67 checks',
+    copy: 'Offline Windows and network evidence across eight domains.',
+    source: { kind: 'buildEvidence', index: 0 },
+  },
+  {
+    repo: 'NovaCut',
+    label: 'Android editor',
+    value: '40+ effects',
+    copy: 'Compose and Media3 editing surface with release-backed delivery.',
+    source: { kind: 'buildEvidence', index: 0 },
+  },
+];
 
 export const projectProof: Record<string, ProjectProof> = {
   'win11-nvme-driver-patcher': {
