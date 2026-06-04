@@ -93,12 +93,13 @@ Post-v0.17.0 deep audit across 5 dimensions (feature completeness, performance, 
   - Verify: `npm test`; `npm run images:audit`; `npm run build`; generated PNG probe for all eight interior routes; visual inspection of `dist/og/search.png` and `dist/og/healthcare-it.png`.
   - Complexity: M
 
-- [ ] P3 -- Add last-updated timestamps to interior pages for freshness signals
-  - Why: Interior pages (/now, /uses, /resume, /healthcare-it) display no last-modified date. Search engines value freshness signals. /now page pattern specifically calls for a visible date.
-  - Evidence: now.astro, uses.astro, resume.astro have no date display. None include dateModified in structured data.
-  - Touches: src/data/curated.ts (add lastUpdated fields), src/pages/now.astro, src/pages/uses.astro, src/pages/resume.astro
+- [x] P3 -- Add last-updated timestamps to interior pages for freshness signals
+  - Why: Interior pages (/now, /uses, /resume, /healthcare-it) need visible freshness signals. `/now/` already renders its data-backed updated date; `/uses/`, `/resume/`, and `/healthcare-it/` were missing equivalent reviewed dates.
+  - Evidence: uses.astro, resume.astro, and healthcare-it.astro had no date display. They also lacked page-level dateModified structured data.
+  - Touches: src/data/page-freshness.ts, src/pages/uses.astro, src/pages/resume.astro, src/pages/healthcare-it.astro, src/styles/global.css, scripts/audit-schema.mjs
   - Acceptance: Each interior content page shows a human-readable 'Last updated' date. Structured data includes dateModified.
-  - Verify: Navigate to /now/. Confirm 'Last updated' date is visible.
+  - Done: `/uses/`, `/resume/`, and `/healthcare-it/` now render visible `Last updated` timestamps from `src/data/page-freshness.ts` and emit reviewed `WebPage` JSON-LD with parseable `dateModified`.
+  - Verify: `npm test`; `npm run schema:audit` after build; Browser preview checks for visible dates and matching `dateModified`.
   - Complexity: S
 
 ### Performance
