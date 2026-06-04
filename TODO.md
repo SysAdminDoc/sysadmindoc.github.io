@@ -148,7 +148,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [ ] **T100** P1 — Greatest Hits case-study coverage 3/8 → parity + validator (IMP-4).
 - [ ] **T101** P1 — reconcile hero "176+" vs catalog "181" headline count (IMP-1).
 - [x] **T102** P1 — critical-CSS inline for hero (the real mobile-LCP lever, NOT @layer) + re-baseline stale PERFORMANCE_AUDIT.md (v0.16.12). Done with T16; 2026-06-04 audit shows mobile homepage LCP 668ms.
-- [ ] **T103** P1 — forced-colors gap: SVG data-viz (heatmap/donut/skill rings) unreadable in WHCM.
+- [x] **T103** P1 — forced-colors gap: SVG data-viz (heatmap/donut/skill rings) unreadable in WHCM.
+  - Done: Forced-colors overrides now map the heatmap cells/month labels, heatmap legend swatches, language donut segments/legend markers, and skill-ring foreground/background strokes to system palette colors with visible boundaries and readable labels.
+  - Verify: `npm run build`; `npm run forced-colors:audit` passed with desktop and mobile heatmap cells, donut segments, and skill rings visibly painted under emulated `forced-colors: active`.
 - [ ] **T104** P2 — CI gate stubs empty data; commit src/data/_fixtures and render real shapes pre-merge.
   - Research note: After the T118/T126 passes, PR CI still starts from ad hoc `{}` / `[]` generated-cache stubs before `npm run check` and `npm run build:ci`; keep this item focused on schema-valid fixture caches that exercise profile feed, README cache, release rows, ranking, and rendered JSON-LD with realistic shapes instead of adding another empty-stub variant.
 - [ ] **T105** P2 — promote a11y audit to blocking --strict subset; mirror test + a11y into deploy.yml.
@@ -361,12 +363,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 10 — 2026-06-04) — see [docs/research-2026-06-04-cycle-10.md](docs/research-2026-06-04-cycle-10.md)
 
-- [ ] **T134** 🤖 P2 — Add a forced-colors browser audit for SVG data-visualization surfaces.
+- [x] **T134** 🤖 P2 — Add a forced-colors browser audit for SVG data-visualization surfaces.
   - Why: T103 names the forced-colors visual defect, but the current a11y gate is static HTML only and cannot detect computed forced-color paint, SVG fill/stroke collapse, missing outlines, or chart-region visibility regressions in Windows High Contrast style modes.
   - Evidence: `scripts/audit-a11y.mjs` only checks static HTML rules and explicitly defers computed contrast/Playwright coverage; `src/styles/global.css` has a targeted `@media(forced-colors:active)` block for focus, decorative layers, and control borders but no overrides for `.heatmap-svg`, `.hm-*`, `.lang-donut`, or `.sk-ring`; the heatmap uses `rgba()` SVG fills/background swatches, the language donut emits literal SVG `stroke` colors, and skill rings use custom-property SVG strokes. MDN documents that forced colors affect SVG `fill` and `stroke`, background images, and shadows; W3C WCAG 2.2 explains that chart lines/shapes/slices needed to understand a graph are graphical objects with non-text contrast requirements; Playwright can emulate `forcedColors: 'active'`.
   - Touches: A new browser-based audit script such as `scripts/audit-forced-colors.mjs`, `package.json`, and optionally `.github/workflows/quality-gates.yml`; pair with T103 CSS fixes rather than replacing them.
+  - Done: Added `scripts/audit-forced-colors.mjs` and `npm run forced-colors:audit`, using Chrome/Edge CDP to serve built `dist/`, emulate `forced-colors: active`, visit the homepage at desktop and mobile widths, and fail with compact region summaries when the heatmap, language donut, or skill rings are collapsed, transparent, missing text equivalents, or missing painted boundaries. Weekly quality gates now run the audit after `build:ci`, upload `forced-colors-audit.log`, summarize PASS/FAIL, and include failures in the build-output issue body.
   - Acceptance: The audit builds or serves the static output, emulates `forcedColors: 'active'`, visits the homepage data-viz sections at desktop and mobile widths, verifies the heatmap, language donut, and skill rings remain visible/non-blank with discernible boundaries or text equivalents, and fails with a compact region-level summary when a target is transparent, collapsed into the canvas, or hidden by forced palette rules.
-  - Verify: `npm run build && npm run forced-colors:audit`; include the new audit in `npm run a11y:audit` or a weekly gate once stable, and keep T103's manual WHCM spot check as a final visual confirmation.
+  - Verify: `npm run build`; `npm run forced-colors:audit` passed with 364/364 heatmap cells, 8/8 donut segments, and 8 skill rings painted at both desktop and mobile widths.
 
 ---
 

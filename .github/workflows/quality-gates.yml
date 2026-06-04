@@ -174,12 +174,17 @@ jobs:
           schema_code=$?
           record_failure "$schema_code"
 
+          run_report "Audit forced-colors data visualizations" forced-colors-audit.log npm run forced-colors:audit
+          forced_colors_code=$?
+          record_failure "$forced_colors_code"
+
           echo "exit_code=$first_failure" >> "$GITHUB_OUTPUT"
           echo "build_exit_code=$build_code" >> "$GITHUB_OUTPUT"
           echo "endpoints_exit_code=$endpoints_code" >> "$GITHUB_OUTPUT"
           echo "feed_exit_code=$feed_code" >> "$GITHUB_OUTPUT"
           echo "search_exit_code=$search_code" >> "$GITHUB_OUTPUT"
           echo "schema_exit_code=$schema_code" >> "$GITHUB_OUTPUT"
+          echo "forced_colors_exit_code=$forced_colors_code" >> "$GITHUB_OUTPUT"
           exit 0
       - name: Run performance audit report (advisory)
         id: performance_audit
@@ -270,6 +275,7 @@ jobs:
             echo "  - JSON Feed: ${{ steps.build_output_audits.outputs.feed_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Pagefind search: ${{ steps.build_output_audits.outputs.search_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Rendered JSON-LD: ${{ steps.build_output_audits.outputs.schema_exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "  - Forced-colors data visualizations: ${{ steps.build_output_audits.outputs.forced_colors_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "- Performance/bfcache audit (advisory): ${{ steps.performance_audit.outputs.status }}"
             echo ""
             echo "See the uploaded quality-gate-reports artifact for command logs."
@@ -297,6 +303,7 @@ jobs:
             search-index.log
             search-audit.log
             schema-audit.log
+            forced-colors-audit.log
             preview.log
             performance-audit.log
             performance-summary.md
@@ -324,6 +331,7 @@ jobs:
               ['Pagefind search index', 'search-index.log'],
               ['Pagefind search audit', 'search-audit.log'],
               ['Rendered JSON-LD', 'schema-audit.log'],
+              ['Forced-colors data visualizations', 'forced-colors-audit.log'],
               ['Performance/bfcache audit (advisory)', 'performance-audit.log'],
               ['Performance/bfcache summary', 'performance-summary.md'],
               ['Semantic index audit (advisory only)', 'semantic-audit.log'],

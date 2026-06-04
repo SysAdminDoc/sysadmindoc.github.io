@@ -45,6 +45,7 @@ npm run endpoints:audit # verify built public JSON/text/script endpoint contract
 npm run feed:audit     # verify built JSON Feed metadata and item contracts
 npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
+npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
@@ -103,7 +104,7 @@ The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml
 
 [.github/workflows/ci.yml](.github/workflows/ci.yml) also runs an advisory Lighthouse CI budget after the PR build and uploads the filesystem reports as `lighthouse-ci-reports`.
 
-[.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, advisory semantic-audit status, generated data refresh, data validation, asset/reference checks, Astro diagnostics, and non-deploying build-output audits for endpoint/feed/search/schema contracts. If production audit, catalog drift, generated-data refresh, local validation, or build-output audits fail, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
+[.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, advisory semantic-audit status, generated data refresh, data validation, asset/reference checks, Astro diagnostics, non-deploying build-output audits for endpoint/feed/search/schema contracts, and forced-colors data-visualization coverage. If production audit, catalog drift, generated-data refresh, local validation, or build-output audits fail, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
 
 ## Layout
 
@@ -152,6 +153,7 @@ scripts/
 ├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
 ├── audit-feed.mjs         # built JSON Feed metadata/item contract audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
+├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
 ├── audit-semantic-index.mjs
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
