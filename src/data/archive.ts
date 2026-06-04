@@ -34,11 +34,11 @@ export const archiveEntries: ArchiveEntry[] = [
     name: 'DuplicateFF',
     status: 'archived',
     statusLabel: 'Archived reference',
-    summary: 'DuplicateFF remains visible as a reference architecture rather than a current flagship utility.',
-    reason: 'The catalog description frames it as an archived duplicate-file finder reference, which is useful context without overstating current maintenance.',
-    source: 'CHANGELOG.md v0.12.0 and current src/data/projects.ts catalog description.',
+    summary: 'DuplicateFF remains visible as a reference architecture rather than a current flagship utility, but it is outside the feed-backed active catalog.',
+    reason: 'The profile projects feed omits it from the current portfolio set; the archive keeps a direct public GitHub link without generating a project detail page.',
+    source: 'CHANGELOG.md v0.12.0, SysAdminDoc projects.json feed, and current archive policy.',
     links: [
-      { label: 'Project page', href: '/projects/DuplicateFF/', note: 'Public catalog entry' },
+      { label: 'GitHub repository', href: 'https://github.com/SysAdminDoc/DuplicateFF', note: 'Public archived reference outside the active feed-backed catalog' },
     ],
   },
   {

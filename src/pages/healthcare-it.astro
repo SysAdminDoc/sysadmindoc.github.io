@@ -5,7 +5,7 @@ import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import StarSvg from '../components/StarSvg.astro';
 import { healthcareIT } from '../data/curated';
-import { catalog, featured, liveApps } from '../data/projects';
+import { catalog, featured, liveApps } from '../data/portfolio';
 
 let stars: Record<string, number> = {};
 try { const mod = await import('../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}

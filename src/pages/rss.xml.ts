@@ -1,7 +1,7 @@
 import type { APIContext } from 'astro';
 import rss from '@astrojs/rss';
 import sanitizeHtml from 'sanitize-html';
-import { featured, liveApps, catalog } from '../data/projects';
+import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 
 let stats: { lastPushedAt?: string | null; fetchedAt?: string | null } = {};

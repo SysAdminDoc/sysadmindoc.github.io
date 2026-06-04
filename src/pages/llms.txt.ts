@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { featured, liveApps, catalog } from '../data/projects';
+import { featured, liveApps, catalog } from '../data/portfolio';
 
 // Curated, AI-readable index following the llms.txt convention (llmstxt.org):
 // an H1, a blockquote summary, then sectioned link lists pointing at the

@@ -3,7 +3,7 @@
 Last consolidated: 2026-06-04
 Repository: `SysAdminDoc/sysadmindoc.github.io`
 Site: https://sysadmindoc.github.io
-Current tracked version: v0.18.2
+Current tracked version: v0.18.3
 
 This is the canonical tracked project context for future work. Tool-specific and machine-local instruction files can point here, but this file should carry durable facts, current architecture, public/private boundaries, and roadmap state.
 
@@ -17,6 +17,7 @@ The site must remain public-safe. It should not expose private repository names,
 
 - Static site built with Astro 6.
 - TypeScript data layer under `src/data/`.
+- `src/data/portfolio.ts` is the rendered portfolio adapter. It consumes the ignored profile feed cache at `src/data/_profile-projects.json`, maps profile categories into site categories, excludes suppressed/non-portfolio rows, and preserves local curated featured/live-app overlays.
 - Main pages under `src/pages/`, including homepage, catalog, search, project detail pages, OG image endpoints, RSS, releases, timeline, archive decisions, language pages, and healthcare IT pages.
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
@@ -28,8 +29,8 @@ The site must remain public-safe. It should not expose private repository names,
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
 - `/search/` is a Pagefind Component UI-backed full-text search page. `npm run build` runs Astro and then `npm run search:index`, which writes the static search bundle to `dist/pagefind`.
-- The homepage catalog has URL-backed `view=` slices for all/new/recently updated/has-download. New/recent derive from ignored `_meta.json` freshness against the generated stats timestamp; has-download derives from ignored `_releases.json` download totals.
-- `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public project and release data as the rendered pages.
+- The homepage catalog renders from the public SysAdminDoc profile `projects.json` feed when the build-time cache is available. URL-backed `view=` slices for all/new/recently updated/has-download derive from feed fields plus ignored `_meta.json` freshness and `_releases.json` release download totals.
+- `/projects.json` and `/releases.json` are schema-versioned static JSON indexes generated from the same public feed-backed project and release data as the rendered pages.
 - `PERFORMANCE_AUDIT.md` records the current Core Web Vitals lab, bfcache, overflow, and service-worker update UX baseline. The service worker now waits on updates and lets the page prompt before refreshing.
 - `IMAGE_PIPELINE.md` records the current social-card, screenshot-master, thumbnail, README image, and Astro image tooling decisions.
 - Live-app card previews use Sharp-generated 640x400 thumbnails under `public/screenshots/thumbs/`, while the original `public/screenshots/*.jpg` masters remain available for detail contexts.
@@ -43,6 +44,7 @@ The site must remain public-safe. It should not expose private repository names,
 ## Key Commands
 
 - Install: `npm install`
+- Refresh profile feed cache: `npm run profile-feed:sync`
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
 - Build search index only: `npm run search:index` after `astro build`
@@ -63,9 +65,9 @@ Current verification baseline:
 
 - `npm run check` passed with 45 Astro files, 0 errors, 0 warnings, and 0 hints.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, and 1200x630 PNG OG metadata checks.
-- `npm run build` passed, including image pipeline auditing and Pagefind index generation over 198 HTML pages.
-- `npm test` passed with 9 node tests.
-- Focused Chrome CDP browser verification of the homepage catalog views passed: 181 all / 147 new / 173 recently updated / 20 has-download, URL hydration for `view=recent&cat=web&q=Nuke`, and no mobile horizontal overflow at 390px.
+- `npm run build` passed, including profile feed sync, image pipeline auditing, service-worker stamp v0.18.3, and Pagefind index generation over 194 HTML pages.
+- `npm test` passed with 12 node tests.
+- Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf` ran against local preview for `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`; all samples restored from bfcache and had no horizontal overflow or console/network errors. Search, archive, project, and desktop homepage samples stayed under LCP/CLS/lab event-timing thresholds; mobile homepage LCP is the remaining warning.
 - `npm run data:validate` passed.
 - `npm run assets:audit` passed.
@@ -78,18 +80,26 @@ Current verification baseline:
 
 ## Data Model
 
-Primary catalog data is currently in `src/data/projects.ts`:
+Rendered catalog data is currently exported from `src/data/portfolio.ts`:
+
+- It uses the ignored `src/data/_profile-projects.json` cache generated by `npm run profile-feed:sync`.
+- It excludes rows with `includeInPortfolio: false` or `suppressed: true`.
+- It maps profile categories to local `Lang` categories and passes through feed freshness, release, download, topic, and primary-action fields.
+- It keeps local curated featured/live-app records when they match visible feed rows, preserving screenshots and authored highlight copy.
+- If the profile cache is missing or empty, it falls back to `src/data/projects.ts`.
+
+The local fallback and curated overlay data live in `src/data/projects.ts`:
 
 - `featured`: top project cards.
 - `liveApps`: projects with screenshots/live demo style presentation.
-- `catalog`: larger repository catalog.
+- `catalog`: fallback repository catalog.
 - `skills`: skills surfaced on the site.
 - `src/data/proof.ts`: optional source-backed proof sections for project detail pages.
 - `src/data/archive.ts`: public-safe archive decisions for retired, moved, held, removed, or superseded project surfaces.
 
-`npm run data:validate` parses the TypeScript data source and fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, malformed proof records, or unsafe archive entries. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
+`npm run data:validate` parses the TypeScript data source and the optional profile feed cache, then fails on invalid required fields, duplicate section slugs, unknown language/category enums, malformed URLs, missing live-app screenshots, public/private policy violations, route-count drift, command palette coverage gaps, malformed proof records, unsafe archive entries, or invalid profile-feed category mappings. `npm run check` and `npm run build` run this validation before Astro's own checks/build.
 
-Derived data in `src/data/derived.ts` computes fallback repository count from unique project references. The count currently excludes several intentionally skipped repos and can diverge from live GitHub if caches are stale.
+Derived data in `src/data/derived.ts` computes fallback repository count from unique feed-backed project references. The count currently excludes suppressed/non-portfolio feed rows and can diverge from live GitHub if caches are stale.
 
 Important current exclusions:
 
@@ -109,6 +119,8 @@ Catalog reconciliation from 2026-05-17 live GitHub scan:
 ## Generated Data and Automation
 
 `scripts/fetch-stars.mjs` fetches public GitHub repo metadata, releases, README excerpts, and star counts. It preserves existing generated caches when unauthenticated rate limits would otherwise wipe data. Full README refreshes require a token.
+
+`scripts/sync-profile-feed.mjs` fetches `https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json` into the ignored `src/data/_profile-projects.json` cache. If the fetch fails and a valid cache exists, it preserves the cache. If no cache exists, it writes an empty fallback cache so Astro can use local `projects.ts` data.
 
 `scripts/summarize-generated-data.mjs` reads the generated caches and writes a markdown/JSON freshness and integrity summary. The deploy workflow refreshes generated data for each push/manual deploy, then uploads `github-data-refresh-summary`. The separate `data-refresh.yml` workflow runs the same refresh and summary daily or on demand without deploying the site.
 
@@ -185,3 +197,4 @@ Highest-priority work after this research pass:
 - 2026-05-17: Shipped image and OG pipeline hardening. Added Sharp-generated live-app thumbnail derivatives, `npm run images:audit`, thumbnail-aware asset auditing, thumbnail-first live cards, and explicit social-card PNG alt/type metadata.
 - 2026-05-17: Shipped public machine-readable indexes. Added `/projects.json` and `/releases.json` with schema versions, freshness timestamps, counts, public URLs, and build-time GitHub metadata for future tooling.
 - 2026-05-17: Evaluated local semantic indexing. Added `SEMANTIC_INDEX_DECISION.md` and `npm run semantic:audit` as an offline advisory project-similarity/category-drift report, while keeping Pagefind as the user-facing static search layer.
+- 2026-06-04: Shipped feed-backed portfolio rendering. Added `profile-feed:sync`, `src/data/portfolio.ts`, profile feed validation, feed-backed catalog/project routes/feeds/language lanes/timeline/OG routes, suppressed-row exclusion, and local curated overlays/fallbacks.

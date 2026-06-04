@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
 import { categoryLabels } from '../data/categories';
-import { catalog, featured, liveApps } from '../data/projects';
+import { catalog, featured, liveApps, profileFeedInfo } from '../data/portfolio';
 
 export const prerender = true;
 
@@ -109,7 +109,10 @@ export async function GET(context: APIContext) {
     generatedAt,
     source: {
       repository: `${owner}/sysadmindoc.github.io`,
-      data: 'src/data/projects.ts',
+      data: profileFeedInfo.active ? 'SysAdminDoc/SysAdminDoc projects.json' : 'src/data/projects.ts',
+      profileFeedUrl: profileFeedInfo.feedSourceUrl,
+      profileFeedGeneratedAt: profileFeedInfo.generatedAt,
+      profileFeedCachedAt: profileFeedInfo.cachedAt,
       githubMetadataFetchedAt: stats.fetchedAt ?? null,
       githubLastPushedAt: stats.lastPushedAt ?? null,
     },

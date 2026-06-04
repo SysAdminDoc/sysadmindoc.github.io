@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { featured, liveApps, catalog } from '../data/projects';
+import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 
 // JSON Feed 1.1 (jsonfeed.org) mirror of the project feed for modern feed

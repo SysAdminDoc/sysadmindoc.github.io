@@ -46,6 +46,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **AI-scrub rewrite** -- Integrated via merge commit de2bcc5. _(Source: git log)_
 - [x] **Add 9 missing repos to portfolio catalog** -- Commit 1d0d6b8, 2026-06-01. _(Source: git log)_
 - [x] **Catalog freshness and download views** -- Added URL-backed New, Recently updated, and Has download catalog slices derived from cached GitHub metadata and release downloads; verified build, unit tests, and focused browser behavior. _(Source: SysAdminDoc ROADMAP NF6)_
+- [x] **Profile feed-backed catalog rendering** -- Added build-time profile feed sync and rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes from the public SysAdminDoc `projects.json` feed while preserving local curated overlays and fallback data. _(Source: SysAdminDoc ROADMAP P1)_
 
 ### Research Infrastructure (2026-05-17)
 

@@ -4,7 +4,7 @@ import { Resvg } from '@resvg/resvg-js';
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { featured, liveApps, catalog } from '../../data/projects';
+import { featured, liveApps, catalog } from '../../data/portfolio';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FONT_CACHE = join(__dirname, '..', '..', '..', '.astro', 'fonts');

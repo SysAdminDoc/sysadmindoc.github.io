@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { featured, liveApps, catalog } from '../data/projects';
+import { featured, liveApps, catalog } from '../data/portfolio';
 
 // Dedicated feed of release EVENTS (distinct from rss.xml, which is a project
 // feed). Sourced from the cached _releases.json so followers can subscribe to

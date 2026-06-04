@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { catalog, featured, liveApps } from '../data/projects';
+import { catalog, featured, liveApps } from '../data/portfolio';
 
 export const prerender = true;
 
