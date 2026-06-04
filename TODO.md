@@ -273,12 +273,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 5 — 2026-06-04) — see [docs/research-2026-06-04-cycle-5.md](docs/research-2026-06-04-cycle-5.md)
 
-- [ ] **T126** 🤖 P2 — Add a rendered JSON-LD audit before expanding T98/T99.
+- [x] **T126** 🤖 P2 — Add a rendered JSON-LD audit before expanding T98/T99.
   - Why: Base, language, and project pages already emit manual JSON-LD, and T98/T99 will expand that surface; no current validator parses rendered graph output or catches malformed JSON, missing stable `@id`s, or route/type coverage drift.
   - Evidence: `src/layouts/Base.astro` emits WebSite/Person/ProfilePage JSON-LD; `src/pages/lang/[slug].astro` emits CollectionPage/ItemList/BreadcrumbList; `src/pages/projects/[slug].astro` emits SoftwareSourceCode/BreadcrumbList; existing source/data validators do not inspect built `application/ld+json` blocks.
   - Touches: New `schema:audit` script or equivalent build-output validator; possibly `package.json`, `PROJECT_CONTEXT.md`, and CI wiring.
+  - Done: Added `scripts/audit-schema.mjs` and `npm run schema:audit`. `build:ci` now runs the audit after Astro build, HTML repair, service-worker stamping, and Pagefind indexing. The audit parses every built HTML `application/ld+json` block, requires `https://schema.org` context, verifies every page keeps the Base WebSite/Person graph, and checks representative homepage, `/lang/powershell/`, and `/projects/win11-nvme-driver-patcher/` graphs for expected types, stable `@id` anchors, route URLs, item-list positions, and project breadcrumb/code-repository shape.
   - Acceptance: Built HTML JSON-LD blocks parse successfully, use schema.org context, and representative homepage/language/project routes expose expected graph types and stable anchors without overfitting every rich-result rule.
-  - Verify: `npm run build && npm run schema:audit`.
+  - Verify: `npm run schema:audit` passed on the current build with 194 HTML pages, 378 JSON-LD blocks, 757 graph nodes, 194 pages carrying the Base WebSite/Person graph, and 3 representative routes checked. `npm test`; `npm run check`; `npm run build` passed with `schema:audit` inside `build:ci`; `npm run a11y:audit`.
 
 - [ ] **T127** 🤖 P3 — Add JSON Feed icon/favicon metadata and feed validation.
   - Why: `/feed.json` is advertised and live, but omits optional JSON Feed publisher metadata that helps feed readers avoid scraping the homepage, and no explicit feed validator protects required top-level/item fields.
