@@ -9,7 +9,7 @@ import TagCloud from '../components/TagCloud.astro';
 import Heatmap from '../components/Heatmap.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
-import { projectProof } from '../data/proof';
+import { homepageProofHighlights, projectProof } from '../data/proof';
 import {
   computeProjectRankings,
   formatProjectRankingLabel,
@@ -176,29 +176,18 @@ const heroSignals = [
     meta: `Current mix: ${heroDomainText}.`,
   },
 ] as const;
-const heroProofItems = [
-  {
-    repo: 'win11-nvme-driver-patcher',
-    label: 'NVMe driver path',
-    value: '80% IOPS',
-    copy: 'Restore-point rollback for Windows 11 storage testing.',
-    source: projectProof['win11-nvme-driver-patcher'].caseStudy?.context ?? projectProof['win11-nvme-driver-patcher'].buildEvidence[1],
-  },
-  {
-    repo: 'Network_Security_Auditor',
-    label: 'Security audits',
-    value: '67 checks',
-    copy: 'Offline Windows and network evidence across eight domains.',
-    source: projectProof.Network_Security_Auditor.buildEvidence[0],
-  },
-  {
-    repo: 'NovaCut',
-    label: 'Android editor',
-    value: '40+ effects',
-    copy: 'Compose and Media3 editing surface with release-backed delivery.',
-    source: projectProof.NovaCut.buildEvidence[0],
-  },
-] as const;
+function resolveHomepageProofSource(
+  proof: (typeof projectProof)[string],
+  selector: (typeof homepageProofHighlights)[number]['source'],
+) {
+  if (selector.kind === 'caseStudyContext') return proof.caseStudy?.context ?? proof.buildEvidence[0];
+  if (selector.kind === 'caseStudyOutcome') return proof.caseStudy?.outcomes[selector.index] ?? proof.buildEvidence[0];
+  return proof.buildEvidence[selector.index] ?? proof.buildEvidence[0];
+}
+const heroProofItems = homepageProofHighlights.map((highlight) => ({
+  ...highlight,
+  sourceText: resolveHomepageProofSource(projectProof[highlight.repo], highlight.source),
+}));
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const heroReleaseDate = compactUtcDate;
 const journeyMilestones = [
@@ -456,7 +445,7 @@ const cmdkSections = [
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <div class="hero-proof-strip" aria-label="Source-backed project outcomes">
           {heroProofItems.map((proof) => (
-            <a href={`/projects/${proof.repo}/`} class="hero-proof" title={proof.source} aria-label={`${proof.value} ${proof.label}. ${proof.copy} Source: ${proof.source}`}>
+            <a href={`/projects/${proof.repo}/`} class="hero-proof" title={proof.sourceText} aria-label={`${proof.value} ${proof.label}. ${proof.copy} Source: ${proof.sourceText}`}>
               <span class="hero-proof-label">{proof.label}</span>
               <strong class="hero-proof-value">{proof.value}</strong>
               <span class="hero-proof-copy">{proof.copy}</span>
