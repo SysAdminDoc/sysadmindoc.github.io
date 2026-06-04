@@ -21,7 +21,7 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-04 (Cycle 11)
+Last researched: 2026-06-04 (Cycle 12)
 Last updated: 2026-06-04
 Current version: v0.18.3
 
