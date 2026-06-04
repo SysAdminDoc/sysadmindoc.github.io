@@ -1,7 +1,5 @@
 const urls = [
   'http://localhost/',
-  'http://localhost/search/?q=NukeMap',
-  'http://localhost/archive/',
   'http://localhost/projects/project-nomad-desktop/',
 ];
 

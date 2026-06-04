@@ -45,6 +45,7 @@ jobs:
         run: npm run build:ci
       - name: Lighthouse CI budget (advisory)
         continue-on-error: true
+        timeout-minutes: 6
         run: npm run lhci:audit
       - name: Upload Lighthouse reports
         if: always()
