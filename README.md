@@ -21,7 +21,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Interior freshness signals** — reviewed `/uses/`, `/resume/`, and `/healthcare-it/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
-- **Performance and update hygiene** — Lighthouse/bfcache audit plus explicit service-worker update prompts
+- **Performance and update hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, and explicit service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated project/interior OG PNG validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists

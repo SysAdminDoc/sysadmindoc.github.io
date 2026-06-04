@@ -121,7 +121,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T76** Bound non-essential infinite CSS animations (R, S).
 - [x] **T77** font-display:optional for JetBrains Mono (R, S).
 - [x] **T78** Remove duplicate `.skip-link` CSS (R, S).
-- [ ] **T79** content-visibility:auto below-fold (R, M).
+- [x] **T79** content-visibility:auto below-fold (R, M).
+  - Done: Reintroduced `content-visibility:auto` behind `@supports` for ten homepage sections below the first follow-up surface: `#live`, `#volume`, `#catalog`, `#skills`, `#about`, `#career`, `#philosophy`, `#journey`, `#beyond`, and `#connect`. Each section has a per-section `--cv-intrinsic-size` fallback; print output disables containment; `#hero` and `#greatest-hits` intentionally stay eager.
+  - Verify: `npm test` covers the CSS contract; `npm run check`; `npm run build`; headless Chrome CDP probe verified desktop/mobile homepage identity, computed containment styles, nonblank sections after explicit fast scroll, no horizontal overflow, clean console logs, and screenshots under `%TEMP%\sysadmindoc-t79`; local `npm run audit:perf` passed with bfcache restored and no overflow.
 - [x] **T80** INP hygiene on cmdk keystroke filter (NF-30, M).
 - [x] **T81** accent-color token (NF-31, S).
 - [x] **T82** Cache-shape contract types `generated.d.ts` (NF, S).

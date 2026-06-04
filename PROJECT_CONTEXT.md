@@ -24,6 +24,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Shared layout in `src/layouts/Base.astro`.
 - Components under `src/components/`.
 - First-viewport critical styling lives in `src/styles/critical.css` and is inlined by `src/layouts/Base.astro`; the full `src/styles/global.css` bundle is emitted as a hashed asset, preloaded, and applied through a non-blocking print-media swap with `noscript` and `shared.js` media-swap fallbacks.
+- Homepage below-fold render containment is scoped in `src/styles/global.css`: guarded `content-visibility:auto` applies to ten named sections from `#live` through `#connect`, each with a per-section intrinsic-size fallback; `#hero` and `#greatest-hits` stay eager.
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
@@ -107,6 +108,8 @@ Current verification baseline:
 - `npm test` passed with 16 node tests and an explicit repository-root guard.
 - Focused Chrome CDP browser verification of the homepage catalog views passed: 177 all / 153 new / 177 recently updated / 129 has-download, feed source metadata in `/projects.json`, URL hydration for `view=recent&cat=web&q=Nuke`, `DuplicateFF` returning 404, and no mobile horizontal overflow at 390px.
 - `npm run audit:perf -- --base http://127.0.0.1:4321` passed on 2026-06-04 after the critical-CSS split: mobile homepage LCP 668ms, CLS 0, max event 48ms, max long task 123ms, bfcache restored, and no overflow.
+- T79 headless Chrome CDP scroll probe passed at 1280x720 and 390x844: the hero and `#greatest-hits` stayed eager, ten below-fold homepage sections reported `content-visibility:auto` with intrinsic-size fallbacks, explicit fast scroll rendered nonblank section text, screenshots were written under `%TEMP%\sysadmindoc-t79`, console issues were empty, and horizontal overflow stayed 0.
+- `npm run audit:perf -- --base http://127.0.0.1:4321 --strict --lcp 60000 --event 500 --out .tmp/perf-t79.json` passed after the T79 content-visibility pass: Home mobile LCP 460ms, Home desktop LCP 220ms, CLS 0 on all 5 route samples, bfcache restored, and no overflow.
 - `npm run audit:perf -- --base http://127.0.0.1:4321 --strict --lcp 60000 --event 500 --out .tmp/performance-audit-ci.json` passed after the weekly performance-gate wiring; the generated summary covered 5 route samples with route, viewport, LCP, CLS, event, long-task, bfcache, overflow, and issue-count rows. Default and 5s-LCP local runs before the explicit baseline showed advisory LCP/event fluctuations while bfcache and overflow stayed clean.
 - Manual `ci.yml` workflow_dispatch run `26952960465` passed on 2026-06-04 after the Lighthouse CI addition. LHCI wrote two filesystem reports and uploaded `lighthouse-ci-reports`; advisory warnings were homepage performance score 0.7, homepage TBT 1988.5ms, and homepage third-party request count 3.
 - `npm run lhci:summary -- --dir .tmp/downloaded-lhci-reports --out .tmp/lhci-summary-test.md` produced a Markdown table for the prior `lighthouse-ci-reports` artifact with the three historical homepage warnings: `categories:performance` 0.70 vs >= 0.80, `total-blocking-time` 1,989 ms vs <= 300 ms, and `resource-summary:third-party:count` 3 vs <= 0. The no-report path also produced an explicit informational summary.
@@ -228,13 +231,13 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T43 freshness pass:
+Highest-priority workflow/research work after the T79 content-visibility pass:
 
-1. `T79` -- content-visibility:auto below-fold.
+1. `T95` -- Migrate inline scripts off CSP `unsafe-inline`.
 2. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
-3. `T80` -- View Transitions micro-polish.
+3. `T98` -- Page-level JSON-LD on the 8 interior routes.
 
-Next open checklist item in document order is `T79` content-visibility:auto below-fold.
+Next open checklist item in document order is `T95` CSP `unsafe-inline` migration.
 
 ## Definition of Done for Future Changes
 
@@ -292,3 +295,4 @@ Next open checklist item in document order is `T79` content-visibility:auto belo
 - 2026-06-04: Shipped README code highlighting. Project pages now render cached README fences through Shiki with fixed CSS classes while preserving sanitizer stripping for remote README inline styles and event handlers.
 - 2026-06-04: Shipped interior-page OG cards. `src/data/interior-og-pages.ts` now drives generated social cards for the key secondary routes through the existing Satori/Resvg endpoint, and `images:audit` plus unit tests guard required slugs, route wiring, and project-card collisions. Built PNG probes confirmed all eight generated cards are 1200x630; Browser preview verified `/search/` and `/healthcare-it/` metadata, PNG responses, no overflow, and clean console logs.
 - 2026-06-04: Shipped interior freshness signals. `src/data/page-freshness.ts` centralizes reviewed dates for `/uses/`, `/resume/`, and `/healthcare-it/`; the pages render visible `Last updated` timestamps and reviewed `WebPage.dateModified` JSON-LD, with schema audit coverage and browser verification.
+- 2026-06-04: Reintroduced below-fold homepage render containment for T79. `global.css` applies guarded `content-visibility:auto` to ten sections with intrinsic-size fallbacks and a print opt-out; unit, headless Chrome CDP, build, and performance checks guard against near-fold blanking, overflow, and bfcache regressions.
