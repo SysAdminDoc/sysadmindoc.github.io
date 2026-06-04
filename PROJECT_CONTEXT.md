@@ -25,6 +25,7 @@ The site must remain public-safe. It should not expose private repository names,
 - Browser behavior in `public/scripts/main.js`, `public/scripts/cmdk.js`, and `public/scripts/theme.js`.
 - Service worker in `public/sw.js`.
 - Generated GitHub metadata caches under `src/data/_*.json` are ignored.
+- PR CI installs tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `scripts/install-generated-fixtures.mjs`. The installer audits star/meta/README key parity, stats totals, non-empty releases, README refresh telemetry, profile-feed metadata, and finite ranking inputs before copying into ignored `src/data/_*.json` files. The fixture set covers all Pagefind Category labels and the representative JSON-LD project route; `build:ci` verifies those rendered contracts. CI then runs `npm run check` with `PROFILE_PROJECTS_OFFLINE=1` so `profile-feed:sync` preserves the fixture cache without network replacement.
 - `/timeline/` is generated from ignored GitHub release and metadata caches plus tracked changelog entries, then filtered client-side by year, platform, category, and language.
 - Timeline filters update the current page in place; they intentionally avoid query-string state so static preview and GitHub Pages direct links remain stable.
 - `/archive/` is a public-safe anti-portfolio generated from `src/data/archive.ts`. Sensitive entries are grouped without links; safe entries link only to current public project pages or reviewed public GitHub repositories.
@@ -55,6 +56,8 @@ The site must remain public-safe. It should not expose private repository names,
 
 - Install: `npm install`
 - Refresh profile feed cache: `npm run profile-feed:sync`
+- Audit tracked generated-data fixtures: `npm run generated:fixtures:check`
+- Install tracked generated-data fixtures into ignored caches: `npm run generated:fixtures`
 - Unit tests: `npm test`
 - Type and Astro check: `npm run check`
 - Build: `npm run build`
@@ -85,6 +88,7 @@ The site must remain public-safe. It should not expose private repository names,
 Current verification baseline:
 
 - `npm run check` passed with 47 Astro files, 0 errors, 0 warnings, and 0 hints.
+- The generated fixture path passed from a clean ignored-cache state: `npm run generated:fixtures:check`; `npm run generated:fixtures`; `PROFILE_PROJECTS_OFFLINE=1 npm run check`; `npm test`; `npm run build:ci`; standalone `npm run endpoints:audit`; `npm run feed:audit`; `npm run search:audit`; `npm run schema:audit`; `npm run a11y:audit`; and `rtk git diff --check`. The fixture build rendered 16 profile projects, 9 releases, all 10 Pagefind Category labels, and the representative `win11-nvme-driver-patcher` JSON-LD project route.
 - `npm run images:audit` passed with 22 live apps, 1595.2 KB of full screenshot masters, 230.9 KB of thumbnails, 22 Astro thumbnail inputs, and 1200x630 PNG OG metadata checks.
 - `npm run css:audit` passed and is now part of both `npm run check` and `npm run build`; it checked 24 shared first-viewport selectors and 11 mobile override selectors across `critical.css` and `global.css`. `npm run css:audit -- --self-test` also passed by proving a removed `.hero-proof-strip` selector is reported.
 - `npm run build` passed, including profile feed sync, CSS parity auditing, image pipeline auditing, 22 Astro `<Picture>` live-card thumbnails, public endpoint audit, JSON Feed audit, service-worker stamp v0.18.3, Pagefind detecting `data-pagefind-body` and indexing 193 of 194 HTML pages, the generated search audit, and the rendered JSON-LD audit.
@@ -216,11 +220,11 @@ Current reconciliation:
 
 Canonical roadmap: `TODO.md`. `ROADMAP.md`, `RESEARCH_FEATURE_PLAN.md`, and dated research docs are retained as evidence/rationale archives keyed by TODO IDs.
 
-Highest-priority workflow/research work after the T134 forced-colors audit pass:
+Highest-priority workflow/research work after the T137 generated-fixture pass:
 
 1. `T135` -- Add a CSP preflight audit before removing `script-src 'unsafe-inline'`.
-2. `T137` -- Replace PR CI empty generated-cache stubs with schema-valid fixtures.
-3. `T41` -- README code syntax highlighting.
+2. `T41` -- README code syntax highlighting.
+3. `T105` -- Promote a11y audit to a blocking strict subset and mirror test/a11y into deploy.
 
 Next open checklist item in document order is `T41` README code syntax highlighting.
 

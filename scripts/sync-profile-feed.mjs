@@ -17,6 +17,7 @@ const root = join(__dirname, '..');
 const dataDir = join(root, 'src', 'data');
 const cachePath = join(dataDir, '_profile-projects.json');
 const feedUrl = process.env.PROFILE_PROJECTS_FEED_URL || DEFAULT_PROFILE_FEED_URL;
+const offlineMode = process.env.PROFILE_PROJECTS_OFFLINE === '1';
 
 function writeJsonAtomic(filePath, value) {
   const tmp = `${filePath}.tmp`;
@@ -67,6 +68,22 @@ function writeEmptyFallback(reason) {
 }
 
 mkdirSync(dataDir, { recursive: true });
+
+if (offlineMode) {
+  let existing = null;
+  try {
+    existing = readExistingCache();
+  } catch (cacheError) {
+    console.warn(`profile-feed: offline cache is invalid; replacing with fallback cache. ${cacheError.message}`);
+  }
+  if (existing) {
+    console.log(`profile-feed: offline mode; preserving ${existing.projects.length} cached portfolio projects.`);
+  } else {
+    writeEmptyFallback('offline mode requested and no valid cache exists');
+    console.warn('profile-feed: offline mode requested and no cache exists; Astro will use local fallback data.');
+  }
+  process.exit(0);
+}
 
 try {
   const payload = await fetchJsonWithTimeout(feedUrl);
