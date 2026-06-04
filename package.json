@@ -26,6 +26,7 @@
     "screenshots:thumbs": "node scripts/generate-screenshot-thumbnails.mjs",
     "semantic:audit": "node scripts/audit-semantic-index.mjs",
     "audit:perf": "node scripts/audit-performance.mjs",
+    "lhci:audit": "node scripts/run-lhci.mjs",
     "a11y:audit": "node scripts/audit-a11y.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
