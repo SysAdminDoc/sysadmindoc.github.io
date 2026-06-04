@@ -34,6 +34,7 @@
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
     "search:audit": "node scripts/audit-search-index.mjs",
     "feed:audit": "node scripts/audit-feed.mjs",
+    "smoke:live": "node scripts/smoke-live-site.mjs",
     "catalog:audit": "node scripts/audit-catalog.mjs"
   },
   "dependencies": {

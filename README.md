@@ -23,7 +23,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and OG PNG metadata validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
-- **GitHub Pages + GH Actions** — split data refresh, type checking, build, and deploy
+- **GitHub Pages + GH Actions** — split data refresh, type checking, build, deploy, and post-deploy live smoke checks
 
 ## Develop
 
@@ -42,6 +42,7 @@ npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run feed:audit     # verify built JSON Feed metadata and item contracts
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.18.3 --expected-projects 177 --expected-releases 60 --expected-feed-items 177
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
@@ -93,7 +94,9 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 9. Uploads a generated-data freshness summary artifact
 10. Runs Astro type checks
 11. Builds the Astro site
-12. Publishes to GitHub Pages
+12. Captures the build artifact contract for live smoke checks
+13. Publishes to GitHub Pages
+14. Checks the live Pages URL for the stamped service worker, project/release/feed counts, profile-feed source, JSON Feed shape, and sitemap index
 
 The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
 
@@ -146,6 +149,7 @@ scripts/
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-feed.mjs         # built JSON Feed metadata/item contract audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
+├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
 ├── audit-semantic-index.mjs
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root
 ├── generate-screenshot-thumbnails.mjs
