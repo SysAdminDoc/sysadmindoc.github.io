@@ -41,6 +41,7 @@ npm run semantic:audit # report similar-project and cross-category catalog revie
 npm run data:summary  # summarize generated GitHub metadata freshness and integrity
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
+npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
@@ -52,6 +53,8 @@ npm run preview       # serve dist/
 `npm run capture-screenshots` additionally requires Playwright (`npm i -D playwright && npx playwright install chromium`); it is an optional, dynamically-imported dependency used only for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
+
+`npm run lhci:audit` is canonical in CI/Linux. On local Windows it exits cleanly by default because Chrome launcher cleanup can fail with `EPERM` after collection; set `LHCI_ALLOW_LOCAL_WINDOWS=1` to force a local attempt. Use `npm run audit:perf` for local Windows performance/bfcache smoke checks.
 
 ### Windows / VMware shared folders
 
@@ -91,6 +94,8 @@ Pushes to `main` trigger [.github/workflows/deploy.yml](.github/workflows/deploy
 12. Publishes to GitHub Pages
 
 The scheduled metadata refresh is split into [.github/workflows/data-refresh.yml](.github/workflows/data-refresh.yml). It runs daily and on demand, refreshes generated GitHub data without deploying, writes the same freshness summary to the job summary, and uploads `github-data-refresh-summary`.
+
+[.github/workflows/ci.yml](.github/workflows/ci.yml) also runs an advisory Lighthouse CI budget after the PR build and uploads the filesystem reports as `lighthouse-ci-reports`.
 
 [.github/workflows/quality-gates.yml](.github/workflows/quality-gates.yml) runs weekly and on demand. It reports production dependency audit status, public catalog drift, data validation, asset/reference checks, and Astro diagnostics. If production audit or catalog drift fails, it opens or updates a GitHub issue with the relevant logs. [.github/dependabot.yml](.github/dependabot.yml) keeps npm and GitHub Actions dependencies moving weekly.
 
