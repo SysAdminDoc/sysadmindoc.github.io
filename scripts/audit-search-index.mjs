@@ -103,6 +103,13 @@ function routeSlugFromProjectFile(filePath) {
   return match?.[1] ?? null;
 }
 
+function routeFromHtmlFile(filePath) {
+  const relative = path.relative(distDir, filePath).replaceAll(path.sep, '/');
+  if (relative === 'index.html') return '/';
+  if (relative.endsWith('/index.html')) return `/${relative.slice(0, -'index.html'.length)}`;
+  return `/${relative}`;
+}
+
 async function readJson(filePath, label) {
   try {
     return JSON.parse(await fs.readFile(filePath, 'utf8'));
@@ -138,11 +145,35 @@ const htmlFiles = await collectHtmlFiles(distDir).catch((error) => {
   fail(`Unable to scan ${path.relative(root, distDir) || distDir}: ${error.message}`);
   return [];
 });
+const htmlByFile = new Map();
+for (const filePath of htmlFiles) {
+  try {
+    htmlByFile.set(filePath, await fs.readFile(filePath, 'utf8'));
+  } catch (error) {
+    fail(`${routeFromHtmlFile(filePath)} is unreadable: ${error.message}`);
+    htmlByFile.set(filePath, '');
+  }
+}
 const projectFiles = htmlFiles.filter((filePath) => routeSlugFromProjectFile(filePath));
+const pagefindBodyFiles = htmlFiles.filter((filePath) => /\bdata-pagefind-body\b/i.test(htmlByFile.get(filePath) ?? ''));
+const expectedSearchFiles = htmlFiles.filter((filePath) => routeFromHtmlFile(filePath) !== '/404.html');
+const missingPagefindBodies = expectedSearchFiles
+  .filter((filePath) => !pagefindBodyFiles.includes(filePath))
+  .map(routeFromHtmlFile)
+  .sort();
+const unexpectedPagefindBodies = htmlFiles
+  .filter((filePath) => routeFromHtmlFile(filePath) === '/404.html' && pagefindBodyFiles.includes(filePath))
+  .map(routeFromHtmlFile);
+if (missingPagefindBodies.length > 0) {
+  fail(`HTML routes missing data-pagefind-body: ${missingPagefindBodies.join(', ')}.`);
+}
+if (unexpectedPagefindBodies.length > 0) {
+  fail(`Non-content routes should not expose data-pagefind-body: ${unexpectedPagefindBodies.join(', ')}.`);
+}
 const pagefindEntry = await readJson(path.join(pagefindDir, 'pagefind-entry.json'), 'dist/pagefind/pagefind-entry.json');
 const indexedPageCount = Object.values(pagefindEntry?.languages ?? {}).reduce((sum, language) => sum + Number(language?.page_count ?? 0), 0);
-if (indexedPageCount !== htmlFiles.length) {
-  fail(`Pagefind entry reports ${indexedPageCount} indexed pages; dist contains ${htmlFiles.length} HTML pages.`);
+if (indexedPageCount !== pagefindBodyFiles.length) {
+  fail(`Pagefind entry reports ${indexedPageCount} indexed pages; dist contains ${pagefindBodyFiles.length} data-pagefind-body HTML pages.`);
 }
 
 const renderedCategoryCounts = new Map();
@@ -152,7 +183,7 @@ for (const filePath of projectFiles) {
   const slug = routeSlugFromProjectFile(filePath);
   if (!slug) continue;
   renderedProjectSlugs.add(slug);
-  const html = await fs.readFile(filePath, 'utf8');
+  const html = htmlByFile.get(filePath) ?? '';
   const labels = new Set();
   for (const match of html.matchAll(/\bdata-pagefind-filter=(["'])Category:([\s\S]*?)\1/gi)) {
     const label = normalizeLabel(match[2]);
@@ -167,7 +198,8 @@ for (const filePath of projectFiles) {
   increment(renderedCategoryCounts, label);
 }
 
-const indexHtml = await fs.readFile(path.join(distDir, 'index.html'), 'utf8').catch((error) => {
+const indexPath = path.join(distDir, 'index.html');
+const indexHtml = htmlByFile.get(indexPath) ?? await fs.readFile(indexPath, 'utf8').catch((error) => {
   fail(`dist/index.html is missing or unreadable: ${error.message}`);
   return '';
 });
@@ -260,7 +292,8 @@ if (errors.length > 0) {
 }
 
 console.log('Search index audit');
-console.log(`  HTML pages indexed: ${indexedPageCount}`);
+console.log(`  HTML pages scanned: ${htmlFiles.length}`);
+console.log(`  data-pagefind-body pages indexed: ${indexedPageCount}`);
 console.log(`  Rendered project pages: ${renderedProjectSlugs.size}`);
 console.log(`  Homepage catalog cards: ${catalogSlugs.size}`);
 console.log(`  Category filters checked: ${pagefindCategoryCounts.size}`);

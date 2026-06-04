@@ -337,12 +337,13 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ## 🔬 Researcher Queue (Cycle 8 — 2026-06-04) — see [docs/research-2026-06-04-cycle-8.md](docs/research-2026-06-04-cycle-8.md)
 
-- [ ] **T132** 🤖 P2 — Scope Pagefind indexing to intentional content regions.
+- [x] **T132** 🤖 P2 — Scope Pagefind indexing to intentional content regions.
   - Why: The built search index currently starts at every `<body>` because no page declares `data-pagefind-body`, so repeated global UI such as the command palette dialog and layout copy can be indexed alongside actual project/page content.
   - Evidence: Deploy run `26960045875` logged `Did not find a data-pagefind-body element on the site`, then indexed 194 pages, 21,262 words, and 1 filter; `Base.astro` renders the command-palette dialog and quick-link copy on every page; Pagefind's indexing docs say it starts at `<body>` by default and narrows to tagged `data-pagefind-body` regions when present.
   - Touches: `src/layouts/Base.astro`, project/interior page templates, possibly `src/pages/search.astro`, and T125's future `search:audit` expectations.
+  - Done: Added `data-pagefind-body` to the meaningful `<main>` region on every searchable rendered route while leaving `/404.html` untagged. The global Base command-palette dialog and quick-link controls remain outside the tagged regions, so Pagefind no longer indexes that repeated UI by falling back to whole-body indexing. `search:audit` now enforces that every non-404 HTML route exposes a tagged body region, that `/404.html` does not, and that the generated Pagefind page count equals the intentional tagged route set before it checks Category facets and filtered project results.
   - Acceptance: Every route intended for search has one or more meaningful `data-pagefind-body` regions, repeated global UI is excluded or outside those regions, Pagefind no longer logs the whole-body fallback, intended project/language/interior pages remain indexed, and Category filters still work after T125.
-  - Verify: `npm run build && npm run search:index`; confirm Pagefind does not print the whole-body fallback, page/filter counts match the intentional route set, and searches for command-palette-only terms such as `Esc` do not return repeated unrelated pages.
+  - Verify: `npm run build` passed with Pagefind detecting `data-pagefind-body`, ignoring untagged pages, and indexing 193 of 194 built HTML routes. The integrated `search:audit` passed with 194 scanned HTML pages, 193 tagged Pagefind body pages indexed, 177 rendered project pages, 177 homepage catalog cards, 10 Category filters, and 177 filtered public project results checked.
 
 ---
 
@@ -377,6 +378,17 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Touches: A new audit such as `scripts/audit-csp.mjs`, `package.json`, possibly `PROJECT_CONTEXT.md`, and later T95 implementation files once the inventory is stable.
   - Acceptance: The audit parses source or built HTML, reports the active CSP policy, inventories executable inline scripts, inline event handlers, external self-hosted scripts, JSON-LD blocks, inline styles/style attributes, and current `unsafe-inline` dependencies; computes SHA-256 hashes for stable hashable inline script blocks; separates dynamic blocks that need externalization or a nonce/hash decision; and can fail in strict mode when a new executable inline block or inline event handler appears outside an allowlist.
   - Verify: `npm run csp:audit`; then run a strict/candidate mode such as `npm run csp:audit -- --candidate-script-src "'self'" --strict` and confirm it reports the known blockers before failing rather than silently greenlighting T95.
+
+---
+
+## 🔬 Researcher Queue (Cycle 12 — 2026-06-04) — see [docs/research-2026-06-04-cycle-12.md](docs/research-2026-06-04-cycle-12.md)
+
+- [ ] **T136** 🤖 P2 — Run the custom performance/bfcache audit in an automated quality workflow.
+  - Why: `npm run audit:perf` is the only current guard for bfcache restore, mobile horizontal overflow, route-level console/network failures, lab event timing, and local CDP probes, but it is documented as a local preview command and is not exercised by PR CI or weekly quality gates.
+  - Evidence: `PERFORMANCE_AUDIT.md` defines `npm run audit:perf` as the canonical local Chromium audit and records that it previously caught project-page README image/overflow regressions; `scripts/audit-performance.mjs` samples `/`, `/search/?q=NukeMap`, `/archive/`, `/projects/project-nomad-desktop/`, and desktop `/`, records LCP/CLS/event/longtask/bfcache/overflow/console/network data, writes JSON, and supports `--strict`; `package.json` exposes `audit:perf`, but `.github/workflows/ci.yml` runs only advisory LHCI plus static a11y after `build:ci`, and `.github/workflows/quality-gates.yml` does not run `audit:perf` or upload `.tmp/performance-audit.json`. T120 only covers LHCI warning visibility, while web.dev treats Core Web Vitals and bfcache as separate user-experience surfaces.
+  - Touches: `.github/workflows/quality-gates.yml` or `.github/workflows/ci.yml`, possibly `scripts/audit-performance.mjs` for CI-friendly summary output, and `PROJECT_CONTEXT.md`/`README.md` if the command contract changes.
+  - Acceptance: A workflow starts a local preview/static server after `build:ci`, waits for readiness, runs `npm run audit:perf -- --base <local-url> --strict --out .tmp/performance-audit-ci.json`, uploads the JSON artifact, and publishes a compact job summary with route, viewport, LCP, CLS, max event, max long task, bfcache, overflow, and issue count. Keep the first CI wiring advisory if needed, but the weekly/manual quality workflow should make regressions visible without relying on local notes.
+  - Verify: Trigger the selected workflow with `workflow_dispatch`; confirm the performance audit starts against built output, summary rows are visible in the job summary, the JSON artifact is uploaded, and a forced failure such as an impossible `--lcp 1` threshold reports the affected routes cleanly.
 
 ---
 
