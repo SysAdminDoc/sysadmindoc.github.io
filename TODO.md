@@ -173,7 +173,9 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 - [x] **T104** P2 — CI gate stubs empty data; commit src/data/_fixtures and render real shapes pre-merge.
   - Research note: After the T118/T126 passes, PR CI still starts from ad hoc `{}` / `[]` generated-cache stubs before `npm run check` and `npm run build:ci`; keep this item focused on schema-valid fixture caches that exercise profile feed, README cache, release rows, ranking, and rendered JSON-LD with realistic shapes instead of adding another empty-stub variant.
   - Done: Superseded by T137. PR CI now installs audited schema-valid generated-data fixtures instead of writing empty inline stubs.
-- [ ] **T105** P2 — promote a11y audit to blocking --strict subset; mirror test + a11y into deploy.yml.
+- [x] **T105** P2 — promote a11y audit to blocking --strict subset; mirror test + a11y into deploy.yml.
+  - Done: `npm run a11y:audit` now runs `scripts/audit-a11y.mjs --strict` and fails on the conservative static HTML rule subset; `npm run a11y:audit:advisory` remains available for inventory-only local runs. PR CI no longer swallows a11y failures, and `deploy.yml` now runs `npm test` plus the strict a11y audit before uploading the Pages artifact.
+  - Verify: `node --check scripts/audit-a11y.mjs`; `npm test` includes workflow/source-contract coverage; `npm run a11y:audit`; `npm run a11y:audit:advisory`; `npm run check`; `npm run build`; fresh-build `npm run a11y:audit`; `rtk git diff --check`.
 - [ ] **T106** P2 — axe-core/Playwright a11y job + Playwright visual-regression baselines for future visual-regression-sensitive CSS/image changes.
 - [ ] **T107** P2 — README TOC + reading-time on project pages (heading IDs already generated, orphaned) (NF-A4).
 - [ ] **T108** P2 — homepage SectionJumpNav (reuse existing component + cmdkSections) (NF-A5).

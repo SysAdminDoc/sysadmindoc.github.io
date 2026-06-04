@@ -32,6 +32,8 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Unit tests
+        run: npm test
       - name: Audit production dependencies
         run: npm run audit:prod
       - name: Audit public repository catalog
@@ -62,6 +64,8 @@ jobs:
         run: npx astro check
       - name: Build Astro site
         run: npm run build:ci
+      - name: Accessibility audit
+        run: npm run a11y:audit
       - name: Capture live smoke contract
         id: live_smoke_contract
         run: node scripts/smoke-live-site.mjs --emit-contract --dist dist
