@@ -485,6 +485,18 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 15 — 2026-06-05) — see [docs/research-2026-06-05-cycle-15.md](docs/research-2026-06-05-cycle-15.md)
+
+- [x] **T139** 🤖 P3 — Guard installed-PWA shortcut metadata.
+  - Why: `public/manifest.json` already had Catalog/Search/Releases/Now shortcuts, but they had no descriptions and no regression test. Installed-app shortcut menus are a small but useful deep-link surface, and the manifest should preserve useful names, destinations, and PWA tracking URLs across future edits.
+  - Evidence: web.dev documents manifest shortcuts as installed-app deep links, ordered by priority, and MDN documents shortcut `description` as a supported string field; `rg` found no source test covering `public/manifest.json` shortcuts.
+  - Touches: `public/manifest.json`, `test/pwa-manifest.test.mjs`, and loop continuity docs.
+  - Done: Added descriptions to the four existing PWA shortcuts and a node:test contract that validates manifest identity, standalone launch behavior, shortcut order, descriptions, rooted URLs, and `source=pwa` tracking.
+  - Acceptance: Manifest shortcuts remain bounded to the intended four high-priority routes, each shortcut carries useful description copy, every shortcut URL remains same-origin/rooted with `source=pwa`, and the contract fails if future edits drop the installed-app affordance.
+  - Verify: `node --test test/pwa-manifest.test.mjs`; `npm test`; `npm run check`; `npm run build`.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.

@@ -35,9 +35,29 @@
     }
   ],
   "shortcuts": [
-    { "name": "Catalog", "short_name": "Catalog", "url": "/?source=pwa#catalog" },
-    { "name": "Search", "short_name": "Search", "url": "/search/?source=pwa" },
-    { "name": "Releases", "short_name": "Releases", "url": "/releases/?source=pwa" },
-    { "name": "Now", "short_name": "Now", "url": "/now/?source=pwa" }
+    {
+      "name": "Catalog",
+      "short_name": "Catalog",
+      "description": "Open the full project catalog.",
+      "url": "/?source=pwa#catalog"
+    },
+    {
+      "name": "Search",
+      "short_name": "Search",
+      "description": "Search projects and README excerpts.",
+      "url": "/search/?source=pwa"
+    },
+    {
+      "name": "Releases",
+      "short_name": "Releases",
+      "description": "Review recent public release notes.",
+      "url": "/releases/?source=pwa"
+    },
+    {
+      "name": "Now",
+      "short_name": "Now",
+      "description": "Jump to the current focus page.",
+      "url": "/now/?source=pwa"
+    }
   ]
 }
