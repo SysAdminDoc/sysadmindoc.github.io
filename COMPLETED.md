@@ -56,6 +56,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Interior-page OG cards** -- Generalized the existing Satori/Resvg `/og/[slug].png` endpoint with shared interior-page metadata so key secondary pages publish differentiated 1200x630 PNG social cards. _(Source: TODO T42)_
 - [x] **Interior freshness signals** -- Added a shared reviewed-date data source, visible `Last updated` rows, and reviewed `WebPage.dateModified` schema for `/uses/`, `/resume/`, and `/healthcare-it/`. _(Source: TODO T43)_
 - [x] **Below-fold homepage render containment** -- Reintroduced guarded `content-visibility:auto` for ten below-fold homepage sections with intrinsic-size fallbacks and browser/performance verification. _(Source: TODO T79)_
+- [x] **Project-page native sharing** -- Added a `Share project` action to every project detail page with Web Share API support, clipboard/execCommand fallback, and polite status feedback so desktop and mobile visitors can share or copy canonical project URLs. _(Source: TODO T138, docs/research-2026-06-05-cycle-14.md)_
 
 ### Research Infrastructure (2026-05-17)
 
