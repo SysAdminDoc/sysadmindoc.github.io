@@ -473,6 +473,18 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 ---
 
+## 🔬 Researcher Queue (Cycle 14 — 2026-06-05) — see [docs/research-2026-06-05-cycle-14.md](docs/research-2026-06-05-cycle-14.md)
+
+- [x] **T138** 🤖 P2 — Add project-page native sharing with a copy-link fallback.
+  - Why: Project detail pages exposed source/live/lane actions but no first-party way to share the current project URL. The Web Share API is useful on supported devices but remains limited-availability, so project sharing needs a clipboard fallback for desktop and unsupported browsers.
+  - Evidence: `src/pages/projects/[slug].astro` had GitHub/live/lane actions only; `public/scripts/project-page.js` handled recently viewed projects but no `navigator.share` or clipboard fallback; MDN marks Web Share as limited availability and secure-context-only; web.dev app-shortcuts guidance confirmed installed-PWA shortcuts are already present but best-effort and do not replace in-page sharing.
+  - Touches: `src/pages/projects/[slug].astro`, `public/scripts/project-page.js`, `src/styles/global.css`, `test/project-share.test.mjs`, and loop continuity docs.
+  - Done: Added a `Share project` action to every project detail page, wired build-time title/text/URL data attributes, used `navigator.share` when available, fell back to `navigator.clipboard.writeText` or `document.execCommand('copy')`, and added an `aria-live` status for shared/copied/failure feedback.
+  - Acceptance: Project pages expose a keyboard-focusable share action beside the existing primary actions; native share receives the project title, description, and canonical URL when supported; unsupported or failed native share attempts copy the canonical project URL; status feedback is announced without adding inline executable scripts.
+  - Verify: `node --test test/project-share.test.mjs`; `npm test`; `npm run check`; `npm run build`; Browser preview on a project route confirmed page identity, visible share control, no console errors, desktop/mobile layout, and copy fallback status.
+
+---
+
 ## Remaining open — deferred with rationale (need design decision, heavy deps, or input)
 
 These survived the v0.18.0 drain because they need a judgment call I shouldn't make unilaterally, a dependency/CI surface I can't fully verify headlessly, or your input. Each is scoped and ready to pick up.

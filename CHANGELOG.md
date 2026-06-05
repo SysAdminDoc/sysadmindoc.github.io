@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [v0.18.3] - 2026-06-04
 
+- Added project-page native sharing with resilient copy fallback. Project detail pages now expose a `Share project` action that uses the Web Share API when available, falls back to clipboard/legacy copy, and announces shared/copied status.
 - Added `npm run profile-feed:sync`, a build-time raw GitHub cache for `SysAdminDoc/SysAdminDoc` `projects.json` with local fallback preservation.
 - Rendered catalog, project routes, command palette, feeds, language lanes, timeline, OG routes, and JSON indexes through `src/data/portfolio.ts`, with curated featured/live-app overlays from local data.
 - Suppressed and non-portfolio feed rows are excluded from generated routes; feed-omitted local-only rows no longer render, and the `DuplicateFF` archive entry now links to GitHub instead of a removed project page.

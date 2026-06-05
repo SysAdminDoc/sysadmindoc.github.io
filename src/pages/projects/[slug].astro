@@ -344,12 +344,25 @@ const jsonLd = JSON.stringify({
               Open live build
             </a>
           )}
+          <button
+            type="button"
+            class="btn bg2 project-share-button"
+            data-project-share
+            data-share-title={name}
+            data-share-text={plainDescription || `Project page for ${name}`}
+            data-share-url={projectUrl}
+            aria-describedby="project-share-status"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/></svg>
+            Share project
+          </button>
           {relatedTrack && (
             <a href={relatedTrack.href} class="page-action-link">Open the {relatedTrack.label}</a>
           )}
           {starCount > 0 && (
             <span class="project-stars"><StarSvg /> {starCount}</span>
           )}
+          <span id="project-share-status" class="project-share-status" aria-live="polite"></span>
         </div>
         <div class="project-overview" aria-label="Project snapshot">
           {projectFacts.map((fact) => (
