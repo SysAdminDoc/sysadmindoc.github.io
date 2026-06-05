@@ -1,9 +1,9 @@
 # Autonomous Loop State
 
 Last updated: 2026-06-05
-Assigned project: `\\vmware-host\Shared Folders\repos\sysadmindoc.github.io`
+Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 15
+Current cycle: 16
 
 ## Latest result
 
@@ -11,10 +11,12 @@ Current cycle: 15
 - Verification for this cycle: `node --test test/project-share.test.mjs`, `npm test`, `npm run check`, `npm run build`, and Browser preview of `/projects/project-nomad-desktop/` at desktop and 390px mobile widths. The share fallback copied the canonical project URL and console logs stayed clean.
 - 2026-06-05: Cycle 15 shipped installed-PWA shortcut metadata guards. The implementation adds descriptions to the existing Catalog/Search/Releases/Now shortcuts and tests shortcut order, same-origin URLs, `source=pwa` tracking, and standalone launch metadata.
 - Verification for this cycle: `node --test test/pwa-manifest.test.mjs`, `npm test`, `npm run check`, and `npm run build`.
+- 2026-06-05: Cycle 16 sanitized public loop-state path details. The implementation keeps repository identity and the Windows shared-folder gotcha while removing exact local checkout paths from new continuity docs and nearby historical TODO wording.
+- Verification for this cycle: a path-sensitive `rg` scan over the edited continuity docs found no exact local checkout paths; `git diff --check`.
 
 ## Next project
 
-Per delegated chat scope, do not advance to another project in this chat. Continue the next cycle on `\\vmware-host\Shared Folders\repos\sysadmindoc.github.io`.
+Per delegated chat scope, do not advance to another project in this chat. Continue the next cycle on `SysAdminDoc/sysadmindoc.github.io`.
 
 ## Next cycle seed
 
