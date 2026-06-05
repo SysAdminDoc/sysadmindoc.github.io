@@ -239,10 +239,10 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
 
 - [x] **T114** 🤖 P1 — Make `npm test` explicit and current-working-directory safe.
   - Why: The bare `node --test` script can silently test the wrong directory when npm is invoked from an unsafe Windows UNC context, producing a false green build signal.
-  - Evidence: `package.json:18` is `"test": "node --test"`; Node's test runner discovers files from its active working directory when no explicit glob is supplied; on this machine, running npm directly from `\\vmware-host\Shared Folders\...` fell back to `C:\Windows` and executed unrelated Windows tests, while `cmd /c pushd "\\vmware-host\Shared Folders\repos\sysadmindoc.github.io" && npm test` ran the 12 repo tests correctly.
+  - Evidence: `package.json:18` is `"test": "node --test"`; Node's test runner discovers files from its active working directory when no explicit glob is supplied; on this machine, running npm directly from a raw UNC shared-folder checkout fell back to `C:\Windows` and executed unrelated Windows tests, while a directory-aware invocation from the repo root ran the 12 repo tests correctly.
   - Touches: `package.json`; optionally a small `scripts/ensure-project-cwd.mjs` guard or an explicit `node --test "test/**/*.test.mjs"` pattern.
   - Done: `npm test` now runs `scripts/ensure-project-cwd.mjs` before an explicit `node --test "test/**/*.test.mjs"` target.
-  - Verify: Valid repo run still reports 12 tests; `node C:\Users\--\repos\sysadmindoc.github.io\scripts\ensure-project-cwd.mjs` from `C:\Windows` fails fast instead of allowing ambient discovery.
+  - Verify: Valid repo run still reports 12 tests; running `scripts/ensure-project-cwd.mjs` from `C:\Windows` fails fast instead of allowing ambient discovery.
 
 - [x] **T115** 🤖 P2 — Document or guard the Windows/VMware shared-folder build workflow.
   - Why: The repository can be edited from the VMware shared folder, but local npm/Astro execution from that path is unreliable enough to confuse validation and build triage.
@@ -494,6 +494,18 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added descriptions to the four existing PWA shortcuts and a node:test contract that validates manifest identity, standalone launch behavior, shortcut order, descriptions, rooted URLs, and `source=pwa` tracking.
   - Acceptance: Manifest shortcuts remain bounded to the intended four high-priority routes, each shortcut carries useful description copy, every shortcut URL remains same-origin/rooted with `source=pwa`, and the contract fails if future edits drop the installed-app affordance.
   - Verify: `node --test test/pwa-manifest.test.mjs`; `npm test`; `npm run check`; `npm run build`.
+
+---
+
+## 🔬 Researcher Queue (Cycle 16 — 2026-06-05) — see [docs/research-2026-06-05-cycle-16.md](docs/research-2026-06-05-cycle-16.md)
+
+- [x] **T140** 🤖 P2 — Sanitize exact local checkout paths from public loop docs.
+  - Why: The portfolio is public-safe by design. Loop continuity should identify the repository and reusable workflow lessons without preserving exact machine-local checkout paths in newly tracked public docs.
+  - Evidence: `AUTONOMOUS-LOOP-STATE.md` introduced the exact delegated UNC checkout path; an older T111 note in `TODO.md` already contained a raw UNC example and a redacted local Windows checkout example.
+  - Touches: `AUTONOMOUS-LOOP-STATE.md`, `TODO.md`, `docs/research-2026-06-05-cycle-16.md`, and completion docs.
+  - Done: Replaced exact local checkout paths with `SysAdminDoc/sysadmindoc.github.io`, "raw UNC shared-folder checkout", and repo-root wording while preserving the build/test gotcha and delegated same-project continuity.
+  - Acceptance: Public docs retain the Windows/UNC test-run lesson and same-project continuation rule without publishing the exact assigned local path.
+  - Verify: A path-sensitive `rg` scan over the edited continuity docs found no exact local checkout paths; `git diff --check`.
 
 ---
 

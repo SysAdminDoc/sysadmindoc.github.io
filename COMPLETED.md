@@ -58,6 +58,7 @@ This file captures all completed and stale items from the 2026-05-17 research sp
 - [x] **Below-fold homepage render containment** -- Reintroduced guarded `content-visibility:auto` for ten below-fold homepage sections with intrinsic-size fallbacks and browser/performance verification. _(Source: TODO T79)_
 - [x] **Project-page native sharing** -- Added a `Share project` action to every project detail page with Web Share API support, clipboard/execCommand fallback, and polite status feedback so desktop and mobile visitors can share or copy canonical project URLs. _(Source: TODO T138, docs/research-2026-06-05-cycle-14.md)_
 - [x] **Installed-PWA shortcut metadata guard** -- Added useful descriptions to Catalog/Search/Releases/Now manifest shortcuts and a source test that preserves shortcut order, same-origin destinations, `source=pwa` tracking, and standalone launch metadata. _(Source: TODO T139, docs/research-2026-06-05-cycle-15.md)_
+- [x] **Public loop-state path sanitization** -- Replaced exact local checkout paths in loop continuity docs with repository identity and generic UNC/root wording while preserving the Windows shared-folder test gotcha. _(Source: TODO T140, docs/research-2026-06-05-cycle-16.md)_
 
 ### Research Infrastructure (2026-05-17)
 

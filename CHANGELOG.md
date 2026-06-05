@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [v0.18.3] - 2026-06-04
 
+- Sanitized exact local checkout paths from public loop continuity notes while preserving the Windows shared-folder testing guidance.
 - Added PWA manifest shortcut descriptions and a regression test for installed-app deep links.
 - Added project-page native sharing with resilient copy fallback. Project detail pages now expose a `Share project` action that uses the Web Share API when available, falls back to clipboard/legacy copy, and announces shared/copied status.
 - Added `npm run profile-feed:sync`, a build-time raw GitHub cache for `SysAdminDoc/SysAdminDoc` `projects.json` with local fallback preservation.

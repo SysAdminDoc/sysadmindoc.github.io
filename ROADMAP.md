@@ -21,7 +21,7 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-05 (Cycle 15; see `TODO.md` T139 and `docs/research-2026-06-05-cycle-15.md`)
+Last researched: 2026-06-05 (Cycle 16; see `TODO.md` T140 and `docs/research-2026-06-05-cycle-16.md`)
 Last updated: 2026-06-05
 Current version: v0.18.3
 
