@@ -1,5 +1,5 @@
 (function () {
-  window.addEventListener('DOMContentLoaded', function () {
+  function init() {
     var loading = document.getElementById('pagefindLoading');
     if (!window.PagefindComponents) {
       if (loading) {
@@ -12,7 +12,13 @@
     var initial = params.get('q');
     if (initial && initial.trim()) {
       var manager = window.PagefindComponents.getInstanceManager();
-      manager.getInstance('default').triggerSearch(initial.trim());
+      var instance = manager && manager.getInstance('default');
+      if (instance) instance.triggerSearch(initial.trim());
     }
-  });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
 })();
