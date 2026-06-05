@@ -163,16 +163,13 @@
   const dividerItems = Array.from(document.querySelectorAll('.dv'));
   if(!revealItems.length && !cardItems.length && !dividerItems.length) return;
 
-  const reduceMotion = typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   const revealNow = () => {
     revealItems.forEach(el => el.classList.add('vis'));
     cardItems.forEach(el => el.classList.add('vis'));
     dividerItems.forEach(el => el.classList.add('vis'));
   };
 
-  if(reduceMotion || typeof IntersectionObserver !== 'function'){
+  if(prefersReducedMotion || typeof IntersectionObserver !== 'function'){
     revealNow();
     return;
   }

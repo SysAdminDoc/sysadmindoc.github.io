@@ -49,18 +49,17 @@
     t: '/healthcare-it/',
   };
   /* escapeHTML, isTextEntryTarget — loaded from shared.js */
-  var escapeHtml = escapeHTML;
 
   function highlightMatch(text, query) {
     const value = String(text == null ? '' : text);
-    if (!query) return escapeHtml(value);
+    if (!query) return escapeHTML(value);
     const lowerValue = value.toLowerCase();
     const lowerQuery = query.toLowerCase();
     const index = lowerValue.indexOf(lowerQuery);
-    if (index < 0) return escapeHtml(value);
-    return escapeHtml(value.slice(0, index))
-      + '<mark>' + escapeHtml(value.slice(index, index + query.length)) + '</mark>'
-      + escapeHtml(value.slice(index + query.length));
+    if (index < 0) return escapeHTML(value);
+    return escapeHTML(value.slice(0, index))
+      + '<mark>' + escapeHTML(value.slice(index, index + query.length)) + '</mark>'
+      + escapeHTML(value.slice(index + query.length));
   }
 
   function setMeta(message) {
@@ -161,7 +160,7 @@
       const groupLabel = row.groupLabel
         || (row.kind === 'project' ? 'Projects' : row.kind === 'route' ? 'Pages & Tracks' : 'Sections');
       if (groupLabel !== lastGroup) {
-        output.push('<div class="cmdk-group-label">' + escapeHtml(groupLabel) + '</div>');
+        output.push('<div class="cmdk-group-label">' + escapeHTML(groupLabel) + '</div>');
         lastGroup = groupLabel;
       }
       const dotColor = row.kind === 'route'
@@ -173,18 +172,18 @@
               live: '#facc15',
               catalog: '#58a6ff',
             })[row.type] || '#7080a0';
-      const badge = row.kind === 'project' ? row.type.toUpperCase() : (row.badge || 'SECTION');
+      const badge = row.kind === 'project' ? (row.type || 'project').toUpperCase() : (row.badge || 'SECTION');
       const subtitle = row.desc
         || (row.kind === 'project'
           ? ((row.categoryLabel || row.category) ? (row.categoryLabel || row.category) + ' project' : 'Open the project detail page.')
           : 'Open this route.');
       output.push(
-        '<div class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" data-href="' + escapeHtml(row.href || row.url) + '"' + (row.external ? ' data-external="true"' : '') + '>'
+        '<div class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" data-href="' + escapeHTML(row.href || row.url) + '"' + (row.external ? ' data-external="true"' : '') + '>'
         + '<span class="cmdk-dot" style="background:' + dotColor + ';color:' + dotColor + '"></span>'
         + '<span class="cmdk-copy">'
         + '<span class="cmdk-title-row">'
         + '<span class="cmdk-title">' + highlightMatch(row.label || row.name, query) + '</span>'
-        + '<span class="cmdk-badge">' + escapeHtml(badge) + '</span>'
+        + '<span class="cmdk-badge">' + escapeHTML(badge) + '</span>'
         + '</span>'
         + '<span class="cmdk-subtitle">' + highlightMatch(subtitle, query) + '</span>'
         + '</span>'
