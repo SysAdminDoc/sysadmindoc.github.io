@@ -116,14 +116,11 @@ function getPortfolioLanguageSummary(){
     return total>0?{langs:langCount,total}:null;
 }
 /* ===== SHARED MOUSE STATE ===== */
-const isMobile=innerWidth<768;
 const mouseState={x:-1000,y:-1000,moved:false};
-if(!isMobile){
-    document.addEventListener('mousemove',e=>{
-        mouseState.x=e.clientX;mouseState.y=e.clientY;mouseState.moved=true;
-    },{passive:true});
-    document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
-}
+document.addEventListener('mousemove',e=>{
+    mouseState.x=e.clientX;mouseState.y=e.clientY;mouseState.moved=true;
+},{passive:true});
+document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
 
 /* ===== COPY TOAST ===== */
 const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
@@ -134,9 +131,9 @@ function showCopyToast(){clearTimeout(copyToastTimer);copyToast.classList.add('s
 const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'projects',val:'…',vc:'tv',id:'termRepos'},{key:'stars',val:'…',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
 const tb=document.getElementById('termBody');let ti=0;
 function rt(){if(ti>=tl.length||!tb)return;const l=tl[ti];const d=document.createElement('div');d.classList.add('tl');d.style.animationDelay=(ti*.08)+'s';
-    if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+l.path+'</span><span class="tcm">$ </span><span class="tc">'+l.cmd+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
-    else if(l.key){const idAttr=l.id?' id="'+l.id+'"':'';d.innerHTML='<span class="tk">'+l.key+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'"'+idAttr+'>'+l.val+'</span>'}
-    else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+l.text+'</span>'}
+    if(l.prompt){d.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">'+escapeHTML(l.path)+'</span><span class="tcm">$ </span><span class="tc">'+escapeHTML(l.cmd)+'</span>'+(l.cursor?'<span class="tci"></span>':'')}
+    else if(l.key){const idAttr=l.id?' id="'+escapeHTML(l.id)+'"':'';d.innerHTML='<span class="tk">'+escapeHTML(l.key)+'</span><span class="tcm">: </span><span class="'+(l.vc||'ts')+'"'+idAttr+'>'+escapeHTML(l.val)+'</span>'}
+    else if(l.text!==undefined){d.innerHTML=l.text===''?'&nbsp;':'<span class="'+(l.color||'tc')+'">'+escapeHTML(l.text)+'</span>'}
     tb.appendChild(d);ti++;if(ti<tl.length)setTimeout(rt,80+Math.random()*40);else if(typeof onTermReady==='function')setTimeout(onTermReady,1500)}
 if(prefersReducedMotion){
     while(ti<tl.length)rt();
@@ -170,20 +167,23 @@ async function fetchAllRepos(conditionalEtag){
     let allRepos=[];
     let firstEtag=null;
     for(let page=1;page<=10;page++){
-        // Conditional request on page 1 (repos are sort=updated, so an unchanged
-        // page 1 means nothing changed). A 304 is free against the rate limit.
-        const opts=(page===1&&conditionalEtag)?{headers:{'If-None-Match':conditionalEtag}}:void 0;
-        const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page,opts,10000);
-        if(page===1){
-            if(r.status===304)return {notModified:true};
-            firstEtag=r.headers.get('etag');
+        try{
+            const opts=(page===1&&conditionalEtag)?{headers:{'If-None-Match':conditionalEtag}}:void 0;
+            const r=await fetchWithTimeout('https://api.github.com/users/SysAdminDoc/repos?per_page=100&sort=updated&page='+page,opts,10000);
+            if(page===1){
+                if(r.status===304)return {notModified:true};
+                firstEtag=r.headers.get('etag');
+            }
+            if(!r.ok)throw new Error('GitHub API error: '+r.status);
+            const repos=await r.json();
+            if(!Array.isArray(repos))throw new Error('Unexpected GitHub repo payload');
+            if(repos.length===0)break;
+            allRepos=allRepos.concat(repos);
+            if(repos.length<100)break;
+        }catch(e){
+            if(page===1)throw e;
+            break;
         }
-        if(!r.ok)throw new Error('GitHub API error: '+r.status);
-        const repos=await r.json();
-        if(!Array.isArray(repos))throw new Error('Unexpected GitHub repo payload');
-        if(repos.length===0)break;
-        allRepos=allRepos.concat(repos);
-        if(repos.length<100)break;
     }
     return {repos:allRepos,etag:firstEtag};
 }
@@ -442,20 +442,24 @@ let lastScrollY=0;
 /* ===== BACK TO TOP ===== */
 const bttBtn=document.getElementById('backToTop');
 const navEl=document.getElementById('nav');
+let _scrollRaf=0;
 window.addEventListener('scroll',()=>{
-    const sy=window.scrollY;
-    if(bttBtn)bttBtn.classList.toggle('show',sy>600);
-    const max=document.documentElement.scrollHeight-innerHeight;
-    const pct=max>0?(sy/max)*100:0;
-    if(scrollProg)scrollProg.style.width=pct+'%';
-    // Nav hide on scroll down, show on scroll up
-    if(navEl){
-        if(sy>120){
-            if(sy>lastScrollY+5){navEl.classList.add('hid');const _nl=document.getElementById('navLinks');const _mt=document.getElementById('mobileToggle');if(_nl&&_nl.classList.contains('open')){_nl.classList.remove('open');if(_mt)_mt.setAttribute('aria-expanded','false')}}
-            else if(sy<lastScrollY-5)navEl.classList.remove('hid');
-        }else{navEl.classList.remove('hid')}
-    }
-    lastScrollY=sy;
+    if(_scrollRaf)return;
+    _scrollRaf=requestAnimationFrame(()=>{
+        _scrollRaf=0;
+        const sy=window.scrollY;
+        if(bttBtn)bttBtn.classList.toggle('show',sy>600);
+        const max=document.documentElement.scrollHeight-innerHeight;
+        const pct=max>0?(sy/max)*100:0;
+        if(scrollProg)scrollProg.style.width=pct+'%';
+        if(navEl){
+            if(sy>120){
+                if(sy>lastScrollY+5){navEl.classList.add('hid');const _nl=document.getElementById('navLinks');const _mt=document.getElementById('mobileToggle');if(_nl&&_nl.classList.contains('open')){_nl.classList.remove('open');if(_mt)_mt.setAttribute('aria-expanded','false')}}
+                else if(sy<lastScrollY-5)navEl.classList.remove('hid');
+            }else{navEl.classList.remove('hid')}
+        }
+        lastScrollY=sy;
+    });
 },{passive:true});
 if(bttBtn)bttBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:prefersReducedMotion?'auto':'smooth'})});
 
@@ -493,7 +497,14 @@ function playVideo(trigger){
     });
 }
 document.querySelectorAll('.video-thumb[data-yt]').forEach(thumb=>{
+    if(!thumb.hasAttribute('tabindex'))thumb.setAttribute('tabindex','0');
+    if(!thumb.hasAttribute('role'))thumb.setAttribute('role','button');
+    if(!thumb.getAttribute('aria-label')){
+        const alt=thumb.querySelector('img')?.alt;
+        thumb.setAttribute('aria-label',alt?'Play video: '+alt:'Play video');
+    }
     thumb.addEventListener('click',function(){playVideo(this)});
+    thumb.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();playVideo(this)}});
 });
 
 /* ===== CATALOG: FILTER + SEARCH + SORT ===== */
@@ -639,12 +650,12 @@ function sortCatalog(method){
             return(readNumber(a,'rankPosition')||readNumber(a,'index'))-(readNumber(b,'rankPosition')||readNumber(b,'index'));
         }
         if(method==='stars')return(parseInt(b.dataset.stars)||0)-(parseInt(a.dataset.stars)||0);
-        if(method==='name')return a.dataset.name.localeCompare(b.dataset.name);
-        if(method==='name-desc')return b.dataset.name.localeCompare(a.dataset.name);
+        if(method==='name')return(a.dataset.name||'').localeCompare(b.dataset.name||'');
+        if(method==='name-desc')return(b.dataset.name||'').localeCompare(a.dataset.name||'');
         if(method==='recent')return(b.dataset.updated||'').localeCompare(a.dataset.updated||'');
         return 0;
     });
-    items.forEach(item=>grid.appendChild(item));
+    const frag=document.createDocumentFragment();items.forEach(item=>frag.appendChild(item));grid.appendChild(frag);
 }
 
 document.querySelectorAll('.catalog-view').forEach(b=>{
@@ -889,7 +900,12 @@ function onTermReady(){
         }
         return value;
     }
+    var TERM_MAX_LINES=200;
+    function trimTerminal(){
+        while(tbody.children.length>TERM_MAX_LINES){tbody.removeChild(tbody.firstChild)}
+    }
     function addPrompt(){
+        trimTerminal();
         inputLine=document.createElement('div');
         inputLine.className='term-input-line';
         inputLine.innerHTML='<span class="tp">matt@sysadmin</span><span class="tcm">:</span><span class="tpa">~/portfolio</span><span class="tcm">$ </span>';
@@ -963,7 +979,11 @@ function onTermReady(){
         if(!output)return;
         const text=output.textContent.trim();
         if(!text)return;
-        navigator.clipboard.writeText(text).then(showCopyToast).catch(function(){});
+        if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+            navigator.clipboard.writeText(text).then(showCopyToast).catch(function(){showCopyToast()});
+        }else{
+            try{var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showCopyToast()}catch(e){}
+        }
     }
     tbody.addEventListener('click',function(e){
         copyOutput(getClosestTarget(e.target,'.term-output'));
@@ -1006,6 +1026,7 @@ function onTermReady(){
         if(e.key===code[pos]){pos++;if(pos===code.length){pos=0;triggerEasterEgg()}}else{pos=0}
     });
     function triggerEasterEgg(){
+        if(prefersReducedMotion)return;
         const overlay=document.createElement('div');
         overlay.style.cssText='position:fixed;inset:0;z-index:100000;pointer-events:none;overflow:hidden';
         document.body.appendChild(overlay);
