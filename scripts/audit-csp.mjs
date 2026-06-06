@@ -100,6 +100,28 @@ function sha256Csp(value) {
   return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
 }
 
+function extractSingleQuotedConst(text, name) {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = text.match(new RegExp(`const\\s+${escapedName}\\s*=\\s*'([^']*)';`));
+  return match?.[1] ?? null;
+}
+
+async function resolveGeneratedCsp(filePath, text, value) {
+  if (value !== '{contentSecurityPolicy}') return value;
+
+  const policyTemplate = text.match(/const\s+contentSecurityPolicy\s*=\s*`([\s\S]*?)`;/)?.[1] ?? null;
+  const criticalImport = text.match(/import\s+criticalCss\s+from\s+['"]([^'"]+)\?raw['"];/)?.[1] ?? null;
+  const noJsRevealCss = extractSingleQuotedConst(text, 'noJsRevealCss');
+  if (!policyTemplate || !criticalImport || !noJsRevealCss) return value;
+
+  const criticalCssPath = path.resolve(path.dirname(filePath), criticalImport);
+  const criticalCss = await fs.readFile(criticalCssPath, 'utf8').catch(() => null);
+  if (criticalCss === null) return value;
+
+  const styleElemSrc = ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
+  return policyTemplate.replace('${styleElemSrc}', styleElemSrc);
+}
+
 function parseCsp(policy) {
   const directives = new Map();
   for (const part of String(policy ?? '').split(';')) {
@@ -208,7 +230,7 @@ function styleAttributeAllowedByCandidate(_record, tokens) {
   return directiveAllowsUnsafeInline(tokens);
 }
 
-function auditSourceFile(filePath, text) {
+async function auditSourceFile(filePath, text) {
   const rel = toPosix(path.relative(root, filePath));
   const cspMetas = [];
   const scripts = [];
@@ -227,7 +249,7 @@ function auditSourceFile(filePath, text) {
     const line = lineFor(text, tagMatch.index);
 
     if (tagName === 'meta' && String(attrs['http-equiv'] ?? '').toLowerCase() === 'content-security-policy') {
-      cspMetas.push({ file: rel, line, content: String(attrs.content ?? '') });
+      cspMetas.push({ file: rel, line, content: await resolveGeneratedCsp(filePath, text, String(attrs.content ?? '')) });
     }
 
     if (tagName === 'link') {
@@ -403,7 +425,7 @@ if (options.distDir && files.length === 0) {
 }
 const sourceAudits = [];
 for (const filePath of files) {
-  sourceAudits.push(auditSourceFile(filePath, await fs.readFile(filePath, 'utf8')));
+  sourceAudits.push(await auditSourceFile(filePath, await fs.readFile(filePath, 'utf8')));
 }
 const runtimeStyleRoots = [path.resolve(root, 'public', 'scripts')];
 const runtimeStyleFiles = (await Promise.all(runtimeStyleRoots.map((dir) => collectRuntimeStyleFiles(dir)))).flat();
