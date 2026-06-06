@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 23
+Current cycle: 24
 
 ## Latest result
 
@@ -27,6 +27,8 @@ Current cycle: 23
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; source `style-src-attr 'none'` strict audit; source inline-style grep; `npm test`; `npm run check`; `npm run build`; strict built `style-src-attr 'none'` audit; `npm run csp:audit:browser`; rendered browser spot-checks for home/project flows.
 - 2026-06-06: Cycle 23 implemented T145 fixture-backed Playwright visual-baseline stabilization. Endpoint and DOM-size audits now support deterministic 16-project fixture builds without weakening live-scale floors, and the eight visual baselines were refreshed from the fixture `build:ci` output. T145 is checked off in `TODO.md`, and T146 was added for build-output CSP hash-drift enforcement.
 - Verification for this cycle: `npm run generated:fixtures`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm test`; `node --check scripts/audit-public-endpoints.mjs`; `node --check scripts/audit-dom-size.mjs`; `node --test test/llms-completeness.test.mjs test/dom-size-budget.test.mjs`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run build:ci`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright:update`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright`.
+- 2026-06-06: Cycle 24 implemented T146 build-output CSP hash-drift enforcement. The CSP audit now supports `--active-style-src-elem`, `npm run csp:audit:dist:style:elem` derives strict rendered style-element tokens from the active policy, and `build:ci` runs the gate before endpoint/feed/DOM/search/schema audits. T146 is checked off in `TODO.md`, and T147 was added for rendered CSP metadata consistency.
+- Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs test/public-script-minify.test.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The build-integrated CSP gate scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active `style-src-elem` hashes.
 
 ## Next project
 
@@ -34,8 +36,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-23.md`.
-- Start with T146: wire strict rendered `style-src-elem` hash verification into the build-output audit path so critical/no-JS CSS hash drift cannot ship outside the unit-test path.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-24.md`.
+- Start with T147: make strict dist CSP audits fail on missing or divergent rendered CSP meta tags before deriving the active policy.
 - Audit whether the two active `style-src-elem` hashes should be generated from source during build to prevent critical/no-JS CSS drift.
 - Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

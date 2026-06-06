@@ -21,7 +21,7 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-06 (Cycle 23; see `TODO.md` T141-T146 and `docs/research-2026-06-06-cycle-23.md`)
+Last researched: 2026-06-06 (Cycle 24; see `TODO.md` T141-T147 and `docs/research-2026-06-06-cycle-24.md`)
 Last updated: 2026-06-06
 Current version: v0.18.3
 
@@ -122,6 +122,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `scripts/audit-csp.mjs`, `package.json`, `test/csp-audit.test.mjs`, `README.md`, `PROJECT_CONTEXT.md`.
 - Acceptance: The build-output audit path verifies rendered style-element CSP against the active hash contract, fails on stale hashes, and keeps the fast source hash unit test.
 - Verify: `npm test`; `npm run build`; strict built `style-src-elem` candidate audit.
+- Done in Cycle 24: `scripts/audit-csp.mjs` now supports `--active-style-src-elem`, deriving strict style-element candidate tokens from the active CSP instead of duplicating hash strings in npm scripts. `npm run csp:audit:dist:style:elem` runs `node scripts/audit-csp.mjs --dist --active-style-src-elem --strict`, and `build:ci` now executes it after HTML repair/public script minification and before endpoint/feed/DOM/search/schema audits. The build-integrated run scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active hashes.
+- Confidence: High
+
+### T147 - Require consistent CSP metadata across rendered pages
+
+- Priority: P2
+- Why: The active-policy audit uses the first CSP meta tag to derive the rendered style contract. That is enough to catch hash drift for the shared layout output, but a future route with a missing or divergent CSP meta could still weaken a single rendered page.
+- Evidence: Cycle 24's build-integrated CSP run reported 194 CSP meta tags across 194 built HTML files. The audit does not yet fail if those 194 policies are not byte-for-byte consistent before selecting the active policy.
+- Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, `README.md`, `PROJECT_CONTEXT.md`.
+- Acceptance: Strict dist CSP audits fail when any built HTML file has no CSP meta or a policy that differs from the active policy; output should report representative divergent file paths and keep normal source inventory mode readable.
+- Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
 - Confidence: Medium
 
 Research sources:
@@ -902,7 +913,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T146 build-output style CSP hash-drift enforcement and then research the next security or UX improvement.
+Continue from T147 rendered CSP metadata consistency, then run a fresh UX pass on the stricter-CSP interactive routes.
 
 ### Important Findings So Far
 
@@ -916,12 +927,13 @@ Continue from T146 build-output style CSP hash-drift enforcement and then resear
 - Cycle 21 implemented T142. Active CSP no longer has style-element `unsafe-inline`: `style-src 'self'`, `style-src-elem 'self'` plus the critical/no-JS hashes. A full local rendered build with `inlineStylesheets: 'never'` had 388 style blocks, 776 stylesheet/preload links, zero routes with more than two style blocks, and passed the strict staged `style-src-elem` candidate. Performance passed with no issues; Playwright axe passed; screenshot baselines are a T145 drift item.
 - Cycle 22 implemented T143 and T144. Active CSP now uses `style-src-attr 'none'`; source and built CSP attribute audits pass; the dedicated browser audit records no policy violations across representative routes and interactions.
 - Cycle 23 implemented T145. The fixture build now passes endpoint and DOM-size audits with data-aware floors, the refreshed screenshot baselines are generated from `PROFILE_PROJECTS_OFFLINE=1` fixture output, and full Playwright audit passes 21/21 CSP, axe, and visual checks.
+- Cycle 24 implemented T146. `build:ci` now runs a strict rendered `style-src-elem` audit derived from the active CSP, and the current live build passes with 194 CSP metas, 388 style blocks, and 776 stylesheet/preload links.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T146 by wiring a strict rendered style-element CSP hash audit into the build-output path.
-2. Audit whether the active `style-src-elem` source hashes can be generated from source during build so future critical/no-JS CSS edits cannot drift.
+1. Continue T147 by making strict dist CSP audits fail on missing or divergent rendered CSP meta tags.
+2. Audit whether the active `style-src-elem` source hashes should be generated from source during build so future critical/no-JS CSS edits cannot drift.
 3. Run a fresh UX pass on the command palette, terminal, project share, language lane, and project detail routes now covered by the stricter style policy.
 
 ### Unprocessed Leads
@@ -930,6 +942,7 @@ Continue from T146 build-output style CSP hash-drift enforcement and then resear
 - Keep finite accent/category/style values in class maps or SVG attributes; do not reintroduce static style attributes.
 - Keep runtime style work to direct property writes for genuinely dynamic coordinates; do not reintroduce `style.cssText`.
 - Playwright visual baselines are fixture-backed; run `npm run generated:fixtures`, `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright` before refreshing baselines.
+- Strict rendered CSP checks now run in `build:ci`; keep the fast source hash test and the build-output active-policy check in sync.
 
 ### Files Still To Inspect
 
