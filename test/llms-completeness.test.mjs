@@ -22,4 +22,7 @@ test('llms.txt source exposes reviewed pages, language lanes, feeds, and machine
   assert.match(audit, /Language lanes/);
   assert.match(audit, /Machine-readable endpoints/);
   assert.match(audit, /catalog count must be exact/);
+  assert.match(audit, /function minimumUsefulLinkCount/);
+  assert.match(audit, /Math\.min\(50, fixtureAwareFloor\)/);
+  assert.match(audit, /projectCount: projectsSummary\.projectCount/);
 });

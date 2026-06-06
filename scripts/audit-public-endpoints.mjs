@@ -278,7 +278,12 @@ function auditCmdkData(source) {
   };
 }
 
-function auditLlmsTxt(text) {
+function minimumUsefulLinkCount(projectCount, requiredUrlCount) {
+  const fixtureAwareFloor = requiredUrlCount + Math.min(projectCount, 24);
+  return Math.min(50, fixtureAwareFloor);
+}
+
+function auditLlmsTxt(text, { projectCount }) {
   const lines = text.split(/\r?\n/);
   const nonEmpty = lines.filter((line) => line.trim().length > 0);
   if (!nonEmpty[0]?.startsWith('# ')) fail('llms.txt first non-empty line must be an H1.');
@@ -342,8 +347,11 @@ function auditLlmsTxt(text) {
   if (/All\s+\d+\+\s+public projects/i.test(text)) {
     fail('llms.txt catalog count must be exact, not plus-suffixed.');
   }
-  if (linkCount < 50) fail(`llms.txt should expose at least 50 useful links, found ${linkCount}.`);
-  return { llmsLinks: linkCount };
+  const minimumUsefulLinks = minimumUsefulLinkCount(projectCount, requiredUrls.length);
+  if (linkCount < minimumUsefulLinks) {
+    fail(`llms.txt should expose at least ${minimumUsefulLinks} useful links, found ${linkCount}.`);
+  }
+  return { llmsLinks: linkCount, minimumUsefulLinks };
 }
 
 function auditDiscoveryLinks(html) {
@@ -415,7 +423,7 @@ const indexHtml = await readText('index.html');
 const projectsSummary = auditProjectsIndex(projectsIndex);
 const releasesSummary = auditReleasesIndex(releasesIndex);
 const cmdkSummary = auditCmdkData(cmdkSource);
-const llmsSummary = auditLlmsTxt(llmsText);
+const llmsSummary = auditLlmsTxt(llmsText, { projectCount: projectsSummary.projectCount });
 const discoverySummary = auditDiscoveryLinks(indexHtml);
 const headerSummary = await auditSourceHeaderPolicies();
 
@@ -431,7 +439,7 @@ console.log(`  releases.json releases: ${releasesSummary.releaseCount}`);
 console.log(`  releases.json repositories: ${releasesSummary.releaseRepoCount}`);
 console.log(`  cmdk-data.js projects: ${cmdkSummary.cmdkProjects}`);
 console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
-console.log(`  llms.txt links: ${llmsSummary.llmsLinks}`);
+console.log(`  llms.txt links: ${llmsSummary.llmsLinks} / ${llmsSummary.minimumUsefulLinks} minimum`);
 console.log(`  alternate discovery links: ${discoverySummary.discoveryCount}`);
 console.log(`  source header policies: ${headerSummary.sourceHeaderPolicies}`);
 console.log('Public endpoint audit passed.');

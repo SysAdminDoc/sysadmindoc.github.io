@@ -547,12 +547,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added `tests/playwright/csp-style-policy.spec.mjs` plus `npm run csp:audit:browser`. The audit rewrites rendered documents to the final `style-src-attr 'none'` policy, records `securitypolicyviolation` events, blocks nondeterministic external surfaces, serves the stability stylesheet from a same-origin URL, and exercises representative route and interaction coverage.
   - Verify: `npm run csp:audit:browser` passes after a built `dist/` is available.
 
-- [ ] **T145** P2 - Stabilize Playwright visual baselines for current feed-backed output and strict CSP.
+- [x] **T145** P2 - Stabilize Playwright visual baselines for current feed-backed output and strict CSP.
   - Why: T142 made the Playwright harness CSP-compatible, and the axe subset now passes under the stricter style policy, but the eight screenshot comparisons fail against stale baselines. The actual pages are coherent; observed differences include current profile-feed project ordering and focus-state drift rather than missing CSS.
   - Evidence: `npx playwright test --config=playwright.audits.config.mjs -g "axe accessibility audit"` passed six route/hydration tests after the harness switched from inline `page.addStyleTag({ content })` to a same-origin fulfilled stylesheet URL. Full `npm run audit:playwright` still fails all eight screenshot comparisons at roughly 2-13% pixel deltas.
   - Touches: `tests/playwright/portfolio-audits.spec.mjs`, `playwright.audits.config.mjs`, screenshot baselines under `tests/playwright/__screenshots__/chromium/`, and possibly fixture/profile-feed setup for deterministic visual data.
   - Acceptance: Visual baseline runs use deterministic data, blocked service workers, stable focus state, and a CSP-compatible stability stylesheet; either refreshed baselines are committed intentionally or the test masks/normalizes the dynamic regions causing false positives.
   - Verify: `npm run generated:fixtures`; deterministic build; `npm run audit:playwright` passes in the same environment used to generate the baselines.
+  - Done: Endpoint and DOM-size audits now account for the 16-project generated fixture build without weakening live-scale ceilings: `/llms.txt` keeps a 50-link live floor but derives a fixture floor from required URLs plus project count, and `dom:audit` uses a bounded small-catalog average-card budget for fixture output. Visual baselines were refreshed from the fixture-backed Playwright run.
+  - Verify: `npm run generated:fixtures`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run build:ci`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright`.
+
+- [ ] **T146** P2 - Promote active style CSP hash drift checks into the build-output audit path.
+  - Why: The current unit test guards the `critical.css` and no-JS fallback hashes in `Base.astro`, and the built CSP audit can prove the final policy works. A build-time audit should connect those pieces so future first-paint CSS edits cannot accidentally ship a stale `style-src-elem` hash outside the normal unit-test path.
+  - Evidence: Active CSP depends on two SHA-256 hashes (`critical.css` and the no-JS reveal fallback). `test/csp-audit.test.mjs` checks them in source, while `build:ci` currently runs endpoint/feed/DOM/search/schema audits but not a strict rendered style-element candidate audit.
+  - Touches: `scripts/audit-csp.mjs`, `package.json`, `test/csp-audit.test.mjs`, `README.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: `build:ci` or a dedicated build-output script verifies the active rendered `style-src-elem` policy against the generated `dist/` HTML, fails on hash drift, and keeps the source hash test as the faster unit guard.
+  - Verify: `npm test`; `npm run build`; strict built CSP style-element audit.
 
 ---
 
