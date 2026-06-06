@@ -50,6 +50,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Extended command-palette keyboard smoke coverage to verify filtered result selection, `aria-activedescendant`, Arrow movement, Enter activation, and closed state after navigation.
 - Extended command-palette pointer smoke coverage to verify backdrop dismiss, `aria-expanded` reset, clicked result navigation, and closed state after navigation.
 - Extended command-palette empty-state smoke coverage to verify no-results copy, cleared active-descendant state, and recovery to valid results.
+- Split the rendered homepage interaction smoke into focused command-palette and terminal/catalog/video tests with independent runtime-error and overflow guards.
 - Added class-based Shiki highlighting for cached project README code fences while keeping remote README inline styles and event-handler attributes stripped by `sanitize-html`.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
