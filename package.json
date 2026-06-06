@@ -45,7 +45,7 @@
     "a11y:audit:advisory": "node scripts/audit-a11y.mjs",
     "audit:playwright": "playwright test --config=playwright.audits.config.mjs",
     "audit:playwright:update": "playwright test --config=playwright.audits.config.mjs --update-snapshots",
-    "audit:interactions": "playwright test --config=playwright.audits.config.mjs tests/playwright/interaction-smoke.spec.mjs",
+    "audit:interactions": "playwright test --config=playwright.interactions.config.mjs tests/playwright/interaction-smoke.spec.mjs",
     "forced-colors:audit": "node scripts/audit-forced-colors.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",

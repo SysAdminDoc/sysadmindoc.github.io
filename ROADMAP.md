@@ -177,7 +177,18 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `playwright.audits.config.mjs`, `package.json`, `.github/workflows/ci.yml`, `README.md`, and workflow/source-contract tests.
 - Acceptance: Interaction-smoke and visual/axe Playwright runs write distinct report/result folders in CI and local commands, and the artifact upload includes both without changing screenshot baseline paths.
 - Verify: `npm run audit:interactions`; fixture-backed `npm run audit:playwright`; `npm test`.
+- Done in Cycle 29: Added `playwright.interactions.config.mjs` as a thin wrapper around the visual/axe audit config, keeping screenshot baseline paths inherited while writing interaction smoke reports to `.tmp/playwright-interactions-report` and results to `.tmp/playwright-interactions-results`. CI now uploads both interaction and visual report/result folders, and `test/a11y-gate.test.mjs` locks the separate paths.
 - Confidence: High
+
+### T152 - Harden command-palette close behavior
+
+- Priority: P2
+- Why: T149 exposed that the command-palette close contract is not currently guarded. Escape and Ctrl/Cmd+K are advertised in the UI, but the first interaction-smoke draft left the dialog open when those keys were pressed from inside the search field.
+- Evidence: The failed rendered smoke attempts left `#cmdk` visible after `page.keyboard.press('Escape')` and after `page.keyboard.press('Control+K')` while the search input remained focused. Existing CSP/visual tests open and filter the palette but do not assert close behavior.
+- Touches: `public/scripts/cmdk.js`, `tests/playwright/interaction-smoke.spec.mjs` or a focused Playwright test, `README.md`, and `PROJECT_CONTEXT.md`.
+- Acceptance: The command palette closes reliably via Escape and Ctrl/Cmd+K while focus is inside the search field, the toggle button `aria-expanded` state updates, and a rendered browser test guards the behavior without flaky dialog assumptions.
+- Verify: focused Playwright close test; `npm run audit:interactions`; `npm test`.
+- Confidence: Medium
 
 Research sources:
 
@@ -957,7 +968,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T151 Playwright report-output separation.
+Continue from T152 command-palette close hardening.
 
 ### Important Findings So Far
 
@@ -976,13 +987,14 @@ Continue from T151 Playwright report-output separation.
 - Cycle 26 implemented T148. Active `style-src-elem` hashes are now generated from the same source strings that render critical/no-JS CSS, while source and rendered CSP audits continue to report the resolved active policy.
 - Cycle 27 implemented T149. `npm run audit:interactions` now runs a focused rendered Playwright smoke over active CSP, command-palette filtering, terminal contact navigation, catalog search, click-to-load video close, mobile Python-lane project navigation, project share fallback, console errors, and horizontal overflow without screenshot assertions.
 - Cycle 28 implemented T150. PR CI now runs `npm run audit:interactions` after Chromium install and before the fixture-backed visual/axe Playwright suite, with source-contract coverage for the npm script and workflow step order.
+- Cycle 29 implemented T151. Interaction-smoke Playwright output now writes to `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`, while the visual/axe audit keeps `.tmp/playwright-report` and `.tmp/playwright-results`; CI uploads both sets.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T151 by giving interaction and visual Playwright runs distinct report/result folders.
-2. Keep screenshot baseline paths unchanged while separating transient `.tmp` report output.
-3. Update the CI artifact upload and source-contract test so both report sets are preserved.
+1. Continue T152 by reproducing and fixing command-palette close behavior from inside `#cmdkInput`.
+2. Guard Escape and Ctrl/Cmd+K close paths in a rendered Playwright test and verify `aria-expanded` updates.
+3. Keep the existing command-palette search/filter smoke intact while adding the close contract.
 
 ### Unprocessed Leads
 
