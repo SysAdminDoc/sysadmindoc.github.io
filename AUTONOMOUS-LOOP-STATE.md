@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 32
+Current cycle: 33
 
 ## Latest result
 
@@ -45,6 +45,8 @@ Current cycle: 32
 - Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 - 2026-06-06: Cycle 32 implemented T154 command-palette pointer activation and backdrop dismiss coverage. The rendered interaction smoke now clicks the native dialog backdrop and verifies closed state plus `aria-expanded` reset, then reopens, filters a stable `search` result set, clicks the first internal command result, verifies navigation, and confirms the palette is closed after navigation. T154 is checked off in `TODO.md`, and T155 was added for no-results recovery coverage.
 - Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+- 2026-06-06: Cycle 33 implemented T155 command-palette no-results recovery coverage. The rendered interaction smoke now enters an unmatched query, verifies no-results status/copy, asserts no result rows and cleared `aria-activedescendant`, then enters a valid `search` query and verifies result plus active-option recovery before closing. T155 is checked off in `TODO.md`, and T156 was added for splitting the homepage interaction smoke into focused flows.
+- Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
 ## Next project
 
@@ -53,7 +55,7 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 ## Next cycle seed
 
 - Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `ROADMAP.md`.
-- Start with T155: guard command-palette no-results state and recovery behavior.
-- Verify no-results copy, cleared `aria-activedescendant`, no selected rows, then valid-query recovery.
-- Keep the existing command-palette keyboard close, keyboard activation, and pointer activation smoke assertions intact.
+- Start with T156: split the long homepage interaction smoke into focused command-palette and homepage workflow tests.
+- Keep terminal, catalog, and video homepage checks covered separately from command-palette assertions.
+- Preserve runtime-error and horizontal-overflow guards across both focused flows.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

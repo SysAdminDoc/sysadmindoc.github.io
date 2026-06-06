@@ -221,6 +221,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, and `PROJECT_CONTEXT.md`.
 - Acceptance: A rendered browser test enters an unmatched query, verifies no-results copy, cleared active-descendant state, and no selected rows, then enters a valid query and verifies result/active-option recovery while preserving console-error and overflow guards.
 - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+- Done in Cycle 33: Extended the rendered interaction smoke to enter an unmatched query, verify no-results status/copy, assert no result rows and cleared `aria-activedescendant`, then enter a valid `search` query and verify result plus active-option recovery before closing.
+- Confidence: High
+
+### T156 - Split the homepage interaction smoke into focused flows
+
+- Priority: P2
+- Why: The homepage rendered smoke has grown from one compact workflow into a long command-palette plus terminal/catalog/video sequence. Focused test cases would make failures easier to interpret while preserving the same browser coverage.
+- Evidence: `tests/playwright/interaction-smoke.spec.mjs` now performs multiple command-palette open/filter/close/navigation cycles before it reaches terminal, catalog, and video checks inside the same test case.
+- Touches: `tests/playwright/interaction-smoke.spec.mjs`, `README.md`, and `PROJECT_CONTEXT.md`.
+- Acceptance: Command-palette assertions move into a focused rendered smoke test with runtime-error and overflow guards, while terminal/catalog/video homepage checks remain covered in a separate test; `npm run audit:interactions` still passes in reasonable time.
+- Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 - Confidence: Medium
 
 Research sources:
@@ -997,11 +1008,11 @@ New from v0.18.0 research:
 
 ### Last Completed Cycle
 
-Cycle 32: T154 command-palette pointer activation and backdrop dismiss coverage.
+Cycle 33: T155 command-palette no-results recovery coverage.
 
 ### Current Focus
 
-Continue from T155 command-palette no-results recovery coverage.
+Continue from T156 homepage interaction smoke split.
 
 ### Important Findings So Far
 
@@ -1024,13 +1035,14 @@ Continue from T155 command-palette no-results recovery coverage.
 - Cycle 30 implemented T152. The command palette now closes on Escape and Ctrl/Cmd+K from inside `#cmdkInput` through capture-phase shortcut handling, and the rendered interaction smoke verifies dialog open state plus toggle/input `aria-expanded` state for both close paths.
 - Cycle 31 implemented T153. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with Arrow keys, activates `/search/` with Enter, and verifies the palette closes after navigation.
 - Cycle 32 implemented T154. The rendered interaction smoke now verifies native dialog backdrop dismiss with `aria-expanded` reset, then clicks a deterministic internal command result and confirms navigation plus closed palette state.
+- Cycle 33 implemented T155. The rendered interaction smoke now verifies command-palette no-results status/copy, zero result rows, cleared `aria-activedescendant`, and recovery to valid `search` results with active option state.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T155 by exercising command-palette no-results state and recovery against built `dist/`.
-2. Verify no-results copy, cleared `aria-activedescendant`, no selected rows, then valid-query recovery.
-3. Keep the existing keyboard close, keyboard activation, pointer activation, console-error, and overflow smoke guards intact.
+1. Continue T156 by splitting command-palette assertions into a focused rendered smoke test.
+2. Keep terminal, catalog, and video homepage checks covered in a separate focused flow.
+3. Preserve the existing runtime-error and horizontal-overflow guards across both flows.
 
 ### Unprocessed Leads
 
