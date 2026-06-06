@@ -601,12 +601,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: PR CI now runs `npm run audit:interactions` immediately after Chromium installation and before the fixture-backed visual/axe Playwright suite. The existing Playwright artifact upload remains `if: always()` so an interaction-smoke failure is captured in `.tmp/playwright-*`, and the source-contract test locks the npm script plus CI step order.
   - Verify: `node --test test/a11y-gate.test.mjs`; `npm test`; `npm run audit:interactions`.
 
-- [ ] **T151** P2 - Separate Playwright report output for interaction and visual suites.
+- [x] **T151** P2 - Separate Playwright report output for interaction and visual suites.
   - Why: T150 makes both Playwright suites run in PR CI, but they still share `.tmp/playwright-report` and `.tmp/playwright-results`. A passing interaction smoke followed by the visual suite can leave only the later visual report in the uploaded artifact.
   - Evidence: `playwright.audits.config.mjs` has one `outputDir` and one HTML reporter output folder for all audit commands. `npm run audit:interactions` narrows the spec path but does not override report locations.
   - Touches: `playwright.audits.config.mjs`, `package.json`, `.github/workflows/ci.yml`, `README.md`, and workflow/source-contract tests.
   - Acceptance: Interaction-smoke and visual/axe Playwright runs write distinct report/result folders in CI and local commands, and the artifact upload includes both without changing screenshot baseline paths.
   - Verify: `npm run audit:interactions`; fixture-backed `npm run audit:playwright`; `npm test`.
+  - Done: Added `playwright.interactions.config.mjs` as a thin wrapper around the visual/axe audit config with separate `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results` paths. `npm run audit:interactions` now uses that config, CI uploads both interaction and visual report/result folders, and the workflow source-contract test locks the separate paths while preserving the shared screenshot baseline template.
+  - Verify: `node --check playwright.interactions.config.mjs`; `node --test test/a11y-gate.test.mjs`; `npm run audit:interactions`.
+
+- [ ] **T152** P2 - Harden command-palette close behavior.
+  - Why: T149's first interaction-smoke draft exposed that pressing Escape or Ctrl+K inside the command-palette search field did not close the native dialog reliably in Chromium, even though the UI advertises both close paths. The final T149 smoke avoided that brittle assertion, but the user-facing close contract still needs a focused fix.
+  - Evidence: The failed smoke runs left `#cmdk` visible after `page.keyboard.press('Escape')` and after `page.keyboard.press('Control+K')` while the dialog search field remained focused. Existing CSP/visual tests only assert that the palette opens and filters; they do not assert close behavior.
+  - Touches: `public/scripts/cmdk.js`, `tests/playwright/interaction-smoke.spec.mjs` or a focused Playwright test, `README.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: The command palette closes reliably via Escape and Ctrl/Cmd+K while focus is inside the search field, the toggle button `aria-expanded` state updates, and the rendered interaction smoke or a focused browser test guards the behavior without flaky dialog assumptions.
+  - Verify: focused Playwright close test; `npm run audit:interactions`; `npm test`.
 
 ---
 

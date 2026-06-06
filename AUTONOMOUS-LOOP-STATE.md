@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 28
+Current cycle: 29
 
 ## Latest result
 
@@ -37,6 +37,8 @@ Current cycle: 28
 - Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `npm run build:ci`; `npm run audit:interactions`. The focused smoke passed 3/3 Chromium tests and fails on runtime console errors or horizontal overflow.
 - 2026-06-06: Cycle 28 implemented T150 rendered interaction smoke CI promotion. PR CI now runs `npm run audit:interactions` after Chromium installation and before the fixture-backed visual/axe Playwright suite, with source-contract coverage for the npm script and workflow order. T150 is checked off in `TODO.md`, and T151 was added for Playwright report-output separation.
 - Verification for this cycle: `node --test test/a11y-gate.test.mjs`; `npm test`; `npm run audit:interactions`.
+- 2026-06-06: Cycle 29 implemented T151 Playwright report-output separation. Added `playwright.interactions.config.mjs`, moved `npm run audit:interactions` to `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`, kept the visual/axe suite on `.tmp/playwright-report` and `.tmp/playwright-results`, and updated CI artifact upload plus source-contract coverage. T151 is checked off in `TODO.md`, and T152 was added for command-palette close hardening.
+- Verification for this cycle: `node --check playwright.interactions.config.mjs`; `node --test test/a11y-gate.test.mjs`; `npm run audit:interactions`; checked that both interaction and visual Playwright report/result directories can coexist under `.tmp`.
 
 ## Next project
 
@@ -45,7 +47,7 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 ## Next cycle seed
 
 - Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `ROADMAP.md`.
-- Start with T151: give `audit:interactions` and `audit:playwright` distinct report/result folders.
-- Keep screenshot baseline paths unchanged while separating transient `.tmp` report output.
-- Update CI artifact upload and source-contract tests so both report sets are preserved.
+- Start with T152: reproduce and fix command-palette close behavior from inside `#cmdkInput`.
+- Guard Escape and Ctrl/Cmd+K close paths in a rendered Playwright test and verify `aria-expanded` updates.
+- Keep the existing command-palette search/filter smoke intact while adding the close contract.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.
