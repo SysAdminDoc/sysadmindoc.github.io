@@ -646,11 +646,20 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Extended the rendered interaction smoke to enter an unmatched command-palette query, verify the no-results status/copy, assert no result rows and cleared `aria-activedescendant`, then enter a valid `search` query and verify results plus active option state recover before closing.
   - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
-- [ ] **T156** P2 - Split the homepage interaction smoke into focused flows.
+- [x] **T156** P2 - Split the homepage interaction smoke into focused flows.
   - Why: T152-T155 added valuable command-palette assertions, but the first rendered interaction smoke now covers command palette, terminal navigation, catalog search, and video modal behavior in one long test. A single failure produces a broader trace than necessary and makes unrelated homepage interactions wait behind command-palette setup.
   - Evidence: `tests/playwright/interaction-smoke.spec.mjs` now performs multiple command-palette open/filter/close/navigation cycles before reaching terminal, catalog, and video checks inside the same test case.
   - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: Command-palette assertions move into a focused rendered smoke test with its own runtime-error/overflow guards, while terminal/catalog/video homepage checks remain covered in a separate test; total `npm run audit:interactions` runtime stays reasonable and all existing assertions are preserved.
+  - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+  - Done: Split the rendered homepage smoke into a focused command-palette test and a separate terminal/catalog/video workflow test. Both tests collect runtime errors, run against built `dist/`, and retain horizontal-overflow guards; the interaction suite now reports four focused Chromium tests.
+  - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+
+- [ ] **T157** P2 - Guard command-palette section hash activation.
+  - Why: Command-palette route activation is now covered for `/search/`, but same-page section hash activation uses a different `navigateTo()` branch with `scrollIntoView`, focus targeting, and history updates.
+  - Evidence: `public/scripts/cmdk.js` handles `href` values beginning with `#` separately. The rendered smoke currently activates internal page routes but does not activate a section result such as `Catalog` or `Live Apps` from the palette.
+  - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: A rendered browser test filters to a deterministic section command, activates it, verifies the expected hash, palette closed state, focus target behavior, and no runtime errors or horizontal overflow.
   - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 
 ---

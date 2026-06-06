@@ -98,7 +98,7 @@ async function expectCommandPaletteState(page, isOpen) {
 }
 
 test.describe('rendered interaction smoke', () => {
-  test('homepage command palette, terminal, video, and catalog search work without runtime errors', async ({ page }) => {
+  test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/', '#heroTerm.interactive');
@@ -171,6 +171,16 @@ test.describe('rendered interaction smoke', () => {
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(pointerHref)}$`));
     await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('homepage terminal, video, and catalog search work without runtime errors', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#heroTerm.interactive');
+    await expectNoHorizontalOverflow(page);
 
     await page.locator('#heroTerm').click();
     await expect(page.locator('.term-input')).toBeVisible();
