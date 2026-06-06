@@ -68,6 +68,7 @@ npm run lhci:audit     # run advisory Lighthouse CI budgets against the built di
 npm run lhci:summary   # summarize LHCI filesystem warning reports for GitHub summaries
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
 npm run audit:playwright # browser axe + visual baselines against fixture-built dist/
+npm run audit:interactions # focused rendered interaction smoke against built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
@@ -75,7 +76,7 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
-`npm run audit:playwright` requires a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
+`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run audit:interactions` runs a compact rendered smoke over command palette filtering, terminal navigation, catalog search, project share fallback, console errors, and horizontal overflow without screenshot assertions. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
