@@ -12,6 +12,7 @@ const options = {
   candidateStyleSrc: null,
   candidateStyleElemSrc: null,
   candidateStyleAttrSrc: null,
+  activeStyleElemSrc: false,
   distDir: null,
 };
 
@@ -34,6 +35,8 @@ for (let index = 2; index < process.argv.length; index += 1) {
     options.candidateStyleElemSrc = process.argv[index];
   } else if (arg.startsWith('--candidate-style-src-elem=')) {
     options.candidateStyleElemSrc = arg.slice('--candidate-style-src-elem='.length);
+  } else if (arg === '--active-style-src-elem') {
+    options.activeStyleElemSrc = true;
   } else if (arg === '--candidate-style-src-attr') {
     index += 1;
     options.candidateStyleAttrSrc = process.argv[index];
@@ -48,7 +51,7 @@ for (let index = 2; index < process.argv.length; index += 1) {
       options.distDir = 'dist';
     }
   } else if (arg === '--help' || arg === '-h') {
-    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--candidate-style-src <tokens>] [--candidate-style-src-elem <tokens>] [--candidate-style-src-attr <tokens>] [--dist [dir]] [--strict]');
+    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--candidate-style-src <tokens>] [--candidate-style-src-elem <tokens>] [--active-style-src-elem] [--candidate-style-src-attr <tokens>] [--dist [dir]] [--strict]');
     process.exit(0);
   } else {
     throw new Error(`Unknown argument: ${arg}`);
@@ -441,7 +444,7 @@ const unknownExecutable = executableInline.filter((script) => !script.allowlist)
 const unknownEventHandlers = eventHandlers.filter((handler) => !handler.allowlist);
 const candidate = candidateTokens(options.candidateScriptSrc);
 const candidateStyle = candidateTokens(options.candidateStyleSrc);
-const candidateStyleElem = candidateTokens(options.candidateStyleElemSrc);
+const candidateStyleElem = options.activeStyleElemSrc ? styleElemSrc : candidateTokens(options.candidateStyleElemSrc);
 const candidateStyleAttr = candidateTokens(options.candidateStyleAttrSrc);
 const candidateBlockers = candidate
   ? [
@@ -587,9 +590,9 @@ if (candidateStyle) {
 
 if (candidateStyleElem) {
   console.log('');
-  console.log(`Candidate style-src-elem: ${candidateStyleElem.join(' ')}`);
+  console.log(`${options.activeStyleElemSrc ? 'Active' : 'Candidate'} style-src-elem: ${candidateStyleElem.join(' ')}`);
   if (candidateStyleElemBlockers.length === 0) {
-    console.log('  PASS - candidate allows all current style element/link surfaces.');
+    console.log(`  PASS - ${options.activeStyleElemSrc ? 'active policy' : 'candidate'} allows all current style element/link surfaces.`);
   } else {
     console.log(`  BLOCKED - ${candidateStyleElemBlockers.length} current style element/link surface(s) would be blocked.`);
     printCandidateBlockers(candidateStyleElemBlockers, (blocker) => {
@@ -633,8 +636,15 @@ if (options.strict && candidate && candidateBlockers.length > 0) {
 if (options.strict && candidateStyle && candidateStyleBlockers.length > 0) {
   failures.push(`candidate style-src ${candidateStyle.join(' ')} would block ${candidateStyleBlockers.length} current inline style surface(s).`);
 }
+if (options.strict && options.activeStyleElemSrc && styleElemDirective.source !== 'style-src-elem') {
+  failures.push('active style-src-elem directive is missing.');
+}
+if (options.strict && options.activeStyleElemSrc && directiveAllowsUnsafeInline(styleElemSrc)) {
+  failures.push("active style-src-elem still allows 'unsafe-inline'.");
+}
 if (options.strict && candidateStyleElem && candidateStyleElemBlockers.length > 0) {
-  failures.push(`candidate style-src-elem ${candidateStyleElem.join(' ')} would block ${candidateStyleElemBlockers.length} current style element/link surface(s).`);
+  const styleElemLabel = options.activeStyleElemSrc ? 'active style-src-elem' : 'candidate style-src-elem';
+  failures.push(`${styleElemLabel} ${candidateStyleElem.join(' ')} would block ${candidateStyleElemBlockers.length} current style element/link surface(s).`);
 }
 if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
   failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);

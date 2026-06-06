@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -138,4 +139,32 @@ test('csp audit strict split style candidates reflect staged attribute migration
   assert.match(attr.stdout, /Candidate style-src-attr: 'none'/);
   assert.match(attr.stdout, /PASS - candidate allows all current style attribute surfaces/);
   assert.equal(attr.stderr, '');
+});
+
+test('csp audit can verify rendered style elements against the active policy', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-active-style-'));
+  const inlineCss = 'body{color:#123;background:#fff}';
+  const inlineHash = sha256Csp(inlineCss);
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    `style-src-elem 'self' '${inlineHash}'`,
+    "style-src-attr 'none'",
+  ].join('; ');
+
+  fs.writeFileSync(
+    path.join(tmp, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><style>${inlineCss}</style><link rel="stylesheet" href="/assets/site.css"></head><body></body></html>`,
+  );
+
+  const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], {
+    cwd: repoRoot,
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Active style-src-elem: 'self' 'sha256-/);
+  assert.match(result.stdout, /PASS - active policy allows all current style element\/link surfaces/);
+  assert.equal(result.stderr, '');
 });

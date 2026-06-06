@@ -40,6 +40,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Split style CSP auditing into `style-src-elem` and `style-src-attr` modes, moved the active style policy to hashed `style-src-elem` plus `style-src-attr 'none'`, and added `npm run csp:audit:browser` to verify representative rendered routes without style policy violations.
 - Converted remaining finite inline style attributes and runtime `style.cssText` writes to classes, tone maps, SVG attributes, and direct dynamic property writes so source and built CSP audits report zero style-attribute blockers.
 - Stabilized fixture-backed Playwright visual baselines after strict style CSP hardening, including fixture-aware endpoint/DOM budgets and refreshed desktop/mobile screenshots for the deterministic generated-data build.
+- Added strict rendered style-element CSP hash verification to `build:ci`; the new dist audit derives `style-src-elem` tokens from the active policy and fails if rendered critical/no-JS style blocks drift from their hashes.
 - Added class-based Shiki highlighting for cached project README code fences while keeping remote README inline styles and event-handler attributes stripped by `sanitize-html`.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
