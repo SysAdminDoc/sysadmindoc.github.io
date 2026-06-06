@@ -565,11 +565,20 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added `--active-style-src-elem` to the CSP audit so strict rendered checks derive the candidate tokens from the active policy instead of duplicating hashes in package scripts. Added `npm run csp:audit:dist:style:elem` and wired it into `build:ci` after HTML repair and public script minification.
   - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs test/public-script-minify.test.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The build-integrated CSP gate scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active `style-src-elem` hashes.
 
-- [ ] **T147** P2 - Require consistent CSP metadata across rendered pages.
+- [x] **T147** P2 - Require consistent CSP metadata across rendered pages.
   - Why: The active-policy audit now proves the first rendered CSP contract allows the built style surfaces, but the script still uses the first CSP meta tag as the active policy. A future route with a missing or divergent CSP meta could weaken a single page without changing the first scanned page.
   - Evidence: Current `npm run csp:audit:dist:style:elem` reports 194 CSP meta tags across 194 built HTML files, but it does not yet assert that every rendered CSP meta has identical directive text before deriving active tokens.
   - Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, `README.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: Strict dist CSP audits fail when any built HTML page lacks a CSP meta tag or has a policy that diverges from the active policy; reporting should identify the first few divergent files without making normal source inventory mode noisy.
+  - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
+  - Done: Strict dist CSP audits now count files with exactly one CSP meta, count unique rendered CSP policies, and fail when any built page lacks a CSP meta, has multiple CSP metas, or differs from the active policy. Failure output includes representative affected paths.
+  - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run csp:audit:dist:style:elem`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. Current rendered output reports 194/194 files with one CSP meta and one unique CSP policy.
+
+- [ ] **T148** P2 - Generate active style CSP hashes from source inputs.
+  - Why: The source test and rendered dist gate now catch stale `style-src-elem` hashes, but the policy still stores the critical/no-JS hashes as string literals in `Base.astro`. Generating the policy tokens from the CSS source values would make intentional first-paint CSS edits less manual.
+  - Evidence: T146/T147 prove the current hashes are correct and consistently rendered, but the next maintainer still has to update the CSP string when `critical.css` or the no-JS fallback style changes.
+  - Touches: `src/layouts/Base.astro`, `src/styles/critical.css`, `test/csp-audit.test.mjs`, and possibly a small source helper.
+  - Acceptance: The active `style-src-elem` hash tokens are derived from the same source strings that render the inline critical/no-JS style blocks; tests prove the rendered CSP still contains the computed hashes.
   - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
 
 ---

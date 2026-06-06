@@ -53,7 +53,7 @@ npm run csp:audit:style:elem # report style-src-elem 'self' blockers without fai
 npm run csp:audit:style:attr # verify style-src-attr 'none' is clean in source/runtime inventory
 npm run csp:audit:browser # browser-check representative routes with candidate style-src-attr 'none'
 npm run csp:audit:dist # verify rendered dist/ CSP inventory after a build
-npm run csp:audit:dist:style:elem # fail if rendered style-src-elem hashes drift from the active policy
+npm run csp:audit:dist:style:elem # fail on rendered style-src-elem drift or inconsistent CSP metas
 npm run dom:audit     # verify built homepage/catalog DOM-size budgets
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity

@@ -336,7 +336,7 @@ function auditSourceFile(filePath, text) {
     });
   }
 
-  return { cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes, styleLinks };
+  return { file: rel, cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes, styleLinks };
 }
 
 async function collectRuntimeStyleFiles(dir) {
@@ -422,6 +422,12 @@ const cssTextWrites = runtimeStyleAudits.flatMap((audit) => audit.cssTextWrites)
 const setAttributeStyleWrites = runtimeStyleAudits.flatMap((audit) => audit.setAttributeStyleWrites);
 const directStylePropertyReferences = runtimeStyleAudits.flatMap((audit) => audit.directStylePropertyReferences);
 const activeCsp = cspMetas[0]?.content ?? '';
+const cspPolicies = new Set(cspMetas.map((meta) => meta.content));
+const filesWithoutCsp = options.distDir ? sourceAudits.filter((audit) => audit.cspMetas.length === 0) : [];
+const filesWithMultipleCsp = options.distDir ? sourceAudits.filter((audit) => audit.cspMetas.length > 1) : [];
+const divergentCspMetas = options.distDir && activeCsp
+  ? cspMetas.filter((meta) => meta.content !== activeCsp)
+  : [];
 const directives = parseCsp(activeCsp);
 const scriptDirective = effectiveDirective(directives, 'script-src', ['default-src']);
 const styleDirective = effectiveDirective(directives, 'style-src', ['default-src']);
@@ -504,6 +510,13 @@ function printCandidateBlockers(blockers, labelFor, max = 80) {
   }
 }
 
+function summarizePaths(records, getPath = (record) => record.file, max = 8) {
+  const paths = records.map(getPath);
+  const shown = paths.slice(0, max).join(', ');
+  if (paths.length <= max) return shown;
+  return `${shown}, ... ${paths.length - max} more`;
+}
+
 function printScript(script) {
   const status = script.allowlist ? 'known' : 'unknown';
   const hash = script.hash ? ` hash='${script.hash}'` : ' hash=dynamic';
@@ -522,6 +535,10 @@ function printEvent(handler) {
 console.log('CSP preflight audit');
 console.log(`  ${options.distDir ? 'built HTML files' : 'source files'} scanned: ${files.length}`);
 console.log(`  CSP meta tags: ${cspMetas.length}`);
+if (options.distDir) {
+  console.log(`  files with one CSP meta: ${files.length - filesWithoutCsp.length - filesWithMultipleCsp.length}/${files.length}`);
+  console.log(`  unique CSP policies: ${cspPolicies.size}`);
+}
 if (activeCsp) console.log(`  active CSP: ${activeCsp}`);
 console.log(`  script-src: ${directiveLabel('script-src', scriptDirective)}`);
 console.log(`  style-src: ${directiveLabel('style-src', styleDirective)}`);
@@ -626,6 +643,15 @@ if (options.strict && unknownExecutable.length > 0) {
 }
 if (options.strict && unknownEventHandlers.length > 0) {
   failures.push(`${unknownEventHandlers.length} inline event handler(s) are outside the CSP audit allowlist.`);
+}
+if (options.strict && options.distDir && filesWithoutCsp.length > 0) {
+  failures.push(`${filesWithoutCsp.length} built HTML file(s) are missing a CSP meta tag: ${summarizePaths(filesWithoutCsp)}.`);
+}
+if (options.strict && options.distDir && filesWithMultipleCsp.length > 0) {
+  failures.push(`${filesWithMultipleCsp.length} built HTML file(s) have multiple CSP meta tags: ${summarizePaths(filesWithMultipleCsp)}.`);
+}
+if (options.strict && options.distDir && divergentCspMetas.length > 0) {
+  failures.push(`${divergentCspMetas.length} built CSP meta tag(s) differ from the active policy: ${summarizePaths(divergentCspMetas)}.`);
 }
 if (options.strict && directiveAllowsUnsafeInline(scriptSrc)) {
   failures.push("script-src still allows 'unsafe-inline'.");
