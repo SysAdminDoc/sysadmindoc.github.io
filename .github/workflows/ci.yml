@@ -56,6 +56,8 @@ jobs:
         run: npm run a11y:audit
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+      - name: Rendered interaction smoke
+        run: npm run audit:interactions
       - name: Browser accessibility and visual audit
         run: npm run audit:playwright
       - name: Upload Playwright reports
