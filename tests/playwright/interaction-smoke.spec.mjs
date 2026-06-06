@@ -143,6 +143,21 @@ test.describe('rendered interaction smoke', () => {
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(firstHref)}$`));
     await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');
+    await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, true);
+    await page.mouse.click(8, 8);
+    await expectCommandPaletteState(page, false);
+    await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, true);
+    await page.locator('#cmdkInput').fill('search');
+    await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
+    const pointerTarget = page.locator('#cmdkList .cmdk-item').first();
+    const pointerHref = await pointerTarget.getAttribute('data-href');
+    expect(pointerHref).toMatch(/^\/[^/]/);
+    await pointerTarget.click();
+    await expect(page).toHaveURL(new RegExp(`${escapeRegExp(pointerHref)}$`));
+    await expectCommandPaletteState(page, false);
+    await preparePage(page, '/', '#heroTerm.interactive');
 
     await page.locator('#heroTerm').click();
     await expect(page.locator('.term-input')).toBeVisible();

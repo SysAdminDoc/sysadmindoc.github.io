@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 31
+Current cycle: 32
 
 ## Latest result
 
@@ -43,6 +43,8 @@ Current cycle: 31
 - Verification for this cycle: `node --check public/scripts/cmdk.js`; `node --check tests/playwright/interaction-smoke.spec.mjs`; `node --test test/public-script-minify.test.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 - 2026-06-06: Cycle 31 implemented T153 command-palette keyboard result activation coverage. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with ArrowDown/ArrowUp, activates `/search/` with Enter, and verifies the palette is closed after navigation. T153 is checked off in `TODO.md`, and T154 was added for pointer activation and backdrop dismiss coverage.
 - Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+- 2026-06-06: Cycle 32 implemented T154 command-palette pointer activation and backdrop dismiss coverage. The rendered interaction smoke now clicks the native dialog backdrop and verifies closed state plus `aria-expanded` reset, then reopens, filters a stable `search` result set, clicks the first internal command result, verifies navigation, and confirms the palette is closed after navigation. T154 is checked off in `TODO.md`, and T155 was added for no-results recovery coverage.
+- Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
 ## Next project
 
@@ -51,7 +53,7 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 ## Next cycle seed
 
 - Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `ROADMAP.md`.
-- Start with T154: guard command-palette pointer activation and backdrop dismiss behavior.
-- Verify backdrop click resets `aria-expanded`, then click a deterministic internal result and confirm navigation.
-- Keep the existing command-palette keyboard close and keyboard activation smoke assertions intact.
+- Start with T155: guard command-palette no-results state and recovery behavior.
+- Verify no-results copy, cleared `aria-activedescendant`, no selected rows, then valid-query recovery.
+- Keep the existing command-palette keyboard close, keyboard activation, and pointer activation smoke assertions intact.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

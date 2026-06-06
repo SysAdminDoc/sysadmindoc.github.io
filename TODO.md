@@ -628,11 +628,20 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Extended the rendered interaction smoke to filter command-palette results with a stable `search` query, wait for the debounced result status, assert selected option and `aria-activedescendant` state, move selection with ArrowDown/ArrowUp, activate the selected internal `/search/` result with Enter, and verify the palette is closed after navigation.
   - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
-- [ ] **T154** P2 - Guard command-palette pointer activation and backdrop dismiss.
+- [x] **T154** P2 - Guard command-palette pointer activation and backdrop dismiss.
   - Why: T152/T153 cover keyboard close and keyboard activation, but pointer-specific dialog behaviors remain unguarded. The palette supports clicking result rows and clicking the native dialog backdrop to dismiss, both of which can regress independently from keyboard handling.
   - Evidence: `public/scripts/cmdk.js` has separate `backdrop.addEventListener('click', ...)` and `list.addEventListener('click', ...)` paths. The rendered smoke currently opens, filters, closes, and keyboard-activates, but does not click a result row or the dialog backdrop.
   - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: A rendered browser test clicks the backdrop to close the palette with `aria-expanded` reset, then clicks a deterministic internal command result and verifies navigation, no runtime errors, and no horizontal overflow.
+  - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+  - Done: Extended the rendered interaction smoke to open the command palette, click outside the panel on the native dialog backdrop, verify closed state and `aria-expanded` reset, then reopen, filter to a stable `search` result set, click the first internal result, verify navigation, and confirm the palette is closed after navigation.
+  - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+
+- [ ] **T155** P2 - Guard command-palette no-results recovery.
+  - Why: The command palette now has coverage for successful filtering, close paths, keyboard activation, and pointer activation, but the empty-result state and recovery path remain unguarded. Empty states are user-facing and can regress if the debounced renderer or active-descendant reset changes.
+  - Evidence: `public/scripts/cmdk.js` renders `.cmdk-empty`, updates `#cmdkMeta`, and clears `aria-activedescendant` when no rows match. The rendered smoke does not currently enter an unmatched query or verify that a later valid query recovers results.
+  - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: A rendered browser test enters an unmatched query, verifies the no-results copy, cleared `aria-activedescendant`, and no selected rows, then enters a valid query and verifies results and active option state recover without runtime errors or horizontal overflow.
   - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 
 ---
