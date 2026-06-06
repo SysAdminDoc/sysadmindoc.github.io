@@ -168,3 +168,43 @@ test('csp audit can verify rendered style elements against the active policy', (
   assert.match(result.stdout, /PASS - active policy allows all current style element\/link surfaces/);
   assert.equal(result.stderr, '');
 });
+
+test('csp audit strict dist mode fails on missing or divergent CSP metadata', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-meta-consistency-'));
+  const nestedDir = path.join(tmp, 'nested');
+  fs.mkdirSync(nestedDir);
+  const inlineCss = 'body{color:#123}';
+  const inlineHash = sha256Csp(inlineCss);
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    `style-src-elem 'self' '${inlineHash}'`,
+    "style-src-attr 'none'",
+  ].join('; ');
+  const divergentPolicy = policy.replace("connect-src 'self'", "connect-src 'self' https://example.com");
+  const divergentFallbackPolicy = divergentPolicy === policy
+    ? `${policy}; connect-src https://example.com`
+    : divergentPolicy;
+
+  fs.writeFileSync(
+    path.join(tmp, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><style>${inlineCss}</style></head><body></body></html>`,
+  );
+  fs.writeFileSync(path.join(tmp, 'missing.html'), '<!doctype html><html><head></head><body></body></html>');
+  fs.writeFileSync(
+    path.join(nestedDir, 'divergent.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${divergentFallbackPolicy}"></head><body></body></html>`,
+  );
+
+  const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], {
+    cwd: repoRoot,
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /files with one CSP meta: 2\/3/);
+  assert.match(result.stdout, /unique CSP policies: 2/);
+  assert.match(result.stderr, /1 built HTML file\(s\) are missing a CSP meta tag: .*missing\.html/);
+  assert.match(result.stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*(index\.html|nested\/divergent\.html)/);
+});

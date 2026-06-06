@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 24
+Current cycle: 25
 
 ## Latest result
 
@@ -29,6 +29,8 @@ Current cycle: 24
 - Verification for this cycle: `npm run generated:fixtures`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm test`; `node --check scripts/audit-public-endpoints.mjs`; `node --check scripts/audit-dom-size.mjs`; `node --test test/llms-completeness.test.mjs test/dom-size-budget.test.mjs`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run build:ci`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright:update`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright`.
 - 2026-06-06: Cycle 24 implemented T146 build-output CSP hash-drift enforcement. The CSP audit now supports `--active-style-src-elem`, `npm run csp:audit:dist:style:elem` derives strict rendered style-element tokens from the active policy, and `build:ci` runs the gate before endpoint/feed/DOM/search/schema audits. T146 is checked off in `TODO.md`, and T147 was added for rendered CSP metadata consistency.
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs test/public-script-minify.test.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The build-integrated CSP gate scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active `style-src-elem` hashes.
+- 2026-06-06: Cycle 25 implemented T147 rendered CSP metadata consistency. Strict dist CSP audits now report files with exactly one CSP meta and unique rendered policy count, then fail on missing, duplicated, or divergent CSP meta policies with representative paths. T147 is checked off in `TODO.md`, and T148 was added for generated style CSP hashes.
+- Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run csp:audit:dist:style:elem`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. Current rendered output reports 194/194 files with one CSP meta and one unique policy.
 
 ## Next project
 
@@ -36,8 +38,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-24.md`.
-- Start with T147: make strict dist CSP audits fail on missing or divergent rendered CSP meta tags before deriving the active policy.
-- Audit whether the two active `style-src-elem` hashes should be generated from source during build to prevent critical/no-JS CSS drift.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-25.md`.
+- Start with T148: generate active `style-src-elem` hashes from the same source strings that render critical/no-JS CSS.
+- Keep the source hash test and strict rendered dist gate as proof that the generated policy still matches output.
 - Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.
