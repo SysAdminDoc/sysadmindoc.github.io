@@ -574,12 +574,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Strict dist CSP audits now count files with exactly one CSP meta, count unique rendered CSP policies, and fail when any built page lacks a CSP meta, has multiple CSP metas, or differs from the active policy. Failure output includes representative affected paths.
   - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run csp:audit:dist:style:elem`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. Current rendered output reports 194/194 files with one CSP meta and one unique CSP policy.
 
-- [ ] **T148** P2 - Generate active style CSP hashes from source inputs.
+- [x] **T148** P2 - Generate active style CSP hashes from source inputs.
   - Why: The source test and rendered dist gate now catch stale `style-src-elem` hashes, but the policy still stores the critical/no-JS hashes as string literals in `Base.astro`. Generating the policy tokens from the CSS source values would make intentional first-paint CSS edits less manual.
   - Evidence: T146/T147 prove the current hashes are correct and consistently rendered, but the next maintainer still has to update the CSP string when `critical.css` or the no-JS fallback style changes.
   - Touches: `src/layouts/Base.astro`, `src/styles/critical.css`, `test/csp-audit.test.mjs`, and possibly a small source helper.
   - Acceptance: The active `style-src-elem` hash tokens are derived from the same source strings that render the inline critical/no-JS style blocks; tests prove the rendered CSP still contains the computed hashes.
   - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
+  - Done: `Base.astro` now computes `style-src-elem` from `criticalCss` and the no-JS reveal CSS constant, then renders that generated `contentSecurityPolicy` value. The source CSP audit resolves the generated policy for source inventory checks, and the rendered dist audit remains the build-output proof.
+  - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `node scripts/audit-csp.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`.
+
+- [ ] **T149** P2 - Add a focused rendered interaction smoke for final style CSP routes.
+  - Why: The static and browser CSP gates cover policy violations, and fixture Playwright covers axe/visual baselines, but the next UX pass should cheaply prove core interactions still work under the generated final CSP policy without relying on visual diffs alone.
+  - Evidence: Current browser coverage exercises representative CSP routes, command palette, terminal, and visual pages. It does not emit a compact interaction contract for share fallback, terminal command output, command-palette navigation, search filtering, and no horizontal overflow in one focused post-build smoke.
+  - Touches: `tests/playwright/portfolio-audits.spec.mjs` or a new focused Playwright spec, `playwright.audits.config.mjs`, `package.json`, `README.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: A focused rendered smoke runs against built `dist/`, checks representative interactions under the active CSP, fails on console errors or horizontal overflow, and avoids brittle screenshot assertions.
+  - Verify: `npm run build:ci`; focused Playwright smoke; `npm run audit:playwright`.
 
 ---
 

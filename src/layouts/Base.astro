@@ -1,4 +1,5 @@
 ---
+import crypto from 'node:crypto';
 import globalCssUrl from '../styles/global.css?url';
 import criticalCss from '../styles/critical.css?raw';
 import type { CmdkSection } from '../data/cmdk';
@@ -37,6 +38,14 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const isHome = Astro.url.pathname === '/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
+const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
+
+function sha256Csp(value: string) {
+  return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
+}
+
+const styleElemSrc = ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
+const contentSecurityPolicy = `default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem ${styleElemSrc}; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'`;
 
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas
@@ -87,7 +96,7 @@ if (isHome) {
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="SysAdminDoc" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-IgolL9OcCAAkbJBdeHMz7R8+koltdJ8QZkkoG6h27v4=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'" />
+  <meta http-equiv="Content-Security-Policy" content={contentSecurityPolicy} />
   <meta name="generator" content={Astro.generator} />
 
   <meta property="og:title" content={title} />
@@ -131,7 +140,7 @@ if (isHome) {
   {/* Fonts self-hosted in public/fonts/ and declared in critical.css + global.css */}
   <noscript>
     <link rel="stylesheet" href={globalCssUrl} />
-    <style>.rv,.card-enter{opacity:1!important;transform:none!important}</style>
+    <style is:inline set:html={noJsRevealCss}></style>
   </noscript>
 
 </head>

@@ -21,7 +21,7 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-06 (Cycle 25; see `TODO.md` T141-T148 and `docs/research-2026-06-06-cycle-25.md`)
+Last researched: 2026-06-06 (Cycle 26; see `TODO.md` T141-T149 and `docs/research-2026-06-06-cycle-26.md`)
 Last updated: 2026-06-06
 Current version: v0.18.3
 
@@ -144,6 +144,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `src/layouts/Base.astro`, `src/styles/critical.css`, `test/csp-audit.test.mjs`, and possibly a tiny source helper.
 - Acceptance: The CSP meta `style-src-elem` tokens are derived from the same source strings that render the inline critical/no-JS style blocks, with tests proving the rendered policy keeps matching those computed hashes.
 - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
+- Done in Cycle 26: `Base.astro` now computes `style-src-elem` from `criticalCss` and `noJsRevealCss`, then renders `contentSecurityPolicy` from those computed tokens. `scripts/audit-csp.mjs` resolves that generated policy in source mode so the source inventory keeps reporting the active directives, while the strict rendered dist gate remains the build-output proof. The rendered build still passes with 194/194 CSP metas, one unique policy, 388 inline style blocks, and 776 stylesheet/preload links.
+- Confidence: High
+
+### T149 - Add a focused rendered interaction smoke for final style CSP routes
+
+- Priority: P2
+- Why: Static and browser CSP gates now protect the policy, and fixture Playwright protects accessibility/visual baselines. A compact interaction smoke should prove the most important hydrated flows still work under the generated final style CSP without adding another screenshot dependency.
+- Evidence: Existing browser coverage exercises CSP violations and visual/axe routes, but a single post-build interaction contract for command palette navigation, terminal commands, project share fallback, search filtering, and overflow would make regressions easier to locate.
+- Touches: `tests/playwright/portfolio-audits.spec.mjs` or a focused new spec, `playwright.audits.config.mjs`, `package.json`, `README.md`, `PROJECT_CONTEXT.md`.
+- Acceptance: The smoke runs against built `dist/`, fails on console errors or horizontal overflow, verifies the representative interactions, and keeps visual assertions out of the focused smoke.
+- Verify: `npm run build:ci`; focused Playwright smoke; `npm run audit:playwright`.
 - Confidence: Medium
 
 Research sources:
@@ -924,7 +935,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T148 generated style CSP hashes, then run a fresh UX pass on the stricter-CSP interactive routes.
+Continue from T149 focused rendered interaction smoke for final style CSP routes.
 
 ### Important Findings So Far
 
@@ -940,12 +951,13 @@ Continue from T148 generated style CSP hashes, then run a fresh UX pass on the s
 - Cycle 23 implemented T145. The fixture build now passes endpoint and DOM-size audits with data-aware floors, the refreshed screenshot baselines are generated from `PROFILE_PROJECTS_OFFLINE=1` fixture output, and full Playwright audit passes 21/21 CSP, axe, and visual checks.
 - Cycle 24 implemented T146. `build:ci` now runs a strict rendered `style-src-elem` audit derived from the active CSP, and the current live build passes with 194 CSP metas, 388 style blocks, and 776 stylesheet/preload links.
 - Cycle 25 implemented T147. Strict dist CSP audits now fail on missing, duplicated, or divergent rendered CSP meta policies; current rendered output has 194/194 files with one CSP meta and one unique policy.
+- Cycle 26 implemented T148. Active `style-src-elem` hashes are now generated from the same source strings that render critical/no-JS CSS, while source and rendered CSP audits continue to report the resolved active policy.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T148 by generating active `style-src-elem` hashes from the same source strings that render critical/no-JS CSS.
-2. Keep the source hash test and strict rendered dist gate as proof that the generated policy still matches output.
+1. Continue T149 by adding a compact rendered interaction smoke under the final generated style CSP policy.
+2. Keep it focused on interactions and console/overflow checks; visual baselines remain in the existing Playwright audit.
 3. Run a fresh UX pass on the command palette, terminal, project share, language lane, and project detail routes now covered by the stricter style policy.
 
 ### Unprocessed Leads
