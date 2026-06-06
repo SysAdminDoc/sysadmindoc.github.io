@@ -155,7 +155,18 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `tests/playwright/portfolio-audits.spec.mjs` or a focused new spec, `playwright.audits.config.mjs`, `package.json`, `README.md`, `PROJECT_CONTEXT.md`.
 - Acceptance: The smoke runs against built `dist/`, fails on console errors or horizontal overflow, verifies the representative interactions, and keeps visual assertions out of the focused smoke.
 - Verify: `npm run build:ci`; focused Playwright smoke; `npm run audit:playwright`.
+- Done in Cycle 27: Added `tests/playwright/interaction-smoke.spec.mjs` plus `npm run audit:interactions`. The smoke runs against built `dist/`, stubs external GitHub/YouTube calls without console abort noise, verifies the active generated `style-src-elem` CSP, and exercises homepage command-palette filtering, terminal `contact`, catalog search, click-to-load video close, mobile Python-lane project navigation, and mobile project share fallback while failing on runtime console errors or horizontal overflow.
 - Confidence: Medium
+
+### T150 - Promote the rendered interaction smoke into PR CI
+
+- Priority: P2
+- Why: T149 gives the project a compact rendered UX smoke, but it is still a local/manual command. PR CI already installs Chromium and runs Playwright after a fixture-backed `build:ci`, so the smoke can become a cheap pre-merge guard without another browser setup.
+- Evidence: `.github/workflows/ci.yml` currently runs `npm run audit:playwright` after `npm run build:ci` and uploads `.tmp/playwright-report` plus `.tmp/playwright-results`. `npm run audit:interactions` uses the same config and report paths.
+- Touches: `.github/workflows/ci.yml`, `README.md`, `PROJECT_CONTEXT.md`, and possibly workflow/source-contract tests.
+- Acceptance: Pull-request CI runs the focused rendered interaction smoke after the built `dist/` and browser are available, publishes failures through the existing Playwright artifact upload, and keeps visual baseline and interaction smoke responsibilities separate.
+- Verify: workflow/source-contract test if present; `npm test`; `npm run audit:interactions`.
+- Confidence: High
 
 Research sources:
 
@@ -935,7 +946,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T149 focused rendered interaction smoke for final style CSP routes.
+Continue from T150 rendered interaction smoke CI promotion.
 
 ### Important Findings So Far
 
@@ -952,13 +963,14 @@ Continue from T149 focused rendered interaction smoke for final style CSP routes
 - Cycle 24 implemented T146. `build:ci` now runs a strict rendered `style-src-elem` audit derived from the active CSP, and the current live build passes with 194 CSP metas, 388 style blocks, and 776 stylesheet/preload links.
 - Cycle 25 implemented T147. Strict dist CSP audits now fail on missing, duplicated, or divergent rendered CSP meta policies; current rendered output has 194/194 files with one CSP meta and one unique policy.
 - Cycle 26 implemented T148. Active `style-src-elem` hashes are now generated from the same source strings that render critical/no-JS CSS, while source and rendered CSP audits continue to report the resolved active policy.
+- Cycle 27 implemented T149. `npm run audit:interactions` now runs a focused rendered Playwright smoke over active CSP, command-palette filtering, terminal contact navigation, catalog search, click-to-load video close, mobile Python-lane project navigation, project share fallback, console errors, and horizontal overflow without screenshot assertions.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T149 by adding a compact rendered interaction smoke under the final generated style CSP policy.
-2. Keep it focused on interactions and console/overflow checks; visual baselines remain in the existing Playwright audit.
-3. Run a fresh UX pass on the command palette, terminal, project share, language lane, and project detail routes now covered by the stricter style policy.
+1. Continue T150 by wiring `npm run audit:interactions` into PR CI after the fixture build and Chromium install.
+2. Keep the interaction smoke distinct from `npm run audit:playwright`; screenshots remain in the fixture-backed visual suite.
+3. Verify the workflow contract locally and make sure existing Playwright report artifacts still capture interaction-smoke failures.
 
 ### Unprocessed Leads
 

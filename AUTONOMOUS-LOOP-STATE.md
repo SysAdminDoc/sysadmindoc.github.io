@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 26
+Current cycle: 27
 
 ## Latest result
 
@@ -33,6 +33,8 @@ Current cycle: 26
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run csp:audit:dist:style:elem`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. Current rendered output reports 194/194 files with one CSP meta and one unique policy.
 - 2026-06-06: Cycle 26 implemented T148 generated style CSP hashes. `Base.astro` now computes `style-src-elem` from the same `criticalCss` and no-JS reveal CSS strings that render the inline style blocks, and the source CSP audit resolves the generated policy for source inventory checks. T148 is checked off in `TODO.md`, and T149 was added for a focused rendered interaction smoke.
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `node scripts/audit-csp.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The rendered build still passes with 194/194 CSP metas, one unique policy, 388 inline style blocks, and 776 stylesheet/preload links.
+- 2026-06-06: Cycle 27 implemented T149 focused rendered interaction smoke. Added `tests/playwright/interaction-smoke.spec.mjs` and `npm run audit:interactions`, covering active generated style CSP, homepage command-palette filtering, terminal `contact`, catalog search, click-to-load video close, mobile Python-lane project navigation, and mobile project share fallback without screenshot assertions. T149 is checked off in `TODO.md`, and T150 was added for PR CI promotion.
+- Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `npm run build:ci`; `npm run audit:interactions`. The focused smoke passed 3/3 Chromium tests and fails on runtime console errors or horizontal overflow.
 
 ## Next project
 
@@ -40,8 +42,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-26.md`.
-- Start with T149: add a compact rendered interaction smoke under the final generated style CSP policy.
-- Keep the smoke focused on interactions, console errors, and horizontal overflow; visual baselines stay in the existing Playwright audit.
-- Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `ROADMAP.md`.
+- Start with T150: wire `npm run audit:interactions` into PR CI after the fixture build and Chromium install.
+- Keep `audit:interactions` focused on interactions, console errors, and horizontal overflow; visual baselines stay in `npm run audit:playwright`.
+- Verify the workflow/source contract locally, then run the focused smoke and normal Node checks.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.
