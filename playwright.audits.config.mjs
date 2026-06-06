@@ -33,6 +33,7 @@ export default defineConfig({
     locale: 'en-US',
     reducedMotion: 'reduce',
     screenshot: 'only-on-failure',
+    serviceWorkers: 'block',
     timezoneId: 'UTC',
     trace: 'retain-on-failure',
     video: 'off',

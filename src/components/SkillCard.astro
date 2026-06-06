@@ -23,14 +23,15 @@ const Tag = href ? 'a' : 'div';
 const extra = href ? { href } : {};
 const footLabel = slug ? 'Open track →' : href ? 'Open matches →' : 'Reference only';
 const metricText = skill.metric ? `${skill.metric.label} - ${skill.metric.percent}% of catalog` : null;
+const skillTone = skill.color.startsWith('--') ? skill.color.slice(2) : 'blue';
 ---
 <Tag class="skc card-enter" {...extra}>
-  <div class="sk-ring" style={`--ring-target:${skill.ringTarget}`} aria-label={metricText ?? undefined}>
+  <div class={`sk-ring sk-tone-${skillTone}`} data-ring-target={skill.ringTarget} aria-label={metricText ?? undefined}>
     <svg viewBox="0 0 76 76">
       <circle class="ring-bg" cx="38" cy="38" r="32.5" />
       <circle class="ring-fg" cx="38" cy="38" r="32.5" stroke={`var(${skill.color})`} />
     </svg>
-    <div class="sk-ring-label" style={`color:var(${skill.color})`} set:html={skill.code}></div>
+    <div class="sk-ring-label" set:html={skill.code}></div>
   </div>
   <div class="skn">{skill.name}</div>
   <div class="sks">{skill.sub}</div>
@@ -66,6 +67,13 @@ const metricText = skill.metric ? `${skill.metric.label} - ${skill.metric.percen
   }
   .skc-more{color:var(--t1);transition:color .2s ease-out,transform .2s ease-out}
   .skc-more.static{color:var(--t3)}
+  .sk-tone-blue .sk-ring-label{color:var(--blue)}
+  .sk-tone-grn .sk-ring-label{color:var(--grn)}
+  .sk-tone-yel .sk-ring-label{color:var(--yel)}
+  .sk-tone-teal .sk-ring-label{color:var(--teal)}
+  .sk-tone-pur .sk-ring-label{color:var(--pur)}
+  .sk-tone-red .sk-ring-label{color:var(--red)}
+  .sk-tone-org .sk-ring-label{color:var(--org)}
   a.skc:hover .skc-more,
   a.skc:focus-visible .skc-more{color:var(--grn);transform:translateX(2px)}
 </style>

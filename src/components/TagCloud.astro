@@ -25,9 +25,10 @@ const totalProjects = catalog.length;
 
 const max = Math.max(...entries.map(([, n]) => n));
 const min = Math.min(...entries.map(([, n]) => n));
-const scale = (n: number) => {
-  if (max === min) return 1;
-  return 0.6 + (0.9 * (n - min)) / (max - min); // 0.6 → 1.5 em
+const tagScaleClass = (n: number) => {
+  if (max === min) return 'tag-cloud-size-3';
+  const ratio = (n - min) / (max - min);
+  return `tag-cloud-size-${Math.min(5, Math.max(1, Math.round(1 + ratio * 4)))}`;
 };
 ---
 <section id="volume" aria-label="Project volume by category">
@@ -67,9 +68,8 @@ const scale = (n: number) => {
         {entries.map(([key, n]) => (
           <a
             href={`/?cat=${key}#catalog`}
-            class="tag-cloud-tag"
+            class={`tag-cloud-tag ${tagScaleClass(n)}`}
             data-cat={key}
-            style={`font-size:${scale(n)}em`}
             aria-label={`${labels[key] ?? key}: ${n} projects`}
           >
             <span class={`cdo ${key}`}></span>
@@ -184,6 +184,11 @@ const scale = (n: number) => {
   }
   .tag-cloud-tag:hover{color:var(--t1);border-color:rgba(255,255,255,.16);background:var(--glass-hover);transform:translateY(-2px)}
   .tag-cloud-tag:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+  .tag-cloud-size-1{font-size:.6em}
+  .tag-cloud-size-2{font-size:.825em}
+  .tag-cloud-size-3{font-size:1.05em}
+  .tag-cloud-size-4{font-size:1.275em}
+  .tag-cloud-size-5{font-size:1.5em}
   .tag-cloud-label{font-family:var(--mono);font-weight:600}
   .tag-cloud-count{font-family:var(--mono);font-size:.7em;color:var(--t3);padding:2px 7px;background:var(--bg3);border-radius:999px;line-height:1.4}
   .tag-cloud-tag:hover .tag-cloud-count{color:var(--t1);background:var(--glass-border)}

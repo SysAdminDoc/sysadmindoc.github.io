@@ -343,6 +343,7 @@ function renderLangDonut(langCount,repoCount){
     const total=repoCount;
     if(!total)return;
     const colors={'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0'};
+    const colorClasses={'PowerShell':'powershell','Python':'python','JavaScript':'javascript','HTML':'html','Kotlin':'kotlin','C#':'csharp','C++':'cpp','Shell':'shell','TypeScript':'typescript','CSS':'css','Other':'other'};
     const radius=70;
     const circ=2*Math.PI*radius;
     const gap=2;
@@ -359,9 +360,9 @@ function renderLangDonut(langCount,repoCount){
     let legend='';
     top.forEach(function(entry){
         var lang=entry[0],count=entry[1];
-        var color=colors[lang]||'#7080a0';
         var pct=Math.round(count/total*100);
-        legend+='<div class="lang-legend-item"><span class="lang-legend-dot" style="background:'+color+'"></span>'+escapeHTML(lang)+'<span class="lang-legend-pct">'+pct+'%</span></div>';
+        var tone=colorClasses[lang]||'other';
+        legend+='<div class="lang-legend-item"><span class="lang-legend-dot lang-tone-'+tone+'"></span>'+escapeHTML(lang)+'<span class="lang-legend-pct">'+pct+'%</span></div>';
     });
     const lead=top[0];
     const leadLang=lead?lead[0]:'Mixed';
@@ -477,14 +478,13 @@ function playVideo(trigger){
     iframe.frameBorder='0';
     iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     iframe.allowFullscreen=true;
-    iframe.style.cssText='width:100%;height:100%;position:absolute;inset:0';
+    iframe.className='video-embed';
     frameWrap.appendChild(iframe);
     // Keyboard-operable close button restores the thumbnail (escape from the embed).
     const closeBtn=document.createElement('button');
     closeBtn.type='button';
     closeBtn.className='video-close';
     closeBtn.setAttribute('aria-label','Close video and return to thumbnail');
-    closeBtn.style.cssText='position:absolute;top:8px;right:8px;z-index:2;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.62);color:#fff;cursor:pointer';
     closeBtn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
     closeBtn.addEventListener('click',()=>{
         frameWrap.replaceWith(trigger);
@@ -982,7 +982,7 @@ function onTermReady(){
         if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
             navigator.clipboard.writeText(text).then(showCopyToast).catch(function(){showCopyToast()});
         }else{
-            try{var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showCopyToast()}catch(e){}
+            try{var ta=document.createElement('textarea');ta.value=text;ta.className='copy-buffer';ta.setAttribute('aria-hidden','true');document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showCopyToast()}catch(e){}
         }
     }
     tbody.addEventListener('click',function(e){
@@ -1028,21 +1028,21 @@ function onTermReady(){
     function triggerEasterEgg(){
         if(prefersReducedMotion)return;
         const overlay=document.createElement('div');
-        overlay.style.cssText='position:fixed;inset:0;z-index:100000;pointer-events:none;overflow:hidden';
+        overlay.className='matrix-overlay';
         document.body.appendChild(overlay);
         const chars='abcdefghijklmnopqrstuvwxyz0123456789@#$%&*<>/\\|{}[]';
         const cols=Math.floor(window.innerWidth/14);
         for(let i=0;i<cols;i++){
             const col=document.createElement('div');
-            col.style.cssText='position:absolute;top:-100%;left:'+i*14+'px;font-family:var(--mono);font-size:13px;color:var(--grn);text-shadow:0 0 8px var(--grn-glow);line-height:1.2;writing-mode:vertical-lr;white-space:nowrap;animation:matrixFall '+(2+Math.random()*3)+'s linear '+(Math.random()*2)+'s forwards';
+            col.className='matrix-column';
+            col.style.left=i*14+'px';
+            col.style.animationDuration=(2+Math.random()*3)+'s';
+            col.style.animationDelay=(Math.random()*2)+'s';
             let str='';for(let j=0;j<60;j++)str+=chars[Math.floor(Math.random()*chars.length)];
             col.textContent=str;
             overlay.appendChild(col);
         }
-        const style=document.createElement('style');
-        style.textContent='@keyframes matrixFall{0%{transform:translateY(0);opacity:.8}100%{transform:translateY('+(window.innerHeight+200)+'px);opacity:0}}';
-        document.head.appendChild(style);
-        setTimeout(()=>{overlay.remove();style.remove()},6000);
+        setTimeout(()=>{overlay.remove()},6000);
     }
 })();
 
@@ -1054,6 +1054,8 @@ function onTermReady(){
     const ringObs=new IntersectionObserver(entries=>{
         entries.forEach(e=>{
             if(e.isIntersecting){
+                const fg=e.target.querySelector('.ring-fg');
+                if(fg&&e.target.dataset.ringTarget)fg.style.strokeDashoffset=e.target.dataset.ringTarget;
                 e.target.classList.add('drawn');
                 ringObs.unobserve(e.target);
                 drawn++;

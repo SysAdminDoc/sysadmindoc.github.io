@@ -14,6 +14,7 @@ export function getStaticPaths() {
 
 const { slug } = Astro.params;
 const lang = LANGS[slug!]!;
+const accentTone = lang.accent.startsWith('--') ? lang.accent.slice(2) : 'blue';
 
 let stars: Record<string, number> = {};
 try { const mod = await import('../../data/_stars.json'); stars = (mod.default ?? mod) as Record<string, number>; } catch {}
@@ -115,9 +116,9 @@ const langJsonLd = JSON.stringify({
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={`${lang.label} lane`} contextTone="blue" />
 
-  <main id="main" class="lang-page" data-pagefind-body>
+  <main id="main" class={`lang-page lang-accent-${accentTone}`} data-pagefind-body>
     <div class="si page-shell" id="lane-overview">
-      <div class="sh rv" style={`--accent:var(${lang.accent})`}>
+      <div class="sh rv">
         <div class="lang-hero-copy">
           <div class="sl">// Stack · {lang.label}</div>
           <h1 class="lang-title">{lang.label}</h1>
@@ -154,10 +155,10 @@ const langJsonLd = JSON.stringify({
       </div>
 
       <div class="lang-stats page-stat-grid rv">
-        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{repos.length}</div><div class="lang-stat-label page-stat-label">Public projects</div><div class="page-stat-copy">The depth of the public archive in this lane.</div></div>
-        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{totalStars}</div><div class="lang-stat-label page-stat-label">Stars across projects</div><div class="page-stat-copy">A quick signal for where attention has concentrated.</div></div>
-        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{featuredCount}</div><div class="lang-stat-label page-stat-label">Featured projects</div><div class="page-stat-copy">Projects strong enough to anchor the portfolio story.</div></div>
-        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value" style={`color:var(${lang.accent})`}>{liveCount}</div><div class="lang-stat-label page-stat-label">Browser-ready builds</div><div class="page-stat-copy">Deployable work you can judge without a local setup step.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value">{repos.length}</div><div class="lang-stat-label page-stat-label">Public projects</div><div class="page-stat-copy">The depth of the public archive in this lane.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value">{totalStars}</div><div class="lang-stat-label page-stat-label">Stars across projects</div><div class="page-stat-copy">A quick signal for where attention has concentrated.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value">{featuredCount}</div><div class="lang-stat-label page-stat-label">Featured projects</div><div class="page-stat-copy">Projects strong enough to anchor the portfolio story.</div></div>
+        <div class="lang-stat page-stat"><div class="lang-stat-num page-stat-value">{liveCount}</div><div class="lang-stat-label page-stat-label">Browser-ready builds</div><div class="page-stat-copy">Deployable work you can judge without a local setup step.</div></div>
         {mostRecent?.pushedAt && (
           <div class="lang-highlight">
             <span class="lang-highlight-label">Latest update</span>
@@ -184,7 +185,7 @@ const langJsonLd = JSON.stringify({
       ) : (
         <div class="lang-grid">
           {repos.map((r) => (
-            <a href={`/projects/${r.repo}/`} class="lang-card card-enter" style={`--accent:var(${lang.accent})`}>
+            <a href={`/projects/${r.repo}/`} class="lang-card card-enter">
               <div class="lang-card-head">
                 {r.featured && <span class="lang-card-featured">★</span>}
                 <h3 class="lang-card-name">{r.name}</h3>
@@ -227,6 +228,13 @@ const langJsonLd = JSON.stringify({
 
 <style is:global>
   .lang-page{min-height:calc(100vh - 200px)}
+  .lang-page.lang-accent-blue{--accent:var(--blue)}
+  .lang-page.lang-accent-grn{--accent:var(--grn)}
+  .lang-page.lang-accent-yel{--accent:var(--yel)}
+  .lang-page.lang-accent-teal{--accent:var(--teal)}
+  .lang-page.lang-accent-pur{--accent:var(--pur)}
+  .lang-page.lang-accent-red{--accent:var(--red)}
+  .lang-page.lang-accent-org{--accent:var(--org)}
   .lang-page .page-shell > .sh{grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:start}
   .lang-hero-copy{display:grid;align-content:start;gap:18px}
   .lang-hero-aside{display:grid;gap:14px;align-content:start}
@@ -250,7 +258,7 @@ const langJsonLd = JSON.stringify({
   .lang-intro{font-size:clamp(16px,1.4vw,19px);color:var(--t2);line-height:1.7;max-width:720px;margin:0}
   .lang-stats{gap:16px;margin-top:32px;max-width:1100px}
   .lang-stat{height:100%}
-  .lang-stat-num{font-weight:700}
+  .lang-stat-num{font-weight:700;color:var(--accent)}
   .lang-stat-num-sm{font-size:14px;font-weight:600;word-break:break-word}
   .lang-highlight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--t2)}
   .lang-highlight-label{color:var(--t3);letter-spacing:.12em;text-transform:uppercase}
