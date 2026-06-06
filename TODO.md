@@ -637,12 +637,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Extended the rendered interaction smoke to open the command palette, click outside the panel on the native dialog backdrop, verify closed state and `aria-expanded` reset, then reopen, filter to a stable `search` result set, click the first internal result, verify navigation, and confirm the palette is closed after navigation.
   - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
-- [ ] **T155** P2 - Guard command-palette no-results recovery.
+- [x] **T155** P2 - Guard command-palette no-results recovery.
   - Why: The command palette now has coverage for successful filtering, close paths, keyboard activation, and pointer activation, but the empty-result state and recovery path remain unguarded. Empty states are user-facing and can regress if the debounced renderer or active-descendant reset changes.
   - Evidence: `public/scripts/cmdk.js` renders `.cmdk-empty`, updates `#cmdkMeta`, and clears `aria-activedescendant` when no rows match. The rendered smoke does not currently enter an unmatched query or verify that a later valid query recovers results.
   - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: A rendered browser test enters an unmatched query, verifies the no-results copy, cleared `aria-activedescendant`, and no selected rows, then enters a valid query and verifies results and active option state recover without runtime errors or horizontal overflow.
   - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+  - Done: Extended the rendered interaction smoke to enter an unmatched command-palette query, verify the no-results status/copy, assert no result rows and cleared `aria-activedescendant`, then enter a valid `search` query and verify results plus active option state recover before closing.
+  - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+
+- [ ] **T156** P2 - Split the homepage interaction smoke into focused flows.
+  - Why: T152-T155 added valuable command-palette assertions, but the first rendered interaction smoke now covers command palette, terminal navigation, catalog search, and video modal behavior in one long test. A single failure produces a broader trace than necessary and makes unrelated homepage interactions wait behind command-palette setup.
+  - Evidence: `tests/playwright/interaction-smoke.spec.mjs` now performs multiple command-palette open/filter/close/navigation cycles before reaching terminal, catalog, and video checks inside the same test case.
+  - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: Command-palette assertions move into a focused rendered smoke test with its own runtime-error/overflow guards, while terminal/catalog/video homepage checks remain covered in a separate test; total `npm run audit:interactions` runtime stays reasonable and all existing assertions are preserved.
+  - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 
 ---
 
