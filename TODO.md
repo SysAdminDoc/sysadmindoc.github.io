@@ -592,12 +592,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added `tests/playwright/interaction-smoke.spec.mjs` and `npm run audit:interactions`. The smoke stubs external GitHub/YouTube calls without abort noise, runs against built `dist/`, verifies the generated active `style-src-elem` CSP is present, exercises homepage command-palette filtering, terminal `contact`, catalog search, click-to-load video close, mobile language-lane project navigation, and mobile project share fallback, and fails on runtime console errors or horizontal overflow.
   - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `npm run build:ci`; `npm run audit:interactions`.
 
-- [ ] **T150** P2 - Promote the rendered interaction smoke into PR CI.
+- [x] **T150** P2 - Promote the rendered interaction smoke into PR CI.
   - Why: T149 provides a compact post-build UX gate, but it is currently local/manual. PR CI already builds fixture-backed `dist/` and installs Chromium for Playwright, so the interaction smoke can run there without adding a new browser installation step.
   - Evidence: `.github/workflows/ci.yml` currently runs `npm run audit:playwright` after fixture build and Chromium install, then uploads `.tmp/playwright-*` reports. `npm run audit:interactions` uses the same Playwright config/report paths and should share that CI setup.
   - Touches: `.github/workflows/ci.yml`, `README.md`, `PROJECT_CONTEXT.md`, and possibly workflow/source-contract tests.
   - Acceptance: Pull-request CI runs the focused rendered interaction smoke after the built `dist/` and browser are available, publishes failures in the existing Playwright artifact set, and keeps visual baseline and interaction smoke responsibilities distinct.
   - Verify: workflow/source-contract test if present; `npm test`; `npm run audit:interactions`.
+  - Done: PR CI now runs `npm run audit:interactions` immediately after Chromium installation and before the fixture-backed visual/axe Playwright suite. The existing Playwright artifact upload remains `if: always()` so an interaction-smoke failure is captured in `.tmp/playwright-*`, and the source-contract test locks the npm script plus CI step order.
+  - Verify: `node --test test/a11y-gate.test.mjs`; `npm test`; `npm run audit:interactions`.
+
+- [ ] **T151** P2 - Separate Playwright report output for interaction and visual suites.
+  - Why: T150 makes both Playwright suites run in PR CI, but they still share `.tmp/playwright-report` and `.tmp/playwright-results`. A passing interaction smoke followed by the visual suite can leave only the later visual report in the uploaded artifact.
+  - Evidence: `playwright.audits.config.mjs` has one `outputDir` and one HTML reporter output folder for all audit commands. `npm run audit:interactions` narrows the spec path but does not override report locations.
+  - Touches: `playwright.audits.config.mjs`, `package.json`, `.github/workflows/ci.yml`, `README.md`, and workflow/source-contract tests.
+  - Acceptance: Interaction-smoke and visual/axe Playwright runs write distinct report/result folders in CI and local commands, and the artifact upload includes both without changing screenshot baseline paths.
+  - Verify: `npm run audit:interactions`; fixture-backed `npm run audit:playwright`; `npm test`.
 
 ---
 

@@ -44,6 +44,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Extended strict dist CSP auditing to require one consistent CSP meta policy across every rendered HTML page, failing on missing, duplicated, or divergent CSP metadata.
 - Generated the active style CSP hashes from the same critical/no-JS CSS source strings that render inline style blocks, while keeping source and rendered CSP audits resolved to the active policy.
 - Added `npm run audit:interactions`, a focused rendered Playwright smoke for active CSP, homepage command palette, terminal contact navigation, catalog search, click-to-load video close, mobile language-lane navigation, project share fallback, console errors, and horizontal overflow without screenshot assertions.
+- Added the rendered interaction smoke to PR CI after Chromium installation and before the fixture-backed Playwright visual/axe suite, with source-contract coverage for the workflow order.
 - Added class-based Shiki highlighting for cached project README code fences while keeping remote README inline styles and event-handler attributes stripped by `sanitize-html`.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.

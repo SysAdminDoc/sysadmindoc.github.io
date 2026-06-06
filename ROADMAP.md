@@ -166,6 +166,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `.github/workflows/ci.yml`, `README.md`, `PROJECT_CONTEXT.md`, and possibly workflow/source-contract tests.
 - Acceptance: Pull-request CI runs the focused rendered interaction smoke after the built `dist/` and browser are available, publishes failures through the existing Playwright artifact upload, and keeps visual baseline and interaction smoke responsibilities separate.
 - Verify: workflow/source-contract test if present; `npm test`; `npm run audit:interactions`.
+- Done in Cycle 28: PR CI now runs `npm run audit:interactions` immediately after Chromium installation and before `npm run audit:playwright`. The existing always-on Playwright artifact upload captures interaction-smoke failures, and `test/a11y-gate.test.mjs` locks the npm script plus CI step order.
+- Confidence: High
+
+### T151 - Separate Playwright report output for interaction and visual suites
+
+- Priority: P2
+- Why: T150 runs both Playwright suites in PR CI, but both commands still use the same `.tmp/playwright-report` and `.tmp/playwright-results` paths from `playwright.audits.config.mjs`. A passing interaction smoke followed by a visual run can leave only the later visual report in the uploaded artifact.
+- Evidence: `playwright.audits.config.mjs` defines one `outputDir` and one HTML reporter output folder for all audit commands. `npm run audit:interactions` scopes the spec path but does not override report locations.
+- Touches: `playwright.audits.config.mjs`, `package.json`, `.github/workflows/ci.yml`, `README.md`, and workflow/source-contract tests.
+- Acceptance: Interaction-smoke and visual/axe Playwright runs write distinct report/result folders in CI and local commands, and the artifact upload includes both without changing screenshot baseline paths.
+- Verify: `npm run audit:interactions`; fixture-backed `npm run audit:playwright`; `npm test`.
 - Confidence: High
 
 Research sources:
@@ -946,7 +957,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T150 rendered interaction smoke CI promotion.
+Continue from T151 Playwright report-output separation.
 
 ### Important Findings So Far
 
@@ -964,13 +975,14 @@ Continue from T150 rendered interaction smoke CI promotion.
 - Cycle 25 implemented T147. Strict dist CSP audits now fail on missing, duplicated, or divergent rendered CSP meta policies; current rendered output has 194/194 files with one CSP meta and one unique policy.
 - Cycle 26 implemented T148. Active `style-src-elem` hashes are now generated from the same source strings that render critical/no-JS CSS, while source and rendered CSP audits continue to report the resolved active policy.
 - Cycle 27 implemented T149. `npm run audit:interactions` now runs a focused rendered Playwright smoke over active CSP, command-palette filtering, terminal contact navigation, catalog search, click-to-load video close, mobile Python-lane project navigation, project share fallback, console errors, and horizontal overflow without screenshot assertions.
+- Cycle 28 implemented T150. PR CI now runs `npm run audit:interactions` after Chromium install and before the fixture-backed visual/axe Playwright suite, with source-contract coverage for the npm script and workflow step order.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T150 by wiring `npm run audit:interactions` into PR CI after the fixture build and Chromium install.
-2. Keep the interaction smoke distinct from `npm run audit:playwright`; screenshots remain in the fixture-backed visual suite.
-3. Verify the workflow contract locally and make sure existing Playwright report artifacts still capture interaction-smoke failures.
+1. Continue T151 by giving interaction and visual Playwright runs distinct report/result folders.
+2. Keep screenshot baseline paths unchanged while separating transient `.tmp` report output.
+3. Update the CI artifact upload and source-contract test so both report sets are preserved.
 
 ### Unprocessed Leads
 
