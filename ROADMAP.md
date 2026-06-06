@@ -21,11 +21,11 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-05 (Cycle 16; see `TODO.md` T140 and `docs/research-2026-06-05-cycle-16.md`)
-Last updated: 2026-06-05
+Last researched: 2026-06-06 (Cycle 22; see `TODO.md` T141-T145 and `docs/research-2026-06-06-cycle-22.md`)
+Last updated: 2026-06-06
 Current version: v0.18.3
 
-## Status: 42 of 42 v0.17.0 items shipped — roadmap fully drained
+## Status: v0.18.3 implementation queue drained; Cycle 22 completed style-attribute CSP hardening
 
 The 2026-06-01 sprint produced 42 items. All 42 were implemented across 13 commits (v0.16.15 -> v0.17.0). See [COMPLETED.md](COMPLETED.md) for the prior 17-item roadmap. Research evidence in [RESEARCH_REPORT.md](RESEARCH_REPORT.md).
 
@@ -51,6 +51,76 @@ R1 (InteriorNav anchor), R2 (/now update), R3 (stats refresh), R4 (OG cpp), R5 (
 **NOTES_FEED_POLICY.md activation criteria (7 gates)**
 - Priority: Parked
 - Status: All 7 criteria unmet. No action until a reviewed source corpus exists.
+
+---
+
+## Cycle 17 Research-Driven Additions: Style-Side CSP Hardening
+
+The script-side CSP work is now strong (`script-src 'self'`, zero executable inline scripts, zero inline event handlers), but `style-src 'unsafe-inline'` remains active because source and built HTML still include inline style blocks, style attributes, and runtime `style.cssText` writes. Cycle 17 should treat this as a staged security and maintainability migration, not as a single policy toggle.
+
+### T141 - Split CSP style auditing by element and attribute directives
+
+- Priority: P1
+- Why: The existing CSP audit aggregates `<style>/<link>` surfaces and `style=""` attributes under one `style-src` candidate. CSP Level 3 now has separate `style-src-elem` and `style-src-attr` directives, which lets this static site reduce style-element risk before every dynamic attribute is eliminated.
+- Evidence: `node scripts/audit-csp.mjs --candidate-style-src "'self'"` reports 31 source blockers: 15 style blocks and 16 style attributes. `node scripts/audit-csp.mjs --dist --candidate-style-src "'self'"` reports 1,012 rendered blockers across 194 HTML files. MDN documents `style-src-elem` for `<style>` and stylesheet links, and `style-src-attr` for inline style attributes and `cssText`.
+- Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, `README.md`, `PROJECT_CONTEXT.md`.
+- Acceptance: The audit reports source and built counts separately for style elements, stylesheet links, style attributes, `cssText` writes, and direct safe property writes; it supports candidate policies for `style-src-elem` and `style-src-attr`; regression tests fail if a new inline style surface is added without classification.
+- Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; source and built candidate runs produce separate element/attribute blocker counts.
+- Done in Cycle 20: `scripts/audit-csp.mjs` preserves `--candidate-style-src` as the aggregate legacy mode, adds `--candidate-style-src-elem` and `--candidate-style-src-attr`, models directive fallback (`style-src-elem`/`style-src-attr` -> `style-src` -> `default-src`), inventories 4 stylesheet/preload links, classifies six runtime `style.cssText` writes as attribute-surface blockers, reports zero runtime `setAttribute("style")` writes, and lists 27 direct `.style.property` references as informational. `test/csp-audit.test.mjs` and package/README scripts now cover the split modes.
+- Confidence: High
+
+### T142 - Remove or hash inline style blocks so `style-src-elem` can drop `unsafe-inline`
+
+- Priority: P1
+- Why: Style blocks account for 394 rendered blockers, primarily repeated critical CSS plus route/component-local Astro styles. This can be reduced without changing every dynamic style attribute at once.
+- Evidence: `src/layouts/Base.astro:113` inlines `critical.css`; `src/layouts/Base.astro:134` inlines the no-JS reveal fallback; 13 page/component `<style>` blocks remain across `src/components/*` and `src/pages/*`. Astro docs state that `is:inline` leaves a style tag in final HTML, while normal component styles are processed and bundled.
+- Touches: `src/layouts/Base.astro`, `src/styles/critical.css`, `src/styles/global.css`, route/component style blocks, `scripts/audit-csp.mjs`.
+- Acceptance: Route/component `<style>` blocks are moved into bundled CSS or hashed intentionally; the critical CSS block is either covered by a generated SHA-256 CSP hash or replaced by a safe external first-paint strategy with no LCP regression; built HTML candidate `style-src-elem` passes without `unsafe-inline`.
+- Verify: `node scripts/audit-csp.mjs --dist --candidate-style-src-elem "<candidate>" --strict`; `npm run build` from a local non-UNC checkout; `npm run audit:perf`; `npm run audit:playwright` for desktop/mobile visual regression.
+- Cycle 19 blueprint: current built output is mostly two repeated style blocks per page: critical CSS (`sha256-IgolL9OcCAAkbJBdeHMz7R8+koltdJ8QZkkoG6h27v4=`) and no-JS reveal fallback (`sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA=`). Only six built routes currently have a third auto-inlined CSS chunk. After T141, test `style-src-elem 'self' <critical-hash> <noscript-hash>` while keeping `style-src-attr 'unsafe-inline'`; also run an `astro.config.mjs` experiment with `build.inlineStylesheets: 'never'` to see whether the six route chunks can be externalized without a performance or visual regression.
+- Done in Cycle 21: `astro.config.mjs` now sets `build.inlineStylesheets: 'never'`, and the active CSP in `src/layouts/Base.astro` is staged as `style-src 'self'; style-src-elem 'self' <critical hash> <no-JS hash>; style-src-attr 'unsafe-inline'`. A full rendered local build produced 388 style blocks instead of 394, increased same-origin style/preload links from 770 to 776, had zero routes with more than two style blocks, and passed strict built `style-src-elem` candidate auditing. The performance audit passed with no issues. Playwright axe passed after the harness switched its stability CSS to a same-origin URL and blocked service workers; visual snapshots still need T145 baseline stabilization.
+- Confidence: High
+
+### T143 - Convert inline style attributes to class, data, SVG, or finite-token styling
+
+- Priority: P2
+- Why: Inline style attributes account for 16 source blockers and 618 rendered blockers. Most are not arbitrary user content; they are finite presentation values that can become class maps, `data-*` attributes, SVG attributes, or CSS variables emitted through a safer generated stylesheet.
+- Evidence: Current blockers include `SkillCard.astro` ring/color variables, `TagCloud.astro` font-size scaling, `index.astro` legend dots and principle accents, `lang/[slug].astro` lane accent variables, and `projects/[slug].astro` margin/category dot styles. Runtime writes also include `public/scripts/main.js` and `public/scripts/cmdk.js` `style.cssText` assignments.
+- Touches: `src/components/SkillCard.astro`, `src/components/TagCloud.astro`, `src/pages/index.astro`, `src/pages/lang/[slug].astro`, `src/pages/projects/[slug].astro`, `public/scripts/main.js`, `public/scripts/cmdk.js`, `src/styles/global.css`.
+- Acceptance: Static inline `style=""` attributes are removed from Astro source; `style.cssText` writes are replaced with classes plus direct property writes where dynamic coordinates are needed; the CSP audit can report zero source style attributes; built rendered attributes are either zero or limited to audited, intentionally allowed dynamic cases.
+- Verify: `node scripts/audit-csp.mjs --candidate-style-src-attr "'none'"`; `npm run build`; browser probes for language pages, project pages, homepage charts, video overlay, command-palette toast, terminal effects, and copy fallback.
+- Done in Cycle 22: Static Astro `style=""` attributes were replaced with finite class/tone mappings across skill cards, tag cloud sizing, homepage language/principle accents, language-page accents, and project-page spacing/category dots. Runtime `style.cssText` writes in `main.js` and `cmdk.js` now use classes plus direct property writes only for dynamic animation coordinates and ring draw values. Active CSP now uses `style-src-attr 'none'`, and the source CSP audit reports zero inline style attributes, zero `style.cssText` writes, and zero `setAttribute("style")` writes.
+- Confidence: Medium
+
+### T144 - Add candidate-policy browser verification before removing style `unsafe-inline`
+
+- Priority: P2
+- Why: Static inventory is necessary but not enough. The final policy change should prove that hydrated routes still render under the candidate policy and that runtime style manipulations do not create CSP violations or broken UI.
+- Evidence: Existing Playwright audits check visual and axe coverage, while `scripts/audit-csp.mjs` checks source/built inventories. No current browser test runs a candidate style CSP and listens for `securitypolicyviolation` events across representative pages.
+- Touches: `tests/playwright/portfolio-audits.spec.mjs` or a new CSP-specific Playwright/CDP script, `package.json`, `playwright.audits.config.mjs`, `README.md`.
+- Acceptance: A candidate CSP browser audit visits `/`, `/search/`, `/archive/`, a language page, and a project page; opens the command palette; triggers theme/mobile nav/share/copy/video paths where applicable; records `securitypolicyviolation`; fails on visual blanking, console errors, CSP violations, or hidden critical content.
+- Verify: New CSP browser audit plus existing `npm run audit:playwright` and `npm run a11y:audit`.
+- Done in Cycle 22: Added `tests/playwright/csp-style-policy.spec.mjs` and the `npm run csp:audit:browser` script. The Playwright audit rewrites rendered pages to the final `style-src-attr 'none'` candidate, records `securitypolicyviolation` events, blocks external nondeterministic surfaces, serves the stability stylesheet from same origin, and exercises homepage, search, archive, language, project, command palette, terminal, video, and share fallback flows.
+- Confidence: Medium
+
+### T145 - Stabilize Playwright visual baselines for strict CSP and feed-backed output
+
+- Priority: P2
+- Why: T142 uncovered that the browser audit's visual layer is no longer deterministic enough to act as a clean regression gate. The harness now avoids inline style injection, but screenshot expectations still drift against current rendered data and focus state.
+- Evidence: The axe subset passed six checks under the stricter style policy. Full `npm run audit:playwright` still failed eight screenshot comparisons with coherent actual pages and broad text/focus/data differences rather than blanking or missing styles. A deterministic fixture rebuild also exposed an existing endpoint-audit threshold mismatch (`llms.txt` useful links 44 vs expected minimum 50), so the visual path needs its fixture assumptions reconciled before baselines are refreshed.
+- Touches: `tests/playwright/portfolio-audits.spec.mjs`, `playwright.audits.config.mjs`, screenshot baselines, generated fixture setup, and possibly `scripts/audit-public-endpoints.mjs`.
+- Acceptance: The visual audit runs against deterministic data, blocks service workers, uses a CSP-compatible same-origin stability stylesheet, normalizes or masks focus/dynamic data, and has intentionally refreshed baselines that pass in the same environment used by CI.
+- Verify: `npm run generated:fixtures`; deterministic build; `npm run audit:playwright`.
+- Confidence: Medium
+
+Research sources:
+
+- MDN `style-src`: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/style-src
+- MDN `style-src-elem`: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/style-src-elem
+- MDN `style-src-attr`: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/style-src-attr
+- Astro directives reference (`is:inline`, `is:global`): https://docs.astro.build/en/reference/directives-reference/
+- Astro styling guide: https://docs.astro.build/en/guides/styling/
+- web.dev strict CSP: https://web.dev/articles/strict-csp
 
 ---
 
@@ -810,6 +880,59 @@ New from v0.18.0 research:
 - **SRI on same-origin scripts**: no benefit for static site. Only needed if external CDN scripts added.
 - **Command palette homepage cmdkSections**: by design. Quick links in Base.astro sufficiently surface Uses/Resume/Healthcare IT via search.
 - **catalog-policy.json privacy configuration**: positive finding. RadAtlas/GeneratorSpecs correctly excluded. Maven Imaging name and internal project mentions on /now and /healthcare-it are intentional public disclosures per owner.
+
+---
+
+## Continuation State
+
+### Last Completed Cycle
+
+Cycle 22: T143/T144 style-attribute CSP hardening and browser candidate-policy audit.
+
+### Current Focus
+
+Continue from T145 visual-baseline stabilization and then research the next security or UX improvement.
+
+### Important Findings So Far
+
+- Current source `style-src-attr 'none'` audit passes with zero style attributes, zero `style.cssText` writes, and zero `setAttribute("style")` writes.
+- Current built-output `style-src-attr 'none'` audit passes with zero style attribute blockers after the Cycle 22 class/token migration.
+- `script-src 'self'` remains clean with zero executable inline scripts and zero inline event handlers.
+- Cycle 18 measured one source stylesheet link, six runtime `style.cssText` writes, zero `setAttribute("style")` writes, and 32 total `.style.` references.
+- Cycle 19 found that rendered style blocks are mostly 194 repeated critical CSS blocks plus 194 repeated no-JS fallback blocks, with only six routes carrying a third auto-inlined style chunk under Astro `inlineStylesheets: 'auto'`.
+- The current critical CSS hash is `sha256-IgolL9OcCAAkbJBdeHMz7R8+koltdJ8QZkkoG6h27v4=` and the no-JS fallback hash is `sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA=`.
+- Cycle 20 implemented T141. Current split source audit results: `style-src-elem 'self'` blocks 15 style element/link surfaces, and `style-src-attr 'none'` blocks 22 style attribute surfaces (16 static `style=""` attributes plus six runtime `style.cssText` writes). The audit separately inventories four stylesheet/preload links, zero `setAttribute("style")` writes, and 27 direct style property references.
+- Cycle 21 implemented T142. Active CSP no longer has style-element `unsafe-inline`: `style-src 'self'`, `style-src-elem 'self'` plus the critical/no-JS hashes. A full local rendered build with `inlineStylesheets: 'never'` had 388 style blocks, 776 stylesheet/preload links, zero routes with more than two style blocks, and passed the strict staged `style-src-elem` candidate. Performance passed with no issues; Playwright axe passed; screenshot baselines are a T145 drift item.
+- Cycle 22 implemented T143 and T144. Active CSP now uses `style-src-attr 'none'`; source and built CSP attribute audits pass; the dedicated browser audit records no policy violations across representative routes and interactions.
+- Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
+
+### Next Best Actions
+
+1. Continue T145 by reconciling Playwright fixture/baseline assumptions so the visual audit can pass under the stricter style CSP.
+2. Audit whether the active `style-src-elem` source hashes can be generated or verified from source during build so future critical/no-JS CSS edits cannot drift.
+3. Run a fresh UX pass on the command palette, terminal, project share, language lane, and project detail routes now covered by the stricter style policy.
+
+### Unprocessed Leads
+
+- Use `style-src-elem` to allow external styles and intentionally hashed inline critical CSS while keeping `style-src-attr` staged separately.
+- Keep finite accent/category/style values in class maps or SVG attributes; do not reintroduce static style attributes.
+- Keep runtime style work to direct property writes for genuinely dynamic coordinates; do not reintroduce `style.cssText`.
+- Playwright visual baselines need deterministic feed/focus handling before they can validate the T142 visual surface automatically.
+
+### Files Still To Inspect
+
+- `public/scripts/main.js`
+- `public/scripts/cmdk.js`
+- `playwright.audits.config.mjs`
+- `tests/playwright/portfolio-audits.spec.mjs`
+- `scripts/audit-public-endpoints.mjs`
+
+### Searches Still To Run
+
+- `rg -n "style\\.cssText|setAttribute\\(['\\\"]style|\\.style\\." public/scripts src scripts`
+- `rg -n "style=|<style" src/pages src/components src/layouts`
+- `rg -n "Content-Security-Policy|style-src" src scripts test tests`
+- `rg -n "llms.txt|useful links|page.addStyleTag|serviceWorkers" scripts tests playwright.audits.config.mjs`
 
 ---
 

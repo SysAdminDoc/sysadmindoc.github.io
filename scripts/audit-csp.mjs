@@ -10,6 +10,8 @@ const options = {
   strict: false,
   candidateScriptSrc: null,
   candidateStyleSrc: null,
+  candidateStyleElemSrc: null,
+  candidateStyleAttrSrc: null,
   distDir: null,
 };
 
@@ -27,6 +29,16 @@ for (let index = 2; index < process.argv.length; index += 1) {
     options.candidateStyleSrc = process.argv[index];
   } else if (arg.startsWith('--candidate-style-src=')) {
     options.candidateStyleSrc = arg.slice('--candidate-style-src='.length);
+  } else if (arg === '--candidate-style-src-elem') {
+    index += 1;
+    options.candidateStyleElemSrc = process.argv[index];
+  } else if (arg.startsWith('--candidate-style-src-elem=')) {
+    options.candidateStyleElemSrc = arg.slice('--candidate-style-src-elem='.length);
+  } else if (arg === '--candidate-style-src-attr') {
+    index += 1;
+    options.candidateStyleAttrSrc = process.argv[index];
+  } else if (arg.startsWith('--candidate-style-src-attr=')) {
+    options.candidateStyleAttrSrc = arg.slice('--candidate-style-src-attr='.length);
   } else if (arg === '--dist') {
     const next = process.argv[index + 1];
     if (next && !next.startsWith('--')) {
@@ -36,7 +48,7 @@ for (let index = 2; index < process.argv.length; index += 1) {
       options.distDir = 'dist';
     }
   } else if (arg === '--help' || arg === '-h') {
-    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--candidate-style-src <tokens>] [--dist [dir]] [--strict]');
+    console.log('Usage: node scripts/audit-csp.mjs [--candidate-script-src <tokens>] [--candidate-style-src <tokens>] [--candidate-style-src-elem <tokens>] [--candidate-style-src-attr <tokens>] [--dist [dir]] [--strict]');
     process.exit(0);
   } else {
     throw new Error(`Unknown argument: ${arg}`);
@@ -95,6 +107,20 @@ function parseCsp(policy) {
   return directives;
 }
 
+function effectiveDirective(directives, name, fallbacks = []) {
+  if (directives.has(name)) return { tokens: directives.get(name), source: name };
+  for (const fallback of fallbacks) {
+    if (directives.has(fallback)) return { tokens: directives.get(fallback), source: fallback };
+  }
+  return { tokens: [], source: null };
+}
+
+function directiveLabel(name, directive) {
+  const tokens = directive.tokens.join(' ') || '(none)';
+  if (!directive.source || directive.source === name) return tokens;
+  return `${tokens} (inherits ${directive.source})`;
+}
+
 function directiveAllowsUnsafeInline(tokens) {
   return tokens.includes("'unsafe-inline'");
 }
@@ -127,16 +153,25 @@ function scriptIsExecutable(kind) {
 
 function sourceKindForScript(attrs) {
   if (attrs.src) {
-    const src = String(attrs.src);
-    if (src.startsWith('/') || src.startsWith('./') || src.startsWith('../')) return 'self-hosted';
-    try {
-      const url = new URL(src);
-      return url.protocol === 'https:' ? 'third-party' : 'other';
-    } catch {
-      return 'dynamic';
-    }
+    return sourceKindForUrl(String(attrs.src)).kind;
   }
   return 'inline';
+}
+
+function sourceKindForUrl(value) {
+  const urlValue = String(value ?? '');
+  if (urlValue.startsWith('/') || urlValue.startsWith('./') || urlValue.startsWith('../')) {
+    return { kind: 'self-hosted', value: urlValue };
+  }
+  if (/^\{[^}]+\}$/.test(urlValue)) {
+    return { kind: 'dynamic-self', value: urlValue };
+  }
+  try {
+    const url = new URL(urlValue);
+    return { kind: url.protocol === 'https:' ? 'third-party' : 'other', value: urlValue, origin: url.origin, protocol: url.protocol };
+  } catch {
+    return { kind: 'dynamic', value: urlValue };
+  }
 }
 
 function candidateTokens(value) {
@@ -158,6 +193,18 @@ function styleAllowedByCandidate(record, tokens) {
   return false;
 }
 
+function styleLinkAllowedByCandidate(record, tokens) {
+  if (tokens.includes('*')) return true;
+  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && tokens.includes("'self'")) return true;
+  if (record.sourceKind === 'third-party' && record.protocol && tokens.includes(record.protocol)) return true;
+  if (record.sourceKind === 'third-party' && record.origin && tokens.includes(record.origin)) return true;
+  return false;
+}
+
+function styleAttributeAllowedByCandidate(_record, tokens) {
+  return directiveAllowsUnsafeInline(tokens);
+}
+
 function auditSourceFile(filePath, text) {
   const rel = toPosix(path.relative(root, filePath));
   const cspMetas = [];
@@ -165,6 +212,7 @@ function auditSourceFile(filePath, text) {
   const eventHandlers = [];
   const styleBlocks = [];
   const styleAttributes = [];
+  const styleLinks = [];
 
   const tagPattern = /<([A-Za-z][\w:-]*)(\s[\s\S]*?)?>/g;
   let tagMatch;
@@ -177,6 +225,29 @@ function auditSourceFile(filePath, text) {
 
     if (tagName === 'meta' && String(attrs['http-equiv'] ?? '').toLowerCase() === 'content-security-policy') {
       cspMetas.push({ file: rel, line, content: String(attrs.content ?? '') });
+    }
+
+    if (tagName === 'link') {
+      const relValue = String(attrs.rel ?? '').toLowerCase();
+      const asValue = String(attrs.as ?? '').toLowerCase();
+      const isStylesheet = relValue.split(/\s+/).includes('stylesheet');
+      const isStylePreload = relValue.split(/\s+/).includes('preload') && asValue === 'style';
+      if (isStylesheet || isStylePreload) {
+        const href = String(attrs.href ?? '');
+        const source = sourceKindForUrl(href);
+        styleLinks.push({
+          kind: isStylePreload ? 'style-preload' : 'style-link',
+          file: rel,
+          line,
+          tagName,
+          href,
+          rel: relValue,
+          sourceKind: source.kind,
+          origin: source.origin,
+          protocol: source.protocol,
+          tagSource: tagSource.slice(0, Math.min(240, tagSource.length)).replace(/\s+/g, ' ').trim(),
+        });
+      }
     }
 
     for (const [name, value] of Object.entries(attrs)) {
@@ -262,7 +333,64 @@ function auditSourceFile(filePath, text) {
     });
   }
 
-  return { cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes };
+  return { cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes, styleLinks };
+}
+
+async function collectRuntimeStyleFiles(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
+  const files = [];
+  for (const entry of entries) {
+    const filePath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (['node_modules', 'dist', '.astro', '.tmp'].includes(entry.name)) continue;
+      files.push(...await collectRuntimeStyleFiles(filePath));
+    } else if (entry.isFile() && /\.(js|mjs|ts)$/.test(entry.name)) {
+      files.push(filePath);
+    }
+  }
+  return files;
+}
+
+function auditRuntimeStyleFile(filePath, text) {
+  const rel = toPosix(path.relative(root, filePath));
+  const cssTextWrites = [];
+  const setAttributeStyleWrites = [];
+  const directStylePropertyReferences = [];
+
+  const cssTextPattern = /\.style\.cssText\s*=/g;
+  let cssTextMatch;
+  while ((cssTextMatch = cssTextPattern.exec(text)) !== null) {
+    cssTextWrites.push({
+      kind: 'style-cssText',
+      file: rel,
+      line: lineFor(text, cssTextMatch.index),
+      label: 'style.cssText write',
+    });
+  }
+
+  const setAttributePattern = /\.setAttribute\(\s*['"]style['"]/g;
+  let setAttributeMatch;
+  while ((setAttributeMatch = setAttributePattern.exec(text)) !== null) {
+    setAttributeStyleWrites.push({
+      kind: 'style-setAttribute',
+      file: rel,
+      line: lineFor(text, setAttributeMatch.index),
+      label: 'setAttribute("style") write',
+    });
+  }
+
+  const directStylePattern = /\.style\.(?!cssText\b)([A-Za-z_$][\w$-]*)/g;
+  let directStyleMatch;
+  while ((directStyleMatch = directStylePattern.exec(text)) !== null) {
+    directStylePropertyReferences.push({
+      kind: 'style-property',
+      file: rel,
+      line: lineFor(text, directStyleMatch.index),
+      property: directStyleMatch[1],
+    });
+  }
+
+  return { cssTextWrites, setAttributeStyleWrites, directStylePropertyReferences };
 }
 
 const scanRoots = options.distDir ? [options.distDir] : sourceDirs;
@@ -274,16 +402,32 @@ const sourceAudits = [];
 for (const filePath of files) {
   sourceAudits.push(auditSourceFile(filePath, await fs.readFile(filePath, 'utf8')));
 }
+const runtimeStyleRoots = [path.resolve(root, 'public', 'scripts')];
+const runtimeStyleFiles = (await Promise.all(runtimeStyleRoots.map((dir) => collectRuntimeStyleFiles(dir)))).flat();
+const runtimeStyleAudits = [];
+for (const filePath of runtimeStyleFiles) {
+  runtimeStyleAudits.push(auditRuntimeStyleFile(filePath, await fs.readFile(filePath, 'utf8')));
+}
 
 const cspMetas = sourceAudits.flatMap((audit) => audit.cspMetas);
 const scripts = sourceAudits.flatMap((audit) => audit.scripts);
 const eventHandlers = sourceAudits.flatMap((audit) => audit.eventHandlers);
 const styleBlocks = sourceAudits.flatMap((audit) => audit.styleBlocks);
 const styleAttributes = sourceAudits.flatMap((audit) => audit.styleAttributes);
+const styleLinks = sourceAudits.flatMap((audit) => audit.styleLinks);
+const cssTextWrites = runtimeStyleAudits.flatMap((audit) => audit.cssTextWrites);
+const setAttributeStyleWrites = runtimeStyleAudits.flatMap((audit) => audit.setAttributeStyleWrites);
+const directStylePropertyReferences = runtimeStyleAudits.flatMap((audit) => audit.directStylePropertyReferences);
 const activeCsp = cspMetas[0]?.content ?? '';
 const directives = parseCsp(activeCsp);
-const scriptSrc = directives.get('script-src') ?? directives.get('default-src') ?? [];
-const styleSrc = directives.get('style-src') ?? directives.get('default-src') ?? [];
+const scriptDirective = effectiveDirective(directives, 'script-src', ['default-src']);
+const styleDirective = effectiveDirective(directives, 'style-src', ['default-src']);
+const styleElemDirective = effectiveDirective(directives, 'style-src-elem', ['style-src', 'default-src']);
+const styleAttrDirective = effectiveDirective(directives, 'style-src-attr', ['style-src', 'default-src']);
+const scriptSrc = scriptDirective.tokens;
+const styleSrc = styleDirective.tokens;
+const styleElemSrc = styleElemDirective.tokens;
+const styleAttrSrc = styleAttrDirective.tokens;
 const executableInline = scripts.filter((script) => script.executable);
 const jsonDataScripts = scripts.filter((script) => script.type === 'json-ld' || script.type === 'data-json');
 const externalScripts = scripts.filter((script) => script.attrs.src);
@@ -297,6 +441,8 @@ const unknownExecutable = executableInline.filter((script) => !script.allowlist)
 const unknownEventHandlers = eventHandlers.filter((handler) => !handler.allowlist);
 const candidate = candidateTokens(options.candidateScriptSrc);
 const candidateStyle = candidateTokens(options.candidateStyleSrc);
+const candidateStyleElem = candidateTokens(options.candidateStyleElemSrc);
+const candidateStyleAttr = candidateTokens(options.candidateStyleAttrSrc);
 const candidateBlockers = candidate
   ? [
       ...executableInline
@@ -315,6 +461,29 @@ const candidateStyleBlockers = candidateStyle
       ...styleAttributes
         .filter((style) => !styleAllowedByCandidate({ ...style, kind: 'style-attribute' }, candidateStyle))
         .map((style) => ({ kind: 'style-attribute', record: style })),
+    ]
+  : [];
+const candidateStyleElemBlockers = candidateStyleElem
+  ? [
+      ...styleBlocks
+        .filter((style) => !styleAllowedByCandidate(style, candidateStyleElem))
+        .map((style) => ({ kind: 'style-block', record: style })),
+      ...styleLinks
+        .filter((link) => !styleLinkAllowedByCandidate(link, candidateStyleElem))
+        .map((link) => ({ kind: link.kind, record: link })),
+    ]
+  : [];
+const candidateStyleAttrBlockers = candidateStyleAttr
+  ? [
+      ...styleAttributes
+        .filter((style) => !styleAttributeAllowedByCandidate(style, candidateStyleAttr))
+        .map((style) => ({ kind: 'style-attribute', record: style })),
+      ...cssTextWrites
+        .filter((write) => !styleAttributeAllowedByCandidate(write, candidateStyleAttr))
+        .map((write) => ({ kind: 'style-cssText', record: write })),
+      ...setAttributeStyleWrites
+        .filter((write) => !styleAttributeAllowedByCandidate(write, candidateStyleAttr))
+        .map((write) => ({ kind: 'style-setAttribute', record: write })),
     ]
   : [];
 
@@ -351,10 +520,14 @@ console.log('CSP preflight audit');
 console.log(`  ${options.distDir ? 'built HTML files' : 'source files'} scanned: ${files.length}`);
 console.log(`  CSP meta tags: ${cspMetas.length}`);
 if (activeCsp) console.log(`  active CSP: ${activeCsp}`);
-console.log(`  script-src: ${scriptSrc.join(' ') || '(inherits default-src)'}`);
-console.log(`  style-src: ${styleSrc.join(' ') || '(inherits default-src)'}`);
+console.log(`  script-src: ${directiveLabel('script-src', scriptDirective)}`);
+console.log(`  style-src: ${directiveLabel('style-src', styleDirective)}`);
+console.log(`  style-src-elem: ${directiveLabel('style-src-elem', styleElemDirective)}`);
+console.log(`  style-src-attr: ${directiveLabel('style-src-attr', styleAttrDirective)}`);
 console.log(`  script unsafe-inline active: ${directiveAllowsUnsafeInline(scriptSrc) ? 'yes' : 'no'}`);
 console.log(`  style unsafe-inline active: ${directiveAllowsUnsafeInline(styleSrc) ? 'yes' : 'no'}`);
+console.log(`  style element unsafe-inline active: ${directiveAllowsUnsafeInline(styleElemSrc) ? 'yes' : 'no'}`);
+console.log(`  style attribute unsafe-inline active: ${directiveAllowsUnsafeInline(styleAttrSrc) ? 'yes' : 'no'}`);
 console.log('');
 console.log('Inline script inventory');
 console.log(`  executable inline scripts: ${executableInline.length}`);
@@ -368,10 +541,16 @@ console.log(`  inline event handlers: ${eventHandlers.length}`);
 for (const handler of eventHandlers) printEvent(handler);
 console.log(`  inline style blocks: ${styleBlocks.length}`);
 console.log(`  inline style attributes: ${styleAttributes.length}`);
+console.log(`  stylesheet/preload links: ${styleLinks.length}`);
+console.log(`  runtime style.cssText writes: ${cssTextWrites.length}`);
+console.log(`  runtime setAttribute("style") writes: ${setAttributeStyleWrites.length}`);
+console.log(`  runtime direct style property references: ${directStylePropertyReferences.length}`);
 console.log('');
 console.log('Current unsafe-inline dependencies');
 console.log(`  script-src unsafe-inline required today: ${executableInline.length + eventHandlers.length > 0 ? 'yes' : 'no'}`);
 console.log(`  style-src unsafe-inline required today: ${styleBlocks.length + styleAttributes.length > 0 ? 'yes' : 'no'}`);
+console.log(`  style-src-elem unsafe-inline required today: ${styleBlocks.length > 0 ? 'yes' : 'no'}`);
+console.log(`  style-src-attr unsafe-inline required today: ${styleAttributes.length + cssTextWrites.length + setAttributeStyleWrites.length > 0 ? 'yes' : 'no'}`);
 
 if (candidate) {
   console.log('');
@@ -406,6 +585,38 @@ if (candidateStyle) {
   }
 }
 
+if (candidateStyleElem) {
+  console.log('');
+  console.log(`Candidate style-src-elem: ${candidateStyleElem.join(' ')}`);
+  if (candidateStyleElemBlockers.length === 0) {
+    console.log('  PASS - candidate allows all current style element/link surfaces.');
+  } else {
+    console.log(`  BLOCKED - ${candidateStyleElemBlockers.length} current style element/link surface(s) would be blocked.`);
+    printCandidateBlockers(candidateStyleElemBlockers, (blocker) => {
+      const record = blocker.record;
+      if (blocker.kind === 'style-block') {
+        return record.hash ? `hash='${record.hash}'` : 'hash=dynamic';
+      }
+      return `${record.rel || 'stylesheet'} ${record.sourceKind}`;
+    });
+  }
+}
+
+if (candidateStyleAttr) {
+  console.log('');
+  console.log(`Candidate style-src-attr: ${candidateStyleAttr.join(' ')}`);
+  if (candidateStyleAttrBlockers.length === 0) {
+    console.log('  PASS - candidate allows all current style attribute surfaces.');
+  } else {
+    console.log(`  BLOCKED - ${candidateStyleAttrBlockers.length} current style attribute surface(s) would be blocked.`);
+    printCandidateBlockers(candidateStyleAttrBlockers, (blocker) => {
+      const record = blocker.record;
+      if (blocker.kind === 'style-attribute') return `${record.tagName}.style`;
+      return record.label;
+    });
+  }
+}
+
 const failures = [];
 if (options.strict && unknownExecutable.length > 0) {
   failures.push(`${unknownExecutable.length} executable inline script(s) are outside the CSP audit allowlist.`);
@@ -421,6 +632,12 @@ if (options.strict && candidate && candidateBlockers.length > 0) {
 }
 if (options.strict && candidateStyle && candidateStyleBlockers.length > 0) {
   failures.push(`candidate style-src ${candidateStyle.join(' ')} would block ${candidateStyleBlockers.length} current inline style surface(s).`);
+}
+if (options.strict && candidateStyleElem && candidateStyleElemBlockers.length > 0) {
+  failures.push(`candidate style-src-elem ${candidateStyleElem.join(' ')} would block ${candidateStyleElemBlockers.length} current style element/link surface(s).`);
+}
+if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
+  failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);
 }
 
 if (failures.length > 0) {

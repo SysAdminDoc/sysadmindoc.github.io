@@ -105,6 +105,7 @@ const publicProjectCount = catalogTotal;
 // data with no JS / offline / rate-limited. main.js refreshes it from the live
 // API on capable clients. Mirrors renderLangDonut() in public/scripts/main.js.
 const donutColors: Record<string, string> = { 'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0' };
+const donutTones: Record<string, string> = { 'PowerShell':'powershell','Python':'python','JavaScript':'javascript','HTML':'html','Kotlin':'kotlin','C#':'csharp','C++':'cpp','Shell':'shell','TypeScript':'typescript','CSS':'css','Other':'other' };
 const buildLangCount: Record<string, number> = {};
 let donutTotal = 0;
 for (const c of catalog) {
@@ -127,6 +128,7 @@ const donutArcs = donutTop.map(([lang, count]) => {
   const arc = {
     lang,
     color: donutColors[lang] ?? '#7080a0',
+    tone: donutTones[lang] ?? 'other',
     dash: `${arcLen.toFixed(1)} ${(DONUT_CIRC - arcLen).toFixed(1)}`,
     offset: (-donutOffset).toFixed(1),
     pct: Math.round(pct * 100),
@@ -348,32 +350,28 @@ const philosophyPrinciples = [
     title: 'Works On First Launch',
     desc: 'Download, launch, done. Tools auto-install their own dependencies and prerequisites. No setup wizards, no README scavenger hunts — if it takes more than one step to run, the build is not finished yet.',
     note: 'Onboarding should feel like opening software, not starting a project.',
-    bg: 'var(--blued)',
-    accent: 'var(--blue)',
+    tone: 'blue',
     icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
   },
   {
     title: "Build What's Missing",
     desc: "When the right tool does not exist, I build it. Most projects begin as a fix for personal operational friction, then grow into maintained software that solves the same problem for other people too.",
     note: 'The best backlog is the one you already trip over at work.',
-    bg: 'var(--grnd)',
-    accent: 'var(--grn)',
+    tone: 'green',
     icon: 'M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z',
   },
   {
     title: 'Always Dark',
     desc: 'Every interface ships with a premium dark theme. The goal is not decoration; it is a calmer workspace with stronger contrast, cleaner hierarchy, and less fatigue over long sessions.',
     note: 'A tool people stare at for hours should feel composed, not harsh.',
-    bg: 'var(--purd)',
-    accent: 'var(--pur)',
+    tone: 'purple',
     icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z',
   },
   {
     title: 'Open by Default',
     desc: `Everything ships in public. ${publicProjectCount}+ projects and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
     note: 'Trust comes faster when the work is inspectable and easy to try.',
-    bg: 'var(--orgd)',
-    accent: 'var(--org)',
+    tone: 'orange',
     icon: 'M16 18l6-6-6-6M8 6l-6 6 6 6',
   },
 ] as const;
@@ -691,7 +689,7 @@ const cmdkSections = [
               </div>
               <div class="lang-legend">
                 {donutArcs.map((arc) => (
-                  <div class="lang-legend-item"><span class="lang-legend-dot" style={`background:${arc.color}`}></span>{arc.lang}<span class="lang-legend-pct">{arc.pct}%</span></div>
+                  <div class="lang-legend-item"><span class={`lang-legend-dot lang-tone-${arc.tone}`}></span>{arc.lang}<span class="lang-legend-pct">{arc.pct}%</span></div>
                 ))}
               </div>
             </div>
@@ -821,7 +819,7 @@ const cmdkSections = [
     </div>
     <div class="pg">
       {philosophyPrinciples.map((principle) => (
-        <article class="prc card-enter" style={{ '--principle-bg': principle.bg, '--principle-accent': principle.accent }}>
+        <article class={`prc card-enter principle-${principle.tone}`}>
           <div class="pri"><svg viewBox="0 0 24 24" stroke="var(--principle-accent)"><path d={principle.icon}></path></svg></div>
           <h3 class="prt">{principle.title}</h3>
           <p class="prd">{principle.desc}</p>
@@ -839,7 +837,7 @@ const cmdkSections = [
     <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
-        <div class="ji rv" style="position:relative;">
+        <div class="ji rv">
           <div class="jd"></div>
           <div class="jeyebrow">{step.eyebrow}</div>
           <h3 class="jt"><a href={step.href} class="ji-link">{step.title}</a></h3>
