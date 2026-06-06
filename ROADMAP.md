@@ -232,6 +232,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `README.md`, and `PROJECT_CONTEXT.md`.
 - Acceptance: Command-palette assertions move into a focused rendered smoke test with runtime-error and overflow guards, while terminal/catalog/video homepage checks remain covered in a separate test; `npm run audit:interactions` still passes in reasonable time.
 - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+- Done in Cycle 34: Split the rendered homepage smoke into a focused command-palette test and a separate terminal/catalog/video workflow test. Both tests keep runtime-error collection and horizontal-overflow guards, and the interaction suite now reports four focused Chromium tests.
+- Confidence: High
+
+### T157 - Guard command-palette section hash activation
+
+- Priority: P2
+- Why: Command-palette route activation is covered for `/search/`, but same-page section hash activation uses a separate `navigateTo()` branch that scrolls, focuses the target, and updates browser history.
+- Evidence: `public/scripts/cmdk.js` handles `href` values beginning with `#` separately. The rendered interaction smoke activates internal routes but does not activate a section command such as `Catalog` or `Live Apps`.
+- Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, and `PROJECT_CONTEXT.md`.
+- Acceptance: A rendered browser test filters to a deterministic section command, activates it, verifies the expected hash, closed palette state, focus-target behavior, and preserved console-error/overflow guards.
+- Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 - Confidence: Medium
 
 Research sources:
@@ -1008,11 +1019,11 @@ New from v0.18.0 research:
 
 ### Last Completed Cycle
 
-Cycle 33: T155 command-palette no-results recovery coverage.
+Cycle 34: T156 homepage interaction smoke split.
 
 ### Current Focus
 
-Continue from T156 homepage interaction smoke split.
+Continue from T157 command-palette section hash activation coverage.
 
 ### Important Findings So Far
 
@@ -1036,13 +1047,14 @@ Continue from T156 homepage interaction smoke split.
 - Cycle 31 implemented T153. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with Arrow keys, activates `/search/` with Enter, and verifies the palette closes after navigation.
 - Cycle 32 implemented T154. The rendered interaction smoke now verifies native dialog backdrop dismiss with `aria-expanded` reset, then clicks a deterministic internal command result and confirms navigation plus closed palette state.
 - Cycle 33 implemented T155. The rendered interaction smoke now verifies command-palette no-results status/copy, zero result rows, cleared `aria-activedescendant`, and recovery to valid `search` results with active option state.
+- Cycle 34 implemented T156. The rendered interaction smoke is split into focused command-palette and terminal/catalog/video tests, each with runtime-error collection and horizontal-overflow guards.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T156 by splitting command-palette assertions into a focused rendered smoke test.
-2. Keep terminal, catalog, and video homepage checks covered in a separate focused flow.
-3. Preserve the existing runtime-error and horizontal-overflow guards across both flows.
+1. Continue T157 by activating a deterministic section command from the command palette.
+2. Verify hash navigation, closed palette state, and target focus behavior.
+3. Preserve existing route activation, empty-state, pointer, keyboard, runtime-error, and overflow guards.
 
 ### Unprocessed Leads
 
