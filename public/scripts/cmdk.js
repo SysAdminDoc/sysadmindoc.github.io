@@ -264,6 +264,10 @@
     input.setAttribute('aria-expanded', String(isOpen));
   }
 
+  function isPaletteToggle(event) {
+    return (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+  }
+
   function setSelected(nextIndex) {
     const nodes = list.querySelectorAll('.cmdk-item');
     if (!nodes.length) {
@@ -361,7 +365,15 @@
   }
 
   document.addEventListener('keydown', event => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    if (backdrop.open && (event.key === 'Escape' || isPaletteToggle(event))) {
+      event.preventDefault();
+      event.stopPropagation();
+      close();
+    }
+  }, true);
+
+  document.addEventListener('keydown', event => {
+    if (isPaletteToggle(event)) {
       event.preventDefault();
       backdrop.open ? close() : open();
       return;

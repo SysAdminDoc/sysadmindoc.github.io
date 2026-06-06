@@ -610,12 +610,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added `playwright.interactions.config.mjs` as a thin wrapper around the visual/axe audit config with separate `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results` paths. `npm run audit:interactions` now uses that config, CI uploads both interaction and visual report/result folders, and the workflow source-contract test locks the separate paths while preserving the shared screenshot baseline template.
   - Verify: `node --check playwright.interactions.config.mjs`; `node --test test/a11y-gate.test.mjs`; `npm run audit:interactions`.
 
-- [ ] **T152** P2 - Harden command-palette close behavior.
+- [x] **T152** P2 - Harden command-palette close behavior.
   - Why: T149's first interaction-smoke draft exposed that pressing Escape or Ctrl+K inside the command-palette search field did not close the native dialog reliably in Chromium, even though the UI advertises both close paths. The final T149 smoke avoided that brittle assertion, but the user-facing close contract still needs a focused fix.
   - Evidence: The failed smoke runs left `#cmdk` visible after `page.keyboard.press('Escape')` and after `page.keyboard.press('Control+K')` while the dialog search field remained focused. Existing CSP/visual tests only assert that the palette opens and filters; they do not assert close behavior.
   - Touches: `public/scripts/cmdk.js`, `tests/playwright/interaction-smoke.spec.mjs` or a focused Playwright test, `README.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: The command palette closes reliably via Escape and Ctrl/Cmd+K while focus is inside the search field, the toggle button `aria-expanded` state updates, and the rendered interaction smoke or a focused browser test guards the behavior without flaky dialog assumptions.
   - Verify: focused Playwright close test; `npm run audit:interactions`; `npm test`.
+  - Done: Added capture-phase handling for Escape and Ctrl/Cmd+K while the native dialog is open, preventing browser search-input behavior from consuming the close shortcut before the palette can close. The rendered interaction smoke now asserts dialog `open` state plus button/input `aria-expanded` state for Escape and Ctrl+K while focus is inside `#cmdkInput`.
+  - Verify: `node --check public/scripts/cmdk.js`; `node --check tests/playwright/interaction-smoke.spec.mjs`; `node --test test/public-script-minify.test.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+
+- [ ] **T153** P2 - Guard command-palette keyboard result activation.
+  - Why: The rendered smoke now covers opening, filtering, and closing, but it still does not assert Arrow key selection or Enter activation. The command palette advertises keyboard-first navigation, so regressions in `aria-activedescendant`, `aria-selected`, or Enter navigation would be user-visible.
+  - Evidence: `tests/playwright/interaction-smoke.spec.mjs` verifies results exist after filtering but does not move selection or activate a result. `public/scripts/cmdk.js` has dedicated ArrowUp/ArrowDown/Enter handling that is currently only covered indirectly by source review.
+  - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: A rendered browser test filters the command palette, moves the active option with Arrow keys, verifies selected/active-descendant state, activates a deterministic internal result with Enter, and confirms the palette closes without runtime errors or horizontal overflow.
+  - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 
 ---
 
