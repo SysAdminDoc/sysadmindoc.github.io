@@ -556,12 +556,21 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Endpoint and DOM-size audits now account for the 16-project generated fixture build without weakening live-scale ceilings: `/llms.txt` keeps a 50-link live floor but derives a fixture floor from required URLs plus project count, and `dom:audit` uses a bounded small-catalog average-card budget for fixture output. Visual baselines were refreshed from the fixture-backed Playwright run.
   - Verify: `npm run generated:fixtures`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm test`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run build:ci`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright`.
 
-- [ ] **T146** P2 - Promote active style CSP hash drift checks into the build-output audit path.
+- [x] **T146** P2 - Promote active style CSP hash drift checks into the build-output audit path.
   - Why: The current unit test guards the `critical.css` and no-JS fallback hashes in `Base.astro`, and the built CSP audit can prove the final policy works. A build-time audit should connect those pieces so future first-paint CSS edits cannot accidentally ship a stale `style-src-elem` hash outside the normal unit-test path.
   - Evidence: Active CSP depends on two SHA-256 hashes (`critical.css` and the no-JS reveal fallback). `test/csp-audit.test.mjs` checks them in source, while `build:ci` currently runs endpoint/feed/DOM/search/schema audits but not a strict rendered style-element candidate audit.
   - Touches: `scripts/audit-csp.mjs`, `package.json`, `test/csp-audit.test.mjs`, `README.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: `build:ci` or a dedicated build-output script verifies the active rendered `style-src-elem` policy against the generated `dist/` HTML, fails on hash drift, and keeps the source hash test as the faster unit guard.
   - Verify: `npm test`; `npm run build`; strict built CSP style-element audit.
+  - Done: Added `--active-style-src-elem` to the CSP audit so strict rendered checks derive the candidate tokens from the active policy instead of duplicating hashes in package scripts. Added `npm run csp:audit:dist:style:elem` and wired it into `build:ci` after HTML repair and public script minification.
+  - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs test/public-script-minify.test.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The build-integrated CSP gate scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active `style-src-elem` hashes.
+
+- [ ] **T147** P2 - Require consistent CSP metadata across rendered pages.
+  - Why: The active-policy audit now proves the first rendered CSP contract allows the built style surfaces, but the script still uses the first CSP meta tag as the active policy. A future route with a missing or divergent CSP meta could weaken a single page without changing the first scanned page.
+  - Evidence: Current `npm run csp:audit:dist:style:elem` reports 194 CSP meta tags across 194 built HTML files, but it does not yet assert that every rendered CSP meta has identical directive text before deriving active tokens.
+  - Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, `README.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: Strict dist CSP audits fail when any built HTML page lacks a CSP meta tag or has a policy that diverges from the active policy; reporting should identify the first few divergent files without making normal source inventory mode noisy.
+  - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
 
 ---
 

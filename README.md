@@ -38,7 +38,7 @@ npm run profile-feed:sync # optional: refresh ignored profile projects cache fro
 npm run generated:fixtures:check # audit tracked PR-CI generated-data fixtures
 npm run generated:fixtures # install fixture caches into ignored src/data/_*.json files
 npm run fetch-stars   # optional: refresh star cache from GitHub
-npm run build:ci      # build plus HTML structure, endpoint, feed, DOM-size, search, and schema audits
+npm run build:ci      # build plus HTML structure, strict style CSP, endpoint, feed, DOM-size, search, and schema audits
 npm run scripts:minify # minify copied dist/scripts output after Astro build
 node scripts/fix-html-structure.mjs # verify built HTML structure; --repair is legacy recovery only
 npm run catalog:audit # compare public GitHub repos with portfolio data
@@ -53,6 +53,7 @@ npm run csp:audit:style:elem # report style-src-elem 'self' blockers without fai
 npm run csp:audit:style:attr # verify style-src-attr 'none' is clean in source/runtime inventory
 npm run csp:audit:browser # browser-check representative routes with candidate style-src-attr 'none'
 npm run csp:audit:dist # verify rendered dist/ CSP inventory after a build
+npm run csp:audit:dist:style:elem # fail if rendered style-src-elem hashes drift from the active policy
 npm run dom:audit     # verify built homepage/catalog DOM-size budgets
 npm run semantic:audit # report similar-project and cross-category catalog review hints
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity

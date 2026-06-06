@@ -10,7 +10,7 @@ const root = process.cwd();
 test('build:ci minifies copied public scripts', async () => {
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.scripts['scripts:minify'], 'node scripts/minify-public-scripts.mjs');
-  assert.match(pkg.scripts['build:ci'], /node scripts\/fix-html-structure\.mjs && npm run scripts:minify && npm run endpoints:audit/);
+  assert.match(pkg.scripts['build:ci'], /node scripts\/fix-html-structure\.mjs && npm run scripts:minify && npm run csp:audit:dist:style:elem && npm run endpoints:audit/);
   assert.match(await fs.readFile(path.join(root, 'scripts', 'minify-public-scripts.mjs'), 'utf8'), /minifyIdentifiers: false/);
 });
 
