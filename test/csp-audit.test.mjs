@@ -54,16 +54,19 @@ test('csp audit inventories current inline script blockers without failing defau
 test('csp style element hashes match the critical and no-js inline style blocks', () => {
   const baseLayout = fs.readFileSync(baseLayoutPath, 'utf8');
   const criticalCss = fs.readFileSync(criticalCssPath, 'utf8');
-  const csp = baseLayout.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
-  const noJsFallbackCss = baseLayout.match(/<noscript>[\s\S]*?<style>([\s\S]*?)<\/style>[\s\S]*?<\/noscript>/)?.[1] ?? '';
+  const noJsFallbackCss = baseLayout.match(/const noJsRevealCss = '([^']+)';/)?.[1] ?? '';
   const astroConfig = fs.readFileSync(path.join(repoRoot, 'astro.config.mjs'), 'utf8');
+  const output = runAudit();
 
   assert.match(astroConfig, /inlineStylesheets:\s*'never'/);
-  assert.ok(noJsFallbackCss, 'expected a literal no-JS fallback style block in Base.astro');
-  assert.match(csp, /style-src 'self'; style-src-elem 'self'/);
-  assert.match(csp, /style-src-attr 'none'/);
-  assert.ok(csp.includes(`'${sha256Csp(criticalCss)}'`), 'CSP must include the current critical.css hash');
-  assert.ok(csp.includes(`'${sha256Csp(noJsFallbackCss)}'`), 'CSP must include the current no-JS fallback hash');
+  assert.ok(noJsFallbackCss, 'expected a source no-JS fallback CSS constant in Base.astro');
+  assert.match(baseLayout, /const styleElemSrc = \["'self'"/);
+  assert.match(baseLayout, /sha256Csp\(criticalCss\)/);
+  assert.match(baseLayout, /sha256Csp\(noJsRevealCss\)/);
+  assert.match(baseLayout, /content=\{contentSecurityPolicy\}/);
+  assert.match(baseLayout, /<style is:inline set:html=\{noJsRevealCss\}><\/style>/);
+  assert.match(output, new RegExp(`'${sha256Csp(criticalCss).replaceAll('+', '\\+')}'`));
+  assert.match(output, new RegExp(`'${sha256Csp(noJsFallbackCss).replaceAll('+', '\\+')}'`));
 });
 
 test('csp audit strict candidate mode passes with script-src self after script migration', () => {

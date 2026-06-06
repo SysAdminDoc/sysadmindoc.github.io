@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 25
+Current cycle: 26
 
 ## Latest result
 
@@ -31,6 +31,8 @@ Current cycle: 25
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs test/public-script-minify.test.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The build-integrated CSP gate scanned 194 built pages, 388 inline style blocks, and 776 stylesheet/preload links, then passed against the active `style-src-elem` hashes.
 - 2026-06-06: Cycle 25 implemented T147 rendered CSP metadata consistency. Strict dist CSP audits now report files with exactly one CSP meta and unique rendered policy count, then fail on missing, duplicated, or divergent CSP meta policies with representative paths. T147 is checked off in `TODO.md`, and T148 was added for generated style CSP hashes.
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run csp:audit:dist:style:elem`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. Current rendered output reports 194/194 files with one CSP meta and one unique policy.
+- 2026-06-06: Cycle 26 implemented T148 generated style CSP hashes. `Base.astro` now computes `style-src-elem` from the same `criticalCss` and no-JS reveal CSS strings that render the inline style blocks, and the source CSP audit resolves the generated policy for source inventory checks. T148 is checked off in `TODO.md`, and T149 was added for a focused rendered interaction smoke.
+- Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `node scripts/audit-csp.mjs`; `npm run build:ci`; `npm test`; `npm run check`; `git diff --check`. The rendered build still passes with 194/194 CSP metas, one unique policy, 388 inline style blocks, and 776 stylesheet/preload links.
 
 ## Next project
 
@@ -38,8 +40,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-25.md`.
-- Start with T148: generate active `style-src-elem` hashes from the same source strings that render critical/no-JS CSS.
-- Keep the source hash test and strict rendered dist gate as proof that the generated policy still matches output.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-26.md`.
+- Start with T149: add a compact rendered interaction smoke under the final generated style CSP policy.
+- Keep the smoke focused on interactions, console errors, and horizontal overflow; visual baselines stay in the existing Playwright audit.
 - Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.
