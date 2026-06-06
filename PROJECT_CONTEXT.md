@@ -271,7 +271,7 @@ Highest-priority workflow/research work after the T112 terminal, Atom feed, cata
 2. T143/T144 P2: migrate inline style attributes/runtime `cssText` and add candidate-policy browser verification.
 3. Use T141's split audit commands to measure each stage: `csp:audit:style:elem` for style blocks/links and `csp:audit:style:attr` for static/runtime attribute surfaces.
 
-Next work should continue from T154 by guarding command-palette pointer result activation and backdrop dismiss behavior.
+Next work should continue from T155 by guarding command-palette no-results state and recovery behavior.
 
 ## Definition of Done for Future Changes
 
@@ -365,3 +365,4 @@ Next work should continue from T154 by guarding command-palette pointer result a
 - 2026-06-06: Cycle 29 implemented T151 Playwright report-output separation. `audit:interactions` now uses `playwright.interactions.config.mjs` and writes `.tmp/playwright-interactions-report` / `.tmp/playwright-interactions-results`, while the visual/axe suite keeps `.tmp/playwright-report` / `.tmp/playwright-results`; CI uploads both sets.
 - 2026-06-06: Cycle 30 implemented T152 command-palette close hardening. `public/scripts/cmdk.js` now closes the native dialog on Escape and Ctrl/Cmd+K from inside `#cmdkInput` through capture-phase shortcut handling, and the rendered interaction smoke verifies dialog state plus toggle/input `aria-expanded` updates for both close paths.
 - 2026-06-06: Cycle 31 implemented T153 command-palette keyboard activation coverage. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with ArrowDown/ArrowUp, activates `/search/` with Enter, and confirms the palette is closed after navigation.
+- 2026-06-06: Cycle 32 implemented T154 command-palette pointer activation coverage. The rendered interaction smoke now clicks the native dialog backdrop, verifies closed state plus `aria-expanded` reset, then reopens, filters a stable `search` result set, clicks the first internal result, verifies navigation, and confirms the palette is closed after navigation.
