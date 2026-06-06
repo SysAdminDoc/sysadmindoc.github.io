@@ -321,7 +321,7 @@ const jsonLd = JSON.stringify({
           <span>{name}</span>
         </div>
         <div class="project-meta">
-          <span class={`cdo ${category}`} style="display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px"></span>
+          <span class={`cdo ${category} project-meta-dot`}></span>
           <span class="project-category">{category.toUpperCase()}</span>
           {isFeatured && <span class="project-badge-featured">FEATURED</span>}
           {isLive && <span class="project-badge-live">LIVE</span>}
@@ -453,7 +453,7 @@ const jsonLd = JSON.stringify({
             </section>
           </div>
           {proof.caseStudy && (
-            <div class="project-proof-grid" style="margin-top: 2rem;">
+            <div class="project-proof-grid project-proof-grid-spaced">
               <section class="project-proof-card project-proof-card-wide">
                 <h3>Case Study</h3>
                 <p>{proof.caseStudy.context}</p>
@@ -506,7 +506,7 @@ const jsonLd = JSON.stringify({
             </details>
           )}
           <article class="project-readme" set:html={readmeHtml}></article>
-          <p class="project-readme-hint" style="margin-top:24px">
+          <p class="project-readme-hint project-readme-hint-spaced">
             Read on GitHub → <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>
           </p>
         </div>
@@ -563,7 +563,7 @@ const jsonLd = JSON.stringify({
               <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p>
             </div>
           </div>
-        <div class="cg" style="margin-top:24px">
+        <div class="cg project-related-grid">
           {related.map((r) => (
             <a
               href={`/projects/${r.repo}/`}
@@ -639,6 +639,7 @@ const jsonLd = JSON.stringify({
   .project-actions{min-width:0;max-width:100%;margin-top:0}
   .project-actions .btn{min-width:0;white-space:normal}
   .project-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;min-width:0;max-width:100%;margin-top:28px}
+  .project-meta-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
   .project-fact{min-width:0;padding:20px 18px 18px;border-radius:24px;border:1px solid var(--border-soft);background:var(--surface-1);box-shadow:var(--shadow-soft);overflow-wrap:anywhere}
   .project-fact-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
   .project-fact-value{font-family:var(--mono);font-size:18px;color:var(--t1);line-height:1.2;margin-bottom:8px}
@@ -654,6 +655,7 @@ const jsonLd = JSON.stringify({
   .project-readme-wrap{max-width:1000px;margin:0 auto}
   .project-panel{padding:30px;border-radius:30px;border:1px solid var(--border-soft);background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .project-readme-hint{color:var(--t3);font-size:14px;margin-bottom:20px}
+  .project-readme-hint-spaced,.project-related-grid{margin-top:24px}
   .project-link{color:var(--grn);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
   .project-link:hover{border-color:var(--grn)}
   .project-shot-link{display:block;position:relative;max-width:960px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid var(--glass-border);background:var(--bg2);box-shadow:0 24px 60px rgba(0,0,0,.4);transition:transform .25s ease-out,box-shadow .25s}
@@ -664,6 +666,7 @@ const jsonLd = JSON.stringify({
   .project-og{display:block;max-width:800px;width:100%;height:auto;border-radius:12px;border:1px solid var(--glass-border);margin:0 auto}
   .project-empty{max-width:none}
   .project-proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .project-proof-grid-spaced{margin-top:2rem}
   .project-proof-card{padding:20px;border:1px solid var(--glass-border);border-radius:12px;background:var(--bg2)}
   .project-proof-card-wide{grid-column:1/-1}
   .project-proof-card h3{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--grn);margin:0 0 12px}

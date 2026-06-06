@@ -49,6 +49,9 @@ npm run images:audit  # validate screenshot masters, public/Astro thumbnails, an
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
 npm run csp:audit     # verify source CSP script/style inventory and strict script-src readiness
 npm run csp:audit:style # report current style-src 'self' blockers without failing
+npm run csp:audit:style:elem # report style-src-elem 'self' blockers without failing
+npm run csp:audit:style:attr # verify style-src-attr 'none' is clean in source/runtime inventory
+npm run csp:audit:browser # browser-check representative routes with candidate style-src-attr 'none'
 npm run csp:audit:dist # verify rendered dist/ CSP inventory after a build
 npm run dom:audit     # verify built homepage/catalog DOM-size budgets
 npm run semantic:audit # report similar-project and cross-category catalog review hints

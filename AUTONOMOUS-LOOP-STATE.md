@@ -1,9 +1,9 @@
 # Autonomous Loop State
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 16
+Current cycle: 22
 
 ## Latest result
 
@@ -13,6 +13,18 @@ Current cycle: 16
 - Verification for this cycle: `node --test test/pwa-manifest.test.mjs`, `npm test`, `npm run check`, and `npm run build`.
 - 2026-06-05: Cycle 16 sanitized public loop-state path details. The implementation keeps repository identity and the Windows shared-folder gotcha while removing exact local checkout paths from new continuity docs and nearby historical TODO wording.
 - Verification for this cycle: a path-sensitive `rg` scan over the edited continuity docs found no exact local checkout paths; `git diff --check`.
+- 2026-06-06: Cycle 17 expanded the roadmap with the next style-side CSP hardening pass. Added T141-T144 to `TODO.md`, added the Cycle 17 evidence section to `ROADMAP.md`, and created `docs/research-2026-06-06-cycle-17.md`.
+- Verification for this cycle: current source CSP style candidate run reports 31 blockers (15 style blocks, 16 style attributes); current built-output candidate run reports 1,012 blockers (394 style blocks, 618 style attributes). `npm run csp:audit:style` from the raw UNC shared-folder checkout still fails because `cmd.exe` falls back to `C:\Windows`, while direct `node scripts/audit-csp.mjs ...` works.
+- 2026-06-06: Cycle 18 made T141 implementation-ready by inspecting `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, critical CSS, runtime scripts, and Playwright audit coverage. Created `docs/research-2026-06-06-cycle-18.md` and added the blueprint to `ROADMAP.md` and `TODO.md`.
+- Verification for this cycle: measured one source stylesheet link, 15 source style blocks, 16 source static style attributes, six runtime `style.cssText` writes, zero `setAttribute("style")` writes, and 32 total `.style.` references. Existing tests currently lock aggregate style candidate behavior and need split-candidate expectations added for T141.
+- 2026-06-06: Cycle 19 made T142 style-block hardening feasible. Created `docs/research-2026-06-06-cycle-19.md` and added the hash/`inlineStylesheets` experiment details to `ROADMAP.md` and `TODO.md`.
+- Verification for this cycle: existing built output repeats critical CSS (`sha256-IgolL9OcCAAkbJBdeHMz7R8+koltdJ8QZkkoG6h27v4=`) and no-JS fallback (`sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA=`) on nearly every page. Only six built routes have a third inline style block under Astro `inlineStylesheets: 'auto'`.
+- 2026-06-06: Cycle 20 implemented T141 split CSP style auditing. The audit now supports aggregate `--candidate-style-src`, split `--candidate-style-src-elem`, split `--candidate-style-src-attr`, effective directive fallback reporting, stylesheet/preload link inventory, runtime `style.cssText` inventory, and direct style-property reference reporting. T141 is checked off in `TODO.md`.
+- Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `node scripts/audit-csp.mjs --candidate-style-src "'self'"`; `node scripts/audit-csp.mjs --candidate-style-src-elem "'self'"`; `node scripts/audit-csp.mjs --candidate-style-src-attr "'none'"`. Current split counts: 15 `style-src-elem` blockers and 22 `style-src-attr` blockers.
+- 2026-06-06: Cycle 21 implemented T142 staged style-element CSP hardening. Active CSP now removes style-element `unsafe-inline` with `style-src 'self'`, hashed `style-src-elem`, and staged `style-src-attr 'unsafe-inline'`; Astro now uses `build.inlineStylesheets: 'never'`; the Playwright harness no longer injects inline stability CSS and blocks service workers for deterministic audits. T142 is checked off in `TODO.md`, and T145 was added for visual-baseline stabilization.
+- Verification for this cycle: direct source `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; normal local `npm test`; normal local `npm run build`; strict built `style-src-elem` candidate audit passed. Full rendered output changed from 394 style blocks/770 style links to 388 style blocks/776 style links with zero routes over two style blocks. `npm run audit:perf -- --strict --lcp 60000 --event 500` passed. Playwright axe subset passed under the stricter policy; full Playwright still has screenshot-baseline drift to resolve under T145.
+- 2026-06-06: Cycle 22 implemented T143/T144 style-attribute CSP hardening. Static style attributes and runtime `style.cssText` writes were replaced with finite classes, tone maps, SVG attributes, and direct property writes for dynamic coordinates only. Active CSP now uses `style-src-attr 'none'`, and the new `npm run csp:audit:browser` Playwright audit records policy violations across representative rendered routes and interactions. T143 and T144 are checked off in `TODO.md`.
+- Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; source `style-src-attr 'none'` strict audit; source inline-style grep; `npm test`; `npm run check`; `npm run build`; strict built `style-src-attr 'none'` audit; `npm run csp:audit:browser`; rendered browser spot-checks for home/project flows.
 
 ## Next project
 
@@ -20,6 +32,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and the newest `docs/research-*.md`.
-- Re-run dependency/security drift checks.
-- Consider the style-side CSP hardening backlog only if there is enough time for a careful CSS/inline-style migration plus visual regression coverage.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-22.md`.
+- Start with T145: stabilize Playwright visual baselines under deterministic data, blocked service workers, and the CSP-compatible stability stylesheet. Note that a fixture `build:ci` attempt exposed an existing `llms.txt` useful-link threshold mismatch before visual baselines could be trusted.
+- Audit whether the two active `style-src-elem` hashes should be generated or enforced from source during build to prevent critical/no-JS CSS drift.
+- Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
+- Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

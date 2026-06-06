@@ -28,11 +28,11 @@
   let chordTimer = 0;
   let chordActive = false;
   /* prefersReducedMotion — loaded from shared.js */
-  const routeColors = {
-    blue: '#7cb8ff',
-    green: '#4ade80',
-    amber: '#e5b169',
-    slate: '#8b9cc0',
+  const routeDotTones = {
+    blue: 'blue',
+    green: 'green',
+    amber: 'amber',
+    slate: 'slate',
   };
   const defaultProjectTypes = ['featured', 'live'];
   const chordMap = {
@@ -163,15 +163,15 @@
         output.push('<div class="cmdk-group-label">' + escapeHTML(groupLabel) + '</div>');
         lastGroup = groupLabel;
       }
-      const dotColor = row.kind === 'route'
-        ? (routeColors[row.tone] || '#8b9cc0')
+      const dotTone = row.kind === 'route'
+        ? (routeDotTones[row.tone] || 'slate')
         : row.kind === 'section'
-          ? '#8b9cc0'
+          ? 'slate'
           : ({
-              featured: '#4ade80',
-              live: '#facc15',
-              catalog: '#58a6ff',
-            })[row.type] || '#7080a0';
+              featured: 'green',
+              live: 'amber',
+              catalog: 'blue',
+            })[row.type] || 'slate';
       const badge = row.kind === 'project' ? (row.type || 'project').toUpperCase() : (row.badge || 'SECTION');
       const subtitle = row.desc
         || (row.kind === 'project'
@@ -179,7 +179,7 @@
           : 'Open this route.');
       output.push(
         '<div class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" data-href="' + escapeHTML(row.href || row.url) + '"' + (row.external ? ' data-external="true"' : '') + '>'
-        + '<span class="cmdk-dot" style="background:' + dotColor + ';color:' + dotColor + '"></span>'
+        + '<span class="cmdk-dot cmdk-dot-' + dotTone + '"></span>'
         + '<span class="cmdk-copy">'
         + '<span class="cmdk-title-row">'
         + '<span class="cmdk-title">' + highlightMatch(row.label || row.name, query) + '</span>'
@@ -349,15 +349,15 @@
     if (!hint) {
       hint = document.createElement('div');
       hint.id = 'chordHint';
-      hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--glass-border);color:var(--t1);padding:10px 16px;border-radius:10px;font-family:var(--mono);font-size:13px;z-index:99997;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+      hint.className = 'cmdk-chord-hint';
       hint.setAttribute('role', 'status');
       hint.setAttribute('aria-live', 'polite');
       document.body.appendChild(hint);
     }
     hint.textContent = message;
-    hint.style.opacity = '1';
+    hint.classList.add('is-visible');
     clearTimeout(hint._t);
-    hint._t = setTimeout(() => { hint.style.opacity = '0'; }, 1200);
+    hint._t = setTimeout(() => { hint.classList.remove('is-visible'); }, 1200);
   }
 
   document.addEventListener('keydown', event => {

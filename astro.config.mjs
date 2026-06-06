@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   output: 'static',
   build: {
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'never',
     assets: '_assets',
     concurrency: 1, // marked.use() mutates global state in [slug].astro; parallel builds race
   },

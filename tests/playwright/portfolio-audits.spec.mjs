@@ -28,6 +28,12 @@ const stabilityCss = `
 async function preparePage(page, path, readySelector = 'main') {
   await page.route('https://api.github.com/**', (route) => route.abort());
   await page.route('https://www.youtube-nocookie.com/**', (route) => route.abort());
+  await page.route('**/__playwright-stability.css', (route) =>
+    route.fulfill({
+      contentType: 'text/css; charset=utf-8',
+      body: stabilityCss,
+    }),
+  );
   await page.addInitScript((now) => {
     const RealDate = Date;
     class FixedDate extends RealDate {
@@ -45,7 +51,7 @@ async function preparePage(page, path, readySelector = 'main') {
     window.Date = FixedDate;
   }, stableNow);
   await page.goto(path, { waitUntil: 'load' });
-  await page.addStyleTag({ content: stabilityCss });
+  await page.addStyleTag({ url: '/__playwright-stability.css' });
   await page.locator('main').waitFor({ state: 'visible' });
   await page.locator(readySelector).waitFor({ state: 'visible' });
   await page.evaluate(async () => {
