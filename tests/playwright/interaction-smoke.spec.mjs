@@ -76,6 +76,23 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow).toBeLessThanOrEqual(1);
 }
 
+async function expectCommandPaletteState(page, isOpen) {
+  await expect.poll(async () => page.evaluate(() => {
+    const dialog = document.getElementById('cmdk');
+    const toggle = document.getElementById('cmdkToggle');
+    const input = document.getElementById('cmdkInput');
+    return {
+      dialogOpen: Boolean(dialog?.open),
+      toggleExpanded: toggle?.getAttribute('aria-expanded') ?? null,
+      inputExpanded: input?.getAttribute('aria-expanded') ?? null,
+    };
+  })).toEqual({
+    dialogOpen: isOpen,
+    toggleExpanded: String(isOpen),
+    inputExpanded: String(isOpen),
+  });
+}
+
 test.describe('rendered interaction smoke', () => {
   test('homepage command palette, terminal, video, and catalog search work without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
@@ -90,8 +107,16 @@ test.describe('rendered interaction smoke', () => {
 
     await page.locator('#cmdkToggle').click();
     await expect(page.locator('#cmdk')).toBeVisible();
+    await expectCommandPaletteState(page, true);
     await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
+    await page.keyboard.press('Escape');
+    await expectCommandPaletteState(page, false);
+    await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, true);
+    await page.locator('#cmdkInput').fill('python');
+    await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');
 
     await page.locator('#heroTerm').click();

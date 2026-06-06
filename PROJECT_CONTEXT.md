@@ -271,7 +271,7 @@ Highest-priority workflow/research work after the T112 terminal, Atom feed, cata
 2. T143/T144 P2: migrate inline style attributes/runtime `cssText` and add candidate-policy browser verification.
 3. Use T141's split audit commands to measure each stage: `csp:audit:style:elem` for style blocks/links and `csp:audit:style:attr` for static/runtime attribute surfaces.
 
-Next work should continue from T152 by hardening command-palette close behavior for Escape and Ctrl/Cmd+K from inside the search input.
+Next work should continue from T153 by guarding command-palette Arrow key selection and Enter activation from inside the search input.
 
 ## Definition of Done for Future Changes
 
@@ -363,3 +363,4 @@ Next work should continue from T152 by hardening command-palette close behavior 
 - 2026-06-06: Cycle 27 implemented T149 focused rendered interaction smoke. `npm run audit:interactions` now uses Playwright against built `dist/` to verify the generated active CSP and core hydrated flows without screenshots: homepage command-palette filtering, terminal `contact`, catalog search, click-to-load video close, mobile Python-lane project navigation, mobile project share fallback, console errors, and horizontal overflow.
 - 2026-06-06: Cycle 28 implemented T150 CI promotion for the rendered interaction smoke. PR CI now runs `npm run audit:interactions` after Chromium installation and before `npm run audit:playwright`, and `test/a11y-gate.test.mjs` asserts the npm script and workflow step order.
 - 2026-06-06: Cycle 29 implemented T151 Playwright report-output separation. `audit:interactions` now uses `playwright.interactions.config.mjs` and writes `.tmp/playwright-interactions-report` / `.tmp/playwright-interactions-results`, while the visual/axe suite keeps `.tmp/playwright-report` / `.tmp/playwright-results`; CI uploads both sets.
+- 2026-06-06: Cycle 30 implemented T152 command-palette close hardening. `public/scripts/cmdk.js` now closes the native dialog on Escape and Ctrl/Cmd+K from inside `#cmdkInput` through capture-phase shortcut handling, and the rendered interaction smoke verifies dialog state plus toggle/input `aria-expanded` updates for both close paths.
