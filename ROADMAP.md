@@ -199,6 +199,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, and `PROJECT_CONTEXT.md`.
 - Acceptance: A rendered browser test filters the command palette, moves active option state with Arrow keys, activates a deterministic internal result with Enter, confirms the palette closes, and keeps console-error/overflow guards active.
 - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+- Done in Cycle 31: Extended the rendered interaction smoke to filter a stable `search` result set, wait for the debounced result status, assert `aria-activedescendant` and selected-option state, move selection with ArrowDown/ArrowUp, activate the selected internal `/search/` result with Enter, and confirm the palette is closed after navigation.
+- Confidence: High
+
+### T154 - Guard command-palette pointer activation and backdrop dismiss
+
+- Priority: P2
+- Why: Keyboard command-palette flows are now covered, but pointer-specific dialog behaviors remain separate code paths. Clicking result rows and clicking the native dialog backdrop should stay reliable for mouse and touch users.
+- Evidence: `public/scripts/cmdk.js` has separate click listeners for the dialog backdrop and result list. The rendered interaction smoke does not currently click the backdrop or activate a result row with the pointer.
+- Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, and `PROJECT_CONTEXT.md`.
+- Acceptance: A rendered browser test clicks the backdrop to close the palette with `aria-expanded` reset, then clicks a deterministic internal command result and verifies navigation while preserving console-error and overflow guards.
+- Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 - Confidence: Medium
 
 Research sources:
@@ -975,11 +986,11 @@ New from v0.18.0 research:
 
 ### Last Completed Cycle
 
-Cycle 30: T152 command-palette close behavior hardening.
+Cycle 31: T153 command-palette keyboard result activation coverage.
 
 ### Current Focus
 
-Continue from T153 command-palette keyboard result activation coverage.
+Continue from T154 command-palette pointer activation and backdrop dismiss coverage.
 
 ### Important Findings So Far
 
@@ -1000,13 +1011,14 @@ Continue from T153 command-palette keyboard result activation coverage.
 - Cycle 28 implemented T150. PR CI now runs `npm run audit:interactions` after Chromium install and before the fixture-backed visual/axe Playwright suite, with source-contract coverage for the npm script and workflow step order.
 - Cycle 29 implemented T151. Interaction-smoke Playwright output now writes to `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`, while the visual/axe audit keeps `.tmp/playwright-report` and `.tmp/playwright-results`; CI uploads both sets.
 - Cycle 30 implemented T152. The command palette now closes on Escape and Ctrl/Cmd+K from inside `#cmdkInput` through capture-phase shortcut handling, and the rendered interaction smoke verifies dialog open state plus toggle/input `aria-expanded` state for both close paths.
+- Cycle 31 implemented T153. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with Arrow keys, activates `/search/` with Enter, and verifies the palette closes after navigation.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T153 by exercising command-palette Arrow key selection and Enter activation against built `dist/`.
-2. Verify `aria-activedescendant` and `aria-selected` move to the active option before activation.
-3. Keep the existing close, search/filter, console-error, and overflow smoke guards intact.
+1. Continue T154 by exercising command-palette backdrop dismiss and pointer result activation against built `dist/`.
+2. Verify `aria-expanded` resets after backdrop close, then click a deterministic internal result and confirm navigation.
+3. Keep the existing keyboard close, keyboard activation, console-error, and overflow smoke guards intact.
 
 ### Unprocessed Leads
 

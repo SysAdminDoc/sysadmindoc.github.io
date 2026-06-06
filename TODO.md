@@ -619,11 +619,20 @@ Legend: `[ ]` open · `[x]` done this cycle · S/M/L complexity · sources in pa
   - Done: Added capture-phase handling for Escape and Ctrl/Cmd+K while the native dialog is open, preventing browser search-input behavior from consuming the close shortcut before the palette can close. The rendered interaction smoke now asserts dialog `open` state plus button/input `aria-expanded` state for Escape and Ctrl+K while focus is inside `#cmdkInput`.
   - Verify: `node --check public/scripts/cmdk.js`; `node --check tests/playwright/interaction-smoke.spec.mjs`; `node --test test/public-script-minify.test.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
-- [ ] **T153** P2 - Guard command-palette keyboard result activation.
+- [x] **T153** P2 - Guard command-palette keyboard result activation.
   - Why: The rendered smoke now covers opening, filtering, and closing, but it still does not assert Arrow key selection or Enter activation. The command palette advertises keyboard-first navigation, so regressions in `aria-activedescendant`, `aria-selected`, or Enter navigation would be user-visible.
   - Evidence: `tests/playwright/interaction-smoke.spec.mjs` verifies results exist after filtering but does not move selection or activate a result. `public/scripts/cmdk.js` has dedicated ArrowUp/ArrowDown/Enter handling that is currently only covered indirectly by source review.
   - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
   - Acceptance: A rendered browser test filters the command palette, moves the active option with Arrow keys, verifies selected/active-descendant state, activates a deterministic internal result with Enter, and confirms the palette closes without runtime errors or horizontal overflow.
+  - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
+  - Done: Extended the rendered interaction smoke to filter command-palette results with a stable `search` query, wait for the debounced result status, assert selected option and `aria-activedescendant` state, move selection with ArrowDown/ArrowUp, activate the selected internal `/search/` result with Enter, and verify the palette is closed after navigation.
+  - Verify: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+
+- [ ] **T154** P2 - Guard command-palette pointer activation and backdrop dismiss.
+  - Why: T152/T153 cover keyboard close and keyboard activation, but pointer-specific dialog behaviors remain unguarded. The palette supports clicking result rows and clicking the native dialog backdrop to dismiss, both of which can regress independently from keyboard handling.
+  - Evidence: `public/scripts/cmdk.js` has separate `backdrop.addEventListener('click', ...)` and `list.addEventListener('click', ...)` paths. The rendered smoke currently opens, filters, closes, and keyboard-activates, but does not click a result row or the dialog backdrop.
+  - Touches: `tests/playwright/interaction-smoke.spec.mjs`, `public/scripts/cmdk.js` if reproduction exposes a behavior bug, `README.md`, `ROADMAP.md`, and `PROJECT_CONTEXT.md`.
+  - Acceptance: A rendered browser test clicks the backdrop to close the palette with `aria-expanded` reset, then clicks a deterministic internal command result and verifies navigation, no runtime errors, and no horizontal overflow.
   - Verify: `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`; `npm test`.
 
 ---

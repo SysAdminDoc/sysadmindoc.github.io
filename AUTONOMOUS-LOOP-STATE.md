@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 30
+Current cycle: 31
 
 ## Latest result
 
@@ -41,6 +41,8 @@ Current cycle: 30
 - Verification for this cycle: `node --check playwright.interactions.config.mjs`; `node --test test/a11y-gate.test.mjs`; `npm run audit:interactions`; checked that both interaction and visual Playwright report/result directories can coexist under `.tmp`.
 - 2026-06-06: Cycle 30 implemented T152 command-palette close hardening. Added capture-phase shortcut handling for Escape and Ctrl/Cmd+K while the native dialog is open, and extended the rendered interaction smoke to assert dialog `open` state plus toggle/input `aria-expanded` state for both close paths while focus is inside `#cmdkInput`. T152 is checked off in `TODO.md`, and T153 was added for command-palette keyboard result activation coverage.
 - Verification for this cycle: `node --check public/scripts/cmdk.js`; `node --check tests/playwright/interaction-smoke.spec.mjs`; `node --test test/public-script-minify.test.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
+- 2026-06-06: Cycle 31 implemented T153 command-palette keyboard result activation coverage. The rendered interaction smoke now filters a stable `search` result set, verifies `aria-activedescendant` and selected-option state, moves selection with ArrowDown/ArrowUp, activates `/search/` with Enter, and verifies the palette is closed after navigation. T153 is checked off in `TODO.md`, and T154 was added for pointer activation and backdrop dismiss coverage.
+- Verification for this cycle: `node --check tests/playwright/interaction-smoke.spec.mjs`; `PROFILE_PROJECTS_OFFLINE=1 npm run audit:interactions`.
 
 ## Next project
 
@@ -49,7 +51,7 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 ## Next cycle seed
 
 - Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `ROADMAP.md`.
-- Start with T153: guard command-palette keyboard result activation from inside `#cmdkInput`.
-- Verify Arrow key selection updates `aria-activedescendant`/`aria-selected`, then Enter activates a deterministic internal result and closes the palette.
-- Keep the existing command-palette search/filter and close-path smoke assertions intact.
+- Start with T154: guard command-palette pointer activation and backdrop dismiss behavior.
+- Verify backdrop click resets `aria-expanded`, then click a deterministic internal result and confirm navigation.
+- Keep the existing command-palette keyboard close and keyboard activation smoke assertions intact.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

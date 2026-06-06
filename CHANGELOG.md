@@ -47,6 +47,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added the rendered interaction smoke to PR CI after Chromium installation and before the fixture-backed Playwright visual/axe suite, with source-contract coverage for the workflow order.
 - Added a dedicated Playwright interaction-smoke config so interaction and visual/axe runs write separate `.tmp` report/result folders, and CI uploads both sets.
 - Hardened command-palette close shortcuts so Escape and Ctrl/Cmd+K close the native dialog from inside the search field, with rendered smoke coverage for dialog state and `aria-expanded` updates.
+- Extended command-palette keyboard smoke coverage to verify filtered result selection, `aria-activedescendant`, Arrow movement, Enter activation, and closed state after navigation.
 - Added class-based Shiki highlighting for cached project README code fences while keeping remote README inline styles and event-handler attributes stripped by `sanitize-html`.
 - Fixed the GitHub Pages deploy path so it generates the profile-feed cache before `astro check`; clean CI runners no longer fail on missing `src/data/_profile-projects.json`.
 - Hardened `npm test` so it checks the repository root before running an explicit `test/**/*.test.mjs` target instead of relying on ambient Node test discovery.
