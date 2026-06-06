@@ -21,7 +21,7 @@
 > 5. Never edit this Implementer Instructions block or the 🔬 Researcher Queue
 >    headings — the research machine owns those. Never force-push.
 
-Last researched: 2026-06-06 (Cycle 24; see `TODO.md` T141-T147 and `docs/research-2026-06-06-cycle-24.md`)
+Last researched: 2026-06-06 (Cycle 25; see `TODO.md` T141-T148 and `docs/research-2026-06-06-cycle-25.md`)
 Last updated: 2026-06-06
 Current version: v0.18.3
 
@@ -132,6 +132,17 @@ The script-side CSP work is now strong (`script-src 'self'`, zero executable inl
 - Evidence: Cycle 24's build-integrated CSP run reported 194 CSP meta tags across 194 built HTML files. The audit does not yet fail if those 194 policies are not byte-for-byte consistent before selecting the active policy.
 - Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `package.json`, `README.md`, `PROJECT_CONTEXT.md`.
 - Acceptance: Strict dist CSP audits fail when any built HTML file has no CSP meta or a policy that differs from the active policy; output should report representative divergent file paths and keep normal source inventory mode readable.
+- Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
+- Done in Cycle 25: Strict dist CSP audits now report files with exactly one CSP meta and unique rendered CSP policy count. In strict dist mode, the audit fails on missing CSP metas, multiple CSP metas, or any policy that differs from the active policy, with representative paths in failure output. Current rendered output reports 194/194 files with one CSP meta and one unique CSP policy.
+- Confidence: High
+
+### T148 - Generate active style CSP hashes from source inputs
+
+- Priority: P2
+- Why: T146 and T147 catch stale or inconsistent rendered `style-src-elem` policy, but the two active hashes are still literal strings in `Base.astro`. Computing them from the CSS strings that are actually rendered would remove a manual update step.
+- Evidence: The active policy depends on the imported `critical.css` raw string and the no-JS reveal fallback literal. Source tests compute both hashes independently, and rendered dist audits now enforce the final policy. The remaining gap is the source policy assembly itself.
+- Touches: `src/layouts/Base.astro`, `src/styles/critical.css`, `test/csp-audit.test.mjs`, and possibly a tiny source helper.
+- Acceptance: The CSP meta `style-src-elem` tokens are derived from the same source strings that render the inline critical/no-JS style blocks, with tests proving the rendered policy keeps matching those computed hashes.
 - Verify: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; `npm run build:ci`.
 - Confidence: Medium
 
@@ -913,7 +924,7 @@ Cycle 23: T145 fixture-backed Playwright visual-baseline stabilization.
 
 ### Current Focus
 
-Continue from T147 rendered CSP metadata consistency, then run a fresh UX pass on the stricter-CSP interactive routes.
+Continue from T148 generated style CSP hashes, then run a fresh UX pass on the stricter-CSP interactive routes.
 
 ### Important Findings So Far
 
@@ -928,12 +939,13 @@ Continue from T147 rendered CSP metadata consistency, then run a fresh UX pass o
 - Cycle 22 implemented T143 and T144. Active CSP now uses `style-src-attr 'none'`; source and built CSP attribute audits pass; the dedicated browser audit records no policy violations across representative routes and interactions.
 - Cycle 23 implemented T145. The fixture build now passes endpoint and DOM-size audits with data-aware floors, the refreshed screenshot baselines are generated from `PROFILE_PROJECTS_OFFLINE=1` fixture output, and full Playwright audit passes 21/21 CSP, axe, and visual checks.
 - Cycle 24 implemented T146. `build:ci` now runs a strict rendered `style-src-elem` audit derived from the active CSP, and the current live build passes with 194 CSP metas, 388 style blocks, and 776 stylesheet/preload links.
+- Cycle 25 implemented T147. Strict dist CSP audits now fail on missing, duplicated, or divergent rendered CSP meta policies; current rendered output has 194/194 files with one CSP meta and one unique policy.
 - Raw UNC shared-folder checkout execution still makes `npm run ...` fall back to `C:\Windows`; direct `node scripts/audit-csp.mjs ...` works for lightweight audits, while full npm/Astro verification should run from a normal local checkout/worktree path.
 
 ### Next Best Actions
 
-1. Continue T147 by making strict dist CSP audits fail on missing or divergent rendered CSP meta tags.
-2. Audit whether the active `style-src-elem` source hashes should be generated from source during build so future critical/no-JS CSS edits cannot drift.
+1. Continue T148 by generating active `style-src-elem` hashes from the same source strings that render critical/no-JS CSS.
+2. Keep the source hash test and strict rendered dist gate as proof that the generated policy still matches output.
 3. Run a fresh UX pass on the command palette, terminal, project share, language lane, and project detail routes now covered by the stricter style policy.
 
 ### Unprocessed Leads
