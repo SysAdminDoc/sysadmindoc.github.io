@@ -14,5 +14,8 @@ test('build path enforces a homepage catalog DOM-size budget', async () => {
   assert.match(script, /catalogSectionBytes: 266_240/);
   assert.match(script, /catalogDomNodes: 2_300/);
   assert.match(script, /catalogCards: 220/);
+  assert.match(script, /const smallCatalogBudgets/);
+  assert.match(script, /maxCatalogCards: 50/);
+  assert.match(script, /mode: 'small-catalog'/);
   assert.match(script, /Homepage catalog renders \$\{catalogCards\} cards; dist\/projects\.json exposes \$\{projects\.length\} projects/);
 });

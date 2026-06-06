@@ -3,7 +3,7 @@
 Last updated: 2026-06-06
 Assigned project: `SysAdminDoc/sysadmindoc.github.io`
 Pass: 1
-Current cycle: 22
+Current cycle: 23
 
 ## Latest result
 
@@ -25,6 +25,8 @@ Current cycle: 22
 - Verification for this cycle: direct source `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; normal local `npm test`; normal local `npm run build`; strict built `style-src-elem` candidate audit passed. Full rendered output changed from 394 style blocks/770 style links to 388 style blocks/776 style links with zero routes over two style blocks. `npm run audit:perf -- --strict --lcp 60000 --event 500` passed. Playwright axe subset passed under the stricter policy; full Playwright still has screenshot-baseline drift to resolve under T145.
 - 2026-06-06: Cycle 22 implemented T143/T144 style-attribute CSP hardening. Static style attributes and runtime `style.cssText` writes were replaced with finite classes, tone maps, SVG attributes, and direct property writes for dynamic coordinates only. Active CSP now uses `style-src-attr 'none'`, and the new `npm run csp:audit:browser` Playwright audit records policy violations across representative rendered routes and interactions. T143 and T144 are checked off in `TODO.md`.
 - Verification for this cycle: `node --check scripts/audit-csp.mjs`; `node --test test/csp-audit.test.mjs`; source `style-src-attr 'none'` strict audit; source inline-style grep; `npm test`; `npm run check`; `npm run build`; strict built `style-src-attr 'none'` audit; `npm run csp:audit:browser`; rendered browser spot-checks for home/project flows.
+- 2026-06-06: Cycle 23 implemented T145 fixture-backed Playwright visual-baseline stabilization. Endpoint and DOM-size audits now support deterministic 16-project fixture builds without weakening live-scale floors, and the eight visual baselines were refreshed from the fixture `build:ci` output. T145 is checked off in `TODO.md`, and T146 was added for build-output CSP hash-drift enforcement.
+- Verification for this cycle: `npm run generated:fixtures`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run check`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm test`; `node --check scripts/audit-public-endpoints.mjs`; `node --check scripts/audit-dom-size.mjs`; `node --test test/llms-completeness.test.mjs test/dom-size-budget.test.mjs`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run build:ci`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright:update`; `$env:PROFILE_PROJECTS_OFFLINE='1'; npm run audit:playwright`.
 
 ## Next project
 
@@ -32,8 +34,8 @@ Per delegated chat scope, do not advance to another project in this chat. Contin
 
 ## Next cycle seed
 
-- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-22.md`.
-- Start with T145: stabilize Playwright visual baselines under deterministic data, blocked service workers, and the CSP-compatible stability stylesheet. Note that a fixture `build:ci` attempt exposed an existing `llms.txt` useful-link threshold mismatch before visual baselines could be trusted.
-- Audit whether the two active `style-src-elem` hashes should be generated or enforced from source during build to prevent critical/no-JS CSS drift.
+- Re-open `TODO.md`, `PROJECT_CONTEXT.md`, and `docs/research-2026-06-06-cycle-23.md`.
+- Start with T146: wire strict rendered `style-src-elem` hash verification into the build-output audit path so critical/no-JS CSS hash drift cannot ship outside the unit-test path.
+- Audit whether the two active `style-src-elem` hashes should be generated from source during build to prevent critical/no-JS CSS drift.
 - Run a rendered UX pass over home command palette, terminal, video overlay, project share fallback, language lane, and project details under the final style CSP.
 - Use direct Node commands from the shared-folder checkout for lightweight audits; run full npm/Astro verification from a normal local checkout/worktree path.

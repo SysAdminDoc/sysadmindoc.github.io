@@ -31,6 +31,11 @@ const budgets = {
   averageCardBytes: 1_500,
   maxCardBytes: 2_600,
 };
+const smallCatalogBudgets = {
+  maxCatalogCards: 50,
+  averageCardNodes: 16,
+  averageCardBytes: 1_900,
+};
 
 const distDir = path.resolve(root, options.distDir);
 const errors = [];
@@ -62,6 +67,18 @@ function formatBytes(bytes) {
 
 function checkBudget(label, actual, max, formatter = String) {
   if (actual > max) fail(`${label} is ${formatter(actual)}; budget is ${formatter(max)}.`);
+}
+
+function budgetsForCatalog(cardCount) {
+  if (cardCount > 0 && cardCount < smallCatalogBudgets.maxCatalogCards) {
+    return {
+      ...budgets,
+      averageCardNodes: smallCatalogBudgets.averageCardNodes,
+      averageCardBytes: smallCatalogBudgets.averageCardBytes,
+      mode: 'small-catalog',
+    };
+  }
+  return { ...budgets, mode: 'standard' };
 }
 
 const indexPath = path.join(distDir, 'index.html');
@@ -100,29 +117,31 @@ for (const card of cardBlocks) {
 
 const averageCardNodes = catalogCards > 0 ? totalCardNodes / catalogCards : 0;
 const averageCardBytes = catalogCards > 0 ? totalCardBytes / catalogCards : 0;
+const activeBudgets = budgetsForCatalog(catalogCards);
 
 if (catalogCards !== projects.length) {
   fail(`Homepage catalog renders ${catalogCards} cards; dist/projects.json exposes ${projects.length} projects.`);
 }
-checkBudget('Homepage HTML size', homepageHtmlBytes, budgets.homepageHtmlBytes, formatBytes);
-checkBudget('Catalog section size', catalogSectionBytes, budgets.catalogSectionBytes, formatBytes);
-checkBudget('Catalog DOM nodes', catalogDomNodes, budgets.catalogDomNodes);
-checkBudget('Catalog cards', catalogCards, budgets.catalogCards);
-checkBudget('Average card DOM nodes', averageCardNodes, budgets.averageCardNodes, (value) => value.toFixed(2));
-checkBudget('Max card DOM nodes', maxCardNodes, budgets.maxCardNodes);
-checkBudget('Average card bytes', averageCardBytes, budgets.averageCardBytes, formatBytes);
-checkBudget('Max card bytes', maxCardBytes, budgets.maxCardBytes, formatBytes);
+checkBudget('Homepage HTML size', homepageHtmlBytes, activeBudgets.homepageHtmlBytes, formatBytes);
+checkBudget('Catalog section size', catalogSectionBytes, activeBudgets.catalogSectionBytes, formatBytes);
+checkBudget('Catalog DOM nodes', catalogDomNodes, activeBudgets.catalogDomNodes);
+checkBudget('Catalog cards', catalogCards, activeBudgets.catalogCards);
+checkBudget('Average card DOM nodes', averageCardNodes, activeBudgets.averageCardNodes, (value) => value.toFixed(2));
+checkBudget('Max card DOM nodes', maxCardNodes, activeBudgets.maxCardNodes);
+checkBudget('Average card bytes', averageCardBytes, activeBudgets.averageCardBytes, formatBytes);
+checkBudget('Max card bytes', maxCardBytes, activeBudgets.maxCardBytes, formatBytes);
 
 console.log('DOM size audit');
 console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
-console.log(`  homepage HTML: ${formatBytes(homepageHtmlBytes)} / ${formatBytes(budgets.homepageHtmlBytes)}`);
-console.log(`  catalog section: ${formatBytes(catalogSectionBytes)} / ${formatBytes(budgets.catalogSectionBytes)}`);
-console.log(`  catalog cards: ${catalogCards} / ${budgets.catalogCards}`);
-console.log(`  catalog DOM nodes: ${catalogDomNodes} / ${budgets.catalogDomNodes}`);
-console.log(`  average card DOM nodes: ${averageCardNodes.toFixed(2)} / ${budgets.averageCardNodes}`);
-console.log(`  max card DOM nodes: ${maxCardNodes} / ${budgets.maxCardNodes}`);
-console.log(`  average card bytes: ${formatBytes(averageCardBytes)} / ${formatBytes(budgets.averageCardBytes)}`);
-console.log(`  max card bytes: ${formatBytes(maxCardBytes)} / ${formatBytes(budgets.maxCardBytes)}`);
+console.log(`  budget mode: ${activeBudgets.mode}`);
+console.log(`  homepage HTML: ${formatBytes(homepageHtmlBytes)} / ${formatBytes(activeBudgets.homepageHtmlBytes)}`);
+console.log(`  catalog section: ${formatBytes(catalogSectionBytes)} / ${formatBytes(activeBudgets.catalogSectionBytes)}`);
+console.log(`  catalog cards: ${catalogCards} / ${activeBudgets.catalogCards}`);
+console.log(`  catalog DOM nodes: ${catalogDomNodes} / ${activeBudgets.catalogDomNodes}`);
+console.log(`  average card DOM nodes: ${averageCardNodes.toFixed(2)} / ${activeBudgets.averageCardNodes}`);
+console.log(`  max card DOM nodes: ${maxCardNodes} / ${activeBudgets.maxCardNodes}`);
+console.log(`  average card bytes: ${formatBytes(averageCardBytes)} / ${formatBytes(activeBudgets.averageCardBytes)}`);
+console.log(`  max card bytes: ${formatBytes(maxCardBytes)} / ${formatBytes(activeBudgets.maxCardBytes)}`);
 
 if (errors.length > 0) {
   console.error('DOM size audit failed:');

@@ -66,7 +66,7 @@ npm run forced-colors:audit # verify forced-colors SVG data visualizations after
 npm run lhci:audit     # run advisory Lighthouse CI budgets against the built dist/ (CI/Linux)
 npm run lhci:summary   # summarize LHCI filesystem warning reports for GitHub summaries
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
-npm run audit:playwright # browser axe + visual baselines against the built dist/
+npm run audit:playwright # browser axe + visual baselines against fixture-built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run check         # project data + Astro + TypeScript validation
 npm run dev           # http://localhost:4321
@@ -74,7 +74,7 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
-`npm run audit:playwright` requires a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
+`npm run audit:playwright` requires a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
@@ -88,7 +88,7 @@ Use a normal local clone or worktree path, such as `C:\Users\--\repos\sysadmindo
 
 Rendered project entries are adapted from the public SysAdminDoc profile feed into **[src/data/portfolio.ts](src/data/portfolio.ts)**. The ignored cache lives at `src/data/_profile-projects.json` and is refreshed by `npm run profile-feed:sync`, which runs automatically before `npm run check` and `npm run build`.
 
-Pull-request CI does not use GitHub metadata credentials. It installs tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `npm run generated:fixtures`, then runs `npm run check` with `PROFILE_PROJECTS_OFFLINE=1` so the profile-feed sync preserves the fixture cache instead of replacing it over the network. PR CI also installs Chromium, runs the blocking Playwright browser accessibility and visual-baseline suite, and uploads `.tmp/playwright-report` plus `.tmp/playwright-results` as `playwright-audit-reports`.
+Pull-request CI does not use GitHub metadata credentials. It installs tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `npm run generated:fixtures`, then runs checks and `build:ci` with `PROFILE_PROJECTS_OFFLINE=1` so the profile-feed sync preserves the fixture cache instead of replacing it over the network. PR CI also installs Chromium, runs the blocking Playwright browser accessibility and visual-baseline suite against that fixture build, and uploads `.tmp/playwright-report` plus `.tmp/playwright-results` as `playwright-audit-reports`.
 
 The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, and a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`.
 
