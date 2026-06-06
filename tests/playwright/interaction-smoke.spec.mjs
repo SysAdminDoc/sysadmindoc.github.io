@@ -11,6 +11,10 @@ const stabilityCss = `
   .rv, .card-enter, .dv { opacity: 1 !important; transform: none !important; }
 `;
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function collectRuntimeErrors(page) {
   const errors = [];
   page.on('console', (message) => {
@@ -116,6 +120,27 @@ test.describe('rendered interaction smoke', () => {
     await expectCommandPaletteState(page, true);
     await page.locator('#cmdkInput').fill('python');
     await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, false);
+    await page.keyboard.press('Control+K');
+    await expectCommandPaletteState(page, true);
+    await page.locator('#cmdkInput').fill('search');
+    await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
+    await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
+    const firstActiveId = await page.locator('#cmdkInput').getAttribute('aria-activedescendant');
+    const firstSelected = page.locator('#cmdkList .cmdk-item[aria-selected="true"]');
+    const firstHref = await firstSelected.getAttribute('data-href');
+    expect(firstActiveId).toMatch(/^cmdk-option-\d+$/);
+    expect(firstHref).toMatch(/^\/[^/]/);
+    await expect(firstSelected).toHaveAttribute('id', firstActiveId);
+    await page.keyboard.press('ArrowDown');
+    const secondActiveId = await page.locator('#cmdkInput').getAttribute('aria-activedescendant');
+    expect(secondActiveId).toMatch(/^cmdk-option-\d+$/);
+    expect(secondActiveId).not.toBe(firstActiveId);
+    await expect(page.locator(`#${secondActiveId}`)).toHaveAttribute('aria-selected', 'true');
+    await page.keyboard.press('ArrowUp');
+    await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', firstActiveId);
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(new RegExp(`${escapeRegExp(firstHref)}$`));
     await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');
 
