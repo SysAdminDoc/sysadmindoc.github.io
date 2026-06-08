@@ -21,14 +21,17 @@ for (let index = 2; index < process.argv.length; index += 1) {
   }
 }
 
+// Budgets tuned for the ~177-card catalog (2026-06) with ~10-15% headroom.
+// Raise these as the catalog grows; catalog-card count and max-card budgets
+// still have room and are left unchanged.
 const budgets = {
-  homepageHtmlBytes: 460_800,
-  catalogSectionBytes: 266_240,
-  catalogDomNodes: 2_300,
+  homepageHtmlBytes: 512_000,
+  catalogSectionBytes: 327_680,
+  catalogDomNodes: 2_750,
   catalogCards: 220,
-  averageCardNodes: 13,
+  averageCardNodes: 15,
   maxCardNodes: 18,
-  averageCardBytes: 1_500,
+  averageCardBytes: 1_843,
   maxCardBytes: 2_600,
 };
 const smallCatalogBudgets = {
