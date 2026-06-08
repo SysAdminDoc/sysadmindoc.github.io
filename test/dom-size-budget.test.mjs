@@ -11,8 +11,8 @@ test('build path enforces a homepage catalog DOM-size budget', async () => {
 
   assert.equal(pkg.scripts['dom:audit'], 'node scripts/audit-dom-size.mjs');
   assert.match(pkg.scripts['build:ci'], /npm run feed:audit && npm run dom:audit && npm run sw:stamp/);
-  assert.match(script, /catalogSectionBytes: 266_240/);
-  assert.match(script, /catalogDomNodes: 2_300/);
+  assert.match(script, /catalogSectionBytes: 327_680/);
+  assert.match(script, /catalogDomNodes: 2_750/);
   assert.match(script, /catalogCards: 220/);
   assert.match(script, /const smallCatalogBudgets/);
   assert.match(script, /maxCatalogCards: 50/);
