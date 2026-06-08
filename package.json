@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
-    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/sitemap": "^3.7.3",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^6.4.4",
     "marked": "^18.0.4",
@@ -70,7 +70,7 @@
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
     "@types/sanitize-html": "^2.16.1",
-    "esbuild": "^0.27.7",
+    "esbuild": "^0.28.0",
     "lightningcss": "^1.32.0",
     "pagefind": "^1.5.2",
     "sharp": "^0.34.5",
