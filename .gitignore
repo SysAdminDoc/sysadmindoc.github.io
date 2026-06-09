@@ -36,3 +36,7 @@ resume/
 *.DOC
 *.pdf
 *.PDF
+
+# Markdown files local-only (except README)
+*.md
+!README.md
