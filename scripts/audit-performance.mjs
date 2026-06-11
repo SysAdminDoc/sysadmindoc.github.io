@@ -9,6 +9,7 @@ const explicitBaseUrl = readArg('--base') || process.env.PORTFOLIO_AUDIT_BASE ||
 const baseUrl = explicitBaseUrl || 'http://127.0.0.1:4321';
 const outputPath = path.resolve(root, readArg('--out') || path.join('.tmp', 'performance-audit.json'));
 const strict = process.argv.includes('--strict');
+const warmupEnabled = !process.argv.includes('--no-warmup');
 const thresholds = {
   lcpMs: Number(readArg('--lcp') || 2500),
   cls: Number(readArg('--cls') || 0.1),
@@ -390,12 +391,52 @@ async function sendInteraction(client, test) {
   await delay(300);
 }
 
-async function runTest(port, test) {
+async function createTarget(port) {
   const target = await requestJson(`http://127.0.0.1:${port}/json/new?${encodeURIComponent('about:blank')}`, { method: 'PUT' });
   const client = new CdpClient(target.webSocketDebuggerUrl);
+  await client.open();
+  return { client, target };
+}
+
+async function closeTarget(port, client, target) {
+  client.close();
+  await fetch(`http://127.0.0.1:${port}/json/close/${target.id}`).catch(() => {});
+}
+
+async function applyViewport(client, test) {
+  await client.send('Emulation.setDeviceMetricsOverride', {
+    width: test.width,
+    height: test.height,
+    deviceScaleFactor: test.mobile ? 2 : 1,
+    mobile: test.mobile,
+    screenWidth: test.width,
+    screenHeight: test.height,
+  });
+  await client.send('Emulation.setTouchEmulationEnabled', { enabled: test.mobile });
+}
+
+async function warmRoute(port, test) {
+  const { client, target } = await createTarget(port);
+  try {
+    await client.send('Page.enable');
+    await applyViewport(client, test);
+    await navigate(client, new URL(test.path, baseUrl).toString(), test.waitMs);
+  } finally {
+    await closeTarget(port, client, target);
+  }
+}
+
+async function warmAuditRoutes(port) {
+  if (!warmupEnabled) return;
+  for (const test of tests) {
+    await warmRoute(port, test);
+  }
+}
+
+async function runTest(port, test) {
+  const { client, target } = await createTarget(port);
   const issues = [];
 
-  await client.open();
   try {
     client.on('Runtime.consoleAPICalled', (params) => {
       if (params.type !== 'error' && params.type !== 'warning') return;
@@ -422,15 +463,7 @@ async function runTest(port, test) {
     await client.send('Log.enable');
     await client.send('Network.enable');
     await client.send('Page.addScriptToEvaluateOnNewDocument', { source: metricsBootstrap });
-    await client.send('Emulation.setDeviceMetricsOverride', {
-      width: test.width,
-      height: test.height,
-      deviceScaleFactor: test.mobile ? 2 : 1,
-      mobile: test.mobile,
-      screenWidth: test.width,
-      screenHeight: test.height,
-    });
-    await client.send('Emulation.setTouchEmulationEnabled', { enabled: test.mobile });
+    await applyViewport(client, test);
 
     await navigate(client, new URL(test.path, baseUrl).toString(), test.waitMs);
     await sendInteraction(client, test);
@@ -454,8 +487,7 @@ async function runTest(port, test) {
 
     return result;
   } finally {
-    client.close();
-    await fetch(`http://127.0.0.1:${port}/json/close/${target.id}`).catch(() => {});
+    await closeTarget(port, client, target);
   }
 }
 
@@ -497,6 +529,7 @@ try {
   );
 
   const port = await waitForDevToolsPort(userDataDir, chrome);
+  await warmAuditRoutes(port);
   const results = [];
   for (const test of tests) {
     results.push(await runTest(port, test));
@@ -509,10 +542,11 @@ try {
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
   await fs.writeFile(
     outputPath,
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), baseUrl, thresholds, results: resultsWithFailures }, null, 2)}\n`,
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), baseUrl, warmup: warmupEnabled, thresholds, results: resultsWithFailures }, null, 2)}\n`,
   );
 
   console.log(`Portfolio performance audit (${baseUrl})`);
+  console.log(`  Warmup: ${warmupEnabled ? 'enabled' : 'disabled'}`);
   for (const result of resultsWithFailures) {
     const failures = result.failures || [];
     const status = failures.length ? 'WARN' : 'PASS';
