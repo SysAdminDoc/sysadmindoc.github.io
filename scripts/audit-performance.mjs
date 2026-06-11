@@ -1,11 +1,12 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
-const baseUrl = readArg('--base') || process.env.PORTFOLIO_AUDIT_BASE || 'http://127.0.0.1:4321';
+const explicitBaseUrl = readArg('--base') || process.env.PORTFOLIO_AUDIT_BASE || '';
+const baseUrl = explicitBaseUrl || 'http://127.0.0.1:4321';
 const outputPath = path.resolve(root, readArg('--out') || path.join('.tmp', 'performance-audit.json'));
 const strict = process.argv.includes('--strict');
 const thresholds = {
@@ -39,6 +40,72 @@ async function exists(filePath) {
   } catch {
     return false;
   }
+}
+
+async function baseResponds(url) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 1500);
+    const response = await fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+function canStartLocalPreview(url) {
+  if (explicitBaseUrl) return false;
+  try {
+    const parsed = new URL(url);
+    return ['127.0.0.1', 'localhost', '[::1]'].includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+async function waitForPreview(url, preview) {
+  const start = Date.now();
+  while (Date.now() - start < 30000) {
+    if (preview.exitCode !== null) {
+      throw new Error(`Preview server exited before ${url} was reachable with code ${preview.exitCode}.`);
+    }
+    if (await baseResponds(url)) return;
+    await delay(300);
+  }
+  throw new Error(`Timed out waiting for preview server at ${url}.`);
+}
+
+function stopPreview(preview) {
+  if (!preview || preview.exitCode !== null) return;
+  if (process.platform === 'win32') {
+    spawnSync('taskkill', ['/pid', String(preview.pid), '/t', '/f'], { stdio: 'ignore' });
+    return;
+  }
+  preview.kill('SIGTERM');
+}
+
+async function startPreviewIfNeeded() {
+  if (await baseResponds(baseUrl)) return null;
+  if (!canStartLocalPreview(baseUrl)) return null;
+
+  const distIndex = path.join(root, 'dist', 'index.html');
+  if (!(await exists(distIndex))) {
+    throw new Error('dist/index.html was not found. Run npm run build:ci before npm run audit:perf.');
+  }
+
+  const parsed = new URL(baseUrl);
+  const host = parsed.hostname === '[::1]' ? '::1' : parsed.hostname;
+  const port = parsed.port || (parsed.protocol === 'https:' ? '443' : '80');
+  const command = process.platform === 'win32' ? process.env.ComSpec || 'cmd.exe' : 'npm';
+  const args = process.platform === 'win32'
+    ? ['/d', '/s', '/c', `npm run preview -- --host ${host} --port ${port}`]
+    : ['run', 'preview', '--', '--host', host, '--port', port];
+  const preview = spawn(command, args, {
+    cwd: root,
+    stdio: 'ignore',
+  });
+  await waitForPreview(baseUrl, preview);
+  return preview;
 }
 
 async function findChrome() {
@@ -403,27 +470,32 @@ function resultFailures(result) {
   return failures;
 }
 
-const chromePath = await findChrome();
-const userDataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-perf-'));
-const chrome = spawn(
-  chromePath,
-  [
-    '--headless=new',
-    '--remote-debugging-port=0',
-    `--user-data-dir=${userDataDir}`,
-    '--no-first-run',
-    '--disable-default-apps',
-    '--disable-background-networking',
-    '--disable-sync',
-    '--metrics-recording-only',
-    '--mute-audio',
-    'about:blank',
-  ],
-  { stdio: 'ignore' },
-);
-
 let exitCode = 0;
+let preview = null;
+let chrome = null;
+let userDataDir = null;
+
 try {
+  preview = await startPreviewIfNeeded();
+  const chromePath = await findChrome();
+  userDataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-perf-'));
+  chrome = spawn(
+    chromePath,
+    [
+      '--headless=new',
+      '--remote-debugging-port=0',
+      `--user-data-dir=${userDataDir}`,
+      '--no-first-run',
+      '--disable-default-apps',
+      '--disable-background-networking',
+      '--disable-sync',
+      '--metrics-recording-only',
+      '--mute-audio',
+      'about:blank',
+    ],
+    { stdio: 'ignore' },
+  );
+
   const port = await waitForDevToolsPort(userDataDir, chrome);
   const results = [];
   for (const test of tests) {
@@ -453,8 +525,9 @@ try {
 
   if (strict && resultsWithFailures.some((result) => result.failures.length > 0)) exitCode = 1;
 } finally {
-  chrome.kill();
-  await fs.rm(userDataDir, { recursive: true, force: true }).catch(() => {});
+  chrome?.kill();
+  stopPreview(preview);
+  if (userDataDir) await fs.rm(userDataDir, { recursive: true, force: true }).catch(() => {});
 }
 
 process.exit(exitCode);
