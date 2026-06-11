@@ -32,6 +32,7 @@ const projectFilterLabelsByCategory = {
   other: 'Other',
   cpp: 'C++',
 };
+const nonContentRoutes = new Set(['/404.html', '/offline.html']);
 
 const errors = [];
 
@@ -156,13 +157,13 @@ for (const filePath of htmlFiles) {
 }
 const projectFiles = htmlFiles.filter((filePath) => routeSlugFromProjectFile(filePath));
 const pagefindBodyFiles = htmlFiles.filter((filePath) => /\bdata-pagefind-body\b/i.test(htmlByFile.get(filePath) ?? ''));
-const expectedSearchFiles = htmlFiles.filter((filePath) => routeFromHtmlFile(filePath) !== '/404.html');
+const expectedSearchFiles = htmlFiles.filter((filePath) => !nonContentRoutes.has(routeFromHtmlFile(filePath)));
 const missingPagefindBodies = expectedSearchFiles
   .filter((filePath) => !pagefindBodyFiles.includes(filePath))
   .map(routeFromHtmlFile)
   .sort();
 const unexpectedPagefindBodies = htmlFiles
-  .filter((filePath) => routeFromHtmlFile(filePath) === '/404.html' && pagefindBodyFiles.includes(filePath))
+  .filter((filePath) => nonContentRoutes.has(routeFromHtmlFile(filePath)) && pagefindBodyFiles.includes(filePath))
   .map(routeFromHtmlFile);
 if (missingPagefindBodies.length > 0) {
   fail(`HTML routes missing data-pagefind-body: ${missingPagefindBodies.join(', ')}.`);
