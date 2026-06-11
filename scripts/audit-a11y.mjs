@@ -5,8 +5,9 @@
 // detectable from static HTML (no browser required): document language, image
 // text alternatives, page titles, tab-order hazards, focusable-but-hidden
 // elements, and duplicate ids. It is intentionally conservative to keep false
-// positives low. A full axe-core / Playwright pass (interactive states, computed
-// contrast, ARIA semantics) is the planned next upgrade — see TODO.md.
+// positives low. Browser-backed axe/Playwright coverage lives in
+// tests/playwright/portfolio-audits.spec.mjs; this script remains the fast
+// dependency-free static gate.
 //
 // Usage:
 //   node scripts/audit-a11y.mjs            # advisory, always exits 0
