@@ -7,6 +7,7 @@ const distDir = path.resolve(root, process.argv.includes('--dist') ? process.arg
 const siteUrl = 'https://sysadmindoc.github.io';
 const personId = `${siteUrl}/#matt-parker`;
 const websiteId = `${siteUrl}/#website`;
+const nonSchemaRoutes = new Set(['/offline.html']);
 
 const representativeRoutes = new Map([
   ['/', {
@@ -285,6 +286,7 @@ for (const filePath of htmlFiles) {
   const html = await fs.readFile(filePath, 'utf8');
   const blocks = extractJsonLdBlocks(html);
   if (blocks.length === 0) {
+    if (nonSchemaRoutes.has(route)) continue;
     errors.push(`${route} has no application/ld+json blocks`);
     continue;
   }
