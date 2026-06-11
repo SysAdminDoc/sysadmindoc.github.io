@@ -5,9 +5,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = path.join(repoRoot, 'scripts', 'summarize-lhci.mjs');
+const require = createRequire(import.meta.url);
+const lhciConfig = require(path.join(repoRoot, 'lighthouserc.cjs'));
 
 function runSummary(args) {
   return execFileSync(process.execPath, [scriptPath, ...args], {
@@ -59,12 +62,21 @@ test('summarize-lhci reports configured LHCI warnings by route', () => {
     assert.match(output, /Reports checked: 1/);
     assert.match(output, /Warnings: 3/);
     assert.match(output, /\| \/ \| `categories:performance` \| 0\.70 \| >= 0\.80 \|/);
-    assert.match(output, /\| \/ \| `total-blocking-time` \| 450 ms \| <= 300 ms \|/);
+    assert.match(output, /\| \/ \| `total-blocking-time` \| 450 ms \| <= 200 ms \|/);
     assert.match(output, /\| \/ \| `resource-summary:third-party:count` \| 2 \| <= 0 \|/);
     assert.doesNotMatch(output, /largest-contentful-paint/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('lighthouse budget thresholds track current web vitals lab guidance', () => {
+  const assertions = lhciConfig.ci.assert.assertions;
+
+  assert.equal(assertions['first-contentful-paint'][1].maxNumericValue, 1800);
+  assert.equal(assertions['largest-contentful-paint'][1].maxNumericValue, 2500);
+  assert.equal(assertions['cumulative-layout-shift'][1].maxNumericValue, 0.1);
+  assert.equal(assertions['total-blocking-time'][1].maxNumericValue, 200);
 });
 
 test('summarize-lhci writes an explicit no-report summary', () => {
