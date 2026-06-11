@@ -521,4 +521,12 @@
     const index = Number(item.getAttribute('data-idx'));
     if (!Number.isNaN(index)) setSelected(index);
   });
+  window.__PORTFOLIO_CMDK = {
+    open,
+    close,
+    toggle() {
+      backdrop.open ? close() : open();
+    },
+  };
+  window.dispatchEvent(new CustomEvent('portfolio:cmdk-ready'));
 })();

@@ -76,7 +76,7 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
-`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run audit:interactions` runs focused rendered smoke tests over command palette filtering, no-results recovery, close shortcuts, keyboard activation, pointer activation, and same-page section jumps; terminal navigation; catalog search; project share fallback; console errors; and horizontal overflow without screenshot assertions. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
+`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run audit:interactions` runs focused rendered smoke tests over command palette lazy loading, filtering, no-results recovery, close shortcuts, keyboard activation, pointer activation, and same-page section jumps; terminal navigation; catalog search; project share fallback; console errors; and horizontal overflow without screenshot assertions. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
@@ -169,7 +169,7 @@ public/
 ├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
 ├── .well-known/security.txt
 ├── screenshots/      # public captured live-app masters plus stable thumbs/
-└── scripts/          # shared.js, theme.js, main.js, cmdk.js
+└── scripts/          # shared.js, theme.js, main.js, cmdk-loader.js, cmdk.js
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
 ├── sync-profile-feed.mjs  # raw profile projects.json cache for rendered catalog
