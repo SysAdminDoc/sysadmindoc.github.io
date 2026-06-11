@@ -89,6 +89,39 @@
     });
   }
 
+  function revealHashTarget(target) {
+    if (!target) return;
+    if (typeof revealHomepageScrollSections === 'function') {
+      try {
+        revealHomepageScrollSections();
+      } catch (error) {
+        /* non-critical enhancement */
+      }
+    }
+  }
+
+  function activateHashTarget(target, hash) {
+    revealHashTarget(target);
+    window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL = Date.now() + 2200;
+    const jump = forceAuto => {
+      target.scrollIntoView({ behavior: forceAuto || prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      if (hash) {
+        try {
+          window.history.replaceState(null, '', hash);
+        } catch (error) {
+          window.location.hash = hash;
+        }
+      }
+    };
+    jump(false);
+    requestAnimationFrame(() => {
+      jump(true);
+      focusTarget(target, hash);
+    });
+    setTimeout(() => jump(true), 350);
+    setTimeout(() => jump(true), 900);
+  }
+
   function fuzzy(query, text) {
     if (!query) return 1;
     const q = query.toLowerCase();
@@ -288,8 +321,7 @@
     if (href.startsWith('#')) {
       const section = document.querySelector(href);
       if (section) {
-        section.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-        focusTarget(section, href);
+        activateHashTarget(section, href);
         return;
       }
       window.location.hash = href;
@@ -308,8 +340,7 @@
     if (isSamePage && url.hash) {
       const target = document.querySelector(url.hash);
       if (target) {
-        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-        focusTarget(target, url.hash);
+        activateHashTarget(target, url.hash);
         return;
       }
     }
@@ -457,9 +488,9 @@
       if (target.getAttribute('data-external') === 'true') {
         window.open(href, '_blank', 'noopener');
       } else {
+        close({ restoreFocus: false });
         navigateTo(href);
       }
-      close({ restoreFocus: false });
     }
   });
 
@@ -475,8 +506,8 @@
       return;
     }
     event.preventDefault();
-    navigateTo(href);
     close({ restoreFocus: false });
+    navigateTo(href);
   });
   list.addEventListener('mouseover', event => {
     const item = event.target instanceof Element ? event.target.closest('.cmdk-item') : null;

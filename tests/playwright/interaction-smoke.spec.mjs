@@ -176,6 +176,44 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('command palette section results update the hash and focus the target section', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#heroTerm.interactive');
+    await expectNoHorizontalOverflow(page);
+
+    await page.locator('#cmdkToggle').click();
+    await expectCommandPaletteState(page, true);
+    await page.locator('#cmdkInput').fill('catalog');
+    const catalogSectionResult = page.locator('#cmdkList .cmdk-item[data-href="#catalog"]').first();
+    await expect(catalogSectionResult).toBeVisible();
+    await catalogSectionResult.click();
+
+    await expect(page).toHaveURL(/#catalog$/);
+    await expectCommandPaletteState(page, false);
+    await expect.poll(async () => page.evaluate(() => document.activeElement?.id ?? '')).toBe('catalog');
+    await expect.poll(async () => page.locator('#catalog').evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.top >= 0 && rect.top < 180 && rect.bottom > rect.top;
+    })).toBe(true);
+    const targetPosition = await page.locator('#catalog').evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      return {
+        top: rect.top,
+        bottom: rect.bottom,
+        viewportHeight: window.innerHeight,
+      };
+    });
+    expect(targetPosition.top).toBeGreaterThanOrEqual(0);
+    expect(targetPosition.top).toBeLessThan(180);
+    expect(targetPosition.bottom).toBeGreaterThan(targetPosition.top);
+    expect(targetPosition.bottom).toBeGreaterThan(0);
+    expect(targetPosition.viewportHeight).toBeGreaterThan(0);
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('homepage terminal, video, and catalog search work without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
