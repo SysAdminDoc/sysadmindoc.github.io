@@ -94,7 +94,7 @@ self.addEventListener('fetch', (e) => {
 
     // Cross-origin API/CDN: network-first with cache fallback.
     // Cache successful responses so offline fallback actually works.
-    if (url.hostname === 'api.github.com' || url.hostname === 'i.scdn.co' || url.hostname === 'opengraph.githubassets.com') {
+    if (url.hostname === 'api.github.com' || url.hostname === 'opengraph.githubassets.com') {
         e.respondWith(
             timedFetch(e.request)
                 .then((response) => {

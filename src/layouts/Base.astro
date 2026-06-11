@@ -45,7 +45,7 @@ function sha256Csp(value: string) {
 }
 
 const styleElemSrc = ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
-const contentSecurityPolicy = `default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem ${styleElemSrc}; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://i.scdn.co https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'`;
+const contentSecurityPolicy = `default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem ${styleElemSrc}; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'`;
 
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas
