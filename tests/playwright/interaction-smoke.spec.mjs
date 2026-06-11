@@ -26,6 +26,16 @@ function collectRuntimeErrors(page) {
   return errors;
 }
 
+function collectCmdkScriptRequests(page) {
+  const requests = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/scripts/cmdk.js') {
+      requests.push(request.url());
+    }
+  });
+  return requests;
+}
+
 async function preparePage(page, path, readySelector = 'main') {
   await page.route('https://api.github.com/**', (route) =>
     route.fulfill({
@@ -100,6 +110,7 @@ async function expectCommandPaletteState(page, isOpen) {
 test.describe('rendered interaction smoke', () => {
   test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
+    const cmdkScriptRequests = collectCmdkScriptRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/', '#heroTerm.interactive');
 
@@ -108,10 +119,14 @@ test.describe('rendered interaction smoke', () => {
       /style-src-elem 'self' 'sha256-/,
     );
     await expectNoHorizontalOverflow(page);
+    expect(cmdkScriptRequests).toEqual([]);
+    await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(0);
 
-    await page.locator('#cmdkToggle').click();
-    await expect(page.locator('#cmdk')).toBeVisible();
+    await page.keyboard.press('Control+K');
     await expectCommandPaletteState(page, true);
+    await expect(page.locator('#cmdk')).toBeVisible();
+    await expect.poll(async () => cmdkScriptRequests.length).toBe(1);
+    await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(1);
     await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
     await page.keyboard.press('Escape');
@@ -178,12 +193,17 @@ test.describe('rendered interaction smoke', () => {
 
   test('command palette section results update the hash and focus the target section', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
+    const cmdkScriptRequests = collectCmdkScriptRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/', '#heroTerm.interactive');
     await expectNoHorizontalOverflow(page);
+    expect(cmdkScriptRequests).toEqual([]);
+    await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(0);
 
     await page.locator('#cmdkToggle').click();
     await expectCommandPaletteState(page, true);
+    await expect.poll(async () => cmdkScriptRequests.length).toBe(1);
+    await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(1);
     await page.locator('#cmdkInput').fill('catalog');
     const catalogSectionResult = page.locator('#cmdkList .cmdk-item[data-href="#catalog"]').first();
     await expect(catalogSectionResult).toBeVisible();

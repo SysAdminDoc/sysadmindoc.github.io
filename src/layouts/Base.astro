@@ -169,11 +169,12 @@ if (isHome) {
     </div>
   </dialog>
   {/* Page-specific command-palette sections are inert JSON; the large project +
-      quick-link dataset is served once as a cached /cmdk-data.js (loaded next). */}
+      quick-link dataset is served once as a cached /cmdk-data.js (loaded next).
+      The controller itself is lazy-loaded by cmdk-loader.js on first activation. */}
   <script is:inline type="application/json" id="cmdk-sections-data" set:html={JSON.stringify(cmdkSections)} />
   <script src="/cmdk-data.js" is:inline></script>
   <script src="/scripts/shared.js" is:inline></script>
-  <script src="/scripts/cmdk.js" is:inline></script>
+  <script src="/scripts/cmdk-loader.js" is:inline></script>
   <script src="/scripts/theme.js" is:inline></script>
   {/* main.js is homepage-only and depends on shared.js globals
       (prefersReducedMotion/escapeHTML) + __PORTFOLIO_DATA, so it MUST load last,
