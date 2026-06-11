@@ -6,6 +6,7 @@ import { test } from 'node:test';
 const root = process.cwd();
 const indexPath = path.join(root, 'src', 'pages', 'index.astro');
 const mainScriptPath = path.join(root, 'public', 'scripts', 'main.js');
+const readmePath = path.join(root, 'README.md');
 
 test('homepage project count copy uses rendered catalog count', async () => {
   const source = await fs.readFile(indexPath, 'utf8');
@@ -25,4 +26,19 @@ test('live GitHub refresh does not overwrite project count with raw repo totals'
   assert.match(source, /applyGitHubData\(projectCount,totalStars,langCount,\{skipAggregate\}\);/);
   assert.doesNotMatch(source, /applyGitHubData\(cached\.total/);
   assert.doesNotMatch(source, /applyGitHubData\(count,totalStars/);
+});
+
+test('README public command examples match generated portfolio counts', async () => {
+  const readme = await fs.readFile(readmePath, 'utf8');
+  const profile = JSON.parse(await fs.readFile(path.join(root, 'src', 'data', '_profile-projects.json'), 'utf8'));
+  const releases = JSON.parse(await fs.readFile(path.join(root, 'src', 'data', '_releases.json'), 'utf8'));
+  const projectsSource = await fs.readFile(path.join(root, 'src', 'data', 'projects.ts'), 'utf8');
+  const catalogBlock = projectsSource.match(/export const catalog: CatalogEntry\[] = \[[\s\S]*?\n\];/)?.[0] ?? '';
+  const localFallbackCount = catalogBlock.match(/\{ repo: /g)?.length ?? 0;
+
+  assert.ok(localFallbackCount > 0);
+  assert.match(readme, new RegExp(`catalog \\(${profile.projectCount} feed-backed / ${localFallbackCount} local fallback\\)`));
+  assert.match(readme, new RegExp(`--expected-projects ${profile.projectCount}`));
+  assert.match(readme, new RegExp(`--expected-releases ${releases.length}`));
+  assert.match(readme, new RegExp(`--expected-feed-items ${profile.projectCount}`));
 });
