@@ -583,6 +583,39 @@ body{-webkit-tap-highlight-color:rgba(88,166,255,.18)}
 main[id],section[id]{scroll-margin-top:72px}
 a,button,[role="button"],summary{touch-action:manipulation}
 .hn,.st,.hero-stage-title,.lang-title,.project-title,.now-title,.rel-title,.hcit-title{text-wrap:balance}
+@supports (text-wrap:pretty){
+  .hd,
+  .sd,
+  .cde,
+  .lcd,
+  .jdesc,
+  .about-copy,
+  .stack-copy,
+  .lang-donut-copy,
+  .beyond-card-copy,
+  .philosophy-copy,
+  .prf-copy,
+  .footer-summary,
+  .page-stat-copy,
+  .project-desc,
+  .project-section-copy,
+  .project-readme-hint,
+  .project-release-body,
+  .rel-body,
+  .lang-card-desc,
+  .archive-summary,
+  .hcit-card-desc,
+  .resume-summary,
+  .uses-section-head p,
+  .uses-item-note,
+  .now-section-copy,
+  .now-li,
+  .now-p,
+  .career-card-summary,
+  .project-readme :where(p, li, blockquote, td){
+    text-wrap:pretty;
+  }
+}
 .hsn,.hero-pulse .pulse-v,.footer-year,.footer-freshness,.ca-age,.lang-stat-num,.lang-card-stars,.now-pulse-value,.rel-date,.project-release-date,time[data-rel]{font-variant-numeric:tabular-nums}
 #footerText{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .footer-year{font-family:var(--mono);font-size:12px;color:var(--t2)}
