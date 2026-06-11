@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-[![Version](https://img.shields.io/badge/version-0.18.3-blue)](CHANGELOG.md)
+![Version](https://img.shields.io/badge/version-0.18.3-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -76,7 +76,7 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
-`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run audit:interactions` runs focused rendered smoke tests over command palette filtering, no-results recovery, close shortcuts, keyboard activation, and pointer activation; terminal navigation; catalog search; project share fallback; console errors; and horizontal overflow without screenshot assertions. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
+`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and an installed Chromium browser (`npx playwright install chromium`; CI uses `npx playwright install --with-deps chromium`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. `npm run audit:interactions` runs focused rendered smoke tests over command palette filtering, no-results recovery, close shortcuts, keyboard activation, pointer activation, and same-page section jumps; terminal navigation; catalog search; project share fallback; console errors; and horizontal overflow without screenshot assertions. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
@@ -104,7 +104,7 @@ Category and catalog-view counts auto-compute from the feed-backed catalog plus 
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
-Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists. See **[NOTES_FEED_POLICY.md](NOTES_FEED_POLICY.md)** before adding a `/til`, `/notes`, or notes RSS feed.
+Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists.
 
 ## Deploy
 
@@ -202,12 +202,12 @@ PERFORMANCE_AUDIT.md  # Lighthouse, bfcache, and service-worker update review
 IMAGE_PIPELINE.md     # screenshot, thumbnail, README image, and OG card policy
 SEMANTIC_INDEX_DECISION.md # local semantic indexing decision and audit policy
 NOTES_FEED_POLICY.md  # public-safe activation criteria for future notes/TIL
-legacy.html           # backup of pre-Astro single-file site
+docs/archive/legacy.html # backup of pre-Astro single-file site
 ```
 
 ## Roadmap
 
-Open work is tracked in [TODO.md](TODO.md) (single source of truth). Evidence and rationale live in [ROADMAP.md](ROADMAP.md) and [RESEARCH_FEATURE_PLAN.md](RESEARCH_FEATURE_PLAN.md); completed items from earlier sprints are in [COMPLETED.md](COMPLETED.md).
+Open work is tracked locally in `ROADMAP.md`; public delivery history lives in the Git commit log and deployed site behavior.
 
 ## License
 
