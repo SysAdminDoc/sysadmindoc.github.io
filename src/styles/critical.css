@@ -244,12 +244,17 @@ html[data-theme="light"] #nav{
 .nav-actions{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:4px;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
 }
 .ng,.theme-toggle,.nav-search{
   min-height:40px;
-  border:1px solid var(--border-soft);
-  background:rgba(255,255,255,.025);
+  border:1px solid transparent;
+  background:transparent;
   color:var(--t2);
 }
 .ng{
@@ -287,7 +292,7 @@ html[data-theme="light"] #nav{
 .nav-search svg{width:16px;height:16px;flex-shrink:0}
 .nav-search-label{color:var(--t1)}
 .nav-search-kbd{
-  display:inline-flex;
+  display:none;
   align-items:center;
   justify-content:center;
   min-width:50px;
@@ -298,6 +303,11 @@ html[data-theme="light"] #nav{
   background:rgba(255,255,255,.04);
   font-size:10px;
   color:var(--t3);
+}
+html[data-theme="light"] .nav-actions{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.52);
+  box-shadow:0 10px 24px rgba(29,42,70,.08);
 }
 .mt{
   display:none;

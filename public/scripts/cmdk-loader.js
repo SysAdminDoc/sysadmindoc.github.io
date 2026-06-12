@@ -68,13 +68,6 @@
     if (isPaletteToggle(event)) {
       event.preventDefault();
       openPalette();
-      return;
-    }
-    if (event.key === '/') {
-      const focused = document.activeElement;
-      if (focused && typeof isTextEntryTarget === 'function' && isTextEntryTarget(focused)) return;
-      event.preventDefault();
-      openPalette();
     }
   });
 
