@@ -123,7 +123,7 @@ document.addEventListener('mousemove',e=>{
 document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
 
 /* ===== COPY TOAST ===== */
-const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Copied to clipboard';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
+const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Link copied';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
 let copyToastTimer=0;
 function showCopyToast(){clearTimeout(copyToastTimer);copyToast.classList.add('show');copyToastTimer=setTimeout(()=>copyToast.classList.remove('show'),1500)}
 
@@ -1116,7 +1116,8 @@ if('serviceWorker' in navigator){
         toast.setAttribute('role','status');
         toast.setAttribute('aria-live','polite');
         const message=document.createElement('span');
-        message.textContent='New portfolio version available';
+        message.className='sw-update-message';
+        message.innerHTML='<strong>Update ready</strong><span>Refresh to load the newest portfolio build.</span>';
         const actions=document.createElement('div');
         actions.className='sw-update-actions';
         const refresh=document.createElement('button');
@@ -1130,7 +1131,7 @@ if('serviceWorker' in navigator){
         refresh.addEventListener('click',()=>{
             serviceWorkerRefreshRequested=true;
             refresh.disabled=true;
-            message.textContent='Refreshing portfolio...';
+            message.innerHTML='<strong>Refreshing</strong><span>Loading the newest build now.</span>';
             worker.postMessage({type:'SKIP_WAITING'});
         });
         dismiss.addEventListener('click',()=>{
@@ -1188,11 +1189,11 @@ if('serviceWorker' in navigator){
         toast.setAttribute('aria-live','polite');
         var message=document.createElement('span');
         message.className='sw-update-message';
-        message.textContent=isIos
+        message.innerHTML=isIos
             ? (isIosSafari()
-                ? 'Install on iPhone: Share, Add to Home Screen, Open as Web App, Add.'
-                : 'Open in Safari to install: Share, Add to Home Screen, Open as Web App, Add.')
-            : 'Install this portfolio as an app';
+                ? '<strong>Install from Safari</strong><span>Use Share, Add to Home Screen, then Open as Web App.</span>'
+                : '<strong>Open in Safari to install</strong><span>Then use Share, Add to Home Screen, and Open as Web App.</span>')
+            : '<strong>Install portfolio app</strong><span>Add this static portfolio to your app launcher.</span>';
         var actions=document.createElement('div');
         actions.className='sw-update-actions';
         var install=document.createElement('button');

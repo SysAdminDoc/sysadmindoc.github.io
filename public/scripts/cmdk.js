@@ -283,8 +283,8 @@
     if (!top.length) {
       selected = 0;
       input.setAttribute('aria-activedescendant', '');
-      setMeta('Nothing matched that search. Try a project name, page, category, or section.');
-      list.innerHTML = '<div class="cmdk-empty">Nothing matched that search. Try a project name, page, category, or section.</div>';
+      setMeta('No matching destination. Try a project name, stack, category, or route.');
+      list.innerHTML = '<div class="cmdk-empty"><strong>No matching destination</strong><span>Try a project name, stack, category, or route.</span></div>';
       return;
     }
     setMeta(top.length === 1 ? '1 match ready to open.' : top.length + ' matches ready to open.');
