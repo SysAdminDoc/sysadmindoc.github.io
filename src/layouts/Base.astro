@@ -152,19 +152,17 @@ if (isHome) {
     '@graph': jsonLdGraph,
   })} />
   <slot />
-  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette">
+  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true">
     <div class="cmdk">
       <div class="cmdk-input-row">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Jump to a project, page, category, or section…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
-        <span class="cmdk-kbd">Esc</span>
+        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
       </div>
       <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div>
       <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div>
       <div class="cmdk-footer" aria-hidden="true">
-        <span><kbd>Enter</kbd> Open</span>
-        <span><kbd>↑</kbd><kbd>↓</kbd> Move</span>
-        <span><kbd>Esc</kbd> Close</span>
+        <span>Choose a result to open it.</span>
+        <span>Projects, pages, categories, and sections are indexed.</span>
       </div>
     </div>
   </dialog>

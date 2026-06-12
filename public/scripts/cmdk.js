@@ -1,5 +1,4 @@
-/* Command palette (⌘K / Ctrl+K)
- * Shared across the whole site for project search, route jumps, and quick links. */
+/* Command palette shared across the whole site for project search, route jumps, and quick links. */
 (function(){
   function readJsonScript(id) {
     const node = document.getElementById(id);
@@ -25,8 +24,6 @@
 
   let selected = 0;
   let previousFocus = null;
-  let chordTimer = 0;
-  let chordActive = false;
   /* prefersReducedMotion — loaded from shared.js */
   const routeDotTones = {
     blue: 'blue',
@@ -35,19 +32,6 @@
     slate: 'slate',
   };
   const defaultProjectTypes = ['featured', 'live'];
-  const chordMap = {
-    l: '/#live',
-    c: '/#catalog',
-    s: '/#skills',
-    a: '/#about',
-    p: '/#philosophy',
-    j: '/#journey',
-    b: '/#beyond',
-    r: '/releases/',
-    n: '/now/',
-    h: '/',
-    t: '/healthcare-it/',
-  };
   /* escapeHTML, isTextEntryTarget — loaded from shared.js */
 
   function highlightMatch(text, query) {
@@ -283,8 +267,8 @@
     if (!top.length) {
       selected = 0;
       input.setAttribute('aria-activedescendant', '');
-      setMeta('No matching destination. Try a project name, stack, category, or route.');
-      list.innerHTML = '<div class="cmdk-empty"><strong>No matching destination</strong><span>Try a project name, stack, category, or route.</span></div>';
+      setMeta('Nothing matched that search. Try a project name, stack, category, or route.');
+      list.innerHTML = '<div class="cmdk-empty"><strong>Nothing matched that search</strong><span>Try a project name, stack, category, or route.</span></div>';
       return;
     }
     setMeta(top.length === 1 ? '1 match ready to open.' : top.length + ' matches ready to open.');
@@ -379,22 +363,6 @@
     target.scrollIntoView({ block: 'nearest' });
   }
 
-  function showHint(message) {
-    let hint = document.getElementById('chordHint');
-    if (!hint) {
-      hint = document.createElement('div');
-      hint.id = 'chordHint';
-      hint.className = 'cmdk-chord-hint';
-      hint.setAttribute('role', 'status');
-      hint.setAttribute('aria-live', 'polite');
-      document.body.appendChild(hint);
-    }
-    hint.textContent = message;
-    hint.classList.add('is-visible');
-    clearTimeout(hint._t);
-    hint._t = setTimeout(() => { hint.classList.remove('is-visible'); }, 1200);
-  }
-
   document.addEventListener('keydown', event => {
     if (backdrop.open && (event.key === 'Escape' || isPaletteToggle(event))) {
       event.preventDefault();
@@ -407,38 +375,6 @@
     if (isPaletteToggle(event)) {
       event.preventDefault();
       backdrop.open ? close() : open();
-      return;
-    }
-    if (event.key === '/' && !backdrop.open) {
-      const focused = document.activeElement;
-      if (focused && isTextEntryTarget(focused)) return;
-      event.preventDefault();
-      open();
-    }
-  });
-
-  document.addEventListener('keydown', event => {
-    if (backdrop.open) return;
-    const focused = document.activeElement;
-    if (focused && isTextEntryTarget(focused)) return;
-    if (event.metaKey || event.ctrlKey || event.altKey) return;
-
-    if (!chordActive && event.key === 'g') {
-      chordActive = true;
-      showHint('g → quick jump (f/l/c/s/a/p/j/b/r/n/h/t)');
-      clearTimeout(chordTimer);
-      chordTimer = setTimeout(() => { chordActive = false; }, 1500);
-      return;
-    }
-    if (!chordActive) return;
-
-    const target = chordMap[event.key.toLowerCase()];
-    chordActive = false;
-    clearTimeout(chordTimer);
-    if (target) {
-      event.preventDefault();
-      navigateTo(target);
-      showHint('→ ' + target.replace('/#', '#'));
     }
   });
 

@@ -94,9 +94,9 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           <div class="page-stat-copy">Project detail pages expose Category facets, so broad searches can be narrowed without leaving the static search page.</div>
         </div>
         <div class="page-stat">
-          <div class="page-stat-value">Ctrl K</div>
-          <div class="page-stat-label">Still Available</div>
-          <div class="page-stat-copy">The command palette remains the fastest keyboard route for known project names and site sections.</div>
+          <div class="page-stat-value">Command</div>
+          <div class="page-stat-label">Direct Open</div>
+          <div class="page-stat-copy">The header search button opens a focused destination menu for known project names and site sections.</div>
         </div>
       </div>
 
@@ -119,7 +119,6 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
               </pagefind-results>
             </div>
           </div>
-          <pagefind-keyboard-hints></pagefind-keyboard-hints>
         </div>
         <p class="search-loading" id="pagefindLoading">Loading the static search index...</p>
         <noscript>
@@ -162,7 +161,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
     <div class="fi page-footer-shell">
       <div class="footer-brand">
         <div class="ft"><a href="/" class="footer-backlink">Back to portfolio</a></div>
-        <p class="footer-summary">Use full-text search when you remember a feature, README phrase, language, or category. Use Ctrl/Cmd+K when you already know the destination.</p>
+        <p class="footer-summary">Use full-text search when you remember a feature, README phrase, language, or category. Use the header search button when you already know the destination.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation"><a href="/#catalog">Catalog</a><a href="/timeline/">Timeline</a></nav>
     </div>
@@ -181,7 +180,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-loading{margin:14px 0 0;color:var(--t3);font-size:14px;line-height:1.6}
   .search-noscript{margin-top:18px}
   .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:13px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
-  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane,.portfolio-pagefind pagefind-keyboard-hints{display:block;min-width:0;max-width:100%}
+  .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane{display:block;min-width:0;max-width:100%}
   .search-input-row{min-width:0}
   .search-result-layout{display:grid;grid-template-columns:minmax(180px,236px) minmax(0,1fr);gap:18px;align-items:start;min-width:0}
   .search-filter-panel{display:grid;gap:8px;min-width:0}
