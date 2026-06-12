@@ -21,6 +21,49 @@ const cmdkSections = [
   { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search with Category filtering across rendered portfolio pages and README excerpts.', badge: 'PAGEFIND' },
   { label: 'Fallbacks', href: '#search-fallbacks', desc: 'No-JS links into the catalog, timeline, release stream, and archive decisions.', badge: 'LINKS' },
 ];
+const pagefindResultTemplate = String.raw`<li class="pf-result portfolio-result">
+  <div class="pf-result-card portfolio-result-card">
+    {{#if and(options.show_images, meta.image)}}
+    <img class="pf-result-image portfolio-result-image" src="{{ meta.image | resolveUrl(meta.url | default(url)) }}" alt="{{ meta.image_alt | default(meta.title) }}" loading="lazy" decoding="async">
+    {{/if}}
+    <div class="pf-result-content portfolio-result-content">
+      <div class="portfolio-result-meta" aria-label="Result metadata">
+        {{#if meta.route_type}}<span>{{ meta.route_type }}</span>{{/if}}
+        {{#if meta.category}}<span>{{ meta.category }}</span>{{/if}}
+        {{#if meta.updated}}<span>{{ meta.updated }}</span>{{/if}}
+      </div>
+      <p class="pf-result-title">
+        <a class="pf-result-link" href="{{ meta.url | default(url) | safeUrl }}">{{ meta.title }}</a>
+      </p>
+      {{#if excerpt}}
+      <p class="pf-result-excerpt">{{+ excerpt +}}</p>
+      {{/if}}
+    </div>
+  </div>
+  {{#if sub_results}}
+  <ul class="pf-heading-chips">
+    {{#each sub_results as sub}}
+    <li class="pf-heading-chip">
+      <a class="pf-heading-link" href="{{ sub.url | safeUrl }}">{{ sub.title }}</a>
+      <p class="pf-heading-excerpt">{{+ sub.excerpt +}}</p>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</li>`;
+const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-result" aria-hidden="true">
+  <div class="pf-result-card portfolio-result-card">
+    <div class="pf-skeleton pf-skeleton-image portfolio-result-image"></div>
+    <div class="pf-result-content portfolio-result-content">
+      <div class="portfolio-result-meta">
+        <span class="pf-skeleton"></span>
+        <span class="pf-skeleton"></span>
+      </div>
+      <p class="pf-result-title pf-skeleton pf-skeleton-title"></p>
+      <p class="pf-result-excerpt pf-skeleton pf-skeleton-excerpt"></p>
+    </div>
+  </div>
+</li>`;
 ---
 <Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <script is:inline type="application/ld+json" set:html={pageJsonLd} />
@@ -70,7 +113,10 @@ const cmdkSections = [
             </aside>
             <div class="search-results-panel">
               <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
-              <pagefind-results max-sub-results="4"></pagefind-results>
+              <pagefind-results show-images max-sub-results="4">
+                <script is:inline type="text/pagefind-template" set:html={pagefindResultTemplate}></script>
+                <script is:inline type="text/pagefind-template" data-template="placeholder" set:html={pagefindPlaceholderTemplate}></script>
+              </pagefind-results>
             </div>
           </div>
           <pagefind-keyboard-hints></pagefind-keyboard-hints>
@@ -145,6 +191,12 @@ const cmdkSections = [
   .portfolio-pagefind .pf-result-link{color:var(--t1);text-decoration:none}
   .portfolio-pagefind .pf-result-link:hover{color:var(--grn)}
   .portfolio-pagefind .pf-result-card{box-shadow:none}
+  .portfolio-pagefind .portfolio-result-card{align-items:flex-start;gap:14px}
+  .portfolio-pagefind .portfolio-result-image{flex:0 0 92px;width:92px;height:58px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-2);object-fit:cover}
+  .portfolio-pagefind .portfolio-result-content{min-width:0}
+  .portfolio-pagefind .portfolio-result-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;min-height:18px}
+  .portfolio-pagefind .portfolio-result-meta span{display:inline-flex;align-items:center;min-height:18px;padding:3px 7px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.025);color:var(--t3);font-family:var(--mono);font-size:10px;line-height:1;letter-spacing:.08em;text-transform:uppercase}
+  .portfolio-pagefind .portfolio-result-meta .pf-skeleton{width:62px;border:0}
   .portfolio-pagefind mark{background:var(--grnd);color:var(--t1);border-radius:3px;padding:0 .12em}
   .search-fallbacks{margin-top:58px}
   .search-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-soft)}
@@ -159,6 +211,10 @@ const cmdkSections = [
   @media(max-width:640px){
     .search-shell{padding:16px}
     .search-result-layout{grid-template-columns:1fr}
+    .portfolio-pagefind .portfolio-result-card{gap:12px}
+    .portfolio-pagefind .portfolio-result-image{flex-basis:74px;width:74px;height:52px}
+    .portfolio-pagefind .portfolio-result-meta{gap:5px}
+    .portfolio-pagefind .portfolio-result-meta span{font-size:9px}
     .search-section-head{align-items:start;flex-direction:column}
     .search-fallback-grid{grid-template-columns:1fr}
   }

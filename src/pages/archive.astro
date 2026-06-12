@@ -56,6 +56,12 @@ const cmdkSections = [
   <InteriorNav active="archive" contextLabel="Archive decisions" contextTone="amber" />
 
   <main id="main" class="archive-page" data-pagefind-body>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Archive"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Archive"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`updated:${pageFreshness.lastReviewed}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image:${pageOg.ogImage}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image_alt:${pageOg.ogImageAlt}`}></span>
     <div class="si page-shell" id="archive-overview">
       <div class="sh rv">
         <div class="sl">// Archive</div>
