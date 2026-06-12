@@ -120,9 +120,10 @@ const categoryLabel: Record<string, string> = {
   ps: 'PowerShell', py: 'Python', web: 'Web', ext: 'Extension', kt: 'Android',
   sec: 'Security', media: 'Media', cs: 'Desktop', guide: 'Guide', fork: 'Fork', other: 'Other',
 };
+const categoryName = categoryLabel[category] ?? category;
 const techChips = Array.from(new Set([
   language,
-  categoryLabel[category] ?? null,
+  categoryName,
   ...tags,
 ].filter(Boolean))) as string[];
 const categoryTrackSlug: Record<string, string> = {
@@ -141,8 +142,13 @@ const relatedTrack = inHealthcareTrack
   : categoryTrack
     ? { href: `/lang/${categoryTrack}/`, label: `${LANGS[categoryTrack].label} lane` }
     : null;
-const lastTouchedAt = metaMap[slug]?.updatedAt ?? metaMap[slug]?.pushedAt ?? null;
+const lastTouchedAt = metaMap[slug]?.updatedAt ?? metaMap[slug]?.pushedAt ?? catalogMatch?.updatedAt ?? catalogMatch?.pushedAt ?? null;
 const latestRelease = projectReleases[0] ?? null;
+function isoDate(value?: string | null) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
+}
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const compactNumber = new Intl.NumberFormat('en-US');
 const projectFacts = [
@@ -225,6 +231,8 @@ const cmdkSections = [
 
 const title = `${name} — Matt Parker`;
 const ogImage = `/og/${slug}.png`;
+const pagefindResultType = isLive ? 'Live app' : 'Project';
+const pagefindUpdated = isoDate(lastTouchedAt ?? latestRelease?.publishedAt ?? null);
 const langMap: Record<string, string> = { ps: 'PowerShell', py: 'Python', web: 'JavaScript', ext: 'JavaScript', kt: 'Kotlin', cs: 'C#', cpp: 'C++', media: 'Python', sec: 'JavaScript', guide: '', fork: '', other: '' };
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
 const personRef = { '@id': 'https://sysadmindoc.github.io/#matt-parker' };
@@ -307,8 +315,11 @@ const jsonLd = JSON.stringify({
   <InteriorNav contextLabel={name} contextTone="slate" />
 
   <main id="main" class="project-page" data-pagefind-body data-project-slug={slug}>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`category:${categoryName}`}></span>
+    {pagefindUpdated && <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`updated:${pagefindUpdated}`}></span>}
     <div class="si page-shell">
-      <div class="project-header" id="project-overview" data-pagefind-filter={`Category:${categoryLabel[category] ?? category}`} data-pagefind-meta={`Type:${isLive ? 'Live app' : 'Project'}`}>
+      <div class="project-header" id="project-overview" data-pagefind-filter={`Category:${categoryName}`} data-pagefind-meta={`type:${pagefindResultType}`}>
         <div class="project-breadcrumbs">
           <a href="/#catalog" class="page-inline-link">Portfolio</a>
           <span>/</span>
@@ -393,11 +404,11 @@ const jsonLd = JSON.stringify({
         </div>
         {hasScreenshot && isLive ? (
           <a href={liveUrl} target="_blank" rel="noopener" class="project-shot-link">
-            <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" />
+            <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]" />
             <span class="project-shot-badge">Open live →</span>
           </a>
         ) : (
-          <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" />
+          <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]" />
         )}
         <p class="project-readme-hint">
           Source at <a href={ghUrl} target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/{slug}</a>.

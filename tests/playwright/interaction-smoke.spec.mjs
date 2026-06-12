@@ -177,6 +177,34 @@ test.describe('rendered interaction smoke', () => {
     expect(cspMessages).toEqual([]);
   });
 
+  test('search results surface route metadata and images without overflow', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/search/?q=archive', '#pagefindSearch');
+
+    const archiveMeta = page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }).first();
+    await expect(archiveMeta).toBeVisible({ timeout: 20_000 });
+    await expect(archiveMeta).toContainText('Portfolio');
+    await expect(archiveMeta).toContainText(/\d{4}-\d{2}-\d{2}/);
+    const archiveCard = page.locator('.portfolio-result-card').filter({
+      has: page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }),
+    }).first();
+    await expect(archiveCard.locator('.portfolio-result-image')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/search/?q=python', '#pagefindSearch');
+    const projectMeta = page.locator('.portfolio-result-meta').filter({ hasText: /Project|Live app/ }).first();
+    await expect(projectMeta).toBeVisible({ timeout: 20_000 });
+    await expect(projectMeta).toContainText(/\d{4}-\d{2}-\d{2}/);
+    const projectCard = page.locator('.portfolio-result-card').filter({
+      has: page.locator('.portfolio-result-meta').filter({ hasText: /Project|Live app/ }),
+    }).first();
+    await expect(projectCard.locator('.portfolio-result-image')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);

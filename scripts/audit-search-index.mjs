@@ -18,6 +18,7 @@ const requiredCategoryLabels = [
   'Security',
   'Web',
 ];
+const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
 const projectFilterLabelsByCategory = {
   ps: 'PowerShell',
   py: 'Python',
@@ -177,6 +178,14 @@ if (indexedPageCount !== pagefindBodyFiles.length) {
   fail(`Pagefind entry reports ${indexedPageCount} indexed pages; dist contains ${pagefindBodyFiles.length} data-pagefind-body HTML pages.`);
 }
 
+const searchHtml = htmlByFile.get(path.join(distDir, 'search', 'index.html')) ?? '';
+if (!/<pagefind-results\b[^>]*\bshow-images\b/i.test(searchHtml)) {
+  fail('/search/ must enable Pagefind result images.');
+}
+if (!/\bportfolio-result-meta\b/.test(searchHtml)) {
+  fail('/search/ must include the portfolio metadata result template.');
+}
+
 const renderedCategoryCounts = new Map();
 const renderedProjectSlugs = new Set();
 const categoryBySlug = new Map();
@@ -250,6 +259,8 @@ for (const label of requiredCategoryLabels) {
 }
 
 let filteredResultCount = 0;
+let projectMetadataResultCount = 0;
+let archiveMetadataResultCount = 0;
 if (pagefind && pagefindCategoryCounts.size > 0) {
   for (const [label, expectedCount] of sortedEntries(renderedCategoryCounts)) {
     const result = await pagefind.search(null, { filters: { Category: label } }).catch((error) => {
@@ -276,12 +287,70 @@ if (pagefind && pagefindCategoryCounts.size > 0) {
       if (categoryBySlug.get(match[1]) !== label) {
         fail(`Filtered empty search for Category:${label} returned ${url}, which is rendered as ${categoryBySlug.get(match[1])}.`);
       }
+      const meta = data?.meta ?? {};
+      if (meta.route_type !== 'Project') {
+        fail(`${url} metadata route_type is ${meta.route_type || '(missing)'}; expected Project.`);
+      }
+      if (!['Project', 'Live app'].includes(meta.type)) {
+        fail(`${url} metadata type is ${meta.type || '(missing)'}; expected Project or Live app.`);
+      }
+      if (meta.category !== label) {
+        fail(`${url} metadata category is ${meta.category || '(missing)'}; expected ${label}.`);
+      }
+      if (!isoDatePattern.test(String(meta.updated ?? ''))) {
+        fail(`${url} metadata updated is ${meta.updated || '(missing)'}; expected YYYY-MM-DD.`);
+      }
+      if (!/^\/(?:og|screenshots)\//.test(String(meta.image ?? ''))) {
+        fail(`${url} metadata image is ${meta.image || '(missing)'}; expected /og/ or /screenshots/ path.`);
+      }
+      if (!String(meta.image_alt ?? '').trim()) {
+        fail(`${url} metadata image_alt is missing.`);
+      }
+      projectMetadataResultCount += 1;
       urls.add(url);
     }
     if (urls.size !== expectedCount) {
       fail(`Filtered empty search for Category:${label} returned ${urls.size} unique project URLs; expected ${expectedCount}.`);
     }
     filteredResultCount += result.results.length;
+  }
+
+  const archiveResult = await pagefind.search('archive').catch((error) => {
+    fail(`Archive metadata search failed: ${error.message}`);
+    return null;
+  });
+  if (archiveResult) {
+    let foundArchive = false;
+    for (const item of archiveResult.results) {
+      const data = await item.data();
+      const url = String(data?.url ?? '');
+      if (url !== '/archive/' && url !== '/archive') continue;
+      foundArchive = true;
+      const meta = data?.meta ?? {};
+      if (meta.route_type !== 'Archive') {
+        fail('/archive/ metadata route_type must be Archive.');
+      }
+      if (meta.type !== 'Archive') {
+        fail('/archive/ metadata type must be Archive.');
+      }
+      if (meta.category !== 'Portfolio') {
+        fail(`/archive/ metadata category is ${meta.category || '(missing)'}; expected Portfolio.`);
+      }
+      if (!isoDatePattern.test(String(meta.updated ?? ''))) {
+        fail(`/archive/ metadata updated is ${meta.updated || '(missing)'}; expected YYYY-MM-DD.`);
+      }
+      if (meta.image !== '/og/archive.png') {
+        fail(`/archive/ metadata image is ${meta.image || '(missing)'}; expected /og/archive.png.`);
+      }
+      if (!String(meta.image_alt ?? '').trim()) {
+        fail('/archive/ metadata image_alt is missing.');
+      }
+      archiveMetadataResultCount += 1;
+      break;
+    }
+    if (!foundArchive) {
+      fail('Search for "archive" did not return the /archive/ route.');
+    }
   }
 }
 await pagefind?.destroy?.();
@@ -299,6 +368,8 @@ console.log(`  Rendered project pages: ${renderedProjectSlugs.size}`);
 console.log(`  Homepage catalog cards: ${catalogSlugs.size}`);
 console.log(`  Category filters checked: ${pagefindCategoryCounts.size}`);
 console.log(`  Filtered project results checked: ${filteredResultCount}`);
+console.log(`  Project metadata results checked: ${projectMetadataResultCount}`);
+console.log(`  Archive metadata results checked: ${archiveMetadataResultCount}`);
 console.log('  Category counts:');
 for (const [label, count] of sortedEntries(renderedCategoryCounts)) {
   console.log(`    ${label}: ${count}`);
