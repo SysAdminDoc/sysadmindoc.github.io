@@ -109,7 +109,7 @@ export const cmdkQuickLinks = [
   {
     label: 'Timeline',
     url: '/timeline/',
-    desc: 'Year-in-review view generated from releases, repository movement, and changelog entries.',
+    desc: 'Year-in-review view generated from releases and repository movement.',
     badge: 'PAGE',
     tone: 'blue',
     searchTerms: ['year in review', 'history', 'momentum', 'timeline'],

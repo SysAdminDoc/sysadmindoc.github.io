@@ -8,7 +8,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Moved to catalog',
     summary: 'A small group of older browser demos was removed from the homepage live showcase but kept in the catalog where the work is still safe to browse.',
     reason: 'The live grid now prioritizes current screenshots and launch-ready apps; older demos belong in project context instead of competing with active highlights.',
-    source: 'CHANGELOG.md v0.2.1 and current src/data/projects.ts catalog entries.',
+    source: 'Current src/data/projects.ts catalog entries and live-app screenshot policy.',
     links: [
       { label: 'NukeMap', href: '/projects/NukeMap/', note: 'Public catalog entry' },
       { label: 'CronScope', href: '/projects/CronScope/', note: 'Public catalog entry' },
@@ -23,7 +23,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Catalog skipped',
     summary: 'Some public repositories are intentionally omitted from the polished portfolio catalog because they are grab bags, placeholders, or lower-signal surfaces.',
     reason: 'The portfolio should stay navigable and product-oriented; the archive can name reviewed public exceptions without turning them into headline projects.',
-    source: 'src/data/catalog-policy.json intentionallySkippedPublicRepos and CHANGELOG.md v0.12.1.',
+    source: 'src/data/catalog-policy.json intentionallySkippedPublicRepos.',
     links: [
       { label: 'Scripts', href: 'https://github.com/SysAdminDoc/Scripts', note: 'Public but intentionally outside the catalog' },
       { label: 'ChanPrep', href: 'https://github.com/SysAdminDoc/ChanPrep', note: 'Public but intentionally outside the catalog' },
@@ -36,7 +36,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Archived reference',
     summary: 'DuplicateFF remains visible as a reference architecture rather than a current flagship utility, but it is outside the feed-backed active catalog.',
     reason: 'The profile projects feed omits it from the current portfolio set; the archive keeps a direct public GitHub link without generating a project detail page.',
-    source: 'CHANGELOG.md v0.12.0, SysAdminDoc projects.json feed, and current archive policy.',
+    source: 'SysAdminDoc projects.json feed and current archive policy.',
     links: [
       { label: 'GitHub repository', href: 'https://github.com/SysAdminDoc/DuplicateFF', note: 'Public archived reference outside the active feed-backed catalog' },
     ],
@@ -48,7 +48,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Removed from catalog',
     summary: 'An older batch of private, archived, or placeholder repositories was removed from the catalog and is not re-listed here by name.',
     reason: 'The portfolio should explain the cleanup pattern without turning old private or low-signal repository names into a new public index.',
-    source: 'CHANGELOG.md v0.2.0 and historical public/private boundary notes.',
+    source: 'Current archive policy and public/private boundary review.',
     links: [],
     sensitive: true,
   },
@@ -59,7 +59,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Held for review',
     summary: 'Medical-imaging artifacts that could expose clinical or employer context are excluded from visible project surfaces and public screenshots.',
     reason: 'X-ray and medical-imaging work needs explicit public-safety review before promotion, even when repository metadata is technically public.',
-    source: 'src/data/catalog-policy.json privacyReviewRequired, CHANGELOG.md v0.14.1-v0.14.2, and historical security-boundary notes.',
+    source: 'src/data/catalog-policy.json privacyReviewRequired and current security-boundary review.',
     links: [],
     sensitive: true,
   },
@@ -70,7 +70,7 @@ export const archiveEntries: ArchiveEntry[] = [
     statusLabel: 'Superseded',
     summary: 'A legacy Start Menu management direction is represented by the current Start-Menu-Organizer project instead of keeping older names in the portfolio.',
     reason: 'The archive should point visitors toward the maintained public surface when an older tool line has a clearer successor.',
-    source: 'CHANGELOG.md v0.2.0 removal notes and current src/data/projects.ts catalog entry.',
+    source: 'Current src/data/projects.ts catalog entry for the public successor.',
     links: [
       { label: 'Start-Menu-Organizer', href: '/projects/Start-Menu-Organizer/', note: 'Current public successor' },
     ],
