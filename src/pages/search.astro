@@ -27,7 +27,7 @@ const pagefindResultTemplate = String.raw`<li class="pf-result portfolio-result"
     <img class="pf-result-image portfolio-result-image" src="{{ meta.image | resolveUrl(meta.url | default(url)) }}" alt="{{ meta.image_alt | default(meta.title) }}" loading="lazy" decoding="async">
     {{/if}}
     <div class="pf-result-content portfolio-result-content">
-      <div class="portfolio-result-meta" aria-label="Result metadata">
+      <div class="portfolio-result-meta">
         {{#if meta.route_type}}<span>{{ meta.route_type }}</span>{{/if}}
         {{#if meta.category}}<span>{{ meta.category }}</span>{{/if}}
         {{#if meta.updated}}<span>{{ meta.updated }}</span>{{/if}}

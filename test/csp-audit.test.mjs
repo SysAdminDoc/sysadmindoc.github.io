@@ -29,7 +29,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /CSP preflight audit/);
   assert.match(output, /script-src: 'self'/);
   assert.match(output, /style-src: 'self'/);
-  assert.match(output, /style-src-elem: 'self' 'sha256-IgolL9OcCAAkbJBdeHMz7R8\+koltdJ8QZkkoG6h27v4=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='/);
+  assert.match(output, /style-src-elem: 'self' 'sha256-Kh2pRqTswpcPlsv80tOdhVrmv1XJh\/RHXsQMO2\+5TuU=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='/);
   assert.match(output, /style-src-attr: 'none'/);
   assert.match(output, /script unsafe-inline active: no/);
   assert.match(output, /style unsafe-inline active: no/);
@@ -38,7 +38,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /executable inline scripts: 0/);
   assert.match(output, /JSON-LD\/data script blocks: 12/);
   assert.match(output, /inline event handlers: 0/);
-  assert.match(output, /inline style blocks: 15/);
+  assert.match(output, /inline style blocks: 14/);
   assert.match(output, /inline style attributes: 0/);
   assert.match(output, /stylesheet\/preload links: 4/);
   assert.match(output, /runtime style\.cssText writes: 0/);
@@ -85,7 +85,7 @@ test('csp audit reports style-src self blockers before style unsafe-inline remov
   const output = runAudit(['--candidate-style-src', "'self'"]);
 
   assert.match(output, /Candidate style-src: 'self'/);
-  assert.match(output, /BLOCKED - 15 current inline style surface\(s\) would be blocked/);
+  assert.match(output, /BLOCKED - 14 current inline style surface\(s\) would be blocked/);
   assert.match(output, /style-block: src\/components\/GreatestHits\.astro:\d+ hash='sha256-/);
   assert.doesNotMatch(output, /style-attribute:/);
   assert.match(output, /CSP preflight audit passed/);
@@ -99,15 +99,15 @@ test('csp audit strict style candidate fails until inline style surfaces are rem
 
   assert.equal(result.status, 1);
   assert.match(result.stdout, /Candidate style-src: 'self'/);
-  assert.match(result.stdout, /BLOCKED - 15 current inline style surface\(s\) would be blocked/);
-  assert.match(result.stderr, /candidate style-src 'self' would block 15 current inline style surface\(s\)/);
+  assert.match(result.stdout, /BLOCKED - 14 current inline style surface\(s\) would be blocked/);
+  assert.match(result.stderr, /candidate style-src 'self' would block 14 current inline style surface\(s\)/);
 });
 
 test('csp audit reports style-src-elem self blockers separately from style attributes', () => {
   const output = runAudit(['--candidate-style-src-elem', "'self'"]);
 
   assert.match(output, /Candidate style-src-elem: 'self'/);
-  assert.match(output, /BLOCKED - 15 current style element\/link surface\(s\) would be blocked/);
+  assert.match(output, /BLOCKED - 14 current style element\/link surface\(s\) would be blocked/);
   assert.match(output, /style-block: src\/components\/GreatestHits\.astro:\d+ hash='sha256-/);
   assert.doesNotMatch(output, /style-attribute: src\/components\/SkillCard\.astro:\d+ div\.style/);
   assert.doesNotMatch(output, /style-cssText:/);
@@ -132,7 +132,7 @@ test('csp audit strict split style candidates reflect staged attribute migration
   });
   assert.equal(elem.status, 1);
   assert.match(elem.stdout, /Candidate style-src-elem: 'self'/);
-  assert.match(elem.stderr, /candidate style-src-elem 'self' would block 15 current style element\/link surface\(s\)/);
+  assert.match(elem.stderr, /candidate style-src-elem 'self' would block 14 current style element\/link surface\(s\)/);
 
   const attr = spawnSync(process.execPath, [scriptPath, '--candidate-style-src-attr', "'none'", '--strict'], {
     cwd: repoRoot,
