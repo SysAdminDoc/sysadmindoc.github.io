@@ -29,7 +29,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /CSP preflight audit/);
   assert.match(output, /script-src: 'self'/);
   assert.match(output, /style-src: 'self'/);
-  assert.match(output, /style-src-elem: 'self' 'sha256-Kh2pRqTswpcPlsv80tOdhVrmv1XJh\/RHXsQMO2\+5TuU=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='/);
+  assert.match(output, /style-src-elem: 'self' 'sha256-s9fwBAoJnSf0KrffyUFLVVMQ4jwSv\/HOypv\+X8tlmvk=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='/);
   assert.match(output, /style-src-attr: 'none'/);
   assert.match(output, /script unsafe-inline active: no/);
   assert.match(output, /style unsafe-inline active: no/);
