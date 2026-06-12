@@ -26,6 +26,20 @@ function collectRuntimeErrors(page) {
   return errors;
 }
 
+function collectCspConsoleMessages(page) {
+  const messages = [];
+  page.on('console', (message) => {
+    const text = message.text();
+    if (message.type() === 'error' || /content security policy|securitypolicyviolation|speculationrules/i.test(text)) {
+      messages.push(`[${message.type()}] ${text}`);
+    }
+  });
+  page.on('pageerror', (error) => {
+    messages.push(`[pageerror] ${error.message}`);
+  });
+  return messages;
+}
+
 function collectCmdkScriptRequests(page) {
   const requests = [];
   page.on('request', (request) => {
@@ -34,6 +48,27 @@ function collectCmdkScriptRequests(page) {
     }
   });
   return requests;
+}
+
+async function installCspViolationRecorder(page) {
+  await page.addInitScript(() => {
+    window.__cspViolations = [];
+    window.addEventListener('securitypolicyviolation', (event) => {
+      window.__cspViolations.push({
+        blockedURI: event.blockedURI,
+        effectiveDirective: event.effectiveDirective,
+        lineNumber: event.lineNumber,
+        sample: event.sample,
+        sourceFile: event.sourceFile,
+        violatedDirective: event.violatedDirective,
+      });
+    });
+  });
+}
+
+async function expectNoCspViolations(page) {
+  const violations = await page.evaluate(() => window.__cspViolations ?? []);
+  expect(violations).toEqual([]);
 }
 
 async function preparePage(page, path, readySelector = 'main') {
@@ -108,6 +143,40 @@ async function expectCommandPaletteState(page, isOpen) {
 }
 
 test.describe('rendered interaction smoke', () => {
+  test('Astro client prerender link interactions do not violate the active CSP', async ({ page }) => {
+    const cspMessages = collectCspConsoleMessages(page);
+    await installCspViolationRecorder(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#heroTerm.interactive');
+
+    await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute(
+      'content',
+      /script-src 'self'/,
+    );
+
+    const timelineLink = page.locator('a[href="/timeline/"]').first();
+    await timelineLink.hover();
+    await timelineLink.focus();
+    await page.waitForTimeout(500);
+    await expectNoCspViolations(page);
+    await timelineLink.click();
+    await expect(page).toHaveURL(/\/timeline\/$/);
+    await expect(page.locator('main.timeline-page')).toBeVisible();
+    await expectNoCspViolations(page);
+
+    const catalogLink = page.locator('a[href="/#catalog"]').first();
+    await catalogLink.hover();
+    await catalogLink.focus();
+    await page.waitForTimeout(500);
+    await expectNoCspViolations(page);
+    await catalogLink.click();
+    await expect(page).toHaveURL(/\/#catalog$/);
+    await expect(page.locator('#catalog')).toBeVisible();
+
+    await expectNoCspViolations(page);
+    expect(cspMessages).toEqual([]);
+  });
+
   test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
