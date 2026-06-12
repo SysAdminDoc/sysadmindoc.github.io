@@ -3707,15 +3707,6 @@ html[data-theme="light"] .fb{
   outline-offset:3px;
 }
 
-/* Chord hint toast — accessible live region */
-#chordHint{
-  /* Base styles set in JS; add polish here */
-  border-radius:10px!important;
-  border:1px solid var(--border-soft)!important;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-}
-
 /* Footer bottom padding — prevent content clipping at viewport bottom */
 footer{
   padding-bottom:max(32px, env(safe-area-inset-bottom, 0px));
@@ -5017,4 +5008,177 @@ html[data-theme="light"] .copy-toast{
   background:rgba(237,255,244,.92);
   box-shadow:0 14px 34px rgba(29,42,70,.12);
 }
+}
+
+/* ===== v0.18.4 product refinement overrides ===== */
+.nav-actions{
+  gap:4px;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
+}
+.nav-actions > .theme-toggle,
+.nav-actions > .nav-search,
+.nav-actions > .ng,
+.nav-actions > .mt{
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.nav-actions > .nav-context{
+  border-color:transparent;
+  background:transparent;
+  box-shadow:none;
+}
+.nav-actions > .theme-toggle:hover,
+.nav-actions > .theme-toggle:focus-visible,
+.nav-actions > .nav-search:hover,
+.nav-actions > .nav-search:focus-visible,
+.nav-actions > .ng:hover,
+.nav-actions > .ng:focus-visible,
+.nav-actions > .mt:hover,
+.nav-actions > .mt:focus-visible{
+  color:var(--t1);
+  border-color:var(--border-soft);
+  background:var(--glass-hover);
+  box-shadow:none;
+}
+.nav-actions > .theme-toggle:active,
+.nav-actions > .nav-search:active,
+.nav-actions > .ng:active,
+.nav-actions > .mt:active{
+  transform:translateY(0);
+  background:rgba(255,255,255,.08);
+}
+.nav-search[aria-busy="true"]{
+  opacity:.72;
+  cursor:progress;
+}
+.nav-search[aria-busy="true"] svg{
+  animation:nav-search-busy .8s linear infinite;
+}
+@keyframes nav-search-busy{
+  to{transform:rotate(360deg)}
+}
+.nav-search-kbd,
+.cmdk-kbd{
+  display:none!important;
+}
+.cmdk-footer{
+  justify-content:center;
+  gap:10px 16px;
+  text-align:center;
+  line-height:1.55;
+}
+.cmdk-footer span{
+  white-space:normal;
+}
+.cmdk-footer span + span::before{
+  content:"";
+  display:inline-block;
+  width:4px;
+  height:4px;
+  margin-right:16px;
+  border-radius:2px;
+  background:currentColor;
+  opacity:.45;
+  vertical-align:middle;
+}
+.page-jump-nav,
+.page-jump-links,
+.heatmap-wrap,
+.heatmap-scroll{
+  min-width:0;
+  max-width:100%;
+}
+.page-jump-nav{
+  overflow:hidden;
+}
+.heatmap-wrap{
+  width:100%;
+}
+.heatmap-scroll{
+  width:100%;
+  contain:inline-size;
+  overscroll-behavior-x:contain;
+}
+.heatmap-svg{
+  max-width:none;
+}
+html[data-theme="light"] .nav-actions{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.52);
+  box-shadow:0 10px 24px rgba(29,42,70,.08);
+}
+html[data-theme="light"] .nav-actions > .theme-toggle,
+html[data-theme="light"] .nav-actions > .nav-search,
+html[data-theme="light"] .nav-actions > .ng,
+html[data-theme="light"] .nav-actions > .mt{
+  background:transparent;
+}
+@media(max-width:1180px){
+  .route-home .nav-actions{
+    flex-shrink:0;
+  }
+}
+@media(max-width:720px){
+  .nav-actions{
+    padding:3px;
+  }
+  .nav-actions > .nav-context{
+    display:none;
+  }
+  .nav-actions > .theme-toggle,
+  .nav-actions > .nav-search,
+  .nav-actions > .ng,
+  .nav-actions > .mt{
+    width:38px;
+    min-width:38px;
+    height:38px;
+    min-height:38px;
+    padding:0;
+    justify-content:center;
+  }
+  .page-jump-nav{
+    padding:10px 12px;
+  }
+  .page-jump-links{
+    flex:1 1 auto;
+    min-width:0;
+    mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent);
+  }
+  .page-jump-link{
+    width:auto;
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+  .cmdk-footer{
+    justify-content:flex-start;
+    text-align:left;
+  }
+  .cmdk-footer span + span::before{
+    display:none;
+  }
+}
+@media(max-width:480px){
+  .route-home .nav-actions{
+    gap:2px;
+  }
+  .route-home .nav-search,
+  .route-home .theme-toggle,
+  .route-home .ng,
+  .route-home .mt{
+    width:36px;
+    min-width:36px;
+    height:36px;
+    min-height:36px;
+  }
+  .home-jump-shell .page-jump-nav{
+    margin-inline:0;
+  }
+  .heatmap-wrap{
+    padding-inline:0;
+  }
 }
