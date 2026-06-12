@@ -1,6 +1,4 @@
 ---
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
@@ -27,7 +25,7 @@ type RepoMeta = {
 
 type TimelineEvent = {
   id: string;
-  type: 'release' | 'project' | 'changelog';
+  type: 'release' | 'project';
   typeLabel: string;
   title: string;
   desc: string;
@@ -56,9 +54,6 @@ try {
   const mod = await import('../data/_meta.json');
   meta = (mod.default ?? mod) as Record<string, RepoMeta>;
 } catch {}
-
-const changelogPath = join(process.cwd(), 'CHANGELOG.md');
-const changelogText = readFileSync(changelogPath, 'utf8');
 
 const slugId = (value: string) =>
   value
@@ -151,38 +146,7 @@ const projectEvents: TimelineEvent[] = catalog
   })
   .filter(Boolean) as TimelineEvent[];
 
-const changelogEvents: TimelineEvent[] = Array.from(
-  changelogText.matchAll(/^## \[(v[^\]]+)\] - (\d{4}-\d{2}-\d{2})\s*\n+([\s\S]*?)(?=\n## \[|$)/gm),
-)
-  .map((match, index) => {
-    const [, version, date, body] = match;
-    const title = body.match(/\*\*(.*?)\*\*/)?.[1] ?? version;
-    const bullet = body.match(/^- (.+)$/m)?.[1] ?? 'Portfolio changelog entry.';
-    const isoDate = `${date}T12:00:00Z`;
-    const sortTime = new Date(isoDate).getTime();
-    if (!Number.isFinite(sortTime)) return null;
-    return {
-      id: `changelog-${version}-${index}`,
-      type: 'changelog' as const,
-      typeLabel: 'Changelog',
-      title: `${version}: ${cleanText(title)}`,
-      desc: cleanText(bullet),
-      href: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/CHANGELOG.md',
-      external: true,
-      date: isoDate,
-      year: date.slice(0, 4),
-      sortTime,
-      platformId: 'portfolio',
-      platformLabel: 'Portfolio Site',
-      categoryId: 'portfolio',
-      categoryLabel: 'Portfolio',
-      languageId: 'astro',
-      languageLabel: 'Astro',
-    };
-  })
-  .filter(Boolean) as TimelineEvent[];
-
-const events = [...releaseEvents, ...projectEvents, ...changelogEvents].sort((a, b) => b.sortTime - a.sortTime);
+const events = [...releaseEvents, ...projectEvents].sort((a, b) => b.sortTime - a.sortTime);
 
 const uniqueOptions = (field: 'year' | 'platform' | 'category' | 'language') => {
   const map = new Map<string, string>();
@@ -224,7 +188,6 @@ const yearSummaries = Array.from(byYear, ([year, yearEvents]) => {
     year,
     releases: yearEvents.filter((event) => event.type === 'release').length,
     projectUpdates: yearEvents.filter((event) => event.type === 'project').length,
-    changelog: yearEvents.filter((event) => event.type === 'changelog').length,
     projects: projectSet.size,
     topCategories,
   };
@@ -235,7 +198,7 @@ const activeProjects = new Set(events.map((event) => event.project).filter(Boole
 const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const cmdkSections = [
   { label: 'Overview', href: '#timeline-overview', desc: 'Year-level momentum, release counts, active projects, and source mix.', badge: 'TIMELINE' },
-  { label: 'Year Review', href: '#year-review', desc: 'Roll-up cards generated from release, project, and changelog evidence.', badge: 'YEARS' },
+  { label: 'Year Review', href: '#year-review', desc: 'Roll-up cards generated from release and project metadata evidence.', badge: 'YEARS' },
   { label: 'Events', href: '#timeline-events', desc: 'Filterable project timeline by year, platform, category, and language.', badge: 'FILTERS' },
 ] as const;
 const title = 'Timeline — Matt Parker';
@@ -263,7 +226,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
         <h1 class="st timeline-title">Year-in-review for the public archive</h1>
         <p class="sd">
           A generated view of what shipped, what moved, and where the work clustered.
-          It combines GitHub release cache entries, latest project pushes, and tracked changelog highlights.
+          It combines GitHub release cache entries and latest project push metadata from the generated portfolio snapshot.
         </p>
       </div>
 
@@ -271,7 +234,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
         <div class="page-stat">
           <div class="page-stat-value">{latestYear}</div>
           <div class="page-stat-label">Latest Year</div>
-          <div class="page-stat-copy">Newest generated year currently represented by releases, pushes, or changelog entries.</div>
+          <div class="page-stat-copy">Newest generated year currently represented by releases or project push metadata.</div>
         </div>
         <div class="page-stat">
           <div class="page-stat-value">{releaseEvents.length}</div>
@@ -303,7 +266,6 @@ const pageJsonLd = reviewedWebPageJsonLd({
               <div class="timeline-year-stats">
                 <span><strong>{summary.releases}</strong> releases</span>
                 <span><strong>{summary.projectUpdates}</strong> project updates</span>
-                <span><strong>{summary.changelog}</strong> site notes</span>
               </div>
               <p>{summary.projects} public projects show activity or release evidence this year.</p>
               {summary.topCategories.length > 0 && (
@@ -432,14 +394,12 @@ const pageJsonLd = reviewedWebPageJsonLd({
   .timeline-marker{width:10px;height:10px;border-radius:2px;margin-top:25px;background:var(--blue);box-shadow:0 0 16px rgba(88,166,255,.3)}
   .timeline-marker-release{background:var(--grn);box-shadow:0 0 16px var(--grn-glow)}
   .timeline-marker-project{background:var(--blue)}
-  .timeline-marker-changelog{background:var(--yel)}
   .timeline-event-card{padding:20px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
   .timeline-event-card:hover{border-color:rgba(74,222,128,.28);transform:translateY(-1px)}
   .timeline-event-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
   .timeline-type{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t1);padding:4px 7px;border:1px solid var(--border-soft);border-radius:6px}
   .timeline-type-release{color:var(--grn);background:var(--grnd);border-color:rgba(74,222,128,.22)}
   .timeline-type-project{color:var(--blue);background:var(--blued);border-color:rgba(88,166,255,.22)}
-  .timeline-type-changelog{color:var(--yel);background:var(--yeld);border-color:rgba(234,179,8,.22)}
   .timeline-event-meta time{font-family:var(--mono);font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
   .timeline-event-card h3{font-size:18px;line-height:1.35;margin:0}
   .timeline-event-card h3 a{color:var(--t1);text-decoration:none}

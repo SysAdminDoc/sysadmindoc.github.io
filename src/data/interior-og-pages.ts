@@ -48,7 +48,7 @@ export const interiorOgPages: InteriorOgPage[] = [
     slug: 'timeline',
     route: '/timeline/',
     title: 'Timeline',
-    description: 'Year-in-review timeline generated from GitHub releases, project metadata, and portfolio changelog highlights.',
+    description: 'Year-in-review timeline generated from GitHub releases and project metadata.',
     label: 'History',
     accent: '#58a6ff',
     command: 'cat timeline.json',

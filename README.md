@@ -16,7 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **README rendering** — GFM through `marked`, sanitized remote HTML, class-based Shiki highlighting, reading-time metadata, and heading outlines
-- **Generated timeline** — year-in-review page built from release, push, and changelog evidence
+- **Generated timeline** — year-in-review page built from release and project-push evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
 - **Shared section navigation** — homepage and interior jump links reuse command-palette section data through `SectionJumpNav`
