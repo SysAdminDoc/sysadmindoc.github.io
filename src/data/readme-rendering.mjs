@@ -19,6 +19,7 @@ const SHIKI_LANGS = [
   'xml',
   'csharp',
   'cpp',
+  'kotlin',
   'diff',
   'markdown',
 ];
@@ -52,6 +53,8 @@ const LANGUAGE_ALIASES = new Map([
   ['cs', 'csharp'],
   ['htm', 'html'],
   ['js', 'javascript'],
+  ['kotlin', 'kotlin'],
+  ['kt', 'kotlin'],
   ['jsx', 'jsx'],
   ['md', 'markdown'],
   ['mjs', 'javascript'],

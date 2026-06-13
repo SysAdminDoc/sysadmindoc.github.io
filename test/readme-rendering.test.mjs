@@ -107,6 +107,30 @@ test('README renderer falls back cleanly for unknown fence languages', async () 
   assert.doesNotMatch(html, /\sstyle=/i);
 });
 
+test('README renderer highlights Kotlin fenced code blocks', async () => {
+  const markdown = [
+    '# KotlinDemo',
+    '',
+    '```kotlin',
+    'fun main() = println("Hello")',
+    '```',
+  ].join('\n');
+
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+
+  assert.match(html, /<pre class="readme-code shiki shiki-github-dark-default" tabindex="0">/);
+  assert.match(html, /<code class="readme-code-inner language-kotlin">/);
+  assert.doesNotMatch(html, /\sstyle=/i);
+});
+
+test('README code language aliases resolve kt to kotlin', async () => {
+  const highlighter = await getReadmeHighlighter();
+  const loaded = highlighter.getLoadedLanguages();
+
+  assert.equal(normalizeReadmeCodeLang('kt', loaded), 'kotlin');
+  assert.equal(normalizeReadmeCodeLang('kotlin', loaded), 'kotlin');
+});
+
 test('README code language aliases resolve only to loaded Shiki languages', async () => {
   const highlighter = await getReadmeHighlighter();
   const loaded = highlighter.getLoadedLanguages();

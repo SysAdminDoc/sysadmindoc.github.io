@@ -5,6 +5,18 @@ import { test } from 'node:test';
 
 const root = process.cwd();
 
+test('PWA manifest splits icon purpose into separate any and maskable entries', async () => {
+  const manifest = JSON.parse(await fs.readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
+  const icon512 = manifest.icons.filter((i) => i.sizes === '512x512');
+  assert.equal(icon512.length, 2, 'expected two 512x512 icon entries');
+  const purposes = icon512.map((i) => i.purpose).sort();
+  assert.deepEqual(purposes, ['any', 'maskable']);
+  for (const icon of icon512) {
+    assert.equal(icon.src, '/icon-512.png');
+    assert.equal(icon.type, 'image/png');
+  }
+});
+
 test('PWA manifest exposes bounded install shortcuts with descriptions', async () => {
   const manifest = JSON.parse(await fs.readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
 

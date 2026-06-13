@@ -1,5 +1,6 @@
 ---
 import type { CatalogEntry } from '../data/types';
+import { categoryLabels } from '../data/categories';
 import StarSvg from './StarSvg.astro';
 
 export interface Props {
@@ -30,20 +31,6 @@ const {
   rankLabel = '',
   rankDisplayLabel = '',
 } = Astro.props;
-const categoryLabels: Record<string, string> = {
-  ps: 'PowerShell',
-  py: 'Python',
-  web: 'Web Apps',
-  ext: 'Extensions',
-  kt: 'Android',
-  sec: 'Security',
-  media: 'Media',
-  cs: 'Desktop',
-  guide: 'Guides',
-  fork: 'Forks',
-  other: 'Other',
-};
-
 // Relative age → short badge string. Only show if data is present.
 function relAge(iso?: string): string | null {
   if (!iso) return null;
