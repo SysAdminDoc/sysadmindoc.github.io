@@ -47,6 +47,8 @@ jobs:
         run: npm run check
       - name: Build site
         run: npm run build:ci
+      - name: Internal link audit
+        run: npm run links:audit
       - name: Lighthouse CI budget (advisory)
         continue-on-error: true
         timeout-minutes: 6
