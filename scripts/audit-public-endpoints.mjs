@@ -376,6 +376,104 @@ function auditDiscoveryLinks(html) {
   return { discoveryCount: alternates.length };
 }
 
+function auditSecurityTxt(text) {
+  if (!text.trim()) {
+    fail('dist/.well-known/security.txt is empty.');
+    return { contacts: [], hasCanonical: false, expires: null };
+  }
+
+  const lines = text.split(/\r?\n/);
+  const contacts = [];
+  let hasCanonical = false;
+  let expires = null;
+  let hasPreferredLanguages = false;
+
+  for (const line of lines) {
+    if (line.startsWith('#') || !line.trim()) continue;
+    const colonIndex = line.indexOf(':');
+    if (colonIndex === -1) continue;
+    const field = line.slice(0, colonIndex).trim();
+    const value = line.slice(colonIndex + 1).trim();
+
+    if (field === 'Contact') {
+      parseUrl(value, 'security.txt Contact');
+      contacts.push(value);
+    } else if (field === 'Canonical') {
+      const expectedCanonical = `${siteUrl}/.well-known/security.txt`;
+      if (value !== expectedCanonical) {
+        fail(`security.txt Canonical must be "${expectedCanonical}", got "${value}".`);
+      }
+      hasCanonical = true;
+    } else if (field === 'Expires') {
+      requireDate(value, 'security.txt Expires');
+      const expiresDate = new Date(value);
+      if (!Number.isNaN(expiresDate.getTime())) {
+        const now = new Date();
+        if (expiresDate <= now) {
+          fail(`security.txt Expires date "${value}" is in the past.`);
+        }
+        const oneYearFromNow = new Date(now);
+        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+        if (expiresDate > oneYearFromNow) {
+          fail(`security.txt Expires date "${value}" is more than 1 year from now (RFC 9116 guidance).`);
+        }
+      }
+      expires = value;
+    } else if (field === 'Preferred-Languages') {
+      hasPreferredLanguages = true;
+    }
+  }
+
+  if (contacts.length === 0) fail('security.txt must have at least one Contact: field with an HTTPS URL.');
+  if (!hasCanonical) fail('security.txt must have a Canonical: field.');
+  if (expires === null) fail('security.txt must have an Expires: field.');
+  if (!hasPreferredLanguages) fail('security.txt must have a Preferred-Languages: field.');
+
+  return { contacts, hasCanonical, expires };
+}
+
+function auditRobotsTxt(text) {
+  if (!text.trim()) {
+    fail('dist/robots.txt is empty.');
+    return { userAgents: [], sitemapUrl: null };
+  }
+
+  const lines = text.split(/\r?\n/);
+  const userAgents = [];
+  let sitemapUrl = null;
+
+  for (const line of lines) {
+    if (line.startsWith('#') || !line.trim()) continue;
+    const colonIndex = line.indexOf(':');
+    if (colonIndex === -1) continue;
+    const field = line.slice(0, colonIndex).trim();
+    const value = line.slice(colonIndex + 1).trim();
+
+    if (field === 'User-agent') {
+      userAgents.push(value);
+    } else if (field === 'Sitemap') {
+      sitemapUrl = value;
+    }
+  }
+
+  if (userAgents.length === 0) fail('robots.txt must have at least one User-agent: directive.');
+
+  const expectedSitemap = `${siteUrl}/sitemap-index.xml`;
+  if (sitemapUrl !== expectedSitemap) {
+    fail(`robots.txt Sitemap must be "${expectedSitemap}", got "${sitemapUrl ?? '(missing)'}".`);
+  }
+
+  return { userAgents, sitemapUrl };
+}
+
+function auditHumansTxt(text) {
+  if (!text.trim()) {
+    fail('dist/humans.txt is empty.');
+    return { present: false };
+  }
+  return { present: true };
+}
+
 async function auditSourceHeaderPolicies() {
   const helperSource = await fs.readFile(path.join(root, 'src', 'data', 'endpoint-headers.ts'), 'utf8').catch((error) => {
     fail(`src/data/endpoint-headers.ts is missing or unreadable: ${error.message}`);
@@ -427,6 +525,14 @@ const llmsSummary = auditLlmsTxt(llmsText, { projectCount: projectsSummary.proje
 const discoverySummary = auditDiscoveryLinks(indexHtml);
 const headerSummary = await auditSourceHeaderPolicies();
 
+const securityTxt = await readText('.well-known/security.txt');
+const robotsTxt = await readText('robots.txt');
+const humansTxt = await readText('humans.txt');
+
+const securitySummary = auditSecurityTxt(securityTxt);
+const robotsSummary = auditRobotsTxt(robotsTxt);
+const humansSummary = auditHumansTxt(humansTxt);
+
 if (errors.length > 0) {
   console.error('Public endpoint audit failed:');
   for (const error of errors) console.error(`  - ${error}`);
@@ -442,4 +548,7 @@ console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
 console.log(`  llms.txt links: ${llmsSummary.llmsLinks} / ${llmsSummary.minimumUsefulLinks} minimum`);
 console.log(`  alternate discovery links: ${discoverySummary.discoveryCount}`);
 console.log(`  source header policies: ${headerSummary.sourceHeaderPolicies}`);
+console.log(`  security.txt contacts: ${securitySummary.contacts.length}, expires: ${securitySummary.expires}`);
+console.log(`  robots.txt user-agents: ${robotsSummary.userAgents.length}, sitemap: ${robotsSummary.sitemapUrl}`);
+console.log(`  humans.txt: ${humansSummary.present ? 'present' : 'missing'}`);
 console.log('Public endpoint audit passed.');

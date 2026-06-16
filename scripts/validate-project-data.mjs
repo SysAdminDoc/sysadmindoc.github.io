@@ -222,6 +222,7 @@ const liveApps = exportedArray(projectsSource, 'liveApps');
 const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
 const greatestHits = exportedArray(curatedSource, 'greatestHits');
+const nowData = exportedObject(curatedSource, 'now');
 const proofRecords = exportedObject(proofSource, 'projectProof');
 const homepageProofHighlights = exportedArray(proofSource, 'homepageProofHighlights');
 const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
@@ -528,6 +529,28 @@ for (const [index, entry] of archiveEntries.entries()) {
   }
 }
 
+// /now page freshness guard
+const NOW_WARN_DAYS = 30;
+const NOW_FAIL_DAYS = 90;
+
+const nowUpdatedRaw = nowData.updated;
+let nowAgeDays = null;
+if (typeof nowUpdatedRaw !== 'string' || nowUpdatedRaw.trim().length === 0) {
+  fail('now.updated must be a non-empty string in curated.ts.');
+} else {
+  const nowDate = new Date(nowUpdatedRaw);
+  if (isNaN(nowDate.getTime())) {
+    fail(`now.updated "${nowUpdatedRaw}" is not a valid date string.`);
+  } else {
+    nowAgeDays = Math.floor((Date.now() - nowDate.getTime()) / (1000 * 60 * 60 * 24));
+    if (nowAgeDays >= NOW_FAIL_DAYS) {
+      fail(`/now page is stale: last updated ${nowAgeDays} days ago (limit: ${NOW_FAIL_DAYS} days). Update now.updated in curated.ts.`);
+    } else if (nowAgeDays >= NOW_WARN_DAYS) {
+      warn(`/now page is ${nowAgeDays} days old (advisory limit: ${NOW_WARN_DAYS} days). Consider updating now.updated in curated.ts.`);
+    }
+  }
+}
+
 const routeSlugs = new Map();
 for (const slug of portfolioRefs) {
   const normalized = slug.toLowerCase();
@@ -603,6 +626,7 @@ console.log(`  proof records: ${Object.keys(proofRecords).length}`);
 console.log(`  greatest hit case studies: ${greatestHitCaseStudyCount}/${greatestHits.length}`);
 console.log(`  homepage proof highlights: ${homepageProofHighlights.length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
+if (nowAgeDays !== null) console.log(`  /now page age: ${nowAgeDays} day${nowAgeDays === 1 ? '' : 's'} (warn >${NOW_WARN_DAYS}d, fail >${NOW_FAIL_DAYS}d)`);
 
 if (warnings.length > 0) {
   console.warn('');

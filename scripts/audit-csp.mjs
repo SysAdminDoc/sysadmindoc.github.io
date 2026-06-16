@@ -697,6 +697,9 @@ if (options.strict && candidateStyleElem && candidateStyleElemBlockers.length > 
 if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
   failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);
 }
+if (options.strict && !directives.has('form-action')) {
+  failures.push("form-action directive is missing. form-action has no default-src fallback; omitting it leaves form destinations unrestricted.");
+}
 
 if (failures.length > 0) {
   console.error('');
