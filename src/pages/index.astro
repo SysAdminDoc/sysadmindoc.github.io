@@ -592,6 +592,7 @@ const cmdkSections = [
 
   <section id="catalog" aria-label="Project catalog"><div class="si">
     <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and a build-time ranking that blends stars, freshness, and release-download activity before you click through.</p></div>
+    <search aria-label="Filter and search the project catalog">
     <div class="catalog-controls rv">
       <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
       <div class="search-wrap">
@@ -622,6 +623,7 @@ const cmdkSections = [
         <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
       ))}
     </div>
+    </search>
     <div class="catalog-feedback rv">
       <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the ranked archive: {catalogTotal} public projects.</div>
       <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>

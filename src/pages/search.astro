@@ -100,6 +100,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         </div>
       </div>
 
+      <search aria-label="Full-text site search">
       <div class="search-shell rv">
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
           <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload faceted></pagefind-config>
@@ -127,6 +128,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           </div>
         </noscript>
       </div>
+      </search>
 
       <SectionJumpNav items={cmdkSections} />
     </div>

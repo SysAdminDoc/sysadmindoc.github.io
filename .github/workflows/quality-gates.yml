@@ -179,6 +179,23 @@ jobs:
           forced_colors_code=$?
           record_failure "$forced_colors_code"
 
+          if [ "$build_code" -eq 0 ]; then
+            run_report "Audit JS and CSS bundle sizes" bundle-audit.log npm run bundle:audit
+            bundle_code=$?
+          else
+            bundle_code="$build_code"
+            {
+              echo "Skipped bundle:audit because build:ci failed."
+              echo "See build-output-audits.log for details."
+            } > bundle-audit.log
+            cat bundle-audit.log
+          fi
+          record_failure "$bundle_code"
+
+          run_report "Audit sitemap XML" sitemap-audit.log npm run sitemap:audit
+          sitemap_code=$?
+          record_failure "$sitemap_code"
+
           echo "exit_code=$first_failure" >> "$GITHUB_OUTPUT"
           echo "build_exit_code=$build_code" >> "$GITHUB_OUTPUT"
           echo "endpoints_exit_code=$endpoints_code" >> "$GITHUB_OUTPUT"
@@ -186,6 +203,8 @@ jobs:
           echo "search_exit_code=$search_code" >> "$GITHUB_OUTPUT"
           echo "schema_exit_code=$schema_code" >> "$GITHUB_OUTPUT"
           echo "forced_colors_exit_code=$forced_colors_code" >> "$GITHUB_OUTPUT"
+          echo "bundle_exit_code=$bundle_code" >> "$GITHUB_OUTPUT"
+          echo "sitemap_exit_code=$sitemap_code" >> "$GITHUB_OUTPUT"
           exit 0
       - name: Run performance audit report (advisory)
         id: performance_audit
@@ -277,6 +296,8 @@ jobs:
             echo "  - Pagefind search: ${{ steps.build_output_audits.outputs.search_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Rendered JSON-LD: ${{ steps.build_output_audits.outputs.schema_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Forced-colors data visualizations: ${{ steps.build_output_audits.outputs.forced_colors_exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "  - Bundle size: ${{ steps.build_output_audits.outputs.bundle_exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "  - Sitemap XML: ${{ steps.build_output_audits.outputs.sitemap_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "- Performance/bfcache audit (advisory): ${{ steps.performance_audit.outputs.status }}"
             echo ""
             echo "See the uploaded quality-gate-reports artifact for command logs."
@@ -305,6 +326,8 @@ jobs:
             search-audit.log
             schema-audit.log
             forced-colors-audit.log
+            bundle-audit.log
+            sitemap-audit.log
             preview.log
             performance-audit.log
             performance-summary.md
@@ -333,6 +356,8 @@ jobs:
               ['Pagefind search audit', 'search-audit.log'],
               ['Rendered JSON-LD', 'schema-audit.log'],
               ['Forced-colors data visualizations', 'forced-colors-audit.log'],
+              ['Bundle size audit', 'bundle-audit.log'],
+              ['Sitemap XML audit', 'sitemap-audit.log'],
               ['Performance/bfcache audit (advisory)', 'performance-audit.log'],
               ['Performance/bfcache summary', 'performance-summary.md'],
               ['Semantic index audit (advisory only)', 'semantic-audit.log'],

@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "npm run profile-feed:sync && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && npm run build:ci",
-    "build:ci": "npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run sw:stamp && npm run search:index && npm run search:audit && npm run schema:audit",
+    "build:ci": "npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run sw:stamp && npm run search:index && npm run search:audit && npm run schema:audit && npm run sitemap:audit",
     "sw:stamp": "node scripts/stamp-sw.mjs",
     "check": "npm run profile-feed:sync && npm run public-source:audit && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && astro check",
     "preview": "astro preview",
@@ -54,7 +54,10 @@
     "endpoints:audit": "node scripts/audit-public-endpoints.mjs",
     "feed:audit": "node scripts/audit-feed.mjs",
     "smoke:live": "node scripts/smoke-live-site.mjs",
-    "catalog:audit": "node scripts/audit-catalog.mjs"
+    "catalog:audit": "node scripts/audit-catalog.mjs",
+    "bundle:audit": "node scripts/audit-bundle-size.mjs",
+    "links:audit": "node scripts/audit-built-links.mjs",
+    "sitemap:audit": "node scripts/audit-sitemap.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
