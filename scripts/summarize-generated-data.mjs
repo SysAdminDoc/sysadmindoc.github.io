@@ -135,6 +135,21 @@ const starEntries = Object.keys(stars).length;
 const metaEntries = Object.keys(meta).length;
 const readmeEntries = Object.keys(readmes).length;
 const releaseEntries = Array.isArray(releases) ? releases.length : 0;
+
+const PROVENANCE_LEVELS = /** @type {const} */ (['no-assets', 'unsigned', 'checksum', 'attested']);
+/** @type {Record<string, number>} */
+const provenanceCounts = Object.fromEntries(PROVENANCE_LEVELS.map((level) => [level, 0]));
+let provenanceUnknown = 0;
+if (Array.isArray(releases)) {
+  for (const release of releases) {
+    const p = release?.provenance;
+    if (typeof p === 'string' && Object.prototype.hasOwnProperty.call(provenanceCounts, p)) {
+      provenanceCounts[p] += 1;
+    } else {
+      provenanceUnknown += 1;
+    }
+  }
+}
 const fetchedAgeHours = ageHours(stats.fetchedAt);
 const fresh = fetchedAgeHours <= options.maxAgeHours;
 const profileProjects = Array.isArray(profileFeed?.projects) ? profileFeed.projects : [];
@@ -410,6 +425,11 @@ const summary = {
     topLimit: options.rankingLimit,
     top: rankingTopRows,
   },
+  provenanceDistribution: {
+    ...provenanceCounts,
+    unknown: provenanceUnknown,
+    total: releaseEntries,
+  },
   checks,
 };
 
@@ -508,6 +528,17 @@ const markdown = [
   '',
   `- Last pushed repo: ${stats.lastPushedRepo ?? 'unknown'} at ${summary.lastPushedAt}`,
   `- Latest release signal: ${latestRelease}`,
+  '',
+  '## Release Provenance Distribution',
+  '',
+  `- Total releases: ${summary.provenanceDistribution.total}`,
+  `- attested (sigstore/attestation): ${summary.provenanceDistribution.attested}`,
+  `- checksum (.sha256/.sig/.asc/etc.): ${summary.provenanceDistribution.checksum}`,
+  `- unsigned (assets but no provenance): ${summary.provenanceDistribution.unsigned}`,
+  `- no-assets (no downloadable files): ${summary.provenanceDistribution['no-assets']}`,
+  ...(summary.provenanceDistribution.unknown > 0
+    ? [`- unknown (missing provenance field): ${summary.provenanceDistribution.unknown}`]
+    : []),
   '',
   '## Integrity Checks',
   '',

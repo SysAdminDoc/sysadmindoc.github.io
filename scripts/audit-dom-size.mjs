@@ -21,6 +21,14 @@ for (let index = 2; index < process.argv.length; index += 1) {
   }
 }
 
+// Timeline page budget: ~200 events × ~18 nodes/event + surrounding chrome.
+// All events are rendered in the HTML (no-JS/SEO), so the full list counts.
+// 15 000 element budget gives ~10-15% headroom over current event counts.
+const timelineBudget = {
+  route: '/timeline/',
+  domElements: 15_000,
+};
+
 // Budgets tuned for the ~177-card catalog (2026-06) with ~10-15% headroom.
 // Raise these as the catalog grows; catalog-card count and max-card budgets
 // still have room and are left unchanged.
@@ -134,6 +142,17 @@ checkBudget('Max card DOM nodes', maxCardNodes, activeBudgets.maxCardNodes);
 checkBudget('Average card bytes', averageCardBytes, activeBudgets.averageCardBytes, formatBytes);
 checkBudget('Max card bytes', maxCardBytes, activeBudgets.maxCardBytes, formatBytes);
 
+// --- Timeline page audit ---
+const timelinePath = path.join(distDir, 'timeline', 'index.html');
+const timelineHtml = await fs.readFile(timelinePath, 'utf8').catch(() => null);
+let timelineDomElements = null;
+if (timelineHtml) {
+  timelineDomElements = countTags(timelineHtml);
+  checkBudget(`Timeline DOM elements (${timelineBudget.route})`, timelineDomElements, timelineBudget.domElements);
+} else {
+  console.warn(`  [warn] ${timelineBudget.route} not found in dist — timeline audit skipped.`);
+}
+
 console.log('DOM size audit');
 console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
 console.log(`  budget mode: ${activeBudgets.mode}`);
@@ -145,6 +164,9 @@ console.log(`  average card DOM nodes: ${averageCardNodes.toFixed(2)} / ${active
 console.log(`  max card DOM nodes: ${maxCardNodes} / ${activeBudgets.maxCardNodes}`);
 console.log(`  average card bytes: ${formatBytes(averageCardBytes)} / ${formatBytes(activeBudgets.averageCardBytes)}`);
 console.log(`  max card bytes: ${formatBytes(maxCardBytes)} / ${formatBytes(activeBudgets.maxCardBytes)}`);
+if (timelineDomElements !== null) {
+  console.log(`  timeline DOM elements: ${timelineDomElements} / ${timelineBudget.domElements}`);
+}
 
 if (errors.length > 0) {
   console.error('DOM size audit failed:');
