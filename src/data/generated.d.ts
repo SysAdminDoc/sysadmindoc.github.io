@@ -34,6 +34,7 @@ export interface GeneratedRelease {
   url: string;
   downloads?: number;
   bodyFirst: string;
+  provenance?: 'no-assets' | 'unsigned' | 'checksum' | 'attested';
 }
 
 export interface GeneratedProfileProject {

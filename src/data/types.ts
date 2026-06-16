@@ -41,6 +41,7 @@ export interface CatalogEntry {
   latestReleaseTag?: string | null;
   latestReleaseUrl?: string | null;
   releaseAssetKinds?: string[];
+  releaseProvenance?: 'no-assets' | 'unsigned' | 'checksum' | 'attested';
   topics?: string[];
   primaryAction?: {
     kind: string;

@@ -113,6 +113,48 @@ async function fetchAllRepos() {
   return all;
 }
 
+/**
+ * Determine release artifact provenance trust state from asset names and release body.
+ * Conservative: defaults to 'unsigned' when in doubt.
+ * @param {Array<{name: string}>} assets
+ * @param {string} body
+ * @returns {'no-assets' | 'unsigned' | 'checksum' | 'attested'}
+ */
+function computeProvenance(assets, body) {
+  if (assets.length === 0) return 'no-assets';
+
+  const names = assets.map((a) => (typeof a.name === 'string' ? a.name.toLowerCase() : ''));
+
+  // Sigstore / attestation: .sigstore, .sigstore.json, or release body mentions attestation
+  const hasSigstore = names.some((n) => n.endsWith('.sigstore') || n.endsWith('.sigstore.json'));
+  const bodyMentionsAttestation = /\battestati(?:on|ons)\b/i.test(body) || /\bsigstore\b/i.test(body);
+  if (hasSigstore || bodyMentionsAttestation) return 'attested';
+
+  // Checksum files: .sha256, .sha512, .md5, checksums, sha256sums, sha512sums, etc.
+  const hasChecksum = names.some(
+    (n) =>
+      n.endsWith('.sha256') ||
+      n.endsWith('.sha512') ||
+      n.endsWith('.md5') ||
+      n.endsWith('.sha1') ||
+      n === 'checksums' ||
+      n === 'checksums.txt' ||
+      n === 'sha256sums' ||
+      n === 'sha256sums.txt' ||
+      n === 'sha512sums' ||
+      n === 'sha512sums.txt' ||
+      /checksums?\.txt$/i.test(n) ||
+      /sha\d+sums?(\.txt)?$/i.test(n),
+  );
+  if (hasChecksum) return 'checksum';
+
+  // PGP/GPG signatures: .sig, .asc
+  const hasSig = names.some((n) => n.endsWith('.sig') || n.endsWith('.asc'));
+  if (hasSig) return 'checksum'; // signed but not attested — treat as checksum tier
+
+  return 'unsigned';
+}
+
 async function main() {
   mkdirSync(dataDir, { recursive: true });
 
@@ -260,7 +302,8 @@ async function main() {
       }
       for (const release of list) {
         if (release.draft || release.prerelease) continue;
-        const downloads = Array.isArray(release.assets) ? release.assets.reduce((sum, a) => sum + (a.download_count || 0), 0) : 0;
+        const assets = Array.isArray(release.assets) ? release.assets : [];
+        const downloads = assets.reduce((sum, a) => sum + (a.download_count || 0), 0);
         allReleases.push({
           repo: repo.name,
           tag: release.tag_name,
@@ -276,6 +319,7 @@ async function main() {
             .slice(0, 3)
             .join(' · ')
             .slice(0, 220),
+          provenance: computeProvenance(assets, release.body || ''),
         });
       }
       releasesFetched += 1;
