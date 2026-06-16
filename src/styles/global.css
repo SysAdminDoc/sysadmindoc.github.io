@@ -5735,3 +5735,108 @@ html:not(.js) #timelineShowMore{display:none!important}
   .timeline-marker{display:none}
   .timeline-event-card{padding:18px}
 }
+
+/* ===== Container Queries — progressive enhancement for card components =====
+   Cards (.ca, .lc2, .skc) currently adapt via viewport-based @media queries.
+   Container queries let them respond to their parent grid's inline-size instead,
+   so the same card component works in any layout context (full-width grid,
+   sidebar, modal, etc.).
+
+   The existing @media rules are kept as fallbacks for the ~7% of browsers that
+   do not support container queries. In supporting browsers the @container rules
+   take precedence because they are later in source order and match more
+   specifically when the container is narrow.
+
+   Only card-INTERNAL layout (padding, font-size, gap, clamp) is converted here.
+   Grid column counts and grid-template-columns remain @media-driven since those
+   belong to the page layout, not the card. */
+
+/* 1. Establish containment on the grid wrappers that hold the cards. */
+@supports (container-type: inline-size) {
+  .cg { container-type: inline-size; }
+  .lg { container-type: inline-size; }
+  .skg { container-type: inline-size; }
+}
+
+/* 2. Container-query overrides for CatalogEntry (.ca) card internals.
+   Mirrors the @media(max-width:640px) card-internal rules from site.foundation,
+   site.audit, and site.polish layers. The 640px breakpoint on the viewport
+   maps to ~640px on the container (the .cg grid). */
+@container (max-width: 640px) {
+  /* From site.foundation @media(max-width:640px) */
+  .cds {
+    font-size: 11px;
+    max-width: 120px;
+  }
+
+  /* From site.audit @media(max-width:640px) — card padding */
+  .ca {
+    padding: 12px 14px;
+  }
+}
+
+/* Tighter card internals at very narrow containers — mirrors site.polish
+   @media(max-width:640px) rules for .ca and its children. These fire when the
+   catalog grid itself is <=600px (slightly below the 640px viewport breakpoint
+   to account for page padding). */
+@container (max-width: 600px) {
+  .ca {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px 12px;
+    padding: 16px;
+  }
+  .ca .cdo {
+    margin-top: 6px;
+  }
+  .ca-copy {
+    gap: 6px;
+  }
+  .cds {
+    max-width: none;
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+  }
+  .ca-rank {
+    max-width: none;
+    font-size: 11px;
+    -webkit-line-clamp: 2;
+  }
+  .ca-side {
+    grid-column: 2;
+    justify-self: start;
+    justify-content: flex-start;
+  }
+}
+
+/* 3. Container-query overrides for LiveCard (.lc2) card internals.
+   Mirrors the thumbnail height reduction from site.foundation
+   @media(max-width:640px). */
+@container (max-width: 640px) {
+  .lc2-thumb {
+    height: 60px;
+  }
+}
+
+/* 4. Container-query overrides for SkillCard (.skc) card internals.
+   The skill card has minimal internal responsive changes — its padding is
+   constant and the grid handles column counts. This rule provides a tighter
+   padding at narrow container widths for improved density. */
+@container (max-width: 480px) {
+  .skc {
+    padding: 18px 14px;
+  }
+  .sk-ring {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+  }
+  .sk-ring-label {
+    font-size: 17px;
+  }
+  .skn {
+    font-size: 12px;
+  }
+  .sks {
+    font-size: 11px;
+  }
+}
