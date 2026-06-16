@@ -1,4 +1,5 @@
 (function () {
+  document.documentElement.classList.add('js');
   try {
     var theme = localStorage.getItem('theme-pref');
     var isLight = theme === 'light';
