@@ -321,8 +321,8 @@ const pageJsonLd = reviewedWebPageJsonLd({
         </search>
         <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">{events.length} timeline events shown.</p>
 
-        <ol class="timeline-list" id="timelineList">
-          {events.map((event) => (
+        <ol class="timeline-list" id="timelineList" data-initial-count="50">
+          {events.map((event, index) => (
             <li
               class="timeline-event"
               data-timeline-event
@@ -330,6 +330,8 @@ const pageJsonLd = reviewedWebPageJsonLd({
               data-platform={event.platformId}
               data-category={event.categoryId}
               data-language={event.languageId}
+              hidden={index >= 50 ? true : undefined}
+              data-beyond-fold={index >= 50 ? '' : undefined}
             >
               <div class={`timeline-marker timeline-marker-${event.type}`}></div>
               <article class="timeline-event-card">
@@ -350,6 +352,19 @@ const pageJsonLd = reviewedWebPageJsonLd({
             </li>
           ))}
         </ol>
+        {events.length > 50 && (
+          <div class="timeline-show-more" id="timelineShowMore">
+            <button type="button" class="btn bg2" id="timelineShowMoreBtn">
+              Show {events.length - 50} more events
+            </button>
+          </div>
+        )}
+        <noscript>
+          <style>
+            [data-beyond-fold] { display: grid !important; }
+            #timelineShowMore { display: none !important; }
+          </style>
+        </noscript>
       </section>
     </div>
   </main>
@@ -411,6 +426,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
     .timeline-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
     .timeline-reset{grid-column:1/-1}
   }
+  .timeline-show-more{display:flex;justify-content:center;margin-top:24px}
   @media(max-width:640px){
     .timeline-section-head{align-items:start;flex-direction:column}
     .timeline-controls{grid-template-columns:1fr}
