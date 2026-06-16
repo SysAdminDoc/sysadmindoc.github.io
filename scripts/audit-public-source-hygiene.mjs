@@ -142,3 +142,21 @@ if (findings.length > 0) {
 }
 
 console.log('Public source hygiene audit passed.');
+
+// Verify the built dist/index.html declares the referrer policy meta tag.
+const distIndexPath = path.join(root, 'dist', 'index.html');
+const distIndexText = await fs.readFile(distIndexPath, 'utf8').catch(() => null);
+if (distIndexText === null) {
+  console.log('');
+  console.log('Referrer policy meta check: dist/index.html not found — skipped (run build first).');
+} else {
+  const hasReferrerMeta = distIndexText.includes('name="referrer"') && distIndexText.includes('strict-origin-when-cross-origin');
+  console.log('');
+  console.log('Referrer policy meta check');
+  if (hasReferrerMeta) {
+    console.log('  dist/index.html referrer policy meta tag: present.');
+  } else {
+    console.error('  dist/index.html is missing <meta name="referrer" content="strict-origin-when-cross-origin">.');
+    process.exit(1);
+  }
+}
