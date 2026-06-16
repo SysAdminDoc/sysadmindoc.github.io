@@ -19,6 +19,7 @@ import { join } from 'node:path';
 import process from 'node:process';
 import { LANGS } from '../lang/_langs';
 import { renderProjectReadme } from '../../data/readme-rendering.mjs';
+import { categoryLabels } from '../../data/categories';
 
 export async function getStaticPaths() {
   // One page per unique repo across featured + liveApps + catalog
@@ -116,11 +117,7 @@ try {
   rankingStats = { ...rankingStats, ...(mod.default ?? mod) };
 } catch {}
 const language = metaMap[slug]?.language ?? null;
-const categoryLabel: Record<string, string> = {
-  ps: 'PowerShell', py: 'Python', web: 'Web', ext: 'Extension', kt: 'Android',
-  sec: 'Security', media: 'Media', cs: 'Desktop', guide: 'Guide', fork: 'Fork', other: 'Other',
-};
-const categoryName = categoryLabel[category] ?? category;
+const categoryName = categoryLabels[category as keyof typeof categoryLabels] ?? category;
 const techChips = Array.from(new Set([
   language,
   categoryName,
@@ -159,11 +156,11 @@ const projectFacts = [
   },
   {
     label: 'Primary lane',
-    value: relatedTrack?.label ?? language ?? (categoryLabel[category] ?? 'Other'),
+    value: relatedTrack?.label ?? language ?? (categoryLabels[category as keyof typeof categoryLabels] ?? 'Other'),
     detail: relatedTrack
       ? 'The clearest adjacent context for this project inside the portfolio.'
-      : language && categoryLabel[category] && language !== categoryLabel[category]
-        ? `${categoryLabel[category]} category`
+      : language && categoryLabels[category as keyof typeof categoryLabels] && language !== categoryLabels[category as keyof typeof categoryLabels]
+        ? `${categoryLabels[category as keyof typeof categoryLabels]} category`
         : 'Catalog classification',
   },
   {
@@ -281,7 +278,7 @@ const softwareApplicationNode: Record<string, unknown> | null = isLive && liveUr
   name,
   description: plainDescription,
   url: liveUrl,
-  applicationCategory: `${categoryLabel[category] ?? category} application`,
+  applicationCategory: `${categoryLabels[category as keyof typeof categoryLabels] ?? category} application`,
   operatingSystem: 'Web',
   isAccessibleForFree: true,
   author: personRef,
@@ -588,7 +585,7 @@ const jsonLd = JSON.stringify({
               <span class="ca-copy">
                 <span class="cna">
                   <span class="cna-label">{r.name}</span>
-                  <span class="ca-kind">{categoryLabel[r.category] ?? r.category}</span>
+                  <span class="ca-kind">{categoryLabels[r.category] ?? r.category}</span>
                 </span>
                 <span class="cds" set:html={r.desc}></span>
                 {r._rankDisplayLabel && (
