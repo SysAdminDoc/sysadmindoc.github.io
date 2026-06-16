@@ -41,6 +41,7 @@
             --dur-slow:.38s;
             /* Selection colors — same tokens in both themes for consistency */
             --selection-bg:rgba(74,222,128,.22);
+            --selection-bg:light-dark(rgba(74,222,128,.28), rgba(74,222,128,.22));
             --selection-fg:currentColor;
             /* Focus system */
             --focus-ring:0 0 0 3px rgba(74,222,128,.28);
@@ -62,9 +63,6 @@
             --ls-tight:-0.02em;--ls-normal:0;--ls-wide:0.04em;--ls-caps:0.08em;
             /* Transition bundles */
             --tx-fast:.18s var(--ease-out);--tx-base:.25s var(--ease-out);--tx-spring:.4s var(--ease-spring);
-        }
-        html[data-theme="light"]{
-            --selection-bg:rgba(74,222,128,.28);
         }
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         ::selection{background:var(--selection-bg);color:var(--selection-fg);text-shadow:none}
@@ -663,42 +661,41 @@ main[id],section[id]{scroll-margin-top:calc(72px + env(safe-area-inset-top,0px))
 @layer site.homepage {
 :root{
   --bg:#050913;
+  --bg:light-dark(#f5f1e8, #050913);
   --bg2:#0b1220;
+  --bg2:light-dark(#ede7da, #0b1220);
   --bg3:#111c2f;
+  --bg3:light-dark(#ddd6c7, #111c2f);
   --glass:rgba(9,16,29,.52);
+  --glass:light-dark(rgba(255,255,255,.62), rgba(9,16,29,.52));
   --glass-border:rgba(146,169,205,.14);
+  --glass-border:light-dark(rgba(70,83,112,.12), rgba(146,169,205,.14));
   --glass-hover:rgba(146,169,205,.1);
+  --glass-hover:light-dark(rgba(70,83,112,.08), rgba(146,169,205,.1));
   --brdb:rgba(124,184,255,.32);
+  --brdb:light-dark(rgba(53,107,191,.22), rgba(124,184,255,.32));
   --t1:#f4f7fb;
+  --t1:light-dark(#172033, #f4f7fb);
   --t2:#a7b4cb;
+  --t2:light-dark(#4f5d79, #a7b4cb);
   --t3:#8b99b0;
+  --t3:light-dark(#74829c, #8b99b0);
   --blue:#7cb8ff;
   --blued:rgba(124,184,255,.13);
+  --blued:light-dark(rgba(124,184,255,.14), rgba(124,184,255,.13));
   --blue-glow:rgba(124,184,255,.28);
+  --blue-glow:light-dark(rgba(124,184,255,.15), rgba(124,184,255,.28));
   --org:#e5b169;
   --orgd:rgba(229,177,105,.14);
+  --orgd:light-dark(rgba(229,177,105,.16), rgba(229,177,105,.14));
   --pur:#c69cff;
   --purd:rgba(198,156,255,.13);
+  --purd:light-dark(rgba(198,156,255,.12), rgba(198,156,255,.13));
   --teal:#58e5d6;
   --teald:rgba(88,229,214,.12);
-}
-html[data-theme="light"]{
-  --bg:#f5f1e8;
-  --bg2:#ede7da;
-  --bg3:#ddd6c7;
-  --glass:rgba(255,255,255,.62);
-  --glass-border:rgba(70,83,112,.12);
-  --glass-hover:rgba(70,83,112,.08);
-  --brdb:rgba(53,107,191,.22);
-  --t1:#172033;
-  --t2:#4f5d79;
-  --t3:#74829c;
-  --blued:rgba(124,184,255,.14);
-  --orgd:rgba(229,177,105,.16);
-  --purd:rgba(198,156,255,.12);
-  --teald:rgba(88,229,214,.12);
-  --blue-glow:rgba(124,184,255,.15);
-  --grn-glow:rgba(74,222,128,.15);
+  --teald:light-dark(rgba(88,229,214,.12), rgba(88,229,214,.12));
+  --grn-glow:rgba(74,222,128,.25);
+  --grn-glow:light-dark(rgba(74,222,128,.15), rgba(74,222,128,.25));
 }
 body{
   background:
@@ -2205,27 +2202,25 @@ footer{
 @layer site.polish {
 :root{
   --surface-1:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+  --surface-1:light-dark(linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58)), linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)));
   --surface-2:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  --surface-2:light-dark(linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48)), linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)));
   --surface-strong:linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74));
+  --surface-strong:light-dark(linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82)), linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74)));
   --border-soft:rgba(255,255,255,.08);
+  --border-soft:light-dark(rgba(70,83,112,.11), rgba(255,255,255,.08));
   --border-strong:rgba(124,184,255,.18);
+  --border-strong:light-dark(rgba(53,107,191,.18), rgba(124,184,255,.18));
   --shadow-soft:0 22px 52px rgba(0,0,0,.18);
+  --shadow-soft:light-dark(0 20px 44px rgba(29,42,70,.12), 0 22px 52px rgba(0,0,0,.18));
   --shadow-strong:0 34px 84px rgba(0,0,0,.34);
+  --shadow-strong:light-dark(0 28px 66px rgba(29,42,70,.16), 0 34px 84px rgba(0,0,0,.34));
   --radius-sm:8px;
   --radius-md:10px;
   --radius-lg:12px;
   --radius-xl:12px;
   --content-max:1280px;
   --content-reading:68ch;
-}
-html[data-theme="light"]{
-  --surface-1:linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58));
-  --surface-2:linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48));
-  --surface-strong:linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82));
-  --border-soft:rgba(70,83,112,.11);
-  --border-strong:rgba(53,107,191,.18);
-  --shadow-soft:0 20px 44px rgba(29,42,70,.12);
-  --shadow-strong:0 28px 66px rgba(29,42,70,.16);
 }
 @media(prefers-contrast:more){
   :root{
