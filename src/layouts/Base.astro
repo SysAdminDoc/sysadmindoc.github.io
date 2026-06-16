@@ -124,6 +124,7 @@ if (isHome) {
   <link rel="preload" href={globalCssUrl} as="style" />
   <link rel="stylesheet" href={globalCssUrl} media="print" data-async-style />
   <script src="/scripts/head-init.js" is:inline></script>
+  <script src="/scripts/theme-toggle.js" is:inline></script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -174,7 +175,9 @@ if (isHome) {
   <script src="/cmdk-data.js" is:inline></script>
   <script src="/scripts/shared.js" is:inline></script>
   <script src="/scripts/cmdk-loader.js" is:inline></script>
-  <script src="/scripts/theme.js" is:inline></script>
+  <script src="/scripts/relative-time.js" is:inline></script>
+  <script src="/scripts/mobile-nav.js" is:inline></script>
+  <script src="/scripts/scroll-reveal.js" is:inline></script>
   {/* main.js is homepage-only and depends on shared.js globals
       (prefersReducedMotion/escapeHTML) + __PORTFOLIO_DATA, so it MUST load last,
       after shared.js + cmdk-data.js. Loading it from the page slot ran it first

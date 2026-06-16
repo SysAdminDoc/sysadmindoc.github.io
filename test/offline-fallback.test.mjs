@@ -11,7 +11,8 @@ test('service worker exposes a local offline navigation fallback', async () => {
   const css = await fs.readFile(path.join(root, 'public', 'styles', 'offline.css'), 'utf8');
 
   assert.match(sw, /const OFFLINE_URL = '\/offline\.html'/);
-  assert.match(sw, /'\/styles\/offline\.css'/);
+  // PRECACHE is generated from dist/ at stamp time; verify the placeholder is in place.
+  assert.match(sw, /const PRECACHE = __PRECACHE_PLACEHOLDER__/);
   assert.match(sw, /cachedOrOffline\(e\.request, OFFLINE_URL\)/);
   assert.doesNotMatch(sw, /cachedOrOffline\(e\.request, '\/'\)/);
 

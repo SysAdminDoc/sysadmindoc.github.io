@@ -1,6 +1,6 @@
 const CACHE = 'portfolio-v__BUILD_VERSION__';
 const OFFLINE_URL = '/offline.html';
-const PRECACHE = ['/', OFFLINE_URL, '/styles/offline.css', '/manifest.json', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/rss.xml', '/atom.xml', '/cmdk-data.js', '/scripts/head-init.js', '/scripts/main.js', '/scripts/cmdk-loader.js', '/scripts/theme.js', '/scripts/shared.js'];
+const PRECACHE = __PRECACHE_PLACEHOLDER__;
 const FETCH_TIMEOUT = 10000;
 
 function offlineResponse(status = 503, statusText = 'Offline') {
