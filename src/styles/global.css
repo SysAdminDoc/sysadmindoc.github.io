@@ -4697,6 +4697,509 @@ html[data-theme="light"] mark{
   box-shadow:var(--focus-ring),var(--control-shadow-soft);
 }
 
+/* ===== v1.1 extreme premium-polish pass ===== */
+
+/* ---------- A. Mobile nav smooth open/close ---------- */
+@media(max-width:900px){
+  .mt{display:block}
+  .nk{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    position:absolute;
+    top:calc(64px + env(safe-area-inset-top,0px));
+    left:0;
+    right:0;
+    padding:12px;
+    border-bottom:1px solid var(--glass-border);
+    background:rgba(10,14,23,.95);
+    backdrop-filter:blur(24px) saturate(1.4);
+    -webkit-backdrop-filter:blur(24px) saturate(1.4);
+    transform:translateY(-8px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+  }
+  .nk.open{
+    transform:translateY(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      visibility 0s linear 0s;
+  }
+  html[data-theme="light"] .nk{
+    background:rgba(248,244,234,.98);
+  }
+  .nk a{
+    width:100%;
+    justify-content:flex-start;
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:14px;
+    min-height:44px;
+  }
+  .nk a:hover,.nk a.active{
+    background:rgba(255,255,255,.06);
+  }
+  html[data-theme="light"] .nk a:hover,
+  html[data-theme="light"] .nk a.active{
+    background:rgba(70,83,112,.06);
+  }
+}
+
+/* ---------- B. Mobile nav overlay backdrop ---------- */
+.nav-backdrop{
+  display:none;
+}
+@media(max-width:900px){
+  .nav-backdrop{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:999;
+    background:rgba(5,9,19,.5);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity var(--dur-base) var(--ease-out),visibility 0s linear var(--dur-base);
+  }
+  .nav-backdrop.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transition:opacity var(--dur-base) var(--ease-out),visibility 0s linear 0s;
+  }
+  html[data-theme="light"] .nav-backdrop{
+    background:rgba(29,42,70,.28);
+  }
+}
+
+/* ---------- C. Card hover micro-lift consistency ---------- */
+.pc:active,.lc2:active,.skc:active,.video-card:active,.prc:active,.cnc:active,.career-card:active,.gh-card:active{
+  transform:translateY(-1px) scale(.995);
+  transition-duration:var(--dur-fast);
+}
+.ca:active{
+  transform:translateY(-1px);
+  transition-duration:var(--dur-fast);
+}
+
+/* ---------- D. Filter button pressed/active micro-press ---------- */
+.fb:active{
+  transform:translateY(1px) scale(.98);
+  transition-duration:var(--dur-fast);
+}
+
+/* ---------- E. Light theme — terminal text readability ---------- */
+html[data-theme="light"] .tp,
+html[data-theme="light"] .ts{color:#0e7a3e}
+html[data-theme="light"] .tpa{color:#1c65b8}
+html[data-theme="light"] .tc{color:var(--t1)}
+html[data-theme="light"] .tcm{color:var(--t3)}
+html[data-theme="light"] .tk{color:#7c3aed}
+html[data-theme="light"] .tv{color:#c2710c}
+html[data-theme="light"] .tci{background:#0e7a3e;box-shadow:0 0 8px rgba(14,122,62,.3)}
+
+/* ---------- F. Light theme — selection text ---------- */
+html[data-theme="light"] ::selection{
+  background:rgba(53,107,191,.18);
+  color:var(--t1);
+}
+
+/* ---------- G. Smooth scroll-to-top button appear ---------- */
+.btt{
+  transition:
+    color var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--ease-spring),
+    opacity var(--dur-slow) var(--ease-out),
+    visibility 0s;
+}
+.btt.show{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.btt:active{
+  transform:translateY(0) scale(.92);
+  transition-duration:var(--dur-fast);
+}
+
+/* ---------- H. Copy toast premium feel ---------- */
+.copy-toast{
+  font-weight:500;
+  letter-spacing:.02em;
+  backdrop-filter:blur(16px) saturate(1.2);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);
+}
+
+/* ---------- I. Hero avatar hover ---------- */
+.hero-avatar.loaded:hover{
+  box-shadow:0 0 28px rgba(124,184,255,.2);
+}
+
+/* ---------- J. Nav link active state underline ---------- */
+.nk a.active{
+  position:relative;
+  color:var(--t1);
+  font-weight:600;
+}
+
+/* ---------- K. Light theme — hero proof cards ---------- */
+html[data-theme="light"] .hero-proof{
+  background:rgba(255,255,255,.58);
+  box-shadow:0 10px 22px rgba(29,42,70,.06);
+}
+html[data-theme="light"] .hero-proof:hover{
+  background:rgba(255,255,255,.82);
+  box-shadow:0 14px 30px rgba(29,42,70,.1);
+}
+
+/* ---------- L. Light theme — hero signals ---------- */
+html[data-theme="light"] .hero-signal{
+  background:rgba(255,255,255,.52);
+  box-shadow:0 10px 22px rgba(29,42,70,.06);
+}
+html[data-theme="light"] .hero-signal:hover{
+  background:rgba(255,255,255,.76);
+  box-shadow:0 14px 30px rgba(29,42,70,.1);
+}
+
+/* ---------- M. Light theme — pulse items ---------- */
+html[data-theme="light"] .hero-pulse .pulse-item{
+  background:rgba(255,255,255,.48);
+  border-color:var(--border-soft);
+}
+html[data-theme="light"] .hero-pulse .pulse-item:hover{
+  background:rgba(255,255,255,.72);
+  border-color:var(--border-strong);
+}
+
+/* ---------- N. Light theme — htag (availability badge) ---------- */
+html[data-theme="light"] .htag{
+  background:rgba(14,122,62,.08);
+  border-color:rgba(14,122,62,.22);
+  color:#0e7a3e;
+}
+html[data-theme="light"] .htag .dot,
+html[data-theme="light"] .pulse-dot{
+  background:#0e7a3e;
+  box-shadow:0 0 10px rgba(14,122,62,.3);
+}
+
+/* ---------- O. Light theme — catalog rank sidebar ---------- */
+html[data-theme="light"] .ca-rank{
+  border-left-color:rgba(53,107,191,.5);
+  color:#1c65b8;
+}
+html[data-theme="light"] .ca-rank-related{
+  border-left-color:rgba(14,122,62,.5);
+  color:#0e7a3e;
+}
+
+/* ---------- P. Light theme — age badges ---------- */
+html[data-theme="light"] .ca-age.age-hot{
+  color:#0e7a3e;
+  background:rgba(14,122,62,.08);
+  border-color:rgba(14,122,62,.24);
+}
+html[data-theme="light"] .ca-age.age-warm{
+  color:#1c65b8;
+  background:rgba(28,101,184,.08);
+  border-color:rgba(28,101,184,.2);
+}
+
+/* ---------- Q. Light theme — star badges ---------- */
+html[data-theme="light"] .ca-stars{
+  color:#a16207;
+  border-color:rgba(161,98,7,.18);
+  background:rgba(250,204,21,.1);
+}
+html[data-theme="light"] .ca-stars svg{
+  fill:#a16207;
+}
+
+/* ---------- R. Light theme — live badge ---------- */
+html[data-theme="light"] .lb2{
+  color:#0e7a3e;
+  background:rgba(14,122,62,.08);
+  border-color:rgba(14,122,62,.18);
+}
+html[data-theme="light"] .lb2 .status-dot.up{
+  background:#0e7a3e;
+  box-shadow:0 0 6px rgba(14,122,62,.3);
+}
+
+/* ---------- S. Light theme — section labels ---------- */
+html[data-theme="light"] .sl{
+  color:#1c65b8;
+  text-shadow:none;
+}
+
+/* ---------- T. Light theme — section divider ---------- */
+html[data-theme="light"] .dv-line{
+  background:linear-gradient(90deg, transparent 0%, rgba(70,83,112,.1) 18%, rgba(53,107,191,.2) 50%, rgba(70,83,112,.1) 82%, transparent 100%);
+}
+
+/* ---------- U. Light theme — scroll progress bar ---------- */
+html[data-theme="light"] .scroll-progress{
+  background:linear-gradient(90deg,#3b82f6,#7c3aed,#0e9768);
+  opacity:.65;
+}
+
+/* ---------- V. Light theme — conic gradient card hover ---------- */
+html[data-theme="light"] .pc:hover::before,
+html[data-theme="light"] .lc2:hover::before{
+  background:conic-gradient(from var(--border-angle),transparent 40%,#3b82f6,#7c3aed,#0e9768,#3b82f6,transparent 60%);
+}
+
+/* ---------- W. Print media — clean reading ---------- */
+@media print{
+  body::before,
+  body::after,
+  .hero-grid,
+  .hero::before,
+  .hero::after,
+  .scroll-progress,
+  .btt,
+  .matrix-overlay,
+  #nav,
+  .skip-link{
+    display:none!important;
+  }
+  body{
+    background:#fff!important;
+    color:#000!important;
+  }
+  .hero{
+    min-height:auto!important;
+    padding:24px!important;
+  }
+  section{
+    padding:24px 16px!important;
+    break-inside:avoid;
+  }
+  .pc,.lc2,.ca,.skc,.cnc,.prc,.career-card{
+    break-inside:avoid;
+    box-shadow:none!important;
+    border-color:#ccc!important;
+    background:#fff!important;
+  }
+  a[href^="http"]::after{
+    content:" (" attr(href) ")";
+    font-size:11px;
+    color:#666;
+    word-break:break-all;
+  }
+  .fg,.lg,.skg,.cg,.cng,.pg,.career-timeline{
+    display:block!important;
+  }
+  .fg > *,.lg > *,.skg > *,.cg > *,.cng > *,.pg > *,.career-timeline > *{
+    margin-bottom:12px!important;
+  }
+}
+
+/* ---------- X. 404 page — premium empty state ---------- */
+.error-recovery{
+  max-width:32rem;
+  margin:3rem auto 0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  text-align:center;
+}
+.error-recovery .btn{
+  justify-content:center;
+}
+
+/* ---------- Y. Smooth view transition for theme switch ---------- */
+@media(prefers-reduced-motion:no-preference){
+  ::view-transition-old(root),
+  ::view-transition-new(root){
+    animation-duration:.25s;
+    mix-blend-mode:normal;
+  }
+}
+
+/* ---------- Z. Light theme — scrollbar ---------- */
+html[data-theme="light"]{
+  scrollbar-color:rgba(70,83,112,.22) transparent;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb{
+  background:rgba(70,83,112,.2);
+  background-clip:padding-box;
+  border:2px solid transparent;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{
+  background:rgba(53,107,191,.34);
+  background-clip:padding-box;
+}
+
+/* ---------- AA. Light theme — gradient text readability ---------- */
+html[data-theme="light"] .hn .a{
+  background:linear-gradient(135deg,#2563eb,#7c3aed,#0e9768,#2563eb);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+html[data-theme="light"] .hsn{
+  background:linear-gradient(135deg,var(--t1),#2563eb);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* ---------- BB. Light theme — connect section glow ---------- */
+html[data-theme="light"] #connect .si::before{
+  background:radial-gradient(circle, rgba(53,107,191,.12) 0%, transparent 68%);
+}
+
+/* ---------- CC. Light theme — nav actions group ---------- */
+html[data-theme="light"] .nav-actions{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.52);
+  box-shadow:0 8px 22px rgba(29,42,70,.06);
+}
+
+/* ---------- DD. Light theme — career bullet dots ---------- */
+html[data-theme="light"] .career-card-highlights li::before{
+  background:#0e7a3e;
+  box-shadow:0 0 8px rgba(14,122,62,.3);
+}
+html[data-theme="light"] .career-previous .career-card-highlights li::before{
+  background:#2563eb;
+  box-shadow:0 0 8px rgba(37,99,235,.3);
+}
+
+/* ---------- EE. Light theme — career card gradient border ---------- */
+html[data-theme="light"] .career-card::before{
+  background:linear-gradient(135deg,transparent 40%,rgba(14,122,62,.18) 100%);
+}
+html[data-theme="light"] .career-previous::before{
+  background:linear-gradient(135deg,transparent 40%,rgba(53,107,191,.18) 100%);
+}
+html[data-theme="light"] .career-current{
+  border-color:rgba(14,122,62,.18);
+}
+html[data-theme="light"] .career-current:hover{
+  border-color:rgba(14,122,62,.36);
+}
+
+/* ---------- FF. Catalog sort select hover refinement ---------- */
+.sort-select:hover{
+  border-color:var(--border-strong);
+  box-shadow:0 12px 28px rgba(0,0,0,.1);
+}
+html[data-theme="light"] .sort-select:hover{
+  box-shadow:0 10px 22px rgba(29,42,70,.08);
+}
+
+/* ---------- GG. Accessible underline on inline links ---------- */
+.page-inline-link,
+.footer-backlink{
+  text-underline-offset:3px;
+  text-decoration-thickness:1px;
+}
+
+/* ---------- HH. Journey timeline dot pulse on hover ---------- */
+.ji:hover .jd,
+.ji:focus-within .jd{
+  transform:scale(1.25);
+  transition:transform var(--dur-base) var(--ease-spring);
+}
+
+/* ---------- II. Light theme — project header ---------- */
+html[data-theme="light"] .project-header{
+  background:linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.76));
+  box-shadow:0 22px 52px rgba(29,42,70,.12);
+}
+html[data-theme="light"] .project-header::before{
+  background:
+    radial-gradient(circle at top left, rgba(53,107,191,.08), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(124,93,191,.06), transparent 28%);
+}
+
+/* ---------- JJ. Light theme — code blocks ---------- */
+html[data-theme="light"] .project-readme pre.readme-code{
+  background:#f6f8fa;
+  color:#24292f;
+  border-color:var(--border-soft);
+  box-shadow:inset 0 1px 0 rgba(0,0,0,.04),0 12px 28px rgba(29,42,70,.06);
+}
+
+/* ---------- KK. Light theme — no-results empty state ---------- */
+html[data-theme="light"] .no-results{
+  border-color:var(--border-soft);
+  border-style:dashed;
+}
+
+/* ---------- LL. Smooth catalog feedback show/hide ---------- */
+.catalog-feedback{
+  transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out);
+}
+.catalog-feedback[hidden]{
+  display:flex!important;
+  opacity:0;
+  transform:translateY(-4px);
+  pointer-events:none;
+  height:0;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  border:0;
+}
+
+/* ---------- MM. Light theme — theme toggle pressed state ---------- */
+html[data-theme="light"] .theme-toggle[aria-pressed="true"]{
+  color:#c2710c;
+  border-color:rgba(194,113,12,.22);
+  background:rgba(250,204,21,.1);
+}
+
+/* ---------- NN. Light theme — search mark highlight ---------- */
+html[data-theme="light"] .cmdk-item .cmdk-title mark,
+html[data-theme="light"] .cmdk-subtitle mark{
+  background:rgba(250,204,21,.28);
+  color:var(--t1);
+}
+
+/* ---------- OO. Landscape mobile hero — prevent excessive height ---------- */
+@media(max-height:500px) and (orientation:landscape){
+  .hero{
+    min-height:auto;
+    padding-top:76px;
+    padding-bottom:32px;
+  }
+}
+
+/* ---------- PP. Interactive cursor hints ---------- */
+.pc,.lc2,.gh-card,.cnc,.beyond-card,.ji,.about-link,.stack-action,.hero-reel-item{
+  cursor:pointer;
+}
+.ca[href]{
+  cursor:pointer;
+}
+
+/* ---------- QQ. Selection color in forced-colors ---------- */
+@media(forced-colors:active){
+  ::selection{
+    background:Highlight;
+    color:HighlightText;
+  }
+}
+
 .btn:disabled,
 .sw-update-actions button:disabled,
 [aria-disabled="true"]{
