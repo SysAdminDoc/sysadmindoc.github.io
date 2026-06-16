@@ -286,6 +286,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
           <p>Use the filters to move from the full archive view into a platform, language, category, or year lane.</p>
         </div>
 
+        <search aria-label="Filter the project timeline">
         <form class="timeline-controls" id="timelineFilters">
           <label>
             <span>Year</span>
@@ -317,6 +318,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
           </label>
           <button type="button" class="timeline-reset" id="timelineReset">Reset</button>
         </form>
+        </search>
         <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">{events.length} timeline events shown.</p>
 
         <ol class="timeline-list" id="timelineList">
