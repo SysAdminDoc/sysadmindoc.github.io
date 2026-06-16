@@ -149,6 +149,16 @@ const profileFeedStatus = !profileFeed
   : profileProjects.length === 0 || profileSource?.startsWith('local fallback:')
     ? 'fallback'
     : 'active';
+const fixtureMode =
+  process.env.PROFILE_PROJECTS_OFFLINE === '1' || profileSource === 'fixture';
+const parityBase = profileProjectCount > 0 ? profileProjectCount : null;
+const starsCoverage = parityBase != null ? starEntries / parityBase : null;
+const metaCoverage = parityBase != null ? metaEntries / parityBase : null;
+const releasesCoverage = parityBase != null ? releaseEntries / parityBase : null;
+const readmesCoverage = parityBase != null ? readmeEntries / parityBase : null;
+const PARITY_COVERAGE_THRESHOLD = 0.8;
+const starsParityOk = fixtureMode || starsCoverage == null || starsCoverage >= PARITY_COVERAGE_THRESHOLD;
+const metaParityOk = fixtureMode || metaCoverage == null || metaCoverage >= PARITY_COVERAGE_THRESHOLD;
 const readmeRefreshTargetRepos = finiteNumberOrNull(readmeRefreshRaw?.totalPublicRepos);
 const readmeRefreshAttempted = finiteNumberOrNull(readmeRefreshRaw?.attempted);
 const readmeRefreshMisses = finiteNumberOrNull(readmeRefreshRaw?.misses);
@@ -313,6 +323,14 @@ const checks = [
     label: 'ranking ranks are unique and contiguous',
     ok: rankingRanksContiguous,
   },
+  {
+    label: `stars coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
+    ok: starsParityOk,
+  },
+  {
+    label: `metadata coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
+    ok: metaParityOk,
+  },
 ];
 
 const failedChecks = checks.filter((check) => !check.ok);
@@ -371,6 +389,19 @@ const summary = {
     projectsLength: profileProjects.length,
     suppressedCount: profileFeed?.suppressedCount ?? null,
   },
+  parity: {
+    fixtureMode,
+    profileProjectCount: parityBase,
+    starEntries,
+    metaEntries,
+    releaseEntries,
+    readmeEntries,
+    starsCoverage: roundMetric(starsCoverage, 4),
+    metaCoverage: roundMetric(metaCoverage, 4),
+    releasesCoverage: roundMetric(releasesCoverage, 4),
+    readmesCoverage: roundMetric(readmesCoverage, 4),
+    coverageThreshold: PARITY_COVERAGE_THRESHOLD,
+  },
   ranking: {
     weightTotal: roundMetric(rankingWeightTotal, 4),
     weights: PROJECT_RANKING_WEIGHTS,
@@ -417,6 +448,16 @@ const markdown = [
   `- Metadata entries: ${metaEntries}`,
   `- README entries: ${readmeEntries}`,
   `- Release entries: ${releaseEntries}`,
+  '',
+  '## Parity',
+  '',
+  ...(fixtureMode ? ['> Fixture corpus — reduced counts are expected; coverage checks skipped.', ''] : []),
+  `- Profile-feed project count: ${summary.parity.profileProjectCount ?? 'unknown'}`,
+  `- Stars entries: ${starEntries} (${formatPercent(starsCoverage)} of profile-feed)`,
+  `- Metadata entries: ${metaEntries} (${formatPercent(metaCoverage)} of profile-feed)`,
+  `- Release entries: ${releaseEntries} (${formatPercent(releasesCoverage)} of profile-feed)`,
+  `- README entries: ${readmeEntries} (${formatPercent(readmesCoverage)} of profile-feed)`,
+  `- Coverage threshold: ${PARITY_COVERAGE_THRESHOLD * 100}%`,
   '',
   '## README Refresh',
   '',

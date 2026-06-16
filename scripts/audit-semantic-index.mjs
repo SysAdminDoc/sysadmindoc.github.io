@@ -9,6 +9,10 @@ const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const readmesPath = path.join(root, 'src', 'data', '_readmes.json');
 const minScore = Number(process.argv.includes('--min-score') ? process.argv[process.argv.indexOf('--min-score') + 1] : 0.42);
 const reportLimit = Number(process.argv.includes('--limit') ? process.argv[process.argv.indexOf('--limit') + 1] : 12);
+const strictMode = process.argv.includes('--strict');
+const fixtureMode = process.env.PROFILE_PROJECTS_OFFLINE === '1' || process.argv.includes('--fixture');
+
+const README_COVERAGE_THRESHOLD = 50; // minimum % of projects that must have a README text in strict mode
 
 const stopwords = new Set([
   'about', 'across', 'after', 'also', 'android', 'app', 'apps', 'based', 'built', 'client', 'code', 'custom',
@@ -135,9 +139,15 @@ const categoryMismatches = pairs.filter((pair) => !pair.sameCategory).slice(0, r
 const topPairs = pairs.slice(0, reportLimit);
 const readmeCount = docs.filter((doc) => doc.readmePresent).length;
 
+const readmeCoverage = docs.length > 0 ? (readmeCount / docs.length) * 100 : 0;
+const readmeCoverageLabel = fixtureMode
+  ? `${readmeCoverage.toFixed(1)}% (fixture mode)`
+  : `${readmeCoverage.toFixed(1)}%`;
+
 console.log('Semantic project audit');
 console.log(`  projects: ${docs.length}`);
 console.log(`  README texts available: ${readmeCount}`);
+console.log(`  README corpus coverage: ${readmeCoverageLabel}`);
 console.log(`  min score: ${minScore}`);
 console.log('');
 console.log('Top similar pairs:');
@@ -156,3 +166,10 @@ if (categoryMismatches.length === 0) {
 
 console.log('');
 console.log('Semantic project audit completed. This report is advisory and does not add runtime tracking or hosted inference.');
+
+if (!fixtureMode && strictMode && readmeCoverage < README_COVERAGE_THRESHOLD) {
+  console.error(
+    `README coverage gate failed: ${readmeCoverage.toFixed(1)}% < ${README_COVERAGE_THRESHOLD}% threshold (${readmeCount}/${docs.length} projects). Run without --strict or increase corpus coverage.`,
+  );
+  process.exit(1);
+}
