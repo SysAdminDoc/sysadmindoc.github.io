@@ -19,6 +19,16 @@ import {
   rankCatalogEntries,
 } from '../data/project-ranking.mjs';
 import { careerRoles } from '../data/career';
+import {
+  computeCatalogViewState,
+  computeViewCounts,
+  computeCategoryCounts,
+} from '../data/catalog-views.mjs';
+import {
+  DONUT_R,
+  buildDonutLangCount,
+  computeDonutArcs,
+} from '../data/svg-arc.mjs';
 
 // Build-time: load cached star counts + aggregate stats + per-repo metadata (fetch-stars.mjs).
 let stars: Record<string, number> = {};
@@ -67,78 +77,26 @@ const projectRankings = computeProjectRankings(catalog, {
   referenceDate: stats.fetchedAt ?? stats.lastPushedAt ?? Date.now(),
 });
 const rankedCatalog = rankCatalogEntries(catalog, projectRankings);
-const dayMs = 24 * 60 * 60 * 1000;
-function ageDays(iso?: string | null): number | null {
-  if (!iso) return null;
-  const value = new Date(iso).getTime();
-  if (!Number.isFinite(value) || !Number.isFinite(freshnessReference)) return null;
-  return Math.max(0, Math.floor((freshnessReference - value) / dayMs));
-}
-const catalogViewState = new Map(
-  catalog.map((entry) => {
-    const updatedAt = entry.updatedAt ?? entry.pushedAt ?? meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt;
-    const days = ageDays(updatedAt);
-    return [
-      entry.repo,
-      {
-        isNew: days !== null && days <= 30,
-        isRecent: days !== null && days <= 90,
-        hasDownload: Boolean(entry.hasDownload || releaseDownloadRepos.has(entry.repo)),
-      },
-    ] as const;
-  }),
-);
-const viewCounts = {
-  all: catalog.length,
-  new: [...catalogViewState.values()].filter((state) => state.isNew).length,
-  recent: [...catalogViewState.values()].filter((state) => state.isRecent).length,
-  download: [...catalogViewState.values()].filter((state) => state.hasDownload).length,
-};
+const catalogViewState = computeCatalogViewState(catalog, {
+  meta,
+  releaseDownloadRepos,
+  referenceMs: freshnessReference,
+});
+const viewCounts = computeViewCounts(catalogViewState);
 
 // Derive category counts from catalog data (fixes hardcoded-count gotcha)
-const catCounts: Record<string, number> = {};
-for (const c of catalog) catCounts[c.category] = (catCounts[c.category] ?? 0) + 1;
+const catCounts = computeCategoryCounts(catalog);
 const catalogTotal = catalog.length;
 const publicProjectCount = catalogTotal;
 
 // Build-time language mix from cached _meta.json so the Stack donut renders real
 // data with no JS / offline / rate-limited. main.js refreshes it from the live
 // API on capable clients. Mirrors renderLangDonut() in public/scripts/main.js.
-const donutColors: Record<string, string> = { 'PowerShell':'#58a6ff','Python':'#4ade80','JavaScript':'#facc15','HTML':'#fb923c','Kotlin':'#2dd4bf','C#':'#c084fc','C++':'#f87171','Shell':'#8b9cc0','TypeScript':'#3b82f6','CSS':'#a78bfa','Other':'#7080a0' };
-const donutTones: Record<string, string> = { 'PowerShell':'powershell','Python':'python','JavaScript':'javascript','HTML':'html','Kotlin':'kotlin','C#':'csharp','C++':'cpp','Shell':'shell','TypeScript':'typescript','CSS':'css','Other':'other' };
-const buildLangCount: Record<string, number> = {};
-let donutTotal = 0;
-for (const c of catalog) {
-  const lang = meta[c.repo]?.language;
-  if (!lang) continue;
-  buildLangCount[lang] = (buildLangCount[lang] ?? 0) + 1;
-  donutTotal += 1;
-}
-const namedLangs = Object.entries(buildLangCount).filter(([k]) => k !== 'Other').sort((a, b) => b[1] - a[1]);
-const donutTop = namedLangs.slice(0, 7);
-const donutTail = namedLangs.slice(7).reduce((s, e) => s + e[1], 0) + (buildLangCount['Other'] ?? 0);
-if (donutTail > 0) donutTop.push(['Other', donutTail]);
-const DONUT_R = 70;
-const DONUT_CIRC = 2 * Math.PI * DONUT_R;
-const DONUT_GAP = 2;
-let donutOffset = 0;
-const donutArcs = donutTop.map(([lang, count]) => {
-  const pct = donutTotal ? count / donutTotal : 0;
-  const arcLen = Math.max(pct * DONUT_CIRC - DONUT_GAP, 0);
-  const arc = {
-    lang,
-    color: donutColors[lang] ?? '#7080a0',
-    tone: donutTones[lang] ?? 'other',
-    dash: `${arcLen.toFixed(1)} ${(DONUT_CIRC - arcLen).toFixed(1)}`,
-    offset: (-donutOffset).toFixed(1),
-    pct: Math.round(pct * 100),
-  };
-  donutOffset += pct * DONUT_CIRC;
-  return arc;
-});
-const donutLead = donutTop[0];
-const donutLeadLang = donutLead ? donutLead[0] : 'Mixed';
-const donutLeadPct = donutLead && donutTotal ? Math.round((donutLead[1] as number) / donutTotal * 100) : 0;
+const { langCount: buildLangCount, total: donutTotal } = buildDonutLangCount(catalog, meta);
+const donutArcs = computeDonutArcs(buildLangCount, donutTotal);
+const donutLead = donutArcs[0];
+const donutLeadLang = donutLead ? donutLead.lang : 'Mixed';
+const donutLeadPct = donutLead ? donutLead.pct : 0;
 
 const filterButtons = [
   { key: 'ps', label: 'PowerShell' },
