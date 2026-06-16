@@ -97,6 +97,7 @@
 (function(){
   const mobileToggle = document.getElementById('mobileToggle');
   const navLinks = document.getElementById('navLinks');
+  const navBackdrop = document.getElementById('navBackdrop');
   if(!mobileToggle || !navLinks) return;
   let previousBodyOverflow = '';
   let previousHtmlOverflow = '';
@@ -104,6 +105,7 @@
   var focusableSelector = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
   function setMobileNav(open){
     navLinks.classList.toggle('open', open);
+    if(navBackdrop) navBackdrop.classList.toggle('show', open);
     mobileToggle.setAttribute('aria-expanded', String(open));
     mobileToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
     mobileToggle.setAttribute('title', open ? 'Close navigation menu' : 'Open navigation menu');
@@ -131,10 +133,14 @@
     a.addEventListener('click', () => setMobileNav(false));
   });
 
+  if(navBackdrop){
+    navBackdrop.addEventListener('click', () => setMobileNav(false));
+  }
+
   document.addEventListener('click', e => {
     const target = e.target;
     if(!(target instanceof Element)) return;
-    if(navLinks.classList.contains('open') && !target.closest('#navLinks') && !target.closest('#mobileToggle')){
+    if(navLinks.classList.contains('open') && !target.closest('#navLinks') && !target.closest('#mobileToggle') && !target.closest('#navBackdrop')){
       setMobileNav(false);
     }
   });
@@ -152,7 +158,7 @@
   });
 
   window.addEventListener('resize', () => {
-    if(window.innerWidth > 640 && navLinks.classList.contains('open')) setMobileNav(false);
+    if(window.innerWidth > 900 && navLinks.classList.contains('open')) setMobileNav(false);
   });
 })();
 
