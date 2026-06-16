@@ -139,3 +139,113 @@ test('README code language aliases resolve only to loaded Shiki languages', asyn
   assert.equal(normalizeReadmeCodeLang('js', loaded), 'javascript');
   assert.equal(normalizeReadmeCodeLang('not-a-real-language', loaded), null);
 });
+
+// ---------------------------------------------------------------------------
+// Adversarial sanitizer fixtures
+// ---------------------------------------------------------------------------
+
+// Helper: shared negative assertions applied to every adversarial case.
+function assertNoExecutableHtml(html, label) {
+  assert.doesNotMatch(html, /<script[\s>]/i, `${label}: <script> tag must not survive`);
+  assert.doesNotMatch(html, /\son\w+\s*=/i, `${label}: on* event handler must not survive`);
+  assert.doesNotMatch(html, /javascript:/i, `${label}: javascript: protocol must not survive`);
+  assert.doesNotMatch(html, /<xmp[\s>]/i, `${label}: <xmp> tag must not survive`);
+  assert.doesNotMatch(html, /<textarea[\s>]/i, `${label}: <textarea> tag must not survive`);
+}
+
+test('README sanitizer strips <xmp> raw-text bypass tag', async () => {
+  const markdown = '<xmp><script>alert(1)</script></xmp>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, '<xmp>');
+});
+
+test('README sanitizer strips <textarea> content-swallowing tag', async () => {
+  const markdown = '<textarea><script>alert(1)</script></textarea>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, '<textarea>');
+});
+
+test('README sanitizer strips SVG with inline <script>', async () => {
+  const markdown = '<svg><script>alert(1)</script></svg>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'SVG+script');
+  // svg itself should also be gone (not in allowedTags)
+  assert.doesNotMatch(html, /<svg[\s>]/i);
+});
+
+test('README sanitizer neutralises data:text/html URI in <img src>', async () => {
+  // allowedSchemesByTag for img includes 'data' (for image/* payloads), so
+  // sanitize-html keeps the src but the inline <script> payload is HTML-entity-
+  // encoded by the time it reaches the attribute value — it cannot execute.
+  const markdown = '<img src="data:text/html,<script>alert(1)</script>">';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'data-uri-img');
+  // Confirm the <script> inside the data URI is entity-encoded, not literal
+  assert.doesNotMatch(html, /<script>/i);
+  assert.match(html, /&lt;script&gt;/i);
+});
+
+test('README sanitizer removes <script> injected via malformed closing tags', async () => {
+  const markdown = '</p><script>alert(1)</script>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'malformed-closing-tag');
+});
+
+test('README sanitizer strips onmouseover event handler from <div>', async () => {
+  const markdown = '<div onmouseover="alert(1)">hover me</div>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'onmouseover-div');
+  // The div itself is allowed (in sanitize-html defaults) but the handler must be gone
+  assert.match(html, /hover me/);
+});
+
+test('README sanitizer strips onerror event handler from <img>', async () => {
+  const markdown = '<img onerror="alert(1)" src="x.png">';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'onerror-img');
+  // img tag itself should survive (it is in allowedTags) but without the handler
+  assert.match(html, /<img /i);
+});
+
+test('README sanitizer neutralises javascript: Markdown link via URL rewriting', async () => {
+  // The marked link renderer calls resolveReadmeLink(), which treats
+  // "javascript:alert(1)" as a relative path (no http/https/data/# prefix) and
+  // prepends the GitHub blob base URL. The result is a harmless absolute HTTPS
+  // link, not an executable javascript: URI.
+  const markdown = '[click](javascript:alert(1))';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assert.doesNotMatch(html, /<script[\s>]/i);
+  assert.doesNotMatch(html, /\son\w+\s*=/i);
+  // Must resolve to a safe https: URL, not a bare javascript: URI
+  assert.match(html, /href="https:\/\/github\.com\/SysAdminDoc\/DemoRepo\/blob\/HEAD\/javascript:alert\(1\)"/);
+});
+
+test('README sanitizer neutralises javascript: href in raw HTML anchor via URL rewriting', async () => {
+  // sanitize-html's transformTags for <a> calls resolveReadmeLink(), which
+  // converts the relative-looking "javascript:alert(1)" path into a safe
+  // absolute https: GitHub URL (same defence as the Markdown link path above).
+  const markdown = '<a href="javascript:alert(1)">click</a>';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assert.doesNotMatch(html, /<script[\s>]/i);
+  assert.doesNotMatch(html, /\son\w+\s*=/i);
+  // Must resolve to a safe https: URL, not a bare javascript: URI
+  assert.match(html, /href="https:\/\/github\.com\/SysAdminDoc\/DemoRepo\/blob\/HEAD\/javascript:alert\(1\)"/);
+});
+
+test('README sanitizer strips onclick from task-list <input type="checkbox">', async () => {
+  const markdown = '<input type="checkbox" onclick="alert(1)">';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  assertNoExecutableHtml(html, 'checkbox-onclick');
+  // Checkbox is allowed but must be forced disabled with no extra attributes
+  if (/<input/i.test(html)) {
+    assert.match(html, /disabled/i);
+    assert.doesNotMatch(html, /onclick/i);
+  }
+});
+
+test('README sanitizer strips non-checkbox <input> types entirely', async () => {
+  const markdown = '<input type="text" value="pwned">';
+  const html = await renderProjectReadmeHtml(markdown, 'DemoRepo');
+  // transformTags drops non-checkbox inputs (tagName: '')
+  assert.doesNotMatch(html, /<input/i);
+});
