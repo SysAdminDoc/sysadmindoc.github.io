@@ -5,18 +5,29 @@
 @font-face{font-family:'Outfit';font-style:normal;font-weight:300 800;font-display:swap;src:url('/fonts/outfit-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --bg:#050913;
+  --bg:light-dark(#f5f1e8, #050913);
   --bg2:#0b1220;
+  --bg2:light-dark(#ede7da, #0b1220);
   --bg3:#111c2f;
+  --bg3:light-dark(#ddd6c7, #111c2f);
   --glass:rgba(9,16,29,.52);
+  --glass:light-dark(rgba(255,255,255,.62), rgba(9,16,29,.52));
   --glass-border:rgba(146,169,205,.14);
+  --glass-border:light-dark(rgba(70,83,112,.12), rgba(146,169,205,.14));
   --glass-hover:rgba(146,169,205,.1);
+  --glass-hover:light-dark(rgba(70,83,112,.08), rgba(146,169,205,.1));
   --brdb:rgba(124,184,255,.32);
+  --brdb:light-dark(rgba(53,107,191,.22), rgba(124,184,255,.32));
   --t1:#f4f7fb;
+  --t1:light-dark(#172033, #f4f7fb);
   --t2:#a7b4cb;
+  --t2:light-dark(#4f5d79, #a7b4cb);
   --t3:#8b99b0;
+  --t3:light-dark(#74829c, #8b99b0);
   --blue:#7cb8ff;
   --blued:rgba(124,184,255,.13);
   --blue-glow:rgba(124,184,255,.28);
+  --blue-glow:light-dark(rgba(124,184,255,.15), rgba(124,184,255,.28));
   --org:#e5b169;
   --orgd:rgba(229,177,105,.14);
   --pur:#c69cff;
@@ -26,17 +37,25 @@
   --grn:#4ade80;
   --grnd:rgba(74,222,128,.12);
   --grn-glow:rgba(74,222,128,.25);
+  --grn-glow:light-dark(rgba(74,222,128,.15), rgba(74,222,128,.25));
   --yel:#facc15;
   --red:#f87171;
   --mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;
   --sans:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;
   --surface-1:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+  --surface-1:light-dark(linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58)), linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)));
   --surface-2:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  --surface-2:light-dark(linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48)), linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)));
   --surface-strong:linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74));
+  --surface-strong:light-dark(linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82)), linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74)));
   --border-soft:rgba(255,255,255,.08);
+  --border-soft:light-dark(rgba(70,83,112,.11), rgba(255,255,255,.08));
   --border-strong:rgba(124,184,255,.18);
+  --border-strong:light-dark(rgba(53,107,191,.18), rgba(124,184,255,.18));
   --shadow-soft:0 22px 52px rgba(0,0,0,.18);
+  --shadow-soft:light-dark(0 20px 44px rgba(29,42,70,.12), 0 22px 52px rgba(0,0,0,.18));
   --shadow-strong:0 34px 84px rgba(0,0,0,.34);
+  --shadow-strong:light-dark(0 28px 66px rgba(29,42,70,.16), 0 34px 84px rgba(0,0,0,.34));
   --radius-xl:12px;
   --lh-relaxed:1.7;
   --ls-caps:.08em;
@@ -48,25 +67,6 @@
   color-scheme:dark;
 }
 html[data-theme="light"]{
-  --bg:#f5f1e8;
-  --bg2:#ede7da;
-  --bg3:#ddd6c7;
-  --glass:rgba(255,255,255,.62);
-  --glass-border:rgba(70,83,112,.12);
-  --glass-hover:rgba(70,83,112,.08);
-  --brdb:rgba(53,107,191,.22);
-  --t1:#172033;
-  --t2:#4f5d79;
-  --t3:#74829c;
-  --blue-glow:rgba(124,184,255,.15);
-  --grn-glow:rgba(74,222,128,.15);
-  --surface-1:linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58));
-  --surface-2:linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48));
-  --surface-strong:linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82));
-  --border-soft:rgba(70,83,112,.11);
-  --border-strong:rgba(53,107,191,.18);
-  --shadow-soft:0 20px 44px rgba(29,42,70,.12);
-  --shadow-strong:0 28px 66px rgba(29,42,70,.16);
   color-scheme:light;
 }
 @media(prefers-contrast:more){
