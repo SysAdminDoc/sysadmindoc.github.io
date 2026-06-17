@@ -46,10 +46,6 @@
     return loading;
   }
 
-  function isPaletteToggle(event) {
-    return (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
-  }
-
   function openPalette() {
     const api = getApi();
     if (api) {
@@ -62,14 +58,6 @@
       })
       .catch(() => setLoadingState(false));
   }
-
-  document.addEventListener('keydown', event => {
-    if (getApi()) return;
-    if (isPaletteToggle(event)) {
-      event.preventDefault();
-      openPalette();
-    }
-  });
 
   const toggle = document.getElementById('cmdkToggle');
   toggle?.addEventListener('click', event => {

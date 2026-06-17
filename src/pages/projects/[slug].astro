@@ -585,7 +585,7 @@ const jsonLd = JSON.stringify({
               <span class="ca-copy">
                 <span class="cna">
                   <span class="cna-label">{r.name}</span>
-                  <span class="ca-kind">{categoryLabels[r.category] ?? r.category}</span>
+                  <span class="ca-kind">{categoryLabels[r.category as keyof typeof categoryLabels] ?? r.category}</span>
                 </span>
                 <span class="cds" set:html={r.desc}></span>
                 {r._rankDisplayLabel && (

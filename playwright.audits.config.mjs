@@ -3,6 +3,9 @@ import { defineConfig } from '@playwright/test';
 const host = process.env.PLAYWRIGHT_HOST ?? '127.0.0.1';
 const port = Number.parseInt(process.env.PLAYWRIGHT_PORT ?? '4321', 10);
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://${host}:${port}`;
+const launchOptions = process.env.CHROME_PATH
+  ? { executablePath: process.env.CHROME_PATH }
+  : undefined;
 
 export default defineConfig({
   testDir: './tests/playwright',
@@ -37,6 +40,7 @@ export default defineConfig({
     timezoneId: 'UTC',
     trace: 'retain-on-failure',
     video: 'off',
+    ...(launchOptions ? { launchOptions } : {}),
   },
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
@@ -49,7 +53,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { browserName: 'chromium' },
+      use: { browserName: 'chromium', ...(launchOptions ? { launchOptions } : {}) },
     },
   ],
 });

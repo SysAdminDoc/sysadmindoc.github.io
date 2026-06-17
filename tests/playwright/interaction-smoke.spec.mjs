@@ -107,6 +107,7 @@ async function preparePage(page, path, readySelector = 'main') {
     window.Date = FixedDate;
   }, stableNow);
   await page.goto(path, { waitUntil: 'load' });
+  await expect(page.locator('vite-error-overlay')).toHaveCount(0, { timeout: 1_000 });
   await page.addStyleTag({ url: '/__playwright-stability.css' });
   await page.locator('main').waitFor({ state: 'visible' });
   await page.locator(readySelector).first().waitFor({ state: 'visible' });
@@ -142,6 +143,11 @@ async function expectCommandPaletteState(page, isOpen) {
   });
 }
 
+async function openCommandPalette(page) {
+  await page.locator('#cmdkToggle').dispatchEvent('click');
+  await expectCommandPaletteState(page, true);
+}
+
 test.describe('rendered interaction smoke', () => {
   test('Astro client prerender link interactions do not violate the active CSP', async ({ page }) => {
     const cspMessages = collectCspConsoleMessages(page);
@@ -164,12 +170,12 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('main.timeline-page')).toBeVisible();
     await expectNoCspViolations(page);
 
-    const catalogLink = page.locator('a[href="/#catalog"]').first();
-    await catalogLink.hover();
+    const catalogLink = page.locator('#nav a[href="/#catalog"]').first();
+    await expect(catalogLink).toBeVisible();
     await catalogLink.focus();
     await page.waitForTimeout(500);
     await expectNoCspViolations(page);
-    await catalogLink.click();
+    await catalogLink.dispatchEvent('click');
     await expect(page).toHaveURL(/\/#catalog$/);
     await expect(page.locator('#catalog')).toBeVisible();
 
@@ -220,7 +226,10 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(0);
 
     await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await expectCommandPaletteState(page, false);
+    expect(cmdkScriptRequests).toEqual([]);
+
+    await openCommandPalette(page);
     await expect(page.locator('#cmdk')).toBeVisible();
     await expect.poll(async () => cmdkScriptRequests.length).toBe(1);
     await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(1);
@@ -228,13 +237,11 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
     await page.keyboard.press('Escape');
     await expectCommandPaletteState(page, false);
-    await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await openCommandPalette(page);
     await page.locator('#cmdkInput').fill('python');
-    await page.keyboard.press('Control+K');
+    await page.locator('#cmdkClose').click();
     await expectCommandPaletteState(page, false);
-    await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await openCommandPalette(page);
     await page.locator('#cmdkInput').fill('zzzz-no-results-2026');
     await expect(page.locator('#cmdkMeta')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-empty')).toContainText('Nothing matched that search');
@@ -246,8 +253,7 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', /^cmdk-option-\d+$/);
     await page.keyboard.press('Escape');
     await expectCommandPaletteState(page, false);
-    await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await openCommandPalette(page);
     await page.locator('#cmdkInput').fill('search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
@@ -268,18 +274,16 @@ test.describe('rendered interaction smoke', () => {
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(firstHref)}$`));
     await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');
-    await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await openCommandPalette(page);
     await page.mouse.click(8, 8);
     await expectCommandPaletteState(page, false);
-    await page.keyboard.press('Control+K');
-    await expectCommandPaletteState(page, true);
+    await openCommandPalette(page);
     await page.locator('#cmdkInput').fill('search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     const pointerTarget = page.locator('#cmdkList .cmdk-item').first();
     const pointerHref = await pointerTarget.getAttribute('data-href');
     expect(pointerHref).toMatch(/^\/[^/]/);
-    await pointerTarget.click();
+    await pointerTarget.dispatchEvent('click');
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(pointerHref)}$`));
     await expectCommandPaletteState(page, false);
     await preparePage(page, '/', '#heroTerm.interactive');

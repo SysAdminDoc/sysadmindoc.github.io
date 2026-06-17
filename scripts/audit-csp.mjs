@@ -119,7 +119,11 @@ async function resolveGeneratedCsp(filePath, text, value) {
   if (criticalCss === null) return value;
 
   const styleElemSrc = ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
-  return policyTemplate.replace('${styleElemSrc}', styleElemSrc);
+  return policyTemplate
+    .replace('${scriptSrc}', "'self'")
+    .replace('${styleSrc}', "'self'")
+    .replace('${styleElemSrc}', styleElemSrc)
+    .replace('${styleAttrSrc}', "'none'");
 }
 
 function parseCsp(policy) {

@@ -34,11 +34,27 @@ test('CI runs the Playwright browser a11y and visual baseline gate', async () =>
   const interactionsConfig = await fs.readFile(path.join(root, 'playwright.interactions.config.mjs'), 'utf8');
   const spec = await fs.readFile(path.join(root, 'tests', 'playwright', 'portfolio-audits.spec.mjs'), 'utf8');
 
-  assert.match(ci, /- name: Install Playwright browsers\s+run: npx playwright install --with-deps chromium/);
+  const installBrowsersIndex = ci.indexOf('- name: Install Playwright browsers');
+  const installDepsIndex = ci.indexOf('- name: Install Playwright system deps (cache hit)');
+  const interactionsIndex = ci.indexOf('- name: Rendered interaction smoke');
+  const auditIndex = ci.indexOf('- name: Browser accessibility and visual audit');
+
+  assert.notEqual(installBrowsersIndex, -1);
+  assert.notEqual(installDepsIndex, -1);
+  assert.notEqual(interactionsIndex, -1);
+  assert.notEqual(auditIndex, -1);
+  assert.ok(installDepsIndex > installBrowsersIndex);
+  assert.ok(interactionsIndex > installDepsIndex);
+  assert.ok(auditIndex > interactionsIndex);
   assert.match(
     ci,
-    /- name: Install Playwright browsers\s+run: npx playwright install --with-deps chromium\s+- name: Rendered interaction smoke\s+run: npm run audit:interactions\s+- name: Browser accessibility and visual audit\s+run: npm run audit:playwright/,
+    /- name: Install Playwright browsers\s+if: steps\.playwright-cache\.outputs\.cache-hit != 'true'\s+run: npx playwright install --with-deps chromium/,
   );
+  assert.match(
+    ci,
+    /- name: Install Playwright system deps \(cache hit\)\s+if: steps\.playwright-cache\.outputs\.cache-hit == 'true'\s+run: npx playwright install-deps chromium/,
+  );
+  assert.match(ci, /- name: Rendered interaction smoke\s+run: npm run audit:interactions/);
   assert.match(ci, /- name: Browser accessibility and visual audit\s+run: npm run audit:playwright/);
   assert.match(ci, /\.tmp\/playwright-interactions-report/);
   assert.match(ci, /\.tmp\/playwright-interactions-results/);

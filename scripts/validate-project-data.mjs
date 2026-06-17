@@ -34,6 +34,19 @@ function fail(message) {
 
 function parseValue(node, source) {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+  if (ts.isTemplateExpression(node)) {
+    let value = node.head.text;
+    for (const span of node.templateSpans) {
+      const expression = span.expression;
+      if (ts.isIdentifier(expression) || ts.isPropertyAccessExpression(expression)) {
+        value += `{${expression.getText(source)}}`;
+      } else {
+        fail(`Unsupported template expression in ${location(source, expression)}.`);
+      }
+      value += span.literal.text;
+    }
+    return value;
+  }
   if (ts.isNumericLiteral(node)) return Number(node.text);
   if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
   if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
