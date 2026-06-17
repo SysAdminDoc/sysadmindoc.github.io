@@ -20,6 +20,7 @@
   const list = document.getElementById('cmdkList');
   const meta = document.getElementById('cmdkMeta');
   const toggleBtn = document.getElementById('cmdkToggle');
+  const closeBtn = document.getElementById('cmdkClose');
   if (!backdrop || !input || !list) return;
 
   let selected = 0;
@@ -281,10 +282,6 @@
     input.setAttribute('aria-expanded', String(isOpen));
   }
 
-  function isPaletteToggle(event) {
-    return (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
-  }
-
   function setSelected(nextIndex) {
     const nodes = list.querySelectorAll('.cmdk-item');
     if (!nodes.length) {
@@ -364,23 +361,17 @@
   }
 
   document.addEventListener('keydown', event => {
-    if (backdrop.open && (event.key === 'Escape' || isPaletteToggle(event))) {
+    if (backdrop.open && event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
       close();
     }
   }, true);
 
-  document.addEventListener('keydown', event => {
-    if (isPaletteToggle(event)) {
-      event.preventDefault();
-      backdrop.open ? close() : open();
-    }
-  });
-
   toggleBtn?.addEventListener('click', () => {
     backdrop.open ? close() : open();
   });
+  closeBtn?.addEventListener('click', () => close());
   /* Native <dialog> fires 'cancel' on Escape — close cleanly */
   backdrop.addEventListener('cancel', event => {
     event.preventDefault();
