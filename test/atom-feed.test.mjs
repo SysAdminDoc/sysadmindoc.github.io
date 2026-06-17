@@ -13,6 +13,7 @@ test('Atom project feed is routed, advertised, cached, and audited', async () =>
   const smoke = await fs.readFile(path.join(root, 'scripts', 'smoke-live-site.mjs'), 'utf8');
   const llms = await fs.readFile(path.join(root, 'src', 'pages', 'llms.txt.ts'), 'utf8');
   const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const stampSw = await fs.readFile(path.join(root, 'scripts', 'stamp-sw.mjs'), 'utf8');
 
   assert.match(atom, /<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom" xml:lang="en-US">/);
   assert.match(atom, /endpointHeaders\('application\/atom\+xml; charset=UTF-8'\)/);
@@ -26,5 +27,7 @@ test('Atom project feed is routed, advertised, cached, and audited', async () =>
   assert.match(smoke, /fetchText\(baseUrl, '\/atom\.xml'/);
   assert.match(smoke, /project Atom entries/);
   assert.match(llms, /title: 'Atom', route: '\/atom\.xml', description: 'Standards-based XML project feed/);
-  assert.match(sw, /'\/rss\.xml', '\/atom\.xml'/);
+  assert.match(sw, /const PRECACHE = __PRECACHE_PLACEHOLDER__/);
+  assert.match(stampSw, /for \(const file of \['rss\.xml', 'atom\.xml'\]\)/);
+  assert.match(stampSw, /feedFiles\.push\('\/' \+ file\)/);
 });
