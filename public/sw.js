@@ -47,7 +47,7 @@ async function freshCachedOrOffline(request) {
     const cached = await caches.match(request);
     if (cached) {
         const at = Number(cached.headers.get('sw-cached-at') || 0);
-        if (!at || Date.now() - at < CROSS_ORIGIN_TTL) return cached;
+        if (Number.isFinite(at) && at > 0 && Date.now() - at < CROSS_ORIGIN_TTL) return cached;
     }
     return offlineResponse();
 }

@@ -486,7 +486,9 @@ function playVideo(trigger){
     closeBtn.className='video-close';
     closeBtn.setAttribute('aria-label','Close video and return to thumbnail');
     closeBtn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
-    closeBtn.addEventListener('click',()=>{
+    closeBtn.addEventListener('click',(event)=>{
+        event.preventDefault();
+        event.stopPropagation();
         frameWrap.replaceWith(trigger);
         if(typeof trigger.focus==='function')trigger.focus();
     });

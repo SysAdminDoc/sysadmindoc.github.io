@@ -59,6 +59,8 @@ test('CI runs the Playwright browser a11y and visual baseline gate', async () =>
   assert.match(ci, /\.tmp\/playwright-interactions-report/);
   assert.match(ci, /\.tmp\/playwright-interactions-results/);
   assert.match(config, /snapshotPathTemplate: '\{testDir\}\/__screenshots__\/\{projectName\}\/\{arg\}\{ext\}'/);
+  assert.match(config, /PLAYWRIGHT_AUDIT_PORT \?\? process\.env\.PLAYWRIGHT_PORT \?\? '4324'/);
+  assert.match(config, /reuseExistingServer: false/);
   assert.match(interactionsConfig, /playwright\.audits\.config\.mjs/);
   assert.match(interactionsConfig, /outputDir: '\.tmp\/playwright-interactions-results'/);
   assert.match(interactionsConfig, /outputFolder: '\.tmp\/playwright-interactions-report'/);

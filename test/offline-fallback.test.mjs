@@ -15,6 +15,9 @@ test('service worker exposes a local offline navigation fallback', async () => {
   assert.match(sw, /const PRECACHE = __PRECACHE_PLACEHOLDER__/);
   assert.match(sw, /cachedOrOffline\(e\.request, OFFLINE_URL\)/);
   assert.doesNotMatch(sw, /cachedOrOffline\(e\.request, '\/'\)/);
+  assert.match(sw, /headers\.set\('sw-cached-at', String\(Date\.now\(\)\)\)/);
+  assert.match(sw, /Number\.isFinite\(at\) && at > 0 && Date\.now\(\) - at < CROSS_ORIGIN_TTL/);
+  assert.doesNotMatch(sw, /if \(!at \|\| Date\.now\(\) - at < CROSS_ORIGIN_TTL\) return cached/);
 
   assert.match(html, /<title>Offline - SysAdminDoc Portfolio<\/title>/);
   assert.match(html, /Content-Security-Policy/);
