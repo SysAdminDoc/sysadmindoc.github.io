@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 
 const stableNow = Date.parse('2026-06-04T12:00:00Z');
 const routes = [
-  { name: 'home', path: '/', ready: '#heroTerm.interactive' },
+  { name: 'home', path: '/', ready: 'main' },
   { name: 'search', path: '/search/?q=python', ready: '#site-search' },
   { name: 'archive', path: '/archive/', ready: '#archive-entries' },
   { name: 'project-nomad', path: '/projects/project-nomad-desktop/', ready: '[data-project-slug="project-nomad-desktop"]' },

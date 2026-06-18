@@ -126,6 +126,14 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow).toBeLessThanOrEqual(1);
 }
 
+async function expectSearchFallbackLinks(page) {
+  const fallbackLinks = page.locator('#search-fallbacks');
+  await expect(fallbackLinks.locator('a[href="/#catalog"]')).toBeVisible();
+  await expect(fallbackLinks.locator('a[href="/timeline/"]')).toBeVisible();
+  await expect(fallbackLinks.locator('a[href="/releases/"]')).toBeVisible();
+  await expect(fallbackLinks.locator('a[href="/archive/"]')).toBeVisible();
+}
+
 async function expectCommandPaletteState(page, isOpen) {
   await expect.poll(async () => page.evaluate(() => {
     const dialog = document.getElementById('cmdk');
@@ -196,6 +204,9 @@ test.describe('rendered interaction smoke', () => {
       has: page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }),
     }).first();
     await expect(archiveCard.locator('.portfolio-result-image')).toBeVisible();
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
+    await expect(page.locator('#pagefindLoading')).toBeHidden();
+    await expect(page.locator('#pagefindFallback')).toBeHidden();
     await expectNoHorizontalOverflow(page);
 
     await page.setViewportSize({ width: 390, height: 900 });
@@ -207,6 +218,53 @@ test.describe('rendered interaction smoke', () => {
       has: page.locator('.portfolio-result-meta').filter({ hasText: /Project|Live app/ }),
     }).first();
     await expect(projectCard.locator('.portfolio-result-image')).toBeVisible();
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
+    await expect(page.locator('#pagefindFallback')).toBeHidden();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('search no-result state stays calm and navigable', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/search/?q=zzzz-no-results-2026', '#pagefindSearch');
+
+    await expect(page.locator('pagefind-summary .pf-summary')).toContainText('No results', { timeout: 20_000 });
+    await expect(page.locator('.pf-results .portfolio-result-card')).toHaveCount(0);
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
+    await expect(page.locator('#pagefindFallback')).toBeHidden();
+    await expectSearchFallbackLinks(page);
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('search missing bundle exposes fallback recovery without overflow', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.route('**/pagefind/pagefind-component-ui.js', (route) =>
+      route.fulfill({
+        contentType: 'text/javascript; charset=utf-8',
+        body: '/* Pagefind bundle intentionally unavailable for degraded-state smoke coverage. */',
+      }),
+    );
+
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/search/?q=archive', '#pagefindSearch');
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expect(page.locator('#pagefindLoading')).toBeHidden();
+    await expect(page.locator('#pagefindFallback')).toBeVisible();
+    await expect(page.locator('#pagefindFallback')).toContainText('Search fallback active.');
+    await expect(page.locator('#pagefindFallback a[href="#search-fallbacks"]')).toBeVisible();
+    await expect(page.locator('#pagefindFallback a[href="/#catalog"]')).toBeVisible();
+    await expectSearchFallbackLinks(page);
+    await expectNoHorizontalOverflow(page);
+
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/search/?q=archive', '#pagefindSearch');
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expect(page.locator('#pagefindFallback')).toBeVisible();
+    await expect(page.locator('#pagefindFallback a[href="#search-fallbacks"]')).toBeVisible();
+    await expect(page.locator('#pagefindFallback a[href="/#catalog"]')).toBeVisible();
+    await expectSearchFallbackLinks(page);
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });

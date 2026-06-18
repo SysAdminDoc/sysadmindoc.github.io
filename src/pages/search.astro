@@ -101,17 +101,17 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
       </div>
 
       <search aria-label="Full-text site search">
-      <div class="search-shell rv">
+      <div class="search-shell rv" data-pagefind-shell data-pagefind-state="loading">
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
           <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload faceted></pagefind-config>
           <div class="search-input-row">
             <pagefind-input placeholder="Search projects, README excerpts, releases, timeline entries..." autofocus></pagefind-input>
           </div>
           <div class="search-result-layout">
-            <aside class="search-filter-panel" aria-label="Search filters">
+            <div class="search-filter-panel" aria-label="Search filters">
               <div class="search-filter-kicker">Filter</div>
               <pagefind-filter-pane open="category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
-            </aside>
+            </div>
             <div class="search-results-panel">
               <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
               <pagefind-results show-images max-sub-results="4">
@@ -122,6 +122,14 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           </div>
         </div>
         <p class="search-loading" id="pagefindLoading">Loading the static search index...</p>
+        <div class="search-degraded page-empty" id="pagefindFallback" role="status" aria-live="polite" hidden>
+          <strong>Search fallback active.</strong>
+          <span>The static search bundle did not load. Use the fallback links below or open the catalog to keep browsing.</span>
+          <div class="search-recovery-actions" aria-label="Fallback search actions">
+            <a href="#search-fallbacks">View fallback links</a>
+            <a href="/#catalog">Open catalog</a>
+          </div>
+        </div>
         <noscript>
           <div class="search-noscript page-empty">
             <strong>JavaScript is required for full-text search.</strong> The fallback links below still work without scripts.
@@ -180,6 +188,13 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-overview{margin-top:32px}
   .search-shell{width:100%;min-width:0;max-width:100%;margin-top:28px;padding:22px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft);overflow:hidden}
   .search-loading{margin:14px 0 0;color:var(--t3);font-size:14px;line-height:1.6}
+  .search-shell[data-pagefind-state="degraded"] .portfolio-pagefind{opacity:.72}
+  .search-degraded{margin-top:18px}
+  .search-degraded[hidden]{display:none!important}
+  .search-degraded span{display:block;margin-top:6px}
+  .search-recovery-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .search-recovery-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 13px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-2);color:var(--t1);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+  .search-recovery-actions a:hover,.search-recovery-actions a:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring)}
   .search-noscript{margin-top:18px}
   .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:13px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
   .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane{display:block;min-width:0;max-width:100%}
