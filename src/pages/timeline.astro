@@ -219,7 +219,10 @@ const pageJsonLd = reviewedWebPageJsonLd({
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="timeline" contextLabel="Timeline" contextTone="blue" />
 
-  <main id="main" class="timeline-page" data-pagefind-body>
+  <main id="main" class="timeline-page" data-pagefind-body data-pagefind-filter="Scope:Timeline">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Timeline"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Timeline"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
     <div class="si page-shell" id="timeline-overview">
       <div class="sh rv">
         <div class="sl">// Timeline</div>
@@ -375,4 +378,3 @@ const pageJsonLd = reviewedWebPageJsonLd({
 
   <script src="/scripts/timeline.js" is:inline></script>
 </Base>
-

@@ -195,6 +195,8 @@ test.describe('rendered interaction smoke', () => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
+    await expect(page.locator('pagefind-filter-pane')).toContainText('Scope', { timeout: 20_000 });
+    await expect(page.locator('pagefind-filter-pane')).toContainText('Category');
 
     const archiveMeta = page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }).first();
     await expect(archiveMeta).toBeVisible({ timeout: 20_000 });

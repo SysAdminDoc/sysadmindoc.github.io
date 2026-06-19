@@ -18,6 +18,19 @@ const requiredCategoryLabels = [
   'Security',
   'Web Apps',
 ];
+const requiredScopeLabels = [
+  'Archive',
+  'Healthcare IT',
+  'Home',
+  'Language Lane',
+  'Now',
+  'Project',
+  'Releases',
+  'Resume',
+  'Search',
+  'Timeline',
+  'Uses',
+];
 const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
 const projectFilterLabelsByCategory = {
   ps: 'PowerShell',
@@ -185,6 +198,25 @@ if (!/<pagefind-results\b[^>]*\bshow-images\b/i.test(searchHtml)) {
 if (!/\bportfolio-result-meta\b/.test(searchHtml)) {
   fail('/search/ must include the portfolio metadata result template.');
 }
+if (!/<pagefind-filter-pane\b[^>]*\bopen=(["'])[^"']*\bscope\b[^"']*\bcategory\b[^"']*\1/i.test(searchHtml)) {
+  fail('/search/ must expose Scope and Category Pagefind filters.');
+}
+
+const renderedScopeCounts = new Map();
+for (const filePath of pagefindBodyFiles) {
+  const route = routeFromHtmlFile(filePath);
+  const html = htmlByFile.get(filePath) ?? '';
+  const labels = new Set();
+  for (const match of html.matchAll(/\bdata-pagefind-filter=(["'])Scope:([\s\S]*?)\1/gi)) {
+    const label = normalizeLabel(match[2]);
+    if (label) labels.add(label);
+  }
+  if (labels.size !== 1) {
+    fail(`${route} must expose exactly one Scope Pagefind filter; found ${labels.size}.`);
+    continue;
+  }
+  increment(renderedScopeCounts, Array.from(labels)[0]);
+}
 
 const renderedCategoryCounts = new Map();
 const renderedProjectSlugs = new Set();
@@ -248,6 +280,11 @@ if (pagefindCategoryCounts.size === 0) {
   fail('Generated Pagefind index does not expose a Category filter.');
 }
 compareCounts('Pagefind Category filter', pagefindCategoryCounts, renderedCategoryCounts);
+const pagefindScopeCounts = new Map(Object.entries(pagefindFilters?.Scope ?? {}).map(([key, value]) => [key, Number(value)]));
+if (pagefindScopeCounts.size === 0) {
+  fail('Generated Pagefind index does not expose a Scope filter.');
+}
+compareCounts('Pagefind Scope filter', pagefindScopeCounts, renderedScopeCounts);
 
 for (const label of requiredCategoryLabels) {
   if (!renderedCategoryCounts.has(label)) {
@@ -255,6 +292,14 @@ for (const label of requiredCategoryLabels) {
   }
   if (!pagefindCategoryCounts.has(label)) {
     fail(`Generated Pagefind index is missing expected Category label ${label}.`);
+  }
+}
+for (const label of requiredScopeLabels) {
+  if (!renderedScopeCounts.has(label)) {
+    fail(`Rendered pages are missing expected Scope label ${label}.`);
+  }
+  if (!pagefindScopeCounts.has(label)) {
+    fail(`Generated Pagefind index is missing expected Scope label ${label}.`);
   }
 }
 
@@ -315,6 +360,24 @@ if (pagefind && pagefindCategoryCounts.size > 0) {
     filteredResultCount += result.results.length;
   }
 
+  const projectScope = await pagefind.search(null, { filters: { Scope: 'Project' } }).catch((error) => {
+    fail(`Filtered empty search for Scope:Project failed: ${error.message}`);
+    return null;
+  });
+  if (projectScope) {
+    if (projectScope.results.length !== renderedProjectSlugs.size) {
+      fail(`Filtered empty search for Scope:Project returned ${projectScope.results.length} results; expected ${renderedProjectSlugs.size}.`);
+    }
+    for (const item of projectScope.results) {
+      const data = await item.data();
+      const url = String(data?.url ?? '');
+      const match = /^\/projects\/([^/]+)\/?$/.exec(url);
+      if (!match || !renderedProjectSlugs.has(match[1])) {
+        fail(`Filtered empty search for Scope:Project returned non-project URL ${url || '(missing)'}.`);
+      }
+    }
+  }
+
   const archiveResult = await pagefind.search('archive').catch((error) => {
     fail(`Archive metadata search failed: ${error.message}`);
     return null;
@@ -367,11 +430,16 @@ console.log(`  data-pagefind-body pages indexed: ${indexedPageCount}`);
 console.log(`  Rendered project pages: ${renderedProjectSlugs.size}`);
 console.log(`  Homepage catalog cards: ${catalogSlugs.size}`);
 console.log(`  Category filters checked: ${pagefindCategoryCounts.size}`);
+console.log(`  Scope filters checked: ${pagefindScopeCounts.size}`);
 console.log(`  Filtered project results checked: ${filteredResultCount}`);
 console.log(`  Project metadata results checked: ${projectMetadataResultCount}`);
 console.log(`  Archive metadata results checked: ${archiveMetadataResultCount}`);
 console.log('  Category counts:');
 for (const [label, count] of sortedEntries(renderedCategoryCounts)) {
+  console.log(`    ${label}: ${count}`);
+}
+console.log('  Scope counts:');
+for (const [label, count] of sortedEntries(renderedScopeCounts)) {
   console.log(`    ${label}: ${count}`);
 }
 console.log('Search index audit passed.');

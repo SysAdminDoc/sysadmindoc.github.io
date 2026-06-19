@@ -72,7 +72,10 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav active="search" contextLabel="Search" contextTone="green" />
 
-  <main id="main" class="search-page" data-pagefind-body>
+  <main id="main" class="search-page" data-pagefind-body data-pagefind-filter="Scope:Search">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Search"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Search"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
     <div class="si page-shell" id="site-search">
       <div class="sh rv">
         <div class="sl">// Search</div>
@@ -89,9 +92,9 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           <div class="page-stat-copy">Pagefind indexes the built HTML after Astro and ships a static bundle with the site.</div>
         </div>
         <div class="page-stat">
-          <div class="page-stat-value">Category</div>
-          <div class="page-stat-label">Content Indexed</div>
-          <div class="page-stat-copy">Project detail pages expose Category facets, so broad searches can be narrowed without leaving the static search page.</div>
+          <div class="page-stat-value">Scope + Category</div>
+          <div class="page-stat-label">Facets Indexed</div>
+          <div class="page-stat-copy">Route types and project lanes are indexed as static facets, so broad searches can be narrowed without leaving the page.</div>
         </div>
         <div class="page-stat">
           <div class="page-stat-value">Command</div>
@@ -110,7 +113,8 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           <div class="search-result-layout">
             <div class="search-filter-panel" aria-label="Search filters">
               <div class="search-filter-kicker">Filter</div>
-              <pagefind-filter-pane open="category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
+              <p class="search-filter-copy">Use Scope for result type and Category for project lanes.</p>
+              <pagefind-filter-pane open="scope,category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
             </div>
             <div class="search-results-panel">
               <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
@@ -202,6 +206,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-result-layout{display:grid;grid-template-columns:minmax(180px,236px) minmax(0,1fr);gap:18px;align-items:start;min-width:0}
   .search-filter-panel{display:grid;gap:8px;min-width:0}
   .search-filter-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .search-filter-copy{margin:0 0 4px;color:var(--t3);font-size:12px;line-height:1.5}
   .search-results-panel{display:grid;gap:10px;min-width:0}
   .portfolio-pagefind .pf-filter-pane{box-shadow:none}
   .portfolio-pagefind .pf-result-link{color:var(--t1);text-decoration:none}
