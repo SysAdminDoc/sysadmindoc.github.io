@@ -59,7 +59,8 @@
     "catalog:audit": "node scripts/audit-catalog.mjs",
     "bundle:audit": "node scripts/audit-bundle-size.mjs",
     "links:audit": "node scripts/audit-built-links.mjs",
-    "sitemap:audit": "node scripts/audit-sitemap.mjs"
+    "sitemap:audit": "node scripts/audit-sitemap.mjs",
+    "liveapps:audit": "node scripts/audit-live-apps.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
