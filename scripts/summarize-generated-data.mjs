@@ -174,6 +174,7 @@ const readmesCoverage = parityBase != null ? readmeEntries / parityBase : null;
 const PARITY_COVERAGE_THRESHOLD = 0.8;
 const starsParityOk = fixtureMode || starsCoverage == null || starsCoverage >= PARITY_COVERAGE_THRESHOLD;
 const metaParityOk = fixtureMode || metaCoverage == null || metaCoverage >= PARITY_COVERAGE_THRESHOLD;
+const readmesParityOk = fixtureMode || readmesCoverage == null || readmesCoverage >= PARITY_COVERAGE_THRESHOLD;
 const readmeRefreshTargetRepos = finiteNumberOrNull(readmeRefreshRaw?.totalPublicRepos);
 const readmeRefreshAttempted = finiteNumberOrNull(readmeRefreshRaw?.attempted);
 const readmeRefreshMisses = finiteNumberOrNull(readmeRefreshRaw?.misses);
@@ -346,15 +347,40 @@ const checks = [
     label: `metadata coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
     ok: metaParityOk,
   },
+  {
+    label: `README coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
+    ok: readmesParityOk,
+  },
 ];
 
 const failedChecks = checks.filter((check) => !check.ok);
 const status = failedChecks.length === 0 ? 'fresh' : 'attention-required';
+const generatedDataMode = fixtureMode
+  ? 'fixture'
+  : readmeRefreshRaw?.tokenPresent === false || readmeRefreshRaw?.skippedReason === 'missing-token'
+    ? 'unauthenticated-partial'
+    : status === 'fresh'
+      ? 'production-fresh'
+      : 'production-attention';
+const guidance = [];
+if (fixtureMode) {
+  guidance.push('Fixture/offline mode: reduced generated-data counts are expected; unset PROFILE_PROJECTS_OFFLINE for a production refresh.');
+}
+if (!fixtureMode && !process.env.GITHUB_TOKEN && readmeRefreshRaw?.tokenPresent === false) {
+  guidance.push('Production README refreshes require GITHUB_TOKEN; run npm run fetch-stars with credentials before treating coverage as authoritative.');
+}
+if (!fixtureMode && !fresh) {
+  guidance.push(`Generated data is stale: refresh with npm run fetch-stars and npm run profile-feed:sync, then rerun this command with --fail-on-stale.`);
+}
+if (!fixtureMode && (!starsParityOk || !metaParityOk || !readmesParityOk)) {
+  guidance.push('Profile-feed parity is low: refresh generated GitHub data and README caches before relying on rankings or semantic coverage.');
+}
 const outDir = path.resolve(root, options.outDir);
 await fs.mkdir(outDir, { recursive: true });
 
 const summary = {
   status,
+  mode: generatedDataMode,
   generatedAt: new Date().toISOString(),
   fetchedAt: isoOrUnknown(stats.fetchedAt),
   ageHours: Number.isFinite(fetchedAgeHours) ? Number(fetchedAgeHours.toFixed(2)) : null,
@@ -431,6 +457,7 @@ const summary = {
     total: releaseEntries,
   },
   checks,
+  guidance,
 };
 
 function hasOwn(record, key) {
@@ -456,9 +483,11 @@ const markdown = [
   '# GitHub Data Refresh Summary',
   '',
   `Status: ${status}`,
+  `Mode: ${generatedDataMode}`,
   `Summary generated: ${summary.generatedAt}`,
   `Data fetched: ${summary.fetchedAt}`,
   `Data age: ${summary.ageHours ?? 'unknown'} hours (limit ${options.maxAgeHours})`,
+  ...(summary.guidance.length > 0 ? ['', '## Action Required', '', ...summary.guidance.map((line) => `- ${line}`)] : []),
   '',
   '## Totals',
   '',
