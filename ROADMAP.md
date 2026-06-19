@@ -8,15 +8,6 @@ Last normalized: 2026-06-17
 
 ## Research-Driven Additions
 
-### P1
-
-- [ ] P1 — Make generated-data coverage and freshness impossible to misread
-  Why: `npm run data:summary` reports stale 343.69-hour generated data and 16/182 star/meta/README coverage while `semantic:audit` runs with only 8.7% README corpus coverage.
-  Evidence: `scripts/summarize-generated-data.mjs`, `scripts/audit-semantic-index.mjs`, `scripts/fetch-stars.mjs`, local `npm run data:summary`, GitHub REST conditional-request/rate-limit docs.
-  Touches: `scripts/summarize-generated-data.mjs`, `scripts/audit-semantic-index.mjs`, `scripts/fetch-stars.mjs`, `package.json`, `.github/workflows/data-refresh.yml`, README command notes.
-  Acceptance: Data summary labels fixture/partial-cache mode separately from production refresh; strict summary/semantic modes fail on low coverage or stale generated caches; the data-refresh workflow still uploads an actionable summary; local output explains when `GITHUB_TOKEN` or fixtures are required.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — Add proof coverage reporting for recommended and live projects

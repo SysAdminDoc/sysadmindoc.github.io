@@ -148,6 +148,7 @@ console.log('Semantic project audit');
 console.log(`  projects: ${docs.length}`);
 console.log(`  README texts available: ${readmeCount}`);
 console.log(`  README corpus coverage: ${readmeCoverageLabel}`);
+console.log(`  mode: ${fixtureMode ? 'fixture' : strictMode ? 'production-strict' : 'advisory'}`);
 console.log(`  min score: ${minScore}`);
 console.log('');
 console.log('Top similar pairs:');
@@ -169,7 +170,7 @@ console.log('Semantic project audit completed. This report is advisory and does 
 
 if (!fixtureMode && strictMode && readmeCoverage < README_COVERAGE_THRESHOLD) {
   console.error(
-    `README coverage gate failed: ${readmeCoverage.toFixed(1)}% < ${README_COVERAGE_THRESHOLD}% threshold (${readmeCount}/${docs.length} projects). Run without --strict or increase corpus coverage.`,
+    `README coverage gate failed: ${readmeCoverage.toFixed(1)}% < ${README_COVERAGE_THRESHOLD}% threshold (${readmeCount}/${docs.length} projects). Refresh README caches with GITHUB_TOKEN via npm run fetch-stars, pass --fixture for fixture-corpus audits, or run without --strict for advisory review.`,
   );
   process.exit(1);
 }

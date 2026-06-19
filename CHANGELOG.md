@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [v0.18.5] - 2026-06-16
 
+- Added strict generated-data and semantic-audit modes that label fixture/unauthenticated/production states, fail on low README parity, and explain the credentialed refresh path.
 - Wired the bundle-size audit into `build:ci` and split CSS budgets into route-chunk, shared-global, and total caps so the gate now passes while still catching oversized CSS drift.
 - Added Pagefind Scope facets across every indexed route so search can distinguish projects, language lanes, releases, timeline entries, archive decisions, and profile pages; the search-index audit now verifies rendered Scope counts.
 - Reworked the homepage hero into a tighter premium first viewport: short desktop screens now show the full intro, proof stats, primary actions, signature-project panel, and a visible next-section hint instead of a tall poster-like scroll.
