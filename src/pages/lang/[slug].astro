@@ -116,7 +116,10 @@ const langJsonLd = JSON.stringify({
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={`${lang.label} lane`} contextTone="blue" />
 
-  <main id="main" class={`lang-page lang-accent-${accentTone}`} data-pagefind-body>
+  <main id="main" class={`lang-page lang-accent-${accentTone}`} data-pagefind-body data-pagefind-filter="Scope:Language Lane">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Language Lane"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Language Lane"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`category:${lang.label}`}></span>
     <div class="si page-shell" id="lane-overview">
       <div class="sh rv">
         <div class="lang-hero-copy">
