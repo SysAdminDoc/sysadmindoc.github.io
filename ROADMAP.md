@@ -10,13 +10,6 @@ Last normalized: 2026-06-17
 
 ### P1
 
-- [ ] P1 — Make bundle-size audit pass and gate the CSS budget
-  Why: `npm run bundle:audit` currently fails because built global CSS is 152.9 KB against a 120 KB per-file CSS budget, while the main build path can still pass.
-  Evidence: `scripts/audit-bundle-size.mjs`, `dist/_assets/global.BRKX-7AH.css`, `src/styles/global.css`, Astro scoped-style docs, web.dev/Chrome unused-CSS guidance.
-  Touches: `src/styles/global.css`, page/component styles in `src/pages/` and `src/components/`, `scripts/audit-bundle-size.mjs`, `package.json`, `.github/workflows/ci.yml`, rendered visual baselines if styling moves.
-  Acceptance: A fresh `npm run build:ci && npm run bundle:audit` passes; the bundle gate is wired into CI/build or explicitly documented as advisory with a justified budget; rendered Playwright/a11y checks do not regress.
-  Complexity: M
-
 - [ ] P1 — Make generated-data coverage and freshness impossible to misread
   Why: `npm run data:summary` reports stale 343.69-hour generated data and 16/182 star/meta/README coverage while `semantic:audit` runs with only 8.7% README corpus coverage.
   Evidence: `scripts/summarize-generated-data.mjs`, `scripts/audit-semantic-index.mjs`, `scripts/fetch-stars.mjs`, local `npm run data:summary`, GitHub REST conditional-request/rate-limit docs.

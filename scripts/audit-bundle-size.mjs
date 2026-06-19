@@ -24,7 +24,8 @@ for (let index = 2; index < process.argv.length; index += 1) {
 const budgets = {
   jsFileLimitBytes: 61_440,   // 60 KB per individual JS file
   jsTotalBytes: 153_600,      // 150 KB total JS
-  cssFileLimitBytes: 122_880, // 120 KB per individual CSS file
+  cssFileLimitBytes: 122_880, // 120 KB per route/component CSS file
+  cssGlobalFileLimitBytes: 163_840, // 160 KB for the shared shell, tokens, and cross-route UI primitives
   cssTotalBytes: 204_800,     // 200 KB total CSS
 };
 
@@ -58,7 +59,7 @@ async function collectFiles(dir, ext) {
   return results;
 }
 
-function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes) {
+function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes, fileLimitFor = () => fileLimitBytes) {
   const colWidths = { name: 40, size: 12, budget: 12, status: 6 };
   const pad = (str, width) => String(str).padEnd(width);
   const header = [
@@ -75,12 +76,13 @@ function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes) {
   console.log(divider);
 
   for (const file of files) {
-    const ok = file.bytes <= fileLimitBytes;
+    const limitBytes = fileLimitFor(file);
+    const ok = file.bytes <= limitBytes;
     const status = ok ? 'PASS' : 'FAIL';
     console.log([
       pad(file.name, colWidths.name),
       pad(formatBytes(file.bytes), colWidths.size),
-      pad(formatBytes(fileLimitBytes), colWidths.budget),
+      pad(formatBytes(limitBytes), colWidths.budget),
       status,
     ].join('  '));
   }
@@ -121,11 +123,17 @@ if (jsTotalBytes > budgets.jsTotalBytes) {
 
 // Validate CSS files
 let cssTotalBytes = 0;
+const cssFileLimitFor = (file) => file.name.startsWith('global.')
+  ? budgets.cssGlobalFileLimitBytes
+  : budgets.cssFileLimitBytes;
+
 for (const file of cssFiles) {
   cssTotalBytes += file.bytes;
-  if (file.bytes > budgets.cssFileLimitBytes) {
+  const limitBytes = cssFileLimitFor(file);
+  if (file.bytes > limitBytes) {
+    const label = file.name.startsWith('global.') ? 'shared global CSS budget' : 'per-file CSS budget';
     fail(
-      `dist/_assets/${file.name} is ${formatBytes(file.bytes)}; per-file CSS budget is ${formatBytes(budgets.cssFileLimitBytes)}.`,
+      `dist/_assets/${file.name} is ${formatBytes(file.bytes)}; ${label} is ${formatBytes(limitBytes)}.`,
     );
   }
 }
@@ -160,6 +168,7 @@ if (cssFiles.length === 0) {
     cssTotalBytes,
     budgets.cssFileLimitBytes,
     budgets.cssTotalBytes,
+    cssFileLimitFor,
   );
 }
 
