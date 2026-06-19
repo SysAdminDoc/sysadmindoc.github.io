@@ -89,6 +89,17 @@ export const interiorOgPages: InteriorOgPage[] = [
     ogImageAlt: 'Healthcare IT page social preview card',
   },
   {
+    slug: 'screenshots',
+    route: '/screenshots/',
+    title: 'Screenshots',
+    description: 'Visual evidence gallery of live-app product surfaces captured from deployed builds.',
+    label: 'Visual Proof',
+    accent: '#c084fc',
+    command: 'ls screenshots/',
+    ogImage: '/og/screenshots.png',
+    ogImageAlt: 'Screenshots gallery page social preview card',
+  },
+  {
     slug: 'releases',
     route: '/releases/',
     title: 'Releases',
