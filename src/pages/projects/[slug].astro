@@ -399,10 +399,15 @@ const jsonLd = JSON.stringify({
             <p class="project-section-copy">{hasScreenshot && isLive ? 'Captured from the deployed app so you can judge the real product surface before opening it.' : 'Using the generated project card as a clean fallback until a live capture is available.'}</p>
           </div>
         </div>
-        {hasScreenshot && isLive ? (
-          <a href={liveUrl} target="_blank" rel="noopener" class="project-shot-link">
+        {hasScreenshot ? (
+          <a href={liveUrl || ghUrl} class="project-shot-link" role="button" tabindex="0"
+            data-shot-viewer
+            data-shot-src={`/screenshots/${slug}.jpg`}
+            data-shot-alt={`${name} live screenshot`}
+            data-shot-live={liveUrl || ''}
+            data-shot-source={ghUrl}>
             <img src={`/screenshots/${slug}.jpg`} alt={`${name} live screenshot`} class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]" />
-            <span class="project-shot-badge">Open live →</span>
+            <span class="project-shot-badge">View screenshot</span>
           </a>
         ) : (
           <img src={`/og/${slug}.png`} alt={`${name} card`} class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]" />
@@ -617,6 +622,7 @@ const jsonLd = JSON.stringify({
   </main>
 
   <script src="/scripts/project-page.js" is:inline></script>
+  <script src="/scripts/shot-viewer.js" is:inline></script>
 
   <footer>
     <div class="fi page-footer-shell">
