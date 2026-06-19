@@ -641,6 +641,65 @@ console.log(`  homepage proof highlights: ${homepageProofHighlights.length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
 if (nowAgeDays !== null) console.log(`  /now page age: ${nowAgeDays} day${nowAgeDays === 1 ? '' : 's'} (warn >${NOW_WARN_DAYS}d, fail >${NOW_FAIL_DAYS}d)`);
 
+const proofKeys = new Set(Object.keys(proofRecords));
+const caseStudyKeys = new Set(Object.keys(proofRecords).filter((key) => proofRecords[key].caseStudy));
+const featuredRepos = new Set(featured.map((project) => project.repo));
+const greatestHitsRepos = new Set(greatestHits.map((hit) => hit.repo));
+const liveAppSlugs = new Set(liveApps.map((app) => app.slug));
+
+const proofBuckets = [
+  { label: 'Greatest Hits', repos: [...greatestHitsRepos], enforced: true },
+  { label: 'Featured', repos: [...featuredRepos].filter((repo) => !greatestHitsRepos.has(repo)), enforced: false },
+  { label: 'Live Apps', repos: [...liveAppSlugs], enforced: false },
+];
+
+const categoryBuckets = new Map();
+for (const entry of catalog) {
+  const cat = entry.category;
+  if (!categoryBuckets.has(cat)) categoryBuckets.set(cat, []);
+  categoryBuckets.get(cat).push(entry.repo);
+}
+
+console.log('');
+console.log('Proof coverage report');
+for (const bucket of proofBuckets) {
+  const withProof = bucket.repos.filter((repo) => proofKeys.has(repo));
+  const withCase = bucket.repos.filter((repo) => caseStudyKeys.has(repo));
+  const tag = bucket.enforced ? ' (enforced)' : '';
+  console.log(`  ${bucket.label}: ${withProof.length}/${bucket.repos.length} proof, ${withCase.length}/${bucket.repos.length} case study${tag}`);
+}
+
+console.log('  Language lanes:');
+const sortedCategories = [...categoryBuckets.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+for (const [cat, repos] of sortedCategories) {
+  const label = categoryLabels[cat] || cat;
+  const withProof = repos.filter((repo) => proofKeys.has(repo));
+  console.log(`    ${label} (${cat}): ${withProof.length}/${repos.length} proof`);
+}
+
+const missingProof = [];
+for (const bucket of proofBuckets) {
+  for (const repo of bucket.repos) {
+    if (!proofKeys.has(repo)) {
+      missingProof.push({ repo, tier: bucket.label });
+    }
+  }
+}
+const catalogOnlyMissing = catalog
+  .filter((entry) => !proofKeys.has(entry.repo) && !missingProof.some((item) => item.repo === entry.repo))
+  .map((entry) => ({ repo: entry.repo, tier: categoryLabels[entry.category] || entry.category }));
+
+if (missingProof.length > 0 || catalogOnlyMissing.length > 0) {
+  console.log('');
+  console.log('Missing proof (prioritized):');
+  for (const item of missingProof) {
+    console.log(`  - ${item.repo} [${item.tier}]`);
+  }
+  if (catalogOnlyMissing.length > 0) {
+    console.log(`  ... and ${catalogOnlyMissing.length} catalog-only projects without proof.`);
+  }
+}
+
 if (warnings.length > 0) {
   console.warn('');
   console.warn('Advisory warnings (non-blocking):');
