@@ -1,11 +1,12 @@
 {
-  "schema": "sysadmindoc.readme-refresh.v1",
+  "schema": "sysadmindoc.readme-refresh.v2",
   "generatedAt": "2026-06-04T14:52:18.000Z",
   "source": "fixture",
   "tokenPresent": false,
   "totalPublicRepos": 16,
   "attempted": 16,
   "refreshed": 16,
+  "reused": 0,
   "misses": 0,
   "preserved": 0,
   "unattempted": 0,

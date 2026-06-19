@@ -34,6 +34,7 @@ const metaPath = join(dataDir, '_meta.json');
 const releasesPath = join(dataDir, '_releases.json');
 const readmesPath = join(dataDir, '_readmes.json');
 const readmeRefreshPath = join(dataDir, '_readme-refresh.json');
+const etagsPath = join(dataDir, '_etags.json');
 
 function readJson(path, fallback) {
   try {
@@ -91,6 +92,32 @@ async function fetchText(url, options, context) {
   if (!res.ok) {
     throw new Error(`${context}: ${describeGitHubFailure(res)}`);
   }
+  return await res.text();
+}
+
+const ETAG_NOT_MODIFIED = Symbol('etag-304');
+
+async function fetchJsonConditional(url, options, context, savedEtags) {
+  const conditionalHeaders = { ...options.headers };
+  const etag = savedEtags[url];
+  if (etag) conditionalHeaders['If-None-Match'] = etag;
+  const res = await fetchWithTimeout(url, { ...options, headers: conditionalHeaders });
+  if (res.status === 304) return ETAG_NOT_MODIFIED;
+  if (!res.ok) throw new Error(`${context}: ${describeGitHubFailure(res)}`);
+  const responseEtag = res.headers.get('etag');
+  if (responseEtag) savedEtags[url] = responseEtag;
+  return await res.json();
+}
+
+async function fetchTextConditional(url, options, context, savedEtags) {
+  const conditionalHeaders = { ...options.headers };
+  const etag = savedEtags[url];
+  if (etag) conditionalHeaders['If-None-Match'] = etag;
+  const res = await fetchWithTimeout(url, { ...options, headers: conditionalHeaders });
+  if (res.status === 304) return ETAG_NOT_MODIFIED;
+  if (!res.ok) throw new Error(`${context}: ${describeGitHubFailure(res)}`);
+  const responseEtag = res.headers.get('etag');
+  if (responseEtag) savedEtags[url] = responseEtag;
   return await res.text();
 }
 
@@ -163,6 +190,7 @@ async function main() {
   const existingMeta = readJson(metaPath, {});
   const existingReleases = readJson(releasesPath, []);
   const existingReadmes = readJson(readmesPath, {});
+  const savedEtags = readJson(etagsPath, {});
 
   let repos;
   try {
@@ -287,16 +315,34 @@ async function main() {
     .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
     .slice(0, 40);
 
+  const existingReleasesByRepo = new Map();
+  if (Array.isArray(existingReleases)) {
+    for (const release of existingReleases) {
+      if (!release?.repo) continue;
+      if (!existingReleasesByRepo.has(release.repo)) existingReleasesByRepo.set(release.repo, []);
+      existingReleasesByRepo.get(release.repo).push(release);
+    }
+  }
+
   const allReleases = [];
   let releasesFetched = 0;
   let releasesFailed = 0;
+  let releasesReused = 0;
   for (const repo of topPushed) {
+    const releaseUrl = `https://api.github.com/repos/${USER}/${repo.name}/releases?per_page=5`;
     try {
-      const list = await fetchJson(
-        `https://api.github.com/repos/${USER}/${repo.name}/releases?per_page=5`,
+      const list = await fetchJsonConditional(
+        releaseUrl,
         { headers },
         `releases for ${repo.name}`,
+        savedEtags,
       );
+      if (list === ETAG_NOT_MODIFIED) {
+        const cached = existingReleasesByRepo.get(repo.name);
+        if (cached) allReleases.push(...cached);
+        releasesReused += 1;
+        continue;
+      }
       if (!Array.isArray(list)) {
         throw new Error('expected an array payload');
       }
@@ -335,7 +381,7 @@ async function main() {
       : existingReleases;
   writeJson(releasesPath, releasesOutput);
   console.log(
-    `Wrote ${releasesPath}: ${releasesOutput.length} releases from ${releasesFetched} repos (${releasesFailed} failed).`,
+    `Wrote ${releasesPath}: ${releasesOutput.length} releases from ${releasesFetched} refreshed, ${releasesReused} reused, ${releasesFailed} failed.`,
   );
 
   const repoNames = new Set(publicRepos.map((repo) => repo.name));
@@ -348,6 +394,7 @@ async function main() {
     source,
     attempted,
     refreshed,
+    reused = 0,
     misses,
     rateLimited,
     failureSamples = [],
@@ -359,13 +406,14 @@ async function main() {
     const unattempted = Math.max(0, publicRepos.length - attempted);
     const missing = Math.max(0, publicRepos.length - cacheEntries);
     writeJson(readmeRefreshPath, {
-      schema: 'sysadmindoc.readme-refresh.v1',
+      schema: 'sysadmindoc.readme-refresh.v2',
       generatedAt: new Date().toISOString(),
       source,
       tokenPresent: Boolean(token),
       totalPublicRepos: publicRepos.length,
       attempted,
       refreshed,
+      reused,
       misses,
       preserved,
       unattempted,
@@ -394,6 +442,7 @@ async function main() {
 
   let readmeOk = 0;
   let readmeMiss = 0;
+  let readmeReused = 0;
   let readmeRateLimited = false;
   let readmeTrimmed = 0;
   const readmeFailures = [];
@@ -406,12 +455,19 @@ async function main() {
       cursor += 1;
       const repo = publicRepos[index];
       if (!repo) continue;
+      const readmeUrl = `https://api.github.com/repos/${USER}/${repo.name}/readme`;
       try {
-        const markdown = await fetchText(
-          `https://api.github.com/repos/${USER}/${repo.name}/readme`,
+        const result = await fetchTextConditional(
+          readmeUrl,
           { headers: { ...headers, Accept: 'application/vnd.github.raw' } },
           `README for ${repo.name}`,
+          savedEtags,
         );
+        if (result === ETAG_NOT_MODIFIED) {
+          readmeReused += 1;
+          continue;
+        }
+        const markdown = result;
         const trimmed = markdown.length > 120_000;
         readmes[repo.name] = trimmed ? `${markdown.slice(0, 120_000)}\n\n…` : markdown;
         if (trimmed) readmeTrimmed += 1;
@@ -433,8 +489,9 @@ async function main() {
   writeJson(readmesPath, readmes, false);
   writeReadmeRefreshSummary({
     source: 'github-api',
-    attempted: readmeOk + readmeMiss,
+    attempted: readmeOk + readmeMiss + readmeReused,
     refreshed: readmeOk,
+    reused: readmeReused,
     misses: readmeMiss,
     rateLimited: readmeRateLimited,
     failureSamples: readmeFailures,
@@ -442,11 +499,13 @@ async function main() {
   });
   const readmeSummary = readmeRateLimited
     ? `rate limit hit after ${readmeOk} refreshes; preserved cache for the remaining repos`
-    : `${readmeMiss} misses, cache preserved for prior successes`;
+    : `${readmeMiss} misses, ${readmeReused} reused via ETag, cache preserved for prior successes`;
   console.log(`Wrote ${readmesPath}: ${readmeOk} READMEs refreshed (${readmeSummary}).`);
   if (readmeFailures.length > 0) {
     console.warn(`README refresh issues: ${readmeFailures.join(' | ')}`);
   }
+
+  writeJson(etagsPath, savedEtags);
 }
 
 main().catch((error) => {
