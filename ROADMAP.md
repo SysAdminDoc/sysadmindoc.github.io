@@ -26,13 +26,6 @@ Last normalized: 2026-06-17
 
 ### P2
 
-- [ ] P2 — Expose route-scope filtering in the Pagefind search UI
-  Why: The index mixes projects, releases, timeline entries, archive decisions, language lanes, and README excerpts; route-type scope control would reduce search ambiguity without adding hosted search.
-  Evidence: `src/pages/search.astro`, `scripts/audit-search-index.mjs`, Pagefind metadata/filter docs, astro-micro issue 40.
-  Touches: `src/pages/search.astro`, search metadata generation in route templates, `scripts/audit-search-index.mjs`, `tests/playwright/interaction-smoke.spec.mjs`.
-  Acceptance: Search exposes a route-type or content-scope filter alongside Category, the built index contains the required metadata, and search audits verify at least project/release/timeline/archive scopes.
-  Complexity: M
-
 - [ ] P2 — Add proof coverage reporting for recommended and live projects
   Why: Competitor and hiring research favor explicit project context/outcome evidence, but authoring more case studies is blocked; coverage reporting can prioritize future human-written proof without fabricating content.
   Evidence: `src/data/proof.ts`, `src/data/curated.ts`, `scripts/validate-project-data.mjs`, `scripts/summarize-generated-data.mjs`, `Roadmap_Blocked.md`.

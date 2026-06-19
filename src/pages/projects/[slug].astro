@@ -311,7 +311,7 @@ const jsonLd = JSON.stringify({
   <a href="#main" class="skip-link">Skip to content</a>
   <InteriorNav contextLabel={name} contextTone="slate" />
 
-  <main id="main" class="project-page" data-pagefind-body data-project-slug={slug}>
+  <main id="main" class="project-page" data-pagefind-body data-project-slug={slug} data-pagefind-filter="Scope:Project">
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span>
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`category:${categoryName}`}></span>
     {pagefindUpdated && <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`updated:${pagefindUpdated}`}></span>}
