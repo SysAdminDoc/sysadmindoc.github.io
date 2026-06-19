@@ -206,6 +206,16 @@ jobs:
           echo "bundle_exit_code=$bundle_code" >> "$GITHUB_OUTPUT"
           echo "sitemap_exit_code=$sitemap_code" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Run live-app availability audit (advisory)
+        id: liveapps_audit
+        shell: bash
+        run: |
+          set +e
+          npm run liveapps:audit > liveapps-audit.log 2>&1
+          code=$?
+          cat liveapps-audit.log
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Run performance audit report (advisory)
         id: performance_audit
         shell: bash
@@ -298,6 +308,7 @@ jobs:
             echo "  - Forced-colors data visualizations: ${{ steps.build_output_audits.outputs.forced_colors_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Bundle size: ${{ steps.build_output_audits.outputs.bundle_exit_code == '0' && 'PASS' || 'FAIL' }}"
             echo "  - Sitemap XML: ${{ steps.build_output_audits.outputs.sitemap_exit_code == '0' && 'PASS' || 'FAIL' }}"
+            echo "- Live-app availability (advisory): ${{ steps.liveapps_audit.outputs.exit_code == '0' && 'PASS' || 'ATTENTION' }}"
             echo "- Performance/bfcache audit (advisory): ${{ steps.performance_audit.outputs.status }}"
             echo ""
             echo "See the uploaded quality-gate-reports artifact for command logs."
@@ -328,6 +339,7 @@ jobs:
             forced-colors-audit.log
             bundle-audit.log
             sitemap-audit.log
+            liveapps-audit.log
             preview.log
             performance-audit.log
             performance-summary.md
@@ -341,40 +353,54 @@ jobs:
             const fs = require('node:fs');
             const title = 'Portfolio quality gates need attention';
             const readLog = (file) => fs.existsSync(file) ? fs.readFileSync(file, 'utf8').slice(-6000) : `Missing ${file}`;
-            const sections = [
-              ['Production audit', 'prod-audit.log'],
-              ['Catalog audit', 'catalog-audit.log'],
-              ['Generated GitHub metadata refresh', 'fetch-stars.log'],
-              ['Profile feed sync', 'profile-feed-sync.log'],
-              ['Data validation', 'data-validate.log'],
-              ['Asset audit', 'assets-audit.log'],
-              ['Astro check', 'astro-check.log'],
-              ['Build-output audit path', 'build-output-audits.log'],
-              ['Endpoint contracts', 'endpoints-audit.log'],
-              ['JSON Feed', 'feed-audit.log'],
-              ['Pagefind search index', 'search-index.log'],
-              ['Pagefind search audit', 'search-audit.log'],
-              ['Rendered JSON-LD', 'schema-audit.log'],
-              ['Forced-colors data visualizations', 'forced-colors-audit.log'],
-              ['Bundle size audit', 'bundle-audit.log'],
-              ['Sitemap XML audit', 'sitemap-audit.log'],
-              ['Performance/bfcache audit (advisory)', 'performance-audit.log'],
-              ['Performance/bfcache summary', 'performance-summary.md'],
-              ['Semantic index audit (advisory only)', 'semantic-audit.log'],
+            const checks = [
+              { name: 'Production audit', log: 'prod-audit.log', exit: '${{ steps.prod_audit.outputs.exit_code }}', cmd: 'npm run audit:prod' },
+              { name: 'Catalog drift', log: 'catalog-audit.log', exit: '${{ steps.catalog_audit.outputs.exit_code }}', cmd: 'npm run catalog:audit' },
+              { name: 'Generated data refresh', log: 'fetch-stars.log', exit: '${{ steps.generated_data.outputs.fetch_exit_code }}', cmd: 'npm run fetch-stars' },
+              { name: 'Profile feed sync', log: 'profile-feed-sync.log', exit: '${{ steps.generated_data.outputs.profile_exit_code }}', cmd: 'npm run profile-feed:sync' },
+              { name: 'Data validation', log: 'data-validate.log', exit: '${{ steps.local_checks.outputs.data_exit_code }}', cmd: 'npm run data:validate' },
+              { name: 'Asset audit', log: 'assets-audit.log', exit: '${{ steps.local_checks.outputs.assets_exit_code }}', cmd: 'npm run assets:audit' },
+              { name: 'Astro check', log: 'astro-check.log', exit: '${{ steps.local_checks.outputs.check_exit_code }}', cmd: 'npm run check' },
+              { name: 'Build path', log: 'build-output-audits.log', exit: '${{ steps.build_output_audits.outputs.build_exit_code }}', cmd: 'npm run build:ci' },
+              { name: 'Endpoint contracts', log: 'endpoints-audit.log', exit: '${{ steps.build_output_audits.outputs.endpoints_exit_code }}', cmd: 'npm run endpoints:audit' },
+              { name: 'JSON Feed', log: 'feed-audit.log', exit: '${{ steps.build_output_audits.outputs.feed_exit_code }}', cmd: 'npm run feed:audit' },
+              { name: 'Pagefind search', log: 'search-audit.log', exit: '${{ steps.build_output_audits.outputs.search_exit_code }}', cmd: 'npm run search:audit' },
+              { name: 'Rendered JSON-LD', log: 'schema-audit.log', exit: '${{ steps.build_output_audits.outputs.schema_exit_code }}', cmd: 'npm run schema:audit' },
+              { name: 'Forced-colors viz', log: 'forced-colors-audit.log', exit: '${{ steps.build_output_audits.outputs.forced_colors_exit_code }}', cmd: 'npm run forced-colors:audit' },
+              { name: 'Bundle size', log: 'bundle-audit.log', exit: '${{ steps.build_output_audits.outputs.bundle_exit_code }}', cmd: 'npm run bundle:audit' },
+              { name: 'Sitemap XML', log: 'sitemap-audit.log', exit: '${{ steps.build_output_audits.outputs.sitemap_exit_code }}', cmd: 'npm run sitemap:audit' },
+              { name: 'Performance (advisory)', log: 'performance-audit.log', exit: '${{ steps.performance_audit.outputs.exit_code }}', cmd: 'npm run audit:perf' },
+              { name: 'Semantic index (advisory)', log: 'semantic-audit.log', exit: '${{ steps.semantic_audit.outputs.exit_code }}', cmd: 'npm run semantic:audit' },
             ];
+            const failing = checks.filter((c) => c.exit !== '0' && c.exit !== 'skipped');
+            const tableRows = checks.map((c) => {
+              const status = c.exit === '0' ? 'PASS' : c.exit === 'skipped' ? 'SKIP' : '**FAIL**';
+              return `| ${c.name} | ${status} | ${c.exit} | \`${c.cmd}\` |`;
+            });
             const body = [
-              'The scheduled portfolio quality gates detected a production dependency, public catalog drift, generated-data, local validation, build-output audit, or advisory performance/bfcache issue.',
+              `Quality gates detected ${failing.length} failure(s).`,
               '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '**Artifact:** `quality-gate-reports`',
               '',
-              ...sections.flatMap(([heading, file]) => [
-                `## ${heading}`,
+              '## Status',
+              '',
+              '| Check | Status | Exit | Reproduce locally |',
+              '|-------|--------|------|-------------------|',
+              ...tableRows,
+              '',
+              '## Logs',
+              '',
+              ...checks.flatMap(({ name, log }) => [
+                `<details><summary>${name} (${log})</summary>`,
+                '',
                 '```text',
-                readLog(file),
+                readLog(log),
                 '```',
+                '</details>',
                 '',
               ]),
-              'Close this issue after the underlying dependency, catalog drift, generated-data, local validation, build-output contract, or performance/bfcache problem is fixed and the workflow is green.',
+              'Close this issue after the failures are fixed and the workflow is green.',
             ].join('\n');
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
