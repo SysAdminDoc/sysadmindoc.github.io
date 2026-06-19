@@ -115,6 +115,14 @@ export const cmdkQuickLinks = [
     searchTerms: ['year in review', 'history', 'momentum', 'timeline'],
   },
   {
+    label: 'Screenshots',
+    url: '/screenshots/',
+    desc: 'Visual evidence gallery of live-app product surfaces captured from deployed builds.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['gallery', 'images', 'visual proof', 'live apps', 'previews'],
+  },
+  {
     label: 'Archive Decisions',
     url: '/archive/',
     desc: 'Public-safe anti-portfolio notes for retired, moved, held, or superseded project surfaces.',
