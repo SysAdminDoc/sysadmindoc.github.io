@@ -14,6 +14,7 @@
         '<span class="sv-spacer"></span>' +
         '<a class="sv-action sv-live" target="_blank" rel="noopener" hidden>Open live</a>' +
         '<a class="sv-action sv-source" target="_blank" rel="noopener">View source</a>' +
+        '<button class="sv-btn sv-share" type="button" aria-label="Share screenshot link">Share</button>' +
         '<button class="sv-btn sv-zoom" type="button" aria-label="Toggle zoom">Fit</button>' +
         '<button class="sv-btn sv-close" type="button" aria-label="Close viewer">×</button>' +
       '</div>' +
@@ -24,6 +25,7 @@
   var caption = dialog.querySelector('.sv-caption');
   var liveLink = dialog.querySelector('.sv-live');
   var sourceLink = dialog.querySelector('.sv-source');
+  var shareBtn = dialog.querySelector('.sv-share');
   var zoomBtn = dialog.querySelector('.sv-zoom');
   var closeBtn = dialog.querySelector('.sv-close');
   var zoomed = false;
@@ -32,6 +34,12 @@
     zoomed = state;
     img.classList.toggle('sv-img-zoom', zoomed);
     zoomBtn.textContent = zoomed ? '100%' : 'Fit';
+  }
+
+  function shotUrl() {
+    var url = new URL(window.location.href);
+    url.searchParams.set('shot', '1');
+    return url.toString();
   }
 
   function open(trigger) {
@@ -61,10 +69,17 @@
     setZoom(false);
     dialog.showModal();
     closeBtn.focus();
+
+    var url = new URL(window.location.href);
+    url.searchParams.set('shot', '1');
+    history.replaceState(null, '', url.toString());
   }
 
   function close() {
     dialog.close();
+    var url = new URL(window.location.href);
+    url.searchParams.delete('shot');
+    history.replaceState(null, '', url.toString());
   }
 
   triggers.forEach(function (trigger) {
@@ -82,10 +97,28 @@
 
   closeBtn.addEventListener('click', close);
   zoomBtn.addEventListener('click', function () { setZoom(!zoomed); });
-
   img.addEventListener('click', function () { setZoom(!zoomed); });
 
-  dialog.addEventListener('cancel', function () { setZoom(false); });
+  shareBtn.addEventListener('click', function () {
+    var url = shotUrl();
+    if (navigator.share) {
+      navigator.share({ title: img.alt || document.title, url: url }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(url).then(function () {
+        shareBtn.textContent = 'Copied';
+        setTimeout(function () { shareBtn.textContent = 'Share'; }, 2000);
+      }).catch(function () {});
+    }
+  });
+
+  dialog.addEventListener('cancel', function () {
+    setZoom(false);
+    var url = new URL(window.location.href);
+    url.searchParams.delete('shot');
+    history.replaceState(null, '', url.toString());
+  });
   dialog.addEventListener('click', function (e) {
     if (e.target === dialog) close();
   });
@@ -97,4 +130,8 @@
       setZoom(!zoomed);
     }
   });
+
+  if (new URLSearchParams(window.location.search).get('shot') === '1' && triggers[0]) {
+    open(triggers[0]);
+  }
 })();
