@@ -89,6 +89,17 @@ export const interiorOgPages: InteriorOgPage[] = [
     ogImageAlt: 'Healthcare IT page social preview card',
   },
   {
+    slug: 'status',
+    route: '/status/',
+    title: 'Status',
+    description: 'Portfolio build health, data freshness, live-app availability, and deployment version.',
+    label: 'Health',
+    accent: '#4ade80',
+    command: 'cat status.json',
+    ogImage: '/og/status.png',
+    ogImageAlt: 'Status page social preview card',
+  },
+  {
     slug: 'screenshots',
     route: '/screenshots/',
     title: 'Screenshots',
