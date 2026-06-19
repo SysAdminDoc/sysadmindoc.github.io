@@ -125,14 +125,20 @@ test.describe('Playwright axe accessibility audit', () => {
 test.describe('Playwright visual baselines', () => {
   for (const viewport of viewports) {
     for (const route of routes) {
-      test(`${route.name} ${viewport.name} viewport matches baseline`, async ({ page }) => {
+      test(`${route.name} ${viewport.name} viewport matches baseline`, async ({ page }, testInfo) => {
+        const isLight = testInfo.project.name.includes('light');
+        const maskColor = isLight ? '#f0f0f3' : '#111827';
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await preparePage(page, route.path, route.ready);
+        if (isLight) {
+          await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+          await page.waitForTimeout(200);
+        }
 
         await expect(page).toHaveScreenshot(`${route.name}-${viewport.name}.png`, {
           fullPage: false,
           mask: dynamicMasks(page),
-          maskColor: '#111827',
+          maskColor,
         });
       });
     }
