@@ -23,6 +23,7 @@ src/data/_releases.json
 src/data/_readmes.json
 src/data/_readme-refresh.json
 src/data/_profile-projects.json
+src/data/_etags.json
 _extracted.json
 CLAUDE.md
 CODEX_CHANGELOG.md

@@ -50,13 +50,14 @@ test('strict generated-data summary fails partial production coverage with actio
     ],
   });
   await writeJson(tmp, '_readme-refresh.json', {
-    schema: 'sysadmindoc.readme-refresh.v1',
+    schema: 'sysadmindoc.readme-refresh.v2',
     generatedAt: now,
     source: 'github-api',
     tokenPresent: true,
     totalPublicRepos: 2,
     attempted: 2,
     refreshed: 1,
+    reused: 0,
     misses: 1,
     preserved: 0,
     unattempted: 0,
@@ -110,13 +111,14 @@ test('fixture generated-data summary labels reduced corpus without blocking advi
     projects: [{ repo: 'FixtureRepo', title: 'Fixture Repo', updatedAt: now }],
   });
   await writeJson(tmp, '_readme-refresh.json', {
-    schema: 'sysadmindoc.readme-refresh.v1',
+    schema: 'sysadmindoc.readme-refresh.v2',
     generatedAt: now,
     source: 'fixture',
     tokenPresent: false,
     totalPublicRepos: 1,
     attempted: 1,
     refreshed: 0,
+    reused: 0,
     misses: 0,
     preserved: 0,
     unattempted: 0,

@@ -175,7 +175,7 @@ function auditFixtureSet(fixtures) {
   }
   if (releaseDownloads <= 0) fail('_releases.json must include at least one positive download count for ranking inputs.');
 
-  if (readmeRefresh.schema !== 'sysadmindoc.readme-refresh.v1') fail('_readme-refresh.json schema is invalid.');
+  if (readmeRefresh.schema !== 'sysadmindoc.readme-refresh.v1' && readmeRefresh.schema !== 'sysadmindoc.readme-refresh.v2') fail('_readme-refresh.json schema is invalid.');
   if (!parseableDate(readmeRefresh.generatedAt)) fail('_readme-refresh.json generatedAt must be a parseable date.');
   if (!nonEmptyString(readmeRefresh.source)) fail('_readme-refresh.json source must be a non-empty string.');
   if (typeof readmeRefresh.tokenPresent !== 'boolean') fail('_readme-refresh.json tokenPresent must be boolean.');

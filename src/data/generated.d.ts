@@ -69,6 +69,7 @@ export interface GeneratedReadmeRefresh {
   totalPublicRepos: number;
   attempted: number;
   refreshed: number;
+  reused: number;
   misses: number;
   preserved: number;
   unattempted: number;
