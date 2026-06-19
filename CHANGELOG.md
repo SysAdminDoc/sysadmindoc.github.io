@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.18.6] - 2026-06-19
+
+- Added proof coverage reporting to data validation: reports proof and case-study coverage by Greatest Hits, featured, live apps, and language-lane buckets with a prioritized missing-proof list.
+- Upgraded `@playwright/test` from 1.60 to 1.61 with all unit tests and audit gates passing.
+- Upgraded Sharp from 0.34.5 to 0.35.1 with all unit tests and image pipeline audit passing.
+- Upgraded TypeScript from 5.x to 6.0.3 with all unit tests, Astro type check (0 errors), and full validation suite passing.
+
 ## [v0.18.5] - 2026-06-16
 
 - Added strict generated-data and semantic-audit modes that label fixture/unauthenticated/production states, fail on low README parity, and explain the credentialed refresh path.
