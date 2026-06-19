@@ -491,4 +491,28 @@ test.describe('rendered interaction smoke', () => {
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
+
+  test('screenshot viewer opens via ?shot=1 deep link and updates URL state', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/projects/StormviewRadar/?shot=1', '[data-project-slug="StormviewRadar"]');
+
+    const trigger = page.locator('[data-shot-viewer]');
+    if (!(await trigger.count())) {
+      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
+      return;
+    }
+
+    const dialog = page.locator('#shotViewer');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('.sv-img')).toHaveAttribute('alt', /StormviewRadar/);
+
+    expect(page.url()).toContain('shot=1');
+    await expect(dialog.locator('.sv-share')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    expect(page.url()).not.toContain('shot=1');
+
+    expect(runtimeErrors).toEqual([]);
+  });
 });
