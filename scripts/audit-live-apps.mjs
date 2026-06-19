@@ -81,6 +81,17 @@ if (apps.length === 0) {
   process.exit(1);
 }
 
+const manifestPath = path.join(screenshotsDir, 'manifest.json');
+let manifestCaptures = new Map();
+try {
+  const manifestData = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  if (Array.isArray(manifestData.captures)) {
+    for (const capture of manifestData.captures) {
+      if (capture.slug && capture.result === 'ok') manifestCaptures.set(capture.slug, capture);
+    }
+  }
+} catch { /* manifest may not exist yet */ }
+
 const now = Date.now();
 const results = [];
 
@@ -94,7 +105,11 @@ for (const app of apps) {
   const thumbPath = path.join(thumbsDir, `${app.slug}.jpg`);
   const masterMtime = await fileMtime(masterPath);
   const thumbMtime = await fileMtime(thumbPath);
-  const masterAgeDays = masterMtime ? Math.floor((now - masterMtime.getTime()) / 86_400_000) : null;
+
+  const capture = manifestCaptures.get(app.slug);
+  const capturedAt = capture?.capturedAt ?? null;
+  const captureAgeDays = capturedAt ? Math.floor((now - new Date(capturedAt).getTime()) / 86_400_000) : null;
+  const masterAgeDays = captureAgeDays ?? (masterMtime ? Math.floor((now - masterMtime.getTime()) / 86_400_000) : null);
   const thumbAgeDays = thumbMtime ? Math.floor((now - thumbMtime.getTime()) / 86_400_000) : null;
   const screenshotStale = masterAgeDays !== null && masterAgeDays > STALE_DAYS;
   const screenshotMissing = masterAgeDays === null;
@@ -107,10 +122,12 @@ for (const app of apps) {
     httpOk: result.ok,
     latencyMs: result.latencyMs,
     httpError: result.error,
+    capturedAt,
     masterAgeDays,
     thumbAgeDays,
     screenshotStale,
     screenshotMissing,
+    hasManifestEntry: Boolean(capture),
   });
 }
 
@@ -119,10 +136,12 @@ const unhealthy = results.filter((r) => !r.httpOk);
 const stale = results.filter((r) => r.screenshotStale);
 const missing = results.filter((r) => r.screenshotMissing);
 
+const withManifest = results.filter((r) => r.hasManifestEntry);
 console.log('Live app availability audit');
 console.log(`  apps checked: ${results.length}`);
 console.log(`  healthy: ${healthy.length}`);
 console.log(`  unhealthy: ${unhealthy.length}`);
+console.log(`  manifest provenance: ${withManifest.length}/${results.length}`);
 console.log(`  stale screenshots (>${STALE_DAYS}d): ${stale.length}`);
 console.log(`  missing screenshots: ${missing.length}`);
 

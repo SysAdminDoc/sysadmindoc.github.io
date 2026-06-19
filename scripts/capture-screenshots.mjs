@@ -13,7 +13,8 @@
 // build wastes minutes. Capture locally, commit the JPGs, ship them. Only need to
 // re-run when UI changes significantly or new live apps are added.
 
-import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, existsSync, writeFileSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -65,16 +66,23 @@ try {
 const outDir = join(root, 'public', 'screenshots');
 const thumbDir = join(outDir, 'thumbs');
 const astroThumbDir = join(root, 'src', 'assets', 'screenshots', 'thumbs');
+const manifestPath = join(outDir, 'manifest.json');
 mkdirSync(outDir, { recursive: true });
 mkdirSync(thumbDir, { recursive: true });
 mkdirSync(astroThumbDir, { recursive: true });
 
+const VIEWPORT = { width: 1280, height: 800 };
+const DEVICE_SCALE = 1.25;
+const COLOR_SCHEME = 'dark';
+
 const browser = await chromium.launch();
 const ctx = await browser.newContext({
-  viewport: { width: 1280, height: 800 },
-  deviceScaleFactor: 1.25,
-  colorScheme: 'dark',
+  viewport: VIEWPORT,
+  deviceScaleFactor: DEVICE_SCALE,
+  colorScheme: COLOR_SCHEME,
 });
+
+const manifest = [];
 
 let ok = 0;
 let fail = 0;
@@ -117,9 +125,34 @@ async function captureOne({ slug, url }) {
       .toBuffer();
     writeFileSync(thumb, thumbnail);
     writeFileSync(astroThumb, thumbnail);
+    const meta = await sharp(screenshot).metadata();
+    manifest.push({
+      slug,
+      url,
+      capturedAt: new Date().toISOString(),
+      viewport: VIEWPORT,
+      deviceScaleFactor: DEVICE_SCALE,
+      colorScheme: COLOR_SCHEME,
+      dimensions: { width: meta.width, height: meta.height },
+      thumbDimensions: { width: 640, height: 400 },
+      bytes: screenshot.length,
+      thumbBytes: thumbnail.length,
+      sha256: createHash('sha256').update(screenshot).digest('hex'),
+      result: 'ok',
+    });
     ok += 1;
     console.log(`✓ ${slug}`);
   } catch (error) {
+    manifest.push({
+      slug,
+      url,
+      capturedAt: new Date().toISOString(),
+      viewport: VIEWPORT,
+      deviceScaleFactor: DEVICE_SCALE,
+      colorScheme: COLOR_SCHEME,
+      result: 'fail',
+      error: error.message,
+    });
     fail += 1;
     const kept = existsSync(out) ? ' (kept previous screenshot assets)' : '';
     console.error(`✗ ${slug} — ${error.message}${kept}`);
@@ -140,5 +173,16 @@ async function worker() {
 await Promise.all(Array.from({ length: Math.min(CONCURRENCY, entries.length) }, worker));
 
 await browser.close();
+
+writeFileSync(manifestPath, JSON.stringify({
+  schema: 'sysadmindoc.screenshot-manifest.v1',
+  generatedAt: new Date().toISOString(),
+  viewport: VIEWPORT,
+  deviceScaleFactor: DEVICE_SCALE,
+  colorScheme: COLOR_SCHEME,
+  captures: manifest,
+}, null, 2) + '\n');
+console.log(`Wrote ${manifestPath}: ${manifest.length} entries.`);
+
 console.log(`\nDone: ${ok} captured, ${fail} failed.`);
 if (fail > 0) process.exit(1);
