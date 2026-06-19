@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  attestations: write
 
 concurrency:
   group: pages
@@ -69,10 +70,21 @@ jobs:
       - name: Capture live smoke contract
         id: live_smoke_contract
         run: node scripts/smoke-live-site.mjs --emit-contract --dist dist
+      - name: Generate SBOM
+        run: npm sbom --sbom-format cyclonedx --omit dev > dist-sbom.cdx.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom
+          path: dist-sbom.cdx.json
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./dist
+      - name: Attest Pages artifact
+        uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
+        with:
+          subject-path: dist-sbom.cdx.json
 
   deploy:
     needs: build
