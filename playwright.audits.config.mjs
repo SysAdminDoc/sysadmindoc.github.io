@@ -53,7 +53,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { browserName: 'chromium', ...(launchOptions ? { launchOptions } : {}) },
+      use: { browserName: 'chromium', colorScheme: 'dark', ...(launchOptions ? { launchOptions } : {}) },
+    },
+    {
+      name: 'chromium-light',
+      use: { browserName: 'chromium', colorScheme: 'light', ...(launchOptions ? { launchOptions } : {}) },
     },
   ],
 });
