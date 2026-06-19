@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { liveApps, catalog } from '../data/portfolio';
+import { categoryLabels } from '../data/categories';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import type { Lang } from '../data/types';
+
+const title = 'Screenshots - Matt Parker';
+const pageOg = interiorOgPageBySlug.screenshots;
+const pageFreshness = pageFreshnessBySlug.screenshots;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+
+const catalogMap = new Map(catalog.map((c) => [c.repo, c]));
+
+const apps = liveApps.map((app) => {
+  const cat = catalogMap.get(app.slug);
+  const category = (cat?.category ?? 'web') as Lang;
+  return {
+    slug: app.slug,
+    name: app.name,
+    url: app.url,
+    desc: app.desc,
+    category,
+    categoryLabel: categoryLabels[category] ?? category,
+    projectUrl: `/projects/${app.slug}/`,
+    screenshotUrl: `/screenshots/${app.slug}.jpg`,
+    thumbUrl: `/screenshots/thumbs/${app.slug}.jpg`,
+  };
+});
+
+const categories = [...new Set(apps.map((a) => a.category))].sort();
+
+const cmdkSections = [
+  { label: 'Gallery', href: '#screenshots-gallery', desc: 'Visual grid of all live-app product surfaces.', badge: `${apps.length}` },
+] as const;
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="screenshots" contextLabel="Visual evidence" contextTone="purple" />
+
+  <main id="main" class="screenshots-page" data-pagefind-body data-pagefind-filter="Scope:Screenshots">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Screenshots"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Gallery"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`updated:${pageFreshness.lastReviewed}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image:${pageOg.ogImage}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image_alt:${pageOg.ogImageAlt}`}></span>
+
+    <div class="si page-shell" id="screenshots-gallery">
+      <div class="sh rv">
+        <div class="sl">// Screenshots</div>
+        <h1 class="st">Visual evidence gallery</h1>
+        <p class="sd">
+          Product surfaces captured from {apps.length} live-app builds deployed to GitHub Pages.
+          Each screenshot links to the project page for full context.
+        </p>
+      </div>
+
+      <SectionJumpNav sectionItems={cmdkSections} />
+
+      <div class="screenshots-filters rv" role="group" aria-label="Filter by category">
+        <button class="screenshots-filter-btn active" data-filter="all">All ({apps.length})</button>
+        {categories.map((cat) => {
+          const count = apps.filter((a) => a.category === cat).length;
+          return (
+            <button class="screenshots-filter-btn" data-filter={cat}>
+              {categoryLabels[cat] ?? cat} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      <div class="screenshots-grid" id="screenshots-grid">
+        {apps.map((app) => (
+          <a href={app.projectUrl} class="screenshots-card" data-category={app.category}>
+            <img
+              src={app.thumbUrl}
+              alt={`${app.name} screenshot`}
+              class="screenshots-thumb"
+              width="640"
+              height="400"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="screenshots-card-info">
+              <span class="screenshots-card-name">{app.name}</span>
+              <span class="screenshots-card-cat">{app.categoryLabel}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <script src="/scripts/screenshots-page.js" is:inline></script>
+</Base>
+
+<style>
+  .screenshots-page{padding-bottom:80px}
+  .screenshots-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .screenshots-filter-btn{
+    background:none;border:1px solid var(--border-soft);color:var(--t2);
+    padding:6px 14px;border-radius:8px;cursor:pointer;font-family:var(--mono);font-size:13px;
+    transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out);
+  }
+  .screenshots-filter-btn:hover{background:rgba(255,255,255,.06);color:var(--t1)}
+  .screenshots-filter-btn.active{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:var(--grn)}
+  .screenshots-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;
+  }
+  .screenshots-card{
+    display:block;border-radius:10px;overflow:hidden;text-decoration:none;
+    border:1px solid var(--border-soft);background:var(--surface-1);
+    transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out);
+  }
+  .screenshots-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+  .screenshots-thumb{display:block;width:100%;height:auto;aspect-ratio:16/10}
+  .screenshots-card-info{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .screenshots-card-name{color:var(--t1);font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .screenshots-card-cat{color:var(--t3);font-family:var(--mono);font-size:12px;white-space:nowrap}
+  @media(max-width:640px){
+    .screenshots-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+    .screenshots-filters{gap:6px}
+  }
+</style>

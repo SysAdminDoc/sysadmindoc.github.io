@@ -41,6 +41,14 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     visibleFreshness: false,
   },
   {
+    slug: 'screenshots',
+    route: '/screenshots/',
+    label: 'Screenshots',
+    lastReviewed: '2026-06-19',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: false,
+  },
+  {
     slug: 'archive',
     route: '/archive/',
     label: 'Archive Decisions',
