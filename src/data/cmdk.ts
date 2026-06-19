@@ -115,6 +115,14 @@ export const cmdkQuickLinks = [
     searchTerms: ['year in review', 'history', 'momentum', 'timeline'],
   },
   {
+    label: 'Status',
+    url: '/status/',
+    desc: 'Portfolio build health, data freshness, live-app availability, and deployment version.',
+    badge: 'PAGE',
+    tone: 'green',
+    searchTerms: ['health', 'build', 'version', 'deploy', 'uptime'],
+  },
+  {
     label: 'Screenshots',
     url: '/screenshots/',
     desc: 'Visual evidence gallery of live-app product surfaces captured from deployed builds.',

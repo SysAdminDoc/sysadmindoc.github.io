@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import pkg from '../../package.json';
+
+const title = 'Status - Matt Parker';
+const pageOg = interiorOgPageBySlug.status;
+const pageFreshness = pageFreshnessBySlug.status;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+
+type Stats = { fetchedAt?: string | null; totalRepos?: number; totalStars?: number };
+let stats: Stats = {};
+try {
+  const mod = await import('../data/_stats.json');
+  stats = (mod.default ?? mod) as Stats;
+} catch {}
+
+let readmeEntries = 0;
+try {
+  const mod = await import('../data/_readmes.json');
+  readmeEntries = Object.keys(mod.default ?? mod).length;
+} catch {}
+
+const version = pkg.version;
+const builtAt = new Date().toISOString();
+const feedActive = profileFeedInfo.active;
+const feedSource = profileFeedInfo.source ?? 'unavailable';
+
+const signals = [
+  { label: 'Version', value: `v${version}`, tone: 'green' },
+  { label: 'Built', value: builtAt.slice(0, 10), tone: 'blue' },
+  { label: 'Catalog', value: `${catalog.length} projects`, tone: 'blue' },
+  { label: 'Live apps', value: `${liveApps.length}`, tone: 'green' },
+  { label: 'Profile feed', value: feedActive ? 'Active' : 'Fallback', tone: feedActive ? 'green' : 'amber' },
+  { label: 'Feed source', value: feedSource.length > 40 ? feedSource.slice(0, 37) + '...' : feedSource, tone: 'blue' },
+  { label: 'Feed projects', value: `${profileFeedInfo.projectCount}`, tone: 'blue' },
+  { label: 'GitHub data', value: stats.fetchedAt ? 'Fresh' : 'Unavailable', tone: stats.fetchedAt ? 'green' : 'amber' },
+  { label: 'Total repos', value: stats.totalRepos != null ? `${stats.totalRepos}` : 'N/A', tone: 'blue' },
+  { label: 'Total stars', value: stats.totalStars != null ? `${stats.totalStars}` : 'N/A', tone: 'blue' },
+  { label: 'README cache', value: `${readmeEntries} entries`, tone: readmeEntries > 0 ? 'green' : 'amber' },
+];
+
+const cmdkSections = [
+  { label: 'Health', href: '#status-health', desc: 'Build version, data freshness, and deployment signals.', badge: 'STATUS' },
+] as const;
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="status" contextLabel="Health" contextTone="green" />
+
+  <main id="main" class="status-page" data-pagefind-body data-pagefind-filter="Scope:Status">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Status"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Status"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`updated:${pageFreshness.lastReviewed}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image:${pageOg.ogImage}`}></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta={`image_alt:${pageOg.ogImageAlt}`}></span>
+
+    <div class="si page-shell" id="status-health">
+      <div class="sh rv">
+        <div class="sl">// Status</div>
+        <h1 class="st">Portfolio health</h1>
+        <p class="sd">
+          Build version, data freshness, and deployment signals.
+          Machine-readable data at <a href="/status.json" class="project-link">/status.json</a>.
+        </p>
+      </div>
+
+      <div class="status-grid rv">
+        {signals.map((s) => (
+          <div class="status-card">
+            <div class={`status-dot status-dot-${s.tone}`}></div>
+            <div class="status-card-body">
+              <div class="status-label">{s.label}</div>
+              <div class="status-value">{s.value}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="status-note rv">
+        This page is regenerated on every deploy. No runtime analytics, no uptime monitoring service.
+        The values above reflect the state at build time.
+      </p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .status-page{padding-bottom:80px}
+  .status-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;
+    margin-top:24px;
+  }
+  .status-card{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:14px 16px;border-radius:10px;
+    border:1px solid var(--border-soft);background:var(--surface-1);
+  }
+  .status-dot{width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0}
+  .status-dot-green{background:var(--grn)}
+  .status-dot-blue{background:var(--blue)}
+  .status-dot-amber{background:var(--yel)}
+  .status-label{color:var(--t3);font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .status-value{color:var(--t1);font-family:var(--mono);font-size:14px;margin-top:2px;word-break:break-all}
+  .status-note{color:var(--t3);font-size:14px;margin-top:24px}
+  @media(max-width:640px){
+    .status-grid{grid-template-columns:1fr;gap:10px}
+  }
+</style>
