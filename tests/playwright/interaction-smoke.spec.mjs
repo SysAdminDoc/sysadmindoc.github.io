@@ -458,4 +458,37 @@ test.describe('rendered interaction smoke', () => {
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
+
+  test('screenshot viewer opens, zooms, and closes with keyboard', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/projects/StormviewRadar/', '[data-project-slug="StormviewRadar"]');
+
+    const trigger = page.locator('[data-shot-viewer]');
+    if (!(await trigger.count())) {
+      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
+      return;
+    }
+
+    await trigger.click();
+    const dialog = page.locator('#shotViewer');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('.sv-img')).toHaveAttribute('alt', /StormviewRadar/);
+    await expect(dialog.locator('.sv-caption')).toContainText('StormviewRadar');
+    await expect(dialog.locator('.sv-live')).toBeVisible();
+    await expect(dialog.locator('.sv-source')).toBeVisible();
+    await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
+
+    await page.keyboard.press('f');
+    await expect(dialog.locator('.sv-zoom')).toContainText('100%');
+    await expect(dialog.locator('.sv-img')).toHaveClass(/sv-img-zoom/);
+
+    await page.keyboard.press('f');
+    await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
 });
