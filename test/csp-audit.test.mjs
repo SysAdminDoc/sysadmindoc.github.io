@@ -11,7 +11,7 @@ const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
 const baseLayoutPath = path.join(repoRoot, 'src', 'layouts', 'Base.astro');
 const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
-const inlineStyleSurfaceCount = 14;
+const inlineStyleSurfaceCount = 15;
 
 function sha256Csp(value) {
   return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
@@ -37,7 +37,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /style element unsafe-inline active: no/);
   assert.match(output, /style attribute unsafe-inline active: no/);
   assert.match(output, /executable inline scripts: 0/);
-  assert.match(output, /JSON-LD\/data script blocks: 13/);
+  assert.match(output, /JSON-LD\/data script blocks: 14/);
   assert.match(output, /inline event handlers: 0/);
   assert.match(output, new RegExp(`inline style blocks: ${inlineStyleSurfaceCount}`));
   assert.match(output, /inline style attributes: 0/);
