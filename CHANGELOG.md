@@ -2,12 +2,20 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
-## [v0.18.6] - 2026-06-19
+## [v0.19.0] - 2026-06-19
 
+- Added conditional GitHub API cache with ETag reuse: release and README fetches send `If-None-Match` and reuse cached data on `304 Not Modified`, reducing rate-limit pressure. Refresh summary now reports reused counts.
+- Added light-theme browser audit coverage: Playwright axe accessibility and visual baseline tests now run in both dark and light theme modes across representative routes.
+- Added live-app availability and screenshot drift audit: `npm run liveapps:audit` checks HTTP status of all 22 live-app URLs with timeout and retry, reports screenshot age and missing captures.
+- Added service-worker lifecycle browser smoke test: Playwright with service workers enabled verifies SW install, offline fallback to `/offline.html`, and no console errors during navigation.
+- Added SBOM generation and artifact provenance attestation to the deploy workflow: CycloneDX SBOM from npm and GitHub artifact attestation for the Pages upload.
+- Normalized quality-gate issue format: issue body now starts with a compact status table of check name, exit code, and local reproduction command, with raw logs collapsed in details blocks.
+- Promoted Node 24 as the primary CI runtime across all four workflows and package.json engines; removed the advisory Node 24 canary job.
+- Applied Sharp 0.35.1 to 0.35.2 patch update.
 - Added proof coverage reporting to data validation: reports proof and case-study coverage by Greatest Hits, featured, live apps, and language-lane buckets with a prioritized missing-proof list.
-- Upgraded `@playwright/test` from 1.60 to 1.61 with all unit tests and audit gates passing.
-- Upgraded Sharp from 0.34.5 to 0.35.1 with all unit tests and image pipeline audit passing.
-- Upgraded TypeScript from 5.x to 6.0.3 with all unit tests, Astro type check (0 errors), and full validation suite passing.
+- Upgraded `@playwright/test` from 1.60 to 1.61.
+- Upgraded Sharp from 0.34.5 to 0.35.2.
+- Upgraded TypeScript from 5.x to 6.0.3.
 
 ## [v0.18.5] - 2026-06-16
 
