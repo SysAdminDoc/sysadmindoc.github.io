@@ -2,6 +2,15 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.0] - 2026-06-19
+
+- Added accessible screenshot viewer for project evidence: native `<dialog>` with full image, caption, Open live/View source actions, fit/zoom toggle (F key), Escape close, focus trap, and reduced-motion-safe transitions.
+- Added visual evidence gallery at `/screenshots/` with responsive grid of all live-app screenshots, category filters, project-page links, command-palette entry, Pagefind metadata, and interior OG page.
+- Added screenshot capture provenance manifest: capture script now writes `public/screenshots/manifest.json` with slug, URL, capture timestamp, viewport, color scheme, dimensions, bytes, sha256, and result per screenshot.
+- Added public portfolio health page at `/status/` and `/status.json` showing build version, catalog count, live-app count, profile-feed source, GitHub data freshness, and README cache status.
+- Added screenshot viewer deep links: `?shot=1` auto-opens the viewer on page load, Share button uses Web Share API with clipboard fallback, and closing clears the query param.
+- Added Playwright interaction smoke coverage for the screenshot viewer (open, zoom, close, deep link, URL state).
+
 ## [v0.19.0] - 2026-06-19
 
 - Added conditional GitHub API cache with ETag reuse: release and README fetches send `If-None-Match` and reuse cached data on `304 Not Modified`, reducing rate-limit pressure. Refresh summary now reports reused counts.
