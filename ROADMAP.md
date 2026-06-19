@@ -8,18 +8,18 @@ Last normalized: 2026-06-19
 
 ## Research-Driven Additions
 
-- [ ] P1 - Add conditional GitHub API cache and refresh telemetry
-  Why: GitHub REST data refreshes currently refetch repo, release, event, and README payloads without ETag reuse, which raises rate-limit and stale-cache risk.
-  Evidence: `scripts/fetch-stars.mjs`; `scripts/summarize-generated-data.mjs`; GitHub REST API conditional request guidance.
-  Touches: `scripts/fetch-stars.mjs`, `scripts/summarize-generated-data.mjs`, `src/data/generated.d.ts`, `src/data/fixtures/generated/`, `test/generated-data-trust.test.mjs`.
-  Acceptance: GitHub fetches persist ETags per endpoint, send `If-None-Match`, preserve cached payloads on `304 Not Modified`, report refreshed/reused/rate-limited counts, and include tests for fresh, reused, and failed refresh paths.
+- [ ] P1 - Add an accessible screenshot viewer for project evidence
+  Why: Live screenshots are currently static previews or links out to deployed apps; best image viewers make inspection fast with keyboard navigation, zoom, captions, and clear metadata.
+  Evidence: `src/pages/projects/[slug].astro`, `src/components/LiveCard.astro`, `public/screenshots/`; PhotoSwipe, ImageGlass, XnView MP, Cogapp image-viewer accessibility guidance.
+  Touches: `src/pages/projects/[slug].astro`, `src/components/LiveCard.astro`, `src/layouts/Base.astro`, `public/scripts/`, `src/styles/global.css`, `tests/playwright/interaction-smoke.spec.mjs`.
+  Acceptance: Screenshot thumbnails and project previews open a native-dialog viewer with focus trap, Escape close, keyboard previous/next, fit/100% zoom, accessible caption/alt text, "open live" and "open source" actions, reduced-motion-safe transitions, and Playwright coverage for keyboard and mobile behavior.
   Complexity: M
 
-- [ ] P1 - Add light and system theme browser audit coverage
-  Why: The rendered Playwright accessibility/visual suite runs only dark mode while the CSS contains extensive light-theme overrides that can regress independently.
-  Evidence: `playwright.audits.config.mjs`; `src/styles/global.css`; `tests/playwright/portfolio-audits.spec.mjs`.
-  Touches: `playwright.audits.config.mjs`, `tests/playwright/portfolio-audits.spec.mjs`, `tests/playwright/__screenshots__/`, `.github/workflows/ci.yml`.
-  Acceptance: Representative homepage, search, archive, and project routes are audited under dark, light, and system preferences with axe, overflow, focus, and screenshot checks; CI fails on theme-specific regressions.
+- [ ] P2 - Add a visual evidence gallery route
+  Why: The portfolio has 22 live-app screenshots but no dedicated way to scan, filter, and compare visual proof across the catalog.
+  Evidence: `src/data/projects.ts`, `public/screenshots/`, `src/assets/screenshots/thumbs/`, `scripts/audit-live-apps.mjs`; XnView MP/FastStone contact-sheet workflows; Framer/Webflow portfolio gallery patterns.
+  Touches: `src/pages/screenshots.astro`, `src/data/projects.ts`, `src/components/LiveCard.astro`, `src/pages/cmdk-data.js.ts`, `src/pages/llms.txt.ts`, `scripts/audit-public-endpoints.mjs`, `scripts/audit-search-index.mjs`, `scripts/audit-sitemap.mjs`.
+  Acceptance: `/screenshots/` renders a responsive visual index with category/status filters, search, screenshot age/live-health badges, no-JS links to project pages, Pagefind metadata, command-palette entry, sitemap coverage, and mobile/desktop Playwright smoke coverage.
   Complexity: M
 
 - [ ] P2 - Add a service-worker lifecycle browser smoke test
@@ -29,11 +29,11 @@ Last normalized: 2026-06-19
   Acceptance: A SW-enabled Playwright test installs the service worker, confirms offline navigation reaches `/offline.html`, simulates a waiting worker/update prompt path, and verifies no console errors or reload loops.
   Complexity: M
 
-- [ ] P2 - Add live-app availability and screenshot drift reporting
-  Why: The portfolio claims browser-ready live apps and requires screenshots to exist, but no scheduled gate verifies that external demo URLs still respond or that screenshots are fresh.
-  Evidence: `src/data/projects.ts`; `src/components/LiveCard.astro`; `scripts/capture-screenshots.mjs`; `scripts/audit-assets.mjs`.
-  Touches: `scripts/`, `src/data/projects.ts`, `.github/workflows/quality-gates.yml`, `IMAGE_PIPELINE.md`.
-  Acceptance: A timeout-bounded audit checks every live-app URL, reports HTTP status/latency/failure reason, flags screenshot age or missing capture metadata, and publishes a concise quality-gate artifact without failing on one transient retry.
+- [ ] P2 - Add screenshot capture provenance metadata
+  Why: Current screenshot freshness relies on file timestamps; premium image managers and docs tools expose durable image metadata so viewers, audits, and public endpoints can explain when and how an image was captured.
+  Evidence: `scripts/capture-screenshots.mjs`, `scripts/audit-image-pipeline.mjs`, `scripts/audit-live-apps.mjs`, `src/pages/projects.json.ts`; PhotoSwipe dimension requirements; ImageGlass/XnView metadata panels.
+  Touches: `scripts/capture-screenshots.mjs`, `scripts/audit-image-pipeline.mjs`, `scripts/audit-live-apps.mjs`, `src/data/types.ts`, `src/pages/projects.json.ts`, `src/pages/releases.json.ts`, `test/`.
+  Acceptance: Screenshot capture writes a tracked manifest with slug, URL, capture timestamp, viewport, color scheme, dimensions, bytes, hash, and capture result; audits validate manifest/image parity; public JSON exposes safe provenance fields; the screenshot viewer and gallery display captured-at and viewport metadata.
   Complexity: M
 
 - [ ] P2 - Generate SBOM and Pages artifact provenance
@@ -50,11 +50,18 @@ Last normalized: 2026-06-19
   Acceptance: The quality-gate issue starts with a compact table of failing checks, exit codes, artifact names, and exact local reproduction commands, then links or collapses raw logs.
   Complexity: S
 
-- [ ] P3 - Apply the Sharp 0.35.2 patch update
-  Why: `npm view sharp version` reports `0.35.2` while the repo is pinned to `^0.35.1`; image generation and audit gates should validate the patch before it rides Dependabot.
-  Evidence: `package.json`; `package-lock.json`; `npm view sharp version time --json`; Sharp release stream.
-  Touches: `package.json`, `package-lock.json`, `scripts/audit-image-pipeline.mjs`, `scripts/generate-screenshot-thumbnails.mjs`, `src/pages/og/[slug].png.ts`.
-  Acceptance: Sharp is updated to 0.35.2, `npm test`, `npm run images:audit`, OG generation, screenshot thumbnail generation, and `npm run build:ci` pass.
+- [ ] P2 - Add a public portfolio health page and endpoint
+  Why: Comparable docs and publishing platforms surface operational confidence clearly; this site already computes data freshness, live-app health, screenshot age, build version, and search/feed contracts but scatters them across CI logs.
+  Evidence: `scripts/summarize-generated-data.mjs`, `scripts/audit-live-apps.mjs`, `scripts/smoke-live-site.mjs`, `.github/workflows/quality-gates.yml`; ReadMe, GitBook, Webflow, and Framer publishing/status patterns.
+  Touches: `src/pages/status.astro`, `src/pages/status.json.ts`, `src/pages/cmdk-data.js.ts`, `src/pages/llms.txt.ts`, `scripts/audit-public-endpoints.mjs`, `scripts/audit-sitemap.mjs`, `.github/workflows/deploy.yml`.
+  Acceptance: `/status/` and `/status.json` show deploy version, generated-data freshness, profile-feed source, live-app health summary, screenshot freshness, search/feed/sitemap contract status, and last successful verification time without exposing secrets or private repo names.
+  Complexity: M
+
+- [ ] P3 - Add screenshot viewer deep links and share targets
+  Why: Mature viewers make a specific image state shareable; project reviewers should be able to link directly to a screenshot, zoom state, or gallery item without losing context.
+  Evidence: `src/pages/projects/[slug].astro`, `public/scripts/project-page.js`, `src/pages/projects.json.ts`; PhotoSwipe hash/deep-link patterns; OpenSeadragon viewport-state conventions.
+  Touches: `public/scripts/`, `src/pages/projects/[slug].astro`, `src/pages/screenshots.astro`, `src/pages/projects.json.ts`, `tests/playwright/interaction-smoke.spec.mjs`.
+  Acceptance: Viewer URLs support stable `?shot=<slug>` or hash links, restore selected image and fit/zoom mode on load, copy a share URL through the existing share status pattern, and degrade to the project page when JavaScript is unavailable.
   Complexity: S
 
 - [ ] P3 - Decide whether Node 24 can become the primary CI runtime
