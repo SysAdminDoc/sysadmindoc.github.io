@@ -261,7 +261,7 @@ const checks = [
   },
   {
     label: 'README refresh schema is current',
-    ok: readmeRefreshRaw?.schema === 'sysadmindoc.readme-refresh.v1',
+    ok: readmeRefreshRaw?.schema === 'sysadmindoc.readme-refresh.v1' || readmeRefreshRaw?.schema === 'sysadmindoc.readme-refresh.v2',
   },
   {
     label: 'README refresh cacheEntries matches README cache',
@@ -404,6 +404,7 @@ const summary = {
     targetRepos: readmeRefreshTargetRepos,
     attempted: readmeRefreshAttempted,
     refreshed: finiteNumberOrNull(readmeRefreshRaw?.refreshed),
+    reused: finiteNumberOrNull(readmeRefreshRaw?.reused),
     misses: readmeRefreshMisses,
     preserved: finiteNumberOrNull(readmeRefreshRaw?.preserved),
     unattempted: finiteNumberOrNull(readmeRefreshRaw?.unattempted),
@@ -517,6 +518,7 @@ const markdown = [
   `- Target repos: ${summary.readmeRefresh.targetRepos ?? 'unknown'}`,
   `- Attempted: ${summary.readmeRefresh.attempted ?? 'unknown'}`,
   `- Refreshed: ${summary.readmeRefresh.refreshed ?? 'unknown'}`,
+  `- Reused (ETag 304): ${summary.readmeRefresh.reused ?? 0}`,
   `- Misses: ${summary.readmeRefresh.misses ?? 'unknown'}`,
   `- Preserved cached entries: ${summary.readmeRefresh.preserved ?? 'unknown'}`,
   `- Unattempted repos: ${summary.readmeRefresh.unattempted ?? 'unknown'}`,
