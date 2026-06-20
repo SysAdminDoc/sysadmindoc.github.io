@@ -123,9 +123,19 @@ document.addEventListener('mousemove',e=>{
 document.addEventListener('mouseleave',()=>{mouseState.x=-1000;mouseState.y=-1000;mouseState.moved=false});
 
 /* ===== COPY TOAST ===== */
-const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Link copied';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');document.body.appendChild(copyToast);
+const copyToast=document.createElement('div');copyToast.className='copy-toast';copyToast.textContent='Link copied';copyToast.setAttribute('role','status');copyToast.setAttribute('aria-live','polite');
+if('popover' in HTMLElement.prototype){copyToast.setAttribute('popover','manual')}
+document.body.appendChild(copyToast);
 let copyToastTimer=0;
-function showCopyToast(){clearTimeout(copyToastTimer);copyToast.classList.add('show');copyToastTimer=setTimeout(()=>copyToast.classList.remove('show'),1500)}
+function showCopyToast(){
+    clearTimeout(copyToastTimer);
+    if(copyToast.showPopover){try{copyToast.showPopover()}catch(e){}}
+    copyToast.classList.add('show');
+    copyToastTimer=setTimeout(function(){
+        copyToast.classList.remove('show');
+        if(copyToast.hidePopover){try{copyToast.hidePopover()}catch(e){}}
+    },1500);
+}
 
 /* ===== TERMINAL TYPING ===== */
 const tl=[{prompt:true,path:'~/portfolio',cmd:'./profile'},{text:''},{key:'name',val:'Matt Parker'},{key:'role',val:'Sr. Systems Administrator'},{key:'projects',val:'…',vc:'tv',id:'termRepos'},{key:'stars',val:'…',vc:'tv',id:'termStars'},{key:'langs',val:'PS1, Python, JS, Kotlin, C#'},{key:'theme',val:'always dark'},{text:''},{prompt:true,path:'~/portfolio',cmd:'echo $PHILOSOPHY'},{text:'Download it, launch it, done.',color:'ts'},{text:''},{prompt:true,path:'~/portfolio',cmd:'',cursor:true}];
