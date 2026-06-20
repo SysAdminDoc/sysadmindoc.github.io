@@ -516,3 +516,97 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 });
+
+test.describe('cross-document view transition smoke', () => {
+  test('navigating between pages produces no console errors', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/', 'main');
+
+    const title1 = await page.title();
+    expect(title1).toBeTruthy();
+
+    await page.locator('a[href="/search/"]').first().click();
+    await page.waitForURL('**/search/**');
+    await page.locator('main').waitFor({ state: 'visible' });
+
+    const title2 = await page.title();
+    expect(title2).not.toEqual(title1);
+    expect(title2).toContain('Search');
+
+    await page.locator('a[href="/"]').first().click();
+    await page.waitForURL(/\/$/);
+    await page.locator('main').waitFor({ state: 'visible' });
+
+    expect(runtimeErrors).toEqual([]);
+    await expectNoHorizontalOverflow(page);
+  });
+});
+
+test.describe('catalog URL-state persistence', () => {
+  test('category filter updates URL and survives reload', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/#catalog', '#catalog');
+
+    const catalogSearch = page.locator('.search-input');
+    await expect(catalogSearch).toBeVisible();
+
+    const filterBtn = page.locator('.filter-btn[data-f]').first();
+    if (!(await filterBtn.count())) {
+      test.skip(true, 'No category filter buttons in this build');
+      return;
+    }
+
+    const category = await filterBtn.getAttribute('data-f');
+    await filterBtn.click();
+
+    await expect.poll(() => page.url()).toContain(`cat=${category}`);
+
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#catalog').waitFor({ state: 'visible' });
+
+    expect(page.url()).toContain(`cat=${category}`);
+
+    const activeFilter = page.locator(`.filter-btn[data-f="${category}"].active`);
+    await expect(activeFilter).toBeVisible();
+
+    expect(runtimeErrors).toEqual([]);
+  });
+});
+
+test.describe('focus-not-obscured by sticky navigation', () => {
+  test('tabbing through interactive elements keeps focus visible above the sticky nav', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/search/', '#site-search');
+
+    const navRect = await page.evaluate(() => {
+      const nav = document.querySelector('nav') || document.querySelector('header');
+      if (!nav) return null;
+      const rect = nav.getBoundingClientRect();
+      return { bottom: rect.bottom, height: rect.height };
+    });
+    if (!navRect) {
+      test.skip(true, 'No nav element found');
+      return;
+    }
+
+    for (let i = 0; i < 15; i++) {
+      await page.keyboard.press('Tab');
+      const focusInfo = await page.evaluate((navBottom) => {
+        const el = document.activeElement;
+        if (!el || el === document.body) return null;
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) return null;
+        return {
+          tag: el.tagName,
+          fullyObscured: rect.bottom <= navBottom && rect.top <= navBottom,
+        };
+      }, navRect.bottom);
+
+      if (focusInfo) {
+        expect(focusInfo.fullyObscured, `${focusInfo.tag} element fully obscured by sticky nav`).toBe(false);
+      }
+    }
+
+    expect(runtimeErrors).toEqual([]);
+  });
+});
