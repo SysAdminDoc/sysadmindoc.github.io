@@ -1,89 +1,115 @@
-# Research - sysadmindoc.github.io
+# Research — sysadmindoc.github.io
 
 ## Executive Summary
-Verified: `sysadmindoc.github.io` is an Astro 6.4.8 static portfolio, GitHub-profile evidence layer, and project catalog for SysAdminDoc/Matt Parker. Its strongest current shape is not a generic portfolio theme; it is a source-backed, privacy-preserving, audited public artifact with Pagefind search, generated GitHub metadata, remote README rendering, strict CSP/public-source checks, PWA/offline behavior, machine-readable endpoints, and broad CI/deploy quality gates. Highest-value direction: keep the static/no-backend philosophy while making the remaining trust boundaries more resilient and visible. Priority opportunities: add GitHub REST conditional-request caching; audit light/system theme parity in rendered browser tests; verify service-worker lifecycle behavior in a browser; monitor live-app availability and screenshot drift; add Pages artifact provenance/SBOM output; make weekly quality issues concise and actionable; apply the Sharp 0.35.2 patch after image gates; decide when Node 24 can move from advisory to primary CI.
+
+`sysadmindoc.github.io` v0.20.0 is an Astro 6.4.8 static portfolio, evidence layer, and project catalog for Matt Parker (SysAdminDoc). It is not a generic portfolio template; it is a source-backed, privacy-preserving, audited public artifact with Pagefind search, generated GitHub metadata, remote README rendering, strict CSP, PWA/offline support, machine-readable endpoints, and 34 audit scripts across CI/deploy quality gates. Compared to the top 25 OSS portfolio templates (AstroPaper, Astrofy, GitProfile, Magic UI Portfolio, Once UI, astro-erudite) and commercial platforms (Framer, Webflow, read.cv, Peerlist), this project leads in evidence density, audit infrastructure, security posture, and accessibility coverage. Its competitive position is strong; the highest-value direction is CSS modernization, deeper WCAG 2.2 compliance, and progressive web platform adoption — not feature expansion.
+
+Top priorities in order:
+1. Adopt baseline CSS features (`@starting-style`, `color-mix()`, `:has()`, subgrid) to reduce manual workarounds and CSS volume
+2. Split the 6272-line global.css into importable module files behind the existing `@layer` structure
+3. Add `Permissions-Policy` restrictive defaults via CSP meta tag
+4. Adopt WCAG 2.2 target-size auditing for interactive elements
+5. Add Trusted Types CSP directive as defense-in-depth
+6. Verify cross-document View Transition behavior in browser audits
+7. Add resume print-to-PDF generation at build time
+8. Expand the Playwright interaction smoke to cover catalog filter URL persistence
+9. Add a build-time CSS nesting pass for the most repetitive selector blocks
+10. Surface project reading-time estimates in catalog and search result cards
 
 ## Product Map
-- Core workflows: browse homepage proof and Greatest Hits, search/filter the full project catalog, inspect project detail and README excerpts, use language/release/timeline/archive views, open command palette shortcuts, install/use offline fallback, and consume JSON/feed/sitemap/LLM endpoints.
-- User personas: hiring/recruiting readers validating real impact; technical collaborators checking source, releases, and README evidence; open-source users looking for launchable projects; the site owner maintaining public/private boundaries.
-- Platforms and distribution: Astro static output on GitHub Pages; Node `>=22`; browser-only scripts; no server runtime, database, analytics backend, hosted CMS, forms backend, or team editing workflow.
-- Key integrations and data flows: GitHub API/profile feed populate generated caches; `marked`, `sanitize-html`, and Shiki render remote README excerpts; Pagefind indexes built HTML; GitHub Actions runs dependency review, generated-data refresh, build, link, accessibility, visual, CSP, schema, feed, sitemap, bundle, DOM, performance, and live smoke audits.
+
+- Core workflows: browse homepage proof and Greatest Hits, search/filter the 182-project catalog, inspect project detail and README excerpts, use language/release/timeline/archive/screenshots/status views, open command palette shortcuts, install/use offline fallback, and consume JSON/Atom/RSS/sitemap/LLM endpoints.
+- User personas: hiring managers validating real impact and engineering judgment; technical collaborators checking source, releases, and README evidence; open-source users looking for launchable projects; the site owner maintaining public/private boundaries.
+- Platforms and distribution: Astro 6 static output on GitHub Pages; Node >=24; browser-only scripts; no server runtime, database, analytics, hosted CMS, forms backend, or team editing workflow.
+- Key integrations: GitHub REST API (with ETag conditional caching) and profile feed populate generated caches; `marked`, `sanitize-html`, and Shiki render remote README excerpts; Pagefind indexes built HTML with Category/Scope facets; GitHub Actions runs dependency review, generated-data refresh, build, link, accessibility, visual baseline, CSP, schema, feed, sitemap, bundle, DOM-size, performance, forced-colors, and live smoke audits; SBOM and artifact attestation ship with every deploy.
 
 ## Competitive Landscape
-- Astro Nano, Astro Micro, Astro Erudite, Astrofy, and active Astro portfolio templates: do low-dependency static presentation, blog/CV/project sections, responsive hierarchy, search, and dark-mode ergonomics well. Learn from their lean static posture and polished scan paths. Avoid becoming a theme clone; this repo's advantage is evidence density, generated provenance, and custom public/private guardrails.
-- GitProfile, DevB.io, GitHub profile README generators, and lowlighter/metrics: do GitHub-derived identity, dynamic badges, automated activity summaries, and low-maintenance public proof well. Learn from repeatable data refresh and shareable profile artifacts. Avoid image-only metric walls, badge sprawl, runtime AI-written claims, and unaudited generated copy.
-- Pagefind and `astro-pagefind`: do private static search, metadata, filters, and no-backend discovery well. Learn from faceted search and metadata-rich result states. Avoid hosted search unless a concrete requirement exceeds Pagefind's static model.
-- Framer, Webflow, Wix, and Squarespace: sell publishing confidence through CMS, localization, analytics, collaboration, form handling, and polished preview states. Learn from status clarity, preview confidence, and content governance. Avoid CMS/team/localization complexity without a content team, privacy model, or multilingual source corpus.
-- ReadMe and GitBook: treat docs/search/provenance as product surfaces with branch previews, reusable content, AI search, OpenAPI flows, and quality instrumentation. Learn from concise operational summaries and traceable publishing state. Avoid SaaS docs complexity for a personal static portfolio.
-- Docusaurus, Starlight, Nextra, and MkDocs Material: do structured docs navigation, versioning, content linting, and local-first publishing workflows well. Learn from docs-as-code guardrails. Avoid full documentation-site migration; the product is portfolio-first, not a docs portal.
+
+- **AstroPaper** (4747 stars): Does Pagefind fuzzy search, tag-based filtering, and system/light/dark themes well. Learn from its 100/100 Lighthouse discipline and VoiceOver/TalkBack screen-reader testing documentation. This project already exceeds its feature set through faceted search, case studies, and audit infrastructure.
+- **Once UI Magic Portfolio** (1336 stars, fastest-growing 2025-2026): Does config-driven setup, auto-generated OG images, and password-protected pages well. Learn from its design-system consistency and feature toggles. Avoid adopting a component design-system layer; the custom vanilla-JS approach is intentional and already audited.
+- **astro-erudite** (797 stars): Does native CSS (dropped Tailwind in v2), View Transitions SPA mode, Shiki code highlighting, and LaTeX rendering well. Learn from its move away from Tailwind toward native CSS; confirms the project's existing vanilla CSS direction.
+- **chronark.com** (815 stars): Does deep GitHub data integration (REST + GraphQL, traffic data, security alerts, auto UI-library detection from `package.json`) well. Learn from its deployment and traffic data surfacing. Avoid pulling traffic/analytics data — contradicts the privacy model.
+- **lowlighter/metrics** (16821 stars): Does plugin-based GitHub visualization (30+ plugins, 300+ options, SVG/Markdown/PDF output) well. Learn from its repeatable data-refresh and shareable artifact patterns. Avoid widget-heavy badge walls; searchable project pages and proof records are more credible.
+- **Commercial platforms** (Framer, Webflow, read.cv, Peerlist): Paywall analytics dashboards, CMS collections, team editing, and A/B testing. Learn from structured case-study formats (Problem > Approach > Outcome > Metrics) and availability signaling. Avoid CMS/analytics/collaboration complexity without a content team.
 
 ## Security, Privacy, and Reliability
-- Verified: `rtk npm audit --json` reports 0 vulnerabilities across production and development dependencies.
-- Verified: `scripts/fetch-stars.mjs` fetches GitHub repos, releases, events, and README data without `ETag`/`If-None-Match` handling, while GitHub REST docs recommend conditional requests where appropriate. Missing guardrail: stale caches and rate-limit recovery depend on full refetches.
-- Verified: `rtk npm run data:summary -- --out .tmp/research-data-summary` reported local `attention-required` because generated metadata was stale and unauthenticated/partial; deploy uses a token and strict summary, but local stale partial states remain easy to misread.
-- Verified: `playwright.audits.config.mjs` runs rendered accessibility/visual coverage under `colorScheme: 'dark'` with `serviceWorkers: 'block'`; `src/styles/global.css` has extensive light-theme overrides and `public/sw.js` has update/offline behavior. Missing guardrail: light/system theme and service-worker lifecycle behavior are not exercised in the main browser audit.
-- Verified: live-app screenshots are validated for presence by `scripts/audit-assets.mjs`, but no scheduled gate checks whether each external live app still responds or whether screenshots have drifted from current deployments.
-- Verified: `.github/workflows/deploy.yml` uploads and deploys the Pages artifact, but no SBOM or artifact attestation is generated for the built static artifact. Supply-chain posture is strong through SHA-pinned actions, dependency review, npm audit, and Dependabot, but deploy provenance is not yet explicit.
-- Verified: `.github/workflows/quality-gates.yml` opens/updates a quality issue by embedding long log tails. Recovery need: scheduled failures should summarize failing gates, exit codes, artifact names, and local reproduction commands before raw logs.
+
+- Verified: 0 npm audit vulnerabilities across production and development dependencies (checked 2026-06-19).
+- Verified: `scripts/fetch-stars.mjs` now uses `ETag`/`If-None-Match` conditional requests for releases and READMEs (v0.19.0). Rate-limit pressure is reduced but repo list fetches still do full refetches.
+- Verified: CSP is strict with hash-based `style-src-elem`, `script-src 'self'`, `style-src-attr 'none'`, and `form-action 'self'`. Missing: `Permissions-Policy` header (not settable via GitHub Pages HTTP headers, but `<meta>` equivalent is not present). Missing: `trusted-types` directive (baseline since Feb 2026, would add defense-in-depth against DOM XSS since `innerHTML` usage is already audited safe).
+- Verified: Light theme browser audits and SW lifecycle tests were added in v0.19.0. Live-app availability and screenshot drift audit added. SBOM and artifact attestation added to deploy workflow. Quality-gate issue format normalized with compact status tables.
+- Gap: No `Permissions-Policy` restrictive defaults to disable unused browser capabilities (camera, microphone, geolocation, payment).
+- Gap: No build-time validation that interactive touch targets meet WCAG 2.2's 24×24px minimum (2.5.8). Current targets are 42-44px min-height (well above threshold), but no automated gate catches regressions.
+- Gap: Cross-document View Transitions are enabled via `@view-transition { navigation: auto; }` in CSS, but no browser audit exercises the transition behavior between pages.
 
 ## Architecture Assessment
-- Generated data: `scripts/fetch-stars.mjs`, `scripts/summarize-generated-data.mjs`, generated fixtures, and deploy/data-refresh workflows should share a clearer cache/reuse/refresh model so unauthenticated local work, token-backed deploy work, and rate-limited recoveries are distinguishable.
-- Theme and accessibility: shared CSS tokens and light-theme overrides are mature, but rendered audits need explicit dark/light/system coverage instead of assuming dark-mode coverage proves all modes.
-- PWA/offline: `test/offline-fallback.test.mjs` validates static offline assets and `public/sw.js` shape, but the browser suite intentionally blocks service workers. A dedicated SW-enabled audit should cover install, offline navigation fallback, waiting-worker update prompt, and reload behavior.
-- Live-app evidence: `src/data/projects.ts`, `src/components/LiveCard.astro`, screenshot assets, and `scripts/capture-screenshots.mjs` are useful but need availability/staleness reporting to keep public demo claims trustworthy.
-- CI observability: existing scripts already emit structured summaries for generated data and performance; the weekly quality-gate issue should reuse that pattern instead of copying raw log tails.
-- Upgrade strategy: Playwright 1.61, TypeScript 6, and Sharp 0.35.1 are already shipped; npm now reports Sharp 0.35.2. CI has a non-blocking Node 24 canary, so promotion should wait for a recorded green browser and build pipeline.
+
+- **CSS architecture**: The 6272-line `global.css` uses `@layer` sections and `light-dark()` (24 uses), container queries (9 uses), scroll-driven animations (4 uses), forced-colors (5 uses), and `prefers-reduced-motion` (8 uses). However, it does not use baseline-safe features like `@starting-style`, `color-mix()`, `:has()`, subgrid, or CSS nesting. These could reduce selector repetition and manual theme overrides. The file would benefit from being split along its existing `@layer` boundaries into importable CSS modules.
+- **Client JS**: 16 separate public scripts (~2200 lines total) are well-organized by concern. The 1233-line `main.js` covers terminal, GitHub API, particles, search, and animations for the homepage. No JS framework — all vanilla, audited for XSS safety.
+- **Data layer**: TypeScript types, profile-feed adapter with local fallback, build-time ranking with configurable weights, and 6 generated JSON caches (`_stars.json`, `_meta.json`, `_readmes.json`, `_releases.json`, `_stats.json`, `_profile-projects.json`). The generated-data lifecycle is well-documented across fixture, unauthenticated, and production modes.
+- **Test infrastructure**: 34 unit tests (node:test), 4 Playwright spec files (axe, visual baselines, CSP, interactions, SW lifecycle), 34 audit scripts. Coverage is exceptional. Gaps: no catalog URL-state persistence smoke test, no cross-document view-transition exercise, no touch-target size regression gate.
+- **Resume page**: Has print stylesheet, JSON Resume export, and per-section command palette. Missing: build-time PDF generation from the resume HTML (community research shows PDF download is a strong hiring signal).
 
 ## Rejected Ideas
-- Runtime AI portfolio summaries from DevB.io-style tools - rejected because portfolio claims must remain conservative, source-backed, and locally auditable.
-- Hosted analytics/RUM dashboards - rejected for now because the site intentionally avoids runtime tracking; lab and scheduled audits fit the privacy model better.
-- Framer/Webflow-style CMS, team editing, hosted forms, and collaboration - rejected because the site is a personal static portfolio with no content team or workflow requiring SaaS editing.
-- Full i18n/localization - rejected until there is a real multilingual source corpus and maintenance owner; commercial localization pricing confirms value but not fit.
-- Widget-heavy GitHub metric walls - rejected because searchable project pages and proof records are more credible than image-only badge sprawl.
-- Hosted search or vector/semantic search - rejected because Pagefind already matches the no-backend model and `SEMANTIC_INDEX_DECISION.md` keeps semantic analysis advisory/local.
-- Public notes/TIL feed - rejected until `NOTES_FEED_POLICY.md` has a reviewed corpus and activation criteria.
-- Immediate Astro 7 migration - rejected because `Roadmap_Blocked.md` already parks this until stable release.
-- Active PWA manifest screenshot work - rejected from active roadmap because `Roadmap_Blocked.md` already tracks the screenshot-capture prerequisite.
-- Plugin ecosystem or multi-user authoring - rejected as a product mismatch for a personal static portfolio.
+
+- Runtime AI portfolio summaries (DevB.io pattern) — rejected because portfolio claims must remain conservative, source-backed, and locally auditable.
+- Hosted analytics/RUM dashboards (Plausible, Umami, Posthog) — rejected because the site intentionally avoids runtime tracking; lab and scheduled audits fit the privacy model.
+- CMS, team editing, hosted forms (Framer/Webflow/Notion pattern) — rejected because no content team or workflow requires SaaS editing.
+- Full i18n/localization (Hugo Toha's 23-language pattern) — rejected until a real multilingual source corpus and maintenance owner exist.
+- Widget-heavy GitHub metric walls (lowlighter/metrics, GitProfile 37-theme pattern) — rejected because searchable project pages and proof records are more credible than badge sprawl.
+- Hosted or vector/semantic search — rejected because Pagefind matches the no-backend model.
+- Database-backed features (guestbook, view counts, comments via Giscus/Supabase/Astro DB) — rejected because the site is a static, privacy-first public artifact with no user accounts or server runtime.
+- Bento grid layout (astro-bento-portfolio pattern) — rejected because the existing section-based hierarchy with Greatest Hits, Live Apps, and Catalog serves evidence density better than a visual grid.
+- Public notes/TIL feed — rejected until `NOTES_FEED_POLICY.md` activation criteria are met.
+- Astro 7 migration — rejected until stable release (`Roadmap_Blocked.md`).
+- Plugin ecosystem or multi-user authoring — rejected as a product mismatch.
+- Newsletter integration (Mailchimp/Buttondown/Beehiiv) — rejected because the site has no blog content feed and no subscriber relationship to maintain.
+- Password-protected pages (Once UI pattern) — rejected because all portfolio content is intentionally public.
+- 3D elements (Three.js/D3 globe, craftzdog pattern) — rejected because the site prioritizes content density and load performance over decorative interactivity.
+- COEP/COOP/CORP headers — rejected because unnecessary for a content-only static site without SharedArrayBuffer or WebAssembly threads.
 
 ## Sources
+
 Direct OSS competitors and analogs:
+- https://github.com/satnaing/astro-paper
 - https://github.com/markhorn-dev/astro-nano
 - https://github.com/trevortylerlee/astro-micro
 - https://github.com/jktrn/astro-erudite
 - https://github.com/manuelernestog/astrofy
 - https://github.com/arifszn/gitprofile
 - https://github.com/lowlighter/metrics
-- https://github.com/sunithvs/devb.io
-- https://github.com/rahuldkjain/github-profile-readme-generator
-- https://github.com/shishkin/astro-pagefind
+- https://github.com/once-ui-system/magic-portfolio
+- https://github.com/magicuidesign/portfolio
+- https://github.com/chronark/chronark.com
+- https://github.com/emmabostian/developer-portfolios
 
 Commercial and adjacent products:
 - https://www.framer.com/pricing
 - https://webflow.com/pricing
-- https://readme.com/
-- https://www.gitbook.com/pricing
-- https://starlight.astro.build/
+- https://read.cv/about/profiles
+- https://peerlist.io
+- https://contra.com
+- https://jsonresume.org
+- https://rxresu.me
 
-Standards, dependencies, security, and performance:
-- https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api
-- https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds
-- https://docs.github.com/en/actions/concepts/security/artifact-attestations
-- https://pagefind.app/docs/filtering/
-- https://pagefind.app/docs/components/filter-pane/
-- https://astro.build/blog/astro-640/
-- https://docs.astro.build/en/reference/configuration-reference/#markdownprocessor
-- https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/screenshots
-- https://web.dev/learn/pwa/web-app-manifest
-- https://playwright.dev/docs/release-notes
-- https://github.com/lovell/sharp/releases
-- https://github.com/markedjs/marked/releases
-- https://github.com/apostrophecms/sanitize-html/releases
-- https://github.com/shikijs/shiki/releases
+Standards and web platform:
+- https://css-tricks.com/interop-2026/
+- https://chrome.dev/css-wrapped-2025/
+- https://web.dev/articles/strict-csp
+- https://web.dev/articles/content-visibility
+- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/forced-colors
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/trusted-types
+- https://www.debugbear.com/blog/speculation-rules
+- https://www.allaccessible.org/blog/wcag-22-complete-guide-2025
 
 Community and hiring signal:
-- https://github.com/orgs/community/discussions/169760
-- https://github.com/orgs/community/discussions/194180
+- https://news.ycombinator.com/item?id=32113545
+- https://hakia.com/skills/building-portfolio/
+- https://dev.to/__be2942592/how-to-build-a-developer-portfolio-that-actually-gets-you-hired-2026-6kn
+- https://shipixen.com/blog/seo-checklist-for-developer-portfolios-and-landing-pages
+- https://fueler.io/blog/proof-of-work-portfolios-real-examples-that-open-doors
 
 ## Open Questions
+
 None that block prioritization or implementation.
