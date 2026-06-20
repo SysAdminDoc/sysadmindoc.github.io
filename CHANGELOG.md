@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.1] - 2026-06-20
+
+- Updated sanitize-html from 2.17.4 to 2.17.5 (bug fix patch).
+- Adopted `@starting-style` for command palette and screenshot viewer dialog entry animations with `display` allow-discrete transitions.
+- Converted shared CSS token definitions (`--grnd`, `--grn-glow`, `--yeld`, `--redd`, `--selection-bg`, `--focus-ring`) from hardcoded `rgba()` to `color-mix()` so tint tokens derive from their base color automatically.
+- Adopted the Popover API for the copy-link toast notification with class-toggle fallback for unsupporting browsers.
+- Added build-time resume PDF generation via Playwright: `npm run resume:pdf` renders `/resume/` through the print stylesheet and outputs `dist/resume.pdf`. The resume page now offers a primary Download PDF button.
+- Added Playwright interaction smoke tests for cross-document View Transition navigation (home ↔ search), catalog URL-state persistence (filter → reload → restore), and WCAG 2.4.11 focus-not-obscured by sticky navigation.
+- Verified TypeScript 7.0 RC compatibility: type checking passes, but `scripts/lib/ts-data-utils.mjs` needs an import update for TS7's changed exports map.
+
 ## [v0.20.0] - 2026-06-19
 
 - Added accessible screenshot viewer for project evidence: native `<dialog>` with full image, caption, Open live/View source actions, fit/zoom toggle (F key), Escape close, focus trap, and reduced-motion-safe transitions.
