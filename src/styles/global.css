@@ -29,9 +29,9 @@
 
         :root{
             /* Shared tokens not redefined in v0.9.0 */
-            --grn:#4ade80;--grnd:rgba(74,222,128,.12);--grn-glow:rgba(74,222,128,.25);
-            --yel:#facc15;--yeld:rgba(250,204,21,.12);
-            --red:#f87171;--redd:rgba(248,113,113,.12);
+            --grn:#4ade80;--grnd:color-mix(in srgb, var(--grn) 12%, transparent);--grn-glow:color-mix(in srgb, var(--grn) 25%, transparent);
+            --yel:#facc15;--yeld:color-mix(in srgb, var(--yel) 12%, transparent);
+            --red:#f87171;--redd:color-mix(in srgb, var(--red) 12%, transparent);
             --mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;
             --sans:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;
             /* Motion system — pick a token, not a magic number */
@@ -42,11 +42,11 @@
             --dur-base:.25s;
             --dur-slow:.38s;
             /* Selection colors — same tokens in both themes for consistency */
-            --selection-bg:rgba(74,222,128,.22);
-            --selection-bg:light-dark(rgba(74,222,128,.28), rgba(74,222,128,.22));
+            --selection-bg:color-mix(in srgb, var(--grn) 22%, transparent);
+            --selection-bg:light-dark(color-mix(in srgb, var(--grn) 28%, transparent), color-mix(in srgb, var(--grn) 22%, transparent));
             --selection-fg:currentColor;
             /* Focus system */
-            --focus-ring:0 0 0 3px rgba(74,222,128,.28);
+            --focus-ring:0 0 0 3px color-mix(in srgb, var(--grn) 28%, transparent);
             --focus-outline:var(--grn);
             /* Brand the native form controls (checkbox/radio/range/select tick) */
             accent-color:var(--grn);
@@ -511,9 +511,10 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 }
 
 /* Command palette — native <dialog> */
-.cmdk-backdrop{border:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;padding:0;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;overscroll-behavior:contain}
+.cmdk-backdrop{border:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;padding:0;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;overscroll-behavior:contain;transition:opacity var(--dur-fast) var(--ease-out),display var(--dur-fast) var(--ease-out) allow-discrete}
 .cmdk-backdrop::backdrop{background:rgba(10,14,23,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:cmdkFade .15s ease-out}
-.cmdk-backdrop[open]{display:flex;animation:cmdkFade .15s ease-out}
+.cmdk-backdrop[open]{display:flex;opacity:1;animation:cmdkFade .15s ease-out}
+@starting-style{.cmdk-backdrop[open]{opacity:0}}
 @keyframes cmdkFade{from{opacity:0}to{opacity:1}}
 .cmdk{width:min(600px,92vw);background:var(--bg2);border:1px solid var(--glass-border);border-radius:10px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(88,166,255,.08)}
 .cmdk-input-row{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--glass-border)}
@@ -3468,9 +3469,11 @@ html[data-theme="light"] .fb{
   position:fixed;inset:0;width:100dvw;height:100dvh;max-width:none;max-height:none;
   margin:0;padding:0;border:none;background:rgba(0,0,0,.92);color:var(--t1);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:1;transition:opacity var(--dur-fast) var(--ease-out),display var(--dur-fast) var(--ease-out) allow-discrete;
 }
 .sv-dialog::backdrop{background:transparent}
-.sv-dialog:not([open]){display:none}
+.sv-dialog:not([open]){display:none;opacity:0}
+@starting-style{.sv-dialog[open]{opacity:0}}
 .sv-inner{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   width:100%;height:100%;overflow:auto;
