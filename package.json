@@ -61,7 +61,8 @@
     "links:audit": "node scripts/audit-built-links.mjs",
     "sitemap:audit": "node scripts/audit-sitemap.mjs",
     "liveapps:audit": "node scripts/audit-live-apps.mjs",
-    "audit:sw": "playwright test --config=playwright.interactions.config.mjs tests/playwright/sw-lifecycle.spec.mjs"
+    "audit:sw": "playwright test --config=playwright.interactions.config.mjs tests/playwright/sw-lifecycle.spec.mjs",
+    "resume:pdf": "node scripts/generate-resume-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
