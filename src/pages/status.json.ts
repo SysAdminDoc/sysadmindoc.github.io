@@ -18,7 +18,7 @@ try {
   readmeEntries = Object.keys(mod.default ?? mod).length;
 } catch {}
 
-export async function GET(context: APIContext) {
+export async function GET(_context: APIContext) {
   const status = {
     schema: 'sysadmindoc.status.v1',
     version: pkg.version,
