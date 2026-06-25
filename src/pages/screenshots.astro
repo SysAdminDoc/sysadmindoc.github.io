@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { liveApps, catalog } from '../data/portfolio';
@@ -69,7 +68,7 @@ const cmdkSections = [
         </p>
       </div>
 
-      <SectionJumpNav sectionItems={cmdkSections} />
+      <SectionJumpNav items={cmdkSections} />
 
       <div class="screenshots-filters rv" role="group" aria-label="Filter by category">
         <button class="screenshots-filter-btn active" data-filter="all">All ({apps.length})</button>
