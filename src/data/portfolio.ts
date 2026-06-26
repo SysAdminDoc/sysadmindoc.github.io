@@ -90,9 +90,16 @@ const langLabels: Record<Lang, string> = {
   cpp: 'C++',
 };
 
+const repoRenames: Record<string, string> = {
+  NovaCut: 'ClearCut',
+};
+
 const visibleFeedProjects = (profileFeed?.projects ?? []).filter(
   (project) => project?.includeInPortfolio !== false && project?.suppressed !== true && typeof project.repo === 'string',
-);
+).map((project) => {
+  const renamed = repoRenames[project.repo!];
+  return renamed ? { ...project, repo: renamed, title: project.title === project.repo ? renamed : project.title } : project;
+});
 const feedBacked = visibleFeedProjects.length > 0;
 
 const localCatalogByRepo = new Map(localCatalog.map((entry) => [entry.repo, entry]));

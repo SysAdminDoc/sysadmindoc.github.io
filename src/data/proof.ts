@@ -16,7 +16,7 @@ export const homepageProofHighlights: HomepageProofHighlight[] = [
     source: { kind: 'buildEvidence', index: 0 },
   },
   {
-    repo: 'NovaCut',
+    repo: 'ClearCut',
     label: 'Android editor',
     value: '40+ effects',
     copy: 'Compose and Media3 editing surface with release-backed delivery.',
@@ -238,7 +238,7 @@ export const projectProof: Record<string, ProjectProof> = {
       ],
     },
   },
-  NovaCut: {
+  ClearCut: {
     problem:
       'Android video editing should have a local, open alternative to subscription-heavy mobile editors.',
     buildEvidence: [
@@ -251,9 +251,9 @@ export const projectProof: Record<string, ProjectProof> = {
     knownLimitations:
       'Media-editor capability depends on device performance, Android media APIs, and codec support.',
     sources: [
-      { label: 'Repository', url: 'https://github.com/SysAdminDoc/NovaCut' },
-      { label: 'README', url: 'https://github.com/SysAdminDoc/NovaCut#readme' },
-      { label: 'Releases', url: 'https://github.com/SysAdminDoc/NovaCut/releases' },
+      { label: 'Repository', url: 'https://github.com/SysAdminDoc/ClearCut' },
+      { label: 'README', url: 'https://github.com/SysAdminDoc/ClearCut#readme' },
+      { label: 'Releases', url: 'https://github.com/SysAdminDoc/ClearCut/releases' },
     ],
     caseStudy: {
       context: 'Every capable Android video editor is either subscription-locked (PowerDirector, KineMaster) or ad-heavy (InShot). I wanted a full editing experience — timeline, effects, transitions, export — that was open source, ran entirely on-device, and respected the user. NovaCut started as a learning project for Jetpack Compose + Media3 and grew into a 38K-line production editor.',
