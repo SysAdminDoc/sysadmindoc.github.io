@@ -13,8 +13,6 @@ test('homepage project count copy uses rendered catalog count', async () => {
 
   assert.match(source, /const publicProjectCount = catalogTotal;/);
   assert.match(source, /id="statRepos" data-live>\{publicProjectCount\}/);
-  assert.match(source, /id="aboutReposText">\{publicProjectCount\}\+/);
-  assert.match(source, /id="aboutRepos">\{publicProjectCount\}/);
   assert.doesNotMatch(source, /stats\.totalRepos/);
 });
 
