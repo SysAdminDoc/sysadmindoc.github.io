@@ -26,7 +26,7 @@ function scheduleIdle(fn,timeout){
     if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout:delay});return}
     setTimeout(fn,Math.min(delay,1000));
 }
-const HOMEPAGE_SCROLL_SECTION_SELECTOR='#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect';
+const HOMEPAGE_SCROLL_SECTION_SELECTOR='#live,#volume,#catalog,#skills,#career,#journey,#beyond,#connect';
 const HOMEPAGE_HASH_RESTORE_DELAYS=[0,250,750,1400,2400,3600];
 const HOMEPAGE_INITIAL_HASH=window.location.hash;
 let homepageHashRestoreToken=0;
