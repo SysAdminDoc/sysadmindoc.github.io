@@ -140,6 +140,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "kindred", name: "kindred", url: "https://github.com/SysAdminDoc/kindred", category: "web", desc: "Privacy-first dating platform" },
   { repo: "HurricaneMap", name: "HurricaneMap", url: "https://sysadmindoc.github.io/HurricaneMap/", category: "web", desc: "Interactive map of every U.S. hurricane landfall (1851&ndash;present), NOAA HURDAT2", live: true },
   { repo: "ApocalypseWatch", name: "ApocalypseWatch", url: "https://sysadmindoc.github.io/ApocalypseWatch/", category: "web", desc: "Premium realtime business-jet tracker dashboard vs. 24h baseline", live: true },
+  { repo: "AsteroidSimulator", name: "AsteroidSimulator", url: "https://github.com/SysAdminDoc/AsteroidSimulator", category: "web", desc: "Asteroid &amp; comet impact simulator with 3D visualization" },
   { repo: "GIFM", name: "GIFM", url: "https://github.com/SysAdminDoc/GIFM", category: "web", desc: "Local GIF maker &amp; compressor with Discord-ready target fitting" },
   { repo: "ConvertFlow", name: "ConvertFlow", url: "https://sysadmindoc.github.io/ConvertFlow/", category: "web", desc: "Browser media converter", live: true },
   { repo: "ImageXpert", name: "ImageXpert", url: "https://sysadmindoc.github.io/ImageXpert/", category: "web", desc: "Multi-engine reverse image search", live: true },
