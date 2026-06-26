@@ -6,7 +6,6 @@ import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import TagCloud from '../components/TagCloud.astro';
-import Heatmap from '../components/Heatmap.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
@@ -505,12 +504,6 @@ const cmdkSections = [
       <SectionJumpNav items={cmdkSections} label="Portfolio Sections" />
     </div>
   </div>
-
-  {stats.pushDays.length > 0 && (
-    <section class="heatmap-section rv"><div class="si">
-      <Heatmap days={stats.pushDays} streak={stats.streak} />
-    </div></section>
-  )}
 
   <Divider />
 
