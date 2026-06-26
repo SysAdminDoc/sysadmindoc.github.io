@@ -11,7 +11,7 @@ export async function GET(_context: APIContext) {
     basics: {
       name: 'Matt Parker',
       label: 'Senior Technical Support Manager',
-      email: 'snafumatthew@gmail.com',
+      email: 'matt_parker@outlook.com',
       url: 'https://sysadmindoc.github.io',
       summary: '15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus open-source tooling across PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
