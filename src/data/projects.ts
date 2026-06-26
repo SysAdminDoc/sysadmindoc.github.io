@@ -10,7 +10,7 @@ export const featured: Featured[] = [
   { repo: "Astra-Deck", name: "Astra-Deck", lang: "ext", langLabel: "JS", desc: "Premium YouTube enhancement extension &mdash; 150+ features for Chrome &amp; Firefox.", tags: ["JavaScript","Chrome","Firefox"] },
   { repo: "OpenCut", name: "OpenCut", lang: "py", langLabel: "Py", desc: "AI-powered video editing automation for Premiere Pro &mdash; captions, audio processing, visual effects, all running locally.", tags: ["Python","Premiere Pro","AI"] },
   { repo: "VideoSubtitleRemover", name: "VideoSubtitleRemover", lang: "py", langLabel: "Py", desc: "AI-powered removal of hard-coded subtitles and text watermarks from video.", tags: ["Python","AI","Video"] },
-  { repo: "NovaCut", name: "NovaCut", lang: "kt", langLabel: "Kt", desc: "Full-featured Android video editor &mdash; 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.", tags: ["Kotlin","Android","Video"] }
+  { repo: "ClearCut", name: "ClearCut", lang: "kt", langLabel: "Kt", desc: "Full-featured Android video editor &mdash; 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.", tags: ["Kotlin","Android","Video"] }
 ];
 
 export const liveApps: LiveApp[] = [
@@ -176,7 +176,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "AlarmClockXtreme", name: "AlarmClockXtreme", url: "https://github.com/SysAdminDoc/AlarmClockXtreme", category: "kt", desc: "Feature-rich alarm clock" },
   { repo: "Lawnchair-Lite", name: "Lawnchair-Lite", url: "https://github.com/SysAdminDoc/Lawnchair-Lite", category: "kt", desc: "Lightweight launcher with 5 dark themes" },
   { repo: "HostShield", name: "HostShield", url: "https://github.com/SysAdminDoc/HostShield", category: "kt", desc: "Hosts-based ad blocker" },
-  { repo: "NovaCut", name: "NovaCut", url: "https://github.com/SysAdminDoc/NovaCut", category: "kt", desc: "Full-featured Android video editor" },
+  { repo: "ClearCut", name: "ClearCut", url: "https://github.com/SysAdminDoc/ClearCut", category: "kt", desc: "Full-featured Android video editor" },
   { repo: "LocalAndroidStore", name: "LocalAndroidStore", url: "https://github.com/SysAdminDoc/LocalAndroidStore", category: "kt", desc: "Personal Android-app catalog from GitHub Releases &mdash; Android sibling of LocalChromeStore" },
   { repo: "one-ui-home-clone", name: "one-ui-home-clone", url: "https://github.com/SysAdminDoc/one-ui-home-clone", category: "kt", desc: "Samsung One UI 7 parity launcher &mdash; Compose, clone not a port" },
   { repo: "AppManagerNG", name: "AppManagerNG", url: "https://github.com/SysAdminDoc/AppManagerNG", category: "kt", desc: "Power-user Android package manager &mdash; continuation of MuntashirAkon/AppManager" },

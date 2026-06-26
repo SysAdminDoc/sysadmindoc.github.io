@@ -28,8 +28,8 @@ export const greatestHits: GreatestHit[] = [
     tag: 'Android',
   },
   {
-    repo: 'NovaCut',
-    name: 'NovaCut',
+    repo: 'ClearCut',
+    name: 'ClearCut',
     why: '38K-line Android video editor with 40+ effects and 37 transitions. Open alternative to PowerDirector, zero telemetry, zero subscription.',
     tag: 'Android',
   },
@@ -90,18 +90,17 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-06-01',
+  updated: '2026-06-25',
   location: 'Sarasota, FL',
   building: [
-    'Portfolio site v0.17 — deep research audit, accessibility overhaul, View Transitions, self-hosted fonts',
-    'Delivering DR panel + handheld X-ray training to a major OEM\u2019s field engineers',
+    `Portfolio site v0.20 — ${fallbackRepoCount}+ repos, Popover API, @starting-style animations, resume PDF generation, Playwright visual baselines`,
+    'NexRay — multi-tenant cloud PACS platform with 4 AI engines',
     'Conduit — unified operations console for Maven Imaging (Tauri 2 + React 19 + FastAPI)',
     'XRayRoomPlanner — X-ray room compliance and drafting tool (React + Electron)',
-    `Catalog now at ${fallbackRepoCount}+ repos across 10 categories — 9 new projects added this sprint`,
-    'NexRay — multi-tenant cloud PACS platform with 4 AI engines',
+    'Delivering DR panel + handheld X-ray training to a major OEM’s field engineers',
   ],
   thinking: [
-    'Building an Obsidian knowledge graph as an AI-programmable brain for development agents',
+    'Preparing for npm v12 install-script changes hitting native deps in July 2026',
     'When self-hosted tooling beats vendor contracts for small medical imaging shops',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
