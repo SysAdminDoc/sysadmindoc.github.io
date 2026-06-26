@@ -277,41 +277,6 @@ const careerSignals = [
   { label: 'Industries', value: 'Healthcare IT / Broadcast / MSP' },
   { label: 'Compliance', value: 'HIPAA / Gov / Academic' },
 ] as const;
-const philosophyChecks = [
-  'One launch path',
-  'Readable defaults',
-  'Open code by default',
-] as const;
-const philosophyPrinciples = [
-  {
-    title: 'Works On First Launch',
-    desc: 'Download, launch, done. Tools auto-install their own dependencies and prerequisites. No setup wizards, no README scavenger hunts — if it takes more than one step to run, the build is not finished yet.',
-    note: 'Onboarding should feel like opening software, not starting a project.',
-    tone: 'blue',
-    icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
-  },
-  {
-    title: "Build What's Missing",
-    desc: "When the right tool does not exist, I build it. Most projects begin as a fix for personal operational friction, then grow into maintained software that solves the same problem for other people too.",
-    note: 'The best backlog is the one you already trip over at work.',
-    tone: 'green',
-    icon: 'M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z',
-  },
-  {
-    title: 'Always Dark',
-    desc: 'Every interface ships with a premium dark theme. The goal is not decoration; it is a calmer workspace with stronger contrast, cleaner hierarchy, and less fatigue over long sessions.',
-    note: 'A tool people stare at for hours should feel composed, not harsh.',
-    tone: 'purple',
-    icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z',
-  },
-  {
-    title: 'Open by Default',
-    desc: `Everything ships in public. ${publicProjectCount}+ projects and growing, with transparent code, direct launches, and a bias toward tools that work for anyone in any environment.`,
-    note: 'Trust comes faster when the work is inspectable and easy to try.',
-    tone: 'orange',
-    icon: 'M16 18l6-6-6-6M8 6l-6 6 6 6',
-  },
-] as const;
 const aerialClips = [
   {id:'waOMwX39NOg', title:'Venice Beach, Florida', desc:'Morning aerial flight — June 2023'},
   {id:'xnpOENxAx-k', title:'Manasota Beach, Florida', desc:'Coastal drone footage over Manasota Key'},
@@ -331,7 +296,6 @@ const cmdkSections = [
   { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
   { label: 'Career', href: '#career', desc: 'Work history.', badge: 'SECTION' },
-  { label: 'Philosophy', href: '#philosophy', desc: 'Build principles.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative projects.', badge: 'SECTION' },
   { label: 'Connect', href: '#connect', desc: 'Contact and links.', badge: 'SECTION' },
@@ -629,32 +593,6 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="philosophy" aria-label="Philosophy"><div class="si">
-    <div class="sh rv"><div class="sl">// Philosophy</div><h2 class="st">What Drives Me</h2><p class="sd">The principles behind every project I ship.</p></div>
-    <div class="philosophy-intro rv">
-      <div class="philosophy-copy-block">
-        <div class="philosophy-kicker">Shipping Standard</div>
-            <p class="philosophy-copy">The project count matters less than the feeling after launch: clear intent, low setup anxiety, and enough polish that the software feels maintained before you read a line of documentation.</p>
-      </div>
-      <div class="philosophy-checks" aria-label="Build standards">
-        {philosophyChecks.map((check) => <span>{check}</span>)}
-      </div>
-    </div>
-    <div class="pg">
-      {philosophyPrinciples.map((principle) => (
-        <article class={`prc card-enter principle-${principle.tone}`}>
-          <div class="pri"><svg viewBox="0 0 24 24" stroke="var(--principle-accent)"><path d={principle.icon}></path></svg></div>
-          <h3 class="prt">{principle.title}</h3>
-          <p class="prd">{principle.desc}</p>
-          <div class="prf">
-            <span class="prf-label">Why it matters</span>
-            <p class="prf-copy">{principle.note}</p>
-          </div>
-        </article>
-      ))}
-    </div>
-  </div></section>
-  <Divider />
 
   <section id="journey" aria-label="Journey"><div class="si">
     <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
