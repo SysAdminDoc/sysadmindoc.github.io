@@ -18,7 +18,7 @@ test('homepage terminal exposes contact, uses, and theme commands', async () => 
   assert.match(main, /light:\(\)=>runThemeCommand\(\['light'\]\)/);
   assert.match(main, /const btn=document\.getElementById\('themeToggle'\)/);
   assert.match(main, /function revealHomepageScrollSections\(\)/);
-  assert.match(main, /#live,#volume,#catalog,#skills,#about,#career,#philosophy,#journey,#beyond,#connect/);
+  assert.match(main, /#live,#volume,#catalog,#skills,#career,#journey,#beyond,#connect/);
   assert.match(main, /el\.style\.contentVisibility='visible'/);
   assert.match(main, /if\(inputEl\)inputEl\.blur\(\)/);
   assert.match(main, /window\.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL=Date\.now\(\)\+1600/);
