@@ -110,8 +110,6 @@ const filterButtons = [
   { key: 'guide', label: 'Guides' },
 ];
 const filterLabelByKey = Object.fromEntries(filterButtons.map((button) => [button.key, button.label]));
-const heroSignatureProjects = featured.slice(0, 3);
-const heroLaunchApps = liveApps.slice(0, 4);
 const heroTopCategories = Object.entries(catCounts)
   .sort(([, a], [, b]) => b - a)
   .slice(0, 3)
@@ -274,15 +272,6 @@ const stackRoutes = [
   { href: '/lang/kotlin/', label: 'Kotlin', meta: 'Android apps' },
   { href: '/lang/security/', label: 'Security', meta: 'Audits & network hardening' },
 ] as const;
-const aboutSignals = [
-  { label: 'Day Job', value: 'Maven Imaging', meta: 'Senior Technical Support Manager — PACS migrations, DR panel deployments, cloud transitions, and international clinical support.' },
-  { label: 'Reach', value: '3-continent support', meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia — plus HIPAA-regulated clients stateside.' },
-  { label: 'Public Archive', value: `${publicProjectCount}+ projects`, meta: 'Fifteen-plus years of IT, compounded into a working body of PowerShell, Python, JavaScript, Kotlin, C#, and C++ tools.' },
-] as const;
-const aboutLinks = [
-  { href: '/healthcare-it/', label: 'See the Healthcare Track', meta: 'The operational context, environments, and system work that shaped the portfolio.' },
-  { href: '/now/', label: 'Open the Current Focus', meta: 'What is being built, refined, and most likely to expand next.' },
-] as const;
 const careerSignals = [
   { label: 'Tenure', value: '15+ years' },
   { label: 'Industries', value: 'Healthcare IT / Broadcast / MSP' },
@@ -341,7 +330,6 @@ const cmdkSections = [
   { label: 'Project Mix', href: '#volume', desc: 'Projects by category.', badge: 'SECTION' },
   { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
-  { label: 'About', href: '#about', desc: 'Background and experience.', badge: 'SECTION' },
   { label: 'Career', href: '#career', desc: 'Work history.', badge: 'SECTION' },
   { label: 'Philosophy', href: '#philosophy', desc: 'Build principles.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
@@ -366,7 +354,6 @@ const cmdkSections = [
         <a href="/timeline/">Timeline</a>
         <a href="/archive/">Archive</a>
         <a href="/now/">Now</a>
-        <a href="#about">About</a>
         <a href="#career">Career</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
@@ -445,45 +432,6 @@ const cmdkSections = [
               <span class="sr-only">{signal.meta}</span>
             </div>
           ))}
-        </div>
-      </div>
-      <div class="hero-stage" aria-label="Portfolio highlights">
-        <div class="hero-stage-head">
-          <div>
-            <div class="hero-stage-kicker">Featured</div>
-            <p class="hero-stage-title">Three projects worth looking at first.</p>
-          </div>
-          <a href="#greatest-hits" class="hero-stage-link">See all highlights</a>
-        </div>
-        <div class="hero-reel">
-          {heroSignatureProjects.map((project, index) => (
-            <a href={`/projects/${project.repo}/`} class="hero-reel-item">
-              <span class="hero-reel-index">{String(index + 1).padStart(2, '0')}</span>
-              <span class="hero-reel-copy">
-                <span class="hero-reel-name">{project.name}</span>
-                <span class="hero-reel-meta">{project.tags.join(' / ')}</span>
-              </span>
-              <span class={`hero-reel-lang ${project.lang}`}>{project.langLabel}</span>
-            </a>
-          ))}
-        </div>
-        <div class="hero-terminal-shell">
-          <div class="hero-terminal-meta">
-            <div class="hero-terminal-copy">
-              <span class="hero-terminal-kicker">Terminal</span>
-              <span class="hero-terminal-note">Try `help`, `ls`, or `open LibreSpot`.</span>
-            </div>
-            <span class="hero-terminal-badge">Live</span>
-          </div>
-          <div class="term" id="heroTerm" role="region" aria-label="Interactive terminal" tabindex="0"><div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">matt@sysadmin: ~/portfolio</span></div><div class="tbd" id="termBody"></div><div class="term-hint" id="termHint">Click the terminal or start typing to explore</div></div>
-        </div>
-        <div class="hero-flightpath">
-          <span class="hero-flightpath-label">Open in browser</span>
-          <div class="hero-flightpath-items">
-            {heroLaunchApps.map((app) => (
-              <a href={app.url} target="_blank" rel="noopener">{app.name}</a>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -643,55 +591,6 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="about" aria-label="About"><div class="si">
-    <div class="sh rv"><div class="sl">// About</div><h2 class="st">The operator behind the portfolio</h2><p class="sd">Operational systems by day, launch-ready tooling after hours, with the same bias toward calm, reliable software in both places.</p></div>
-    <div class="ac">
-      <div class="about-copy rv">
-        <div class="about-kicker">Systems operator first. Product finisher by habit.</div>
-        <p class="atp">I'm the <strong>Senior Technical Support Manager</strong> at <strong>Maven Imaging</strong> &mdash; where I&rsquo;ve architected 10+ PACS migrations (including a million-file Candelis legacy transfer when vendor tooling gave up), restored 54 customer cloud accounts through a cross-vendor transition, and support medical imaging clinics across the Caribbean, East Africa, and East Asia. Before this I spent 11 years as Systems Administrator at <strong>ThinkTV</strong> (PBS affiliate) running Windows servers, Cisco networking, Hyper-V, and SCCM, with four years at a Dayton MSP before that.</p>
-        <p class="atp">When a vendor tool fails at the worst possible moment, I write the replacement. That habit has produced a full set of in-house utilities &mdash; a custom DICOM C-Store sender, a PC-provisioning kit, an acquisition-PC network scanner, a service-watcher script that keeps overnight transfers alive &mdash; on top of the <strong id="aboutReposText">{publicProjectCount}+</strong> <strong>public projects</strong> on GitHub across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Several of them &mdash; the DICOM migration toolchain and the acquisition-PC network scanner among them &mdash; went from side-project to company-wide production tools.</p>
-        <div class="about-signals" aria-label="Profile highlights">
-          {aboutSignals.map((signal) => (
-            <div class="about-signal">
-              <span class="about-signal-label">{signal.label}</span>
-              <strong class="about-signal-value">{signal.value}</strong>
-              <p class="about-signal-meta">{signal.meta}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div class="about-side rv s2">
-        <div class="term about-terminal">
-          <div class="tb"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="tt">about.json</span></div>
-          <div class="atb">
-            <div><span class="tcm">&#123;</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"role"</span><span class="tcm">:</span> <span class="ts">"Sr. Technical Support Manager"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"employer"</span><span class="tcm">:</span> <span class="ts">"Maven Imaging"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"location"</span><span class="tcm">:</span> <span class="ts">"Sarasota, FL"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"experience_years"</span><span class="tcm">:</span> <span class="tv">15</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"focus"</span><span class="tcm">:</span> <span class="ts">"DICOM/PACS &amp; Open Source"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"languages"</span><span class="tcm">:</span> <span class="tcm">[</span></div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"PowerShell"</span><span class="tcm">,</span> <span class="ts">"Python"</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="ts">"JavaScript"</span><span class="tcm">,</span> <span class="ts">"Kotlin"</span><span class="tcm">,</span> <span class="ts">"C#"</span><span class="tcm">,</span> <span class="ts">"C++"</span></div>
-            <div>&nbsp;&nbsp;<span class="tcm">],</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"philosophy"</span><span class="tcm">:</span> <span class="ts">"Works on first launch. Dark theme."</span><span class="tcm">,</span></div>
-              <div>&nbsp;&nbsp;<span class="tk">"projects"</span><span class="tcm">:</span> <span class="tv" id="aboutRepos">{publicProjectCount}</span><span class="tcm">,</span></div>
-            <div>&nbsp;&nbsp;<span class="tk">"available"</span><span class="tcm">:</span> <span class="tv">true</span></div>
-            <div><span class="tcm">&#125;</span></div>
-          </div>
-        </div>
-        <div class="about-links" aria-label="About shortcuts">
-          {aboutLinks.map((link) => (
-            <a href={link.href} class="about-link">
-              <span class="about-link-label">{link.label}</span>
-              <span class="about-link-meta">{link.meta}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div></section>
-  <Divider />
 
   <section id="career" aria-label="Career history"><div class="si">
     <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Medical imaging now, broadcast infrastructure before that, MSP work before that. Every step has been about keeping complex production systems steady and turning the repeated friction into better tooling.</p></div>
