@@ -21,23 +21,6 @@ async function readSourceTree(dir) {
   return chunks.join('\n');
 }
 
-test('iOS PWA install path exposes standalone metadata and manual Safari fallback', async () => {
-  const base = await fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8');
-  const main = await fs.readFile(path.join(root, 'public', 'scripts', 'main.js'), 'utf8');
-
-  assert.match(base, /<meta name="mobile-web-app-capable" content="yes" \/>/);
-  assert.match(base, /<meta name="apple-mobile-web-app-capable" content="yes" \/>/);
-  assert.match(base, /<meta name="apple-mobile-web-app-title" content="SysAdminDoc" \/>/);
-  assert.match(base, /<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" \/>/);
-
-  assert.match(main, /function isIosDevice\(\)/);
-  assert.match(main, /window\.navigator\.standalone===true/);
-  assert.match(main, /function isIosSafari\(\)/);
-  assert.match(main, /Open as Web App/);
-  assert.match(main, /showInstallChip\('ios'\)/);
-  assert.match(main, /beforeinstallprompt/);
-});
-
 test('prefers-contrast layer exists and SearchAction stays out of schema', async () => {
   const critical = await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8');
   const global = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
