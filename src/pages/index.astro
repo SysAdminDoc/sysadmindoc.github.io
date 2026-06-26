@@ -135,9 +135,9 @@ const heroSignals = [
     meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia. 15+ years in IT.',
   },
   {
-    label: 'Strongest lanes',
+    label: 'Primary focus',
     value: heroSignalCategories,
-    meta: `Current mix: ${heroDomainText}.`,
+    meta: `${heroDomainText}.`,
   },
 ] as const;
 function resolveHomepageProofSource(
@@ -202,29 +202,29 @@ const connectPaths = [
     handle: '/search',
     href: '/search/',
     external: false,
-    desc: 'Search rendered project pages, README excerpts, release history, archive decisions, and route copy.',
-    meta: 'Best if you remember a feature, keyword, library, or README phrase.',
+    desc: 'Search project pages, README excerpts, release history, and archive decisions.',
+    meta: 'Search by feature, keyword, library, or README phrase.',
     cta: 'Open full-text search',
     icon: 'release',
   },
   {
-    title: 'GitHub workspace',
+    title: 'GitHub',
     handle: 'github.com/SysAdminDoc',
     href: 'https://github.com/SysAdminDoc',
     external: true,
-    desc: 'Best for opening an issue, browsing the source, or grounding a conversation in a specific project.',
-    meta: 'Public, traceable, and attached directly to the work.',
-    cta: 'Open GitHub workspace',
+    desc: 'Open an issue, browse the source, or fork a project.',
+    meta: 'All source code and issue tracking.',
+    cta: 'Open GitHub',
     icon: 'github',
   },
   {
-    title: 'Release stream',
+    title: 'Releases',
     handle: '/releases',
     href: '/releases/',
     external: false,
-    desc: 'See what is actively shipping, what just changed, and which parts of the portfolio are moving right now.',
-    meta: 'Best if you want the current maintenance pulse first.',
-    cta: 'Open release stream',
+    desc: 'Recent releases, changelogs, and download links across all projects.',
+    meta: 'What shipped recently.',
+    cta: 'View releases',
     icon: 'release',
   },
   {
@@ -232,29 +232,29 @@ const connectPaths = [
     handle: '/timeline',
     href: '/timeline/',
     external: false,
-    desc: 'Filter the public archive by year, platform, language, and category to see how the work moved over time.',
-    meta: 'Best if you want the wide-angle portfolio history before drilling into a repo.',
+    desc: 'Browse the archive by year, platform, language, and category.',
+    meta: 'Full project history.',
     cta: 'Open timeline',
     icon: 'pulse',
   },
   {
-    title: 'Archive decisions',
+    title: 'Archive',
     handle: '/archive',
     href: '/archive/',
     external: false,
-    desc: 'See why older projects moved out of the spotlight, became references, or stayed held back for review.',
-    meta: 'Best if you want the public-safe anti-portfolio context.',
-    cta: 'Open archive decisions',
+    desc: 'Retired, superseded, and reference-only projects with context on why they moved.',
+    meta: 'Previous work and decisions.',
+    cta: 'Open archive',
     icon: 'release',
   },
   {
-    title: 'Current focus',
+    title: 'Now',
     handle: '/now',
     href: '/now/',
     external: false,
-    desc: 'Quick snapshot of what I am building, polishing, and most likely to expand next.',
-    meta: 'Best if you want to gauge timing and fit for new work.',
-    cta: 'Open current focus',
+    desc: 'What I am currently building and what is most likely to ship next.',
+    meta: 'Current focus and priorities.',
+    cta: 'See current focus',
     icon: 'pulse',
   },
   {
@@ -262,8 +262,8 @@ const connectPaths = [
     handle: 'snafumatthew@gmail.com',
     href: 'mailto:snafumatthew@gmail.com',
     external: false,
-    desc: 'The most direct line for collaboration, contract work, or a hiring conversation.',
-    meta: 'Best for anything that needs a real reply — I usually respond within a couple of days.',
+    desc: 'For collaboration, contract work, or hiring conversations.',
+    meta: 'I typically respond within a couple of days.',
     cta: 'Send an email',
     icon: 'mail',
   },
@@ -272,8 +272,8 @@ const connectPaths = [
     handle: 'in/matthewryanparker',
     href: 'https://www.linkedin.com/in/matthewryanparker',
     external: true,
-    desc: 'Professional background, full work history, and the easiest place to connect for recruiters.',
-    meta: 'Best for recruiter discovery and the formal career record.',
+    desc: 'Professional background and full work history.',
+    meta: 'Career record and professional network.',
     cta: 'Open LinkedIn',
     icon: 'linkedin',
   },
@@ -340,29 +340,6 @@ const aerialClips = [
   {id:'PnlsSqa8DtQ', title:'Venice Jetty', desc:'Aerial view of the Venice, Florida jetty'},
   {id:'FVroPKvYgKQ', title:'Nokomis Beach, Florida', desc:'Drone flight over Nokomis Beach'},
 ] as const;
-const beyondCards = [
-  {
-    kicker: 'Aerial footage',
-    value: `${aerialClips.length} flights`,
-    copy: 'Coastal Florida drone clips stay click-to-play so the page stays quiet until a visitor chooses a video.',
-    href: '#beyond-video',
-    cta: 'Watch clips',
-  },
-  {
-    kicker: 'Media tooling',
-    value: 'SlunderStudio',
-    copy: 'The music-generation work is represented through its public project page instead of a third-party music embed.',
-    href: '/projects/SlunderStudio/',
-    cta: 'Open project',
-  },
-  {
-    kicker: 'Boundary',
-    value: 'No autoplay embeds',
-    copy: 'Creative context stays lightweight: internal project routes, outbound source links, and click-to-load video only.',
-    href: '/archive/',
-    cta: 'Read decisions',
-  },
-] as const;
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
@@ -370,19 +347,19 @@ catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
 const latestReleaseName = latestRelease ? latestRelease.name ?? projectNameMap.get(latestRelease.repo) ?? latestRelease.repo : null;
 const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.lastPushedRepo) ?? stats.lastPushedRepo : null;
 const cmdkSections = [
-  { label: 'Highlights', href: '#greatest-hits', desc: 'Start with the shortlist of projects that best explain the portfolio.', badge: 'START' },
-  { label: 'Live Apps', href: '#live', desc: 'Launch-ready browser apps with no setup wall.', badge: 'LIVE' },
-  { label: 'Project Mix', href: '#volume', desc: 'Category footprint and quick-pick routes into the catalog.', badge: 'SECTION' },
-  { label: 'Catalog', href: '#catalog', desc: 'Every public project, filterable by language and domain.', badge: 'ARCHIVE' },
-  { label: 'Stack', href: '#skills', desc: 'Languages, tooling, and where the work clusters.', badge: 'SECTION' },
-  { label: 'About', href: '#about', desc: 'Background, operating style, and what drives the work.', badge: 'SECTION' },
-  { label: 'Career', href: '#career', desc: '15+ years across healthcare imaging, PBS broadcast, and managed services.', badge: 'SECTION' },
-  { label: 'Philosophy', href: '#philosophy', desc: 'The product standards behind every project.', badge: 'SECTION' },
-  { label: 'Journey', href: '#journey', desc: 'How the portfolio expanded across platforms.', badge: 'SECTION' },
-  { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative tooling beyond the terminal.', badge: 'SECTION' },
-  { label: 'Connect', href: '#connect', desc: 'Best ways to collaborate and what to bring.', badge: 'SECTION' },
-  { label: 'Full-Text Search', href: '/search/', desc: 'Search rendered project pages, README excerpts, and route copy.', badge: 'PAGE' },
-  { label: 'Archive Decisions', href: '/archive/', desc: 'Why retired, held, or superseded project surfaces moved out of view.', badge: 'PAGE' },
+  { label: 'Highlights', href: '#greatest-hits', desc: 'Featured projects.', badge: 'START' },
+  { label: 'Live Apps', href: '#live', desc: 'Browser-ready apps.', badge: 'LIVE' },
+  { label: 'Project Mix', href: '#volume', desc: 'Projects by category.', badge: 'SECTION' },
+  { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
+  { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
+  { label: 'About', href: '#about', desc: 'Background and experience.', badge: 'SECTION' },
+  { label: 'Career', href: '#career', desc: 'Work history.', badge: 'SECTION' },
+  { label: 'Philosophy', href: '#philosophy', desc: 'Build principles.', badge: 'SECTION' },
+  { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
+  { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative projects.', badge: 'SECTION' },
+  { label: 'Connect', href: '#connect', desc: 'Contact and links.', badge: 'SECTION' },
+  { label: 'Full-Text Search', href: '/search/', desc: 'Search projects and documentation.', badge: 'PAGE' },
+  { label: 'Archive', href: '/archive/', desc: 'Retired and superseded projects.', badge: 'PAGE' },
 ] as const;
 ---
 <Base cmdkSections={cmdkSections}>
@@ -428,7 +405,7 @@ const cmdkSections = [
       <div class="ht">
         <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
         <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="56" height="56" decoding="async" fetchpriority="high">
-        <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Open for thoughtful collaboration</a>
+        <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Available for work</a>
         <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <div class="hero-proof-strip" aria-label="Source-backed project outcomes">
           {heroProofItems.map((proof) => (
@@ -468,7 +445,7 @@ const cmdkSections = [
           )}
         </div>
         <div class="ha">
-          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Start with the strongest work</a>
+          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Featured projects</a>
           <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View the GitHub archive</a>
         </div>
         <div class="hero-signals" aria-label="Portfolio differentiators">
@@ -484,10 +461,10 @@ const cmdkSections = [
       <div class="hero-stage" aria-label="Portfolio highlights">
         <div class="hero-stage-head">
           <div>
-            <div class="hero-stage-kicker">Signature builds</div>
-            <p class="hero-stage-title">Three projects that explain how I build.</p>
+            <div class="hero-stage-kicker">Featured</div>
+            <p class="hero-stage-title">Three projects worth looking at first.</p>
           </div>
-          <a href="#greatest-hits" class="hero-stage-link">Open the short list</a>
+          <a href="#greatest-hits" class="hero-stage-link">See all highlights</a>
         </div>
         <div class="hero-reel">
           {heroSignatureProjects.map((project, index) => (
@@ -504,8 +481,8 @@ const cmdkSections = [
         <div class="hero-terminal-shell">
           <div class="hero-terminal-meta">
             <div class="hero-terminal-copy">
-              <span class="hero-terminal-kicker">Portfolio shell</span>
-              <span class="hero-terminal-note">Jump through the archive with `help`, `ls`, or `open LibreSpot`.</span>
+              <span class="hero-terminal-kicker">Terminal</span>
+              <span class="hero-terminal-note">Try `help`, `ls`, or `open LibreSpot`.</span>
             </div>
             <span class="hero-terminal-badge">Live</span>
           </div>
@@ -541,7 +518,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="live" aria-label="Live apps"><div class="si">
-    <div class="sh rv"><div class="sl">// Live · {liveApps.length} apps</div><h2 class="st">Open the product surface immediately</h2><p class="sd">{liveApps.length} browser-ready apps with no sign-in gate, no install ceremony, and enough polish to judge the experience in a minute. Each card shows a live reachability check.</p></div>
+    <div class="sh rv"><div class="sl">// Live · {liveApps.length} apps</div><h2 class="st">Browser-Ready Apps</h2><p class="sd">{liveApps.length} apps you can open right now — no install, no sign-up required.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
     </div>
@@ -552,7 +529,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="catalog" aria-label="Project catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">The full public archive</h2><p class="sd">Every public project, with fast search, useful filters, and a build-time ranking that blends stars, freshness, and release-download activity before you click through.</p></div>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All Projects</h2><p class="sd">Every public project, searchable and filterable by language and domain.</p></div>
     <search aria-label="Filter and search the project catalog">
     <div class="catalog-controls rv">
       <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
@@ -621,11 +598,11 @@ const cmdkSections = [
   <Divider />
 
   <section id="skills" aria-label="Stack and skills"><div class="si">
-    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">The portfolio spans a lot of projects, but the work organizes into a few strong lanes. Start with the language track that matches your problem, then use the project mix to understand the bigger picture.</p></div>
+    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">Six languages, one bias: build the tool that should already exist.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
-        <div class="stack-kicker">Browse by lane</div>
-        <p class="stack-copy">Each track groups the projects that share a workflow, platform, and maintenance rhythm. Open a lane for the strongest examples instead of paging through the full archive first.</p>
+        <div class="stack-kicker">Browse by language</div>
+        <p class="stack-copy">Projects grouped by language and platform.</p>
         <div class="stack-actions" aria-label="Open stack tracks">
           {stackRoutes.map((route) => (
             <a href={route.href} class="stack-action">
@@ -817,18 +794,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Aerial footage, creative tooling, and the same lightweight media posture as the rest of the portfolio.</p></div>
-
-    <div class="beyond-overview rv" aria-label="Beyond code highlights">
-      {beyondCards.map((card) => (
-        <a href={card.href} class="beyond-card">
-          <span class="beyond-card-kicker">{card.kicker}</span>
-          <strong class="beyond-card-value">{card.value}</strong>
-          <p class="beyond-card-copy">{card.copy}</p>
-          <span class="beyond-card-cta">{card.cta}</span>
-        </a>
-      ))}
-    </div>
+    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
@@ -846,12 +812,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect" aria-label="Connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Choose the best way in</h2><p class="sd">Fast entry points depending on whether you want full-text discovery, source, shipping activity, timeline history, archive decisions, or the current focus.</p></div>
-    <p class="connect-msg rv">If you have a workflow worth automating, a product surface that feels rough, or a tool that should exist, start with the route that gives the right amount of context.</p>
-    <div class="connect-notes rv" aria-label="Best collaboration fit">
-      <div class="connect-note"><span class="connect-note-label">Best fit</span> Automation, internal tooling, browser products, and UX cleanup for complex workflows.</div>
-      <div class="connect-note"><span class="connect-note-label">Bring along</span> A GitHub issue, a rough idea, or the repetitive process you want gone.</div>
-    </div>
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Get in Touch</h2><p class="sd">Reach out through any of these channels.</p></div>
     <div class="cng">
       {connectPaths.map((path) => (
         <a
@@ -901,7 +862,7 @@ const cmdkSections = [
             </span>
           )}
         </div>
-        <p class="footer-summary">Open source automation, browser tools, and dark-mode-first utilities shaped by real operational work instead of demo-only ideas.</p>
+        <p class="footer-summary">Open-source tools for automation, system administration, and medical imaging workflows.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation">
         <a href="#catalog">Catalog</a>
