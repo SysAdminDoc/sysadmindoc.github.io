@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-04T14:52:00.000Z",
+  "source": {
+    "repository": "SysAdminDoc/sysadmindoc.github.io",
+    "data": "src/data/_releases.json",
+    "githubMetadataFetchedAt": "2026-06-04T14:52:00.000Z"
+  },
+  "counts": {
+    "releases": 9,
+    "repositories": 8
+  },
+  "releases": [
+    {
+      "repo": "Astra-Deck",
+      "projectName": "Astra-Deck",
+      "tag": "v4.46.0",
+      "name": "Astra Deck v4.46.0",
+      "publishedAt": "2026-06-04T12:22:15Z",
+      "summary": "Astra Deck v4.46.0 catches the public release channel up to the current profile-split build line.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.0",
+        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
+        "detail": "https://sysadmindoc.github.io/projects/Astra-Deck/"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.16.0",
+      "name": "VideoSubtitleRemoverPro v3.16.0",
+      "publishedAt": "2026-06-03T16:23:52Z",
+      "summary": "Automated build with RTX 50-series support and video inpainting setup updates.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.16.0",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"
+      }
+    },
+    {
+      "repo": "Keepr",
+      "projectName": "Keepr",
+      "tag": "v0.16.2",
+      "name": "v0.16.2 - Editor open crash fix",
+      "publishedAt": "2026-05-26T20:47:32Z",
+      "summary": "Editor open crash fix for the first published Windows binary line.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.16.2",
+        "repository": "https://github.com/SysAdminDoc/Keepr",
+        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
+      }
+    },
+    {
+      "repo": "AppManagerNG",
+      "projectName": "AppManagerNG",
+      "tag": "v0.5.0",
+      "name": "AppManagerNG v0.5.0",
+      "publishedAt": "2026-05-26T01:07:12Z",
+      "summary": "Release-backed package manager fixture with APK artifacts and changelog coverage.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0",
+        "repository": "https://github.com/SysAdminDoc/AppManagerNG",
+        "detail": "https://sysadmindoc.github.io/projects/AppManagerNG/"
+      }
+    },
+    {
+      "repo": "Droidsmith",
+      "projectName": "Droidsmith",
+      "tag": "v0.1.0",
+      "name": "Droidsmith v0.1.0",
+      "publishedAt": "2026-05-26T00:20:49Z",
+      "summary": "First semver-tagged cross-platform ADB GUI release.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0",
+        "repository": "https://github.com/SysAdminDoc/Droidsmith",
+        "detail": "https://sysadmindoc.github.io/projects/Droidsmith/"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.11.0",
+      "name": "ScriptVault v3.11.0",
+      "publishedAt": "2026-05-24T13:06:40Z",
+      "summary": "Chrome MV3 release for parity and storage rollback hardening.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.11.0",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+      }
+    },
+    {
+      "repo": "OpenLumen",
+      "projectName": "OpenLumen",
+      "tag": "v0.5.1",
+      "name": "OpenLumen v0.5.1",
+      "publishedAt": "2026-05-22T03:47:14Z",
+      "summary": "Deep-audit hardening pass with signed Android package artifacts.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/OpenLumen/releases/tag/v0.5.1",
+        "repository": "https://github.com/SysAdminDoc/OpenLumen",
+        "detail": "https://sysadmindoc.github.io/projects/OpenLumen/"
+      }
+    },
+    {
+      "repo": "Astra-Deck",
+      "projectName": "Astra-Deck",
+      "tag": "v4.5.2",
+      "name": "Astra Deck v4.5.2",
+      "publishedAt": "2026-05-21T15:53:10Z",
+      "summary": "Audit hardening release with narrower local host permissions, popup diagnostics, accessibility checks, and CI gates.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.5.2",
+        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
+        "detail": "https://sysadmindoc.github.io/projects/Astra-Deck/"
+      }
+    },
+    {
+      "repo": "SwiftFloris",
+      "projectName": "SwiftFloris",
+      "tag": "v1.8.172",
+      "name": "SwiftFloris v1.8.172",
+      "publishedAt": "2026-05-19T00:50:52Z",
+      "summary": "Keyboard path-stroke and gesture rendering polish release.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.8.172",
+        "repository": "https://github.com/SysAdminDoc/SwiftFloris",
+        "detail": "https://sysadmindoc.github.io/projects/SwiftFloris/"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sysadmindoc.github.io/sitemap-index.xml
+
+# AI/LLM curated index: https://sysadmindoc.github.io/llms.txt

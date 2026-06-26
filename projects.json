@@ -1,0 +1,4975 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-04T14:52:00.000Z",
+  "source": {
+    "repository": "SysAdminDoc/sysadmindoc.github.io",
+    "data": "SysAdminDoc/SysAdminDoc projects.json",
+    "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
+    "profileFeedGeneratedAt": "2026-06-01T13:18:55.0998940-07:00",
+    "profileFeedCachedAt": "2026-06-26T16:59:44.161Z",
+    "githubMetadataFetchedAt": "2026-06-04T14:52:00.000Z",
+    "githubLastPushedAt": "2026-06-04T14:51:46Z"
+  },
+  "counts": {
+    "projects": 182,
+    "featured": 10,
+    "liveApps": 22,
+    "catalog": 182
+  },
+  "projects": [
+    {
+      "slug": "win11-nvme-driver-patcher",
+      "name": "win11-nvme-driver-patcher",
+      "description": "GUI to enable Windows Server 2025 NVMe driver on Windows 11 - ~80% IOPS improvement on modern SSDs.",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": "C#",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "PowerShell",
+        "WPF",
+        "Driver"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/",
+        "repository": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
+        "source": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/win11-nvme-driver-patcher.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 41
+      },
+      "freshness": {
+        "pushedAt": "2026-05-26T19:01:39Z",
+        "updatedAt": "2026-05-30T21:12:01Z"
+      }
+    },
+    {
+      "slug": "OpenCut",
+      "name": "OpenCut",
+      "description": "AI-powered video editing automation for Premiere Pro - captions, audio processing, visual effects, all running locally.",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": "Python",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "Python",
+        "Premiere Pro",
+        "AI"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OpenCut/",
+        "repository": "https://github.com/SysAdminDoc/OpenCut",
+        "source": "https://github.com/SysAdminDoc/OpenCut",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OpenCut.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 19
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T14:51:46Z",
+        "updatedAt": "2026-06-04T14:49:57Z"
+      }
+    },
+    {
+      "slug": "project-nomad-desktop",
+      "name": "project-nomad-desktop",
+      "description": "Offline survival command center - maps, AI chat, situation room, NukeMap, supply tracking. 600+ routes, 95+ tables.",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": "Python",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "Python",
+        "Flask",
+        "Offline"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/project-nomad-desktop/",
+        "repository": "https://github.com/SysAdminDoc/project-nomad-desktop",
+        "source": "https://github.com/SysAdminDoc/project-nomad-desktop",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/project-nomad-desktop.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 11
+      },
+      "freshness": {
+        "pushedAt": "2026-05-19T03:33:34Z",
+        "updatedAt": "2026-05-19T03:33:37Z"
+      }
+    },
+    {
+      "slug": "LibreSpot",
+      "name": "LibreSpot",
+      "description": "Spotify customization - automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": true,
+      "live": false,
+      "tags": [
+        "PowerShell",
+        "Spotify",
+        "Themes"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LibreSpot/",
+        "repository": "https://github.com/SysAdminDoc/LibreSpot",
+        "source": "https://github.com/SysAdminDoc/LibreSpot",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LibreSpot.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "VideoSubtitleRemover",
+      "name": "VideoSubtitleRemover",
+      "description": "AI-powered removal of hard-coded subtitles and text watermarks from video.",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": "Python",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "Python",
+        "AI",
+        "Video"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/VideoSubtitleRemover/",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "source": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/VideoSubtitleRemover.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 17
+      },
+      "freshness": {
+        "pushedAt": "2026-06-03T16:23:52Z",
+        "updatedAt": "2026-06-03T17:25:01Z"
+      }
+    },
+    {
+      "slug": "Astra-Deck",
+      "name": "Astra-Deck",
+      "description": "Premium YouTube enhancement extension - 150+ features for Chrome & Firefox.",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": "JavaScript",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "JavaScript",
+        "Chrome",
+        "Firefox"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Astra-Deck/",
+        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
+        "source": "https://github.com/SysAdminDoc/Astra-Deck",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Astra-Deck.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 10
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T14:31:50Z",
+        "updatedAt": "2026-06-04T13:47:15Z"
+      }
+    },
+    {
+      "slug": "Network_Security_Auditor",
+      "name": "Network_Security_Auditor",
+      "description": "67 automated checks across 8 security domains with MITRE ATT&CK mapping and multi-tier compliance reports.",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": "PowerShell",
+      "featured": true,
+      "live": false,
+      "tags": [
+        "PowerShell",
+        "Security",
+        "MITRE"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "source": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Network_Security_Auditor.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 6
+      },
+      "freshness": {
+        "pushedAt": "2026-05-26T19:01:15Z",
+        "updatedAt": "2026-05-26T19:01:22Z"
+      }
+    },
+    {
+      "slug": "ZeusWatch",
+      "name": "ZeusWatch",
+      "description": "Premium dark weather app — no API keys required",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": true,
+      "live": false,
+      "tags": [
+        "android",
+        "dark-theme",
+        "jetpack-compose"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ZeusWatch/",
+        "repository": "https://github.com/SysAdminDoc/ZeusWatch",
+        "source": "https://github.com/SysAdminDoc/ZeusWatch",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ZeusWatch.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ClearCut",
+      "name": "ClearCut",
+      "description": "Full-featured Android video editor - 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": true,
+      "live": false,
+      "tags": [
+        "Kotlin",
+        "Android",
+        "Video"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "source": "https://github.com/SysAdminDoc/NovaCut",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ClearCut.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "HostShield",
+      "name": "HostShield",
+      "description": "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": true,
+      "live": false,
+      "tags": [
+        "Kotlin",
+        "Android",
+        "Ad Blocker"
+      ],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/HostShield/",
+        "repository": "https://github.com/SysAdminDoc/HostShield",
+        "source": "https://github.com/SysAdminDoc/HostShield",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/HostShield.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "IconForge",
+      "name": "IconForge",
+      "description": "Image resizer & converter",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/IconForge/",
+        "repository": "https://github.com/SysAdminDoc/IconForge",
+        "source": "https://github.com/SysAdminDoc/IconForge",
+        "live": "https://sysadmindoc.github.io/IconForge/",
+        "ogImage": "https://sysadmindoc.github.io/og/IconForge.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/IconForge.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/IconForge.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SPECTRE",
+      "name": "SPECTRE",
+      "description": "Intelligence aggregator - OSINT data feeds",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SPECTRE/",
+        "repository": "https://github.com/SysAdminDoc/SPECTRE",
+        "source": "https://github.com/SysAdminDoc/SPECTRE",
+        "live": "https://sysadmindoc.github.io/SPECTRE/",
+        "ogImage": "https://sysadmindoc.github.io/og/SPECTRE.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/SPECTRE.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SPECTRE.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ImageXpert",
+      "name": "ImageXpert",
+      "description": "Multi-engine reverse image search",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ImageXpert/",
+        "repository": "https://github.com/SysAdminDoc/ImageXpert",
+        "source": "https://github.com/SysAdminDoc/ImageXpert",
+        "live": "https://sysadmindoc.github.io/ImageXpert/",
+        "ogImage": "https://sysadmindoc.github.io/og/ImageXpert.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/ImageXpert.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageXpert.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ConvertFlow",
+      "name": "ConvertFlow",
+      "description": "Browser media converter",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ConvertFlow/",
+        "repository": "https://github.com/SysAdminDoc/ConvertFlow",
+        "source": "https://github.com/SysAdminDoc/ConvertFlow",
+        "live": "https://sysadmindoc.github.io/ConvertFlow/",
+        "ogImage": "https://sysadmindoc.github.io/og/ConvertFlow.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/ConvertFlow.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ConvertFlow.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ClipForge",
+      "name": "ClipForge",
+      "description": "Browser-based video editor",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ClipForge/",
+        "repository": "https://github.com/SysAdminDoc/ClipForge",
+        "source": "https://github.com/SysAdminDoc/ClipForge",
+        "live": "https://sysadmindoc.github.io/ClipForge/",
+        "ogImage": "https://sysadmindoc.github.io/og/ClipForge.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/ClipForge.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ClipForge.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Text-Filter-Editor",
+      "name": "Text-Filter-Editor",
+      "description": "Text filtering and processing tool",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Text-Filter-Editor/",
+        "repository": "https://github.com/SysAdminDoc/Text-Filter-Editor",
+        "source": "https://github.com/SysAdminDoc/Text-Filter-Editor",
+        "live": "https://sysadmindoc.github.io/Text-Filter-Editor/",
+        "ogImage": "https://sysadmindoc.github.io/og/Text-Filter-Editor.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/Text-Filter-Editor.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Text-Filter-Editor.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Multistreamer",
+      "name": "Multistreamer",
+      "description": "Multi-video streaming viewer with chat",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Multistreamer/",
+        "repository": "https://github.com/SysAdminDoc/Multistreamer",
+        "source": "https://github.com/SysAdminDoc/Multistreamer",
+        "live": "https://sysadmindoc.github.io/Multistreamer/",
+        "ogImage": "https://sysadmindoc.github.io/og/Multistreamer.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/Multistreamer.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Multistreamer.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "StormviewRadar",
+      "name": "StormviewRadar",
+      "description": "Open source weather radar viewer",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": "HTML",
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/StormviewRadar/",
+        "repository": "https://github.com/SysAdminDoc/StormviewRadar",
+        "source": "https://github.com/SysAdminDoc/StormviewRadar",
+        "live": "https://sysadmindoc.github.io/StormviewRadar/",
+        "ogImage": "https://sysadmindoc.github.io/og/StormviewRadar.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/StormviewRadar.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/StormviewRadar.jpg"
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-05-26T19:01:26Z",
+        "updatedAt": "2026-05-26T19:01:33Z"
+      }
+    },
+    {
+      "slug": "SkyTrack",
+      "name": "SkyTrack",
+      "description": "Real-time aircraft tracker",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SkyTrack/",
+        "repository": "https://github.com/SysAdminDoc/SkyTrack",
+        "source": "https://github.com/SysAdminDoc/SkyTrack",
+        "live": "https://sysadmindoc.github.io/SkyTrack/",
+        "ogImage": "https://sysadmindoc.github.io/og/SkyTrack.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/SkyTrack.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SkyTrack.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "GifStudio",
+      "name": "GifStudio",
+      "description": "Browser-based GIF studio",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GifStudio/",
+        "repository": "https://github.com/SysAdminDoc/GifStudio",
+        "source": "https://github.com/SysAdminDoc/GifStudio",
+        "live": "https://sysadmindoc.github.io/GifStudio/",
+        "ogImage": "https://sysadmindoc.github.io/og/GifStudio.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/GifStudio.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/GifStudio.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Base64Converter",
+      "name": "Base64Converter",
+      "description": "Base64 encoder & decoder",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Base64Converter/",
+        "repository": "https://github.com/SysAdminDoc/Base64Converter",
+        "source": "https://github.com/SysAdminDoc/Base64Converter",
+        "live": "https://sysadmindoc.github.io/Base64Converter/",
+        "ogImage": "https://sysadmindoc.github.io/og/Base64Converter.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/Base64Converter.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Base64Converter.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "CoolSites",
+      "name": "CoolSites",
+      "description": "470+ curated free tools & open source projects",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/CoolSites/",
+        "repository": "https://github.com/SysAdminDoc/CoolSites",
+        "source": "https://github.com/SysAdminDoc/CoolSites",
+        "live": "https://sysadmindoc.github.io/CoolSites/",
+        "ogImage": "https://sysadmindoc.github.io/og/CoolSites.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/CoolSites.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CoolSites.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "BookmarkVault",
+      "name": "BookmarkVault",
+      "description": "Bookmark management web app",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/BookmarkVault/",
+        "repository": "https://github.com/SysAdminDoc/BookmarkVault",
+        "source": "https://github.com/SysAdminDoc/BookmarkVault",
+        "live": "https://sysadmindoc.github.io/BookmarkVault/",
+        "ogImage": "https://sysadmindoc.github.io/og/BookmarkVault.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/BookmarkVault.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/BookmarkVault.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ImageForge",
+      "name": "ImageForge",
+      "description": "Open source image converter",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ImageForge/",
+        "repository": "https://github.com/SysAdminDoc/ImageForge",
+        "source": "https://github.com/SysAdminDoc/ImageForge",
+        "live": "https://sysadmindoc.github.io/ImageForge/",
+        "ogImage": "https://sysadmindoc.github.io/og/ImageForge.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/ImageForge.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageForge.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Openshop",
+      "name": "Openshop",
+      "description": "Browser-based image editor with layers & filters",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Openshop/",
+        "repository": "https://github.com/SysAdminDoc/Openshop",
+        "source": "https://github.com/SysAdminDoc/Openshop",
+        "live": "https://sysadmindoc.github.io/Openshop/",
+        "ogImage": "https://sysadmindoc.github.io/og/Openshop.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/Openshop.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Openshop.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DeGoogler",
+      "name": "DeGoogler",
+      "description": "Migration toolkit for leaving Google services",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DeGoogler/",
+        "repository": "https://github.com/SysAdminDoc/DeGoogler",
+        "source": "https://github.com/SysAdminDoc/DeGoogler",
+        "live": "https://sysadmindoc.github.io/DeGoogler/",
+        "ogImage": "https://sysadmindoc.github.io/og/DeGoogler.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/DeGoogler.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/DeGoogler.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "UserScriptHunt",
+      "name": "UserScriptHunt",
+      "description": "Unified userscript search engine",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/UserScriptHunt/",
+        "repository": "https://github.com/SysAdminDoc/UserScriptHunt",
+        "source": "https://github.com/SysAdminDoc/UserScriptHunt",
+        "live": "https://sysadmindoc.github.io/UserScriptHunt/",
+        "ogImage": "https://sysadmindoc.github.io/og/UserScriptHunt.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/UserScriptHunt.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/UserScriptHunt.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SearchHub",
+      "name": "SearchHub",
+      "description": "538 engines across 29 categories",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SearchHub/",
+        "repository": "https://github.com/SysAdminDoc/SearchHub",
+        "source": "https://github.com/SysAdminDoc/SearchHub",
+        "live": "https://sysadmindoc.github.io/SearchHub/",
+        "ogImage": "https://sysadmindoc.github.io/og/SearchHub.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/SearchHub.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SearchHub.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "NATO_PHONETIC_TRAINING",
+      "name": "NATO_PHONETIC_TRAINING",
+      "description": "NATO phonetic alphabet trainer",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/NATO_PHONETIC_TRAINING/",
+        "repository": "https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING",
+        "source": "https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING",
+        "live": "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/",
+        "ogImage": "https://sysadmindoc.github.io/og/NATO_PHONETIC_TRAINING.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/NATO_PHONETIC_TRAINING.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/NATO_PHONETIC_TRAINING.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "VIPTrack",
+      "name": "VIPTrack",
+      "description": "Military & VIP aircraft tracker",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/VIPTrack/",
+        "repository": "https://github.com/SysAdminDoc/VIPTrack",
+        "source": "https://github.com/SysAdminDoc/VIPTrack",
+        "live": "https://sysadmindoc.github.io/VIPTrack/?filter=vip",
+        "ogImage": "https://sysadmindoc.github.io/og/VIPTrack.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/VIPTrack.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/VIPTrack.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "HurricaneMap",
+      "name": "HurricaneMap",
+      "description": "Every U.S. hurricane landfall (1851-present) from NOAA HURDAT2",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/",
+        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
+        "source": "https://github.com/SysAdminDoc/HurricaneMap",
+        "live": "https://sysadmindoc.github.io/HurricaneMap/",
+        "ogImage": "https://sysadmindoc.github.io/og/HurricaneMap.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/HurricaneMap.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/HurricaneMap.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ApocalypseWatch",
+      "name": "ApocalypseWatch",
+      "description": "Realtime business-jet tracker vs. 24h baseline",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ApocalypseWatch/",
+        "repository": "https://github.com/SysAdminDoc/ApocalypseWatch",
+        "source": "https://github.com/SysAdminDoc/ApocalypseWatch",
+        "live": "https://sysadmindoc.github.io/ApocalypseWatch/",
+        "ogImage": "https://sysadmindoc.github.io/og/ApocalypseWatch.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/ApocalypseWatch.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ApocalypseWatch.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Aura",
+      "name": "Aura",
+      "description": "Open-source Zedge alternative — wallpapers, video wallpapers, ringtones, YouTube integration",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Aura/",
+        "repository": "https://github.com/SysAdminDoc/Aura",
+        "source": "https://github.com/SysAdminDoc/Aura",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Aura.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "iOSIconPack",
+      "name": "iOSIconPack",
+      "description": "iOS-style icon pack for Android — 6 iOS eras",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/iOSIconPack/",
+        "repository": "https://github.com/SysAdminDoc/iOSIconPack",
+        "source": "https://github.com/SysAdminDoc/iOSIconPack",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/iOSIconPack.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Lawnchair-Lite",
+      "name": "Lawnchair-Lite",
+      "description": "Lightweight launcher with 5 built-in dark themes",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Lawnchair-Lite/",
+        "repository": "https://github.com/SysAdminDoc/Lawnchair-Lite",
+        "source": "https://github.com/SysAdminDoc/Lawnchair-Lite",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Lawnchair-Lite.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AlarmClockXtreme",
+      "name": "AlarmClockXtreme",
+      "description": "Feature-rich alarm clock with dismiss challenges",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/",
+        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+        "source": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AlarmClockXtreme.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AppManagerNG",
+      "name": "AppManagerNG",
+      "description": "Power-user package manager — continuation of MuntashirAkon/AppManager",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": "Java",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AppManagerNG/",
+        "repository": "https://github.com/SysAdminDoc/AppManagerNG",
+        "source": "https://github.com/SysAdminDoc/AppManagerNG",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AppManagerNG.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 19
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T13:54:54Z",
+        "updatedAt": "2026-06-04T13:54:58Z"
+      }
+    },
+    {
+      "slug": "CallShield",
+      "name": "CallShield",
+      "description": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/CallShield/",
+        "repository": "https://github.com/SysAdminDoc/CallShield",
+        "source": "https://github.com/SysAdminDoc/CallShield",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/CallShield.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FileExplorer",
+      "name": "FileExplorer",
+      "description": "Full-featured file manager with root access, archive support, cloud storage",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FileExplorer/",
+        "repository": "https://github.com/SysAdminDoc/FileExplorer",
+        "source": "https://github.com/SysAdminDoc/FileExplorer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FileExplorer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LocalAndroidStore",
+      "name": "LocalAndroidStore",
+      "description": "Personal Android-app catalog sourced from GitHub Releases — Android sibling of LocalChromeStore",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LocalAndroidStore/",
+        "repository": "https://github.com/SysAdminDoc/LocalAndroidStore",
+        "source": "https://github.com/SysAdminDoc/LocalAndroidStore",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LocalAndroidStore.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "one-ui-home-clone",
+      "name": "one-ui-home-clone",
+      "description": "Samsung One UI 7 parity launcher — Compose, clone not a port",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/one-ui-home-clone/",
+        "repository": "https://github.com/SysAdminDoc/one-ui-home-clone",
+        "source": "https://github.com/SysAdminDoc/one-ui-home-clone",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/one-ui-home-clone.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SnapCrop",
+      "name": "SnapCrop",
+      "description": "Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "source": "https://github.com/SysAdminDoc/SnapCrop",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SnapCrop.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "BillMinder",
+      "name": "BillMinder",
+      "description": "Bill tracker with alarm-style reminders",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/BillMinder/",
+        "repository": "https://github.com/SysAdminDoc/BillMinder",
+        "source": "https://github.com/SysAdminDoc/BillMinder",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/BillMinder.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "OpenSwift",
+      "name": "OpenSwift",
+      "description": "SwiftKey-inspired Android keyboard — glide typing, prediction, themes, clipboard",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OpenSwift/",
+        "repository": "https://github.com/SysAdminDoc/OpenSwift",
+        "source": "https://github.com/SysAdminDoc/OpenSwift",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OpenSwift.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SwiftFloris",
+      "name": "SwiftFloris",
+      "description": "SwiftKey-inspired keyboard built on FlorisBoard's foundation",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": "Kotlin",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SwiftFloris/",
+        "repository": "https://github.com/SysAdminDoc/SwiftFloris",
+        "source": "https://github.com/SysAdminDoc/SwiftFloris",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SwiftFloris.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 4
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T14:51:42Z",
+        "updatedAt": "2026-06-04T14:38:42Z"
+      }
+    },
+    {
+      "slug": "OpenTasker",
+      "name": "OpenTasker",
+      "description": "FOSS Tasker alternative for Android",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OpenTasker/",
+        "repository": "https://github.com/SysAdminDoc/OpenTasker",
+        "source": "https://github.com/SysAdminDoc/OpenTasker",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OpenTasker.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "OpenLumen",
+      "name": "OpenLumen",
+      "description": "Open-source CF.Lumen successor -- root-grade display color filter for Android with rootless fallback",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": "Kotlin",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OpenLumen/",
+        "repository": "https://github.com/SysAdminDoc/OpenLumen",
+        "source": "https://github.com/SysAdminDoc/OpenLumen",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OpenLumen.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 3
+      },
+      "freshness": {
+        "pushedAt": "2026-06-03T05:06:03Z",
+        "updatedAt": "2026-06-03T17:37:11Z"
+      }
+    },
+    {
+      "slug": "Droidsmith",
+      "name": "Droidsmith",
+      "description": "Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": "Rust",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Droidsmith/",
+        "repository": "https://github.com/SysAdminDoc/Droidsmith",
+        "source": "https://github.com/SysAdminDoc/Droidsmith",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Droidsmith.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 1
+      },
+      "freshness": {
+        "pushedAt": "2026-06-02T04:02:40Z",
+        "updatedAt": "2026-06-03T17:41:55Z"
+      }
+    },
+    {
+      "slug": "GuitarTuner",
+      "name": "GuitarTuner",
+      "description": "Offline Android acoustic guitar tuner with automatic string detection and local-only microphone processing",
+      "category": "kt",
+      "categoryLabel": "Android",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GuitarTuner/",
+        "repository": "https://github.com/SysAdminDoc/GuitarTuner",
+        "source": "https://github.com/SysAdminDoc/GuitarTuner",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GuitarTuner.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MyPortfolio",
+      "name": "MyPortfolio",
+      "description": "One Windows desktop catalog for every app I ship — binaries, extensions, APKs from GitHub releases",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MyPortfolio/",
+        "repository": "https://github.com/SysAdminDoc/MyPortfolio",
+        "source": "https://github.com/SysAdminDoc/MyPortfolio",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/MyPortfolio.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LocalChromeStore",
+      "name": "LocalChromeStore",
+      "description": "Personal Chromium extension store sourced from GitHub releases — one-click install/uninstall",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LocalChromeStore/",
+        "repository": "https://github.com/SysAdminDoc/LocalChromeStore",
+        "source": "https://github.com/SysAdminDoc/LocalChromeStore",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LocalChromeStore.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LocalDesktopStore",
+      "name": "LocalDesktopStore",
+      "description": "Private catalog for Windows desktop apps — MSI/Inno/NSIS/ZIP from GitHub releases",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LocalDesktopStore/",
+        "repository": "https://github.com/SysAdminDoc/LocalDesktopStore",
+        "source": "https://github.com/SysAdminDoc/LocalDesktopStore",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LocalDesktopStore.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Images",
+      "name": "Images",
+      "description": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Images/",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "source": "https://github.com/SysAdminDoc/Images",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Images.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DeepPurge",
+      "name": "DeepPurge",
+      "description": "Thorough Windows uninstaller — removes programs completely, hunts down every leftover",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DeepPurge/",
+        "repository": "https://github.com/SysAdminDoc/DeepPurge",
+        "source": "https://github.com/SysAdminDoc/DeepPurge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/DeepPurge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Scour",
+      "name": "Scour",
+      "description": "High-performance disk cleanup — 12 scanner types, NTFS MFT reading",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Scour/",
+        "repository": "https://github.com/SysAdminDoc/Scour",
+        "source": "https://github.com/SysAdminDoc/Scour",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Scour.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "UniversalConverterX",
+      "name": "UniversalConverterX",
+      "description": "Native Windows file converter with context menu integration — 1000+ formats",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/UniversalConverterX/",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "source": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/UniversalConverterX.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Devicer",
+      "name": "Devicer",
+      "description": "Unified Windows toolkit for rooted Android — identify, ROM search, partition backup, boot.img patch, flashing",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Devicer/",
+        "repository": "https://github.com/SysAdminDoc/Devicer",
+        "source": "https://github.com/SysAdminDoc/Devicer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Devicer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Snapture",
+      "name": "Snapture",
+      "description": "All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Snapture/",
+        "repository": "https://github.com/SysAdminDoc/Snapture",
+        "source": "https://github.com/SysAdminDoc/Snapture",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Snapture.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "OrganizeContacts",
+      "name": "OrganizeContacts",
+      "description": "Local-first contact organizer and deduper — native Windows, no cloud upload",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OrganizeContacts/",
+        "repository": "https://github.com/SysAdminDoc/OrganizeContacts",
+        "source": "https://github.com/SysAdminDoc/OrganizeContacts",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OrganizeContacts.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Vigil",
+      "name": "Vigil",
+      "description": "Windows packaging for ungoogled-chromium",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Vigil/",
+        "repository": "https://github.com/SysAdminDoc/Vigil",
+        "source": "https://github.com/SysAdminDoc/Vigil",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Vigil.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "WolfPack",
+      "name": "WolfPack",
+      "description": "Custom LibreWolf portable distribution",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/WolfPack/",
+        "repository": "https://github.com/SysAdminDoc/WolfPack",
+        "source": "https://github.com/SysAdminDoc/WolfPack",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/WolfPack.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "qBittorrent-Vanced",
+      "name": "qBittorrent-Vanced",
+      "description": "Customized BitTorrent client with dark theme",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/qBittorrent-Vanced/",
+        "repository": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
+        "source": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/qBittorrent-Vanced.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PhoneFork",
+      "name": "PhoneFork",
+      "description": "Dual-Samsung Android migration tool for Windows -- apps, media, settings, Wi-Fi, roles, and debloat profiles",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PhoneFork/",
+        "repository": "https://github.com/SysAdminDoc/PhoneFork",
+        "source": "https://github.com/SysAdminDoc/PhoneFork",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PhoneFork.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "QuotaGlass",
+      "name": "QuotaGlass",
+      "description": "Always-visible AI usage quota widget for Windows",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/QuotaGlass/",
+        "repository": "https://github.com/SysAdminDoc/QuotaGlass",
+        "source": "https://github.com/SysAdminDoc/QuotaGlass",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/QuotaGlass.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "TaskCopy",
+      "name": "TaskCopy",
+      "description": "Single-click clipboard snippet menu -- tray icon, global hotkey, search",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/TaskCopy/",
+        "repository": "https://github.com/SysAdminDoc/TaskCopy",
+        "source": "https://github.com/SysAdminDoc/TaskCopy",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/TaskCopy.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AndroidEmulatorPlus",
+      "name": "AndroidEmulatorPlus",
+      "description": "Install Android SDK, manage AVDs, root with Magisk, migrate apps",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/",
+        "repository": "https://github.com/SysAdminDoc/AndroidEmulatorPlus",
+        "source": "https://github.com/SysAdminDoc/AndroidEmulatorPlus",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AndroidEmulatorPlus.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Keepr",
+      "name": "Keepr",
+      "description": "Pixel-close offline-first Google Keep clone -- Tauri 2 + React + Rust + SQLite",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": "TypeScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Keepr/",
+        "repository": "https://github.com/SysAdminDoc/Keepr",
+        "source": "https://github.com/SysAdminDoc/Keepr",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Keepr.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 1
+      },
+      "freshness": {
+        "pushedAt": "2026-05-27T09:50:54Z",
+        "updatedAt": "2026-05-30T21:03:17Z"
+      }
+    },
+    {
+      "slug": "TsunamiSimulator",
+      "name": "TsunamiSimulator",
+      "description": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
+        "repository": "https://github.com/SysAdminDoc/TsunamiSimulator",
+        "source": "https://github.com/SysAdminDoc/TsunamiSimulator",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/TsunamiSimulator.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "REDplusplus",
+      "name": "REDplusplus",
+      "description": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/REDplusplus/",
+        "repository": "https://github.com/SysAdminDoc/REDplusplus",
+        "source": "https://github.com/SysAdminDoc/REDplusplus",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/REDplusplus.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "RcloneBrowserNG",
+      "name": "RcloneBrowserNG",
+      "description": "Modern rclone GUI -- file browser, transfer manager, mount handler. Qt/C++ cross-platform desktop app. Community continuation of RcloneBrowser.",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/RcloneBrowserNG/",
+        "repository": "https://github.com/SysAdminDoc/RcloneBrowserNG",
+        "source": "https://github.com/SysAdminDoc/RcloneBrowserNG",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/RcloneBrowserNG.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PartitionPilot",
+      "name": "PartitionPilot",
+      "description": "Windows disk partition manager -- WPF disk map, SMART health, maintenance, and image workflows",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PartitionPilot/",
+        "repository": "https://github.com/SysAdminDoc/PartitionPilot",
+        "source": "https://github.com/SysAdminDoc/PartitionPilot",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PartitionPilot.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ScriptVault",
+      "name": "ScriptVault",
+      "description": "Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": "JavaScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "source": "https://github.com/SysAdminDoc/ScriptVault",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ScriptVault.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 3
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T14:47:17Z",
+        "updatedAt": "2026-06-04T14:50:04Z"
+      }
+    },
+    {
+      "slug": "AmazonEnhanced",
+      "name": "AmazonEnhanced",
+      "description": "Chrome MV3 Amazon UX cleanup — dark theme, sponsored-result removal, review-quality scoring, 20 locales",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AmazonEnhanced/",
+        "repository": "https://github.com/SysAdminDoc/AmazonEnhanced",
+        "source": "https://github.com/SysAdminDoc/AmazonEnhanced",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AmazonEnhanced.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "StyleKit",
+      "name": "StyleKit",
+      "description": "CSS customization extension — visual editor for any website",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/StyleKit/",
+        "repository": "https://github.com/SysAdminDoc/StyleKit",
+        "source": "https://github.com/SysAdminDoc/StyleKit",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/StyleKit.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Vantage",
+      "name": "Vantage",
+      "description": "New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Vantage/",
+        "repository": "https://github.com/SysAdminDoc/Vantage",
+        "source": "https://github.com/SysAdminDoc/Vantage",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Vantage.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "YoutubeAdblock",
+      "name": "YoutubeAdblock",
+      "description": "Undetectable YouTube ad blocker with proxy engine",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/YoutubeAdblock/",
+        "repository": "https://github.com/SysAdminDoc/YoutubeAdblock",
+        "source": "https://github.com/SysAdminDoc/YoutubeAdblock",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/YoutubeAdblock.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Claude-Ultimate-Enhancer",
+      "name": "Claude-Ultimate-Enhancer",
+      "description": "All-in-one Claude.ai enhancement suite — themes, usage monitor, prompt library",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Claude-Ultimate-Enhancer/",
+        "repository": "https://github.com/SysAdminDoc/Claude-Ultimate-Enhancer",
+        "source": "https://github.com/SysAdminDoc/Claude-Ultimate-Enhancer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Claude-Ultimate-Enhancer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ClearGem",
+      "name": "ClearGem",
+      "description": "Removes visible watermarks from Google Gemini AI-generated images",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ClearGem/",
+        "repository": "https://github.com/SysAdminDoc/ClearGem",
+        "source": "https://github.com/SysAdminDoc/ClearGem",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ClearGem.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Chapterizer",
+      "name": "Chapterizer",
+      "description": "Auto-generate YouTube chapters, detect filler words, skip pauses",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Chapterizer/",
+        "repository": "https://github.com/SysAdminDoc/Chapterizer",
+        "source": "https://github.com/SysAdminDoc/Chapterizer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Chapterizer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MediaDL",
+      "name": "MediaDL",
+      "description": "Media downloader userscript",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MediaDL/",
+        "repository": "https://github.com/SysAdminDoc/MediaDL",
+        "source": "https://github.com/SysAdminDoc/MediaDL",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/MediaDL.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "uBlockVanced",
+      "name": "uBlockVanced",
+      "description": "uBlock Origin with Catppuccin Mocha and Element Forge panel",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/uBlockVanced/",
+        "repository": "https://github.com/SysAdminDoc/uBlockVanced",
+        "source": "https://github.com/SysAdminDoc/uBlockVanced",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/uBlockVanced.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "BackgroundSearch",
+      "name": "BackgroundSearch",
+      "description": "Chrome extension — force background tabs + context menu search",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/BackgroundSearch/",
+        "repository": "https://github.com/SysAdminDoc/BackgroundSearch",
+        "source": "https://github.com/SysAdminDoc/BackgroundSearch",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/BackgroundSearch.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "StyleCraft",
+      "name": "StyleCraft",
+      "description": "Full-featured CSS style editor and manager — Chrome extension",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/StyleCraft/",
+        "repository": "https://github.com/SysAdminDoc/StyleCraft",
+        "source": "https://github.com/SysAdminDoc/StyleCraft",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/StyleCraft.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "UserScript-Finder",
+      "name": "UserScript-Finder",
+      "description": "Discover userscripts for any website",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/UserScript-Finder/",
+        "repository": "https://github.com/SysAdminDoc/UserScript-Finder",
+        "source": "https://github.com/SysAdminDoc/UserScript-Finder",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/UserScript-Finder.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "NDNS",
+      "name": "NDNS",
+      "description": "NextDNS control panel userscript",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/NDNS/",
+        "repository": "https://github.com/SysAdminDoc/NDNS",
+        "source": "https://github.com/SysAdminDoc/NDNS",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/NDNS.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Reddit-Enhancement-Continued",
+      "name": "Reddit-Enhancement-Continued",
+      "description": "Enhancement suite for old.reddit.com",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Reddit-Enhancement-Continued/",
+        "repository": "https://github.com/SysAdminDoc/Reddit-Enhancement-Continued",
+        "source": "https://github.com/SysAdminDoc/Reddit-Enhancement-Continued",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Reddit-Enhancement-Continued.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Doordash-Enhanced",
+      "name": "Doordash-Enhanced",
+      "description": "DoorDash dark mode and feature enhancements",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Doordash-Enhanced/",
+        "repository": "https://github.com/SysAdminDoc/Doordash-Enhanced",
+        "source": "https://github.com/SysAdminDoc/Doordash-Enhanced",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Doordash-Enhanced.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DarkModer",
+      "name": "DarkModer",
+      "description": "Dark Reader as a userscript",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DarkModer/",
+        "repository": "https://github.com/SysAdminDoc/DarkModer",
+        "source": "https://github.com/SysAdminDoc/DarkModer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/DarkModer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "GeminiBuddy",
+      "name": "GeminiBuddy",
+      "description": "Productivity features for Gemini",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GeminiBuddy/",
+        "repository": "https://github.com/SysAdminDoc/GeminiBuddy",
+        "source": "https://github.com/SysAdminDoc/GeminiBuddy",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GeminiBuddy.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "RumbleX",
+      "name": "RumbleX",
+      "description": "Comprehensive Rumble.com enhancement",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/RumbleX/",
+        "repository": "https://github.com/SysAdminDoc/RumbleX",
+        "source": "https://github.com/SysAdminDoc/RumbleX",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/RumbleX.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Discrub",
+      "name": "Discrub",
+      "description": "Discord message editor, deleter, and exporter",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Discrub/",
+        "repository": "https://github.com/SysAdminDoc/Discrub",
+        "source": "https://github.com/SysAdminDoc/Discrub",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Discrub.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AI-Usage_Tracker",
+      "name": "AI-Usage_Tracker",
+      "description": "Usage-limit countdowns and notifications for AI chat tools -- Chrome, Firefox, and userscript builds",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AI-Usage_Tracker/",
+        "repository": "https://github.com/SysAdminDoc/AI-Usage_Tracker",
+        "source": "https://github.com/SysAdminDoc/AI-Usage_Tracker",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AI-Usage_Tracker.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "IMDb_Enhanced",
+      "name": "IMDb_Enhanced",
+      "description": "IMDb enhancement userscript",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/IMDb_Enhanced/",
+        "repository": "https://github.com/SysAdminDoc/IMDb_Enhanced",
+        "source": "https://github.com/SysAdminDoc/IMDb_Enhanced",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/IMDb_Enhanced.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AI_Realism",
+      "name": "AI_Realism",
+      "description": "Field guide for ultra-realistic AI video generation",
+      "category": "guide",
+      "categoryLabel": "Guides",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AI_Realism/",
+        "repository": "https://github.com/SysAdminDoc/AI_Realism",
+        "source": "https://github.com/SysAdminDoc/AI_Realism",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AI_Realism.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "facebook-exit-guide",
+      "name": "facebook-exit-guide",
+      "description": "Guide for leaving Facebook",
+      "category": "guide",
+      "categoryLabel": "Guides",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/facebook-exit-guide/",
+        "repository": "https://github.com/SysAdminDoc/facebook-exit-guide",
+        "source": "https://github.com/SysAdminDoc/facebook-exit-guide",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/facebook-exit-guide.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "android-debloat-list",
+      "name": "android-debloat-list",
+      "description": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
+      "category": "guide",
+      "categoryLabel": "Guides",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/android-debloat-list/",
+        "repository": "https://github.com/SysAdminDoc/android-debloat-list",
+        "source": "https://github.com/SysAdminDoc/android-debloat-list",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/android-debloat-list.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "sysadmindoc.github.io",
+      "name": "sysadmindoc.github.io",
+      "description": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "category": "guide",
+      "categoryLabel": "Guides",
+      "language": "Astro",
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+        "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+        "source": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+        "live": "https://sysadmindoc.github.io/",
+        "ogImage": "https://sysadmindoc.github.io/og/sysadmindoc.github.io.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/sysadmindoc.github.io.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/sysadmindoc.github.io.jpg"
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-04T14:48:45Z",
+        "updatedAt": "2026-06-04T14:50:21Z"
+      }
+    },
+    {
+      "slug": "VideoCrush",
+      "name": "VideoCrush",
+      "description": "Video compression and processing",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/VideoCrush/",
+        "repository": "https://github.com/SysAdminDoc/VideoCrush",
+        "source": "https://github.com/SysAdminDoc/VideoCrush",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/VideoCrush.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AlphaCut",
+      "name": "AlphaCut",
+      "description": "Video background removal and compositing",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AlphaCut/",
+        "repository": "https://github.com/SysAdminDoc/AlphaCut",
+        "source": "https://github.com/SysAdminDoc/AlphaCut",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AlphaCut.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "yt_livestream_downloader",
+      "name": "yt_livestream_downloader",
+      "description": "Download livestreams while they're still live",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/yt_livestream_downloader/",
+        "repository": "https://github.com/SysAdminDoc/yt_livestream_downloader",
+        "source": "https://github.com/SysAdminDoc/yt_livestream_downloader",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/yt_livestream_downloader.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MediaForge",
+      "name": "MediaForge",
+      "description": "Multi-format media converter",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MediaForge/",
+        "repository": "https://github.com/SysAdminDoc/MediaForge",
+        "source": "https://github.com/SysAdminDoc/MediaForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/MediaForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "StreamKeep",
+      "name": "StreamKeep",
+      "description": "Multi-platform stream/VOD downloader with built-in media converter",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/StreamKeep/",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "source": "https://github.com/SysAdminDoc/StreamKeep",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/StreamKeep.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "octopus-factory",
+      "name": "octopus-factory",
+      "description": "Recipe-driven autonomous coding pipeline - multi-agent build/audit/release",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": "Shell",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/octopus-factory/",
+        "repository": "https://github.com/SysAdminDoc/octopus-factory",
+        "source": "https://github.com/SysAdminDoc/octopus-factory",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/octopus-factory.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 1
+      },
+      "freshness": {
+        "pushedAt": "2026-04-26T02:11:10Z",
+        "updatedAt": "2026-04-26T02:22:06Z"
+      }
+    },
+    {
+      "slug": "LTSC-MicrosoftStore",
+      "name": "LTSC-MicrosoftStore",
+      "description": "Add Windows Store to Win11 24H2 LTSC",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/",
+        "repository": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
+        "source": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LTSC-MicrosoftStore.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "RcloneBrowser",
+      "name": "RcloneBrowser",
+      "description": "Cross-platform GUI for rclone",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/RcloneBrowser/",
+        "repository": "https://github.com/SysAdminDoc/RcloneBrowser",
+        "source": "https://github.com/SysAdminDoc/RcloneBrowser",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/RcloneBrowser.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "TabExplorer",
+      "name": "TabExplorer",
+      "description": "Tabbed file manager for Windows",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/TabExplorer/",
+        "repository": "https://github.com/SysAdminDoc/TabExplorer",
+        "source": "https://github.com/SysAdminDoc/TabExplorer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/TabExplorer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "TagStudio",
+      "name": "TagStudio",
+      "description": "User-focused photo & file management system",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/TagStudio/",
+        "repository": "https://github.com/SysAdminDoc/TagStudio",
+        "source": "https://github.com/SysAdminDoc/TagStudio",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/TagStudio.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "WinForge",
+      "name": "WinForge",
+      "description": "All-in-one Windows provisioning suite — app installer, tweaks, features, updates",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/WinForge/",
+        "repository": "https://github.com/SysAdminDoc/WinForge",
+        "source": "https://github.com/SysAdminDoc/WinForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/WinForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Debloat-Win11",
+      "name": "Debloat-Win11",
+      "description": "Enterprise Windows 11 debloating with AppX removal, Office cleanup, telemetry blocking",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Debloat-Win11/",
+        "repository": "https://github.com/SysAdminDoc/Debloat-Win11",
+        "source": "https://github.com/SysAdminDoc/Debloat-Win11",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Debloat-Win11.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Restore-WindowsDefaults",
+      "name": "Restore-WindowsDefaults",
+      "description": "Reverse debloat changes and restore Windows to factory defaults",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Restore-WindowsDefaults/",
+        "repository": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
+        "source": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Restore-WindowsDefaults.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DefenderControl",
+      "name": "DefenderControl",
+      "description": "WPF GUI to fully disable or re-enable Microsoft Defender",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DefenderControl/",
+        "repository": "https://github.com/SysAdminDoc/DefenderControl",
+        "source": "https://github.com/SysAdminDoc/DefenderControl",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/DefenderControl.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DisableDefender",
+      "name": "DisableDefender",
+      "description": "Defender disabler/remover with CLI + premium WPF GUI; firewall preserved",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DisableDefender/",
+        "repository": "https://github.com/SysAdminDoc/DisableDefender",
+        "source": "https://github.com/SysAdminDoc/DisableDefender",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/DisableDefender.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "DefenderShield",
+      "name": "DefenderShield",
+      "description": "Repair and restore Windows Defender and Firewall after debloaters",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/DefenderShield/",
+        "repository": "https://github.com/SysAdminDoc/DefenderShield",
+        "source": "https://github.com/SysAdminDoc/DefenderShield",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/DefenderShield.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "TelemetrySlayer",
+      "name": "TelemetrySlayer",
+      "description": "WPF GUI to disable Windows telemetry, data collection, and compatibility bloat",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/TelemetrySlayer/",
+        "repository": "https://github.com/SysAdminDoc/TelemetrySlayer",
+        "source": "https://github.com/SysAdminDoc/TelemetrySlayer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/TelemetrySlayer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FirewallForge",
+      "name": "FirewallForge",
+      "description": "WPF Windows Firewall manager with live rule editing and offline backup editor",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FirewallForge/",
+        "repository": "https://github.com/SysAdminDoc/FirewallForge",
+        "source": "https://github.com/SysAdminDoc/FirewallForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FirewallForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "NetForge",
+      "name": "NetForge",
+      "description": "WPF network adapter manager — static/DHCP, DNS presets, profile management",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/NetForge/",
+        "repository": "https://github.com/SysAdminDoc/NetForge",
+        "source": "https://github.com/SysAdminDoc/NetForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/NetForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SystemUpdatePro",
+      "name": "SystemUpdatePro",
+      "description": "Enterprise Windows update automation — OEM drivers, Windows Update, winget",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SystemUpdatePro/",
+        "repository": "https://github.com/SysAdminDoc/SystemUpdatePro",
+        "source": "https://github.com/SysAdminDoc/SystemUpdatePro",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SystemUpdatePro.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "WURepair",
+      "name": "WURepair",
+      "description": "Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/WURepair/",
+        "repository": "https://github.com/SysAdminDoc/WURepair",
+        "source": "https://github.com/SysAdminDoc/WURepair",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/WURepair.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SoftwareScannerGUI",
+      "name": "SoftwareScannerGUI",
+      "description": "WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SoftwareScannerGUI/",
+        "repository": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
+        "source": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SoftwareScannerGUI.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "NuclearDellRemover",
+      "name": "NuclearDellRemover",
+      "description": "Scorched-earth Dell bloatware removal — 8-phase complete cleanup",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/NuclearDellRemover/",
+        "repository": "https://github.com/SysAdminDoc/NuclearDellRemover",
+        "source": "https://github.com/SysAdminDoc/NuclearDellRemover",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/NuclearDellRemover.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Disable-AdobeTelemetry",
+      "name": "Disable-AdobeTelemetry",
+      "description": "Comprehensive Adobe telemetry and GrowthSDK suppression for Windows",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/",
+        "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
+        "source": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Disable-AdobeTelemetry.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Wingetter",
+      "name": "Wingetter",
+      "description": "Discover, select, and bulk install software via Winget",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Wingetter/",
+        "repository": "https://github.com/SysAdminDoc/Wingetter",
+        "source": "https://github.com/SysAdminDoc/Wingetter",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Wingetter.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Start-Menu-Organizer",
+      "name": "Start-Menu-Organizer",
+      "description": "Clean junk, detect broken shortcuts, reorganize Start Menu",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/",
+        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
+        "source": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Start-Menu-Organizer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PathForge",
+      "name": "PathForge",
+      "description": "Filesystem repair, stubborn file deletion, path management",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PathForge/",
+        "repository": "https://github.com/SysAdminDoc/PathForge",
+        "source": "https://github.com/SysAdminDoc/PathForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PathForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MonitorControl",
+      "name": "MonitorControl",
+      "description": "Control monitor settings via DDC/CI",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MonitorControl/",
+        "repository": "https://github.com/SysAdminDoc/MonitorControl",
+        "source": "https://github.com/SysAdminDoc/MonitorControl",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/MonitorControl.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "WallBrand",
+      "name": "WallBrand",
+      "description": "Wallpaper branding tool with GUI and CLI modes",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/WallBrand/",
+        "repository": "https://github.com/SysAdminDoc/WallBrand",
+        "source": "https://github.com/SysAdminDoc/WallBrand",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/WallBrand.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "VoidTools-Everything-Settings-Manager",
+      "name": "VoidTools-Everything-Settings-Manager",
+      "description": "GUI for managing VoidTools Everything settings, INI editing, CSV filter/bookmark management",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/VoidTools-Everything-Settings-Manager/",
+        "repository": "https://github.com/SysAdminDoc/VoidTools-Everything-Settings-Manager",
+        "source": "https://github.com/SysAdminDoc/VoidTools-Everything-Settings-Manager",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/VoidTools-Everything-Settings-Manager.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PfblockerngManager",
+      "name": "PfblockerngManager",
+      "description": "GUI for managing pfBlockerNG on pfSense firewalls",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PfblockerngManager/",
+        "repository": "https://github.com/SysAdminDoc/PfblockerngManager",
+        "source": "https://github.com/SysAdminDoc/PfblockerngManager",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PfblockerngManager.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "npp-sc-scanner",
+      "name": "npp-sc-scanner",
+      "description": "Detect and remediate Notepad++ supply chain attack IOCs",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/npp-sc-scanner/",
+        "repository": "https://github.com/SysAdminDoc/npp-sc-scanner",
+        "source": "https://github.com/SysAdminDoc/npp-sc-scanner",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/npp-sc-scanner.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "JDownloader-2-Ultimate-Manager",
+      "name": "JDownloader-2-Ultimate-Manager",
+      "description": "Comprehensive automation for JDownloader 2",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/JDownloader-2-Ultimate-Manager/",
+        "repository": "https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager",
+        "source": "https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/JDownloader-2-Ultimate-Manager.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ThankYouJeffrey",
+      "name": "ThankYouJeffrey",
+      "description": "A tribute to the creator of PowerShell, Jeffrey Snover",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ThankYouJeffrey/",
+        "repository": "https://github.com/SysAdminDoc/ThankYouJeffrey",
+        "source": "https://github.com/SysAdminDoc/ThankYouJeffrey",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ThankYouJeffrey.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "EXTRACTORX",
+      "name": "EXTRACTORX",
+      "description": "Open-source bulk archive extraction tool for Windows",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/EXTRACTORX/",
+        "repository": "https://github.com/SysAdminDoc/EXTRACTORX",
+        "source": "https://github.com/SysAdminDoc/EXTRACTORX",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/EXTRACTORX.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AdapterLock",
+      "name": "AdapterLock",
+      "description": "Per-adapter IP lockdown for Windows -- WPF GUI, CLI mode, policy export, and event-log auditing",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AdapterLock/",
+        "repository": "https://github.com/SysAdminDoc/AdapterLock",
+        "source": "https://github.com/SysAdminDoc/AdapterLock",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AdapterLock.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Brave-Portable-Updater",
+      "name": "Brave-Portable-Updater",
+      "description": "Update Brave inside a Portapps portable install without touching system install",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Brave-Portable-Updater/",
+        "repository": "https://github.com/SysAdminDoc/Brave-Portable-Updater",
+        "source": "https://github.com/SysAdminDoc/Brave-Portable-Updater",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Brave-Portable-Updater.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Tunerize",
+      "name": "Tunerize",
+      "description": "Re-render any audio as chiptune (built-in NES synth) or through any SoundFont — Audio→MIDI→SF2/chiptune→WAV, locally",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Tunerize/",
+        "repository": "https://github.com/SysAdminDoc/Tunerize",
+        "source": "https://github.com/SysAdminDoc/Tunerize",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Tunerize.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Vertigo",
+      "name": "Vertigo",
+      "description": "Vertical video studio for short-form creators — turns raw footage into polished 9:16 for Shorts/TikTok/Reels",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Vertigo/",
+        "repository": "https://github.com/SysAdminDoc/Vertigo",
+        "source": "https://github.com/SysAdminDoc/Vertigo",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Vertigo.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PromptCompanion",
+      "name": "PromptCompanion",
+      "description": "A curated, searchable, offline library of the best AI prompts",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PromptCompanion/",
+        "repository": "https://github.com/SysAdminDoc/PromptCompanion",
+        "source": "https://github.com/SysAdminDoc/PromptCompanion",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PromptCompanion.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SunoJump",
+      "name": "SunoJump",
+      "description": "Audio fingerprint masking for Suno AI — 10-pass pipeline, PyQt6 GUI, batch processing",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SunoJump/",
+        "repository": "https://github.com/SysAdminDoc/SunoJump",
+        "source": "https://github.com/SysAdminDoc/SunoJump",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SunoJump.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PyWall",
+      "name": "PyWall",
+      "description": "Real-time Windows Firewall manager and network monitor",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PyWall/",
+        "repository": "https://github.com/SysAdminDoc/PyWall",
+        "source": "https://github.com/SysAdminDoc/PyWall",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PyWall.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "HostsGuard",
+      "name": "HostsGuard",
+      "description": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "source": "https://github.com/SysAdminDoc/HostsGuard",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/HostsGuard.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PyShop",
+      "name": "PyShop",
+      "description": "Open source Photoshop alternative",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PyShop/",
+        "repository": "https://github.com/SysAdminDoc/PyShop",
+        "source": "https://github.com/SysAdminDoc/PyShop",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PyShop.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SwiftShot",
+      "name": "SwiftShot",
+      "description": "Debloated, Greenshot-inspired screenshot tool",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SwiftShot/",
+        "repository": "https://github.com/SysAdminDoc/SwiftShot",
+        "source": "https://github.com/SysAdminDoc/SwiftShot",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SwiftShot.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Flux",
+      "name": "Flux",
+      "description": "Privacy-focused BitTorrent client — PyQt6 + libtorrent",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Flux/",
+        "repository": "https://github.com/SysAdminDoc/Flux",
+        "source": "https://github.com/SysAdminDoc/Flux",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Flux.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "GitForge",
+      "name": "GitForge",
+      "description": "Full GitHub repo manager — clone, sync, diff, manage",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GitForge/",
+        "repository": "https://github.com/SysAdminDoc/GitForge",
+        "source": "https://github.com/SysAdminDoc/GitForge",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GitForge.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "UniFile",
+      "name": "UniFile",
+      "description": "AI-powered unified file organization — 5 engines, tag-based library, LLM integration",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/UniFile/",
+        "repository": "https://github.com/SysAdminDoc/UniFile",
+        "source": "https://github.com/SysAdminDoc/UniFile",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/UniFile.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "QuickFind",
+      "name": "QuickFind",
+      "description": "Lightning-fast file search for Windows — reads NTFS MFT directly",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/QuickFind/",
+        "repository": "https://github.com/SysAdminDoc/QuickFind",
+        "source": "https://github.com/SysAdminDoc/QuickFind",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/QuickFind.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FileOrganizer",
+      "name": "FileOrganizer",
+      "description": "AI-powered desktop tool for classifying and organizing design asset folders",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FileOrganizer/",
+        "repository": "https://github.com/SysAdminDoc/FileOrganizer",
+        "source": "https://github.com/SysAdminDoc/FileOrganizer",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FileOrganizer.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ImgConverter",
+      "name": "ImgConverter",
+      "description": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ImgConverter/",
+        "repository": "https://github.com/SysAdminDoc/ImgConverter",
+        "source": "https://github.com/SysAdminDoc/ImgConverter",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ImgConverter.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FrameSnap",
+      "name": "FrameSnap",
+      "description": "Browse MP4 videos, mark frames visually, and export precise screenshots",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FrameSnap/",
+        "repository": "https://github.com/SysAdminDoc/FrameSnap",
+        "source": "https://github.com/SysAdminDoc/FrameSnap",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FrameSnap.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ExplorerTweaks",
+      "name": "ExplorerTweaks",
+      "description": "GUI for toggling 50+ Windows File Explorer registry settings with live preview",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ExplorerTweaks/",
+        "repository": "https://github.com/SysAdminDoc/ExplorerTweaks",
+        "source": "https://github.com/SysAdminDoc/ExplorerTweaks",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ExplorerTweaks.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FaceSlim",
+      "name": "FaceSlim",
+      "description": "AI face slimming, reshaping, and beautification with real-time preview and GPU acceleration",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FaceSlim/",
+        "repository": "https://github.com/SysAdminDoc/FaceSlim",
+        "source": "https://github.com/SysAdminDoc/FaceSlim",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FaceSlim.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LipSight",
+      "name": "LipSight",
+      "description": "AI-powered lip reading tool — transcribes speech from silent video",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LipSight/",
+        "repository": "https://github.com/SysAdminDoc/LipSight",
+        "source": "https://github.com/SysAdminDoc/LipSight",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LipSight.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LlamaLink",
+      "name": "LlamaLink",
+      "description": "Sleek GUI frontend for llama.cpp — search, download, and chat with local LLMs",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LlamaLink/",
+        "repository": "https://github.com/SysAdminDoc/LlamaLink",
+        "source": "https://github.com/SysAdminDoc/LlamaLink",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/LlamaLink.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "SlunderStudio",
+      "name": "SlunderStudio",
+      "description": "Offline AI music generation suite — song creation, lyrics, MIDI, vocals, stem separation, mastering",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/SlunderStudio/",
+        "repository": "https://github.com/SysAdminDoc/SlunderStudio",
+        "source": "https://github.com/SysAdminDoc/SlunderStudio",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/SlunderStudio.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "GmailDownloader",
+      "name": "GmailDownloader",
+      "description": "Full Gmail mailbox downloader, AI-powered organizer & analytics suite",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GmailDownloader/",
+        "repository": "https://github.com/SysAdminDoc/GmailDownloader",
+        "source": "https://github.com/SysAdminDoc/GmailDownloader",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GmailDownloader.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "UniversalCompiler",
+      "name": "UniversalCompiler",
+      "description": "All-in-one script-to-EXE compiler",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/UniversalCompiler/",
+        "repository": "https://github.com/SysAdminDoc/UniversalCompiler",
+        "source": "https://github.com/SysAdminDoc/UniversalCompiler",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/UniversalCompiler.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "bypassnroGen",
+      "name": "bypassnroGen",
+      "description": "Generate Windows 11 OOBE bypass files",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/bypassnroGen/",
+        "repository": "https://github.com/SysAdminDoc/bypassnroGen",
+        "source": "https://github.com/SysAdminDoc/bypassnroGen",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/bypassnroGen.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MSStoreHelper",
+      "name": "MSStoreHelper",
+      "description": "Install Microsoft Store apps without the Store",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MSStoreHelper/",
+        "repository": "https://github.com/SysAdminDoc/MSStoreHelper",
+        "source": "https://github.com/SysAdminDoc/MSStoreHelper",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/MSStoreHelper.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Qwen3-TTS-Studio",
+      "name": "Qwen3-TTS-Studio",
+      "description": "AI voice generator powered by Qwen3-TTS",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Qwen3-TTS-Studio/",
+        "repository": "https://github.com/SysAdminDoc/Qwen3-TTS-Studio",
+        "source": "https://github.com/SysAdminDoc/Qwen3-TTS-Studio",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Qwen3-TTS-Studio.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AppList",
+      "name": "AppList",
+      "description": "Scan, catalog, and export all installed applications",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AppList/",
+        "repository": "https://github.com/SysAdminDoc/AppList",
+        "source": "https://github.com/SysAdminDoc/AppList",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AppList.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PillSleepTracker",
+      "name": "PillSleepTracker",
+      "description": "Floating widget for medication tracking + sleep analytics",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PillSleepTracker/",
+        "repository": "https://github.com/SysAdminDoc/PillSleepTracker",
+        "source": "https://github.com/SysAdminDoc/PillSleepTracker",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PillSleepTracker.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Mattpad",
+      "name": "Mattpad",
+      "description": "Minimal notepad built for personal workflow",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Mattpad/",
+        "repository": "https://github.com/SysAdminDoc/Mattpad",
+        "source": "https://github.com/SysAdminDoc/Mattpad",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Mattpad.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "HostsFileGet",
+      "name": "HostsFileGet",
+      "description": "GUI for managing the Windows hosts file",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/HostsFileGet/",
+        "repository": "https://github.com/SysAdminDoc/HostsFileGet",
+        "source": "https://github.com/SysAdminDoc/HostsFileGet",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/HostsFileGet.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Bookmark-Organizer-Pro",
+      "name": "Bookmark-Organizer-Pro",
+      "description": "AI-powered bookmark manager and categorizer",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
+        "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+        "source": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Bookmark-Organizer-Pro.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "QR-Code-Generator-Pro",
+      "name": "QR-Code-Generator-Pro",
+      "description": "QR generator with 98 visual style presets",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/QR-Code-Generator-Pro/",
+        "repository": "https://github.com/SysAdminDoc/QR-Code-Generator-Pro",
+        "source": "https://github.com/SysAdminDoc/QR-Code-Generator-Pro",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/QR-Code-Generator-Pro.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "uBlock-Stylus-Converter",
+      "name": "uBlock-Stylus-Converter",
+      "description": "Convert uBlock cosmetic filters to Stylus CSS",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/uBlock-Stylus-Converter/",
+        "repository": "https://github.com/SysAdminDoc/uBlock-Stylus-Converter",
+        "source": "https://github.com/SysAdminDoc/uBlock-Stylus-Converter",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/uBlock-Stylus-Converter.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "KeepSyncNotes",
+      "name": "KeepSyncNotes",
+      "description": "Google Keep importer and note tracker",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/KeepSyncNotes/",
+        "repository": "https://github.com/SysAdminDoc/KeepSyncNotes",
+        "source": "https://github.com/SysAdminDoc/KeepSyncNotes",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/KeepSyncNotes.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "PDFedit",
+      "name": "PDFedit",
+      "description": "Simple PDF editor",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/PDFedit/",
+        "repository": "https://github.com/SysAdminDoc/PDFedit",
+        "source": "https://github.com/SysAdminDoc/PDFedit",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/PDFedit.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "CSV_Power_Tool",
+      "name": "CSV_Power_Tool",
+      "description": "Bulk CSV processing and consolidation",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/CSV_Power_Tool/",
+        "repository": "https://github.com/SysAdminDoc/CSV_Power_Tool",
+        "source": "https://github.com/SysAdminDoc/CSV_Power_Tool",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/CSV_Power_Tool.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "AI-Model-Compass",
+      "name": "AI-Model-Compass",
+      "description": "Discover, download, and run local AI models tailored to your hardware",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AI-Model-Compass/",
+        "repository": "https://github.com/SysAdminDoc/AI-Model-Compass",
+        "source": "https://github.com/SysAdminDoc/AI-Model-Compass",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AI-Model-Compass.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Stock-Video-Collector",
+      "name": "Stock-Video-Collector",
+      "description": "Stock video collector",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/",
+        "repository": "https://github.com/SysAdminDoc/Stock-Video-Collector",
+        "source": "https://github.com/SysAdminDoc/Stock-Video-Collector",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/Stock-Video-Collector.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "GifText",
+      "name": "GifText",
+      "description": "Animated GIF text editor for meme creation",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GifText/",
+        "repository": "https://github.com/SysAdminDoc/GifText",
+        "source": "https://github.com/SysAdminDoc/GifText",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GifText.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "FoxPort",
+      "name": "FoxPort",
+      "description": "Migrate passwords, bookmarks, and extensions from Chromium browsers to Firefox",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/FoxPort/",
+        "repository": "https://github.com/SysAdminDoc/FoxPort",
+        "source": "https://github.com/SysAdminDoc/FoxPort",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/FoxPort.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "pfSenseSuite",
+      "name": "pfSenseSuite",
+      "description": "pfSense scripts and customizations toolkit",
+      "category": "sec",
+      "categoryLabel": "Security",
+      "language": "JavaScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/pfSenseSuite/",
+        "repository": "https://github.com/SysAdminDoc/pfSenseSuite",
+        "source": "https://github.com/SysAdminDoc/pfSenseSuite",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/pfSenseSuite.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 2
+      },
+      "freshness": {
+        "pushedAt": "2026-05-26T19:18:03Z",
+        "updatedAt": "2026-05-26T19:18:09Z"
+      }
+    },
+    {
+      "slug": "BetterNext",
+      "name": "BetterNext",
+      "description": "Enhanced NextDNS Control Panel",
+      "category": "sec",
+      "categoryLabel": "Security",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/BetterNext/",
+        "repository": "https://github.com/SysAdminDoc/BetterNext",
+        "source": "https://github.com/SysAdminDoc/BetterNext",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/BetterNext.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "ESET",
+      "name": "ESET",
+      "description": "Complete ESET port and address reference lists",
+      "category": "sec",
+      "categoryLabel": "Security",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/ESET/",
+        "repository": "https://github.com/SysAdminDoc/ESET",
+        "source": "https://github.com/SysAdminDoc/ESET",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/ESET.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "NukeMap",
+      "name": "NukeMap",
+      "description": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/NukeMap/",
+        "repository": "https://github.com/SysAdminDoc/NukeMap",
+        "source": "https://github.com/SysAdminDoc/NukeMap",
+        "live": "https://sysadmindoc.github.io/NukeMap/",
+        "ogImage": "https://sysadmindoc.github.io/og/NukeMap.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/NukeMap.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/NukeMap.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "kindred",
+      "name": "kindred",
+      "description": "Compatibility-first dating and social platform",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/kindred/",
+        "repository": "https://github.com/SysAdminDoc/kindred",
+        "source": "https://github.com/SysAdminDoc/kindred",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/kindred.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "MHTMLens",
+      "name": "MHTMLens",
+      "description": "MHTML file viewer and inspector",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/MHTMLens/",
+        "repository": "https://github.com/SysAdminDoc/MHTMLens",
+        "source": "https://github.com/SysAdminDoc/MHTMLens",
+        "live": "https://sysadmindoc.github.io/MHTMLens/",
+        "ogImage": "https://sysadmindoc.github.io/og/MHTMLens.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/MHTMLens.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/MHTMLens.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "LogLens",
+      "name": "LogLens",
+      "description": "Log file viewer and analyzer",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/LogLens/",
+        "repository": "https://github.com/SysAdminDoc/LogLens",
+        "source": "https://github.com/SysAdminDoc/LogLens",
+        "live": "https://sysadmindoc.github.io/LogLens/",
+        "ogImage": "https://sysadmindoc.github.io/og/LogLens.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/LogLens.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/LogLens.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "CronScope",
+      "name": "CronScope",
+      "description": "Cron expression builder and visualizer",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/CronScope/",
+        "repository": "https://github.com/SysAdminDoc/CronScope",
+        "source": "https://github.com/SysAdminDoc/CronScope",
+        "live": "https://sysadmindoc.github.io/CronScope/",
+        "ogImage": "https://sysadmindoc.github.io/og/CronScope.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/CronScope.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CronScope.jpg"
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "StormScope",
+      "name": "StormScope",
+      "description": "Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "source": "https://github.com/SysAdminDoc/StormScope",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/StormScope.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    }
+  ]
+}

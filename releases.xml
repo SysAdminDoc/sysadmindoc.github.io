@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matt Parker — Releases</title>
+    <link>https://sysadmindoc.github.io/releases/</link>
+    <description>Tagged releases across the public archive by Matt Parker.</description>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Jun 2026 12:22:15 GMT</lastBuildDate>
+    <atom:link href="https://sysadmindoc.github.io/releases.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Astra-Deck v4.46.0</title>
+      <link>https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.0</link>
+      <description>Astra Deck v4.46.0 catches the public release channel up to the current profile-split build line.</description>
+      <category>Astra-Deck</category>
+      <pubDate>Thu, 04 Jun 2026 12:22:15 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.0</guid>
+    </item>
+    <item>
+      <title>VideoSubtitleRemover v3.16.0</title>
+      <link>https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.16.0</link>
+      <description>Automated build with RTX 50-series support and video inpainting setup updates.</description>
+      <category>VideoSubtitleRemover</category>
+      <pubDate>Wed, 03 Jun 2026 16:23:52 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.16.0</guid>
+    </item>
+    <item>
+      <title>Keepr v0.16.2</title>
+      <link>https://github.com/SysAdminDoc/Keepr/releases/tag/v0.16.2</link>
+      <description>Editor open crash fix for the first published Windows binary line.</description>
+      <category>Keepr</category>
+      <pubDate>Tue, 26 May 2026 20:47:32 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Keepr/releases/tag/v0.16.2</guid>
+    </item>
+    <item>
+      <title>AppManagerNG v0.5.0</title>
+      <link>https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0</link>
+      <description>Release-backed package manager fixture with APK artifacts and changelog coverage.</description>
+      <category>AppManagerNG</category>
+      <pubDate>Tue, 26 May 2026 01:07:12 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0</guid>
+    </item>
+    <item>
+      <title>Droidsmith v0.1.0</title>
+      <link>https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0</link>
+      <description>First semver-tagged cross-platform ADB GUI release.</description>
+      <category>Droidsmith</category>
+      <pubDate>Tue, 26 May 2026 00:20:49 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0</guid>
+    </item>
+    <item>
+      <title>ScriptVault v3.11.0</title>
+      <link>https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.11.0</link>
+      <description>Chrome MV3 release for parity and storage rollback hardening.</description>
+      <category>ScriptVault</category>
+      <pubDate>Sun, 24 May 2026 13:06:40 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.11.0</guid>
+    </item>
+    <item>
+      <title>OpenLumen v0.5.1</title>
+      <link>https://github.com/SysAdminDoc/OpenLumen/releases/tag/v0.5.1</link>
+      <description>Deep-audit hardening pass with signed Android package artifacts.</description>
+      <category>OpenLumen</category>
+      <pubDate>Fri, 22 May 2026 03:47:14 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/OpenLumen/releases/tag/v0.5.1</guid>
+    </item>
+    <item>
+      <title>Astra-Deck v4.5.2</title>
+      <link>https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.5.2</link>
+      <description>Audit hardening release with narrower local host permissions, popup diagnostics, accessibility checks, and CI gates.</description>
+      <category>Astra-Deck</category>
+      <pubDate>Thu, 21 May 2026 15:53:10 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.5.2</guid>
+    </item>
+    <item>
+      <title>SwiftFloris v1.8.172</title>
+      <link>https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.8.172</link>
+      <description>Keyboard path-stroke and gesture rendering polish release.</description>
+      <category>SwiftFloris</category>
+      <pubDate>Tue, 19 May 2026 00:50:52 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.8.172</guid>
+    </item>
+  </channel>
+</rss>

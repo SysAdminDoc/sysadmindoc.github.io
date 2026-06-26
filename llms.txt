@@ -1,0 +1,76 @@
+# Matt Parker — Portfolio
+
+> Senior Technical Support Manager and builder with 15+ years in enterprise IT and six in medical imaging (DICOM/PACS). Open-source projects across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Static, privacy-first site — no analytics, no cookies, no third-party scripts.
+
+## Featured projects
+- [win11-nvme-driver-patcher](https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/): GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.
+- [OpenCut](https://sysadmindoc.github.io/projects/OpenCut/): AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.
+- [project-nomad-desktop](https://sysadmindoc.github.io/projects/project-nomad-desktop/): Offline survival command center maps, AI chat, situation room, NukeMap, supply tracking. 600+ routes, 95+ tables.
+- [LibreSpot](https://sysadmindoc.github.io/projects/LibreSpot/): Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.
+- [VideoSubtitleRemover](https://sysadmindoc.github.io/projects/VideoSubtitleRemover/): AI-powered removal of hard-coded subtitles and text watermarks from video.
+- [Astra-Deck](https://sysadmindoc.github.io/projects/Astra-Deck/): Premium YouTube enhancement extension 150+ features for Chrome Firefox.
+- [Network_Security_Auditor](https://sysadmindoc.github.io/projects/Network_Security_Auditor/): 67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.
+- [ZeusWatch](https://sysadmindoc.github.io/projects/ZeusWatch/): Premium dark weather app — no API keys required
+- [ClearCut](https://sysadmindoc.github.io/projects/ClearCut/): Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.
+- [HostShield](https://sysadmindoc.github.io/projects/HostShield/): AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.
+
+## Live apps
+- [IconForge](https://sysadmindoc.github.io/projects/IconForge/): Image resizer converter
+- [SPECTRE](https://sysadmindoc.github.io/projects/SPECTRE/): Intelligence aggregator OSINT data feeds
+- [ImageXpert](https://sysadmindoc.github.io/projects/ImageXpert/): Multi-engine reverse image search
+- [ConvertFlow](https://sysadmindoc.github.io/projects/ConvertFlow/): Browser media converter
+- [ClipForge](https://sysadmindoc.github.io/projects/ClipForge/): Browser-based video editor
+- [Text-Filter-Editor](https://sysadmindoc.github.io/projects/Text-Filter-Editor/): Text filtering and processing tool
+- [Multistreamer](https://sysadmindoc.github.io/projects/Multistreamer/): Multi-video streaming viewer with chat
+- [StormviewRadar](https://sysadmindoc.github.io/projects/StormviewRadar/): Open source weather radar viewer
+- [SkyTrack](https://sysadmindoc.github.io/projects/SkyTrack/): Real-time aircraft tracker
+- [GifStudio](https://sysadmindoc.github.io/projects/GifStudio/): Browser-based GIF studio
+- [Base64Converter](https://sysadmindoc.github.io/projects/Base64Converter/): Base64 encoder decoder
+- [CoolSites](https://sysadmindoc.github.io/projects/CoolSites/): 470+ curated free tools open source projects
+- [BookmarkVault](https://sysadmindoc.github.io/projects/BookmarkVault/): Bookmark management web app
+- [ImageForge](https://sysadmindoc.github.io/projects/ImageForge/): Open source image converter
+- [Openshop](https://sysadmindoc.github.io/projects/Openshop/): Browser-based image editor with layers filters
+- [DeGoogler](https://sysadmindoc.github.io/projects/DeGoogler/): Migration toolkit for leaving Google services
+- [UserScriptHunt](https://sysadmindoc.github.io/projects/UserScriptHunt/): Unified userscript search engine
+- [SearchHub](https://sysadmindoc.github.io/projects/SearchHub/): 538 engines across 29 categories
+- [NATO_PHONETIC_TRAINING](https://sysadmindoc.github.io/projects/NATO_PHONETIC_TRAINING/): NATO phonetic alphabet trainer
+- [VIPTrack](https://sysadmindoc.github.io/projects/VIPTrack/): Military VIP aircraft tracker
+- [HurricaneMap](https://sysadmindoc.github.io/projects/HurricaneMap/): Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2
+- [ApocalypseWatch](https://sysadmindoc.github.io/projects/ApocalypseWatch/): Realtime business-jet tracker vs. 24h baseline
+
+## Pages
+- [Portfolio home](https://sysadmindoc.github.io/): 182 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
+- [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
+- [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, healthcare imaging support, and public software projects.
+- [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio projects, rendered README excerpts, releases, timeline entries, and public pages.
+- [Timeline](https://sysadmindoc.github.io/timeline/): Year-in-review timeline generated from GitHub releases and project metadata.
+- [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
+- [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
+- [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Tools built for healthcare facilities running medical imaging systems: PACS migration, support automation, and X-ray acquisition.
+- [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.
+- [Screenshots](https://sysadmindoc.github.io/screenshots/): Visual evidence gallery of live-app product surfaces captured from deployed builds.
+- [Releases](https://sysadmindoc.github.io/releases/): Chronological release stream across the active public portfolio archive.
+- [Full catalog](https://sysadmindoc.github.io/#catalog): All 182 public projects with search and filters.
+
+## Language lanes
+- [PowerShell](https://sysadmindoc.github.io/lang/powershell/): Where the real sysadmin work lives.
+- [Python](https://sysadmindoc.github.io/lang/python/): PyQt6 desktop tools that auto-install their own dependencies on first launch, Flask-backed local utilities, and pipelines that move real production data.
+- [JavaScript](https://sysadmindoc.github.io/lang/javascript/): Userscripts and Chrome MV3 extensions — document-start injection, anti-FOUC styling, Trusted Types, split-context patterns for ad blocking.
+- [Web Apps](https://sysadmindoc.github.io/lang/web/): Single-file HTML apps that deploy to GitHub Pages and just work.
+- [Kotlin / Android](https://sysadmindoc.github.io/lang/kotlin/): Jetpack Compose with Material 3, AMOLED-black by default, R8 + resource shrinking in release builds.
+- [C# / Desktop](https://sysadmindoc.github.io/lang/cs/): C# WPF on .NET 9 for medical imaging — fo-dicom for DICOM, SQLite for local persistence, published as self-contained single-exe.
+- [Security](https://sysadmindoc.github.io/lang/security/): Defensive security tooling — pfSense automations, NextDNS panels, network auditing.
+
+## Feeds
+- [JSON Feed](https://sysadmindoc.github.io/feed.json): JSON Feed 1.1 project feed with absolute icon metadata.
+- [Project RSS](https://sysadmindoc.github.io/rss.xml): RSS feed for recent public project activity.
+- [Atom](https://sysadmindoc.github.io/atom.xml): Standards-based XML project feed with JSON Feed item parity.
+- [Release RSS](https://sysadmindoc.github.io/releases.xml): RSS feed for GitHub release activity across represented projects.
+
+## Machine-readable endpoints
+- [Project index (JSON)](https://sysadmindoc.github.io/projects.json): Schema-versioned project list with detail, source, live, image, and freshness URLs.
+- [Release index (JSON)](https://sysadmindoc.github.io/releases.json): Schema-versioned release list with project, tag, repository, and detail URLs.
+- [Resume data (JSON)](https://sysadmindoc.github.io/resume.json): Structured resume data for career, skills, and experience surfaces.
+- [Command palette data (JS)](https://sysadmindoc.github.io/cmdk-data.js): Cached project and quick-link data used by the global command palette.
+- [Sitemap index](https://sysadmindoc.github.io/sitemap-index.xml): Search-engine sitemap index for generated public routes.
+- [llms.txt](https://sysadmindoc.github.io/llms.txt): This AI-readable site map and endpoint inventory.
