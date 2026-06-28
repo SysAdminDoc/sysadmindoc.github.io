@@ -9,11 +9,8 @@ const selfTest = process.argv.includes('--self-test');
 
 const publicMarkdownAllowlist = new Set(['README.md']);
 const localOnlyMarkdownNames = [
-  'AGENTS.md',
   'AUTONOMOUS-LOOP-STATE.md',
   'CHANGELOG.md',
-  'CLAUDE.md',
-  'CODEX_CHANGELOG.md',
   'COMPLETED.md',
   'HANDOFF.md',
   'PROJECT_CONTEXT.md',
