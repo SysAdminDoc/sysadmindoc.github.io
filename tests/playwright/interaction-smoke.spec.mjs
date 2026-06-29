@@ -161,7 +161,7 @@ test.describe('rendered interaction smoke', () => {
     const cspMessages = collectCspConsoleMessages(page);
     await installCspViolationRecorder(page);
     await page.setViewportSize({ width: 1365, height: 900 });
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
 
     await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute(
       'content',
@@ -275,7 +275,7 @@ test.describe('rendered interaction smoke', () => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
 
     await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute(
       'content',
@@ -333,7 +333,7 @@ test.describe('rendered interaction smoke', () => {
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(firstHref)}$`));
     await expectCommandPaletteState(page, false);
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
     await openCommandPalette(page);
     await page.mouse.click(8, 8);
     await expectCommandPaletteState(page, false);
@@ -346,7 +346,7 @@ test.describe('rendered interaction smoke', () => {
     await pointerTarget.dispatchEvent('click');
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(pointerHref)}$`));
     await expectCommandPaletteState(page, false);
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
 
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
@@ -356,7 +356,7 @@ test.describe('rendered interaction smoke', () => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
     await expectNoHorizontalOverflow(page);
     expect(cmdkScriptRequests).toEqual([]);
     await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(0);
@@ -395,18 +395,11 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
-  test('homepage terminal, video, and catalog search work without runtime errors', async ({ page }) => {
+  test('homepage video and catalog search work without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
     await expectNoHorizontalOverflow(page);
-
-    await page.locator('#heroTerm').click();
-    await expect(page.locator('.term-input')).toBeVisible();
-    await page.locator('.term-input').fill('contact');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('.term-output').last()).toContainText('Connect section');
-    await expect(page).toHaveURL(/#connect$/);
 
     await page.locator('#searchInput').fill('python');
     await page.locator('#catalogSearchForm').evaluate((form) => form.requestSubmit());
@@ -533,7 +526,7 @@ test.describe('cross-document view transition smoke', () => {
     expect(title2).not.toEqual(title1);
     expect(title2).toContain('Search');
 
-    await page.locator('a[href="/"]').first().click();
+    await page.getByRole('link', { name: 'Home' }).dispatchEvent('click');
     await page.waitForURL(/\/$/);
     await page.locator('main').waitFor({ state: 'visible' });
 
@@ -591,19 +584,23 @@ test.describe('focus-not-obscured by sticky navigation', () => {
 
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press('Tab');
-      const focusInfo = await page.evaluate((navBottom) => {
+      const focusInfo = await page.evaluate(() => {
         const el = document.activeElement;
         if (!el || el === document.body) return null;
         const rect = el.getBoundingClientRect();
         if (rect.width === 0 && rect.height === 0) return null;
+        const x = Math.min(Math.max(rect.left + rect.width / 2, 0), window.innerWidth - 1);
+        const y = Math.min(Math.max(rect.top + rect.height / 2, 0), window.innerHeight - 1);
+        const topElement = document.elementFromPoint(x, y);
+        const reachable = Boolean(topElement && (el === topElement || el.contains(topElement) || topElement.contains(el)));
         return {
           tag: el.tagName,
-          fullyObscured: rect.bottom <= navBottom && rect.top <= navBottom,
+          obscured: !reachable,
         };
-      }, navRect.bottom);
+      });
 
       if (focusInfo) {
-        expect(focusInfo.fullyObscured, `${focusInfo.tag} element fully obscured by sticky nav`).toBe(false);
+        expect(focusInfo.obscured, `${focusInfo.tag} element obscured by sticky nav`).toBe(false);
       }
     }
 

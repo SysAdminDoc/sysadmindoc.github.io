@@ -98,7 +98,20 @@ const visibleFeedProjects = (profileFeed?.projects ?? []).filter(
   (project) => project?.includeInPortfolio !== false && project?.suppressed !== true && typeof project.repo === 'string',
 ).map((project) => {
   const renamed = repoRenames[project.repo!];
-  return renamed ? { ...project, repo: renamed, title: project.title === project.repo ? renamed : project.title } : project;
+  if (!renamed) return project;
+  const repoUrl = project.repoUrl?.includes(`/${project.repo}`)
+    ? `https://github.com/${owner}/${renamed}`
+    : project.repoUrl;
+  const action = project.primaryAction?.url?.includes(`/${project.repo}`)
+    ? { ...project.primaryAction, url: `https://github.com/${owner}/${renamed}` }
+    : project.primaryAction;
+  return {
+    ...project,
+    repo: renamed,
+    title: project.title === project.repo ? renamed : project.title,
+    repoUrl,
+    primaryAction: action,
+  };
 });
 const feedBacked = visibleFeedProjects.length > 0;
 

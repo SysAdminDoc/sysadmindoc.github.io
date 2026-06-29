@@ -102,7 +102,7 @@ test.describe('Playwright axe accessibility audit', () => {
   }
 
   test('hydrated command palette state has no axe violations', async ({ page }) => {
-    await preparePage(page, '/', '#heroTerm.interactive');
+    await preparePage(page, '/', '#hero');
 
     await page.locator('#cmdkToggle').click();
     await page.locator('#cmdkInput').fill('python');
@@ -110,16 +110,6 @@ test.describe('Playwright axe accessibility audit', () => {
     await expectAxeClean(page, '#cmdk');
   });
 
-  test('hydrated terminal state has no axe violations', async ({ page }) => {
-    await preparePage(page, '/', '#heroTerm.interactive');
-
-    await page.locator('#heroTerm').click();
-    await expect(page.locator('.term-input')).toBeVisible();
-    await page.locator('.term-input').fill('repos');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('.term-output')).toBeVisible();
-    await expectAxeClean(page, '#heroTerm');
-  });
 });
 
 test.describe('Playwright visual baselines', () => {

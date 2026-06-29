@@ -10,7 +10,7 @@ const isLocalWindows = process.platform === 'win32' && !process.env.CI;
 
 if (isLocalWindows && !runLocalWindows) {
   console.warn('[lhci] Skipping local Windows run: Chrome cleanup currently fails with EPERM after collection.');
-  console.warn('[lhci] CI/Linux still runs the advisory Lighthouse budget. Set LHCI_ALLOW_LOCAL_WINDOWS=1 to force a local attempt.');
+  console.warn('[lhci] Set LHCI_ALLOW_LOCAL_WINDOWS=1 to force a local attempt.');
   process.exit(0);
 }
 

@@ -9,9 +9,9 @@
 //   npx playwright install chromium    # one-time install
 //   npm run capture-screenshots
 //
-// Why separate script (not CI): Chromium is ~170MB; running in GH Actions on every
-// build wastes minutes. Capture locally, commit the JPGs, ship them. Only need to
-// re-run when UI changes significantly or new live apps are added.
+// Why separate script: Chromium is ~170MB, and full screenshot recapture is
+// intentionally local. Capture locally, commit the JPGs, ship them. Only need
+// to re-run when UI changes significantly or new live apps are added.
 
 import { mkdirSync, readFileSync, existsSync, writeFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';

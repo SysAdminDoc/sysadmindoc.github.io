@@ -276,16 +276,16 @@ export const projectProof: Record<string, ProjectProof> = {
     buildEvidence: [
       'Project data validation checks required fields, policy exceptions, live screenshots, routes, and command palette coverage.',
       'Catalog audit compares public GitHub state against portfolio data and documented exceptions.',
-      'Quality workflows report production dependency audit and catalog drift without requiring a local manual session.',
+      'Local quality scripts report production dependency audit and catalog drift without requiring a manual browser session.',
     ],
-    platforms: ['Astro 6', 'GitHub Pages', 'GitHub Actions'],
+    platforms: ['Astro 6', 'GitHub Pages', 'Local audit scripts'],
     installPath: 'Use npm scripts in the repository root: data validation, asset audit, production audit, Astro check, and static build.',
     knownLimitations:
       'Generated GitHub caches are build-time artifacts; the site does not use runtime analytics or hosted search infrastructure.',
     sources: [
       { label: 'Project data validator', url: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/scripts/validate-project-data.mjs' },
       { label: 'Catalog audit', url: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/scripts/audit-catalog.mjs' },
-      { label: 'Quality gates workflow', url: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/.github/workflows/quality-gates.yml' },
+      { label: 'Build scripts', url: 'https://github.com/SysAdminDoc/sysadmindoc.github.io/blob/main/package.json' },
     ],
   },
 };

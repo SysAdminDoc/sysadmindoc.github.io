@@ -52,7 +52,7 @@ export const uses: UsesCategory[] = [
   {
     title: 'DevOps',
     items: [
-      { name: 'GitHub Actions', note: 'CI/CD for every repo' },
+      { name: 'Local release scripts', note: 'Build, audit, and publish gates' },
       { name: 'Contabo VPS', note: 'Self-hosted services' },
       { name: 'Caddy', note: 'Reverse proxy with automatic TLS' },
     ],

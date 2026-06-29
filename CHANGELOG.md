@@ -2,6 +2,16 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.2] - 2026-06-29
+
+- Expanded the fixed header shell to the full viewport width, with brand, navigation, and action controls assigned to stable left/center/right grid zones.
+- Restored comfortable desktop navigation spacing below 1320px while preserving the mobile menu handoff and right-aligned action cluster at tablet and phone widths.
+- Widened the hero content cap after the removed right-side stage so the first viewport no longer inherits the old two-column constraint.
+- Updated the CSP hash path to normalize Windows line endings before policy generation, and kept the offline fallback aligned with Chromium's enforced inline-style hash.
+- Preserved canonical ClearCut URL and freshness metadata when adapting the renamed NovaCut profile-feed entry.
+- Updated Playwright browser audits for the current homepage structure after the terminal stage removal.
+- Updated project version and local-build documentation for the current GitHub Pages publish process.
+
 ## [v0.20.1] - 2026-06-20
 
 - Updated sanitize-html from 2.17.4 to 2.17.5 (bug fix patch).

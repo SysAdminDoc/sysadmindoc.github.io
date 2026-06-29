@@ -177,7 +177,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "AlarmClockXtreme", name: "AlarmClockXtreme", url: "https://github.com/SysAdminDoc/AlarmClockXtreme", category: "kt", desc: "Feature-rich alarm clock" },
   { repo: "Lawnchair-Lite", name: "Lawnchair-Lite", url: "https://github.com/SysAdminDoc/Lawnchair-Lite", category: "kt", desc: "Lightweight launcher with 5 dark themes" },
   { repo: "HostShield", name: "HostShield", url: "https://github.com/SysAdminDoc/HostShield", category: "kt", desc: "Hosts-based ad blocker" },
-  { repo: "ClearCut", name: "ClearCut", url: "https://github.com/SysAdminDoc/ClearCut", category: "kt", desc: "Full-featured Android video editor" },
+  { repo: "ClearCut", name: "ClearCut", url: "https://github.com/SysAdminDoc/ClearCut", category: "kt", desc: "Full-featured Android video editor", pushedAt: "2026-06-28T13:47:49Z", updatedAt: "2026-06-29T16:11:27Z" },
   { repo: "LocalAndroidStore", name: "LocalAndroidStore", url: "https://github.com/SysAdminDoc/LocalAndroidStore", category: "kt", desc: "Personal Android-app catalog from GitHub Releases &mdash; Android sibling of LocalChromeStore" },
   { repo: "one-ui-home-clone", name: "one-ui-home-clone", url: "https://github.com/SysAdminDoc/one-ui-home-clone", category: "kt", desc: "Samsung One UI 7 parity launcher &mdash; Compose, clone not a port" },
   { repo: "AppManagerNG", name: "AppManagerNG", url: "https://github.com/SysAdminDoc/AppManagerNG", category: "kt", desc: "Power-user Android package manager &mdash; continuation of MuntashirAkon/AppManager" },

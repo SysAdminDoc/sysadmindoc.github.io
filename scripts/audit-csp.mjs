@@ -97,7 +97,7 @@ function parseAttrs(source) {
 }
 
 function sha256Csp(value) {
-  return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
+  return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
 }
 
 function extractSingleQuotedConst(text, name) {
