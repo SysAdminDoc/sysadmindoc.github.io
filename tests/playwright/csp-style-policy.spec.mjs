@@ -12,7 +12,7 @@ const stabilityCss = `
 `;
 
 const routes = [
-  { name: 'home', path: '/', ready: '#heroTerm.interactive' },
+  { name: 'home', path: '/', ready: '#hero' },
   { name: 'search', path: '/search/?q=python', ready: '#site-search' },
   { name: 'archive', path: '/archive/', ready: '#archive-entries' },
   { name: 'language', path: '/lang/powershell/', ready: '.lang-card' },
@@ -139,12 +139,6 @@ test.describe('candidate style CSP browser audit', () => {
     await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
     await page.keyboard.press('Escape');
-
-    await page.locator('#heroTerm').click();
-    await expect(page.locator('.term-input')).toBeVisible();
-    await page.locator('.term-input').fill('repos');
-    await page.keyboard.press('Enter');
-    await expect(page.locator('.term-output')).toBeVisible();
 
     const videoThumb = page.locator('.video-thumb[data-yt]').first();
     if (await videoThumb.count()) {

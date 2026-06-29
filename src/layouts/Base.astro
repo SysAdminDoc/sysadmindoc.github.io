@@ -41,7 +41,7 @@ const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
 
 function sha256Csp(value: string) {
-  return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
+  return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
 }
 
 const isDev = import.meta.env.DEV;

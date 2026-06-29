@@ -14,7 +14,7 @@ const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 15;
 
 function sha256Csp(value) {
-  return `sha256-${crypto.createHash('sha256').update(value).digest('base64')}`;
+  return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
 }
 
 function runAudit(args = []) {
