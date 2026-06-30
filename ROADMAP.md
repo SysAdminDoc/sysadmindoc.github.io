@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.2
+Current version: v0.20.3
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P0
-
-- [ ] P0 — Move PWA registration and update recovery to the sitewide runtime
-  Why: Direct visits to interior pages currently skip service-worker registration and update recovery because `/scripts/main.js` only loads on the homepage.
-  Evidence: `src/layouts/Base.astro`, `public/scripts/main.js`, MDN service-worker lifecycle guidance.
-  Touches: `src/layouts/Base.astro`, `public/scripts/main.js`, `public/scripts/shared.js` or a new focused service-worker script, `tests/playwright/sw-lifecycle.spec.mjs`.
-  Acceptance: Loading `/search/`, `/projects/<slug>/`, and `/status/` directly registers `/sw.js`; an available waiting worker shows the same refresh/later recovery UI on every route; the SW lifecycle Playwright spec covers a direct interior-page first visit.
-  Complexity: M
 
 ### P1
 

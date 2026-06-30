@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.3] - 2026-06-30
+
+- Moved service-worker registration and update recovery into a sitewide runtime so direct visits to interior pages register the PWA and can surface refresh prompts without first visiting the homepage.
+- Added service-worker lifecycle smoke coverage for direct `/search/`, `/status/`, and representative project-page landings in both dark and light browser projects.
+
 ## [v0.20.2] - 2026-06-29
 
 - Expanded the fixed header shell to the full viewport width, with brand, navigation, and action controls assigned to stable left/center/right grid zones.
