@@ -5,7 +5,7 @@ import { test } from 'node:test';
 
 const root = process.cwd();
 const indexPath = path.join(root, 'src', 'pages', 'index.astro');
-const mainScriptPath = path.join(root, 'public', 'scripts', 'main.js');
+const githubScriptPath = path.join(root, 'public', 'scripts', 'home-github.js');
 const readmePath = path.join(root, 'README.md');
 
 test('homepage project count copy uses rendered catalog count', async () => {
@@ -17,7 +17,7 @@ test('homepage project count copy uses rendered catalog count', async () => {
 });
 
 test('live GitHub refresh does not overwrite project count with raw repo totals', async () => {
-  const source = await fs.readFile(mainScriptPath, 'utf8');
+  const source = await fs.readFile(githubScriptPath, 'utf8');
 
   assert.match(source, /const projectCount=getFallbackRepoCount\(\)\|\|cached\.displayTotal\|\|cached\.total;/);
   assert.match(source, /writeJsonCache\(GITHUB_CACHE_KEY,\{data:ghData,total:count,displayTotal:projectCount,/);

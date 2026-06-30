@@ -62,18 +62,21 @@ export function inspectHtml(html) {
       hasEarlyHtmlClose: false,
       missingFinalHtmlClose: false,
       mainBeforeShared: false,
+      featureBeforeMain: false,
     };
   }
 
   const head = html.slice(0, bodyIdx);
   const mainIdx = html.indexOf('/scripts/main.js');
   const sharedIdx = html.indexOf('/scripts/shared.js');
+  const featureIndexes = [...html.matchAll(/\/scripts\/home-[^"']+\.js/g)].map((match) => match.index);
 
   return {
     hasBody: true,
     hasEarlyHtmlClose: /<\/html>/i.test(head),
     missingFinalHtmlClose: !/<\/html>\s*$/i.test(html),
     mainBeforeShared: mainIdx >= 0 && (sharedIdx < 0 || mainIdx < sharedIdx),
+    featureBeforeMain: featureIndexes.some((index) => mainIdx < 0 || index < mainIdx),
   };
 }
 
@@ -104,7 +107,7 @@ export function auditDist(dist = defaultDist, options = {}) {
     if (!inspection.hasBody) continue;
 
     const relative = normalizePath(file, dist);
-    if (inspection.mainBeforeShared) {
+    if (inspection.mainBeforeShared || inspection.featureBeforeMain) {
       orderViolations.push(relative);
     }
 
@@ -155,7 +158,7 @@ function main() {
   }
 
   if (result.orderViolations.length) {
-    console.error('fix-html-structure: main.js loads before shared.js (would ReferenceError) in:');
+    console.error('fix-html-structure: homepage scripts load before their shared/core dependencies in:');
     for (const violation of result.orderViolations) console.error(`  - ${violation}`);
     process.exit(1);
   }
