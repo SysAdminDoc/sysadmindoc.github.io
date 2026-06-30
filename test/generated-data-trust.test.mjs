@@ -8,6 +8,7 @@ import { test } from 'node:test';
 const root = process.cwd();
 const summaryScript = path.join(root, 'scripts', 'summarize-generated-data.mjs');
 const semanticScript = path.join(root, 'scripts', 'audit-semantic-index.mjs');
+const packageJsonPath = path.join(root, 'package.json');
 
 async function makeTempDataDir() {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-generated-data-'));
@@ -84,6 +85,84 @@ test('strict generated-data summary fails partial production coverage with actio
   assert.equal(summaryJson.mode, 'production-attention');
   assert.equal(summaryJson.parity.readmesCoverage, 0.5);
   assert(summaryJson.guidance.some((line) => line.includes('Profile-feed parity is low')));
+});
+
+test('deploy generated-data summary requires token-backed README refresh telemetry', async () => {
+  const tmp = await makeTempDataDir();
+  const now = new Date().toISOString();
+
+  await writeJson(tmp, '_stars.json', { Alpha: 8, Beta: 3 });
+  await writeJson(tmp, '_stats.json', {
+    totalRepos: 2,
+    totalStars: 11,
+    lastPushedRepo: 'Alpha',
+    lastPushedAt: now,
+    fetchedAt: now,
+  });
+  await writeJson(tmp, '_meta.json', {
+    Alpha: { stars: 8, pushedAt: now },
+    Beta: { stars: 3, pushedAt: now },
+  });
+  await writeJson(tmp, '_releases.json', []);
+  await writeJson(tmp, '_readmes.json', { Alpha: '# Alpha', Beta: '# Beta' });
+  await writeJson(tmp, '_profile-projects.json', {
+    schema: 'sysadmindoc.profile-projects.v1',
+    source: 'github-api',
+    feedSourceUrl: 'https://example.test/projects.json',
+    generatedAt: now,
+    cachedAt: now,
+    projectCount: 2,
+    projects: [
+      { repo: 'Alpha', title: 'Alpha', updatedAt: now },
+      { repo: 'Beta', title: 'Beta', updatedAt: now },
+    ],
+  });
+  await writeJson(tmp, '_readme-refresh.json', {
+    schema: 'sysadmindoc.readme-refresh.v2',
+    generatedAt: now,
+    source: 'github-api',
+    tokenPresent: false,
+    totalPublicRepos: 2,
+    attempted: 0,
+    refreshed: 0,
+    reused: 0,
+    misses: 0,
+    preserved: 2,
+    unattempted: 2,
+    missing: 0,
+    rateLimited: false,
+    failureSamples: [],
+    skippedReason: 'missing-token',
+    cacheEntries: 2,
+    trimmed: 0,
+  });
+
+  const result = spawnSync(
+    process.execPath,
+    [summaryScript, '--out', 'summary', '--max-age-hours', '36', '--fail-on-stale', '--require-token-backed-readmes'],
+    { cwd: tmp, encoding: 'utf8' },
+  );
+
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /Mode: unauthenticated-partial/);
+  assert.match(result.stdout, /Deploy token-backed README required: yes/);
+  assert.match(result.stdout, /README refresh is token-backed \(deploy preflight required\)/);
+  assert.match(result.stdout, /Deploy preflight requires token-backed README refresh data/);
+
+  const summaryJson = JSON.parse(await fs.readFile(path.join(tmp, 'summary', 'summary.json'), 'utf8'));
+  assert.equal(summaryJson.preflight.requireTokenBackedReadmes, true);
+  assert.equal(summaryJson.preflight.ready, false);
+  assert(summaryJson.checks.some((check) => check.label.includes('deploy preflight required') && check.ok === false));
+});
+
+test('deploy preflight script runs strict generated-data gate before tests and build', async () => {
+  const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+
+  assert.equal(
+    pkg.scripts['data:summary:deploy'],
+    'node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes',
+  );
+  assert.match(pkg.scripts['deploy:preflight'], /^npm run data:summary:deploy && npm test && npm run check && npm run build$/);
 });
 
 test('fixture generated-data summary labels reduced corpus without blocking advisory runs', async () => {
