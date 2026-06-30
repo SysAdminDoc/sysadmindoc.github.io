@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.4
+Current version: v0.20.5
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 — Remove orphaned homepage terminal runtime, styles, and tests
-  Why: The visible terminal was removed, but terminal command code, `.hero-terminal-*` CSS, and terminal tests still ship or gate maintenance.
-  Evidence: `public/scripts/main.js`, `src/styles/global.css`, `src/styles/critical.css`, `test/terminal-commands.test.mjs`; no `id="heroTerm"` or `id="termBody"` remains under `src/`.
-  Touches: `public/scripts/main.js`, `src/styles/global.css`, `src/styles/critical.css`, `test/terminal-commands.test.mjs`, `test/content-visibility.test.mjs` if selector expectations change.
-  Acceptance: No `heroTerm`, `termBody`, interactive terminal command handlers, or `.hero-terminal-*` selectors remain; tests cover the current homepage sections instead of removed terminal behavior; bundle and CSS audits still pass.
-  Complexity: M
 
 - [ ] P1 — Add a WCAG 2.2 target-size regression gate
   Why: The site has strong axe/static checks, but no browser gate enforces the WCAG 2.2 2.5.8 24x24px minimum for links, buttons, and controls.

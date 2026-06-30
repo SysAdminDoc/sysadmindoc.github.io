@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.5] - 2026-06-30
+
+- Removed orphaned homepage command-shell runtime, styles, visual masks, and aggregate-stat writes left after the visible terminal was removed.
+- Replaced stale command-shell tests with homepage runtime guards that cover the current section reveal targets.
+- Synced the offline fallback CSP hash with the updated critical stylesheet.
+
 ## [v0.20.4] - 2026-06-30
 
 - Hardened service-worker install so one stale precache entry no longer prevents valid offline assets from being cached.

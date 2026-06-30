@@ -95,8 +95,7 @@ html[data-theme="light"]{
   .btn,
   .hero-proof-link,
   .hero-pulse .pulse-item,
-  .hero-stage,
-  .term{
+  .hero-stage{
     border-color:var(--border-strong);
   }
   .hr,
@@ -665,7 +664,7 @@ html[data-theme="light"] .nav-actions{
   border-radius:12px;
   pointer-events:none;
 }
-.hero-stage-head,.hero-terminal-meta,.hero-flightpath{
+.hero-stage-head,.hero-flightpath{
   position:relative;
   z-index:1;
   display:flex;
@@ -674,7 +673,7 @@ html[data-theme="light"] .nav-actions{
   gap:18px;
 }
 .hero-stage-head{margin-bottom:18px}
-.hero-stage-kicker,.hero-terminal-kicker,.hero-flightpath-label{
+.hero-stage-kicker,.hero-flightpath-label{
   font-family:var(--mono);
   font-size:11px;
   text-transform:uppercase;
@@ -740,85 +739,6 @@ html[data-theme="light"] .nav-actions{
 .hero-reel-lang.py{color:var(--grn);background:var(--grnd)}
 .hero-reel-lang.ext{color:var(--pur);background:var(--purd)}
 .hero-reel-lang.kt{color:var(--teal);background:var(--teald)}
-.hero-terminal-shell{
-  position:relative;
-  z-index:1;
-  padding:18px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:12px;
-  background:rgba(5,10,18,.38);
-}
-.hero-terminal-meta{margin-bottom:14px}
-.hero-terminal-copy{display:flex;flex-direction:column;gap:4px}
-.hero-terminal-kicker{color:var(--t3)}
-.hero-terminal-note{color:var(--t2);font-size:13px}
-.hero-terminal-badge{
-  flex-shrink:0;
-  padding:8px 12px;
-  border-radius:10px;
-  background:var(--blued);
-  color:var(--blue);
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-}
-.term{
-  overflow:hidden;
-  border:1px solid rgba(124,184,255,.16);
-  border-radius:12px;
-  background:rgba(5,10,18,.72);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.tb{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:14px 18px;
-  border-bottom:1px solid var(--glass-border);
-  background:rgba(255,255,255,.03);
-}
-.td{width:10px;height:10px;border-radius:50%}
-.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
-.tt{
-  flex:1;
-  text-align:center;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:12px;
-}
-.tbd{
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-  padding:20px;
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.8;
-}
-.term-input-line{
-  display:flex;
-  align-items:center;
-  min-height:32px;
-  font-family:var(--mono);
-  font-size:13px;
-}
-.term-input{
-  min-height:32px;
-  padding:4px 0;
-  background:none;
-  border:0;
-  color:var(--t1);
-  font:inherit;
-}
-.term-hint{
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:11px;
-  text-align:center;
-  padding:8px;
-}
-.tp,.ts{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}
 .hero-flightpath{
   margin-top:14px;
   padding-top:14px;
@@ -904,7 +824,7 @@ section{position:relative;z-index:1}
   }
   .ha .btn{width:100%;justify-content:center}
   .hero-stage{padding:20px;border-radius:12px}
-  .hero-stage-head,.hero-terminal-meta,.hero-flightpath{flex-direction:column}
+  .hero-stage-head,.hero-flightpath{flex-direction:column}
   .hero-reel-item{grid-template-columns:auto 1fr}
   .hero-reel-lang{grid-column:2;justify-self:start}
   .hero-flightpath-items{width:100%}
@@ -1027,25 +947,6 @@ section{position:relative;z-index:1}
   gap:12px;
   padding:10px 12px;
 }
-.hero-terminal-shell{
-  padding:12px;
-}
-.hero-terminal-meta{
-  margin-bottom:10px;
-}
-.hero-terminal-note{
-  font-size:12px;
-}
-.hero-terminal-badge{
-  padding:6px 9px;
-}
-.hero-stage .tbd{
-  height:188px;
-  min-height:188px;
-  padding:14px;
-  font-size:12px;
-  line-height:1.65;
-}
 .hero-flightpath{
   margin-top:10px;
   padding-top:10px;
@@ -1092,16 +993,6 @@ section{position:relative;z-index:1}
   }
   .hero-reel-item{
     padding:8px 10px;
-  }
-  .hero-terminal-shell{
-    padding:10px;
-  }
-  .hero-terminal-meta{
-    display:none;
-  }
-  .hero-stage .tbd{
-    height:112px;
-    min-height:112px;
   }
 }
 @media(max-width:1320px){
