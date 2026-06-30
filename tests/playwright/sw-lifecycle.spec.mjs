@@ -2,15 +2,18 @@ import { expect, test } from '@playwright/test';
 
 test.use({ serviceWorkers: 'allow' });
 
-test('service worker installs, caches offline fallback, and survives navigation', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'networkidle' });
-
-  const swRegistered = await page.evaluate(async () => {
+async function hasRegisteredServiceWorker(page) {
+  return page.evaluate(async () => {
     if (!('serviceWorker' in navigator)) return false;
     const reg = await navigator.serviceWorker.getRegistration('/');
     return Boolean(reg?.active || reg?.waiting || reg?.installing);
   });
-  expect(swRegistered).toBe(true);
+}
+
+test('service worker installs, caches offline fallback, and survives navigation', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+
+  await expect.poll(() => hasRegisteredServiceWorker(page)).toBe(true);
 
   await page.evaluate(async () => {
     const reg = await navigator.serviceWorker.ready;
@@ -28,6 +31,13 @@ test('service worker installs, caches offline fallback, and survives navigation'
   });
   expect(offlineCached).toBe(true);
 });
+
+for (const route of ['/search/', '/status/', '/projects/win11-nvme-driver-patcher/']) {
+  test(`service worker registers on direct ${route} landing`, async ({ page }) => {
+    await page.goto(route, { waitUntil: 'networkidle' });
+    await expect.poll(() => hasRegisteredServiceWorker(page)).toBe(true);
+  });
+}
 
 test('offline navigation reaches the offline fallback page', async ({ page, context }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
