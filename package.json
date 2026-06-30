@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.20.7",
+  "version": "0.20.8",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -51,6 +51,7 @@
     "audit:interactions": "playwright test --config=playwright.interactions.config.mjs tests/playwright/interaction-smoke.spec.mjs",
     "forced-colors:audit": "node scripts/audit-forced-colors.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "deps:audit": "node scripts/audit-dependencies.mjs",
     "search:index": "pagefind --site dist --glob \"**/*.html\"",
     "search:audit": "node scripts/audit-search-index.mjs",
     "endpoints:audit": "node scripts/audit-public-endpoints.mjs",

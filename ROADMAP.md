@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.7
+Current version: v0.20.8
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P2
-
-- [ ] P2 — Add a local dependency freshness and upgrade-readiness report
-  Why: Dependency updates are manual; `npm outdated` already shows Astro 7.0.3 available while the project remains on Astro 6.4.8, and registry latests also include Vite 8.1.0 and Shiki 4.3.0.
-  Evidence: `package.json`, `package-lock.json`, `npm audit --omit=dev --audit-level=high`, `npm outdated --json`, Astro 7 upgrade docs.
-  Touches: `package.json`, a dependency audit script, `test/` coverage for report parsing, `Roadmap_Blocked.md` references only if an upgrade stays blocked.
-  Acceptance: A local npm script prints direct dependency current/wanted/latest, flags high/critical advisories, records known blocked majors without failing normal builds, and fails only on configured security thresholds.
-  Complexity: S
 
 - [ ] P2 — Add source-level dead selector and runtime surface auditing
   Why: Dist bundle budgets pass, but source drift allowed removed terminal selectors and handlers to remain after the homepage UI changed.

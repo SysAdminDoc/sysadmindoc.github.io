@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.20.7-blue)
+![Version](https://img.shields.io/badge/version-0.20.8-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -43,6 +43,7 @@ npm run scripts:minify # minify copied dist/scripts output after Astro build
 node scripts/fix-html-structure.mjs # verify built HTML structure; --repair is legacy recovery only
 npm run catalog:audit # compare public GitHub repos with portfolio data
 npm run audit:prod    # fail on high/critical production advisories
+npm run deps:audit    # report direct/override package freshness and high-threshold advisories
 npm run data:validate # validate project data, screenshots, policy, and command palette coverage
 npm run assets:audit  # detect stale screenshots and unreferenced source/public modules
 npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
@@ -64,7 +65,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.20.7 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.20.8 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
@@ -168,6 +169,7 @@ scripts/
 ├── audit-csp.mjs          # source/built CSP inventory plus script/style candidate gates
 ├── audit-a11y.mjs         # static WCAG audit over dist/
 ├── audit-public-endpoints.mjs # built public JSON/text/script endpoint audit
+├── audit-dependencies.mjs # npm outdated/audit freshness and upgrade-readiness report
 ├── audit-feed.mjs         # built JSON/Atom Feed metadata/item contract audit
 ├── audit-dom-size.mjs     # built homepage/catalog DOM-size budget audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
