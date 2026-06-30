@@ -149,6 +149,7 @@ const heroProofItems = homepageProofHighlights.map((highlight) => ({
   ...highlight,
   sourceText: resolveHomepageProofSource(projectProof[highlight.repo], highlight.source),
 }));
+const heroEvidenceApps = liveApps.slice(0, 3);
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const heroReleaseDate = compactUtcDate;
 const journeyMilestones = [
@@ -398,6 +399,39 @@ const cmdkSections = [
           ))}
         </div>
       </div>
+      <aside class="hero-evidence" aria-label="Live project evidence">
+        <div class="hero-evidence-head">
+          <span class="hero-evidence-kicker">Live evidence</span>
+          <strong>Projects that open now</strong>
+          <p>{liveApps.length} browser apps plus source-backed outcomes, surfaced before the full catalog.</p>
+        </div>
+        <div class="hero-evidence-stack">
+          {heroEvidenceApps.map((app, index) => (
+            <a href={app.url} target="_blank" rel="noopener" class="hero-shot" aria-label={`Open ${app.name} live app in a new tab`}>
+              <img
+                src={`/screenshots/thumbs/${app.slug}.jpg`}
+                alt={`${app.name} live app screenshot`}
+                width="640"
+                height="400"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              >
+              <span class="hero-shot-meta">
+                <span>{app.name}</span>
+                <small>Live app</small>
+              </span>
+            </a>
+          ))}
+        </div>
+        <div class="hero-evidence-links" aria-label="Source-backed proof links">
+          {heroProofItems.map((proof) => (
+            <a href={`/projects/${proof.repo}/`} class="hero-evidence-proof" title={proof.sourceText}>
+              <span>{proof.label}</span>
+              <strong>{proof.value}</strong>
+            </a>
+          ))}
+        </div>
+      </aside>
     </div>
   </section>
 

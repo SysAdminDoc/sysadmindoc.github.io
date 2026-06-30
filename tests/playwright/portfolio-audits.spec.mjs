@@ -245,6 +245,48 @@ test.describe('WCAG 2.2 target-size audit', () => {
   }
 });
 
+test('homepage hero evidence rail fills desktop and stays off mobile', async ({ page }) => {
+  const expectDesktopRail = async (width) => {
+    await page.setViewportSize({ width, height: 900 });
+    await preparePage(page, '/', '#hero');
+
+    const rail = page.locator('.hero-evidence');
+    await expect(rail).toBeVisible();
+    await expect(page.locator('.hero-evidence .hero-shot')).toHaveCount(3);
+
+    const desktopMetrics = await page.evaluate(() => {
+      const railElement = document.querySelector('.hero-evidence');
+      const railRect = railElement?.getBoundingClientRect();
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        railTop: railRect?.top ?? 0,
+        railLeft: railRect?.left ?? 0,
+        railRight: railRect?.right ?? 0,
+        railHeight: railRect?.height ?? 0,
+      };
+    });
+    expect(desktopMetrics.scrollWidth).toBeLessThanOrEqual(desktopMetrics.clientWidth + 1);
+    expect(desktopMetrics.railTop).toBeLessThan(160);
+    expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.48);
+    expect(desktopMetrics.railRight).toBeLessThanOrEqual(desktopMetrics.clientWidth);
+    expect(desktopMetrics.railHeight).toBeGreaterThan(420);
+  };
+
+  await expectDesktopRail(1365);
+  await expectDesktopRail(980);
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await preparePage(page, '/', '#hero');
+  await expect(page.locator('.hero-evidence')).toBeHidden();
+
+  const mobileMetrics = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(mobileMetrics.scrollWidth).toBeLessThanOrEqual(mobileMetrics.clientWidth + 1);
+});
+
 test.describe('Playwright visual baselines', () => {
   for (const viewport of viewports) {
     for (const route of routes) {
@@ -253,6 +295,9 @@ test.describe('Playwright visual baselines', () => {
         const maskColor = isLight ? '#f0f0f3' : '#111827';
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await preparePage(page, route.path, route.ready);
+        if (route.name === 'home' && viewport.width >= 980) {
+          await expect(page.locator('.hero-evidence')).toBeVisible();
+        }
         if (isLight) {
           await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
           await page.waitForTimeout(200);
