@@ -33,18 +33,25 @@
     slate: 'slate',
   };
   const defaultProjectTypes = ['featured', 'live'];
-  /* escapeHTML, isTextEntryTarget — loaded from shared.js */
+  const cmdkTitleClass = 'cmdk-title';
+  const cmdkSubtitleClass = 'cmdk-subtitle';
+  /* isTextEntryTarget, SafeDOM — loaded from shared.js */
+  const dom = window.SafeDOM || {};
+  const replaceChildren = dom.replaceChildren || function (node) {
+    while (node.firstChild) node.removeChild(node.firstChild);
+    for (let i = 1; i < arguments.length; i++) {
+      if (arguments[i]) node.appendChild(arguments[i]);
+    }
+  };
+  const appendHighlightedTextSafe = dom.appendHighlightedText || function (node, text) {
+    node.textContent = String(text == null ? '' : text);
+  };
 
-  function highlightMatch(text, query) {
-    const value = String(text == null ? '' : text);
-    if (!query) return escapeHTML(value);
-    const lowerValue = value.toLowerCase();
-    const lowerQuery = query.toLowerCase();
-    const index = lowerValue.indexOf(lowerQuery);
-    if (index < 0) return escapeHTML(value);
-    return escapeHTML(value.slice(0, index))
-      + '<mark>' + escapeHTML(value.slice(index, index + query.length)) + '</mark>'
-      + escapeHTML(value.slice(index + query.length));
+  function highlightedSpan(className, text, query) {
+    const span = document.createElement('span');
+    span.className = className;
+    appendHighlightedTextSafe(span, text, query);
+    return span;
   }
 
   function setMeta(message) {
@@ -172,13 +179,16 @@
   }
 
   function renderRows(rows, query) {
-    const output = [];
+    const fragment = document.createDocumentFragment();
     let lastGroup = '';
     rows.forEach((row, index) => {
       const groupLabel = row.groupLabel
         || (row.kind === 'project' ? 'Projects' : row.kind === 'route' ? 'Pages & Tracks' : 'Sections');
       if (groupLabel !== lastGroup) {
-        output.push('<div class="cmdk-group-label">' + escapeHTML(groupLabel) + '</div>');
+        const group = document.createElement('div');
+        group.className = 'cmdk-group-label';
+        group.textContent = groupLabel;
+        fragment.appendChild(group);
         lastGroup = groupLabel;
       }
       const dotTone = row.kind === 'route'
@@ -195,20 +205,46 @@
         || (row.kind === 'project'
           ? ((row.categoryLabel || row.category) ? (row.categoryLabel || row.category) + ' project' : 'Open the project detail page.')
           : 'Open this route.');
-      output.push(
-        '<div class="cmdk-item" id="cmdk-option-' + index + '" data-idx="' + index + '" role="option" aria-selected="' + (index === 0 ? 'true' : 'false') + '" data-href="' + escapeHTML(row.href || row.url) + '"' + (row.external ? ' data-external="true"' : '') + '>'
-        + '<span class="cmdk-dot cmdk-dot-' + dotTone + '"></span>'
-        + '<span class="cmdk-copy">'
-        + '<span class="cmdk-title-row">'
-        + '<span class="cmdk-title">' + highlightMatch(row.label || row.name, query) + '</span>'
-        + '<span class="cmdk-badge">' + escapeHTML(badge) + '</span>'
-        + '</span>'
-        + '<span class="cmdk-subtitle">' + highlightMatch(subtitle, query) + '</span>'
-        + '</span>'
-        + '</div>',
-      );
+      const item = document.createElement('div');
+      item.className = 'cmdk-item';
+      item.id = 'cmdk-option-' + index;
+      item.dataset.idx = String(index);
+      item.dataset.href = String(row.href || row.url || '');
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+      if (row.external) item.dataset.external = 'true';
+
+      const dot = document.createElement('span');
+      dot.className = 'cmdk-dot cmdk-dot-' + dotTone;
+      const copy = document.createElement('span');
+      copy.className = 'cmdk-copy';
+      const titleRow = document.createElement('span');
+      titleRow.className = 'cmdk-title-row';
+      const badgeNode = document.createElement('span');
+      badgeNode.className = 'cmdk-badge';
+      badgeNode.textContent = badge;
+
+      titleRow.appendChild(highlightedSpan(cmdkTitleClass, row.label || row.name, query));
+      titleRow.appendChild(badgeNode);
+      copy.appendChild(titleRow);
+      copy.appendChild(highlightedSpan(cmdkSubtitleClass, subtitle, query));
+      item.appendChild(dot);
+      item.appendChild(copy);
+      fragment.appendChild(item);
     });
-    return output.join('');
+    return fragment;
+  }
+
+  function renderEmptyState() {
+    const empty = document.createElement('div');
+    empty.className = 'cmdk-empty';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Nothing matched that search';
+    const span = document.createElement('span');
+    span.textContent = 'Try a project name, stack, category, or route.';
+    empty.appendChild(strong);
+    empty.appendChild(span);
+    return empty;
   }
 
   function render(query) {
@@ -217,7 +253,7 @@
       const starterResults = getDefaultResults();
       selected = 0;
       setMeta('Search the archive, jump through this page, or open a key route.');
-      list.innerHTML = renderRows(starterResults, q);
+      replaceChildren(list, renderRows(starterResults, q));
       setSelected(0);
       return;
     }
@@ -269,11 +305,11 @@
       selected = 0;
       input.setAttribute('aria-activedescendant', '');
       setMeta('Nothing matched that search. Try a project name, stack, category, or route.');
-      list.innerHTML = '<div class="cmdk-empty"><strong>Nothing matched that search</strong><span>Try a project name, stack, category, or route.</span></div>';
+      replaceChildren(list, renderEmptyState());
       return;
     }
     setMeta(top.length === 1 ? '1 match ready to open.' : top.length + ' matches ready to open.');
-    list.innerHTML = renderRows(top, q);
+    replaceChildren(list, renderRows(top, q));
     setSelected(0);
   }
 

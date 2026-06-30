@@ -12,12 +12,31 @@
     const scheduleIdle=home.scheduleIdle||function(fn){setTimeout(fn,0)};
     const fetchWithTimeout=home.fetchWithTimeout||function(resource,options){return fetch(resource,options)};
     const updateFilterCounts=home.updateFilterCounts||function(){};
+    const dom=window.SafeDOM||{};
+    const replaceChildren=dom.replaceChildren||function(node){
+        while(node.firstChild)node.removeChild(node.firstChild);
+        for(let i=1;i<arguments.length;i++){if(arguments[i])node.appendChild(arguments[i])}
+    };
+    const svgNode=dom.svgNode||function(tag,attrs){
+        const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+        Object.keys(attrs||{}).forEach(function(name){
+            const value=attrs[name];
+            if(value!=null&&value!==false)node.setAttribute(name,value===true?'':String(value));
+        });
+        return node;
+    };
 
     const GITHUB_CACHE_KEY='gh_cache';
     const GITHUB_CACHE_TTL=21600000;
     const LIVE_STATUS_CACHE_KEY='live_status_cache';
     const LIVE_STATUS_CACHE_TTL=900000;
     let ghData={};
+
+    function createStarIcon(){
+        const svg=svgNode('svg',{viewBox:'0 0 16 16','aria-hidden':'true'});
+        svg.appendChild(svgNode('path',{d:'M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z'}));
+        return svg;
+    }
 
     function getFallbackRepoCount(){
         const injected=window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects)?window.__PORTFOLIO_DATA.allProjects.length:0;
@@ -165,7 +184,7 @@
                 if(s>0&&!el.querySelector('.ca-stars')){
                     const badge=document.createElement('span');
                     badge.className='ca-stars';
-                    badge.innerHTML='<svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>'+escapeHTML(s);
+                    replaceChildren(badge,createStarIcon(),document.createTextNode(String(s)));
                     el.appendChild(badge)}}});
         const countAll=document.getElementById('countAll');
         if(countAll){
@@ -197,27 +216,78 @@
         const radius=70;
         const circ=2*Math.PI*radius;
         const gap=2;
-        let circles='';
+        const svg=svgNode('svg',{viewBox:'0 0 180 180'});
         let offset=0;
         top.forEach(function(entry){
             var lang=entry[0],count=entry[1];
             var pct=count/total;
             var arcLen=Math.max(pct*circ-gap,0);
             var color=colors[lang]||'#7080a0';
-            circles+='<circle cx="90" cy="90" r="'+radius+'" stroke="'+color+'" stroke-dasharray="'+arcLen.toFixed(1)+' '+(circ-arcLen).toFixed(1)+'" stroke-dashoffset="'+(-offset).toFixed(1)+'" opacity=".85"/>';
+            svg.appendChild(svgNode('circle',{
+                cx:'90',
+                cy:'90',
+                r:String(radius),
+                stroke:color,
+                'stroke-dasharray':arcLen.toFixed(1)+' '+(circ-arcLen).toFixed(1),
+                'stroke-dashoffset':(-offset).toFixed(1),
+                opacity:'.85'
+            }));
             offset+=pct*circ;
         });
-        let legend='';
+        const legend=document.createElement('div');
+        legend.className='lang-legend';
         top.forEach(function(entry){
             var lang=entry[0],count=entry[1];
             var pct=Math.round(count/total*100);
             var tone=colorClasses[lang]||'other';
-            legend+='<div class="lang-legend-item"><span class="lang-legend-dot lang-tone-'+tone+'"></span>'+escapeHTML(lang)+'<span class="lang-legend-pct">'+pct+'%</span></div>';
+            const item=document.createElement('div');
+            item.className='lang-legend-item';
+            const dot=document.createElement('span');
+            dot.className='lang-legend-dot lang-tone-'+tone;
+            const pctNode=document.createElement('span');
+            pctNode.className='lang-legend-pct';
+            pctNode.textContent=pct+'%';
+            item.appendChild(dot);
+            item.appendChild(document.createTextNode(String(lang)));
+            item.appendChild(pctNode);
+            legend.appendChild(item);
         });
         const lead=top[0];
         const leadLang=lead?lead[0]:'Mixed';
         const leadPct=lead?Math.round(lead[1]/total*100):0;
-        wrap.innerHTML='<div class="lang-donut-panel"><div class="lang-donut-head"><div class="lang-donut-kicker">Project Mix</div><p class="lang-donut-copy">'+escapeHTML(leadLang)+' leads the public archive at '+leadPct+'% of projects, with the rest spread across desktop, web, and Android tooling.</p></div><div class="lang-donut-shell"><div class="lang-donut"><svg viewBox="0 0 180 180">'+circles+'</svg><div class="lang-donut-center"><div class="donut-total">'+total+'</div><div class="donut-label">projects</div></div></div><div class="lang-legend">'+legend+'</div></div></div>';
+        const panel=document.createElement('div');
+        panel.className='lang-donut-panel';
+        const head=document.createElement('div');
+        head.className='lang-donut-head';
+        const kicker=document.createElement('div');
+        kicker.className='lang-donut-kicker';
+        kicker.textContent='Project Mix';
+        const copy=document.createElement('p');
+        copy.className='lang-donut-copy';
+        copy.textContent=String(leadLang)+' leads the public archive at '+leadPct+'% of projects, with the rest spread across desktop, web, and Android tooling.';
+        head.appendChild(kicker);
+        head.appendChild(copy);
+        const shell=document.createElement('div');
+        shell.className='lang-donut-shell';
+        const donut=document.createElement('div');
+        donut.className='lang-donut';
+        const center=document.createElement('div');
+        center.className='lang-donut-center';
+        const totalNode=document.createElement('div');
+        totalNode.className='donut-total';
+        totalNode.textContent=String(total);
+        const label=document.createElement('div');
+        label.className='donut-label';
+        label.textContent='projects';
+        center.appendChild(totalNode);
+        center.appendChild(label);
+        donut.appendChild(svg);
+        donut.appendChild(center);
+        shell.appendChild(donut);
+        shell.appendChild(legend);
+        panel.appendChild(head);
+        panel.appendChild(shell);
+        replaceChildren(wrap,panel);
     }
 
     (function(){

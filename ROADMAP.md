@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.3
+Current version: v0.21.4
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P1
-
-- [ ] P1 — Prepare Trusted Types by centralizing DOM HTML sinks
-  Why: Trusted Types CSP enforcement is blocked until raw `innerHTML` sinks are wrapped or replaced, even though current CSP audits are otherwise strong.
-  Evidence: `Roadmap_Blocked.md` Trusted Types item; `public/scripts/cmdk.js`, `home-github.js`, `home-media.js`, `shot-viewer.js`, `theme-toggle.js`; MDN Trusted Types CSP docs.
-  Touches: `public/scripts/shared.js`, `public/scripts/cmdk.js`, `public/scripts/home-github.js`, `public/scripts/home-media.js`, `public/scripts/shot-viewer.js`, `public/scripts/theme-toggle.js`, `scripts/audit-csp.mjs`
-  Acceptance: Raw dynamic `innerHTML =` assignments are removed or routed through a single audited safe-render helper; dynamic GitHub/profile/media data uses DOM nodes or sanitized TrustedHTML-compatible paths; CSP audit reports the site is ready for a Trusted Types browser trial.
-  Complexity: M
 
 ### P2
 
