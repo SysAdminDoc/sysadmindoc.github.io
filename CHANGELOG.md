@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.9] - 2026-06-30
+
+- Added source-surface audits for CSS selectors and public runtime DOM targets so stale classes, IDs, data attributes, and DOM hooks fail locally.
+- Removed dead homepage-era selectors from `critical.css` and `global.css`, including the retired hero stage, proof-link, about/philosophy, heatmap, and command-kbd surfaces.
+- Removed stale homepage aggregate-stat writes and the old `.cs2` live-star parent fallback from `public/scripts/main.js`.
+
 ## [v0.20.8] - 2026-06-30
 
 - Added `npm run deps:audit`, a local dependency freshness report that combines `npm outdated --all` with production `npm audit` and tracks direct dependencies plus package overrides.

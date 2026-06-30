@@ -1,6 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import {
+  auditDeadCssSelectors,
+  collectSourceSurface,
+  readSourceSurfaceTexts,
+} from './lib/source-surface-audit.mjs';
 
 const root = process.cwd();
 const criticalPath = path.join(root, 'src', 'styles', 'critical.css');
@@ -26,12 +31,6 @@ const sharedFirstViewportSelectors = [
   '.hero-signal',
   '.hero-signal-label',
   '.hero-signal-value',
-  '.hero-stage',
-  '.hero-stage::before',
-  '.hero-stage::after',
-  '.hero-stage-head',
-  '.hero-stage-title',
-  '.hero-stage-link',
 ];
 
 const sharedMobileSelectors = [
@@ -44,8 +43,6 @@ const sharedMobileSelectors = [
   '.hero-proof-value',
   '.hero-pulse',
   '.hero-pulse .pulse-item',
-  '.hero-stage',
-  '.hero-stage-head',
 ];
 
 function stripComments(css) {
@@ -175,7 +172,7 @@ function auditCss({ criticalCss, globalCss }) {
   };
 }
 
-function report(result, label = 'CSS first-viewport parity audit') {
+function report(result, deadSelectorResult, label = 'CSS first-viewport parity audit') {
   console.log(label);
   console.log(`  critical selectors: ${result.counts.criticalSelectors}`);
   console.log(`  global selectors: ${result.counts.globalSelectors}`);
@@ -183,12 +180,24 @@ function report(result, label = 'CSS first-viewport parity audit') {
   console.log(`  global mobile selectors: ${result.counts.globalMobileSelectors}`);
   console.log(`  shared first-viewport selectors checked: ${result.counts.sharedFirstViewportSelectors}`);
   console.log(`  shared mobile selectors checked: ${result.counts.sharedMobileSelectors}`);
+  if (deadSelectorResult) {
+    console.log('');
+    console.log('CSS dead-selector audit');
+    console.log(`  CSS files checked: ${deadSelectorResult.counts.cssFiles}`);
+    console.log(`  selectors checked: ${deadSelectorResult.counts.selectors}`);
+    console.log(`  selector atoms checked: ${deadSelectorResult.counts.selectorAtoms}`);
+    console.log(`  known source classes: ${deadSelectorResult.counts.knownClasses}`);
+    console.log(`  known source ids: ${deadSelectorResult.counts.knownIds}`);
+    console.log(`  known source data attributes: ${deadSelectorResult.counts.knownDataAttrs}`);
+  }
 }
 
 const [criticalCss, globalCss] = await Promise.all([
   fs.readFile(criticalPath, 'utf8'),
   fs.readFile(globalPath, 'utf8'),
 ]);
+const surfaceTexts = await readSourceSurfaceTexts(root);
+const surface = collectSourceSurface(surfaceTexts);
 
 if (selfTest) {
   const mutated = auditCss({
@@ -197,16 +206,38 @@ if (selfTest) {
   });
   const expectedFailure = mutated.errors.some((error) => error.includes('critical.css') && error.includes('.hero-proof-strip'));
   if (!expectedFailure) {
-    report(mutated, 'CSS first-viewport parity self-test');
+    report(mutated, null, 'CSS first-viewport parity self-test');
     console.error('');
     console.error('CSS first-viewport parity self-test failed: removed .hero-proof-strip was not reported.');
     process.exit(1);
   }
   console.log('CSS first-viewport parity self-test passed.');
+
+  const deadSelectorMutation = auditDeadCssSelectors(
+    new Map([['src/styles/global.css', `${globalCss}\n.ghost-panel .ghost-child{color:red}`]]),
+    surface,
+  );
+  const expectedDeadSelectorFailure = deadSelectorMutation.findings.some(
+    (finding) => finding.name === 'ghost-panel' || finding.name === 'ghost-child',
+  );
+  if (!expectedDeadSelectorFailure) {
+    report(mutated, deadSelectorMutation, 'CSS dead-selector self-test');
+    console.error('');
+    console.error('CSS dead-selector self-test failed: synthetic ghost selectors were not reported.');
+    process.exit(1);
+  }
+  console.log('CSS dead-selector self-test passed.');
 }
 
 const result = auditCss({ criticalCss, globalCss });
-report(result);
+const deadSelectorResult = auditDeadCssSelectors(
+  new Map([
+    ['src/styles/critical.css', criticalCss],
+    ['src/styles/global.css', globalCss],
+  ]),
+  surface,
+);
+report(result, deadSelectorResult);
 
 if (result.errors.length > 0) {
   console.error('');
@@ -215,4 +246,14 @@ if (result.errors.length > 0) {
   process.exit(1);
 }
 
+if (deadSelectorResult.findings.length > 0) {
+  console.error('');
+  console.error('CSS dead-selector audit failed:');
+  for (const finding of deadSelectorResult.findings) {
+    console.error(`  - ${finding.file}:${finding.line} selector "${finding.selector}" references missing ${finding.kind} "${finding.name}".`);
+  }
+  process.exit(1);
+}
+
 console.log('CSS first-viewport parity audit passed.');
+console.log('CSS dead-selector audit passed.');

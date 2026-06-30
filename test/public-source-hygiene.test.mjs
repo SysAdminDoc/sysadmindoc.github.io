@@ -12,5 +12,7 @@ test('public source hygiene audit passes and detects local-only markdown referen
   });
 
   assert.match(stdout, /Public source hygiene self-test passed\./);
+  assert.match(stdout, /Runtime DOM target self-test passed\./);
   assert.match(stdout, /Public source hygiene audit passed\./);
+  assert.match(stdout, /Runtime DOM target audit passed\./);
 });

@@ -2,6 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+import {
+  auditRuntimeDomTargets,
+  collectSourceSurface,
+  readSourceSurfaceTexts,
+} from './lib/source-surface-audit.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = fileURLToPath(import.meta.url);
@@ -110,6 +115,19 @@ function runSelfTest() {
     process.exit(1);
   }
   console.log('Public source hygiene self-test passed.');
+
+  const surface = collectSourceSurface(new Map([
+    ['src/pages/example.astro', '<div id="realWidget" class="real-panel" data-real-ready></div>'],
+  ]));
+  const runtime = auditRuntimeDomTargets(new Map([
+    ['public/scripts/example.js', "document.getElementById('ghostWidget'); document.querySelector('.ghost-panel'); document.querySelector('[data-ghost-ready]');"],
+  ]), surface);
+  const names = new Set(runtime.findings.map((finding) => finding.name));
+  if (!names.has('ghostWidget') || !names.has('ghost-panel') || !names.has('data-ghost-ready')) {
+    console.error('Runtime DOM target self-test failed.');
+    process.exit(1);
+  }
+  console.log('Runtime DOM target self-test passed.');
 }
 
 if (selfTest) runSelfTest();
@@ -124,10 +142,24 @@ for (const filePath of sourceFiles) {
 }
 
 const findings = auditPublicSourceHygiene(sourceTexts, forbiddenNames);
+const surfaceTexts = await readSourceSurfaceTexts(root);
+const surface = collectSourceSurface(surfaceTexts);
+const runtimeTexts = new Map(
+  [...surfaceTexts.entries()].filter(([relativePath]) => relativePath.startsWith('public/scripts/')),
+);
+const runtimeTargetResult = auditRuntimeDomTargets(runtimeTexts, surface);
 
 console.log('Public source hygiene audit');
 console.log(`  source files checked: ${sourceTexts.size}`);
 console.log(`  local-only markdown names checked: ${forbiddenNames.length}`);
+console.log('');
+console.log('Runtime DOM target audit');
+console.log(`  public scripts checked: ${runtimeTargetResult.counts.scriptFiles}`);
+console.log(`  literal DOM targets checked: ${runtimeTargetResult.counts.targets}`);
+console.log(`  target atoms checked: ${runtimeTargetResult.counts.targetAtoms}`);
+console.log(`  known source classes: ${runtimeTargetResult.counts.knownClasses}`);
+console.log(`  known source ids: ${runtimeTargetResult.counts.knownIds}`);
+console.log(`  known source data attributes: ${runtimeTargetResult.counts.knownDataAttrs}`);
 
 if (findings.length > 0) {
   console.error('');
@@ -139,6 +171,17 @@ if (findings.length > 0) {
 }
 
 console.log('Public source hygiene audit passed.');
+
+if (runtimeTargetResult.findings.length > 0) {
+  console.error('');
+  console.error('Runtime DOM target audit failed:');
+  for (const finding of runtimeTargetResult.findings) {
+    console.error(`  - ${finding.file}:${finding.line} ${finding.method} target "${finding.selector}" references missing ${finding.kind} "${finding.name}".`);
+  }
+  process.exit(1);
+}
+
+console.log('Runtime DOM target audit passed.');
 
 // Verify the built dist/index.html declares the referrer policy meta tag.
 const distIndexPath = path.join(root, 'dist', 'index.html');

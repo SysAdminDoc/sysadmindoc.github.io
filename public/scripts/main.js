@@ -255,10 +255,6 @@ function setStatText(el,value,animate){
 function syncAggregateStats(repoCount,totalStars,animate){
     setStatText(document.getElementById('statRepos'),repoCount,animate);
     setStatText(document.getElementById('statStars'),totalStars,animate);
-    setStatText(document.getElementById('aboutRepos'),repoCount,animate);
-    const art=document.getElementById('aboutReposText');if(art)art.textContent=repoCount+'+';
-    setStatText(document.getElementById('philRepos'),repoCount,animate);
-    setStatText(document.getElementById('journeyRepos'),repoCount,animate);
 }
 function applyGitHubData(repoCount,totalStars,langCount,opts){
     opts=opts||{};
@@ -272,7 +268,7 @@ function applyGitHubData(repoCount,totalStars,langCount,opts){
         const card=el.closest('[data-repo]');
         if(card&&ghData[card.dataset.repo]){
             const s=ghData[card.dataset.repo].stars;
-            const parent=el.closest('.cs2')||el.closest('.ca-stars');
+            const parent=el.closest('.ca-stars');
             el.textContent=s>0?s:'';
             if(parent)parent.style.display=s===0?'none':'';
         }});

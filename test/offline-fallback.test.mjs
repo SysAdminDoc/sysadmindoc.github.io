@@ -1,15 +1,23 @@
 import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import vm from 'node:vm';
 
 const root = process.cwd();
+const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
+
+function sha256Csp(value) {
+  return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
+}
 
 test('service worker exposes a local offline navigation fallback', async () => {
   const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
   const html = await fs.readFile(path.join(root, 'public', 'offline.html'), 'utf8');
   const css = await fs.readFile(path.join(root, 'public', 'styles', 'offline.css'), 'utf8');
+  const criticalCss = await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8');
+  const expectedStyleElem = `style-src-elem 'self' '${sha256Csp(criticalCss)}' '${sha256Csp(noJsRevealCss)}'`;
 
   assert.match(sw, /const OFFLINE_URL = '\/offline\.html'/);
   // PRECACHE is generated from dist/ at stamp time; verify the placeholder is in place.
@@ -24,6 +32,7 @@ test('service worker exposes a local offline navigation fallback', async () => {
 
   assert.match(html, /<title>Offline - SysAdminDoc Portfolio<\/title>/);
   assert.match(html, /Content-Security-Policy/);
+  assert.ok(html.includes(expectedStyleElem));
   assert.match(html, /href="\/styles\/offline\.css"/);
   assert.match(html, /href="">Retry this page<\/a>/);
   assert.match(html, /data-pagefind-ignore/);
