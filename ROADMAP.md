@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.1
+Current version: v0.21.2
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 — Surface generated-data trust state on status endpoints
-  Why: The site already exposes build status, but it does not show whether GitHub, README, release, and profile-feed data are fresh, token-backed, or partial.
-  Evidence: `src/pages/status.astro`, `src/pages/status.json.ts`, `npm run data:summary`, Framer/Webflow deployment health patterns.
-  Touches: `src/pages/status.astro`, `src/pages/status.json.ts`, `scripts/audit-public-endpoints.mjs`, `test/status-build-identity.test.mjs`
-  Acceptance: `/status` and `/status.json` expose generated data mode, age, profile-feed count, star/metadata/README/release coverage percentages, and stale/partial warnings; endpoint audits verify the fields.
-  Complexity: M
 
 - [ ] P1 — Add service-worker navigation preload
   Why: The PWA already handles navigation and offline fallback, but service-worker startup can delay navigations when preload is not used.

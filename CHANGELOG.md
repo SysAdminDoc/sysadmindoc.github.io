@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.2] - 2026-06-30
+
+- Added shared generated-data trust computation for status surfaces, including data mode, age, cache coverage percentages, README telemetry, and warnings.
+- Expanded `/status.json` and the portfolio health page with generated-data trust fields so stale, partial, or unauthenticated builds are visible.
+- Extended the public endpoint audit and unit contracts to verify the generated-data trust status schema.
+
 ## [v0.21.1] - 2026-06-30
 
 - Added a deploy-specific generated-data preflight command that fails when GitHub/README caches are stale, low-coverage, or missing token-backed README refresh telemetry.

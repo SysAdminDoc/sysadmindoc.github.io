@@ -15,7 +15,9 @@ function writeJson(filePath, value) {
 
 test('status endpoint and live smoke expose build commit identity', () => {
   const buildIdentity = fs.readFileSync(path.join(repoRoot, 'src', 'data', 'build-identity.ts'), 'utf8');
+  const generatedTrust = fs.readFileSync(path.join(repoRoot, 'src', 'data', 'generated-trust.ts'), 'utf8');
   const statusEndpoint = fs.readFileSync(path.join(repoRoot, 'src', 'pages', 'status.json.ts'), 'utf8');
+  const statusPage = fs.readFileSync(path.join(repoRoot, 'src', 'pages', 'status.astro'), 'utf8');
   const endpointsAudit = fs.readFileSync(path.join(repoRoot, 'scripts', 'audit-public-endpoints.mjs'), 'utf8');
   const smoke = fs.readFileSync(smokeScript, 'utf8');
 
@@ -27,8 +29,19 @@ test('status endpoint and live smoke expose build commit identity', () => {
   assert.match(statusEndpoint, /build:\s*\{\s*commit: buildIdentity\.commit,/);
   assert.match(statusEndpoint, /commitShort: buildIdentity\.commitShort/);
   assert.match(statusEndpoint, /source: buildIdentity\.source/);
+  assert.match(generatedTrust, /GENERATED_DATA_COVERAGE_THRESHOLD = 0\.8/);
+  assert.match(generatedTrust, /mode: 'fixture' \| 'unauthenticated-partial' \| 'production-fresh' \| 'production-attention'/);
+  assert.match(statusEndpoint, /import \{ buildGeneratedDataTrust \} from '\.\.\/data\/generated-trust'/);
+  assert.match(statusEndpoint, /generatedData = buildGeneratedDataTrust/);
+  assert.match(statusEndpoint, /starEntries,/);
+  assert.match(statusEndpoint, /metadataEntries,/);
+  assert.match(statusEndpoint, /releaseEntries,/);
+  assert.match(statusPage, /generatedData\.warnings\.length > 0/);
+  assert.match(statusPage, /README telemetry/);
   assert.match(endpointsAudit, /route: '\/status\.json', file: 'src\/pages\/status\.json\.ts'/);
   assert.match(endpointsAudit, /status\.json build\.commit must be unknown or a 7-40 character hex commit/);
+  assert.match(endpointsAudit, /status\.json generatedData\.mode/);
+  assert.match(endpointsAudit, /status\.json generatedData\.coverage/);
   assert.match(smoke, /option\('--expected-commit'\) \?\? process\.env\.EXPECTED_COMMIT/);
   assert.match(smoke, /fetchText\(baseUrl, '\/status\.json'/);
   assert.match(smoke, /\/status\.json build\.commit drifted/);
