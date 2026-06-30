@@ -14,6 +14,7 @@ const options = {
   outDir: process.env.DATA_REFRESH_SUMMARY_DIR || 'data-refresh-summary',
   maxAgeHours: 36,
   failOnStale: false,
+  requireTokenBackedReadmes: false,
   rankingLimit: 12,
 };
 
@@ -21,6 +22,8 @@ for (let index = 2; index < process.argv.length; index += 1) {
   const arg = process.argv[index];
   if (arg === '--fail-on-stale') {
     options.failOnStale = true;
+  } else if (arg === '--require-token-backed-readmes') {
+    options.requireTokenBackedReadmes = true;
   } else if (arg.startsWith('--max-age-hours=')) {
     options.maxAgeHours = Number(arg.split('=')[1]);
   } else if (arg === '--max-age-hours') {
@@ -192,6 +195,7 @@ const readmeRefreshStatus = !readmeRefreshRaw
     : readmeRefreshRaw.skippedReason
       ? 'skipped'
       : 'refreshed';
+const tokenBackedReadmesOk = !options.requireTokenBackedReadmes || readmeRefreshRaw?.tokenPresent === true;
 const rankingEntries = profileProjects.map(normalizeRankingProject).filter((project) => project.repo);
 const rankingMap = computeProjectRankings(rankingEntries, {
   stars,
@@ -270,6 +274,10 @@ const checks = [
   {
     label: 'README refresh did not hit rate limit',
     ok: Boolean(readmeRefreshRaw) && readmeRefreshRaw.rateLimited === false,
+  },
+  {
+    label: `README refresh is token-backed${options.requireTokenBackedReadmes ? ' (deploy preflight required)' : ''}`,
+    ok: tokenBackedReadmesOk,
   },
   {
     label: 'README refresh attempted all public repos when token-backed',
@@ -369,6 +377,9 @@ if (fixtureMode) {
 if (!fixtureMode && !process.env.GITHUB_TOKEN && readmeRefreshRaw?.tokenPresent === false) {
   guidance.push('Production README refreshes require GITHUB_TOKEN; run npm run fetch-stars with credentials before treating coverage as authoritative.');
 }
+if (options.requireTokenBackedReadmes && readmeRefreshRaw?.tokenPresent !== true) {
+  guidance.push('Deploy preflight requires token-backed README refresh data; set GITHUB_TOKEN, run npm run fetch-stars, then rerun npm run data:summary:deploy.');
+}
 if (!fixtureMode && !fresh) {
   guidance.push(`Generated data is stale: refresh with npm run fetch-stars and npm run profile-feed:sync, then rerun this command with --fail-on-stale.`);
 }
@@ -385,6 +396,11 @@ const summary = {
   fetchedAt: isoOrUnknown(stats.fetchedAt),
   ageHours: Number.isFinite(fetchedAgeHours) ? Number(fetchedAgeHours.toFixed(2)) : null,
   maxAgeHours: options.maxAgeHours,
+  preflight: {
+    failOnStale: options.failOnStale,
+    requireTokenBackedReadmes: options.requireTokenBackedReadmes,
+    ready: failedChecks.length === 0,
+  },
   totalRepos: stats.totalRepos,
   starEntries,
   metaEntries,
@@ -488,6 +504,7 @@ const markdown = [
   `Summary generated: ${summary.generatedAt}`,
   `Data fetched: ${summary.fetchedAt}`,
   `Data age: ${summary.ageHours ?? 'unknown'} hours (limit ${options.maxAgeHours})`,
+  `Deploy token-backed README required: ${options.requireTokenBackedReadmes ? 'yes' : 'no'}`,
   ...(summary.guidance.length > 0 ? ['', '## Action Required', '', ...summary.guidance.map((line) => `- ${line}`)] : []),
   '',
   '## Totals',

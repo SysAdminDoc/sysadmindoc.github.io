@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.0-blue)
+![Version](https://img.shields.io/badge/version-0.21.1-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -62,11 +62,13 @@ npm run semantic:audit # report similar-project and cross-category catalog revie
 npm run semantic:audit:strict # fail when production README corpus coverage is too low
 npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness and integrity
 npm run data:summary:strict # fail on stale, partial, or low-coverage generated-data caches
+npm run data:summary:deploy # strict generated-data gate plus token-backed README telemetry requirement
+npm run deploy:preflight # deploy gate: generated-data deploy summary, tests, check, and build
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.0 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.1 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
@@ -105,7 +107,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Skills: animated ring charts in the Stack section
 - Beyond Code: static creative overview cards, an internal SlunderStudio project route, and click-to-load drone videos with no Spotify embed
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, and `npm run data:summary:strict` fails on stale or low-coverage caches. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, and `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, and `npm run deploy:preflight` runs that gate before tests, check, and build. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
 
 Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
 
@@ -115,8 +117,8 @@ Public notes/TIL content is intentionally not published until a durable reviewed
 
 Deployment is local-first:
 1. Run `npm ci` from a normal local worktree.
-2. Refresh generated data when needed with `npm run fetch-stars` and `npm run profile-feed:sync`.
-3. Run `npm test`, `npm run check`, and `npm run build`.
+2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.
+3. Run `npm run deploy:preflight`; it fails if generated data is stale, coverage is low, or README refresh telemetry was not token-backed.
 4. Preview `dist/` with `npm run preview` and run any relevant browser audits.
 5. Publish the static output to GitHub Pages and verify the live URL with `npm run smoke:live`.
 

@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.1] - 2026-06-30
+
+- Added a deploy-specific generated-data preflight command that fails when GitHub/README caches are stale, low-coverage, or missing token-backed README refresh telemetry.
+- Added unit coverage for the deploy data gate while keeping normal fixture/offline summary and build workflows usable.
+- Documented `npm run deploy:preflight` as the local gate before publishing GitHub Pages output.
+
 ## [v0.21.0] - 2026-06-30
 
 - Split the homepage runtime into feature-scoped scripts for core helpers, navigation, catalog controls, GitHub/live status hydration, media handling, and visual effects.

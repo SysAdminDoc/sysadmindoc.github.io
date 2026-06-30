@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.0
+Current version: v0.21.1
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P0
-
-- [ ] P0 — Gate release deploys on generated-data freshness
-  Why: Normal validation passes even when generated GitHub/README caches are stale and partial, which can make rankings, README excerpts, release data, and status signals misleading.
-  Evidence: `npm run data:summary` reported 612h-old generated data and 8.8% star/metadata/README coverage; `package.json` build scripts do not run `data:summary:strict`.
-  Touches: `package.json`, `scripts/summarize-generated-data.mjs`, `scripts/smoke-live-site.mjs`, `README.md`
-  Acceptance: A documented preflight command fails production deploys when generated data is older than 36h, coverage is below 80%, or token-backed README refresh is absent; normal fixture/offline builds remain usable.
-  Complexity: M
 
 ### P1
 
