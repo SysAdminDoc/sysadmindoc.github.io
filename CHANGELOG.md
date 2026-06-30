@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.8] - 2026-06-30
+
+- Added `npm run deps:audit`, a local dependency freshness report that combines `npm outdated --all` with production `npm audit` and tracks direct dependencies plus package overrides.
+- Recorded Astro 7 and Vite 8 as known blocked major upgrades so they are visible without failing normal builds; high/critical production advisories still fail the command.
+- Added parser coverage for blocked majors, nested transitive package filtering, and configurable security thresholds.
+
 ## [v0.20.7] - 2026-06-30
 
 - Added build commit identity to `/status.json`, preferring explicit build environment variables, falling back to local git, and reporting `unknown` when neither is available.
