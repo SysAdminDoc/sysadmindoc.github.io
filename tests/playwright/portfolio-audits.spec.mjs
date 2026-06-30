@@ -21,7 +21,7 @@ const stabilityCss = `
     scroll-behavior: auto !important;
   }
   html { caret-color: transparent !important; }
-  .tci, .pulse-dot, .now-pulse-dot { visibility: hidden !important; }
+  .pulse-dot, .now-pulse-dot { visibility: hidden !important; }
   .rv, .card-enter, .dv { opacity: 1 !important; transform: none !important; }
 `;
 
@@ -64,8 +64,6 @@ function dynamicMasks(page) {
   return [
     page.locator('#statRepos'),
     page.locator('#statStars'),
-    page.locator('#termRepos'),
-    page.locator('#termStars'),
     page.locator('[data-rel]'),
     page.locator('[data-rel-short]'),
     page.locator('.gh-stars'),

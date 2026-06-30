@@ -122,16 +122,6 @@
         .bg2{background:var(--surface-2);color:var(--t2);border:1px solid var(--border-soft)}
         .bg2:hover{color:var(--t1);border-color:var(--border-strong);background:var(--surface-1);box-shadow:0 10px 24px rgba(0,0,0,.14);transform:translateY(-2px)}
 
-        /* Terminal */
-        .term{background:var(--glass);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid var(--glass-border);border-radius:10px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.4),0 0 1px rgba(255,255,255,.05) inset}
-        .tb{display:flex;align-items:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--glass-border)}
-        .td{width:10px;height:10px;border-radius:50%}.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
-        .tt{flex:1;text-align:center;font-family:var(--mono);font-size:12px;color:var(--t3)}
-        .tbd{padding:20px;font-family:var(--mono);font-size:13px;line-height:1.8;min-height:320px}
-        .tl{opacity:0;animation:tfi .3s ease forwards}@keyframes tfi{to{opacity:1}}
-        .tp{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}.ts{color:var(--grn)}
-        .tci{display:inline-block;width:8px;height:15px;background:var(--grn);vertical-align:text-bottom;animation:blink 1s step-end infinite;box-shadow:0 0 8px var(--grn-glow)}
-
         /* Sections */
         section{padding:100px 24px;position:relative;z-index:1;overflow:hidden}.si{max-width:1200px;margin:0 auto}.sh{margin-bottom:56px}
         section:nth-of-type(odd)::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(88,166,255,.03) 0%,transparent 70%);pointer-events:none;z-index:-1}
@@ -350,13 +340,6 @@
 
         /* Aurora removed for performance */
 
-        /* Interactive Terminal */
-        .term-input-line{display:flex;align-items:center;min-height:32px;font-family:var(--mono);font-size:13px;margin-top:2px}
-        .term-input{min-height:32px;background:none;border:none;color:var(--t1);font-family:var(--mono);font-size:13px;flex:1;outline:none;caret-color:var(--grn);padding:4px 0;width:0}
-        .term-hint{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;padding:8px;opacity:0;transition:opacity .5s}.term.interactive .term-hint{opacity:1}
-        .term-output{color:var(--t2);font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap}
-        .term-output .cmd-name{color:var(--grn)}.term-output .cmd-desc{color:var(--t2)}.term-output .cmd-val{color:var(--org)}
-
         /* Film Grain */
         /* Film grain is a full-viewport fixed compositor layer. Only render it on
            fine-pointer (desktop) devices -- on touch/low-power screens it costs a
@@ -408,10 +391,6 @@
         .sw-update-actions button:disabled{cursor:wait;opacity:.72}
         @media(max-width:560px){.sw-update-toast{left:14px;right:14px;bottom:14px;align-items:stretch;flex-direction:column}.sw-update-actions{width:100%;margin-left:0}.sw-update-actions button{flex:1}}
 
-        /* Terminal Copy Hover */
-        .term-output{position:relative;cursor:pointer;padding:2px 4px;margin:-2px -4px;border-radius:4px;transition:background .2s}
-        .term-output:hover{background:rgba(255,255,255,.03)}
-
         /* Animated Conic-Gradient Card Borders */
         @property --border-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
         @keyframes borderSpin{to{--border-angle:360deg}}
@@ -450,7 +429,7 @@
         @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}body::after{display:none!important}.rv{opacity:1!important;transform:none!important}.card-enter{opacity:1!important;transform:none!important}main{animation:none!important}}
 
         /* Responsive */
-        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.term{max-width:500px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
+        @media(max-width:900px){.hi{grid-template-columns:1fr;gap:48px}.ac{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.cg{grid-template-columns:1fr}.video-grid{grid-template-columns:1fr}.pg{grid-template-columns:1fr}}
         @media(max-width:640px){section{padding:60px 16px}.nk{display:none}.mt{display:block}.nk.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(10,14,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px}.hero{padding:100px 16px 40px;min-height:auto}.hs{gap:24px}.hsn{font-size:26px}.skg{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.fi{flex-direction:column;gap:16px;text-align:center}.cds{font-size:11px;max-width:120px}.lg{grid-template-columns:1fr 1fr}.catalog-controls{flex-direction:column}.search-wrap{max-width:100%}.catalog-submit{width:100%;justify-content:center}.catalog-feedback{flex-direction:column;align-items:flex-start}.catalog-reset,.no-results-action{width:100%;justify-content:center}.cmdk-footer{flex-wrap:wrap;justify-content:flex-start}.btt{bottom:20px;right:20px;width:40px;height:40px}.cng{flex-direction:column;align-items:center}.lc2-thumb{height:60px}}
         @media(max-width:400px){.lg{grid-template-columns:1fr}}
 }
@@ -633,8 +612,8 @@ a,button,[role="button"],summary{touch-action:manipulation}
 .video-thumb{outline:2px solid transparent;outline-offset:3px}
 .video-thumb:focus-visible,.cmdk-item:focus-visible,.gh-card:focus-visible,.tag-cloud-tag:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
 .cmdk-item:focus-visible{background:var(--glass-hover)}
-.search-input,.sort-select,.term-input{outline:2px solid transparent;outline-offset:3px}
-.search-input:focus-visible,.sort-select:focus-visible,.term-input:focus-visible{outline-color:var(--focus-outline);box-shadow:var(--focus-ring)}
+.search-input,.sort-select{outline:2px solid transparent;outline-offset:3px}
+.search-input:focus-visible,.sort-select:focus-visible{outline-color:var(--focus-outline);box-shadow:var(--focus-ring)}
 .nk a{transition:color .25s,background-color .25s,box-shadow .25s}
 .ng{transition:color .3s,background-color .3s,border-color .3s,box-shadow .3s,transform .3s}
 .btn{transition:color .3s,background-color .3s,border-color .3s,box-shadow .3s,transform .3s,opacity .3s}
@@ -888,7 +867,7 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
   border:1px solid rgba(255,255,255,.05);
   pointer-events:none;
 }
-.hero-stage-head,.hero-terminal-meta,.hero-flightpath{
+.hero-stage-head,.hero-flightpath{
   position:relative;
   z-index:1;
   display:flex;
@@ -897,7 +876,7 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
   gap:18px;
 }
 .hero-stage-head{margin-bottom:24px}
-.hero-stage-kicker,.hero-terminal-kicker,.hero-flightpath-label{
+.hero-stage-kicker,.hero-flightpath-label{
   font-family:var(--mono);
   font-size:11px;
   text-transform:uppercase;
@@ -988,41 +967,6 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
 .hero-reel-lang.py{color:var(--grn);background:var(--grnd)}
 .hero-reel-lang.ext{color:var(--pur);background:var(--purd)}
 .hero-reel-lang.kt{color:var(--teal);background:var(--teald)}
-.hero-terminal-shell{
-  position:relative;
-  z-index:1;
-  padding:18px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.06);
-  background:rgba(5,10,18,.46);
-}
-.hero-terminal-meta{margin-bottom:14px}
-.hero-terminal-copy{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-.hero-terminal-kicker{color:var(--t3)}
-.hero-terminal-note{font-size:14px;color:var(--t2)}
-.hero-terminal-badge{
-  flex-shrink:0;
-  padding:8px 12px;
-  border-radius:10px;
-  background:var(--blued);
-  color:var(--blue);
-  font-family:var(--mono);
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-}
-.hero-stage .term{
-  border-radius:12px;
-  background:rgba(5,10,18,.72);
-  border-color:rgba(124,184,255,.16);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.hero-stage .tb{background:rgba(255,255,255,.03)}
-.hero-stage .tbd{min-height:280px}
 .hero-flightpath{
   margin-top:18px;
   padding-top:18px;
@@ -1438,11 +1382,10 @@ html[data-theme="light"] .ca:hover{
   .hs{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:18px 0}
   .hs-item{padding-right:8px}
   .hero-stage{padding:20px;border-radius:12px}
-  .hero-stage-head,.hero-terminal-meta,.hero-flightpath{flex-direction:column}
+  .hero-stage-head,.hero-flightpath{flex-direction:column}
   .hero-stage-title{max-width:13ch}
   .hero-reel-item{grid-template-columns:auto 1fr}
   .hero-reel-lang{grid-column:2;justify-self:start}
-  .hero-terminal-badge{align-self:flex-start}
   .hero-flightpath-items{width:100%}
   .hero-flightpath-items a{width:calc(50% - 5px);text-align:center}
   .lg,.skg{grid-template-columns:1fr}
@@ -1585,13 +1528,6 @@ html[data-theme="light"] .ca:hover{
   line-height:var(--lh-loose);
   margin-bottom:22px;
 }
-.about-terminal{
-  border-radius:12px;
-  background:linear-gradient(180deg, rgba(11,18,32,.82), rgba(8,13,24,.72));
-  border-color:rgba(255,255,255,.08);
-  box-shadow:0 24px 60px rgba(0,0,0,.24);
-}
-.about-terminal .tb{background:rgba(255,255,255,.03)}
 .atb{
   padding:26px 28px;
   font-size:14px;
@@ -1717,7 +1653,6 @@ html[data-theme="light"] .ca:hover{
 }
 @media(max-width:640px){
   .atp{font-size:16px}
-  .about-terminal{border-radius:12px}
   .atb{padding:22px 20px;font-size:13px}
   .prc{padding:28px;min-height:auto}
   .jw{padding-left:40px}
@@ -2273,7 +2208,6 @@ footer{
   .hero-pulse .pulse-item,
   .page-jump-link,
   .cmdk,
-  .term,
   .sw-update-toast{
     border-color:var(--border-strong);
   }
@@ -2571,14 +2505,6 @@ html[data-theme="light"] #nav{
 .hero-reel-item{
   border-color:rgba(255,255,255,.05);
   background:rgba(255,255,255,.025);
-}
-.hero-terminal-shell{
-  border-radius:12px;
-  border-color:rgba(255,255,255,.05);
-  background:rgba(5,10,18,.38);
-}
-.term-hint{
-  color:var(--t3);
 }
 .dv{
   height:36px;
@@ -3310,14 +3236,6 @@ html[data-theme="light"] .fb{
 .hero-reel-item{
   padding:13px 16px;
 }
-.hero-terminal-note{
-  font-size:13px;
-}
-.hero-stage .tbd{
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-}
 .hero-flightpath{
   margin-top:14px;
   padding-top:14px;
@@ -3773,12 +3691,6 @@ html[data-theme="light"] .fb{
 .mt[aria-expanded="true"] line:nth-child(2){opacity:0;transform:scaleX(0)}
 .mt[aria-expanded="true"] line:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
-/* Hero terminal focus ring */
-.term:focus-visible{
-  outline:2px solid var(--grn);
-  outline-offset:3px;
-}
-
 /* Footer bottom padding — prevent content clipping at viewport bottom */
 footer{
   padding-bottom:max(32px, env(safe-area-inset-bottom, 0px));
@@ -3848,19 +3760,10 @@ html[data-theme="light"] .nk.open{
   background:rgba(248,244,234,.96);
 }
 
-/* Light theme — hero stage and terminal */
+/* Light theme — hero stage */
 html[data-theme="light"] .hero-stage{
   background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(247,241,231,.64));
   box-shadow:0 28px 64px rgba(29,42,70,.14);
-}
-html[data-theme="light"] .hero-terminal-shell{
-  background:rgba(9,16,29,.06);
-  border-color:var(--border-soft);
-}
-html[data-theme="light"] .hero-stage .term{
-  background:rgba(9,16,29,.06);
-  border-color:var(--border-soft);
-  box-shadow:0 12px 28px rgba(29,42,70,.08);
 }
 html[data-theme="light"] .hero-reel-item{
   border-color:var(--border-soft);
@@ -3902,7 +3805,6 @@ html[data-theme="light"] .lang-hero-surface,
 html[data-theme="light"] .lang-hero-signal,
 html[data-theme="light"] .about-signal,
 html[data-theme="light"] .about-link,
-html[data-theme="light"] .about-terminal,
 html[data-theme="light"] .philosophy-intro,
 html[data-theme="light"] .beyond-card,
 html[data-theme="light"] .stack-overview,
@@ -4363,20 +4265,6 @@ html[data-theme="light"] .hero-flightpath-items a:hover{
   background:rgba(70,83,112,.08);
 }
 
-/* Hero terminal shell */
-html[data-theme="light"] .hero-terminal-shell{
-  background:rgba(240,235,225,.6);
-}
-html[data-theme="light"] .hero-stage .term{
-  background:rgba(240,235,225,.7);
-  border-color:var(--border-soft);
-}
-html[data-theme="light"] .hero-stage .tb,
-html[data-theme="light"] .about-terminal .tb,
-html[data-theme="light"] .tb{
-  background:rgba(70,83,112,.04);
-}
-
 /* Hero flightpath border */
 html[data-theme="light"] .hero-flightpath{
   border-top-color:var(--border-soft);
@@ -4458,13 +4346,6 @@ html[data-theme="light"] .lc2:hover{
 /* lc2 meta row — rgba(255,255,255,.025) invisible */
 html[data-theme="light"] .lc2-meta-row span{
   background:rgba(70,83,112,.05);
-}
-
-/* About terminal — dark gradient */
-html[data-theme="light"] .about-terminal{
-  background:linear-gradient(180deg, rgba(255,255,255,.8), rgba(247,241,231,.7));
-  border-color:var(--border-soft);
-  box-shadow:0 20px 48px rgba(29,42,70,.1);
 }
 
 /* About/philosophy/journey — rgba(255,255,255,.04/.08) borders */
@@ -4569,15 +4450,6 @@ html[data-theme="light"] .btt{
   background:rgba(255,255,255,.88);
   border-color:var(--border-soft);
   box-shadow:0 8px 20px rgba(29,42,70,.08);
-}
-
-/* Terminal — dark glass */
-html[data-theme="light"] .term{
-  background:rgba(255,255,255,.72);
-  box-shadow:0 14px 32px rgba(29,42,70,.12);
-}
-html[data-theme="light"] .term-output:hover{
-  background:rgba(70,83,112,.04);
 }
 
 /* Shimmer skeleton */
@@ -4871,17 +4743,7 @@ html[data-theme="light"] mark{
   transition-duration:var(--dur-fast);
 }
 
-/* ---------- E. Light theme — terminal text readability ---------- */
-html[data-theme="light"] .tp,
-html[data-theme="light"] .ts{color:#0e7a3e}
-html[data-theme="light"] .tpa{color:#1c65b8}
-html[data-theme="light"] .tc{color:var(--t1)}
-html[data-theme="light"] .tcm{color:var(--t3)}
-html[data-theme="light"] .tk{color:#7c3aed}
-html[data-theme="light"] .tv{color:#c2710c}
-html[data-theme="light"] .tci{background:#0e7a3e;box-shadow:0 0 8px rgba(14,122,62,.3)}
-
-/* ---------- F. Light theme — selection text ---------- */
+/* ---------- E. Light theme — selection text ---------- */
 html[data-theme="light"] ::selection{
   background:rgba(53,107,191,.18);
   color:var(--t1);
@@ -6080,30 +5942,6 @@ section:nth-of-type(even)::before{
   padding:10px 12px;
 }
 
-.hero-terminal-shell{
-  padding:12px;
-}
-
-.hero-terminal-meta{
-  margin-bottom:10px;
-}
-
-.hero-terminal-note{
-  font-size:12px;
-}
-
-.hero-terminal-badge{
-  padding:6px 9px;
-}
-
-.hero-stage .tbd{
-  height:188px;
-  min-height:188px;
-  padding:14px;
-  font-size:12px;
-  line-height:1.65;
-}
-
 .hero-flightpath{
   margin-top:10px;
   padding-top:10px;
@@ -6157,16 +5995,6 @@ section:nth-of-type(even)::before{
   }
   .hero-reel-item{
     padding:8px 10px;
-  }
-  .hero-terminal-shell{
-    padding:10px;
-  }
-  .hero-terminal-meta{
-    display:none;
-  }
-  .hero-stage .tbd{
-    height:112px;
-    min-height:112px;
   }
 }
 
