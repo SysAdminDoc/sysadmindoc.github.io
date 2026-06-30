@@ -5,3 +5,60 @@ Blocked items are tracked in Roadmap_Blocked.md.
 
 Current version: v0.21.0
 Last normalized: 2026-06-29
+
+## Research-Driven Additions
+
+### P0
+
+- [ ] P0 — Gate release deploys on generated-data freshness
+  Why: Normal validation passes even when generated GitHub/README caches are stale and partial, which can make rankings, README excerpts, release data, and status signals misleading.
+  Evidence: `npm run data:summary` reported 612h-old generated data and 8.8% star/metadata/README coverage; `package.json` build scripts do not run `data:summary:strict`.
+  Touches: `package.json`, `scripts/summarize-generated-data.mjs`, `scripts/smoke-live-site.mjs`, `README.md`
+  Acceptance: A documented preflight command fails production deploys when generated data is older than 36h, coverage is below 80%, or token-backed README refresh is absent; normal fixture/offline builds remain usable.
+  Complexity: M
+
+### P1
+
+- [ ] P1 — Surface generated-data trust state on status endpoints
+  Why: The site already exposes build status, but it does not show whether GitHub, README, release, and profile-feed data are fresh, token-backed, or partial.
+  Evidence: `src/pages/status.astro`, `src/pages/status.json.ts`, `npm run data:summary`, Framer/Webflow deployment health patterns.
+  Touches: `src/pages/status.astro`, `src/pages/status.json.ts`, `scripts/audit-public-endpoints.mjs`, `test/status-build-identity.test.mjs`
+  Acceptance: `/status` and `/status.json` expose generated data mode, age, profile-feed count, star/metadata/README/release coverage percentages, and stale/partial warnings; endpoint audits verify the fields.
+  Complexity: M
+
+- [ ] P1 — Add service-worker navigation preload
+  Why: The PWA already handles navigation and offline fallback, but service-worker startup can delay navigations when preload is not used.
+  Evidence: `public/sw.js`, `tests/playwright/sw-lifecycle.spec.mjs`, MDN `ServiceWorkerRegistration.navigationPreload`, web.dev navigation preload guidance.
+  Touches: `public/sw.js`, `tests/playwright/sw-lifecycle.spec.mjs`, `test/offline-fallback.test.mjs`
+  Acceptance: SW activation enables `registration.navigationPreload` when available; navigation fetches prefer `event.preloadResponse` before the existing timed network path; tests cover supported, unsupported, and offline fallback paths.
+  Complexity: S
+
+- [ ] P1 — Prepare Trusted Types by centralizing DOM HTML sinks
+  Why: Trusted Types CSP enforcement is blocked until raw `innerHTML` sinks are wrapped or replaced, even though current CSP audits are otherwise strong.
+  Evidence: `Roadmap_Blocked.md` Trusted Types item; `public/scripts/cmdk.js`, `home-github.js`, `home-media.js`, `shot-viewer.js`, `theme-toggle.js`; MDN Trusted Types CSP docs.
+  Touches: `public/scripts/shared.js`, `public/scripts/cmdk.js`, `public/scripts/home-github.js`, `public/scripts/home-media.js`, `public/scripts/shot-viewer.js`, `public/scripts/theme-toggle.js`, `scripts/audit-csp.mjs`
+  Acceptance: Raw dynamic `innerHTML =` assignments are removed or routed through a single audited safe-render helper; dynamic GitHub/profile/media data uses DOM nodes or sanitized TrustedHTML-compatible paths; CSP audit reports the site is ready for a Trusted Types browser trial.
+  Complexity: M
+
+### P2
+
+- [ ] P2 — Fill the desktop homepage hero with evidence content
+  Why: Current desktop visual baselines show the header is full width but the hero leaves a large unused right side, while comparable portfolios put concrete project proof above the fold.
+  Evidence: `tests/playwright/__screenshots__/chromium/home-desktop.png`, `tests/playwright/__screenshots__/chromium-light/home-desktop.png`, Magic Portfolio, AstroPaper, Peerlist, Contra.
+  Touches: `src/pages/index.astro`, `src/styles/critical.css`, `src/styles/global.css`, `tests/playwright/portfolio-audits.spec.mjs`, `tests/playwright/__screenshots__`
+  Acceptance: Desktop viewports at 980px and wider show a responsive evidence rail/card using existing proof/live screenshot data; mobile remains uncluttered; no horizontal overflow; dark and light visual baselines pass.
+  Complexity: M
+
+- [ ] P2 — Clear the `yaml` override range update
+  Why: Manual dependency hygiene should keep the dependency audit clean when a maintained patch/minor update is available.
+  Evidence: `npm run deps:audit` reports `yaml` override `2.8.3` with wanted/latest `2.9.0`.
+  Touches: `package.json`, `package-lock.json`, `test/dependency-audit.test.mjs`
+  Acceptance: The override or lock entry is updated to `yaml@2.9.0`; `npm run deps:audit`, `npm test`, and `npm run check` pass with no new advisories.
+  Complexity: S
+
+- [ ] P2 — Re-trial the Astro 7 and Vite 8 upgrade path
+  Why: The blocked upgrade note says Astro 7 was not stable, but current dependency research reports Astro 7.0.3 and Vite 8.1.0 as latest majors, so the blocker needs fresh evidence.
+  Evidence: `Roadmap_Blocked.md`, `npm run deps:audit`, Astro 7 upgrade guide.
+  Touches: `package.json`, `package-lock.json`, `astro.config.mjs`, `scripts/*audit*.mjs`, `tests/playwright`, `Roadmap_Blocked.md`
+  Acceptance: A local trial records pass/fail against `npm test`, `npm run check`, `npm run build:ci`, and interaction audits; compatible versions are adopted, or the blocked item is updated with the current concrete failure.
+  Complexity: M
