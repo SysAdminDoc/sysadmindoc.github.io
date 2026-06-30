@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.5-blue)
+![Version](https://img.shields.io/badge/version-0.21.6-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -14,6 +14,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`
 - **Content collections**: featured (9), live apps (22), catalog (182 feed-backed / 189 local fallback), skills (8)
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
+- **Homepage evidence rail** — desktop hero pairs live-app screenshots with source-backed proof links while staying hidden on mobile
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
 - **README rendering** — GFM through `marked`, sanitized remote HTML, class-based Shiki highlighting, reading-time metadata, and heading outlines
 - **Generated timeline** — year-in-review page built from release and project-push evidence
@@ -68,7 +69,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.5 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.6 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

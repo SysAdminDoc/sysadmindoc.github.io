@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.6] - 2026-06-30
+
+- Added a desktop homepage evidence rail with live-app screenshots and source-backed proof links.
+- Added Playwright coverage for 980px+ desktop rail visibility, mobile hiding, and horizontal overflow.
+- Refreshed the dark and light desktop homepage visual baselines and synced the offline critical-CSS CSP hash.
+
 ## [v0.21.5] - 2026-06-30
 
 - Updated the `yaml-language-server` transitive `yaml` override to `yaml@2.9.0`.
