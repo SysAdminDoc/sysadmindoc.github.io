@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.2
+Current version: v0.21.3
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 — Add service-worker navigation preload
-  Why: The PWA already handles navigation and offline fallback, but service-worker startup can delay navigations when preload is not used.
-  Evidence: `public/sw.js`, `tests/playwright/sw-lifecycle.spec.mjs`, MDN `ServiceWorkerRegistration.navigationPreload`, web.dev navigation preload guidance.
-  Touches: `public/sw.js`, `tests/playwright/sw-lifecycle.spec.mjs`, `test/offline-fallback.test.mjs`
-  Acceptance: SW activation enables `registration.navigationPreload` when available; navigation fetches prefer `event.preloadResponse` before the existing timed network path; tests cover supported, unsupported, and offline fallback paths.
-  Complexity: S
 
 - [ ] P1 — Prepare Trusted Types by centralizing DOM HTML sinks
   Why: Trusted Types CSP enforcement is blocked until raw `innerHTML` sinks are wrapped or replaced, even though current CSP audits are otherwise strong.

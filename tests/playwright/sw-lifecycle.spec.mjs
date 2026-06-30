@@ -32,6 +32,20 @@ test('service worker installs, caches offline fallback, and survives navigation'
   expect(offlineCached).toBe(true);
 });
 
+test('service worker enables navigation preload when supported', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+
+  const preloadState = await page.evaluate(async () => {
+    const reg = await navigator.serviceWorker.ready;
+    if (!('navigationPreload' in reg)) return 'unsupported';
+    const state = await reg.navigationPreload.getState();
+    return state.enabled ? 'enabled' : 'disabled';
+  });
+
+  expect(preloadState).not.toBe('disabled');
+  expect(['enabled', 'unsupported']).toContain(preloadState);
+});
+
 for (const route of ['/search/', '/status/', '/projects/win11-nvme-driver-patcher/']) {
   test(`service worker registers on direct ${route} landing`, async ({ page }) => {
     await page.goto(route, { waitUntil: 'networkidle' });

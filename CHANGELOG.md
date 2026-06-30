@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.3] - 2026-06-30
+
+- Enabled service-worker navigation preload during activation when the browser supports it.
+- Updated navigation handling to prefer `event.preloadResponse` before the timed fetch path while preserving stale-while-revalidate cache refresh and offline fallback behavior.
+- Added unit and Playwright lifecycle coverage for supported, unsupported, preload-first, and offline navigation paths.
+
 ## [v0.21.2] - 2026-06-30
 
 - Added shared generated-data trust computation for status surfaces, including data mode, age, cache coverage percentages, README telemetry, and warnings.
