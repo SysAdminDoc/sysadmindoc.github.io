@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.7] - 2026-06-30
+
+- Adopted `astro@7.0.3` with the Vite override refreshed to `vite@8.1.0`.
+- Regenerated the package lock after the Astro 7/Vite 8 trial and confirmed `npm run deps:audit` reports Astro and Vite current.
+- Verified the upgrade with `npm test`, `npm run check`, `npm run build`, `npm run audit:interactions`, and `npm run audit:playwright`.
+
 ## [v0.21.6] - 2026-06-30
 
 - Added a desktop homepage evidence rail with live-app screenshots and source-backed proof links.
