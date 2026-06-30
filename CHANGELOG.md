@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.0] - 2026-06-30
+
+- Split the homepage runtime into feature-scoped scripts for core helpers, navigation, catalog controls, GitHub/live status hydration, media handling, and visual effects.
+- Kept homepage feature scripts loaded only from the homepage layout, after `shared.js`, `cmdk-data.js`, and the small `main.js` core dependency.
+- Extended the HTML structure guard and unit contracts so feature scripts cannot load before their core/shared dependencies.
+
 ## [v0.20.9] - 2026-06-30
 
 - Added source-surface audits for CSS selectors and public runtime DOM targets so stale classes, IDs, data attributes, and DOM hooks fail locally.

@@ -19,7 +19,7 @@ test('html structure guard is no-op for valid build output', async () => {
   await withTempDist(async (dir) => {
     const file = path.join(dir, 'index.html');
     const html =
-      '<!doctype html><html lang="en"><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/main.js"></script></body></html>';
+      '<!doctype html><html lang="en"><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/main.js"></script><script src="/scripts/home-catalog.js"></script></body></html>';
     await fs.writeFile(file, html);
 
     const result = auditDist(dir);
@@ -66,6 +66,18 @@ test('html structure guard still catches homepage script order regressions', asy
     await fs.writeFile(
       path.join(dir, 'index.html'),
       '<!doctype html><html><head></head><body><script src="/scripts/main.js"></script><script src="/scripts/shared.js"></script></body></html>',
+    );
+
+    const result = auditDist(dir);
+    assert.deepEqual(result.orderViolations, ['/index.html']);
+  });
+});
+
+test('html structure guard catches feature scripts before homepage core', async () => {
+  await withTempDist(async (dir) => {
+    await fs.writeFile(
+      path.join(dir, 'index.html'),
+      '<!doctype html><html><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/home-catalog.js"></script><script src="/scripts/main.js"></script></body></html>',
     );
 
     const result = auditDist(dir);

@@ -89,8 +89,8 @@ const catalogTotal = catalog.length;
 const publicProjectCount = catalogTotal;
 
 // Build-time language mix from cached _meta.json so the Stack donut renders real
-// data with no JS / offline / rate-limited. main.js refreshes it from the live
-// API on capable clients. Mirrors renderLangDonut() in public/scripts/main.js.
+// data with no JS / offline / rate-limited. home-github.js refreshes it from the
+// live API on capable clients. Mirrors renderLangDonut() in that feature script.
 const { langCount: buildLangCount, total: donutTotal } = buildDonutLangCount(catalog, meta);
 const donutArcs = computeDonutArcs(buildLangCount, donutTotal);
 const donutLead = donutArcs[0];

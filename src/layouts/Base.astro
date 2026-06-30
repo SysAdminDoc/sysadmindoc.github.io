@@ -188,10 +188,14 @@ if (isHome) {
   <script src="/scripts/mobile-nav.js" is:inline></script>
   <script src="/scripts/scroll-reveal.js" is:inline></script>
   <script src="/scripts/service-worker.js" is:inline></script>
-  {/* main.js is homepage-only and depends on shared.js globals
-       (prefersReducedMotion/escapeHTML) + __PORTFOLIO_DATA, so it MUST load last,
-       after shared.js + cmdk-data.js. Loading it from the page slot ran it first
-      and threw a ReferenceError that killed all homepage interactivity. */}
+  {/* Homepage scripts depend on shared.js globals
+       (prefersReducedMotion/escapeHTML) + __PORTFOLIO_DATA, so main.js stays
+       after shared.js + cmdk-data.js, then feature scripts load in DOM order. */}
   {isHome && <script src="/scripts/main.js" is:inline></script>}
+  {isHome && <script src="/scripts/home-nav.js" is:inline></script>}
+  {isHome && <script src="/scripts/home-catalog.js" is:inline></script>}
+  {isHome && <script src="/scripts/home-github.js" is:inline></script>}
+  {isHome && <script src="/scripts/home-media.js" is:inline></script>}
+  {isHome && <script src="/scripts/home-effects.js" is:inline></script>}
 </body>
 </html>
