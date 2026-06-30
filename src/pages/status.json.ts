@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { buildIdentity } from '../data/build-identity';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
 import pkg from '../../package.json';
@@ -23,6 +24,11 @@ export async function GET(_context: APIContext) {
     schema: 'sysadmindoc.status.v1',
     version: pkg.version,
     generatedAt: new Date().toISOString(),
+    build: {
+      commit: buildIdentity.commit,
+      commitShort: buildIdentity.commitShort,
+      source: buildIdentity.source,
+    },
     catalog: { count: catalog.length, liveApps: liveApps.length },
     profileFeed: {
       source: profileFeedInfo.source ?? null,
@@ -37,6 +43,6 @@ export async function GET(_context: APIContext) {
   };
 
   return new Response(JSON.stringify(status, null, 2) + '\n', {
-    headers: endpointHeaders('application/json; charset=utf-8'),
+    headers: endpointHeaders('application/json; charset=UTF-8'),
   });
 }

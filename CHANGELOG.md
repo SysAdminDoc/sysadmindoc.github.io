@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.7] - 2026-06-30
+
+- Added build commit identity to `/status.json`, preferring explicit build environment variables, falling back to local git, and reporting `unknown` when neither is available.
+- Extended live Pages smoke checks to validate `/status.json` version, catalog count, and optional `--expected-commit`/`EXPECTED_COMMIT` identity before accepting a deploy.
+- Added generated endpoint audit and node:test coverage for the status build identity contract.
+
 ## [v0.20.6] - 2026-06-30
 
 - Added a Playwright WCAG 2.2 target-size regression gate across representative routes, desktop/mobile viewports, and dark/light projects.

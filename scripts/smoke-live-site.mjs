@@ -34,6 +34,28 @@ function normalizeVersion(value) {
   return version;
 }
 
+function normalizeCommit(value, label = 'Expected commit') {
+  const commit = String(value ?? '').trim();
+  if (!commit) return null;
+  if (commit.toLowerCase() === 'unknown') return 'unknown';
+  if (!/^[0-9a-f]{7,40}$/i.test(commit)) {
+    throw new Error(`${label} must be "unknown" or a 7-40 character hex commit, got "${value}".`);
+  }
+  return commit.toLowerCase();
+}
+
+function requireBuildCommit(value, label) {
+  const commit = normalizeCommit(value, label);
+  if (!commit) throw new Error(`${label} is missing.`);
+  return commit;
+}
+
+function commitsMatch(actual, expected) {
+  if (!expected) return true;
+  if (actual === 'unknown' || expected === 'unknown') return actual === expected;
+  return actual.startsWith(expected) || expected.startsWith(actual);
+}
+
 async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, 'utf8'));
 }
@@ -51,9 +73,11 @@ async function emitContract() {
   const projects = await readJson(path.join(distDir, 'projects.json'));
   const releases = await readJson(path.join(distDir, 'releases.json'));
   const feed = await readJson(path.join(distDir, 'feed.json'));
+  const status = await readJson(path.join(distDir, 'status.json'));
 
   const contract = {
     package_version: normalizeVersion(pkg.version),
+    build_commit: requireBuildCommit(status.build?.commit ?? 'unknown', 'dist/status.json build.commit'),
     projects_count: requireCount(Number(projects.counts?.projects ?? projects.projects?.length), 'dist/projects.json project count'),
     releases_count: requireCount(Number(releases.counts?.releases ?? releases.releases?.length), 'dist/releases.json release count'),
     feed_item_count: requireCount(Number(feed.items?.length), 'dist/feed.json item count'),
@@ -70,6 +94,7 @@ async function emitContract() {
 
   console.log('Live smoke contract');
   console.log(`  package version: ${contract.package_version}`);
+  console.log(`  build commit: ${contract.build_commit}`);
   console.log(`  projects: ${contract.projects_count}`);
   console.log(`  releases: ${contract.releases_count}`);
   console.log(`  feed items: ${contract.feed_item_count}`);
@@ -147,6 +172,24 @@ async function checkLiveArtifacts(baseUrl, expected) {
   if (!sw.body.includes(cacheName)) throw new Error(`/sw.js does not contain ${cacheName}.`);
   if (sw.body.includes('__BUILD_VERSION__')) throw new Error('/sw.js still contains the unstamped __BUILD_VERSION__ placeholder.');
   summary.push(`service worker cache: ${cacheName}`);
+
+  const statusResponse = await fetchText(baseUrl, '/status.json', 'application/json');
+  requireHeader(statusResponse, '/status.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
+  const status = parseJson(statusResponse.body, '/status.json');
+  if (status.schema !== 'sysadmindoc.status.v1') throw new Error('/status.json schema drifted.');
+  if (normalizeVersion(status.version) !== expected.version) {
+    throw new Error(`/status.json version drifted: expected ${expected.version}, got ${status.version}.`);
+  }
+  requireDate(status.generatedAt, '/status.json generatedAt');
+  const buildCommit = requireBuildCommit(status.build?.commit ?? 'unknown', '/status.json build.commit');
+  if (!commitsMatch(buildCommit, expected.commit)) {
+    throw new Error(`/status.json build.commit drifted: expected ${expected.commit}, got ${buildCommit}.`);
+  }
+  const statusProjectCount = Number(status.catalog?.count);
+  if (statusProjectCount !== expected.projects) {
+    throw new Error(`/status.json catalog count drifted: expected ${expected.projects}, got ${statusProjectCount}.`);
+  }
+  summary.push(`status: v${status.version} (${buildCommit})`);
 
   const projectsResponse = await fetchText(baseUrl, '/projects.json', 'application/json');
   requireHeader(projectsResponse, '/projects.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
@@ -252,6 +295,7 @@ async function smokeLiveSite() {
   const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
   const expected = {
     version: normalizeVersion(option('--expected-version') ?? process.env.EXPECTED_VERSION ?? pkg.version),
+    commit: normalizeCommit(option('--expected-commit') ?? process.env.EXPECTED_COMMIT),
     projects: positiveInteger(option('--expected-projects'), '--expected-projects'),
     releases: positiveInteger(option('--expected-releases'), '--expected-releases'),
     feedItems: positiveInteger(option('--expected-feed-items'), '--expected-feed-items'),

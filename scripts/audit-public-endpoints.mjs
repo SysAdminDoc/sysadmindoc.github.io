@@ -21,6 +21,7 @@ const endpointHeaderSources = [
   { route: '/projects.json', file: 'src/pages/projects.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/releases.json', file: 'src/pages/releases.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/resume.json', file: 'src/pages/resume.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
+  { route: '/status.json', file: 'src/pages/status.json.ts', helper: 'endpointHeaders', contentType: 'application/json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/feed.json', file: 'src/pages/feed.json.ts', helper: 'endpointHeaders', contentType: 'application/feed+json; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/atom.xml', file: 'src/pages/atom.xml.ts', helper: 'endpointHeaders', contentType: 'application/atom+xml; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
   { route: '/releases.xml', file: 'src/pages/releases.xml.ts', helper: 'endpointHeaders', contentType: 'application/rss+xml; charset=UTF-8', cacheControl: generatedEndpointCacheControl },
@@ -222,6 +223,33 @@ function auditReleasesIndex(releasesIndex) {
     fail(`releases.json counts.repositories is ${expectedRepoCount}; expected ${repos.size}.`);
   }
   return { releaseCount: Array.isArray(releasesIndex.releases) ? releasesIndex.releases.length : 0, releaseRepoCount: repos.size };
+}
+
+function auditStatusEndpoint(statusIndex, { projectCount }) {
+  if (!isObject(statusIndex)) {
+    fail('status.json root must be an object.');
+    return { buildCommit: 'unknown' };
+  }
+  if (statusIndex.schema !== 'sysadmindoc.status.v1') fail('status.json schema drifted.');
+  requireString(statusIndex, 'version', 'status.json');
+  requireDate(statusIndex.generatedAt, 'status.json generatedAt');
+  if (!isObject(statusIndex.build)) {
+    fail('status.json build must be an object.');
+  } else {
+    const commit = requireString(statusIndex.build, 'commit', 'status.json build');
+    requireString(statusIndex.build, 'commitShort', 'status.json build');
+    requireString(statusIndex.build, 'source', 'status.json build');
+    if (commit && !/^(unknown|[0-9a-f]{7,40})$/i.test(commit)) {
+      fail('status.json build.commit must be unknown or a 7-40 character hex commit.');
+    }
+  }
+  if (Number(statusIndex.catalog?.count) !== projectCount) {
+    fail(`status.json catalog.count must match projects.json projects (${projectCount}).`);
+  }
+  if (!Number.isSafeInteger(Number(statusIndex.catalog?.liveApps)) || Number(statusIndex.catalog?.liveApps) < 1) {
+    fail('status.json catalog.liveApps must be a positive integer.');
+  }
+  return { buildCommit: String(statusIndex.build?.commit ?? 'unknown') };
 }
 
 function parseCmdkPayload(source) {
@@ -514,12 +542,14 @@ async function auditSourceHeaderPolicies() {
 
 const projectsIndex = await readJson('projects.json');
 const releasesIndex = await readJson('releases.json');
+const statusIndex = await readJson('status.json');
 const cmdkSource = await readText('cmdk-data.js');
 const llmsText = await readText('llms.txt');
 const indexHtml = await readText('index.html');
 
 const projectsSummary = auditProjectsIndex(projectsIndex);
 const releasesSummary = auditReleasesIndex(releasesIndex);
+const statusSummary = auditStatusEndpoint(statusIndex, projectsSummary);
 const cmdkSummary = auditCmdkData(cmdkSource);
 const llmsSummary = auditLlmsTxt(llmsText, { projectCount: projectsSummary.projectCount });
 const discoverySummary = auditDiscoveryLinks(indexHtml);
@@ -543,6 +573,7 @@ console.log('Public endpoint audit');
 console.log(`  projects.json projects: ${projectsSummary.projectCount}`);
 console.log(`  releases.json releases: ${releasesSummary.releaseCount}`);
 console.log(`  releases.json repositories: ${releasesSummary.releaseRepoCount}`);
+console.log(`  status.json build commit: ${statusSummary.buildCommit}`);
 console.log(`  cmdk-data.js projects: ${cmdkSummary.cmdkProjects}`);
 console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
 console.log(`  llms.txt links: ${llmsSummary.llmsLinks} / ${llmsSummary.minimumUsefulLinks} minimum`);
