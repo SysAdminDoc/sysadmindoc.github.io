@@ -52,8 +52,25 @@ async function freshCachedOrOffline(request) {
     return offlineResponse();
 }
 
+async function resilientPrecache(cache, urls) {
+    const failures = [];
+    await Promise.all(urls.map(async (url) => {
+        try {
+            await cache.add(url);
+        } catch (error) {
+            failures.push(url);
+        }
+    }));
+    if (failures.length) {
+        console.warn('Service worker precache skipped failed entries:', failures.join(', '));
+    }
+    if (urls.length > 0 && failures.length === urls.length) {
+        throw new Error('Service worker precache failed for every entry.');
+    }
+}
+
 self.addEventListener('install', (e) => {
-    e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
+    e.waitUntil(caches.open(CACHE).then((c) => resilientPrecache(c, PRECACHE)));
 });
 
 self.addEventListener('activate', (e) => {
