@@ -3,7 +3,7 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.4
+Current version: v0.21.5
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
@@ -16,13 +16,6 @@ Last normalized: 2026-06-29
   Touches: `src/pages/index.astro`, `src/styles/critical.css`, `src/styles/global.css`, `tests/playwright/portfolio-audits.spec.mjs`, `tests/playwright/__screenshots__`
   Acceptance: Desktop viewports at 980px and wider show a responsive evidence rail/card using existing proof/live screenshot data; mobile remains uncluttered; no horizontal overflow; dark and light visual baselines pass.
   Complexity: M
-
-- [ ] P2 — Clear the `yaml` override range update
-  Why: Manual dependency hygiene should keep the dependency audit clean when a maintained patch/minor update is available.
-  Evidence: `npm run deps:audit` reports `yaml` override `2.8.3` with wanted/latest `2.9.0`.
-  Touches: `package.json`, `package-lock.json`, `test/dependency-audit.test.mjs`
-  Acceptance: The override or lock entry is updated to `yaml@2.9.0`; `npm run deps:audit`, `npm test`, and `npm run check` pass with no new advisories.
-  Complexity: S
 
 - [ ] P2 — Re-trial the Astro 7 and Vite 8 upgrade path
   Why: The blocked upgrade note says Astro 7 was not stable, but current dependency research reports Astro 7.0.3 and Vite 8.1.0 as latest majors, so the blocker needs fresh evidence.
