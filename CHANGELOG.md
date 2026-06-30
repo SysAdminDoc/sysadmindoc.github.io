@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.6] - 2026-06-30
+
+- Added a Playwright WCAG 2.2 target-size regression gate across representative routes, desktop/mobile viewports, and dark/light projects.
+- Expanded Pagefind facet checkboxes, journey links, and footer links to meet 24px target sizing while preserving inline-link and visually hidden label exceptions.
+
 ## [v0.20.5] - 2026-06-30
 
 - Removed orphaned homepage command-shell runtime, styles, visual masks, and aggregate-stat writes left after the visible terminal was removed.
