@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.6
+Current version: v0.20.7
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P2
-
-- [ ] P2 — Expose build commit identity through status and live smoke checks
-  Why: `status.json` reports version and counts, but live smoke cannot prove GitHub Pages is serving the exact commit that was pushed.
-  Evidence: `src/pages/status.json.ts`, `scripts/smoke-live-site.mjs`, local-build/no-remote-CI repository policy.
-  Touches: `src/pages/status.json.ts`, `scripts/smoke-live-site.mjs`, build environment variables or a local stamp script, `test/status-endpoint.test.mjs`.
-  Acceptance: `status.json` includes a commit SHA/build identity when available; live smoke accepts an expected commit and fails if the live endpoint serves a different build; local builds without git metadata degrade to an explicit `unknown` value.
-  Complexity: M
 
 - [ ] P2 — Add a local dependency freshness and upgrade-readiness report
   Why: Dependency updates are manual; `npm outdated` already shows Astro 7.0.3 available while the project remains on Astro 6.4.8, and registry latests also include Vite 8.1.0 and Shiki 4.3.0.
