@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.5
+Current version: v0.20.6
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P1
-
-- [ ] P1 — Add a WCAG 2.2 target-size regression gate
-  Why: The site has strong axe/static checks, but no browser gate enforces the WCAG 2.2 2.5.8 24x24px minimum for links, buttons, and controls.
-  Evidence: `scripts/audit-a11y.mjs`, `tests/playwright/portfolio-audits.spec.mjs`, W3C WCAG 2.2 target-size criterion.
-  Touches: `tests/playwright/portfolio-audits.spec.mjs` or a new focused Playwright audit, `scripts/audit-a11y.mjs` docs, relevant CSS fixes found by the gate.
-  Acceptance: A Playwright audit measures visible interactive targets across desktop and mobile viewports, fails below 24x24px unless an allowed WCAG exception is encoded, and passes on current pages.
-  Complexity: S
 
 ### P2
 

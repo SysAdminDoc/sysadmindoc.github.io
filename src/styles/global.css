@@ -322,7 +322,7 @@
         .ji:nth-child(4) .jd{background:var(--org);box-shadow:0 0 12px rgba(251,146,60,.25)}
         .ji:nth-child(5) .jd{background:var(--teal);box-shadow:0 0 12px rgba(45,212,191,.25)}
         .jt{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:6px}
-        .ji-link{color:inherit;text-decoration:none}.ji-link::after{content:'';position:absolute;inset:0;z-index:1}.ji:hover .ji-link{color:var(--blue)}
+        .ji-link{display:inline-flex;align-items:center;min-width:24px;min-height:24px;color:inherit;text-decoration:none}.ji-link::after{content:'';position:absolute;inset:0;z-index:1}.ji:hover .ji-link{color:var(--blue)}
         /* The whole card shows the focus ring via .ji:focus-within; suppress the
            inner anchor's own outline so it does not double up. */
         .ji-link:focus-visible{outline:none}
@@ -542,7 +542,7 @@ html[data-theme="light"] .cmdk{background:#fff}
 .footer-freshness time{color:var(--t2)}
 @keyframes freshPulse{0%,100%{opacity:.6}50%{opacity:1}}
 .fl{display:flex;gap:16px}
-.fl a{color:var(--t2);text-decoration:none;font-family:var(--mono);font-size:12px;transition:color .2s}
+.fl a{display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;color:var(--t2);text-decoration:none;font-family:var(--mono);font-size:12px;transition:color .2s}
 .fl a:hover{color:var(--grn)}
 
 /* ===== v0.6.0: age badges, sections ===== */
