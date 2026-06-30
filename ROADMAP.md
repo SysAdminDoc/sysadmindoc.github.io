@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.20.3
+Current version: v0.20.4
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 — Make service-worker install resilient to single precache failures
-  Why: `cache.addAll(PRECACHE)` rejects the full install when one precache URL fails, which can break offline support because of one stale generated asset.
-  Evidence: `public/sw.js`, `scripts/stamp-sw.mjs`, MDN `Cache.addAll()` rejection behavior.
-  Touches: `public/sw.js`, `scripts/stamp-sw.mjs`, `test/offline-fallback.test.mjs`, `tests/playwright/sw-lifecycle.spec.mjs`.
-  Acceptance: The install path caches valid precache entries even if one URL fails, logs or records failed entries without throwing away the whole worker, and tests simulate one missing precache URL.
-  Complexity: M
 
 - [ ] P1 — Remove orphaned homepage terminal runtime, styles, and tests
   Why: The visible terminal was removed, but terminal command code, `.hero-terminal-*` CSS, and terminal tests still ship or gate maintenance.

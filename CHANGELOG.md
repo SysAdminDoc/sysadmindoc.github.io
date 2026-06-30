@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.20.4] - 2026-06-30
+
+- Hardened service-worker install so one stale precache entry no longer prevents valid offline assets from being cached.
+- Added a service-worker install unit test that simulates one failed precache URL and verifies the remaining entries still cache.
+
 ## [v0.20.3] - 2026-06-30
 
 - Moved service-worker registration and update recovery into a sitewide runtime so direct visits to interior pages register the PWA and can surface refresh prompts without first visiting the homepage.
