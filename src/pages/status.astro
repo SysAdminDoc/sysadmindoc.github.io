@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import { buildGeneratedDataTrust } from '../data/generated-trust';
+import type { GeneratedReadmeRefresh, GeneratedStats } from '../data/generated';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
@@ -19,11 +21,22 @@ const pageJsonLd = reviewedWebPageJsonLd({
   schemaTypes: pageFreshness.schemaTypes,
 });
 
-type Stats = { fetchedAt?: string | null; totalRepos?: number; totalStars?: number };
-let stats: Stats = {};
+let stats: Partial<GeneratedStats> = {};
 try {
   const mod = await import('../data/_stats.json');
-  stats = (mod.default ?? mod) as Stats;
+  stats = (mod.default ?? mod) as Partial<GeneratedStats>;
+} catch {}
+
+let starEntries = 0;
+try {
+  const mod = await import('../data/_stars.json');
+  starEntries = Object.keys(mod.default ?? mod).length;
+} catch {}
+
+let metadataEntries = 0;
+try {
+  const mod = await import('../data/_meta.json');
+  metadataEntries = Object.keys(mod.default ?? mod).length;
 } catch {}
 
 let readmeEntries = 0;
@@ -32,10 +45,45 @@ try {
   readmeEntries = Object.keys(mod.default ?? mod).length;
 } catch {}
 
+let releaseEntries = 0;
+try {
+  const mod = await import('../data/_releases.json');
+  releaseEntries = Array.isArray(mod.default ?? mod) ? (mod.default ?? mod).length : 0;
+} catch {}
+
+let readmeRefresh: Partial<GeneratedReadmeRefresh> | null = null;
+try {
+  const mod = await import('../data/_readme-refresh.json');
+  readmeRefresh = (mod.default ?? mod) as Partial<GeneratedReadmeRefresh>;
+} catch {}
+
+function formatPercent(value: number | null) {
+  return value == null ? 'unknown' : `${(value * 100).toFixed(1)}%`;
+}
+
+function formatAge(value: number | null) {
+  return value == null ? 'unknown' : `${value.toFixed(1)}h`;
+}
+
+function labelize(value: string) {
+  return value.replace(/-/g, ' ');
+}
+
 const version = pkg.version;
 const builtAt = new Date().toISOString();
 const feedActive = profileFeedInfo.active;
 const feedSource = profileFeedInfo.source ?? 'unavailable';
+const generatedData = buildGeneratedDataTrust({
+  stats,
+  starEntries,
+  metadataEntries,
+  readmeEntries,
+  releaseEntries,
+  profileFeedInfo,
+  readmeRefresh,
+});
+const dataTone = generatedData.status === 'fresh' ? 'green' : 'amber';
+const readmeTone = generatedData.readmeRefresh.tokenPresent ? 'green' : 'amber';
 
 const signals = [
   { label: 'Version', value: `v${version}`, tone: 'green' },
@@ -45,10 +93,16 @@ const signals = [
   { label: 'Profile feed', value: feedActive ? 'Active' : 'Fallback', tone: feedActive ? 'green' : 'amber' },
   { label: 'Feed source', value: feedSource.length > 40 ? feedSource.slice(0, 37) + '...' : feedSource, tone: 'blue' },
   { label: 'Feed projects', value: `${profileFeedInfo.projectCount}`, tone: 'blue' },
-  { label: 'GitHub data', value: stats.fetchedAt ? 'Fresh' : 'Unavailable', tone: stats.fetchedAt ? 'green' : 'amber' },
-  { label: 'Total repos', value: stats.totalRepos != null ? `${stats.totalRepos}` : 'N/A', tone: 'blue' },
-  { label: 'Total stars', value: stats.totalStars != null ? `${stats.totalStars}` : 'N/A', tone: 'blue' },
-  { label: 'README cache', value: `${readmeEntries} entries`, tone: readmeEntries > 0 ? 'green' : 'amber' },
+  { label: 'Data mode', value: labelize(generatedData.mode), tone: dataTone },
+  { label: 'Data age', value: formatAge(generatedData.ageHours), tone: generatedData.stale ? 'amber' : 'green' },
+  { label: 'Profile cache', value: formatAge(generatedData.profileFeed.cachedAgeHours), tone: generatedData.profileFeed.stale ? 'amber' : 'green' },
+  { label: 'Stars coverage', value: `${formatPercent(generatedData.coverage.stars)} (${generatedData.coverage.starEntries})`, tone: generatedData.coverage.stars != null && generatedData.coverage.stars >= generatedData.coverage.threshold ? 'green' : 'amber' },
+  { label: 'Metadata coverage', value: `${formatPercent(generatedData.coverage.metadata)} (${generatedData.coverage.metadataEntries})`, tone: generatedData.coverage.metadata != null && generatedData.coverage.metadata >= generatedData.coverage.threshold ? 'green' : 'amber' },
+  { label: 'README coverage', value: `${formatPercent(generatedData.coverage.readmes)} (${generatedData.coverage.readmeEntries})`, tone: generatedData.coverage.readmes != null && generatedData.coverage.readmes >= generatedData.coverage.threshold ? 'green' : 'amber' },
+  { label: 'Release entries', value: `${generatedData.coverage.releaseEntries} (${formatPercent(generatedData.coverage.releases)})`, tone: 'blue' },
+  { label: 'README telemetry', value: generatedData.readmeRefresh.tokenPresent ? 'Token-backed' : 'Not token-backed', tone: readmeTone },
+  { label: 'Total repos', value: generatedData.totalRepos != null ? `${generatedData.totalRepos}` : 'N/A', tone: 'blue' },
+  { label: 'Total stars', value: generatedData.totalStars != null ? `${generatedData.totalStars}` : 'N/A', tone: 'blue' },
 ];
 
 const cmdkSections = [
@@ -90,6 +144,15 @@ const cmdkSections = [
         ))}
       </div>
 
+      {generatedData.warnings.length > 0 && (
+        <div class="status-warning-panel rv" role="status" aria-label="Generated data warnings">
+          <div class="status-warning-title">Generated data needs attention</div>
+          <ul>
+            {generatedData.warnings.map((warning) => <li>{warning}</li>)}
+          </ul>
+        </div>
+      )}
+
       <p class="status-note rv">
         This page is regenerated on every deploy. No runtime analytics, no uptime monitoring service.
         The values above reflect the state at build time.
@@ -114,7 +177,14 @@ const cmdkSections = [
   .status-dot-blue{background:var(--blue)}
   .status-dot-amber{background:var(--yel)}
   .status-label{color:var(--t3);font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-  .status-value{color:var(--t1);font-family:var(--mono);font-size:14px;margin-top:2px;word-break:break-all}
+  .status-value{color:var(--t1);font-family:var(--mono);font-size:14px;margin-top:2px;overflow-wrap:anywhere;word-break:normal}
+  .status-warning-panel{
+    margin-top:20px;padding:16px;border:1px solid color-mix(in srgb,var(--yel) 36%,var(--border-soft));
+    background:color-mix(in srgb,var(--yel) 8%,var(--surface-1));border-radius:10px;color:var(--t2);
+  }
+  .status-warning-title{color:var(--t1);font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+  .status-warning-panel ul{margin:0;padding-left:18px}
+  .status-warning-panel li{margin:4px 0}
   .status-note{color:var(--t3);font-size:14px;margin-top:24px}
   @media(max-width:640px){
     .status-grid{grid-template-columns:1fr;gap:10px}

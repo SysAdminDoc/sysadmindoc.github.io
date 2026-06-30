@@ -77,6 +77,25 @@ function requireNumber(record, key, label) {
   return value;
 }
 
+function requireNullableNumber(record, key, label) {
+  const value = record?.[key];
+  if (value === null) return null;
+  if (!Number.isFinite(value)) {
+    fail(`${label}.${key} must be a finite number or null.`);
+    return null;
+  }
+  return value;
+}
+
+function requireBoolean(record, key, label) {
+  const value = record?.[key];
+  if (typeof value !== 'boolean') {
+    fail(`${label}.${key} must be a boolean.`);
+    return false;
+  }
+  return value;
+}
+
 function requireDate(value, label) {
   if (typeof value !== 'string' || Number.isNaN(new Date(value).getTime())) {
     fail(`${label} must be a parseable date string.`);
@@ -228,7 +247,7 @@ function auditReleasesIndex(releasesIndex) {
 function auditStatusEndpoint(statusIndex, { projectCount }) {
   if (!isObject(statusIndex)) {
     fail('status.json root must be an object.');
-    return { buildCommit: 'unknown' };
+    return { buildCommit: 'unknown', dataMode: 'unknown' };
   }
   if (statusIndex.schema !== 'sysadmindoc.status.v1') fail('status.json schema drifted.');
   requireString(statusIndex, 'version', 'status.json');
@@ -249,7 +268,71 @@ function auditStatusEndpoint(statusIndex, { projectCount }) {
   if (!Number.isSafeInteger(Number(statusIndex.catalog?.liveApps)) || Number(statusIndex.catalog?.liveApps) < 1) {
     fail('status.json catalog.liveApps must be a positive integer.');
   }
-  return { buildCommit: String(statusIndex.build?.commit ?? 'unknown') };
+  const generatedData = statusIndex.generatedData;
+  if (!isObject(generatedData)) {
+    fail('status.json generatedData must be an object.');
+    return { buildCommit: String(statusIndex.build?.commit ?? 'unknown'), dataMode: 'unknown' };
+  }
+
+  const allowedStatuses = new Set(['fresh', 'attention-required']);
+  const allowedModes = new Set(['fixture', 'unauthenticated-partial', 'production-fresh', 'production-attention']);
+  const dataStatus = requireString(generatedData, 'status', 'status.json generatedData');
+  const dataMode = requireString(generatedData, 'mode', 'status.json generatedData');
+  if (dataStatus && !allowedStatuses.has(dataStatus)) fail(`status.json generatedData.status "${dataStatus}" is not recognized.`);
+  if (dataMode && !allowedModes.has(dataMode)) fail(`status.json generatedData.mode "${dataMode}" is not recognized.`);
+  requireNumber(generatedData, 'maxAgeHours', 'status.json generatedData');
+  requireNullableNumber(generatedData, 'ageHours', 'status.json generatedData');
+  requireBoolean(generatedData, 'stale', 'status.json generatedData');
+  requireNullableNumber(generatedData, 'totalRepos', 'status.json generatedData');
+  requireNullableNumber(generatedData, 'totalStars', 'status.json generatedData');
+  requireNumber(generatedData, 'readmeEntries', 'status.json generatedData');
+
+  const profileFeed = generatedData.profileFeed;
+  if (!isObject(profileFeed)) {
+    fail('status.json generatedData.profileFeed must be an object.');
+  } else {
+    requireBoolean(profileFeed, 'active', 'status.json generatedData.profileFeed');
+    requireNullableNumber(profileFeed, 'projectCount', 'status.json generatedData.profileFeed');
+    requireNullableNumber(profileFeed, 'cachedAgeHours', 'status.json generatedData.profileFeed');
+    requireBoolean(profileFeed, 'stale', 'status.json generatedData.profileFeed');
+  }
+
+  const coverage = generatedData.coverage;
+  if (!isObject(coverage)) {
+    fail('status.json generatedData.coverage must be an object.');
+  } else {
+    requireNumber(coverage, 'threshold', 'status.json generatedData.coverage');
+    requireNullableNumber(coverage, 'profileProjectCount', 'status.json generatedData.coverage');
+    for (const key of ['stars', 'metadata', 'readmes', 'releases']) {
+      requireNullableNumber(coverage, key, 'status.json generatedData.coverage');
+    }
+    for (const key of ['starEntries', 'metadataEntries', 'readmeEntries', 'releaseEntries']) {
+      requireNumber(coverage, key, 'status.json generatedData.coverage');
+    }
+  }
+
+  const readmeRefresh = generatedData.readmeRefresh;
+  if (!isObject(readmeRefresh)) {
+    fail('status.json generatedData.readmeRefresh must be an object.');
+  } else {
+    if (readmeRefresh.tokenPresent !== null && typeof readmeRefresh.tokenPresent !== 'boolean') {
+      fail('status.json generatedData.readmeRefresh.tokenPresent must be a boolean or null.');
+    }
+    requireNullableNumber(readmeRefresh, 'targetRepos', 'status.json generatedData.readmeRefresh');
+    requireNullableNumber(readmeRefresh, 'attempted', 'status.json generatedData.readmeRefresh');
+    requireNullableNumber(readmeRefresh, 'cacheEntries', 'status.json generatedData.readmeRefresh');
+    requireNullableNumber(readmeRefresh, 'cacheCoverage', 'status.json generatedData.readmeRefresh');
+    requireNullableNumber(readmeRefresh, 'missRate', 'status.json generatedData.readmeRefresh');
+    if (readmeRefresh.rateLimited !== null && typeof readmeRefresh.rateLimited !== 'boolean') {
+      fail('status.json generatedData.readmeRefresh.rateLimited must be a boolean or null.');
+    }
+  }
+
+  if (!Array.isArray(generatedData.warnings) || generatedData.warnings.some((warning) => typeof warning !== 'string')) {
+    fail('status.json generatedData.warnings must be an array of strings.');
+  }
+
+  return { buildCommit: String(statusIndex.build?.commit ?? 'unknown'), dataMode };
 }
 
 function parseCmdkPayload(source) {
@@ -574,6 +657,7 @@ console.log(`  projects.json projects: ${projectsSummary.projectCount}`);
 console.log(`  releases.json releases: ${releasesSummary.releaseCount}`);
 console.log(`  releases.json repositories: ${releasesSummary.releaseRepoCount}`);
 console.log(`  status.json build commit: ${statusSummary.buildCommit}`);
+console.log(`  status.json generated data mode: ${statusSummary.dataMode}`);
 console.log(`  cmdk-data.js projects: ${cmdkSummary.cmdkProjects}`);
 console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
 console.log(`  llms.txt links: ${llmsSummary.llmsLinks} / ${llmsSummary.minimumUsefulLinks} minimum`);
