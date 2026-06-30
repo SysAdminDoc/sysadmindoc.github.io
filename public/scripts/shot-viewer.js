@@ -6,28 +6,56 @@
   dialog.id = 'shotViewer';
   dialog.className = 'sv-dialog';
   dialog.setAttribute('aria-label', 'Screenshot viewer');
-  dialog.innerHTML =
-    '<div class="sv-inner">' +
-      '<img class="sv-img" alt="" />' +
-      '<div class="sv-bar">' +
-        '<span class="sv-caption"></span>' +
-        '<span class="sv-spacer"></span>' +
-        '<a class="sv-action sv-live" target="_blank" rel="noopener" hidden>Open live</a>' +
-        '<a class="sv-action sv-source" target="_blank" rel="noopener">View source</a>' +
-        '<button class="sv-btn sv-share" type="button" aria-label="Share screenshot link">Share</button>' +
-        '<button class="sv-btn sv-zoom" type="button" aria-label="Toggle zoom">Fit</button>' +
-        '<button class="sv-btn sv-close" type="button" aria-label="Close viewer">×</button>' +
-      '</div>' +
-    '</div>';
+
+  var inner = document.createElement('div');
+  inner.className = 'sv-inner';
+  var img = document.createElement('img');
+  img.className = 'sv-img';
+  img.alt = '';
+  var bar = document.createElement('div');
+  bar.className = 'sv-bar';
+  var caption = document.createElement('span');
+  caption.className = 'sv-caption';
+  var spacer = document.createElement('span');
+  spacer.className = 'sv-spacer';
+  var liveLink = document.createElement('a');
+  liveLink.className = 'sv-action sv-live';
+  liveLink.target = '_blank';
+  liveLink.rel = 'noopener';
+  liveLink.hidden = true;
+  liveLink.textContent = 'Open live';
+  var sourceLink = document.createElement('a');
+  sourceLink.className = 'sv-action sv-source';
+  sourceLink.target = '_blank';
+  sourceLink.rel = 'noopener';
+  sourceLink.textContent = 'View source';
+  var shareBtn = document.createElement('button');
+  shareBtn.className = 'sv-btn sv-share';
+  shareBtn.type = 'button';
+  shareBtn.setAttribute('aria-label', 'Share screenshot link');
+  shareBtn.textContent = 'Share';
+  var zoomBtn = document.createElement('button');
+  zoomBtn.className = 'sv-btn sv-zoom';
+  zoomBtn.type = 'button';
+  zoomBtn.setAttribute('aria-label', 'Toggle zoom');
+  zoomBtn.textContent = 'Fit';
+  var closeBtn = document.createElement('button');
+  closeBtn.className = 'sv-btn sv-close';
+  closeBtn.type = 'button';
+  closeBtn.setAttribute('aria-label', 'Close viewer');
+  closeBtn.textContent = '\u00d7';
+  bar.appendChild(caption);
+  bar.appendChild(spacer);
+  bar.appendChild(liveLink);
+  bar.appendChild(sourceLink);
+  bar.appendChild(shareBtn);
+  bar.appendChild(zoomBtn);
+  bar.appendChild(closeBtn);
+  inner.appendChild(img);
+  inner.appendChild(bar);
+  dialog.appendChild(inner);
   document.body.appendChild(dialog);
 
-  var img = dialog.querySelector('.sv-img');
-  var caption = dialog.querySelector('.sv-caption');
-  var liveLink = dialog.querySelector('.sv-live');
-  var sourceLink = dialog.querySelector('.sv-source');
-  var shareBtn = dialog.querySelector('.sv-share');
-  var zoomBtn = dialog.querySelector('.sv-zoom');
-  var closeBtn = dialog.querySelector('.sv-close');
   var zoomed = false;
 
   function setZoom(state) {

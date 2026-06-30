@@ -4,6 +4,21 @@
 
     const home=window.PortfolioHome||{};
     const safeRepo=home.safeRepo||function(s){return String(s==null?'':s).replace(/[^A-Za-z0-9._-]/g,'')};
+    const svgNode=(window.SafeDOM&&window.SafeDOM.svgNode)||function(tag,attrs){
+        const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+        Object.keys(attrs||{}).forEach(function(name){
+            const value=attrs[name];
+            if(value!=null&&value!==false)node.setAttribute(name,value===true?'':String(value));
+        });
+        return node;
+    };
+
+    function closeIcon(){
+        const svg=svgNode('svg',{viewBox:'0 0 24 24',width:'18',height:'18',fill:'none',stroke:'currentColor','stroke-width':'2.2','stroke-linecap':'round','aria-hidden':'true'});
+        svg.appendChild(svgNode('line',{x1:'6',y1:'6',x2:'18',y2:'18'}));
+        svg.appendChild(svgNode('line',{x1:'6',y1:'18',x2:'18',y2:'6'}));
+        return svg;
+    }
 
     function playVideo(trigger){
         const id=trigger.dataset.yt;
@@ -24,7 +39,7 @@
         closeBtn.type='button';
         closeBtn.className='video-close';
         closeBtn.setAttribute('aria-label','Close video and return to thumbnail');
-        closeBtn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
+        closeBtn.appendChild(closeIcon());
         closeBtn.addEventListener('click',(event)=>{
             event.preventDefault();
             event.stopPropagation();

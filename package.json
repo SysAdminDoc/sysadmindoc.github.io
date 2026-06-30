@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "private": true,
   "engines": {
     "node": ">=24.0.0"

@@ -385,6 +385,7 @@ function auditRuntimeStyleFile(filePath, text) {
   const cssTextWrites = [];
   const setAttributeStyleWrites = [];
   const directStylePropertyReferences = [];
+  const htmlSinkWrites = [];
 
   const cssTextPattern = /\.style\.cssText\s*=/g;
   let cssTextMatch;
@@ -419,7 +420,25 @@ function auditRuntimeStyleFile(filePath, text) {
     });
   }
 
-  return { cssTextWrites, setAttributeStyleWrites, directStylePropertyReferences };
+  const htmlSinkPatterns = [
+    { kind: 'html-innerHTML', label: 'innerHTML assignment', pattern: /\.innerHTML\s*=/g },
+    { kind: 'html-outerHTML', label: 'outerHTML assignment', pattern: /\.outerHTML\s*=/g },
+    { kind: 'html-insertAdjacentHTML', label: 'insertAdjacentHTML call', pattern: /\.insertAdjacentHTML\s*\(/g },
+    { kind: 'html-createContextualFragment', label: 'createContextualFragment call', pattern: /\.createContextualFragment\s*\(/g },
+  ];
+  for (const sink of htmlSinkPatterns) {
+    let match;
+    while ((match = sink.pattern.exec(text)) !== null) {
+      htmlSinkWrites.push({
+        kind: sink.kind,
+        file: rel,
+        line: lineFor(text, match.index),
+        label: sink.label,
+      });
+    }
+  }
+
+  return { cssTextWrites, setAttributeStyleWrites, directStylePropertyReferences, htmlSinkWrites };
 }
 
 const scanRoots = options.distDir ? [options.distDir] : sourceDirs;
@@ -447,6 +466,7 @@ const styleLinks = sourceAudits.flatMap((audit) => audit.styleLinks);
 const cssTextWrites = runtimeStyleAudits.flatMap((audit) => audit.cssTextWrites);
 const setAttributeStyleWrites = runtimeStyleAudits.flatMap((audit) => audit.setAttributeStyleWrites);
 const directStylePropertyReferences = runtimeStyleAudits.flatMap((audit) => audit.directStylePropertyReferences);
+const htmlSinkWrites = runtimeStyleAudits.flatMap((audit) => audit.htmlSinkWrites);
 const activeCsp = cspMetas[0]?.content ?? '';
 const cspPolicies = new Set(cspMetas.map((meta) => meta.content));
 const filesWithoutCsp = options.distDir ? sourceAudits.filter((audit) => audit.cspMetas.length === 0) : [];
@@ -591,12 +611,17 @@ console.log(`  stylesheet/preload links: ${styleLinks.length}`);
 console.log(`  runtime style.cssText writes: ${cssTextWrites.length}`);
 console.log(`  runtime setAttribute("style") writes: ${setAttributeStyleWrites.length}`);
 console.log(`  runtime direct style property references: ${directStylePropertyReferences.length}`);
+console.log(`  runtime HTML sink writes: ${htmlSinkWrites.length}`);
+for (const sink of htmlSinkWrites) {
+  console.log(`  - ${formatLocation(sink)} ${sink.label}`);
+}
 console.log('');
 console.log('Current unsafe-inline dependencies');
 console.log(`  script-src unsafe-inline required today: ${executableInline.length + eventHandlers.length > 0 ? 'yes' : 'no'}`);
 console.log(`  style-src unsafe-inline required today: ${styleBlocks.length + styleAttributes.length > 0 ? 'yes' : 'no'}`);
 console.log(`  style-src-elem unsafe-inline required today: ${styleBlocks.length > 0 ? 'yes' : 'no'}`);
 console.log(`  style-src-attr unsafe-inline required today: ${styleAttributes.length + cssTextWrites.length + setAttributeStyleWrites.length > 0 ? 'yes' : 'no'}`);
+console.log(`  Trusted Types trial ready: ${htmlSinkWrites.length === 0 ? 'yes' : 'no'}`);
 
 if (candidate) {
   console.log('');
@@ -678,6 +703,9 @@ if (options.strict && options.distDir && filesWithMultipleCsp.length > 0) {
 }
 if (options.strict && options.distDir && divergentCspMetas.length > 0) {
   failures.push(`${divergentCspMetas.length} built CSP meta tag(s) differ from the active policy: ${summarizePaths(divergentCspMetas)}.`);
+}
+if (options.strict && htmlSinkWrites.length > 0) {
+  failures.push(`${htmlSinkWrites.length} runtime HTML sink write(s) block Trusted Types trial readiness: ${summarizePaths(htmlSinkWrites)}.`);
 }
 if (options.strict && directiveAllowsUnsafeInline(scriptSrc)) {
   failures.push("script-src still allows 'unsafe-inline'.");

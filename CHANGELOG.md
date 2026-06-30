@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.4] - 2026-06-30
+
+- Replaced public runtime `innerHTML` sinks in the command palette, GitHub language donut, media controls, screenshot viewer, and theme toggle with DOM/SVG node construction.
+- Added shared safe DOM helpers for text highlighting, child replacement, and SVG node creation in `public/scripts/shared.js`.
+- Extended the CSP audit to report runtime HTML sink counts and `Trusted Types trial ready: yes` when no raw HTML sinks remain.
+
 ## [v0.21.3] - 2026-06-30
 
 - Enabled service-worker navigation preload during activation when the browser supports it.

@@ -10,6 +10,34 @@
   var KEY = 'theme-pref';
   var root = document.documentElement;
 
+  function svgNode(tag, attrs) {
+    var node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.keys(attrs || {}).forEach(function (name) {
+      var value = attrs[name];
+      if (value == null || value === false) return;
+      node.setAttribute(name, value === true ? '' : String(value));
+    });
+    return node;
+  }
+
+  function moonIcon() {
+    var svg = svgNode('svg', { viewBox: '0 0 24 24', fill: 'currentColor', 'aria-hidden': 'true' });
+    svg.appendChild(svgNode('path', { d: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z' }));
+    return svg;
+  }
+
+  function sunIcon() {
+    var svg = svgNode('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'aria-hidden': 'true' });
+    svg.appendChild(svgNode('circle', { cx: '12', cy: '12', r: '4' }));
+    svg.appendChild(svgNode('path', { d: 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41' }));
+    return svg;
+  }
+
+  function setIcon(btn, theme) {
+    while (btn.firstChild) btn.removeChild(btn.firstChild);
+    btn.appendChild(theme === 'dark' ? moonIcon() : sunIcon());
+  }
+
   function apply(theme) {
     root.dataset.theme = theme;
     var nextTheme = theme === 'dark' ? 'light' : 'dark';
@@ -20,9 +48,7 @@
       btn.setAttribute('aria-pressed', String(theme === 'light'));
       btn.setAttribute('aria-label', 'Switch to ' + nextTheme + ' theme');
       btn.setAttribute('title', 'Switch to ' + nextTheme + ' theme');
-      btn.innerHTML = theme === 'dark'
-        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+      setIcon(btn, theme);
     }
   }
 
