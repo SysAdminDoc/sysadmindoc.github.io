@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.2-blue)
+![Version](https://img.shields.io/badge/version-0.21.3-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%206-ff5d01)](https://astro.build)
@@ -23,7 +23,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Interior freshness signals** — reviewed `/uses/`, `/resume/`, and `/healthcare-it/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
-- **Performance, PWA, and update hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, and sitewide service-worker update prompts
+- **Performance, PWA, and update hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, and sitewide service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated project/interior OG PNG validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions and key responsive routes
@@ -68,7 +68,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.2 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.3 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

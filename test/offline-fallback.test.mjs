@@ -24,8 +24,11 @@ test('service worker exposes a local offline navigation fallback', async () => {
   assert.match(sw, /const PRECACHE = __PRECACHE_PLACEHOLDER__/);
   assert.match(sw, /resilientPrecache\(c, PRECACHE\)/);
   assert.doesNotMatch(sw, /\.addAll\(PRECACHE\)/);
-  assert.match(sw, /cachedOrOffline\(e\.request, OFFLINE_URL\)/);
+  assert.match(sw, /cachedOrOffline\(request, OFFLINE_URL\)/);
   assert.doesNotMatch(sw, /cachedOrOffline\(e\.request, '\/'\)/);
+  assert.match(sw, /enableNavigationPreload\(\)/);
+  assert.match(sw, /navigationPreload\.enable\(\)/);
+  assert.match(sw, /handleNavigation\(e\.request, e\.preloadResponse\)/);
   assert.match(sw, /headers\.set\('sw-cached-at', String\(Date\.now\(\)\)\)/);
   assert.match(sw, /Number\.isFinite\(at\) && at > 0 && Date\.now\(\) - at < CROSS_ORIGIN_TTL/);
   assert.doesNotMatch(sw, /if \(!at \|\| Date\.now\(\) - at < CROSS_ORIGIN_TTL\) return cached/);
@@ -97,4 +100,244 @@ test('service worker install preserves valid precache entries when one URL fails
   assert.deepEqual(cached.sort(), ['/offline.html', '/ok.css']);
   assert.equal(warnings.length, 1);
   assert.match(warnings[0], /\/missing\.css/);
+});
+
+test('service worker activate enables navigation preload when supported', async () => {
+  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const listeners = new Map();
+  const deleted = [];
+  let enabled = false;
+  let claimed = false;
+  const script = sw.replace(
+    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
+    "const PRECACHE = ['/offline.html'];",
+  );
+  const sandbox = {
+    console: { warn: () => {} },
+    caches: {
+      open: async () => ({ add: async () => {} }),
+      keys: async () => ['legacy-cache', 'portfolio-v__BUILD_VERSION__'],
+      delete: async (key) => {
+        deleted.push(key);
+        return true;
+      },
+      match: async () => null,
+    },
+    self: {
+      location: { origin: 'https://sysadmindoc.example' },
+      registration: {
+        navigationPreload: {
+          enable: async () => {
+            enabled = true;
+          },
+        },
+      },
+      clients: {
+        claim: async () => {
+          claimed = true;
+        },
+      },
+      skipWaiting: () => {},
+      addEventListener: (type, handler) => listeners.set(type, handler),
+    },
+    setTimeout,
+    clearTimeout,
+    AbortController,
+    Date,
+    Error,
+    Headers,
+    Promise,
+    Request,
+    Response,
+    URL,
+    fetch,
+  };
+
+  vm.runInNewContext(script, sandbox);
+  let activatePromise;
+  listeners.get('activate')({
+    waitUntil: (promise) => {
+      activatePromise = promise;
+    },
+  });
+  await activatePromise;
+
+  assert.equal(enabled, true);
+  assert.equal(claimed, true);
+  assert.deepEqual(deleted, ['legacy-cache']);
+});
+
+test('service worker activate tolerates browsers without navigation preload', async () => {
+  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const listeners = new Map();
+  let claimed = false;
+  const script = sw.replace(
+    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
+    "const PRECACHE = ['/offline.html'];",
+  );
+  const sandbox = {
+    console: { warn: () => {} },
+    caches: {
+      open: async () => ({ add: async () => {} }),
+      keys: async () => [],
+      delete: async () => true,
+      match: async () => null,
+    },
+    self: {
+      location: { origin: 'https://sysadmindoc.example' },
+      registration: {},
+      clients: {
+        claim: async () => {
+          claimed = true;
+        },
+      },
+      skipWaiting: () => {},
+      addEventListener: (type, handler) => listeners.set(type, handler),
+    },
+    setTimeout,
+    clearTimeout,
+    AbortController,
+    Date,
+    Error,
+    Headers,
+    Promise,
+    Request,
+    Response,
+    URL,
+    fetch,
+  };
+
+  vm.runInNewContext(script, sandbox);
+  let activatePromise;
+  listeners.get('activate')({
+    waitUntil: (promise) => {
+      activatePromise = promise;
+    },
+  });
+  await activatePromise;
+
+  assert.equal(claimed, true);
+});
+
+test('service worker navigation handler prefers preload response before fetch', async () => {
+  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const listeners = new Map();
+  const putBodies = [];
+  let fetchCalls = 0;
+  const script = sw.replace(
+    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
+    "const PRECACHE = ['/offline.html'];",
+  );
+  const sandbox = {
+    console: { warn: () => {} },
+    caches: {
+      open: async () => ({
+        add: async () => {},
+        put: async (request, response) => {
+          putBodies.push({ url: request.url, body: await response.text() });
+        },
+      }),
+      keys: async () => [],
+      delete: async () => true,
+      match: async () => null,
+    },
+    self: {
+      location: { origin: 'https://sysadmindoc.example' },
+      registration: {},
+      clients: { claim: async () => {} },
+      skipWaiting: () => {},
+      addEventListener: (type, handler) => listeners.set(type, handler),
+    },
+    setTimeout,
+    clearTimeout,
+    AbortController,
+    Date,
+    Error,
+    Headers,
+    Promise,
+    Request,
+    Response,
+    URL,
+    fetch: async () => {
+      fetchCalls += 1;
+      throw new Error('fetch should not run when preload responds');
+    },
+  };
+
+  vm.runInNewContext(script, sandbox);
+  let responsePromise;
+  const request = new Request('https://sysadmindoc.example/preloaded/', {
+    headers: { accept: 'text/html' },
+  });
+  listeners.get('fetch')({
+    request,
+    preloadResponse: Promise.resolve(new Response('preloaded shell', { status: 200 })),
+    respondWith: (promise) => {
+      responsePromise = promise;
+    },
+  });
+
+  const response = await responsePromise;
+  assert.equal(await response.text(), 'preloaded shell');
+  assert.equal(fetchCalls, 0);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(putBodies, [{ url: 'https://sysadmindoc.example/preloaded/', body: 'preloaded shell' }]);
+});
+
+test('service worker navigation handler falls back offline when preload and fetch miss', async () => {
+  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const listeners = new Map();
+  const script = sw.replace(
+    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
+    "const PRECACHE = ['/offline.html'];",
+  );
+  const sandbox = {
+    console: { warn: () => {} },
+    caches: {
+      open: async () => ({ add: async () => {} }),
+      keys: async () => [],
+      delete: async () => true,
+      match: async (request) => {
+        const target = typeof request === 'string' ? request : new URL(request.url).pathname;
+        if (target === '/offline.html') return new Response('offline shell', { status: 200 });
+        return null;
+      },
+    },
+    self: {
+      location: { origin: 'https://sysadmindoc.example' },
+      registration: {},
+      clients: { claim: async () => {} },
+      skipWaiting: () => {},
+      addEventListener: (type, handler) => listeners.set(type, handler),
+    },
+    setTimeout,
+    clearTimeout,
+    AbortController,
+    Date,
+    Error,
+    Headers,
+    Promise,
+    Request,
+    Response,
+    URL,
+    fetch: async () => {
+      throw new Error('offline');
+    },
+  };
+
+  vm.runInNewContext(script, sandbox);
+  let responsePromise;
+  const request = new Request('https://sysadmindoc.example/offline-test/', {
+    headers: { accept: 'text/html' },
+  });
+  listeners.get('fetch')({
+    request,
+    preloadResponse: Promise.resolve(undefined),
+    respondWith: (promise) => {
+      responsePromise = promise;
+    },
+  });
+
+  const response = await responsePromise;
+  assert.equal(await response.text(), 'offline shell');
 });
