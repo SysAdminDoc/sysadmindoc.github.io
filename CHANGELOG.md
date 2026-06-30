@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.5] - 2026-06-30
+
+- Updated the `yaml-language-server` transitive `yaml` override to `yaml@2.9.0`.
+- Regenerated the package lock so `npm run deps:audit` no longer reports the `yaml` range-update item.
+
 ## [v0.21.4] - 2026-06-30
 
 - Replaced public runtime `innerHTML` sinks in the command palette, GitHub language donut, media controls, screenshot viewer, and theme toggle with DOM/SVG node construction.
