@@ -466,8 +466,9 @@ async function runTest(port, test) {
     await applyViewport(client, test);
 
     await navigate(client, new URL(test.path, baseUrl).toString(), test.waitMs);
+    const afterLoad = await snapshot(client);
     await sendInteraction(client, test);
-    const beforeBack = await snapshot(client);
+    const afterInteraction = await snapshot(client);
 
     await navigate(client, new URL(test.awayPath, baseUrl).toString(), 900);
     await evaluate(client, 'history.back(); true;');
@@ -478,10 +479,12 @@ async function runTest(port, test) {
       label: test.label,
       path: test.path,
       viewport: `${test.width}x${test.height}${test.mobile ? ' mobile' : ' desktop'}`,
-      ...beforeBack,
+      ...afterInteraction,
+      lcpMs: afterLoad.lcpMs,
+      postInteractionLcpMs: afterInteraction.lcpMs,
       bfcacheRestored: afterBack.bfcacheRestored,
       pageShows: afterBack.pageShows,
-      overflow: beforeBack.overflow || afterBack.overflow,
+      overflow: afterInteraction.overflow || afterBack.overflow,
       issues,
     };
 
