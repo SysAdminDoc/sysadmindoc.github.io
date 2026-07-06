@@ -946,6 +946,9 @@ html[data-theme="light"] .ca:hover{
   gap:5px;
   min-width:auto;
 }
+.ca-stars.ca-stars-empty{
+  display:none;
+}
 .ca-stars svg{
   width:12px;
   height:12px;
