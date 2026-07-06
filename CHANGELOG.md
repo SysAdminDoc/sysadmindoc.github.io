@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.11] - 2026-07-06
+
+- Added wide and narrow PWA install screenshots and build-gated manifest validation for screenshot metadata, image dimensions, MIME types, and install UI constraints.
+
 ## [v0.21.10] - 2026-07-06
 
 - Expanded the Playwright axe, target-size, rendered-health, and visual baseline matrix across the major public portfolio routes.
