@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.13] - 2026-07-06
+
+- Refreshed the Astro 7 dependency floor across Astro, `@astrojs/rss`, Shiki, Sharp, and the Vite override, and removed stale Astro 7/Vite 8 blocked-major policy from the dependency audit.
+
 ## [v0.21.12] - 2026-07-06
 
 - Added `npm run smoke:release` to verify GitHub Release ZIP assets, size/digest metadata, upload timestamps, and download URLs for requested portfolio release tags.
