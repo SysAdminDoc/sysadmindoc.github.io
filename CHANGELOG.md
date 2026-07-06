@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.8] - 2026-07-06
+
+- Hardened command-palette keyboard navigation so rapid Enter presses flush the latest typed query before opening a result.
+- Repaired homepage section jumps from the command palette by routing hash reveals through the existing homepage scroll controller.
+- Added shareable URL state, pressed-state semantics, status text, and empty-state feedback to the screenshots gallery filters.
+- Updated the README project-count examples for the current 186 feed-backed project catalog.
+
 ## [v0.21.7] - 2026-06-30
 
 - Adopted `astro@7.0.3` with the Vite override refreshed to `vite@8.1.0`.

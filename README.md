@@ -12,7 +12,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Astro 7** — static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`
-- **Content collections**: featured (9), live apps (22), catalog (182 feed-backed / 189 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (186 feed-backed / 189 local fallback), skills (8)
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Homepage evidence rail** — desktop hero pairs live-app screenshots with source-backed proof links while staying hidden on mobile
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
@@ -69,7 +69,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.7 --expected-commit <commit-sha> --expected-projects 182 --expected-releases 9 --expected-feed-items 182
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.7 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 9 --expected-feed-items 186
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
