@@ -611,6 +611,82 @@ test.describe('catalog URL-state persistence', () => {
   });
 });
 
+test.describe('timeline URL-state persistence', () => {
+  test('filters update URL, survive reload, and expose an empty state', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/timeline/', '#timeline-events');
+
+    const combo = await page.evaluate(() => {
+      const optionValues = (selector) => Array.from(document.querySelectorAll(`${selector} option`))
+        .map(option => option.value)
+        .filter(value => value !== 'all');
+      const years = optionValues('#timelineYear');
+      const platforms = optionValues('#timelinePlatform');
+      const categories = optionValues('#timelineCategory');
+      const languages = optionValues('#timelineLanguage');
+      const events = Array.from(document.querySelectorAll('[data-timeline-event]'))
+        .map(event => ({
+          year: event.getAttribute('data-year'),
+          platform: event.getAttribute('data-platform'),
+          category: event.getAttribute('data-category'),
+          language: event.getAttribute('data-language'),
+        }));
+      for (const year of years) {
+        for (const platform of platforms) {
+          for (const category of categories) {
+            for (const language of languages) {
+              const hasMatch = events.some(event =>
+                event.year === year &&
+                event.platform === platform &&
+                event.category === category &&
+                event.language === language,
+              );
+              if (!hasMatch) {
+                return { year, platform, category, language };
+              }
+            }
+          }
+        }
+      }
+      return null;
+    });
+    if (!combo) {
+      test.skip(true, 'No empty timeline filter combination in this build');
+      return;
+    }
+
+    await page.locator('#timelineYear').selectOption(combo.year);
+    await page.locator('#timelinePlatform').selectOption(combo.platform);
+    await page.locator('#timelineCategory').selectOption(combo.category);
+    await page.locator('#timelineLanguage').selectOption(combo.language);
+    await expect.poll(() => page.url()).toContain(`year=${combo.year}`);
+    await expect.poll(() => page.url()).toContain(`platform=${combo.platform}`);
+    await expect.poll(() => page.url()).toContain(`category=${combo.category}`);
+    await expect.poll(() => page.url()).toContain(`language=${combo.language}`);
+    await expect(page.locator('#timelineStatus')).toContainText('No timeline events match');
+    await expect(page.locator('#timelineEmpty')).toBeVisible();
+
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#timeline-events').waitFor({ state: 'visible' });
+    await expect(page.locator('#timelineYear')).toHaveValue(combo.year);
+    await expect(page.locator('#timelinePlatform')).toHaveValue(combo.platform);
+    await expect(page.locator('#timelineCategory')).toHaveValue(combo.category);
+    await expect(page.locator('#timelineLanguage')).toHaveValue(combo.language);
+    await expect(page.locator('#timelineEmpty')).toBeVisible();
+
+    await page.locator('#timelineReset').click();
+    await expect.poll(() => page.url()).not.toContain('year=');
+    await expect.poll(() => page.url()).not.toContain('platform=');
+    await expect.poll(() => page.url()).not.toContain('category=');
+    await expect.poll(() => page.url()).not.toContain('language=');
+    await expect(page.locator('#timelineEmpty')).toBeHidden();
+    await expect(page.locator('#timelineReset')).toBeDisabled();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+});
+
 test.describe('screenshots gallery filters', () => {
   test('category filter updates pressed state, URL, status, and reload state', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
