@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.14] - 2026-07-06
+
+- Moved Pagefind indexing ahead of service-worker stamping and precached the generated Pagefind component runtime, worker, wasm, filters, fragments, index, and metadata assets for first-install offline search.
+
 ## [v0.21.13] - 2026-07-06
 
 - Refreshed the Astro 7 dependency floor across Astro, `@astrojs/rss`, Shiki, Sharp, and the Vite override, and removed stale Astro 7/Vite 8 blocked-major policy from the dependency audit.
