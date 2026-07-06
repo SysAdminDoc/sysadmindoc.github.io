@@ -80,13 +80,24 @@ function resolveToFsPath(href) {
     // Leave as-is if decoding fails
   }
 
+  const resolvedBase = path.resolve(distDir);
+
   // Paths that end with '/' map to <dir>/index.html (Astro default)
   if (clean.endsWith('/')) {
-    return path.join(distDir, clean, 'index.html');
+    const resolved = path.resolve(resolvedBase, `.${clean}`, 'index.html');
+    if (!isInsideDist(resolvedBase, resolved)) return null;
+    return resolved;
   }
 
   // Direct file reference (e.g. /robots.txt, /manifest.json, /og/foo.png)
-  return path.join(distDir, clean);
+  const resolved = path.resolve(resolvedBase, `.${clean}`);
+  if (!isInsideDist(resolvedBase, resolved)) return null;
+  return resolved;
+}
+
+function isInsideDist(resolvedBase, resolvedPath) {
+  const rel = path.relative(resolvedBase, resolvedPath);
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -152,7 +163,10 @@ for (const filePath of htmlFiles) {
     internalLinks += 1;
 
     const fsPath = resolveToFsPath(href);
-    if (!fsPath) continue; // fragment-only after stripping — safe to skip
+    if (!fsPath) {
+      errors.push(`  ${rel} -> ${href}`);
+      continue;
+    }
 
     const exists = await fileExists(fsPath);
     if (!exists) {
