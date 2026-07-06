@@ -8,16 +8,7 @@ import { pathToFileURL } from 'node:url';
 const root = process.cwd();
 const severityOrder = ['info', 'low', 'moderate', 'high', 'critical'];
 
-export const knownMajorBlocks = {
-  astro: {
-    major: 7,
-    reason: 'Astro 7 needs a separate migration pass for the Astro 6 static build, Pagefind, CSP, and Playwright audit chain.',
-  },
-  vite: {
-    major: 8,
-    reason: 'Vite is pinned through package overrides and should move with Astro after compatibility checks.',
-  },
-};
+export const knownMajorBlocks = {};
 
 function hasFlag(name) {
   return process.argv.includes(name);
