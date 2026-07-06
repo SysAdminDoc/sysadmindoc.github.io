@@ -2183,10 +2183,7 @@ html[data-theme="light"] .fb{
     border:1px solid CanvasText;
     background:Canvas!important;
   }
-  .hm-swatch.hm-1,
-  .hm-swatch.hm-2,
-  .hm-swatch.hm-3,
-  .hm-swatch.hm-4,
+  .hm-swatch.hm-active,
   .lang-legend-dot{
     background:Highlight!important;
   }
@@ -3284,6 +3281,13 @@ html[data-theme="light"] .lc2 .lc2-thumb::after{
   font-family:var(--mono);
   font-size:13px;
 }
+.heatmap-note{
+  display:block;
+  margin-top:4px;
+  color:var(--t3);
+  font-size:12px;
+  line-height:1.45;
+}
 .heatmap-scroll{
   overflow-x:auto;
   overflow-y:hidden;
@@ -3318,40 +3322,22 @@ html[data-theme="light"] .lc2 .lc2-thumb::after{
   font-size:9px;
   dominant-baseline:auto;
 }
-/* Intensity levels — dark theme */
 .hm-empty{
   fill:transparent;
 }
-.hm-0{
+.hm-inactive{
   fill:rgba(255,255,255,.04);
 }
-.hm-1{
-  fill:rgba(74,222,128,.28);
+.hm-active{
+  fill:rgba(74,222,128,.96);
+  stroke:rgba(187,247,208,.34);
 }
-.hm-2{
-  fill:rgba(74,222,128,.52);
-}
-.hm-3{
-  fill:rgba(74,222,128,.82);
-}
-.hm-4{
-  fill:rgba(74,222,128,1);
-}
-/* Intensity levels — light theme */
-html[data-theme="light"] .hm-0{
+html[data-theme="light"] .hm-inactive{
   fill:rgba(70,83,112,.06);
 }
-html[data-theme="light"] .hm-1{
-  fill:rgba(34,160,80,.22);
-}
-html[data-theme="light"] .hm-2{
-  fill:rgba(34,160,80,.46);
-}
-html[data-theme="light"] .hm-3{
-  fill:rgba(34,160,80,.76);
-}
-html[data-theme="light"] .hm-4{
-  fill:rgba(34,160,80,1);
+html[data-theme="light"] .hm-active{
+  fill:rgba(34,160,80,.92);
+  stroke:rgba(21,128,61,.36);
 }
 .hm-swatch{
   display:inline-block;
@@ -3359,17 +3345,10 @@ html[data-theme="light"] .hm-4{
   height:12px;
   border-radius:2px;
 }
-/* Swatch reuses the same fill classes via background */
-.hm-swatch.hm-0{background:rgba(255,255,255,.04)}
-.hm-swatch.hm-1{background:rgba(74,222,128,.28)}
-.hm-swatch.hm-2{background:rgba(74,222,128,.52)}
-.hm-swatch.hm-3{background:rgba(74,222,128,.82)}
-.hm-swatch.hm-4{background:rgba(74,222,128,1)}
-html[data-theme="light"] .hm-swatch.hm-0{background:rgba(70,83,112,.06)}
-html[data-theme="light"] .hm-swatch.hm-1{background:rgba(34,160,80,.22)}
-html[data-theme="light"] .hm-swatch.hm-2{background:rgba(34,160,80,.46)}
-html[data-theme="light"] .hm-swatch.hm-3{background:rgba(34,160,80,.76)}
-html[data-theme="light"] .hm-swatch.hm-4{background:rgba(34,160,80,1)}
+.hm-swatch.hm-inactive{background:rgba(255,255,255,.04)}
+.hm-swatch.hm-active{background:rgba(74,222,128,.96)}
+html[data-theme="light"] .hm-swatch.hm-inactive{background:rgba(70,83,112,.06)}
+html[data-theme="light"] .hm-swatch.hm-active{background:rgba(34,160,80,.92)}
 .heatmap-legend{
   display:flex;
   align-items:center;
@@ -3392,12 +3371,14 @@ html[data-theme="light"] .hm-swatch.hm-4{background:rgba(34,160,80,1)}
     fill:CanvasText;
   }
   .hm-cell{
-    fill:CanvasText;
     stroke:Canvas;
     stroke-width:1;
   }
-  .hm-0{
+  .hm-inactive{
     fill:GrayText;
+  }
+  .hm-active{
+    fill:Highlight;
   }
   .hm-swatch{
     border:1px solid CanvasText;
