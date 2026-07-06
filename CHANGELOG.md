@@ -7,6 +7,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Hardened command-palette keyboard navigation so rapid Enter presses flush the latest typed query before opening a result.
 - Repaired homepage section jumps from the command palette by routing hash reveals through the existing homepage scroll controller.
 - Added shareable URL state, pressed-state semantics, status text, and empty-state feedback to the screenshots gallery filters.
+- Added focus restoration and explicit share/copy failure feedback to the project screenshot viewer.
 - Updated the README project-count examples for the current 186 feed-backed project catalog.
 
 ## [v0.21.7] - 2026-06-30
