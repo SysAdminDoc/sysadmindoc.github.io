@@ -1,16 +1,26 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import sharp from 'sharp';
 import { collectLiveSlugs } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
+const publicDir = path.join(root, 'public');
+const manifestPath = path.join(publicDir, 'manifest.json');
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
-const screenshotsDir = path.join(root, 'public', 'screenshots');
+const screenshotsDir = path.join(publicDir, 'screenshots');
+const installScreenshotsDir = path.join(screenshotsDir, 'install');
 const screenshotThumbsDir = path.join(screenshotsDir, 'thumbs');
 const astroScreenshotThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
-const publicScriptsDir = path.join(root, 'public', 'scripts');
+const publicScriptsDir = path.join(publicDir, 'scripts');
 const componentsDir = path.join(root, 'src', 'components');
 const dataDir = path.join(root, 'src', 'data');
+const manifestScreenshotTypes = new Map([
+  ['.jpg', 'image/jpeg'],
+  ['.jpeg', 'image/jpeg'],
+  ['.png', 'image/png'],
+  ['.webp', 'image/webp'],
+]);
 
 const errors = [];
 
@@ -69,6 +79,139 @@ function moduleImportRegex(moduleBase) {
   return new RegExp(`(?:from\\s+|import\\s*\\()["'][^"']*${escaped}(?:\\.[a-z]+)?["']`, 'm');
 }
 
+function publicPathFromManifestSrc(src, label) {
+  if (typeof src !== 'string' || src.length === 0) {
+    fail(`${label} must be a non-empty string`);
+    return null;
+  }
+  if (!src.startsWith('/')) {
+    fail(`${label} must be root-relative: ${src}`);
+    return null;
+  }
+  if (src.includes('\\')) {
+    fail(`${label} must use forward slashes: ${src}`);
+    return null;
+  }
+
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(src.split(/[?#]/, 1)[0]);
+  } catch {
+    fail(`${label} contains invalid URL encoding: ${src}`);
+    return null;
+  }
+
+  const filePath = path.resolve(publicDir, decodedPath.replace(/^\/+/, ''));
+  const relative = path.relative(publicDir, filePath);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
+    fail(`${label} resolves outside public/: ${src}`);
+    return null;
+  }
+  return filePath;
+}
+
+async function auditManifestScreenshots() {
+  let manifest;
+  try {
+    manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  } catch (error) {
+    fail(`PWA manifest must be valid JSON: ${error.message}`);
+    return { count: 0, formFactors: [], files: new Set() };
+  }
+
+  if (!Array.isArray(manifest.screenshots)) {
+    fail('PWA manifest must include a screenshots array for install previews');
+    return { count: 0, formFactors: [], files: new Set() };
+  }
+
+  const formFactors = new Set();
+  const files = new Set();
+  for (const [index, screenshot] of manifest.screenshots.entries()) {
+    const label = `manifest screenshots[${index}]`;
+    if (!screenshot || typeof screenshot !== 'object' || Array.isArray(screenshot)) {
+      fail(`${label} must be an object`);
+      continue;
+    }
+
+    const filePath = publicPathFromManifestSrc(screenshot.src, `${label}.src`);
+    if (typeof screenshot.label !== 'string' || screenshot.label.trim().length < 20) {
+      fail(`${label}.label must provide descriptive accessible text`);
+    }
+    if (!['wide', 'narrow'].includes(screenshot.form_factor)) {
+      fail(`${label}.form_factor must be "wide" or "narrow"`);
+    } else {
+      formFactors.add(screenshot.form_factor);
+    }
+    if (typeof screenshot.sizes !== 'string' || !/^\d+x\d+$/.test(screenshot.sizes)) {
+      fail(`${label}.sizes must use WIDTHxHEIGHT syntax`);
+    }
+
+    if (!filePath) continue;
+    files.add(filePath);
+
+    const stat = await fs.stat(filePath).catch(() => null);
+    if (!stat?.isFile()) {
+      fail(`${label}.src does not exist: ${path.relative(root, filePath)}`);
+      continue;
+    }
+
+    const expectedType = manifestScreenshotTypes.get(path.extname(filePath).toLowerCase());
+    if (!expectedType) {
+      fail(`${label}.src must be a PNG, WebP, or JPEG image: ${screenshot.src}`);
+    } else if (screenshot.type !== expectedType) {
+      fail(`${label}.type must be ${expectedType} for ${screenshot.src}`);
+    }
+
+    let metadata;
+    try {
+      metadata = await sharp(filePath).metadata();
+    } catch (error) {
+      fail(`${label}.src could not be inspected: ${error.message}`);
+      continue;
+    }
+
+    const width = metadata.width;
+    const height = metadata.height;
+    if (!width || !height) {
+      fail(`${label}.src is missing readable image dimensions: ${screenshot.src}`);
+      continue;
+    }
+
+    const actualSizes = `${width}x${height}`;
+    if (screenshot.sizes !== actualSizes) {
+      fail(`${label}.sizes is ${screenshot.sizes}, expected ${actualSizes}`);
+    }
+
+    const minDimension = Math.min(width, height);
+    const maxDimension = Math.max(width, height);
+    if (minDimension < 320 || maxDimension > 3840) {
+      fail(`${label}.src dimensions ${actualSizes} must stay within Chrome install UI bounds of 320-3840px`);
+    }
+    if (maxDimension / minDimension > 2.3) {
+      fail(`${label}.src aspect ratio ${actualSizes} is too extreme for Chrome install UI`);
+    }
+    if (screenshot.form_factor === 'wide' && width <= height) {
+      fail(`${label}.src must be landscape for form_factor "wide"`);
+    }
+    if (screenshot.form_factor === 'narrow' && height <= width) {
+      fail(`${label}.src must be portrait for form_factor "narrow"`);
+    }
+  }
+
+  for (const required of ['wide', 'narrow']) {
+    if (!formFactors.has(required)) fail(`PWA manifest screenshots must include a ${required} form_factor entry`);
+  }
+
+  const installScreenshotFiles = await listFiles(installScreenshotsDir, (filePath) => /\.(jpe?g|png|webp)$/i.test(filePath));
+  for (const filePath of installScreenshotFiles) {
+    if (!files.has(filePath)) {
+      fail(`Unreferenced PWA install screenshot: ${path.relative(root, filePath)}`);
+    }
+  }
+
+  return { count: manifest.screenshots.length, formFactors: [...formFactors].sort(), files };
+}
+
 const liveSlugs = await collectLiveSlugs(projectsPath, fail);
 const liveSlugSet = new Set(liveSlugs);
 const screenshotFiles = await listFiles(screenshotsDir, (filePath) => path.dirname(filePath) === screenshotsDir && /\.jpg$/i.test(filePath));
@@ -104,6 +247,7 @@ for (const slug of staleAstroThumbs) {
   fail(`Stale Astro asset screenshot thumbnail is not tied to a live app: src/assets/screenshots/thumbs/${slug}.jpg`);
 }
 
+const manifestScreenshotAudit = await auditManifestScreenshots();
 const sourceTexts = await readTextFiles();
 
 const publicScripts = await listFiles(publicScriptsDir, (filePath) => /\.js$/i.test(filePath));
@@ -157,6 +301,7 @@ console.log(`  live app screenshots expected: ${liveSlugs.length}`);
 console.log(`  tracked screenshot masters: ${screenshotSlugs.size}`);
 console.log(`  tracked screenshot thumbnails: ${screenshotThumbSlugs.size}`);
 console.log(`  tracked Astro asset thumbnails: ${astroScreenshotThumbSlugs.size}`);
+console.log(`  PWA manifest screenshots checked: ${manifestScreenshotAudit.count} (${manifestScreenshotAudit.formFactors.join(', ') || 'none'})`);
 console.log(`  public scripts checked: ${publicScripts.length}`);
 console.log(`  components checked: ${components.length}`);
 console.log(`  data modules checked: ${dataModules.length}`);
