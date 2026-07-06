@@ -44,6 +44,7 @@
         HOMEPAGE_HASH_RESTORE_DELAYS.forEach(function(delay){
             setTimeout(function(){
                 if(token!==homepageHashRestoreToken)return;
+                if(window.location.hash!==hash)return;
                 restoreHomepageHashTarget(hash);
             },delay);
         });
@@ -63,6 +64,7 @@
     home.revealHomepageScrollSections=revealHomepageScrollSections;
     home.restoreHomepageHashTarget=restoreHomepageHashTarget;
     home.scheduleHomepageHashRestore=scheduleHomepageHashRestore;
+    home.cancelHomepageHashRestore=cancelHomepageHashRestore;
 
     const secs=document.querySelectorAll('section[id]');
     const nla=document.querySelectorAll('.nk a');

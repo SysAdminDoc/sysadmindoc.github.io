@@ -352,6 +352,20 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('command palette flushes typed searches before Enter navigation', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#hero');
+
+    await openCommandPalette(page);
+    await page.locator('#cmdkInput').fill('timeline');
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/timeline\/$/);
+    await expect(page.locator('main.timeline-page')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('command palette section results update the hash and focus the target section', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
@@ -543,13 +557,13 @@ test.describe('catalog URL-state persistence', () => {
     const catalogSearch = page.locator('.search-input');
     await expect(catalogSearch).toBeVisible();
 
-    const filterBtn = page.locator('.filter-btn[data-f]').first();
+    const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
     if (!(await filterBtn.count())) {
       test.skip(true, 'No category filter buttons in this build');
       return;
     }
 
-    const category = await filterBtn.getAttribute('data-f');
+    const category = await filterBtn.getAttribute('data-filter');
     await filterBtn.click();
 
     await expect.poll(() => page.url()).toContain(`cat=${category}`);
@@ -559,9 +573,39 @@ test.describe('catalog URL-state persistence', () => {
 
     expect(page.url()).toContain(`cat=${category}`);
 
-    const activeFilter = page.locator(`.filter-btn[data-f="${category}"].active`);
+    const activeFilter = page.locator(`.fb[data-filter="${category}"].act`);
     await expect(activeFilter).toBeVisible();
+    await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
 
+    expect(runtimeErrors).toEqual([]);
+  });
+});
+
+test.describe('screenshots gallery filters', () => {
+  test('category filter updates pressed state, URL, status, and reload state', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/screenshots/', '#screenshots-gallery');
+
+    const filterBtn = page.locator('.screenshots-filter-btn[data-filter]:not([data-filter="all"])').first();
+    if (!(await filterBtn.count())) {
+      test.skip(true, 'No screenshot category filters in this build');
+      return;
+    }
+
+    const category = await filterBtn.getAttribute('data-filter');
+    await filterBtn.click();
+
+    await expect.poll(() => page.url()).toContain(`cat=${category}`);
+    await expect(filterBtn).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#screenshotsStatus')).toContainText('Showing');
+    await expect(page.locator('.screenshots-card:visible')).not.toHaveCount(0);
+    await expect(page.locator(`.screenshots-card[data-category="${category}"]:visible`)).not.toHaveCount(0);
+
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#screenshots-gallery').waitFor({ state: 'visible' });
+    await expect(page.locator(`.screenshots-filter-btn[data-filter="${category}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
 });

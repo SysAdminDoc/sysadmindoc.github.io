@@ -83,9 +83,10 @@
 
   function revealHashTarget(target) {
     if (!target) return;
-    if (typeof revealHomepageScrollSections === 'function') {
+    const homepage = window.PortfolioHome || {};
+    if (typeof homepage.revealHomepageScrollSections === 'function') {
       try {
-        revealHomepageScrollSections();
+        homepage.revealHomepageScrollSections();
       } catch (error) {
         /* non-critical enhancement */
       }
@@ -95,6 +96,10 @@
   function activateHashTarget(target, hash) {
     revealHashTarget(target);
     window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL = Date.now() + 2200;
+    const homepage = window.PortfolioHome || {};
+    if (typeof homepage.cancelHomepageHashRestore === 'function') {
+      homepage.cancelHomepageHashRestore();
+    }
     const jump = forceAuto => {
       target.scrollIntoView({ behavior: forceAuto || prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
       if (hash) {
@@ -111,7 +116,13 @@
       focusTarget(target, hash);
     });
     setTimeout(() => jump(true), 350);
-    setTimeout(() => jump(true), 900);
+    setTimeout(() => {
+      if (typeof homepage.restoreHomepageHashTarget === 'function') {
+        homepage.restoreHomepageHashTarget(hash);
+      } else {
+        jump(true);
+      }
+    }, 900);
   }
 
   function fuzzy(query, text) {
@@ -247,7 +258,10 @@
     return empty;
   }
 
+  let renderedQuery = '';
+
   function render(query) {
+    renderedQuery = query;
     const q = query.trim();
     if (!q) {
       const starterResults = getDefaultResults();
@@ -418,13 +432,23 @@
     if (event.target === backdrop) close();
   });
 
-  // Debounce the filter so rapid typing doesn't run a full-catalog pass on every
-  // keystroke (keeps INP low as the project list grows).
   let renderDebounce = 0;
+  function flushPendingRender() {
+    clearTimeout(renderDebounce);
+    renderDebounce = 0;
+    if (renderedQuery !== input.value) render(input.value);
+  }
+
+  // Debounce the filter so rapid typing doesn't run a full-catalog pass on every
+  // keystroke (keeps INP low as the project list grows). Keyboard actions flush
+  // this queue first so Enter never opens a stale default result.
   input.addEventListener('input', event => {
     const value = event.target.value;
     clearTimeout(renderDebounce);
-    renderDebounce = setTimeout(() => render(value), 60);
+    renderDebounce = setTimeout(() => {
+      renderDebounce = 0;
+      render(value);
+    }, 60);
   });
   input.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
@@ -434,16 +458,19 @@
     }
     if (event.key === 'ArrowDown') {
       event.preventDefault();
+      flushPendingRender();
       updateSelection(1);
       return;
     }
     if (event.key === 'ArrowUp') {
       event.preventDefault();
+      flushPendingRender();
       updateSelection(-1);
       return;
     }
     if (event.key === 'Enter') {
       event.preventDefault();
+      flushPendingRender();
       const target = list.querySelectorAll('.cmdk-item')[selected];
       if (!target) return;
       const href = target.getAttribute('data-href');

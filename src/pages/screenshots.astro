@@ -71,15 +71,22 @@ const cmdkSections = [
       <SectionJumpNav items={cmdkSections} />
 
       <div class="screenshots-filters rv" role="group" aria-label="Filter by category">
-        <button class="screenshots-filter-btn active" data-filter="all">All ({apps.length})</button>
+        <button type="button" class="screenshots-filter-btn active" data-filter="all" data-label="all live-app screenshots" aria-pressed="true">All ({apps.length})</button>
         {categories.map((cat) => {
           const count = apps.filter((a) => a.category === cat).length;
           return (
-            <button class="screenshots-filter-btn" data-filter={cat}>
+            <button type="button" class="screenshots-filter-btn" data-filter={cat} data-label={categoryLabels[cat] ?? cat} aria-pressed="false">
               {categoryLabels[cat] ?? cat} ({count})
             </button>
           );
         })}
+      </div>
+      <p class="screenshots-status" id="screenshotsStatus" role="status" aria-live="polite">
+        Showing all {apps.length} live-app screenshots.
+      </p>
+      <div class="page-empty screenshots-empty" id="screenshotsEmpty" hidden>
+        <strong>No screenshots match this filter.</strong>
+        <span>Reset the gallery to review every captured live-app surface.</span>
       </div>
 
       <div class="screenshots-grid" id="screenshots-grid">
@@ -110,12 +117,15 @@ const cmdkSections = [
 <style>
   .screenshots-page{padding-bottom:80px}
   .screenshots-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .screenshots-status{margin:-10px 0 20px;color:var(--t3);font-family:var(--mono);font-size:12px;line-height:1.5}
+  .screenshots-empty{margin-bottom:20px}
+  .screenshots-empty[hidden]{display:none!important}
   .screenshots-filter-btn{
     background:none;border:1px solid var(--border-soft);color:var(--t2);
     padding:6px 14px;border-radius:8px;cursor:pointer;font-family:var(--mono);font-size:13px;
     transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out);
   }
-  .screenshots-filter-btn:hover{background:rgba(255,255,255,.06);color:var(--t1)}
+  .screenshots-filter-btn:hover,.screenshots-filter-btn:focus-visible{background:rgba(255,255,255,.06);color:var(--t1)}
   .screenshots-filter-btn.active{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);color:var(--grn)}
   .screenshots-grid{
     display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;
