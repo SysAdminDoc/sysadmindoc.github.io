@@ -2,6 +2,7 @@
   var form = document.getElementById('timelineFilters');
   var status = document.getElementById('timelineStatus');
   var reset = document.getElementById('timelineReset');
+  var empty = document.getElementById('timelineEmpty');
   var showMoreWrap = document.getElementById('timelineShowMore');
   var showMoreBtn = document.getElementById('timelineShowMoreBtn');
   var events = Array.from(document.querySelectorAll('[data-timeline-event]'));
@@ -16,6 +17,7 @@
     category: document.getElementById('timelineCategory'),
     language: document.getElementById('timelineLanguage'),
   };
+  var filterKeys = Object.keys(controls);
 
   function getValue(key) {
     return controls[key] && controls[key].value ? controls[key].value : 'all';
@@ -39,7 +41,31 @@
     );
   }
 
-  function apply() {
+  function syncUrl(filters) {
+    try {
+      var url = new URL(window.location.href);
+      filterKeys.forEach(function (key) {
+        if (filters[key] && filters[key] !== 'all') {
+          url.searchParams.set(key, filters[key]);
+        } else {
+          url.searchParams.delete(key);
+        }
+      });
+      history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+    } catch (error) {}
+  }
+
+  function hydrateFromUrl() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      filterKeys.forEach(function (key) {
+        setValue(key, params.get(key) || 'all');
+      });
+    } catch (error) {}
+  }
+
+  function apply(options) {
+    options = options || {};
     var filters = {
       year: getValue('year'),
       platform: getValue('platform'),
@@ -64,7 +90,12 @@
       if (!filterActive && !expanded && beyondFold && passesFilter) hiddenBeyondFold += 1;
     });
 
-    status.textContent = visible + ' of ' + events.length + ' timeline events shown.';
+    status.textContent = visible === 0
+      ? 'No timeline events match these filters.'
+      : visible + ' of ' + events.length + ' timeline events shown.';
+    if (empty) empty.hidden = visible !== 0;
+    if (reset) reset.disabled = !filterActive && !expanded;
+    if (options.syncUrl !== false) syncUrl(filters);
 
     // Show/hide the "Show more" button.
     if (showMoreWrap) {
@@ -83,10 +114,12 @@
     });
   }
 
-  form.addEventListener('change', apply);
+  form.addEventListener('change', function () {
+    apply();
+  });
   if (reset) {
     reset.addEventListener('click', function () {
-      Object.keys(controls).forEach(function (key) {
+      filterKeys.forEach(function (key) {
         setValue(key, 'all');
       });
       // Resetting filters collapses back to the fold.
@@ -94,5 +127,6 @@
       apply();
     });
   }
-  apply();
+  hydrateFromUrl();
+  apply({ syncUrl: false });
 })();

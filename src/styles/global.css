@@ -4624,7 +4624,10 @@ html[data-theme="light"] .nav-actions > .mt{
 .timeline-controls select{width:100%;min-height:42px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-2);color:var(--t1);padding:0 12px;font:500 13px var(--mono)}
 .timeline-reset{min-height:42px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-2);color:var(--t1);font:600 12px var(--mono);padding:0 16px;cursor:pointer}
 .timeline-reset:hover,.timeline-controls select:hover{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring)}
+.timeline-reset:disabled{cursor:not-allowed;opacity:.55;box-shadow:none}
 .timeline-status{color:var(--t3);font-size:13px;margin:0 0 20px}
+.timeline-empty{margin:0 0 20px}
+.timeline-empty[hidden]{display:none!important}
 .timeline-list{list-style:none;margin:0;padding:0;display:grid;gap:12px;position:relative}
 .timeline-event{display:grid;grid-template-columns:18px minmax(0,1fr);gap:14px;align-items:start}
 .timeline-event[hidden]{display:none}

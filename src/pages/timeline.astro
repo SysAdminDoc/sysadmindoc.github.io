@@ -323,6 +323,10 @@ const pageJsonLd = reviewedWebPageJsonLd({
         </form>
         </search>
         <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">{events.length} timeline events shown.</p>
+        <div class="page-empty timeline-empty" id="timelineEmpty" hidden>
+          <strong>No timeline events match these filters.</strong>
+          <span>Reset the timeline or broaden one filter to return to the generated activity stream.</span>
+        </div>
 
         <ol class="timeline-list" id="timelineList" data-initial-count="50">
           {events.map((event, index) => (
