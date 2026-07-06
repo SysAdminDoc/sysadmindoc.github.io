@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.15] - 2026-07-06
+
+- Simplified the homepage contribution heatmap to a binary public push-day calendar so the legend, colors, and accessible labels match the available source data.
+
 ## [v0.21.14] - 2026-07-06
 
 - Moved Pagefind indexing ahead of service-worker stamping and precached the generated Pagefind component runtime, worker, wasm, filters, fragments, index, and metadata assets for first-install offline search.

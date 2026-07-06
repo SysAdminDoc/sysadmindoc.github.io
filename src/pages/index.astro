@@ -176,13 +176,16 @@ const heatmapCells = Array.from({ length: heatmapWeeksCount * 7 }, (_, index) =>
   const key = date.toISOString().slice(0, 10);
   const inRange = date >= heatmapStart && date <= heatmapEnd;
   const active = inRange && heatmapPushDays.has(key);
+  const state = active ? 'active' : 'inactive';
   return {
     key,
     week,
     day,
     x: heatmapLeft + week * (heatmapCell + heatmapGap),
     y: heatmapTop + day * (heatmapCell + heatmapGap),
-    level: active ? 4 : 0,
+    active,
+    state,
+    title: `${key}: ${active ? 'public push recorded' : 'no public push recorded'}`,
   };
 });
 const heatmapMonthLabels = heatmapCells
@@ -193,8 +196,8 @@ const heatmapMonthLabels = heatmapCells
     label: heatmapMonthDate.format(cell.date),
     x: cell.x,
   }));
-const heatmapActiveDays = heatmapCells.filter((cell) => cell.level > 0).length;
-const heatmapLabel = `GitHub push activity for the last year ending ${compactUtcDate.format(heatmapEnd)}: ${heatmapActiveDays} active day${heatmapActiveDays === 1 ? '' : 's'}.`;
+const heatmapActiveDays = heatmapCells.filter((cell) => cell.active).length;
+const heatmapLabel = `GitHub public push-day calendar for the last year ending ${compactUtcDate.format(heatmapEnd)}: ${heatmapActiveDays} active day${heatmapActiveDays === 1 ? '' : 's'}. Source data records whether at least one public push was observed on each UTC day, not commit volume.`;
 const journeyMilestones = [
   {
     title: 'Healthcare IT & Systems Administration',
@@ -585,7 +588,10 @@ const cmdkSections = [
         </div>
         <div class="heatmap-card" aria-label="GitHub activity">
           <div class="heatmap-head">
-            <span class="stack-kicker">Recent activity</span>
+            <div>
+              <span class="stack-kicker">Recent activity</span>
+              <span class="heatmap-note">Push days, not commit volume</span>
+            </div>
             <strong>{heatmapActiveDays} active day{heatmapActiveDays === 1 ? '' : 's'}</strong>
           </div>
           <div class="heatmap-scroll" role="region" aria-label="Scrollable GitHub activity heatmap" tabindex="0">
@@ -598,18 +604,17 @@ const cmdkSections = [
               <text class="hm-day" x="0" y={heatmapTop + 4 * (heatmapCell + heatmapGap) + heatmapCell - 1}>Wed</text>
               <text class="hm-day" x="0" y={heatmapTop + 6 * (heatmapCell + heatmapGap) + heatmapCell - 1}>Fri</text>
               {heatmapCells.map((cell) => (
-                <rect class={`hm-cell hm-${cell.level}`} x={cell.x} y={cell.y} width={heatmapCell} height={heatmapCell} rx="2" data-day={cell.key} />
+                <rect class={`hm-cell hm-${cell.state}`} x={cell.x} y={cell.y} width={heatmapCell} height={heatmapCell} rx="2" data-day={cell.key} data-state={cell.state}>
+                  <title>{cell.title}</title>
+                </rect>
               ))}
             </svg>
           </div>
-          <div class="heatmap-legend" aria-hidden="true">
-            <span>Less</span>
-            <span class="hm-swatch hm-0"></span>
-            <span class="hm-swatch hm-1"></span>
-            <span class="hm-swatch hm-2"></span>
-            <span class="hm-swatch hm-3"></span>
-            <span class="hm-swatch hm-4"></span>
-            <span>More</span>
+          <div class="heatmap-legend" aria-label="Push-day legend">
+            <span class="hm-swatch hm-inactive" aria-hidden="true"></span>
+            <span>No push</span>
+            <span class="hm-swatch hm-active" aria-hidden="true"></span>
+            <span>Push day</span>
           </div>
         </div>
       </div>
