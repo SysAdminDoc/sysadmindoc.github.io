@@ -494,6 +494,36 @@ test.describe('rendered interaction smoke', () => {
 
     await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
+    await expect.poll(async () => page.evaluate(() => document.activeElement?.hasAttribute('data-shot-viewer') ?? false)).toBe(true);
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('screenshot viewer reports failed share fallback without runtime errors', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: async () => { throw new Error('clipboard unavailable'); } },
+        configurable: true,
+      });
+    });
+    await preparePage(page, '/projects/StormviewRadar/', '[data-project-slug="StormviewRadar"]');
+
+    const trigger = page.locator('[data-shot-viewer]');
+    if (!(await trigger.count())) {
+      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
+      return;
+    }
+
+    await trigger.click();
+    const dialog = page.locator('#shotViewer');
+    await expect(dialog).toBeVisible();
+    await dialog.locator('.sv-share').click();
+    await expect(dialog.locator('.sv-status')).toContainText('Copy failed.');
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
 
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);

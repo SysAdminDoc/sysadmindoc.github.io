@@ -399,6 +399,7 @@ button:focus-visible,.fb:focus-visible,.btn:focus-visible{outline:2px solid var(
 
 /* Search highlighting */
 mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius:2px;font-weight:500}
+.copy-buffer{position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;pointer-events:none}
 
 /* LIVE preview fallback when opengraph.githubassets.com 429s */
 .lc2-thumb{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bg2),var(--bg3));border-radius:8px;aspect-ratio:1200/628}
@@ -2659,6 +2660,7 @@ html[data-theme="light"] .fb{
 }
 .sv-caption{color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .sv-spacer{flex:1}
+.sv-status{color:var(--grn);white-space:nowrap;min-height:1.4em}
 .sv-action{
   color:var(--grn);text-decoration:none;padding:4px 10px;border-radius:6px;
   border:1px solid rgba(74,222,128,.3);white-space:nowrap;
@@ -2678,6 +2680,7 @@ html[data-theme="light"] .fb{
 @media (max-width:640px){
   .sv-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
   .sv-caption{width:100%;order:-1}
+  .sv-status{flex:1 1 auto}
 }
 .project-readme-toc{
   background:rgba(255,255,255,.03);

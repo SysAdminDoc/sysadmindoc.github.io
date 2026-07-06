@@ -34,6 +34,10 @@
   shareBtn.type = 'button';
   shareBtn.setAttribute('aria-label', 'Share screenshot link');
   shareBtn.textContent = 'Share';
+  var status = document.createElement('span');
+  status.className = 'sv-status';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
   var zoomBtn = document.createElement('button');
   zoomBtn.className = 'sv-btn sv-zoom';
   zoomBtn.type = 'button';
@@ -49,6 +53,7 @@
   bar.appendChild(liveLink);
   bar.appendChild(sourceLink);
   bar.appendChild(shareBtn);
+  bar.appendChild(status);
   bar.appendChild(zoomBtn);
   bar.appendChild(closeBtn);
   inner.appendChild(img);
@@ -57,11 +62,24 @@
   document.body.appendChild(dialog);
 
   var zoomed = false;
+  var lastTrigger = null;
+  var restoreFocusOnClose = true;
+  var statusTimer = 0;
 
   function setZoom(state) {
     zoomed = state;
     img.classList.toggle('sv-img-zoom', zoomed);
     zoomBtn.textContent = zoomed ? '100%' : 'Fit';
+  }
+
+  function setStatus(message) {
+    status.textContent = message || '';
+    if (statusTimer) window.clearTimeout(statusTimer);
+    if (message) {
+      statusTimer = window.setTimeout(function () {
+        status.textContent = '';
+      }, 3200);
+    }
   }
 
   function shotUrl() {
@@ -70,11 +88,41 @@
     return url.toString();
   }
 
-  function open(trigger) {
+  function fallbackCopy(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise(function (resolve, reject) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.className = 'copy-buffer';
+      textarea.setAttribute('readonly', '');
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try {
+        if (document.execCommand('copy')) {
+          resolve();
+        } else {
+          reject(new Error('copy command failed'));
+        }
+      } catch (error) {
+        reject(error);
+      } finally {
+        textarea.remove();
+      }
+    });
+  }
+
+  function open(trigger, options) {
+    options = options || {};
     var src = trigger.getAttribute('data-shot-src');
     var alt = trigger.getAttribute('data-shot-alt') || '';
     var live = trigger.getAttribute('data-shot-live');
     var source = trigger.getAttribute('data-shot-source');
+    lastTrigger = trigger;
+    restoreFocusOnClose = options.restoreFocus !== false;
 
     img.src = src;
     img.alt = alt;
@@ -95,6 +143,8 @@
     }
 
     setZoom(false);
+    setStatus('');
+    shareBtn.textContent = 'Share';
     dialog.showModal();
     closeBtn.focus();
 
@@ -104,10 +154,26 @@
   }
 
   function close() {
+    clearShotUrl();
     dialog.close();
+  }
+
+  function clearShotUrl() {
     var url = new URL(window.location.href);
     url.searchParams.delete('shot');
     history.replaceState(null, '', url.toString());
+  }
+
+  function cleanupAfterClose() {
+    setZoom(false);
+    setStatus('');
+    shareBtn.textContent = 'Share';
+    clearShotUrl();
+    if (restoreFocusOnClose && lastTrigger && typeof lastTrigger.focus === 'function') {
+      lastTrigger.focus();
+    }
+    lastTrigger = null;
+    restoreFocusOnClose = true;
   }
 
   triggers.forEach(function (trigger) {
@@ -130,23 +196,23 @@
   shareBtn.addEventListener('click', function () {
     var url = shotUrl();
     if (navigator.share) {
-      navigator.share({ title: img.alt || document.title, url: url }).catch(function () {});
+      navigator.share({ title: img.alt || document.title, url: url })
+        .then(function () { setStatus('Screenshot link shared.'); })
+        .catch(function (error) {
+          if (error && error.name === 'AbortError') return;
+          fallbackCopy(url)
+            .then(function () { setStatus('Screenshot link copied.'); })
+            .catch(function () { setStatus('Copy failed.'); });
+        });
       return;
     }
-    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-      navigator.clipboard.writeText(url).then(function () {
-        shareBtn.textContent = 'Copied';
-        setTimeout(function () { shareBtn.textContent = 'Share'; }, 2000);
-      }).catch(function () {});
-    }
+    fallbackCopy(url)
+      .then(function () { setStatus('Screenshot link copied.'); })
+      .catch(function () { setStatus('Copy failed.'); });
   });
 
-  dialog.addEventListener('cancel', function () {
-    setZoom(false);
-    var url = new URL(window.location.href);
-    url.searchParams.delete('shot');
-    history.replaceState(null, '', url.toString());
-  });
+  dialog.addEventListener('cancel', clearShotUrl);
+  dialog.addEventListener('close', cleanupAfterClose);
   dialog.addEventListener('click', function (e) {
     if (e.target === dialog) close();
   });
@@ -160,6 +226,6 @@
   });
 
   if (new URLSearchParams(window.location.search).get('shot') === '1' && triggers[0]) {
-    open(triggers[0]);
+    open(triggers[0], { restoreFocus: false });
   }
 })();

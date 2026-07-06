@@ -37,10 +37,8 @@
     return new Promise(function (resolve, reject) {
       var textarea = document.createElement('textarea');
       textarea.value = text;
+      textarea.className = 'copy-buffer';
       textarea.setAttribute('readonly', '');
-      textarea.style.position = 'fixed';
-      textarea.style.top = '-1000px';
-      textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
