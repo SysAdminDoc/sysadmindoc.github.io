@@ -8,9 +8,10 @@ const root = process.cwd();
 test('build path enforces a homepage catalog DOM-size budget', async () => {
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
   const script = await fs.readFile(path.join(root, 'scripts', 'audit-dom-size.mjs'), 'utf8');
+  const buildCi = pkg.scripts['build:ci'];
 
   assert.equal(pkg.scripts['dom:audit'], 'node scripts/audit-dom-size.mjs');
-  assert.match(pkg.scripts['build:ci'], /npm run feed:audit && npm run dom:audit && npm run sw:stamp/);
+  assert.match(buildCi, /npm run feed:audit && npm run dom:audit && npm run search:index && npm run search:audit && npm run sw:stamp/);
   assert.match(script, /catalogSectionBytes: 327_680/);
   assert.match(script, /catalogDomNodes: 2_750/);
   assert.match(script, /catalogCards: 220/);

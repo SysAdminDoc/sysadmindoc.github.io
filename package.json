@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.21.13",
+  "version": "0.21.14",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "npm run profile-feed:sync && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && npm run build:ci",
-    "build:ci": "npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run resume:pdf && npm run bundle:audit && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run sw:stamp && npm run search:index && npm run search:audit && npm run schema:audit && npm run sitemap:audit && npm run links:audit",
+    "build:ci": "npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run resume:pdf && npm run bundle:audit && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run search:index && npm run search:audit && npm run sw:stamp && npm run schema:audit && npm run sitemap:audit && npm run links:audit",
     "sw:stamp": "node scripts/stamp-sw.mjs",
     "check": "npm run profile-feed:sync && npm run public-source:audit && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && astro check",
     "preview": "astro preview",

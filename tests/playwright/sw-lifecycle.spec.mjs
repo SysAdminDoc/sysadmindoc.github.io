@@ -10,6 +10,28 @@ async function hasRegisteredServiceWorker(page) {
   });
 }
 
+async function serviceWorkerCachePaths(page) {
+  return page.evaluate(async () => {
+    const paths = new Set();
+    for (const name of await caches.keys()) {
+      const cache = await caches.open(name);
+      for (const request of await cache.keys()) {
+        paths.add(new URL(request.url).pathname);
+      }
+    }
+    return Array.from(paths).sort();
+  });
+}
+
+async function stubExternalRuntimeRequests(page) {
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({
+      contentType: 'application/json; charset=utf-8',
+      body: '[]',
+    }),
+  );
+}
+
 test('service worker installs, caches offline fallback, and survives navigation', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
 
@@ -30,6 +52,28 @@ test('service worker installs, caches offline fallback, and survives navigation'
     return false;
   });
   expect(offlineCached).toBe(true);
+});
+
+test('service worker precaches Pagefind assets needed for first-install offline search', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+
+  const cachedPaths = await serviceWorkerCachePaths(page);
+  const requiredPaths = [
+    '/pagefind/pagefind-component-ui.css',
+    '/pagefind/pagefind-component-ui.js',
+    '/pagefind/pagefind-worker.js',
+    '/pagefind/pagefind-entry.json',
+    '/pagefind/wasm.en.pagefind',
+    '/pagefind/pagefind.js',
+  ];
+  const missingPaths = requiredPaths.filter((entry) => !cachedPaths.includes(entry));
+
+  expect(missingPaths).toEqual([]);
+  expect(cachedPaths.some((entry) => /^\/pagefind\/index\/.+\.pf_index$/.test(entry))).toBe(true);
+  expect(cachedPaths.some((entry) => /^\/pagefind\/filter\/.+\.pf_filter$/.test(entry))).toBe(true);
+  expect(cachedPaths.some((entry) => /^\/pagefind\/fragment\/.+\.pf_fragment$/.test(entry))).toBe(true);
+  expect(cachedPaths.some((entry) => /^\/pagefind\/pagefind\..+\.pf_meta$/.test(entry))).toBe(true);
 });
 
 test('service worker enables navigation preload when supported', async ({ page }) => {
@@ -66,6 +110,7 @@ test('offline navigation reaches the offline fallback page', async ({ page, cont
 
 test('no console errors during service worker lifecycle', async ({ page }) => {
   const errors = [];
+  await stubExternalRuntimeRequests(page);
   page.on('pageerror', (err) => errors.push(err.message));
   page.on('console', (msg) => {
     if (msg.type() === 'error') errors.push(msg.text());
