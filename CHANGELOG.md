@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.10] - 2026-07-06
+
+- Expanded the Playwright axe, target-size, rendered-health, and visual baseline matrix across the major public portfolio routes.
+
 ## [v0.21.9] - 2026-07-06
 
 - Added resume PDF generation and internal link validation to the production build gate so `/resume.pdf` is emitted before broken-link checks run.
