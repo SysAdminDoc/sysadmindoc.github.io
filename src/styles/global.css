@@ -3697,10 +3697,15 @@ html[data-theme="light"] mark{
 }
 
 /* ---------- B. Mobile nav overlay backdrop ---------- */
+html.mobile-nav-open,
+html.mobile-nav-open body{
+  overflow:hidden;
+  overscroll-behavior:none;
+}
 .nav-backdrop{
   display:none;
 }
-@media(max-width:900px){
+@media(max-width:1120px){
   .nav-backdrop{
     display:block;
     position:fixed;

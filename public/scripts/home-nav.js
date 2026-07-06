@@ -79,6 +79,20 @@
     let lastScrollY=0;
     let scrollRaf=0;
 
+    function closeMobileNavFromScroll(){
+        if(window.PortfolioNav&&typeof window.PortfolioNav.closeMobileNav==='function'){
+            window.PortfolioNav.closeMobileNav({returnFocus:false});
+            return;
+        }
+        const navLinks=document.getElementById('navLinks');
+        const mobileToggle=document.getElementById('mobileToggle');
+        const navBackdrop=document.getElementById('navBackdrop');
+        if(navLinks)navLinks.classList.remove('open');
+        if(navBackdrop)navBackdrop.classList.remove('show');
+        document.documentElement.classList.remove('mobile-nav-open');
+        if(mobileToggle)mobileToggle.setAttribute('aria-expanded','false');
+    }
+
     if(scrollProg||bttBtn||navEl){
         window.addEventListener('scroll',()=>{
             if(scrollRaf)return;
@@ -91,7 +105,7 @@
                 if(scrollProg)scrollProg.style.width=pct+'%';
                 if(navEl){
                     if(sy>120){
-                        if(sy>lastScrollY+5){navEl.classList.add('hid');const navLinks=document.getElementById('navLinks');const mobileToggle=document.getElementById('mobileToggle');if(navLinks&&navLinks.classList.contains('open')){navLinks.classList.remove('open');if(mobileToggle)mobileToggle.setAttribute('aria-expanded','false')}}
+                        if(sy>lastScrollY+5){navEl.classList.add('hid');if(window.PortfolioNav&&window.PortfolioNav.isMobileNavOpen()){closeMobileNavFromScroll()}}
                         else if(sy<lastScrollY-5)navEl.classList.remove('hid');
                     }else{navEl.classList.remove('hid')}
                 }

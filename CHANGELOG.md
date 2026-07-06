@@ -9,6 +9,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added shareable URL state, pressed-state semantics, status text, and empty-state feedback to the screenshots gallery filters.
 - Added focus restoration and explicit share/copy failure feedback to the project screenshot viewer.
 - Added shareable URL state, reload hydration, disabled reset affordance, and empty-state feedback to timeline filters.
+- Fixed mobile navigation cleanup so tablet overlays, backdrop state, focus state, and scroll locking stay synchronized.
 - Updated the README project-count examples for the current 186 feed-backed project catalog.
 
 ## [v0.21.7] - 2026-06-30

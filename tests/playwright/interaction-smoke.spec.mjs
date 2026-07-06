@@ -432,6 +432,48 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('mobile navigation clears backdrop and scroll lock through the shared close path', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1000, height: 900 });
+    await preparePage(page, '/', '#hero');
+
+    await page.locator('#mobileToggle').click();
+    await expect(page.locator('#navLinks')).toHaveClass(/open/);
+    await expect(page.locator('#navBackdrop')).toHaveClass(/show/);
+    await expect.poll(() => page.locator('#navBackdrop').evaluate((node) => getComputedStyle(node).display)).toBe('block');
+    await expect(page.locator('html')).toHaveClass(/mobile-nav-open/);
+    await expect(page.locator('#mobileToggle')).toHaveAttribute('aria-expanded', 'true');
+
+    await page.evaluate(() => window.PortfolioNav.closeMobileNav({ returnFocus: false }));
+    await expect(page.locator('#navLinks')).not.toHaveClass(/open/);
+    await expect(page.locator('#navBackdrop')).not.toHaveClass(/show/);
+    await expect(page.locator('html')).not.toHaveClass(/mobile-nav-open/);
+    await expect(page.locator('#mobileToggle')).toHaveAttribute('aria-expanded', 'false');
+
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/', '#hero');
+    await page.locator('#mobileToggle').click();
+    await expect(page.locator('#navLinks')).toHaveClass(/open/);
+    await page.evaluate(() => {
+      Object.defineProperty(window, 'scrollY', { configurable: true, get: () => 700 });
+      window.dispatchEvent(new Event('scroll'));
+    });
+    await expect.poll(() => page.evaluate(() => ({
+      expanded: document.getElementById('mobileToggle')?.getAttribute('aria-expanded'),
+      locked: document.documentElement.classList.contains('mobile-nav-open'),
+      menuOpen: document.getElementById('navLinks')?.classList.contains('open'),
+      backdropShown: document.getElementById('navBackdrop')?.classList.contains('show'),
+    }))).toEqual({
+      expanded: 'false',
+      locked: false,
+      menuOpen: false,
+      backdropShown: false,
+    });
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('language lane project navigation works without runtime errors or overflow', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 390, height: 900 });
