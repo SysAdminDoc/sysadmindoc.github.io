@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(root, 'dist');
 const outPath = join(distDir, 'resume.pdf');
 
 if (!existsSync(distDir)) {
-  console.error('generate-resume-pdf: dist/ not found. Run "npm run build" first.');
+  console.error('generate-resume-pdf: dist/ not found. Run Astro build before generating the PDF.');
   process.exit(1);
 }
 
@@ -23,9 +22,32 @@ async function generate() {
 
   const server = createServer((req, res) => {
     const url = new URL(req.url, `http://localhost:${port}`);
-    let filePath = join(distDir, decodeURIComponent(url.pathname));
+    let pathname;
+    try {
+      pathname = decodeURIComponent(url.pathname);
+    } catch {
+      res.writeHead(400);
+      res.end('Bad request');
+      return;
+    }
+
+    let filePath = resolve(distDir, `.${pathname}`);
+    const resolvedDist = resolve(distDir);
+    const relPath = relative(resolvedDist, filePath);
+    if (relPath.startsWith('..') || relPath === '..' || path.isAbsolute(relPath)) {
+      res.writeHead(403);
+      res.end('Forbidden');
+      return;
+    }
+
     if (statSync(filePath, { throwIfNoEntry: false })?.isDirectory()) {
       filePath = join(filePath, 'index.html');
+    }
+    const relFilePath = relative(resolvedDist, filePath);
+    if (relFilePath.startsWith('..') || relFilePath === '..' || path.isAbsolute(relFilePath)) {
+      res.writeHead(403);
+      res.end('Forbidden');
+      return;
     }
     if (!existsSync(filePath)) {
       res.writeHead(404);

@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.7
+Current version: v0.21.9
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P0
-
-- [ ] P0 — Fix resume PDF artifact generation and built-link gating
-  Why: The current built site contains a broken `/resume.pdf` download link, and the normal build does not generate the PDF or run the link audit.
-  Evidence: `npm run links:audit`, `src/pages/resume.astro`, `scripts/generate-resume-pdf.mjs`, `package.json`.
-  Touches: `package.json`, `scripts/generate-resume-pdf.mjs`, `scripts/audit-built-links.mjs`, `src/pages/resume.astro`, `test/`, `tests/playwright/`.
-  Acceptance: A clean production build either emits `dist/resume.pdf` before link validation or removes the dead download path; `npm run links:audit` runs in the release/build gate and passes.
-  Complexity: M
 
 ### P1
 

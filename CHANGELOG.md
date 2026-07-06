@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.9] - 2026-07-06
+
+- Added resume PDF generation and internal link validation to the production build gate so `/resume.pdf` is emitted before broken-link checks run.
+- Hardened the built-link audit against escaped internal paths that resolve outside `dist/`.
+
 ## [v0.21.8] - 2026-07-06
 
 - Hardened command-palette keyboard navigation so rapid Enter presses flush the latest typed query before opening a result.
