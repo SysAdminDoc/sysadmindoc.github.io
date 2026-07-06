@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.11-blue)
+![Version](https://img.shields.io/badge/version-0.21.12-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -69,7 +69,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.11 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 9 --expected-feed-items 186
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.12 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 9 --expected-feed-items 186
+npm run smoke:release -- --tag v0.21.8 --asset sysadmindoc-portfolio-v0.21.8.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
@@ -180,6 +181,7 @@ scripts/
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
 ├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
+├── smoke-release-artifact.mjs # GitHub Release ZIP asset smoke check
 ├── audit-semantic-index.mjs
 ├── summarize-lhci.mjs     # LHCI filesystem warning summary
 ├── ensure-project-cwd.mjs  # refuses ambient test discovery outside repo root

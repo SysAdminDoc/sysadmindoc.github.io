@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.12] - 2026-07-06
+
+- Added `npm run smoke:release` to verify GitHub Release ZIP assets, size/digest metadata, upload timestamps, and download URLs for requested portfolio release tags.
+
 ## [v0.21.11] - 2026-07-06
 
 - Added wide and narrow PWA install screenshots and build-gated manifest validation for screenshot metadata, image dimensions, MIME types, and install UI constraints.
