@@ -10,6 +10,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added focus restoration and explicit share/copy failure feedback to the project screenshot viewer.
 - Added shareable URL state, reload hydration, disabled reset affordance, and empty-state feedback to timeline filters.
 - Fixed mobile navigation cleanup so tablet overlays, backdrop state, focus state, and scroll locking stay synchronized.
+- Moved live star-badge hiding to CSS state so runtime styling stays closer to the strict CSP target.
 - Updated the README project-count examples for the current 186 feed-backed project catalog.
 
 ## [v0.21.7] - 2026-06-30

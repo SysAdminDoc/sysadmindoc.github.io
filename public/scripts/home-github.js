@@ -174,7 +174,7 @@
                 const s=ghData[card.dataset.repo].stars;
                 const parent=el.closest('.ca-stars');
                 el.textContent=s>0?s:'';
-                if(parent)parent.style.display=s===0?'none':'';
+                if(parent)parent.classList.toggle('ca-stars-empty',s===0);
             }});
         document.querySelectorAll('.ca[data-repo]').forEach(el=>{
             if(ghData[el.dataset.repo]){
