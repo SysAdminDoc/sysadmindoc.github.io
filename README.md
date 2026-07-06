@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.9-blue)
+![Version](https://img.shields.io/badge/version-0.21.10-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -27,7 +27,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Performance, PWA, update, and CSP hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
 - **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated project/interior OG PNG validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
-- **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions and key responsive routes
+- **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions and the major public responsive routes
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
 - **GitHub Pages deployment** — local build, audit, and smoke process for static Pages output
 
@@ -69,7 +69,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.9 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 9 --expected-feed-items 186
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.10 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 9 --expected-feed-items 186
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

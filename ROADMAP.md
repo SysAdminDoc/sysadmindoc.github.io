@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.9
+Current version: v0.21.10
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 — Expand rendered accessibility and visual regression coverage to all major public routes
-  Why: Current Playwright axe/target-size/visual baselines cover home, search, archive, and one project route, leaving secondary pages vulnerable to theme, overflow, and accessibility regressions.
-  Evidence: `tests/playwright/portfolio-audits.spec.mjs`, `src/pages/status.astro`, `src/pages/timeline.astro`, `src/pages/releases.astro`, `src/pages/screenshots.astro`, `src/pages/resume.astro`, WCAG 2.2.
-  Touches: `tests/playwright/portfolio-audits.spec.mjs`, `tests/playwright/__screenshots__/`, `playwright.audits.config.mjs`, major `src/pages/*.astro` surfaces as fixes require.
-  Acceptance: `npm run audit:playwright` exercises desktop and mobile dark/light coverage for status, timeline, releases, screenshots, resume, uses, now, healthcare, language lane, and representative project/search/archive/home routes with no axe, target-size, overflow, or visual failures.
-  Complexity: L
 
 - [ ] P1 — Add PWA manifest screenshots and install metadata audit
   Why: The manifest has icons and shortcuts but no screenshot previews, even though public screenshot assets already exist and install UIs use screenshots for richer app presentation.

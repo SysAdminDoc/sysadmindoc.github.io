@@ -6,6 +6,15 @@ const routes = [
   { name: 'home', path: '/', ready: 'main' },
   { name: 'search', path: '/search/?q=python', ready: '#site-search' },
   { name: 'archive', path: '/archive/', ready: '#archive-entries' },
+  { name: 'status', path: '/status/', ready: '#status-health' },
+  { name: 'timeline', path: '/timeline/', ready: '#timeline-overview' },
+  { name: 'releases', path: '/releases/', ready: '#release-timeline' },
+  { name: 'screenshots', path: '/screenshots/', ready: '#screenshots-gallery' },
+  { name: 'resume', path: '/resume/', ready: '#resume-header' },
+  { name: 'uses', path: '/uses/', ready: '#uses-overview' },
+  { name: 'now', path: '/now/', ready: '#now-overview' },
+  { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },
+  { name: 'lang-python', path: '/lang/python/', ready: '#lane-overview' },
   { name: 'project-nomad', path: '/projects/project-nomad-desktop/', ready: '[data-project-slug="project-nomad-desktop"]' },
 ];
 const viewports = [
@@ -27,8 +36,18 @@ const stabilityCss = `
 `;
 
 async function preparePage(page, path, readySelector = 'main') {
-  await page.route('https://api.github.com/**', (route) => route.abort());
-  await page.route('https://www.youtube-nocookie.com/**', (route) => route.abort());
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({
+      contentType: 'application/json; charset=utf-8',
+      body: '[]',
+    }),
+  );
+  await page.route('https://www.youtube-nocookie.com/**', (route) =>
+    route.fulfill({
+      contentType: 'text/html; charset=utf-8',
+      body: '<!doctype html><title>External embed disabled for audit</title>',
+    }),
+  );
   await page.route('**/__playwright-stability.css', (route) =>
     route.fulfill({
       contentType: 'text/css; charset=utf-8',
@@ -53,6 +72,7 @@ async function preparePage(page, path, readySelector = 'main') {
   }, stableNow);
   await page.goto(path, { waitUntil: 'load' });
   await page.addStyleTag({ url: '/__playwright-stability.css' });
+  await expect(page.locator('vite-error-overlay')).toHaveCount(0, { timeout: 1_000 });
   await page.locator('main').waitFor({ state: 'visible' });
   await page.locator(readySelector).waitFor({ state: 'visible' });
   await page.evaluate(async () => {
@@ -71,6 +91,7 @@ function dynamicMasks(page) {
     page.locator('.ca-stars'),
     page.locator('.project-stars'),
     page.locator('.project-fact-value time'),
+    page.locator('.status-value'),
   ];
 }
 
@@ -208,6 +229,48 @@ async function collectTargetSizeViolations(page) {
     });
   }, targetSizeMinimum);
 }
+
+function collectRuntimeErrors(page) {
+  const errors = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  page.on('pageerror', (error) => {
+    errors.push(error.message);
+  });
+  return errors;
+}
+
+async function expectNoHorizontalOverflow(page) {
+  const overflow = await page.evaluate(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    return Math.max(root.scrollWidth, body?.scrollWidth ?? 0) - root.clientWidth;
+  });
+  expect(overflow).toBeLessThanOrEqual(1);
+}
+
+test.describe('Rendered public route health', () => {
+  for (const viewport of viewports) {
+    for (const route of routes) {
+      test(`${route.name} ${viewport.name} route renders without overlays, console errors, or overflow`, async ({ page }, testInfo) => {
+        const runtimeErrors = collectRuntimeErrors(page);
+        await page.setViewportSize({ width: viewport.width, height: viewport.height });
+        await preparePage(page, route.path, route.ready);
+        if (testInfo.project.name.includes('light')) {
+          await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+          await page.waitForTimeout(200);
+        }
+
+        await expect(page.locator('main')).toBeVisible();
+        await expect(page.locator(route.ready)).toBeVisible();
+        await expect(page.locator('vite-error-overlay')).toHaveCount(0);
+        await expectNoHorizontalOverflow(page);
+        expect(runtimeErrors).toEqual([]);
+      });
+    }
+  }
+});
 
 test.describe('Playwright axe accessibility audit', () => {
   for (const route of routes) {
