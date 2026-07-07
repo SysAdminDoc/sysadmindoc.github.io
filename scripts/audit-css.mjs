@@ -16,7 +16,7 @@ const sharedFirstViewportSelectors = [
   '.hn',
   '.hn .a',
   '.hr',
-  '.hd',
+  '.hero-summary',
   '.hs',
   '.hs-item',
   '.hs-item:not(:last-child)',
@@ -36,7 +36,7 @@ const sharedFirstViewportSelectors = [
 const sharedMobileSelectors = [
   '.hn',
   '.hr',
-  '.hd',
+  '.hero-summary',
   '.hs',
   '.hero-proof-strip',
   '.hero-proof',
