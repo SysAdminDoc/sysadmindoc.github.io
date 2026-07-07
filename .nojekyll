@@ -1,1 +1,1 @@
-# Disable Jekyll so GitHub Pages serves Astro _assets and Pagefind files.
+GitHub Pages must not run Jekyll; Astro _assets and Pagefind output need raw static serving.
