@@ -1,104 +1,95 @@
 # Research - sysadmindoc.github.io
 
-Date: 2026-07-06
+Date: 2026-07-07
 
 ## Executive Summary
-Verified: `sysadmindoc.github.io` v0.21.8 is an Astro 7, Node 24+, GitHub Pages portfolio/PWA for Matt Parker's public project archive. Its strongest current shape is not a generic template; it is a static, privacy-first proof-of-work system with generated GitHub/profile data, Pagefind search, strict local audits, status/feed endpoints, JSON Resume export, screenshots, CSP hardening, and service-worker resilience. The highest-value direction is release trust: fix broken downloadable artifacts first, then make install/search/visual QA and evidence semantics as enforceable as the existing data and CSP gates.
-
-Top opportunities, in order:
-- Fix the broken `/resume.pdf` production artifact path and make built-link auditing part of the release gate.
-- Expand rendered axe/visual coverage beyond the four current baseline routes to every major public surface.
-- Add manifest screenshots and a manifest audit so the install prompt reflects the existing visual product evidence.
-- Keep Astro/Vite/Shiki/sharp/rss range updates current because the repo is Windows-first and Vite dev-server advisories are active in the ecosystem.
-- Add a release-artifact smoke check for the portfolio itself, matching the site's existing status/build-identity posture.
-- Precache the actual Pagefind component runtime after indexing so first-install offline search is not dependent on a previous build stamp.
-- Make the contribution heatmap legend truthful: source data is binary push-day presence, while the UI renders five intensity levels.
-- Continue source-level CSP style hardening by shrinking the remaining inline style-block surface.
-- Synchronize ignored local ops docs/version metadata so maintainer-facing guidance does not drift behind shipped version state.
+Verified: `sysadmindoc.github.io` v0.21.19 is an Astro 7, Node 24+, GitHub Pages portfolio/PWA for Matt Parker's public project archive. Its strongest current shape is a static, privacy-first proof-of-work system: generated GitHub/profile data, Pagefind search, release/status feeds, audited screenshots, JSON Resume export, local Playwright/accessibility/CSP gates, and no runtime backend. The highest-value direction is trust and delivery reliability, not more template features. Top opportunities: fix the live catalog drift around `RES-Slim`; make GitHub Pages publishing a one-command, live-verified path for the `gh-pages` source branch and `.nojekyll` assets; restore/enforce screenshot capture provenance; expose release artifact provenance publicly; add mid-wide layout regression coverage; keep current dependency/security audits active; leave full i18n, social networking, CMS, analytics, and multi-user features rejected until there is actual product need.
 
 ## Product Map
-- Core workflows: scan homepage proof, search/filter the project catalog, open project detail/README/release pages, browse timeline/releases/screenshots/status/uses/resume pages, consume JSON/RSS/Atom/llms endpoints, and install/use the site as a PWA.
-- User personas: hiring and recruiting reviewers, technical peers checking source quality, the maintainer running local build/deploy gates, search/social crawlers, and offline/mobile visitors using the PWA shell.
-- Platforms and distribution: static Astro output on GitHub Pages, local Windows-first Node 24 build tooling, Chromium/Playwright local QA, no hosted analytics, no backend, no GitHub Actions.
-- Key integrations and data flows: SysAdminDoc profile feed and GitHub API caches into `src/data/_*.json`, sanitized Markdown rendering for README previews, Pagefind index generation after build, Satori/resvg OG cards, screenshot capture/thumbnail pipeline, service-worker precache/runtime caching, JSON Resume endpoint and PDF render script.
+- Core workflows: scan homepage proof, filter/search the catalog, inspect project detail/README/release evidence, browse screenshots/timeline/releases/status/resume/uses/now/healthcare pages, consume static JSON/RSS/Atom/llms endpoints, and install the PWA.
+- User personas: hiring/recruiting reviewers, technical peers validating source quality, the maintainer running local deploy gates, crawlers/search tools, and mobile/offline visitors.
+- Platforms and distribution: static Astro output, GitHub Pages legacy branch publishing from `gh-pages`, Windows-first local Node 24 tooling, local Playwright/Chromium QA, no hosted analytics, no backend.
+- Key integrations and data flows: SysAdminDoc GitHub/profile feeds into `src/data/_*.json`, sanitized README Markdown through `marked`/`sanitize-html`, Pagefind generated index, Satori/resvg OG PNG generation, screenshot capture/thumbnail pipeline, service-worker offline/update layer, JSON Resume/PDF export, and static status/release feeds.
 
 ## Competitive Landscape
-- Peerlist: does proof-of-work aggregation and verified resume credibility well. Learn from its "all work in one place" and verified-credential framing; avoid social feed, messaging, and account/network mechanics.
-- JSON Resume, OpenResume, and Reactive Resume: do structured career portability and PDF/JSON export well. Learn from schema validation and reliable export artifacts; avoid replacing the existing concise resume page with a full resume builder.
-- Magic Portfolio / Once UI: does content separation, CV/project/gallery structure, and polished portfolio defaults well. Learn from portable content contracts and gallery polish; avoid importing a heavier React/design-system stack into a static Astro codebase.
-- AstroPaper, Dasein, and recent Astro portfolio templates: do Astro content hygiene, search, SEO, RSS/sitemap, dark mode, and accessible templates well. Learn from route coverage and theme consistency; avoid becoming a blog/template project.
-- Pagefind: remains the best fit for no-backend private static search. Keep it; improve offline/runtime integration before considering hosted or vector search.
-- lowlighter/metrics: does deterministic GitHub-data artifact generation and many output formats well. Learn from reproducible data/report patterns; avoid badge-wall presentation that would weaken project-level evidence.
-- Framer/Webflow/PWA install guidance: commercial products package deployment confidence, localization, staging, redirects, and install presentation well. Learn from richer install and deployment-health surfaces; avoid CMS, analytics, forms, and paid-platform workflows that conflict with the repo philosophy.
+- AstroPaper: strong Astro content hygiene, dark/light theming, RSS/sitemap/search, and community issue signal around email privacy and media support. Learn from its small static-site discipline; avoid turning this portfolio into a generic blog theme.
+- Magic Portfolio / Once UI: strong portfolio/CV/gallery defaults and content separation. Learn from its crisp proof surfaces; avoid importing a heavier React/design-system stack.
+- Astrofy, Gothsec Astro Portfolio, RyanFitzgerald devportfolio: table-stakes portfolio structure, timeline/project sections, responsive templates, and visible issue signal around overlap bugs at desktop breakpoints. Learn from their route/breakpoint coverage; avoid template sameness.
+- Pagefind: still the right no-backend static search layer, especially after v1.5 metadata relevance improvements. Keep it; improve generated-index and offline/runtime verification before considering hosted or vector search.
+- JSON Resume, OpenResume, Reactive Resume: strong structured career portability and export expectations. Learn from schema/export reliability; avoid building a resume editor.
+- lowlighter/metrics: strong deterministic GitHub-data generation and reproducible artifacts. Learn from report/provenance patterns; avoid badge-wall presentation.
+- Peerlist and Contra: strong proof-of-work aggregation, verified work framing, inquiries, and profile-to-portfolio positioning. Learn from credibility signals and source aggregation; avoid feeds, accounts, payments, messaging, or marketplace mechanics.
+- Webflow/Framer: strong commercial packaging around CMS, localization, analytics, staging, deployment confidence, and install/SEO presentation. Learn from deployment-health and localization economics; avoid paid-platform/CMS/analytics workflows that contradict the static privacy model.
 
 ## Security, Privacy, and Reliability
-- Verified: `npm run links:audit` currently fails on `dist/resume/index.html -> /resume.pdf`; `package.json` exposes `resume:pdf` but `npm run build`/`build:ci` do not run it or `links:audit`.
-- Verified: `npm run audit:prod` reports `found 0 vulnerabilities`, and `npm run deps:audit` reports zero high/critical advisories, but range updates remain for `astro`, `@astrojs/rss`, `sharp`, `shiki`, and the Vite override.
-- Verified: current `vite@8.1.0` is past the Vite `server.fs.deny` patched floor for GHSA-fx2h-pf6j-xcff, and `sanitize-html@2.17.5` is past the `sanitize-html@2.17.3` XSS patched floor for GHSA-rpr9-rxv7-x643; keep the freshness gate because both dependencies sit on trust boundaries.
-- Verified: `public/manifest.json` has icons, shortcuts, categories, and `launch_handler`, but no `screenshots` member despite existing public screenshot assets and PWA install guidance recommending screenshot metadata.
-- Verified: `scripts/stamp-sw.mjs` runs before `search:index` and only conditionally includes `pagefind.js`/`pagefind-ui.js`; the search page loads `pagefind-component-ui.css` and `pagefind-component-ui.js`, so a clean build cannot precache the actual component runtime on first stamp.
-- Verified: `src/pages/index.astro` maps binary `stats.pushDays` values to `level: active ? 4 : 0`, while `src/styles/global.css` and the homepage legend present five heatmap intensity levels.
-- Verified: source-level CSP trial `node scripts/audit-csp.mjs --strict --active-style-src-elem --candidate-style-src-attr "'none'"` reports 15 source style blocks that block a stricter source-level `style-src-elem` posture; the built dist gate remains the current release guard.
-- Missing guardrails: build-integrated link artifact audit, manifest screenshot validation, release-asset smoke verification, first-install offline search assertion, source-level style hardening acceptance, and broader browser visual/axe route coverage.
+- Verified: `npm run catalog:audit` currently fails because `RES-Slim` is an active public non-fork repo missing from both portfolio data and `src/data/catalog-policy.json`; `deploy:preflight` also does not run `catalog:audit`.
+- Verified: the GitHub Pages API reports legacy publishing from `gh-pages`; a source-only push to `main` can leave the live site unchanged, and Astro's `_assets`/Pagefind output require `.nojekyll` on the published branch.
+- Verified: `scripts/capture-screenshots.mjs` writes `public/screenshots/manifest.json`, but that manifest is absent and `scripts/audit-live-apps.mjs` only reports `manifest provenance: 0/22` while still passing.
+- Verified: generated release data already classifies provenance, and `npm run data:summary` reports 60 releases with 0 attested, 19 checksum-backed, and 41 unsigned, but `/status/`, `/status.json`, and `/releases/` do not expose those trust tiers.
+- Verified: `npm run audit:prod` and `npm run deps:audit` are clean on 2026-07-07; Vite 8.1.3 is on a supported Vite line and `sanitize-html@2.17.5` is the current installed sanitizer.
+- Verified: public contact email appears in `src/pages/index.astro`, `src/pages/resume.astro`, and `src/pages/resume.json.ts`; keep it accessible because the resume/contact workflow depends on it, but avoid adding hidden tracking/forms.
+- Blocked but tracked: `Roadmap_Blocked.md` already covers Permissions-Policy and Trusted Types; GitHub Pages custom-header limits and Trusted Types refactor cost make them unsuitable as duplicate active roadmap items.
+- Missing guardrails: live catalog drift in deploy preflight, deterministic Pages publish verification, screenshot provenance enforcement, release provenance display/gating, and breakpoint coverage for mid-wide/short-height UI states.
 
 ## Architecture Assessment
-- Build/release boundary: `build:ci` validates many generated endpoints but omits `links:audit` and `resume:pdf`; artifact generation and broken-link validation should be part of the same production path.
-- Data boundary: generated GitHub/profile/release/readme caches are well modeled and status-aware; next trust work should extend that same proof pattern to local release artifacts and install/search assets.
-- PWA boundary: service-worker navigation preload is already implemented and tested; the remaining gap is cache-manifest ordering and matching the actual Pagefind component assets.
-- UI boundary: major secondary pages have interaction smoke coverage in places, but Playwright axe/target-size/visual baselines still focus on home/search/archive/project routes; status, timeline, releases, screenshots, resume, uses, now, healthcare, and language lanes need rendered regression coverage.
-- Security boundary: Markdown/README rendering uses `marked` plus `sanitize-html`; keeping dependency floors current and validating schema/export surfaces matters more than adding new libraries.
-- Documentation boundary: `ROADMAP.md` still says v0.21.7 and `CLAUDE.md` has older status/version notes while package/README are v0.21.8; ignored maintainer docs should be synced in a follow-up implementation pass.
+- Build/deploy boundary: `package.json` has strong local gates, but no single script owns build -> `gh-pages` publish -> live status/CSS/Pagefind verification. This is the root cause of "pushed but site did not change" failures.
+- Data boundary: `scripts/audit-catalog.mjs` and `src/data/catalog-policy.json` are the right model, but the failing `RES-Slim` row proves catalog policy must be part of deploy readiness.
+- Evidence boundary: screenshot masters/thumbs are audited, and the capture script writes rich provenance, but the absence of a committed/enforced manifest weakens freshness and replayability.
+- Trust boundary: release provenance is already computed in `scripts/fetch-stars.mjs` and summarized in `scripts/summarize-generated-data.mjs`; surfacing it in public status/release views is a low-bloat extension of existing data.
+- UI boundary: Playwright covers major public routes at 1365x900 and 390x900, with a homepage 980px hero check. External portfolio issues show overlap at 1280-1410px bands, so add a mid-wide/short-height matrix before more hero/catalog polish.
+- Testing/docs boundary: existing README commands are broad and current; the stale maintainer-doc/version sync task already exists in `ROADMAP.md` and should not be duplicated.
+- Upgrade strategy: keep `deps:audit`, `audit:prod`, and Astro/Vite/Pagefind release checks; no new framework migration is justified because Astro 7 and Pagefind match the static GitHub Pages target.
 
 ## Rejected Ideas
-- Hosted analytics or real-user tracking from Framer/Webflow: rejected because the project explicitly favors static, privacy-first behavior and already exposes local/audited status surfaces.
-- CMS, comments, forms, accounts, team publishing, or social-network features: rejected because there is no backend, moderation model, or multi-user workflow in this repository.
-- Full i18n/localization rollout: rejected until translated resume/project content exists; commercial localization pricing shows value, but the current corpus is English-only.
-- Native app-store packaging: rejected because the correct platform investment is PWA install quality on GitHub Pages, not wrapping a static portfolio in native shells.
-- Hosted/vector semantic search: rejected because Pagefind already fits the static/no-backend/privacy model and has dedicated local audits.
-- Server-side Astro 7 route caching/API middleware: rejected for this GitHub Pages static deployment; useful in Astro generally, but not fit for the current host/runtime.
-- GitHub Actions build/deploy/test workflows: rejected by repo rules and history; all gates should remain local scripts.
-- Badge-wall GitHub metrics: rejected because lowlighter/metrics is a data-pipeline reference, not the desired product surface.
-- Broad proof/case-study expansion: valuable, but human-authored case studies and sensitive healthcare claims need maintainer judgment before promotion.
-- Notes/TIL publishing: rejected by `NOTES_FEED_POLICY.md` until there is an intentionally reviewed public notes corpus.
+- Hosted analytics, A/B testing, forms, CRM, payments, or marketplace workflows from Webflow/Contra: rejected because this site is intentionally static, privacy-first, and backend-free.
+- Peerlist-style social feed, jobs, messaging, endorsements, or community mechanics: rejected because the portfolio's value is source-backed proof, not a network product.
+- Full CMS/editor workflow from Webflow/Framer: rejected because project data and copy are curated source files with audited generated data, not multi-author content.
+- Full i18n/localization rollout from commercial site builders: rejected until translated resume/project content exists; adding locale plumbing without content would create stale surfaces.
+- Hosted/vector search: rejected because Pagefind already fits the no-backend model and v1.5 metadata relevance makes the current search stack stronger.
+- Email obfuscation as a default: considered from AstroPaper issue signal, but rejected for now because the email is intentionally public for resume/contact access and obfuscation can reduce accessibility/ATS reliability.
+- Native app-store packaging: rejected because the correct distribution surface is the existing PWA manifest and GitHub Pages site.
+- Multi-user permissions/plugin ecosystem: rejected because there is no backend, account model, or maintainer workflow requiring extensibility.
+- GitHub Actions deploy/build/test workflows: rejected by repo rules; local scripts should provide the missing automation instead.
+- Permissions-Policy and Trusted Types as active additions: rejected here because they are already documented in `Roadmap_Blocked.md` with concrete blockers.
 
 ## Sources
 Direct OSS and analogs:
 - https://github.com/satnaing/astro-paper
 - https://github.com/once-ui-system/magic-portfolio
-- https://github.com/roicort/dasein
-- https://github.com/MaeWolff/astro-portfolio-template
-- https://github.com/lowlighter/metrics
+- https://github.com/manuelernestog/astrofy
+- https://github.com/Gothsec/Astro-portfolio
+- https://github.com/RyanFitzgerald/devportfolio
 - https://github.com/Pagefind/pagefind
-- https://github.com/jsonresume
+- https://github.com/lowlighter/metrics
+- https://github.com/jsonresume/jsonresume.org
+- https://github.com/AmruthPillai/Reactive-Resume
 - https://github.com/xitanggg/open-resume
 
 Commercial and community:
 - https://peerlist.io/
-- https://www.framer.com/pricing
+- https://contra.com/portfolios
 - https://webflow.com/
-- https://indieweb.org/Read.cv
 - https://github.com/emmabostian/developer-portfolios
-- https://www.reddit.com/r/webdev/comments/ru9bpo/some_examples_of_portfolios/
+- https://news.ycombinator.com/item?id=19784907
+- https://www.reddit.com/r/webdev/comments/1sf7jrm/what_do_hiring_managers_look_for_in_portfolio/
 
 Standards and platform APIs:
-- https://pagefind.app/docs/
+- https://astro.build/blog/astro-7/
+- https://pagefind.app/docs/metadata/
+- https://github.com/Pagefind/pagefind/releases
 - https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/screenshots
-- https://web.dev/patterns/web-apps/richer-install-ui
-- https://developer.mozilla.org/en-US/docs/Web/API/NavigationPreloadManager
-- https://www.w3.org/TR/WCAG22/
-- https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
-- https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-contrast
-- https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries/Using_for_accessibility
+- https://github.blog/changelog/2024-07-08-pages-legacy-worker-sunset/
+- https://docs.github.com/en/actions/concepts/security/artifact-attestations
+- https://slsa.dev/spec/v1.0/provenance
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy
+- https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
 
 Dependencies and security:
-- https://astro.build/blog/astro-7/
-- https://docs.astro.build/en/guides/upgrade-to/v7/
-- https://github.com/Pagefind/pagefind/releases
-- https://playwright.dev/docs/release-notes
-- https://github.com/withastro/astro/releases
-- https://github.com/shikijs/shiki/releases
-- https://github.com/advisories/GHSA-fx2h-pf6j-xcff
-- https://github.com/advisories/GHSA-rpr9-rxv7-x643
+- https://vite.dev/releases
+- https://vite.dev/blog/announcing-vite8-1
+- https://github.com/apostrophecms/sanitize-html/blob/main/CHANGELOG.md
+- https://github.com/markedjs/marked/releases
 
 ## Open Questions
 None.
