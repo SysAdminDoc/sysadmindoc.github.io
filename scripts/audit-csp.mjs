@@ -106,6 +106,29 @@ function extractSingleQuotedConst(text, name) {
   return match?.[1] ?? null;
 }
 
+async function extractRawCssImport(filePath, text, name) {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = text.match(new RegExp(`import\\s+${escapedName}\\s+from\\s+['"]([^'"]+)\\?raw['"];?`));
+  if (!match) return null;
+
+  const importedPath = path.resolve(path.dirname(filePath), match[1]);
+  return fs.readFile(importedPath, 'utf8').catch(() => null);
+}
+
+function unwrapAstroExpression(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.trim().match(/^\{([A-Za-z_$][\w$]*)\}$/);
+  return match?.[1] ?? null;
+}
+
+async function resolveStyleBlockContent(filePath, text, attrs, content) {
+  const expressionName = unwrapAstroExpression(attrs['set:html']);
+  if (!expressionName) return content;
+
+  return await extractRawCssImport(filePath, text, expressionName)
+    ?? extractSingleQuotedConst(text, expressionName);
+}
+
 async function resolveGeneratedCsp(filePath, text, value) {
   if (value !== '{contentSecurityPolicy}') return value;
 
@@ -240,6 +263,7 @@ async function auditSourceFile(filePath, text) {
   const scripts = [];
   const eventHandlers = [];
   const styleBlocks = [];
+  const astroExtractedStyleBlocks = [];
   const styleAttributes = [];
   const styleLinks = [];
 
@@ -351,18 +375,33 @@ async function auditSourceFile(filePath, text) {
   let styleMatch;
   while ((styleMatch = stylePattern.exec(text)) !== null) {
     const attrs = parseAttrs(styleMatch[1]);
+    const line = lineFor(text, styleMatch.index);
+    const isAstroSourceStyle = !options.distDir && rel.endsWith('.astro');
+    const isInlineAstroStyle = Boolean(attrs['is:inline'] || attrs['set:html']);
+    if (isAstroSourceStyle && !isInlineAstroStyle) {
+      astroExtractedStyleBlocks.push({
+        kind: 'astro-style-block',
+        file: rel,
+        line,
+        bytes: styleMatch[2].length,
+        attrs,
+      });
+      continue;
+    }
+
+    const resolvedContent = await resolveStyleBlockContent(filePath, text, attrs, styleMatch[2]);
     styleBlocks.push({
       kind: 'style-block',
       file: rel,
-      line: lineFor(text, styleMatch.index),
-      dynamic: Boolean(attrs['set:html']),
-      bytes: styleMatch[2].length,
+      line,
+      dynamic: Boolean(attrs['set:html'] && resolvedContent === null),
+      bytes: resolvedContent?.length ?? styleMatch[2].length,
       attrs,
-      hash: !attrs['set:html'] && styleMatch[2].trim() ? sha256Csp(styleMatch[2]) : null,
+      hash: resolvedContent?.trim() ? sha256Csp(resolvedContent) : null,
     });
   }
 
-  return { file: rel, cspMetas, scripts, eventHandlers, styleBlocks, styleAttributes, styleLinks };
+  return { file: rel, cspMetas, scripts, eventHandlers, styleBlocks, astroExtractedStyleBlocks, styleAttributes, styleLinks };
 }
 
 async function collectRuntimeStyleFiles(dir) {
@@ -461,6 +500,7 @@ const cspMetas = sourceAudits.flatMap((audit) => audit.cspMetas);
 const scripts = sourceAudits.flatMap((audit) => audit.scripts);
 const eventHandlers = sourceAudits.flatMap((audit) => audit.eventHandlers);
 const styleBlocks = sourceAudits.flatMap((audit) => audit.styleBlocks);
+const astroExtractedStyleBlocks = sourceAudits.flatMap((audit) => audit.astroExtractedStyleBlocks);
 const styleAttributes = sourceAudits.flatMap((audit) => audit.styleAttributes);
 const styleLinks = sourceAudits.flatMap((audit) => audit.styleLinks);
 const cssTextWrites = runtimeStyleAudits.flatMap((audit) => audit.cssTextWrites);
@@ -541,6 +581,22 @@ const candidateStyleAttrBlockers = candidateStyleAttr
         .map((write) => ({ kind: 'style-setAttribute', record: write })),
     ]
   : [];
+const activeScriptUnsafeInlineRequired = [
+  ...executableInline.filter((script) => !scriptAllowedByCandidate(script, scriptSrc)),
+  ...eventHandlers.filter(() => !directiveAllowsUnsafeInline(scriptSrc)),
+].length > 0;
+const activeStyleElemUnsafeInlineRequired = styleBlocks
+  .filter((style) => !styleAllowedByCandidate(style, styleElemSrc))
+  .length > 0;
+const activeStyleAttrUnsafeInlineRequired = [
+  ...styleAttributes.filter((style) => !styleAttributeAllowedByCandidate(style, styleAttrSrc)),
+  ...cssTextWrites.filter((write) => !styleAttributeAllowedByCandidate(write, styleAttrSrc)),
+  ...setAttributeStyleWrites.filter((write) => !styleAttributeAllowedByCandidate(write, styleAttrSrc)),
+].length > 0;
+const activeStyleSrcUnsafeInlineRequired = (
+  (styleElemDirective.source !== 'style-src-elem' && activeStyleElemUnsafeInlineRequired) ||
+  (styleAttrDirective.source !== 'style-src-attr' && activeStyleAttrUnsafeInlineRequired)
+);
 
 function formatLocation(record) {
   return `${record.file}:${record.line}`;
@@ -606,6 +662,7 @@ console.log('Inline handler and style inventory');
 console.log(`  inline event handlers: ${eventHandlers.length}`);
 for (const handler of eventHandlers) printEvent(handler);
 console.log(`  inline style blocks: ${styleBlocks.length}`);
+console.log(`  Astro extracted style blocks: ${astroExtractedStyleBlocks.length}`);
 console.log(`  inline style attributes: ${styleAttributes.length}`);
 console.log(`  stylesheet/preload links: ${styleLinks.length}`);
 console.log(`  runtime style.cssText writes: ${cssTextWrites.length}`);
@@ -617,10 +674,10 @@ for (const sink of htmlSinkWrites) {
 }
 console.log('');
 console.log('Current unsafe-inline dependencies');
-console.log(`  script-src unsafe-inline required today: ${executableInline.length + eventHandlers.length > 0 ? 'yes' : 'no'}`);
-console.log(`  style-src unsafe-inline required today: ${styleBlocks.length + styleAttributes.length > 0 ? 'yes' : 'no'}`);
-console.log(`  style-src-elem unsafe-inline required today: ${styleBlocks.length > 0 ? 'yes' : 'no'}`);
-console.log(`  style-src-attr unsafe-inline required today: ${styleAttributes.length + cssTextWrites.length + setAttributeStyleWrites.length > 0 ? 'yes' : 'no'}`);
+console.log(`  script-src unsafe-inline required today: ${activeScriptUnsafeInlineRequired ? 'yes' : 'no'}`);
+console.log(`  style-src unsafe-inline required today: ${activeStyleSrcUnsafeInlineRequired ? 'yes' : 'no'}`);
+console.log(`  style-src-elem unsafe-inline required today: ${activeStyleElemUnsafeInlineRequired ? 'yes' : 'no'}`);
+console.log(`  style-src-attr unsafe-inline required today: ${activeStyleAttrUnsafeInlineRequired ? 'yes' : 'no'}`);
 console.log(`  Trusted Types trial ready: ${htmlSinkWrites.length === 0 ? 'yes' : 'no'}`);
 
 if (candidate) {

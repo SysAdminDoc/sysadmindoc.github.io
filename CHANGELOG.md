@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.16] - 2026-07-06
+
+- Updated the source CSP audit to distinguish Astro build-extracted styles from true inline style surfaces and to resolve hashed inline critical/no-JS styles against the active `style-src-elem` policy.
+
 ## [v0.21.15] - 2026-07-06
 
 - Simplified the homepage contribution heatmap to a binary public push-day calendar so the legend, colors, and accessible labels match the available source data.
