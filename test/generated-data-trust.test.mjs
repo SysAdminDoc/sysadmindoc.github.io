@@ -162,7 +162,10 @@ test('deploy preflight script runs strict generated-data gate before tests and b
     pkg.scripts['data:summary:deploy'],
     'node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes',
   );
-  assert.match(pkg.scripts['deploy:preflight'], /^npm run data:summary:deploy && npm test && npm run check && npm run build$/);
+  assert.match(
+    pkg.scripts['deploy:preflight'],
+    /^npm run data:summary:deploy && npm run catalog:audit && npm test && npm run check && npm run build$/,
+  );
 });
 
 test('fixture generated-data summary labels reduced corpus without blocking advisory runs', async () => {

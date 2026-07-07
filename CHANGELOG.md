@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.20] - 2026-07-07
+
+- Added the catalog drift audit to `npm run deploy:preflight` so active public repository changes block deployment before build/publish.
+- Documented `RES-Slim` as an intentional catalog-policy exclusion because it is a public stripped-down Reddit Enhancement Suite fork/variant rather than a polished portfolio project.
+
 ## [v0.21.19] - 2026-07-07
 
 - Restored visual hiding for filtered catalog cards after the modern card grid rules override the earlier hidden-state declaration.

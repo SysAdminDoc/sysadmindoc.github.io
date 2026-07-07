@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.21.19",
+  "version": "0.21.20",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -26,7 +26,7 @@
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "data:summary:strict": "node scripts/summarize-generated-data.mjs --fail-on-stale",
     "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes",
-    "deploy:preflight": "npm run data:summary:deploy && npm test && npm run check && npm run build",
+    "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm test && npm run check && npm run build",
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
     "csp:audit": "node scripts/audit-csp.mjs",
