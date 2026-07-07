@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { buildReleaseProvenanceDistribution } from '../data/generated-trust';
+import type { GeneratedRelease } from '../data/generated';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { featured, liveApps, catalog } from '../data/portfolio';
@@ -18,7 +20,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
   lastReviewed: pageFreshness.lastReviewed,
   schemaTypes: pageFreshness.schemaTypes,
 });
-let releases: { repo: string; tag: string; name: string; publishedAt: string; url: string; bodyFirst: string }[] = [];
+let releases: GeneratedRelease[] = [];
 try {
   const mod = await import('../data/_releases.json');
   releases = (mod.default ?? mod) as typeof releases;
@@ -59,6 +61,39 @@ const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: '
 const monthLabel = (k: string) => monthLabelFormatter.format(new Date(`${k}-01T00:00:00Z`));
 const trackedRepos = new Set(releases.map((release) => release.repo)).size;
 const latestMonth = monthKeys[0] ? monthLabel(monthKeys[0]) : null;
+const releaseProvenance = buildReleaseProvenanceDistribution(releases, releases.length);
+const trustedReleaseCount = releaseProvenance.trusted;
+const provenanceMeta = {
+  attested: {
+    label: 'Attested',
+    className: 'rel-prov-attested',
+    title: 'Release body or assets point to artifact attestation evidence.',
+  },
+  checksum: {
+    label: 'Checksum',
+    className: 'rel-prov-checksum',
+    title: 'Release assets include checksum, signature, or signed provenance sidecars.',
+  },
+  unsigned: {
+    label: 'Unsigned',
+    className: 'rel-prov-unsigned',
+    title: 'Downloadable release assets were found without checksum or attestation sidecars.',
+  },
+  'no-assets': {
+    label: 'No assets',
+    className: 'rel-prov-no-assets',
+    title: 'The release has no downloadable assets in the cache.',
+  },
+  unknown: {
+    label: 'Unknown',
+    className: 'rel-prov-unknown',
+    title: 'The release cache did not include a provenance classification.',
+  },
+} as const;
+function provenanceFor(release: GeneratedRelease) {
+  const provenance = release.provenance;
+  return provenance && provenance in provenanceMeta ? provenanceMeta[provenance] : provenanceMeta.unknown;
+}
 const cmdkSections = [
   { label: 'Overview', href: '#release-overview', desc: 'Release counts, tracked-project stats, and entry points into the archive.', badge: 'PAGE' },
   { label: 'Timeline', href: '#release-timeline', desc: 'Chronological release history grouped by month across active projects.', badge: 'TIMELINE' },
@@ -101,6 +136,11 @@ const cmdkSections = [
             <div class="rel-overview-label page-stat-label">Latest Month</div>
             <div class="rel-overview-copy page-stat-copy">{latestMonth ? 'Most recent month represented in the timeline.' : 'The timeline will populate after the next data refresh.'}</div>
           </div>
+          <div class="rel-overview-card page-stat">
+            <div class="rel-overview-value page-stat-value">{trustedReleaseCount}</div>
+            <div class="rel-overview-label page-stat-label">Trusted Artifacts</div>
+            <div class="rel-overview-copy page-stat-copy">{releaseProvenance.checksum} checksum-backed and {releaseProvenance.attested} attested releases.</div>
+          </div>
         </div>
       )}
       <div class="rel-actions page-actions rv">
@@ -132,6 +172,9 @@ const cmdkSections = [
                         {r.projectName !== r.repo && <span class="rel-project-slug">{r.repo}</span>}
                       </a>
                       <a href={r.url} target="_blank" rel="noopener" class="rel-tag">{r.tag}</a>
+                      <span class={`rel-prov ${provenanceFor(r).className}`} title={provenanceFor(r).title}>
+                        {provenanceFor(r).label}
+                      </span>
                       <time class="rel-date" datetime={r.publishedAt}>{releaseDayFormatter.format(new Date(r.publishedAt))}</time>
                     </div>
                     {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
@@ -179,6 +222,11 @@ const cmdkSections = [
   .rel-repo:hover{color:var(--grn)}
   .rel-tag{font-family:var(--mono);font-size:12px;color:var(--grn);padding:2px 9px;border:1px solid rgba(74,222,128,.3);border-radius:4px;text-decoration:none;background:var(--grnd)}
   .rel-tag:hover{background:rgba(74,222,128,.2)}
+  .rel-prov{font-family:var(--mono);font-size:11px;line-height:1;color:var(--t2);padding:4px 8px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.03);white-space:nowrap}
+  .rel-prov-attested{color:var(--grn);border-color:color-mix(in srgb,var(--grn) 36%,var(--border-soft));background:var(--grnd)}
+  .rel-prov-checksum{color:var(--blue);border-color:color-mix(in srgb,var(--blue) 36%,var(--border-soft));background:color-mix(in srgb,var(--blue) 10%,var(--surface-1))}
+  .rel-prov-unsigned{color:var(--yel);border-color:color-mix(in srgb,var(--yel) 42%,var(--border-soft));background:color-mix(in srgb,var(--yel) 10%,var(--surface-1))}
+  .rel-prov-no-assets,.rel-prov-unknown{color:var(--t3)}
   .rel-date{font-family:var(--mono);font-size:12px;color:var(--t3);margin-left:auto}
   .rel-body{color:var(--t2);font-size:14px;line-height:1.6;margin:8px 0 0;padding-left:0}
   @media(max-width:640px){

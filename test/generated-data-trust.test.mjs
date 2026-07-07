@@ -155,6 +155,93 @@ test('deploy generated-data summary requires token-backed README refresh telemet
   assert(summaryJson.checks.some((check) => check.label.includes('deploy preflight required') && check.ok === false));
 });
 
+test('strict generated-data summary fails featured downloadable releases without provenance', async () => {
+  const tmp = await makeTempDataDir();
+  const now = new Date().toISOString();
+
+  await fs.writeFile(
+    path.join(tmp, 'src', 'data', 'projects.ts'),
+    [
+      "export const featured = [{ repo: 'Alpha', name: 'Alpha' }];",
+      'export const liveApps = [];',
+      "export const catalog = [{ repo: 'Beta', name: 'Beta' }];",
+    ].join('\n'),
+  );
+  await writeJson(tmp, '_stars.json', { Alpha: 8, Beta: 3 });
+  await writeJson(tmp, '_stats.json', {
+    totalRepos: 2,
+    totalStars: 11,
+    lastPushedRepo: 'Alpha',
+    lastPushedAt: now,
+    fetchedAt: now,
+  });
+  await writeJson(tmp, '_meta.json', {
+    Alpha: { stars: 8, pushedAt: now },
+    Beta: { stars: 3, pushedAt: now },
+  });
+  await writeJson(tmp, '_releases.json', [
+    {
+      repo: 'Alpha',
+      tag: 'v1.0.0',
+      name: 'Alpha v1',
+      publishedAt: now,
+      url: 'https://example.test/alpha/releases/v1.0.0',
+      downloads: 5,
+      bodyFirst: 'Initial release',
+      provenance: 'unsigned',
+    },
+  ]);
+  await writeJson(tmp, '_readmes.json', { Alpha: '# Alpha', Beta: '# Beta' });
+  await writeJson(tmp, '_profile-projects.json', {
+    schema: 'sysadmindoc.profile-projects.v1',
+    source: 'github-api',
+    feedSourceUrl: 'https://example.test/projects.json',
+    generatedAt: now,
+    cachedAt: now,
+    projectCount: 2,
+    projects: [
+      { repo: 'Alpha', title: 'Alpha', updatedAt: now },
+      { repo: 'Beta', title: 'Beta', updatedAt: now },
+    ],
+  });
+  await writeJson(tmp, '_readme-refresh.json', {
+    schema: 'sysadmindoc.readme-refresh.v2',
+    generatedAt: now,
+    source: 'github-api',
+    tokenPresent: true,
+    totalPublicRepos: 2,
+    attempted: 2,
+    refreshed: 2,
+    reused: 0,
+    misses: 0,
+    preserved: 0,
+    unattempted: 0,
+    missing: 0,
+    rateLimited: false,
+    failureSamples: [],
+    skippedReason: null,
+    cacheEntries: 2,
+    trimmed: 0,
+  });
+
+  const result = spawnSync(
+    process.execPath,
+    [summaryScript, '--out', 'summary', '--fail-on-unsigned-featured-releases'],
+    { cwd: tmp, encoding: 'utf8' },
+  );
+
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /Featured release provenance required: yes/);
+  assert.match(result.stdout, /featured downloadable releases have checksum or attestation \(strict\)/);
+  assert.match(result.stdout, /Alpha@v1\.0\.0 \(unsigned\)/);
+
+  const summaryJson = JSON.parse(await fs.readFile(path.join(tmp, 'summary', 'summary.json'), 'utf8'));
+  assert.equal(summaryJson.preflight.failOnUnsignedFeaturedReleases, true);
+  assert.equal(summaryJson.preflight.ready, false);
+  assert.equal(summaryJson.provenanceDistribution.unsigned, 1);
+  assert.equal(summaryJson.releaseProvenancePolicy.unsignedFeaturedDownloadable.length, 1);
+});
+
 test('deploy preflight script runs strict generated-data gate before tests and build', async () => {
   const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
 

@@ -6,6 +6,7 @@ import {
   PROJECT_RANKING_WEIGHTS,
   computeProjectRankings,
 } from '../src/data/project-ranking.mjs';
+import { exportedArray, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const dataDir = path.join(root, 'src', 'data');
@@ -14,6 +15,7 @@ const options = {
   outDir: process.env.DATA_REFRESH_SUMMARY_DIR || 'data-refresh-summary',
   maxAgeHours: 36,
   failOnStale: false,
+  failOnUnsignedFeaturedReleases: false,
   requireTokenBackedReadmes: false,
   rankingLimit: 12,
 };
@@ -22,6 +24,8 @@ for (let index = 2; index < process.argv.length; index += 1) {
   const arg = process.argv[index];
   if (arg === '--fail-on-stale') {
     options.failOnStale = true;
+  } else if (arg === '--fail-on-unsigned-featured-releases') {
+    options.failOnUnsignedFeaturedReleases = true;
   } else if (arg === '--require-token-backed-readmes') {
     options.requireTokenBackedReadmes = true;
   } else if (arg.startsWith('--max-age-hours=')) {
@@ -72,6 +76,25 @@ async function readJsonOptional(fileName) {
     return {
       value: null,
       error: `Unable to read ${path.relative(root, filePath)}: ${error.message}`,
+    };
+  }
+}
+
+async function readFeaturedRepoSet() {
+  const projectsPath = path.join(dataDir, 'projects.ts');
+  try {
+    const sourceText = await fs.readFile(projectsPath, 'utf8');
+    const source = sourceFile(projectsPath, sourceText);
+    const repos = new Set(
+      exportedArray(source, 'featured')
+        .map((project) => String(project?.repo ?? '').trim())
+        .filter(Boolean),
+    );
+    return { repos, error: null };
+  } catch (error) {
+    return {
+      repos: new Set(),
+      error: `Unable to read ${path.relative(root, projectsPath)}: ${error.message}`,
     };
   }
 }
@@ -133,6 +156,8 @@ const profileFeedResult = await readJsonOptional('_profile-projects.json');
 const profileFeed = profileFeedResult.value;
 const readmeRefreshResult = await readJsonOptional('_readme-refresh.json');
 const readmeRefreshRaw = readmeRefreshResult.value;
+const featuredRepoResult = await readFeaturedRepoSet();
+const featuredRepos = featuredRepoResult.repos;
 
 const starEntries = Object.keys(stars).length;
 const metaEntries = Object.keys(meta).length;
@@ -153,6 +178,35 @@ if (Array.isArray(releases)) {
     }
   }
 }
+function hasDownloadableAssets(release) {
+  const provenance = release?.provenance;
+  return (
+    provenance === 'unsigned' ||
+    provenance === 'checksum' ||
+    provenance === 'attested' ||
+    Number(release?.downloads) > 0
+  );
+}
+function hasTrustedReleaseProvenance(release) {
+  return release?.provenance === 'checksum' || release?.provenance === 'attested';
+}
+const unsignedFeaturedDownloadableReleases = Array.isArray(releases)
+  ? releases
+      .filter((release) => {
+        const repo = String(release?.repo ?? '').trim();
+        return featuredRepos.has(repo) && hasDownloadableAssets(release) && !hasTrustedReleaseProvenance(release);
+      })
+      .map((release) => ({
+        repo: String(release.repo),
+        tag: String(release.tag ?? 'untagged'),
+        provenance: String(release.provenance ?? 'unknown'),
+        downloads: finiteNumberOrNull(release.downloads),
+        url: String(release.url ?? ''),
+      }))
+  : [];
+const featuredReleaseProvenanceOk =
+  !options.failOnUnsignedFeaturedReleases ||
+  (featuredRepos.size > 0 && !featuredRepoResult.error && unsignedFeaturedDownloadableReleases.length === 0);
 const fetchedAgeHours = ageHours(stats.fetchedAt);
 const fresh = fetchedAgeHours <= options.maxAgeHours;
 const profileProjects = Array.isArray(profileFeed?.projects) ? profileFeed.projects : [];
@@ -359,6 +413,10 @@ const checks = [
     label: `README coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
     ok: readmesParityOk,
   },
+  {
+    label: `featured downloadable releases have checksum or attestation${options.failOnUnsignedFeaturedReleases ? ' (strict)' : ''}`,
+    ok: featuredReleaseProvenanceOk,
+  },
 ];
 
 const failedChecks = checks.filter((check) => !check.ok);
@@ -380,6 +438,16 @@ if (!fixtureMode && !process.env.GITHUB_TOKEN && readmeRefreshRaw?.tokenPresent 
 if (options.requireTokenBackedReadmes && readmeRefreshRaw?.tokenPresent !== true) {
   guidance.push('Deploy preflight requires token-backed README refresh data; set GITHUB_TOKEN, run npm run fetch-stars, then rerun npm run data:summary:deploy.');
 }
+if (options.failOnUnsignedFeaturedReleases && featuredRepoResult.error) {
+  guidance.push(`Featured release provenance policy could not read curated featured repos: ${featuredRepoResult.error}`);
+}
+if (options.failOnUnsignedFeaturedReleases && unsignedFeaturedDownloadableReleases.length > 0) {
+  const examples = unsignedFeaturedDownloadableReleases
+    .slice(0, 6)
+    .map((release) => `${release.repo}@${release.tag} (${release.provenance})`)
+    .join(', ');
+  guidance.push(`Featured downloadable releases need checksum or attestation before strict deploy: ${examples}`);
+}
 if (!fixtureMode && !fresh) {
   guidance.push(`Generated data is stale: refresh with npm run fetch-stars and npm run profile-feed:sync, then rerun this command with --fail-on-stale.`);
 }
@@ -398,6 +466,7 @@ const summary = {
   maxAgeHours: options.maxAgeHours,
   preflight: {
     failOnStale: options.failOnStale,
+    failOnUnsignedFeaturedReleases: options.failOnUnsignedFeaturedReleases,
     requireTokenBackedReadmes: options.requireTokenBackedReadmes,
     ready: failedChecks.length === 0,
   },
@@ -471,7 +540,15 @@ const summary = {
   provenanceDistribution: {
     ...provenanceCounts,
     unknown: provenanceUnknown,
+    trusted: provenanceCounts.checksum + provenanceCounts.attested,
     total: releaseEntries,
+  },
+  releaseProvenancePolicy: {
+    requireFeaturedDownloadProvenance: options.failOnUnsignedFeaturedReleases,
+    featuredRepoSource: 'src/data/projects.ts',
+    featuredRepos: featuredRepos.size,
+    error: featuredRepoResult.error,
+    unsignedFeaturedDownloadable: unsignedFeaturedDownloadableReleases,
   },
   checks,
   guidance,
@@ -505,6 +582,7 @@ const markdown = [
   `Data fetched: ${summary.fetchedAt}`,
   `Data age: ${summary.ageHours ?? 'unknown'} hours (limit ${options.maxAgeHours})`,
   `Deploy token-backed README required: ${options.requireTokenBackedReadmes ? 'yes' : 'no'}`,
+  `Featured release provenance required: ${options.failOnUnsignedFeaturedReleases ? 'yes' : 'no'}`,
   ...(summary.guidance.length > 0 ? ['', '## Action Required', '', ...summary.guidance.map((line) => `- ${line}`)] : []),
   '',
   '## Totals',
@@ -580,6 +658,7 @@ const markdown = [
   '## Release Provenance Distribution',
   '',
   `- Total releases: ${summary.provenanceDistribution.total}`,
+  `- trusted (checksum or attested): ${summary.provenanceDistribution.trusted}`,
   `- attested (sigstore/attestation): ${summary.provenanceDistribution.attested}`,
   `- checksum (.sha256/.sig/.asc/etc.): ${summary.provenanceDistribution.checksum}`,
   `- unsigned (assets but no provenance): ${summary.provenanceDistribution.unsigned}`,
@@ -587,6 +666,16 @@ const markdown = [
   ...(summary.provenanceDistribution.unknown > 0
     ? [`- unknown (missing provenance field): ${summary.provenanceDistribution.unknown}`]
     : []),
+  '',
+  '## Featured Release Provenance Policy',
+  '',
+  `- Strict requirement: ${summary.releaseProvenancePolicy.requireFeaturedDownloadProvenance ? 'yes' : 'no'}`,
+  `- Featured repos parsed: ${summary.releaseProvenancePolicy.featuredRepos}`,
+  `- Failing featured downloadable releases: ${summary.releaseProvenancePolicy.unsignedFeaturedDownloadable.length}`,
+  ...(summary.releaseProvenancePolicy.error ? [`- Policy source error: ${summary.releaseProvenancePolicy.error}`] : []),
+  ...summary.releaseProvenancePolicy.unsignedFeaturedDownloadable
+    .slice(0, 12)
+    .map((release) => `- ${release.repo} ${release.tag}: ${release.provenance}`),
   '',
   '## Integrity Checks',
   '',
@@ -601,7 +690,10 @@ await Promise.all([
 
 console.log(markdown);
 
-if (options.failOnStale && failedChecks.length > 0) {
+if (
+  (options.failOnStale && failedChecks.length > 0) ||
+  (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk)
+) {
   console.error(`Generated data summary failed ${failedChecks.length} check(s).`);
   process.exit(1);
 }

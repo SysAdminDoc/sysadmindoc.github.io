@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.23] - 2026-07-07
+
+- Exposed release artifact provenance on `/status/`, `/status.json`, `/releases/`, and `releases.json`, including attested/checksum/unsigned/no-assets badges and aggregate trusted counts.
+- Added `npm run data:summary -- --fail-on-unsigned-featured-releases` to fail strict generated-data checks when featured downloadable releases lack checksum or attestation evidence.
+
 ## [v0.21.22] - 2026-07-07
 
 - Restored committed live-app screenshot capture provenance and made `npm run liveapps:audit` fail when the screenshot manifest is missing, stale, incomplete, duplicated, URL-drifted, or mismatched against the master screenshot bytes/hash.

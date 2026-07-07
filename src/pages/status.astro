@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import { buildGeneratedDataTrust } from '../data/generated-trust';
-import type { GeneratedReadmeRefresh, GeneratedStats } from '../data/generated';
+import type { GeneratedReadmeRefresh, GeneratedRelease, GeneratedStats } from '../data/generated';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
@@ -45,10 +45,11 @@ try {
   readmeEntries = Object.keys(mod.default ?? mod).length;
 } catch {}
 
-let releaseEntries = 0;
+let releases: GeneratedRelease[] = [];
 try {
   const mod = await import('../data/_releases.json');
-  releaseEntries = Array.isArray(mod.default ?? mod) ? (mod.default ?? mod).length : 0;
+  const rows = mod.default ?? mod;
+  releases = Array.isArray(rows) ? (rows as GeneratedRelease[]) : [];
 } catch {}
 
 let readmeRefresh: Partial<GeneratedReadmeRefresh> | null = null;
@@ -78,12 +79,23 @@ const generatedData = buildGeneratedDataTrust({
   starEntries,
   metadataEntries,
   readmeEntries,
-  releaseEntries,
+  releaseEntries: releases.length,
+  releases,
   profileFeedInfo,
   readmeRefresh,
 });
 const dataTone = generatedData.status === 'fresh' ? 'green' : 'amber';
 const readmeTone = generatedData.readmeRefresh.tokenPresent ? 'green' : 'amber';
+const releaseProvenance = generatedData.releaseProvenance;
+const releaseTrustedPercent =
+  releaseProvenance.total > 0 ? `${((releaseProvenance.trusted / releaseProvenance.total) * 100).toFixed(1)}%` : 'unknown';
+const releaseProvenanceRows = [
+  { label: 'Attested', value: releaseProvenance.attested, tone: 'green' },
+  { label: 'Checksum', value: releaseProvenance.checksum, tone: 'blue' },
+  { label: 'Unsigned', value: releaseProvenance.unsigned, tone: releaseProvenance.unsigned > 0 ? 'amber' : 'green' },
+  { label: 'No assets', value: releaseProvenance['no-assets'], tone: 'blue' },
+  { label: 'Unknown', value: releaseProvenance.unknown, tone: releaseProvenance.unknown > 0 ? 'amber' : 'green' },
+];
 
 const signals = [
   { label: 'Version', value: `v${version}`, tone: 'green' },
@@ -100,6 +112,7 @@ const signals = [
   { label: 'Metadata coverage', value: `${formatPercent(generatedData.coverage.metadata)} (${generatedData.coverage.metadataEntries})`, tone: generatedData.coverage.metadata != null && generatedData.coverage.metadata >= generatedData.coverage.threshold ? 'green' : 'amber' },
   { label: 'README coverage', value: `${formatPercent(generatedData.coverage.readmes)} (${generatedData.coverage.readmeEntries})`, tone: generatedData.coverage.readmes != null && generatedData.coverage.readmes >= generatedData.coverage.threshold ? 'green' : 'amber' },
   { label: 'Release entries', value: `${generatedData.coverage.releaseEntries} (${formatPercent(generatedData.coverage.releases)})`, tone: 'blue' },
+  { label: 'Release trust', value: `${releaseProvenance.trusted}/${releaseProvenance.total} (${releaseTrustedPercent})`, tone: releaseProvenance.unsigned > 0 || releaseProvenance.unknown > 0 ? 'amber' : 'green' },
   { label: 'README telemetry', value: generatedData.readmeRefresh.tokenPresent ? 'Token-backed' : 'Not token-backed', tone: readmeTone },
   { label: 'Total repos', value: generatedData.totalRepos != null ? `${generatedData.totalRepos}` : 'N/A', tone: 'blue' },
   { label: 'Total stars', value: generatedData.totalStars != null ? `${generatedData.totalStars}` : 'N/A', tone: 'blue' },
@@ -144,6 +157,23 @@ const cmdkSections = [
         ))}
       </div>
 
+      <div class="status-provenance-panel rv" aria-label="Release provenance distribution">
+        <div>
+          <div class="status-warning-title">Release provenance</div>
+          <p class="status-provenance-copy">
+            Artifact trust tiers from the cached GitHub release feed. Checksum and attested releases are counted as trusted.
+          </p>
+        </div>
+        <div class="status-provenance-grid">
+          {releaseProvenanceRows.map((row) => (
+            <div class={`status-provenance-pill status-provenance-pill-${row.tone}`}>
+              <span>{row.label}</span>
+              <strong>{row.value}</strong>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {generatedData.warnings.length > 0 && (
         <div class="status-warning-panel rv" role="status" aria-label="Generated data warnings">
           <div class="status-warning-title">Generated data needs attention</div>
@@ -185,8 +215,24 @@ const cmdkSections = [
   .status-warning-title{color:var(--t1);font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
   .status-warning-panel ul{margin:0;padding-left:18px}
   .status-warning-panel li{margin:4px 0}
+  .status-provenance-panel{
+    display:grid;grid-template-columns:minmax(220px,.8fr) 1.2fr;gap:18px;align-items:start;
+    margin-top:20px;padding:16px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-1);
+  }
+  .status-provenance-copy{margin:0;color:var(--t3);font-size:14px;line-height:1.55}
+  .status-provenance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+  .status-provenance-pill{
+    min-height:64px;display:flex;flex-direction:column;justify-content:center;gap:4px;
+    padding:12px;border-radius:8px;border:1px solid var(--border-soft);background:rgba(255,255,255,.03);
+  }
+  .status-provenance-pill span{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--t3)}
+  .status-provenance-pill strong{font-family:var(--mono);font-size:20px;color:var(--t1)}
+  .status-provenance-pill-green{border-color:color-mix(in srgb,var(--grn) 30%,var(--border-soft));background:color-mix(in srgb,var(--grn) 8%,var(--surface-1))}
+  .status-provenance-pill-blue{border-color:color-mix(in srgb,var(--blue) 30%,var(--border-soft));background:color-mix(in srgb,var(--blue) 8%,var(--surface-1))}
+  .status-provenance-pill-amber{border-color:color-mix(in srgb,var(--yel) 36%,var(--border-soft));background:color-mix(in srgb,var(--yel) 8%,var(--surface-1))}
   .status-note{color:var(--t3);font-size:14px;margin-top:24px}
   @media(max-width:640px){
     .status-grid{grid-template-columns:1fr;gap:10px}
+    .status-provenance-panel{grid-template-columns:1fr}
   }
 </style>
