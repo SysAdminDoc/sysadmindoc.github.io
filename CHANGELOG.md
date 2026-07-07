@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.17] - 2026-07-07
+
+- Refreshed the production deploy smoke example for the current token-backed release feed, keeping README version metadata and live release expectations aligned with generated data.
+- Trimmed duplicate homepage catalog card data attributes so the refreshed production catalog remains under the DOM-size deploy budget without changing visible card content.
+
 ## [v0.21.16] - 2026-07-06
 
 - Updated the source CSP audit to distinguish Astro build-extracted styles from true inline style surfaces and to resolve hashed inline critical/no-JS styles against the active `style-src-elem` policy.

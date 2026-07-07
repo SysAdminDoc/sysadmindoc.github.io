@@ -7,6 +7,10 @@
     if(!grid)return;
 
     const allItems=Array.from(grid.querySelectorAll('.ca'));
+    allItems.forEach(item=>{
+        const desc=item.querySelector('.cds');
+        item.dataset.searchText=(item.dataset.name+' '+(desc?desc.textContent:'')+' '+(item.dataset.terms||'')).toLowerCase();
+    });
     let currentFilter='all';
     let currentView='all';
     let currentSearch='';
@@ -108,7 +112,7 @@
                 (currentView==='new'&&item.dataset.new==='true')||
                 (currentView==='recent'&&item.dataset.recent==='true')||
                 (currentView==='download'&&item.dataset.hasDownload==='true');
-            const searchBody=(item.dataset.name+' '+item.dataset.desc+' '+(item.dataset.terms||'')).toLowerCase();
+            const searchBody=item.dataset.searchText||'';
             const matchSearch=!q||searchBody.includes(q);
             const show=matchFilter&&matchView&&matchSearch;
             item.classList.toggle('hid',!show);
