@@ -23,13 +23,19 @@ function option(name, fallback) {
   return value;
 }
 
-function commandName(command) {
-  if (process.platform === 'win32' && command === 'npm') return 'npm.cmd';
-  return command;
+function commandInvocation(command, args) {
+  if (process.platform === 'win32' && command === 'npm') {
+    return {
+      command: process.env.ComSpec || 'cmd.exe',
+      args: ['/d', '/s', '/c', 'npm', ...args],
+    };
+  }
+  return { command, args };
 }
 
 function run(command, args, { cwd = root, env = {}, stdio = 'inherit' } = {}) {
-  const result = spawnSync(commandName(command), args, {
+  const invocation = commandInvocation(command, args);
+  const result = spawnSync(invocation.command, invocation.args, {
     cwd,
     env: { ...process.env, ...env },
     stdio,
@@ -48,7 +54,8 @@ function output(command, args, { cwd = root } = {}) {
 }
 
 function optionalOutput(command, args, { cwd = root } = {}) {
-  const result = spawnSync(commandName(command), args, {
+  const invocation = commandInvocation(command, args);
+  const result = spawnSync(invocation.command, invocation.args, {
     cwd,
     env: process.env,
     stdio: 'pipe',
@@ -199,7 +206,7 @@ async function ensurePagesWorktree(worktreeDir, pagesBranch) {
     await fs.rm(worktreeDir, { recursive: true, force: true });
   }
 
-  const hasLocalBranch = spawnSync(commandName('git'), ['show-ref', '--verify', '--quiet', `refs/heads/${pagesBranch}`], { cwd: root }).status === 0;
+  const hasLocalBranch = spawnSync('git', ['show-ref', '--verify', '--quiet', `refs/heads/${pagesBranch}`], { cwd: root }).status === 0;
   if (hasLocalBranch) {
     run('git', ['worktree', 'add', worktreeDir, pagesBranch]);
   } else {
