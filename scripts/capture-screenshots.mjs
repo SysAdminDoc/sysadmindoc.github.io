@@ -174,6 +174,9 @@ await Promise.all(Array.from({ length: Math.min(CONCURRENCY, entries.length) }, 
 
 await browser.close();
 
+const liveOrder = new Map(entries.map((entry, index) => [entry.slug, index]));
+manifest.sort((a, b) => (liveOrder.get(a.slug) ?? 9999) - (liveOrder.get(b.slug) ?? 9999));
+
 writeFileSync(manifestPath, JSON.stringify({
   schema: 'sysadmindoc.screenshot-manifest.v1',
   generatedAt: new Date().toISOString(),

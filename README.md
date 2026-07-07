@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.21.21-blue)
+![Version](https://img.shields.io/badge/version-0.21.22-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -50,6 +50,7 @@ npm run assets:audit  # detect stale screenshots and unreferenced source/public 
 npm run css:audit     # verify critical/global parity and source-backed selector inventory
 npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
+npm run liveapps:audit # verify live app availability and screenshot manifest provenance
 npm run csp:audit     # verify source CSP script/style inventory, strict script-src readiness, and Trusted Types trial readiness
 npm run csp:audit:style # report current style-src 'self' blockers without failing
 npm run csp:audit:style:elem # report style-src-elem 'self' blockers without failing
@@ -70,7 +71,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Category filters and faceted project results
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.21 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.21.22 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
 npm run smoke:release -- --tag v0.21.8 --asset sysadmindoc-portfolio-v0.21.8.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
@@ -102,7 +103,7 @@ Rendered project entries are adapted from the public SysAdminDoc profile feed in
 
 Offline fixture checks do not use GitHub metadata credentials. They install tracked schema-valid generated-data fixtures from `src/data/fixtures/generated/` with `npm run generated:fixtures`, then run checks and `build:ci` with `PROFILE_PROJECTS_OFFLINE=1` so the profile-feed sync preserves the fixture cache instead of replacing it over the network. Local release passes can also install Chromium, run the focused rendered interaction smoke and the blocking Playwright browser accessibility/visual-baseline suite against that fixture build, and keep both `.tmp/playwright-*` report/result sets for review.
 
-The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, and a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`.
+The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`, and an `ok` provenance entry in `public/screenshots/manifest.json` from `npm run capture-screenshots`.
 
 - Featured: surface in the hero signature reel, command palette, and feeds
 - Live Apps: for GitHub Pages demos

@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.21
+Current version: v0.21.22
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P1
-
-- [ ] P1 - Restore and enforce live-app screenshot capture provenance
-  Why: `npm run liveapps:audit` reports `manifest provenance: 0/22` while still passing, so screenshot freshness is inferred from file mtimes instead of the capture manifest that the capture script already writes.
-  Evidence: `scripts/capture-screenshots.mjs`, `scripts/audit-live-apps.mjs`, missing `public/screenshots/manifest.json`, `rtk npm run liveapps:audit`.
-  Touches: `scripts/capture-screenshots.mjs`, `scripts/audit-live-apps.mjs`, `public/screenshots/manifest.json`, `public/screenshots/*.jpg`, `src/assets/screenshots/thumbs/*.jpg`.
-  Acceptance: `npm run capture-screenshots` produces a committed manifest with one current `ok` entry per live app; `npm run liveapps:audit` fails when the manifest is missing or incomplete; a healthy run reports 22/22 provenance and zero stale/missing captures.
-  Complexity: M
 
 - [ ] P1 - Expose release provenance on status and release pages
   Why: Generated release data classifies artifact trust, but visitors cannot see that the current cache has 60 releases, 0 attested, 19 checksum-backed, and 41 unsigned.
