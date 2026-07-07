@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
@@ -7,7 +8,8 @@ import { propertyName, sourceFile } from './lib/ts-data-utils.mjs';
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const screenshotsDir = path.join(root, 'public', 'screenshots');
-const thumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
+const publicThumbsDir = path.join(screenshotsDir, 'thumbs');
+const astroThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
 
 const TIMEOUT_MS = 15_000;
 const STALE_DAYS = 90;
@@ -73,6 +75,23 @@ async function fileMtime(filePath) {
   }
 }
 
+async function fileBytesAndSha256(filePath) {
+  try {
+    const buffer = await fs.readFile(filePath);
+    return {
+      bytes: buffer.length,
+      sha256: createHash('sha256').update(buffer).digest('hex'),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function parseDateMs(value) {
+  const parsed = new Date(value).getTime();
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 const projectsText = await fs.readFile(projectsPath, 'utf8');
 const apps = parseLiveApps(projectsText);
 
@@ -83,17 +102,40 @@ if (apps.length === 0) {
 
 const manifestPath = path.join(screenshotsDir, 'manifest.json');
 let manifestCaptures = new Map();
+let manifestErrors = [];
 try {
   const manifestData = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-  if (Array.isArray(manifestData.captures)) {
-    for (const capture of manifestData.captures) {
-      if (capture.slug && capture.result === 'ok') manifestCaptures.set(capture.slug, capture);
+  if (manifestData.schema !== 'sysadmindoc.screenshot-manifest.v1') {
+    manifestErrors.push(`manifest schema must be sysadmindoc.screenshot-manifest.v1, got ${manifestData.schema || '(missing)'}`);
+  }
+  if (parseDateMs(manifestData.generatedAt) === null) {
+    manifestErrors.push('manifest generatedAt is missing or invalid');
+  }
+  if (!Array.isArray(manifestData.captures)) {
+    manifestErrors.push('manifest captures must be an array');
+  } else {
+    for (const [index, capture] of manifestData.captures.entries()) {
+      if (!capture?.slug) {
+        manifestErrors.push(`manifest capture ${index + 1} is missing slug`);
+        continue;
+      }
+      if (manifestCaptures.has(capture.slug)) {
+        manifestErrors.push(`manifest has duplicate capture for ${capture.slug}`);
+        continue;
+      }
+      manifestCaptures.set(capture.slug, capture);
     }
   }
-} catch { /* manifest may not exist yet */ }
+} catch (error) {
+  manifestErrors.push(`manifest is missing or invalid: ${error.message}`);
+}
 
 const now = Date.now();
 const results = [];
+const expectedSlugs = new Set(apps.map((app) => app.slug));
+for (const slug of manifestCaptures.keys()) {
+  if (!expectedSlugs.has(slug)) manifestErrors.push(`manifest has extra capture for ${slug}`);
+}
 
 for (const app of apps) {
   let result = await checkUrl(app.url);
@@ -102,17 +144,41 @@ for (const app of apps) {
   }
 
   const masterPath = path.join(screenshotsDir, `${app.slug}.jpg`);
-  const thumbPath = path.join(thumbsDir, `${app.slug}.jpg`);
+  const publicThumbPath = path.join(publicThumbsDir, `${app.slug}.jpg`);
+  const astroThumbPath = path.join(astroThumbsDir, `${app.slug}.jpg`);
   const masterMtime = await fileMtime(masterPath);
-  const thumbMtime = await fileMtime(thumbPath);
+  const publicThumbMtime = await fileMtime(publicThumbPath);
+  const astroThumbMtime = await fileMtime(astroThumbPath);
+  const masterIdentity = await fileBytesAndSha256(masterPath);
 
   const capture = manifestCaptures.get(app.slug);
   const capturedAt = capture?.capturedAt ?? null;
-  const captureAgeDays = capturedAt ? Math.floor((now - new Date(capturedAt).getTime()) / 86_400_000) : null;
-  const masterAgeDays = captureAgeDays ?? (masterMtime ? Math.floor((now - masterMtime.getTime()) / 86_400_000) : null);
-  const thumbAgeDays = thumbMtime ? Math.floor((now - thumbMtime.getTime()) / 86_400_000) : null;
+  const capturedMs = parseDateMs(capturedAt);
+  const captureAgeDays = capturedMs !== null ? Math.floor((now - capturedMs) / 86_400_000) : null;
+  const masterAgeDays = captureAgeDays;
+  const publicThumbAgeDays = publicThumbMtime ? Math.floor((now - publicThumbMtime.getTime()) / 86_400_000) : null;
+  const astroThumbAgeDays = astroThumbMtime ? Math.floor((now - astroThumbMtime.getTime()) / 86_400_000) : null;
   const screenshotStale = masterAgeDays !== null && masterAgeDays > STALE_DAYS;
-  const screenshotMissing = masterAgeDays === null;
+  const screenshotMissing = !masterMtime || !publicThumbMtime || !astroThumbMtime;
+  const provenanceErrors = [];
+
+  if (!capture) {
+    provenanceErrors.push('missing manifest capture');
+  } else {
+    if (capture.result !== 'ok') provenanceErrors.push(`manifest result is ${capture.result || '(missing)'}`);
+    if (capture.url !== app.url) provenanceErrors.push('manifest URL does not match liveApps URL');
+    if (capturedMs === null) provenanceErrors.push('manifest capturedAt is missing or invalid');
+    if (captureAgeDays !== null && captureAgeDays > STALE_DAYS) provenanceErrors.push(`manifest capture is ${captureAgeDays}d old`);
+    if (!Number.isSafeInteger(capture.bytes) || capture.bytes < 1) provenanceErrors.push('manifest bytes is missing or invalid');
+    if (!/^[0-9a-f]{64}$/i.test(String(capture.sha256 ?? ''))) provenanceErrors.push('manifest sha256 is missing or invalid');
+    if (masterIdentity) {
+      if (capture.bytes !== masterIdentity.bytes) provenanceErrors.push('manifest bytes does not match master screenshot');
+      if (String(capture.sha256).toLowerCase() !== masterIdentity.sha256) provenanceErrors.push('manifest sha256 does not match master screenshot');
+    }
+  }
+  if (!masterMtime) provenanceErrors.push('missing master screenshot');
+  if (!publicThumbMtime) provenanceErrors.push('missing public thumbnail');
+  if (!astroThumbMtime) provenanceErrors.push('missing Astro thumbnail');
 
   results.push({
     slug: app.slug,
@@ -124,10 +190,12 @@ for (const app of apps) {
     httpError: result.error,
     capturedAt,
     masterAgeDays,
-    thumbAgeDays,
+    publicThumbAgeDays,
+    astroThumbAgeDays,
     screenshotStale,
     screenshotMissing,
-    hasManifestEntry: Boolean(capture),
+    hasManifestEntry: provenanceErrors.length === 0,
+    provenanceErrors,
   });
 }
 
@@ -135,6 +203,7 @@ const healthy = results.filter((r) => r.httpOk);
 const unhealthy = results.filter((r) => !r.httpOk);
 const stale = results.filter((r) => r.screenshotStale);
 const missing = results.filter((r) => r.screenshotMissing);
+const provenanceFailures = results.filter((r) => r.provenanceErrors.length > 0);
 
 const withManifest = results.filter((r) => r.hasManifestEntry);
 console.log('Live app availability audit');
@@ -170,6 +239,15 @@ if (missing.length > 0) {
   }
 }
 
+if (manifestErrors.length > 0 || provenanceFailures.length > 0) {
+  console.log('');
+  console.log('Manifest provenance failures:');
+  for (const error of manifestErrors) console.log(`  - ${error}`);
+  for (const r of provenanceFailures) {
+    console.log(`  - ${r.slug}: ${r.provenanceErrors.join('; ')}`);
+  }
+}
+
 const outDir = path.resolve(root, '.tmp');
 await fs.mkdir(outDir, { recursive: true });
 await fs.writeFile(
@@ -178,8 +256,10 @@ await fs.writeFile(
 );
 
 console.log('');
-if (unhealthy.length > 0) {
-  console.log(`Live app availability audit: ${unhealthy.length} app(s) unreachable.`);
+if (unhealthy.length > 0 || stale.length > 0 || missing.length > 0 || manifestErrors.length > 0 || provenanceFailures.length > 0) {
+  const failureCount = unhealthy.length + stale.length + missing.length + manifestErrors.length + provenanceFailures.length;
+  console.log(`Live app availability audit failed: ${failureCount} issue(s).`);
+  process.exit(1);
 } else {
   console.log('Live app availability audit passed.');
 }

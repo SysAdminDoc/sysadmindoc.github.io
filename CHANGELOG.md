@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.22] - 2026-07-07
+
+- Restored committed live-app screenshot capture provenance and made `npm run liveapps:audit` fail when the screenshot manifest is missing, stale, incomplete, duplicated, URL-drifted, or mismatched against the master screenshot bytes/hash.
+
 ## [v0.21.21] - 2026-07-07
 
 - Added `npm run publish:pages`, a local GitHub Pages publisher that verifies the configured `gh-pages` source branch, runs the deploy preflight, copies `dist/` with root `.nojekyll`, pushes the deploy branch, and smokes the live URL.

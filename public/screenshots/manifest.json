@@ -1,0 +1,518 @@
+{
+  "schema": "sysadmindoc.screenshot-manifest.v1",
+  "generatedAt": "2026-07-07T21:00:58.247Z",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "deviceScaleFactor": 1.25,
+  "colorScheme": "dark",
+  "captures": [
+    {
+      "slug": "IconForge",
+      "url": "https://sysadmindoc.github.io/IconForge/",
+      "capturedAt": "2026-07-07T21:00:42.427Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 90679,
+      "thumbBytes": 12692,
+      "sha256": "b147dde7ca719fb00af86186016c1b3a7e0218b64c4187633ccc97577fc5f73a",
+      "result": "ok"
+    },
+    {
+      "slug": "SPECTRE",
+      "url": "https://sysadmindoc.github.io/SPECTRE/",
+      "capturedAt": "2026-07-07T21:00:42.663Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 52066,
+      "thumbBytes": 8273,
+      "sha256": "046713f5a3857b3461b9dcc1f51a2b31df07ddedfe3c761890e0b45ee4a63af5",
+      "result": "ok"
+    },
+    {
+      "slug": "ImageXpert",
+      "url": "https://sysadmindoc.github.io/ImageXpert/",
+      "capturedAt": "2026-07-07T21:00:42.661Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 80138,
+      "thumbBytes": 12316,
+      "sha256": "a6afa0a6698942bbee51f36e02779cdcb2069fa066dfa91590b42ffaed827038",
+      "result": "ok"
+    },
+    {
+      "slug": "ConvertFlow",
+      "url": "https://sysadmindoc.github.io/ConvertFlow/",
+      "capturedAt": "2026-07-07T21:00:43.409Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 69287,
+      "thumbBytes": 10850,
+      "sha256": "19c3a31b9fc82e8215ed70caff1f1b84c806dcb449d0ab8e07fbc0015a000316",
+      "result": "ok"
+    },
+    {
+      "slug": "ClipForge",
+      "url": "https://sysadmindoc.github.io/ClipForge/",
+      "capturedAt": "2026-07-07T21:00:45.547Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 74979,
+      "thumbBytes": 11596,
+      "sha256": "5acb120f8446dd49c9be27ef3a0cfc3903114d4435b07dec4c461214e938c358",
+      "result": "ok"
+    },
+    {
+      "slug": "Text-Filter-Editor",
+      "url": "https://sysadmindoc.github.io/Text-Filter-Editor/",
+      "capturedAt": "2026-07-07T21:00:44.874Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 52461,
+      "thumbBytes": 7079,
+      "sha256": "3850d5241baf9c5a75e819b7d275209184726b7f78c34a3cbe9d77ab4cf83db8",
+      "result": "ok"
+    },
+    {
+      "slug": "Multistreamer",
+      "url": "https://sysadmindoc.github.io/Multistreamer/",
+      "capturedAt": "2026-07-07T21:00:45.090Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 44816,
+      "thumbBytes": 7064,
+      "sha256": "c96481df69cb608078ad8c9e90e11ea976600fdd27b36f2d39c12f9e0d60b240",
+      "result": "ok"
+    },
+    {
+      "slug": "StormviewRadar",
+      "url": "https://sysadmindoc.github.io/StormviewRadar/",
+      "capturedAt": "2026-07-07T21:00:47.586Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 300110,
+      "thumbBytes": 37039,
+      "sha256": "eede2db2561b944fcc7952eaee8a67e2db9fc9c4e264b28559b51cd63e4a4b8d",
+      "result": "ok"
+    },
+    {
+      "slug": "SkyTrack",
+      "url": "https://sysadmindoc.github.io/SkyTrack/",
+      "capturedAt": "2026-07-07T21:00:51.800Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 45376,
+      "thumbBytes": 6149,
+      "sha256": "65e96a3e9506c76d2195b8dd4ebd4b1c44eb23ccce513f2ddef9de14679844d5",
+      "result": "ok"
+    },
+    {
+      "slug": "GifStudio",
+      "url": "https://sysadmindoc.github.io/GifStudio/",
+      "capturedAt": "2026-07-07T21:00:47.457Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 28412,
+      "thumbBytes": 4195,
+      "sha256": "7772b65f1e1ab6c805c8bfffd409be8a98809a26b660c0a13f532f64aff84326",
+      "result": "ok"
+    },
+    {
+      "slug": "Base64Converter",
+      "url": "https://sysadmindoc.github.io/Base64Converter/",
+      "capturedAt": "2026-07-07T21:00:47.930Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 71984,
+      "thumbBytes": 11138,
+      "sha256": "fae68a3ccdd7413b246c4ca40735ec3f58394b34c6670ad173e8e35b0f8c359a",
+      "result": "ok"
+    },
+    {
+      "slug": "CoolSites",
+      "url": "https://sysadmindoc.github.io/CoolSites/",
+      "capturedAt": "2026-07-07T21:00:50.367Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 102190,
+      "thumbBytes": 11649,
+      "sha256": "b0f7d0d1527e708c3e21baef9cf9836c1bcbff2373e35784719acfb5e14d1a30",
+      "result": "ok"
+    },
+    {
+      "slug": "BookmarkVault",
+      "url": "https://sysadmindoc.github.io/BookmarkVault/",
+      "capturedAt": "2026-07-07T21:00:50.420Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 122335,
+      "thumbBytes": 15840,
+      "sha256": "014cfdbf3d97334d3b68ef44a5a7d54985b838e90691921afe223d70409d5694",
+      "result": "ok"
+    },
+    {
+      "slug": "ImageForge",
+      "url": "https://sysadmindoc.github.io/ImageForge/",
+      "capturedAt": "2026-07-07T21:00:50.195Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 82215,
+      "thumbBytes": 12948,
+      "sha256": "bfb71f1da446c1ca8c7a7d7c84ea3e184a7ddeee75076397b1e3437031dfacf3",
+      "result": "ok"
+    },
+    {
+      "slug": "Openshop",
+      "url": "https://sysadmindoc.github.io/Openshop/",
+      "capturedAt": "2026-07-07T21:00:53.702Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 63252,
+      "thumbBytes": 9374,
+      "sha256": "37a3222ada5751d11212327b10a3ba0340ba183e90be47bd3734a3b2c6d54199",
+      "result": "ok"
+    },
+    {
+      "slug": "DeGoogler",
+      "url": "https://sysadmindoc.github.io/DeGoogler/",
+      "capturedAt": "2026-07-07T21:00:52.663Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 55585,
+      "thumbBytes": 8818,
+      "sha256": "e7189da9f165ae6cec7931393b312171d3cb7b53b2640d515ee98fe7ac5a79f6",
+      "result": "ok"
+    },
+    {
+      "slug": "UserScriptHunt",
+      "url": "https://sysadmindoc.github.io/UserScriptHunt/",
+      "capturedAt": "2026-07-07T21:00:52.752Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 59419,
+      "thumbBytes": 8075,
+      "sha256": "1686671ee0ef734b942837984c82d91a435c1f098fe2ec85e22fd8cefcb34a39",
+      "result": "ok"
+    },
+    {
+      "slug": "SearchHub",
+      "url": "https://sysadmindoc.github.io/SearchHub/",
+      "capturedAt": "2026-07-07T21:00:54.310Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 93899,
+      "thumbBytes": 13914,
+      "sha256": "1233b44c184962ca5b6ae70d356e10b1af61212643114052672939952f8f14f9",
+      "result": "ok"
+    },
+    {
+      "slug": "NATO_PHONETIC_TRAINING",
+      "url": "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/",
+      "capturedAt": "2026-07-07T21:00:55.030Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 45271,
+      "thumbBytes": 4349,
+      "sha256": "b738a8a1c3391f6af936365c471212c376c20261894976c08e24d5efc24a03bd",
+      "result": "ok"
+    },
+    {
+      "slug": "VIPTrack",
+      "url": "https://sysadmindoc.github.io/VIPTrack/?filter=vip",
+      "capturedAt": "2026-07-07T21:00:58.184Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 41272,
+      "thumbBytes": 5487,
+      "sha256": "bb9b22b51eaca2a724a801088e5b29170a3f3c2fc2fef7ff39f33f7024fae707",
+      "result": "ok"
+    },
+    {
+      "slug": "HurricaneMap",
+      "url": "https://sysadmindoc.github.io/HurricaneMap/",
+      "capturedAt": "2026-07-07T21:00:57.564Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 78504,
+      "thumbBytes": 11134,
+      "sha256": "8b85b8f35d913f82df929fe844e1fa81d2e7a4d7be8b594e4a6dad1ef8938a81",
+      "result": "ok"
+    },
+    {
+      "slug": "ApocalypseWatch",
+      "url": "https://sysadmindoc.github.io/ApocalypseWatch/",
+      "capturedAt": "2026-07-07T21:00:57.371Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 84159,
+      "thumbBytes": 11476,
+      "sha256": "07eda8069750aa382ecdf6d2f64c5c97b0c4b8a2214a0cccc00c86aec6bc4a86",
+      "result": "ok"
+    }
+  ]
+}
