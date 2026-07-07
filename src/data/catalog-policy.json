@@ -16,6 +16,10 @@
       "reason": "GitHub profile repository; not a portfolio project."
     },
     {
+      "repo": "RES-Slim",
+      "reason": "Public stripped-down Reddit Enhancement Suite fork/variant; intentionally omitted from the polished portfolio catalog."
+    },
+    {
       "repo": "null",
       "reason": "Placeholder repository; intentionally excluded from the public portfolio catalog."
     }

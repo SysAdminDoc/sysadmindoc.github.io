@@ -3,19 +3,12 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.19
+Current version: v0.21.20
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
 
 ### P0
-
-- [ ] P0 - Reconcile public catalog drift for RES-Slim
-  Why: `npm run catalog:audit` currently fails because `RES-Slim` is an active public non-fork repo but is absent from both catalog data and catalog-policy exceptions.
-  Evidence: `scripts/audit-catalog.mjs`, `src/data/catalog-policy.json`, `rtk npm run catalog:audit`, GitHub API metadata for `SysAdminDoc/RES-Slim`.
-  Touches: `src/data/projects.ts`, `src/data/catalog-policy.json`, `src/data/archive.ts` if intentionally held, `package.json`, generated data fixtures if needed.
-  Acceptance: `RES-Slim` is either cataloged with reviewed public copy or explicitly skipped/held with a policy reason; `npm run catalog:audit` passes; deploy preflight runs the catalog audit.
-  Complexity: S
 
 - [ ] P0 - Add a verified GitHub Pages publish command
   Why: GitHub Pages serves the `gh-pages` branch, not `main`; a source push can leave the live site unchanged, and Astro `_assets` plus Pagefind assets require root `.nojekyll` on the published branch.
