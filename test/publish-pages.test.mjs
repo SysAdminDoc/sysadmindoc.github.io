@@ -14,6 +14,7 @@ test('GitHub Pages publisher is wired to the local deploy gate and live smoke', 
   assert.equal(pkg.scripts['publish:pages'], 'node scripts/publish-pages.mjs');
   assert.match(publisher, /const DEFAULT_PAGES_BRANCH = 'gh-pages'/);
   assert.match(publisher, /verifyGitHubPagesSource/);
+  assert.match(publisher, /optionalOutput\('gh', \['api', `repos\/\$\{repoSlug\}\/pages`, '--jq', '\.source'\]\)/);
   assert.match(publisher, /sourceBranch !== pagesBranch \|\| sourcePath !== '\/'/);
   assert.match(publisher, /run\('npm', \['run', 'deploy:preflight'\]/);
   assert.match(publisher, /copyDistToWorktree/);
