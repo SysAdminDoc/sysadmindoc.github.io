@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.18] - 2026-07-07
+
+- Added the GitHub Pages `.nojekyll` marker so the deployed Astro `_assets` and Pagefind output are served by the legacy Pages branch publisher.
+
 ## [v0.21.17] - 2026-07-07
 
 - Refreshed the production deploy smoke example for the current token-backed release feed, keeping README version metadata and live release expectations aligned with generated data.
