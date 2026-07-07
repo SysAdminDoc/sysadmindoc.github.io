@@ -15,6 +15,15 @@ export interface CareerRole {
   note?: string;
 }
 
+export const careerSkills = [
+  { name: 'Healthcare Imaging Support', sub: 'PACS, DICOM, DR acquisition' },
+  { name: 'Systems Administration', sub: 'Windows Server, AD, GPO, Hyper-V' },
+  { name: 'Networking', sub: 'Cisco, VPN, DNS/DHCP, monitoring' },
+  { name: 'Customer Escalation', sub: 'troubleshooting, recovery, vendor coordination' },
+  { name: 'Migration Coordination', sub: 'archive transfers, cutovers, validation' },
+  { name: 'Documentation', sub: 'runbooks, knowledge base, training material' },
+] as const;
+
 export const careerRoles: readonly CareerRole[] = [
   {
     role: 'Senior Technical Support Manager',
@@ -23,15 +32,15 @@ export const careerRoles: readonly CareerRole[] = [
     period: 'Feb 2021 — Present',
     tag: 'Current',
     tone: 'current',
-    summary: 'Tier II escalation lead for PACS, DR panels, and cloud migrations. Architected 10+ PACS migrations (including a 1M+ file Candelis legacy transfer when vendor tooling failed), drove a 54-account cross-vendor cloud restoration, and support clinics across the Caribbean, East Africa, and East Asia. Built the in-house tooling that makes it possible.',
+    summary: 'Tier II escalation and support management for PACS, DR panel, acquisition workstation, and cloud-hosted imaging workflows. Work centers on clinical imaging troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.',
     highlights: [
-      'Led 10+ PACS migrations — single largest moved 1M+ files after writing a custom C-Store sender to bypass broken vendor tooling',
-      'Restored 54 customer cloud accounts during a cross-vendor PatientImage / RADinfo transition',
-      'Diagnosed and fixed a fleet-wide Windows 11 random-MAC licensing bug; set the shipping-PC standard to prevent recurrence',
-      'Built production tooling adopted company-wide: DICOM PACS Migrator, WiFi Tool, acquisition-PC network scanner',
-      'Produces the Maven Imaging YouTube tutorial library (VoyanceX, VXvue, Rayence, Genoray, AMRAD) and trains a major OEM’s field engineers',
+      'Coordinate PACS and imaging-system migrations, including legacy archive transfers, customer cutovers, and validation follow-up',
+      'Support DR panel acquisition environments, Windows workstations, network connectivity, and vendor application issues',
+      'Troubleshoot licensing, workstation, networking, VPN, and cloud-account access issues across customer environments',
+      'Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support',
+      'Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps',
     ],
-    stack: ['DICOM C-Store', 'Candelis ImageGrid', 'Voyance / VoyanceX', 'Patient Image Cloud', 'VXvue', 'Rayence DR', 'Hyper-V', 'UniFi VPN', 'Freshdesk'],
+    stack: ['DICOM', 'PACS', 'DR panels', 'Acquisition workstations', 'Windows imaging PCs', 'Cloud imaging workflows', 'Hyper-V', 'VPN', 'Freshdesk'],
   },
   {
     role: 'Systems Administrator',
@@ -41,12 +50,12 @@ export const careerRoles: readonly CareerRole[] = [
     tag: '~11 years',
     tone: 'previous',
     note: 'Concurrent with the start of the Maven Imaging role.',
-    summary: 'Administered the full network and server stack for a regional PBS station serving Dayton and Cincinnati — physical and virtual Windows Servers, Cisco networking, SCCM, and the broadcast-automation infrastructure that had to stay on-air 24/7.',
+    summary: 'Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.',
     highlights: [
-      'Led Hyper-V virtualization initiative, consolidating physical hardware',
-      'Implemented SCCM from scratch to manage 100+ Win7/10 workstations',
-      'Deployed Cisco ISR 4300, ASA firewalls, and Catalyst 2960/3560/SG300 switches',
-      'Maintained Grass Valley K2 video servers + Harmonic encoders on the broadcast side',
+      'Supported Hyper-V virtualization and server consolidation for Windows Server workloads',
+      'Administered endpoint management for Windows workstation fleets using SCCM-era tooling',
+      'Maintained Cisco routing, firewall, and switching infrastructure with monitoring and troubleshooting',
+      'Supported broadcast-related server and encoder infrastructure with escalation and maintenance as needed',
     ],
     stack: ['Windows Server 2008–2016', 'Active Directory & GPO', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP'],
   },
@@ -57,11 +66,11 @@ export const careerRoles: readonly CareerRole[] = [
     period: 'Jun 2010 — Apr 2014',
     tag: '~4 years',
     tone: 'previous',
-    summary: 'Managed day-to-day operations across multiple MSP client environments — Active Directory, Group Policy, DNS/DHCP, legacy server decommissioning, and 24/7/365 network monitoring with escalation to senior admins when needed.',
+    summary: 'Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.',
     highlights: [
-      'Migrated file servers + legacy apps off Windows Server 2003 R2 to 2012 R2',
-      'Built network/system documentation — topology diagrams and runbooks',
-      'Onboarded new users and trained them on workflows, software, and phone systems',
+      'Assisted with server refreshes and legacy Windows Server decommissioning',
+      'Documented client networks, topology notes, runbooks, and recurring support procedures',
+      'Onboarded users and provided practical training on business software, phone systems, and account access',
     ],
     stack: ['Windows Server 2003–2012 R2', 'Active Directory', 'Group Policy', 'Avaya IP Office', 'Endpoint security'],
   },

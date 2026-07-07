@@ -79,7 +79,7 @@ export const manifesto: ManifestoRule[] = [
  */
 export const healthcareIT = {
   intro:
-    "I'm the Senior Technical Support Manager at Maven Imaging — medical imaging equipment, PACS, DR panels, and cloud-based diagnostic archiving. My day job is PACS migrations (10+ to date, including a million-file Candelis transfer that vendor tooling couldn't handle), DR panel deployments, 54-account cloud transitions, and keeping imaging systems up for clinics across the Caribbean, East Africa, and East Asia. Every tool here started as a real production problem.",
+    "I'm the Senior Technical Support Manager at Maven Imaging, supporting medical imaging equipment and software environments that include PACS, DICOM workflows, DR acquisition workstations, and cloud-hosted imaging access. The work is customer-facing and operational: troubleshoot imaging issues, coordinate migrations and archive transfers, support cutovers, document repeatable procedures, and work with vendors and internal teams when clinical workflows are interrupted.",
   // Public showcases for this track currently live as private internal tooling.
   // Kept as a track narrative; project cards intentionally omitted.
   repos: [] as string[],
@@ -93,15 +93,15 @@ export const now = {
   updated: '2026-06-25',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site v0.20 — ${fallbackRepoCount}+ repos, Popover API, @starting-style animations, resume PDF generation, Playwright visual baselines`,
-    'NexRay — multi-tenant cloud PACS platform with 4 AI engines',
-    'Conduit — unified operations console for Maven Imaging (Tauri 2 + React 19 + FastAPI)',
-    'XRayRoomPlanner — X-ray room compliance and drafting tool (React + Electron)',
-    'Delivering DR panel + handheld X-ray training to a major OEM’s field engineers',
+    `Portfolio site v0.21 - ${fallbackRepoCount}+ repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
+    'Medical imaging support workflows: PACS/DICOM migration coordination, customer cutover validation, and documentation cleanup',
+    'Healthcare support operations: cloud imaging account transitions, acquisition workstation support, and vendor handoffs',
+    'Customer-facing documentation and tutorial updates for imaging workflows',
+    'Portfolio copy cleanup so career claims stay conservative, field-accurate, and easy to verify',
   ],
   thinking: [
     'Preparing for npm v12 install-script changes hitting native deps in July 2026',
-    'When self-hosted tooling beats vendor contracts for small medical imaging shops',
+    'How small medical imaging environments balance vendor support, local IT constraints, and reliable recovery plans',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Whatever keeps the focus session going.',

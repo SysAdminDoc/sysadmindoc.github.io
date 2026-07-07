@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.25] - 2026-07-07
+
+- Reworked experience-facing copy across the homepage, resume, JSON resume, healthcare track, metadata, and feeds to use conservative healthcare IT/support language and remove unsupported counts, internal-tool names, geography/OEM claims, and open-source-tool framing.
+- Replaced resume skill chips with career-oriented groups for healthcare imaging support, systems administration, networking, escalation, migration coordination, and documentation.
+- Allowed README badge and GitHub user-attachment image hosts in the image-only CSP and replaced a brittle Pagefind no-result sentinel so rendered interaction smoke tests stay stable on 2026 content.
+
 ## [v0.21.24] - 2026-07-07
 
 - Added mid-wide and short-height Playwright layout regression coverage for home, search, archive, status, releases, screenshots, and project detail routes, including no-overflow, runtime-error, target-size, and visual-baseline assertions.

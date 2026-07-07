@@ -64,7 +64,7 @@ export async function GET(context: APIContext) {
 
   return withEndpointCache(await rss({
     title: 'Matt Parker — Projects',
-    description: `Open-source projects, live web apps, and the full catalog by Matt Parker — ${catalog.length}+ projects across ${Object.keys(categoryLabels).length} categories.`,
+    description: `Public projects, live web apps, and the full catalog by Matt Parker - ${catalog.length}+ projects across ${Object.keys(categoryLabels).length} categories.`,
     site,
     items,
     xmlns: { content: 'http://purl.org/rss/1.0/modules/content/' },

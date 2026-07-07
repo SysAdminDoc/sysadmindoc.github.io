@@ -71,7 +71,7 @@ export async function GET(context: APIContext) {
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US">
   <title>Matt Parker - Projects</title>
-  <subtitle>Open-source projects, live web apps, and the full catalog by Matt Parker.</subtitle>
+  <subtitle>Public projects, live web apps, and the full catalog by Matt Parker.</subtitle>
   <link href="${site}/" />
   <link href="${site}/atom.xml" rel="self" type="application/atom+xml" />
   <id>${site}/</id>

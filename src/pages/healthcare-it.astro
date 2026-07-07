@@ -78,24 +78,24 @@ const cmdkSections = hasRepos
 
       <div class="hcit-stats page-stat-grid rv">
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">10+</div>
-          <div class="hcit-stat-label page-stat-label">PACS migrations led</div>
-          <div class="page-stat-copy">Single largest moved 1M+ files when vendor tooling gave up mid-job.</div>
+          <div class="hcit-stat-num page-stat-value">PACS</div>
+          <div class="hcit-stat-label page-stat-label">DICOM workflows</div>
+          <div class="page-stat-copy">Support for image archive access, migration coordination, routing checks, and customer cutover validation.</div>
         </div>
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">54</div>
-          <div class="hcit-stat-label page-stat-label">Cloud accounts restored</div>
-          <div class="page-stat-copy">Cross-vendor rehydration during a PatientImage / RADinfo transition.</div>
+          <div class="hcit-stat-num page-stat-value">DR</div>
+          <div class="hcit-stat-label page-stat-label">Acquisition support</div>
+          <div class="page-stat-copy">Troubleshooting for detector panels, Windows acquisition workstations, networking, licensing, and vendor applications.</div>
         </div>
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">3 continents</div>
-          <div class="hcit-stat-label page-stat-label">Clinical reach</div>
-          <div class="page-stat-copy">Medical imaging clinics across the Caribbean, East Africa, and East Asia — plus stateside HIPAA-regulated sites.</div>
+          <div class="hcit-stat-num page-stat-value">Cloud</div>
+          <div class="hcit-stat-label page-stat-label">Imaging access</div>
+          <div class="page-stat-copy">Customer support for account access, hosted imaging workflows, transition issues, and recovery communication.</div>
         </div>
       </div>
       <div class="hcit-actions page-actions rv">
-        <a href="/#catalog" class="btn bp">Open full archive</a>
-        <a href="/releases/" class="btn bg2">Open release stream</a>
+        <a href="/resume/" class="btn bp">Open resume</a>
+        <a href="/#connect" class="btn bg2">Contact</a>
       </div>
       <SectionJumpNav items={cmdkSections} />
     </div>
@@ -106,8 +106,8 @@ const cmdkSections = hasRepos
         <div class="si" id="clinical-projects">
           <h2 class="hcit-h2">Projects in this track</h2>
           <div class="hcit-why rv">
-            <p>Most of this work is <strong>operational and customer-specific</strong> — internal migration tooling, acquisition-PC utilities, and on-site fixes that can't be published as standalone public repos without exposing client environments.</p>
-            <p>The measurable outcomes live in the metrics above and in the <a href="/resume/" class="page-inline-link">resume</a>; the public, forkable pieces surface in the <a href="/#catalog" class="page-inline-link">full catalog</a> under Security, Desktop, and PowerShell. This is intentional, not an empty section.</p>
+            <p>Most healthcare imaging support work is <strong>operational and customer-specific</strong>: migration notes, acquisition-workstation troubleshooting, account recovery, workflow validation, and communication during service-impacting issues.</p>
+            <p>The useful public summary is the role context above and the <a href="/resume/" class="page-inline-link">resume</a>, not customer-specific implementation detail.</p>
           </div>
         </div>
         <Divider />
@@ -127,7 +127,7 @@ const cmdkSections = hasRepos
                 <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
                 <p class="hcit-card-desc" set:html={r.desc}></p>
                 <div class="hcit-card-actions">
-                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open source →'}</a>
+                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open external →'}</a>
                   {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Open live demo →</a>}
                 </div>
               </article>
@@ -141,9 +141,9 @@ const cmdkSections = hasRepos
     <div class="si" id="track-context">
       <h2 class="hcit-h2">Why this track exists</h2>
       <div class="hcit-why rv">
-        <p>Healthcare IT is where I learned that the best tool isn't the one with the most features — it's the one that <strong>doesn't fail at 2 AM when a radiologist needs a study back from the archive</strong>.</p>
-        <p>Every project here comes from the same pattern: a vendor tool broke, licensing expired, a workflow was manual for no reason, or nobody had built the obvious thing. So I built it. Small enough to audit, open enough to fork, boring enough to just work.</p>
-        <p>If you run medical imaging infrastructure and find something missing, <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="page-inline-link">open an issue</a>.</p>
+        <p>Healthcare IT rewards steady operations more than novelty. PACS access, DICOM routing, DR acquisition, workstation reliability, and cloud imaging access all matter because they sit close to clinical care.</p>
+        <p>The practical work is diagnosis, documentation, recovery planning, vendor coordination, and clear communication when imaging workflows are interrupted.</p>
+        <p>For healthcare imaging support or systems work, <a href="/#connect" class="page-inline-link">use the contact links</a>.</p>
       </div>
     </div>
   </main>

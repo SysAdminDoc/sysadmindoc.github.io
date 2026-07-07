@@ -229,7 +229,7 @@ test.describe('rendered interaction smoke', () => {
   test('search no-result state stays calm and navigable', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
-    await preparePage(page, '/search/?q=zzzz-no-results-2026', '#pagefindSearch');
+    await preparePage(page, '/search/?q=%22zzqqxxwwvvppllkj%22', '#pagefindSearch');
 
     await expect(page.locator('pagefind-summary .pf-summary')).toContainText('No results', { timeout: 20_000 });
     await expect(page.locator('.pf-results .portfolio-result-card')).toHaveCount(0);
@@ -302,7 +302,7 @@ test.describe('rendered interaction smoke', () => {
     await page.locator('#cmdkClose').click();
     await expectCommandPaletteState(page, false);
     await openCommandPalette(page);
-    await page.locator('#cmdkInput').fill('zzzz-no-results-2026');
+    await page.locator('#cmdkInput').fill('zzqqxxwwvvppllkj');
     await expect(page.locator('#cmdkMeta')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-empty')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(0);

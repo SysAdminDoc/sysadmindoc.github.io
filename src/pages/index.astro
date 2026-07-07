@@ -9,7 +9,6 @@ import TagCloud from '../components/TagCloud.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
-import { homepageProofHighlights, projectProof } from '../data/proof';
 import {
   computeProjectRankings,
   formatProjectRankingDisplayLabel,
@@ -123,13 +122,13 @@ const heroSignalCategories = heroTopCategories.map(({ label }) => label).join(' 
 const heroSignals = [
   {
     label: 'Current role',
-    value: 'Sr. Tech Support Mgr',
-    meta: 'Maven Imaging — PACS, DR panels, cloud migrations.',
+    value: 'Technical Support Manager',
+    meta: 'Maven Imaging - PACS, DICOM, DR panels, and customer support.',
   },
   {
     label: 'Scope',
-    value: '10+ PACS migrations',
-    meta: 'Medical imaging clinics across the Caribbean, East Africa, and East Asia. 15+ years in IT.',
+    value: 'Imaging systems support',
+    meta: 'PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging, and migrations.',
   },
   {
     label: 'Primary focus',
@@ -137,18 +136,23 @@ const heroSignals = [
     meta: `${heroDomainText}.`,
   },
 ] as const;
-function resolveHomepageProofSource(
-  proof: (typeof projectProof)[string],
-  selector: (typeof homepageProofHighlights)[number]['source'],
-) {
-  if (selector.kind === 'caseStudyContext') return proof.caseStudy?.context ?? proof.buildEvidence[0];
-  if (selector.kind === 'caseStudyOutcome') return proof.caseStudy?.outcomes[selector.index] ?? proof.buildEvidence[0];
-  return proof.buildEvidence[selector.index] ?? proof.buildEvidence[0];
-}
-const heroProofItems = homepageProofHighlights.map((highlight) => ({
-  ...highlight,
-  sourceText: resolveHomepageProofSource(projectProof[highlight.repo], highlight.source),
-}));
+const heroExperienceHighlights = [
+  {
+    label: 'Medical imaging',
+    value: 'PACS / DICOM',
+    copy: 'Archive, acquisition, and clinical support workflows.',
+  },
+  {
+    label: 'Systems',
+    value: 'Windows / AD',
+    copy: 'Servers, workstations, identity, monitoring, and networking.',
+  },
+  {
+    label: 'Support',
+    value: 'Escalation',
+    copy: 'Documentation, vendor coordination, customer recovery, and cutovers.',
+  },
+] as const;
 const heroEvidencePrimary = liveApps.find((app) => app.slug === 'SPECTRE') ?? liveApps[0] ?? null;
 const heroEvidenceCards = ['IconForge', 'ImageXpert', 'Text-Filter-Editor']
   .map((slug) => liveApps.find((app) => app.slug === slug))
@@ -217,10 +221,10 @@ const journeyMilestones = [
   {
     title: 'Healthcare IT & Systems Administration',
     eyebrow: 'Origin point',
-    desc: 'Started in general systems administration — Windows fleets, Cisco networks, MSP work, PBS broadcast infrastructure. Moved into medical imaging six years ago: PACS, DR panel deployments, and cloud migrations at Maven Imaging. The only stable path through complex environments is automating the parts you touch every day.',
+    desc: 'Started in general systems administration - Windows fleets, Cisco networks, MSP work, and PBS broadcast infrastructure. Moved into medical imaging support: PACS/DICOM workflows, DR acquisition workstations, customer migrations, and cloud-hosted imaging operations. The practical pattern is steady troubleshooting, documentation, and repeatable fixes.',
     href: '/healthcare-it/',
     cta: 'Open the healthcare track',
-    meta: 'Clinical systems, imaging uptime, and production-first tooling.',
+    meta: 'Clinical systems, imaging uptime, and support workflows.',
   },
   {
     title: 'PowerShell & Windows Automation',
@@ -337,7 +341,7 @@ const stackRoutes = [
 const careerSignals = [
   { label: 'Tenure', value: '15+ years' },
   { label: 'Industries', value: 'Healthcare IT / Broadcast / MSP' },
-  { label: 'Compliance', value: 'HIPAA / Gov / Academic' },
+  { label: 'Work type', value: 'Support / systems / documentation' },
 ] as const;
 const aerialClips = [
   {id:'waOMwX39NOg', title:'Venice Beach, Florida', desc:'Morning aerial flight — June 2023'},
@@ -409,17 +413,17 @@ const cmdkSections = [
           <h1 class="hn">Matt <span class="a">Parker</span></h1>
         </div>
         <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Available for work</a>
-        <div class="hero-proof-strip" aria-label="Source-backed project outcomes">
-          {heroProofItems.map((proof) => (
-            <a href={`/projects/${proof.repo}/`} class="hero-proof" title={proof.sourceText} aria-label={`${proof.value} ${proof.label}. ${proof.copy} Source: ${proof.sourceText}`}>
-              <span class="hero-proof-label">{proof.label}</span>
-              <strong class="hero-proof-value">{proof.value}</strong>
-              <span class="hero-proof-copy">{proof.copy}</span>
-            </a>
+        <div class="hero-proof-strip" aria-label="Experience focus areas">
+          {heroExperienceHighlights.map((item) => (
+            <div class="hero-proof" title={item.copy} aria-label={`${item.label}. ${item.value}. ${item.copy}`}>
+              <span class="hero-proof-label">{item.label}</span>
+              <strong class="hero-proof-value">{item.value}</strong>
+              <span class="hero-proof-copy">{item.copy}</span>
+            </div>
           ))}
         </div>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator</p>
-        <p class="hero-summary">15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
+        <p class="hero-summary">15+ years in enterprise IT, with recent focus on medical imaging support: PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging, customer migrations, and escalation-heavy troubleshooting.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -730,7 +734,7 @@ const cmdkSections = [
 
 
   <section id="career" aria-label="Career history"><div class="si">
-    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Medical imaging now, broadcast infrastructure before that, MSP work before that. Every step has been about keeping complex production systems steady and turning the repeated friction into better tooling.</p></div>
+    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Medical imaging now, broadcast infrastructure before that, MSP work before that. The consistent work is practical support, reliable systems, clear documentation, and calm escalation when production environments need attention.</p></div>
     <div class="career-signals rv" aria-label="Career signals">
       {careerSignals.map((signal) => (
         <div class="career-signal">
@@ -855,7 +859,7 @@ const cmdkSections = [
             </span>
           )}
         </div>
-        <p class="footer-summary">Open-source tools for automation, system administration, and medical imaging workflows.</p>
+        <p class="footer-summary">Systems administration, healthcare imaging support, and practical software work shaped by real operating environments.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation">
         <a href="#catalog">Catalog</a>

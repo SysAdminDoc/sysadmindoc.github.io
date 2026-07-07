@@ -1,7 +1,6 @@
 import type { APIContext } from 'astro';
-import { careerRoles } from '../data/career';
+import { careerRoles, careerSkills } from '../data/career';
 import { endpointHeaders } from '../data/endpoint-headers';
-import { skills } from '../data/projects';
 
 // JSON Resume (jsonresume.org/schema) export for ATS/parser ingestion.
 // Generated from the same shared career + skills data the /resume page renders.
@@ -13,7 +12,7 @@ export async function GET(_context: APIContext) {
       label: 'Senior Technical Support Manager',
       email: 'matt_parker@outlook.com',
       url: 'https://sysadmindoc.github.io',
-      summary: '15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus open-source tooling across PowerShell, Python, JavaScript, Kotlin, C#, and C++.',
+      summary: '15+ years in enterprise IT and systems administration, with recent focus on medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting.',
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
       profiles: [
         { network: 'GitHub', username: 'SysAdminDoc', url: 'https://github.com/SysAdminDoc' },
@@ -28,7 +27,7 @@ export async function GET(_context: APIContext) {
       highlights: [...role.highlights],
       keywords: [...role.stack],
     })),
-    skills: skills.map((skill) => ({
+    skills: careerSkills.map((skill) => ({
       name: skill.name,
       keywords: skill.sub.split(/,\s*/).filter(Boolean),
     })),
