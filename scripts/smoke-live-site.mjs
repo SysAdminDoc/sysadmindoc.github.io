@@ -163,8 +163,28 @@ function requireHeader(response, pathname, { contentTypes, cacheControl }) {
   }
 }
 
+function findFirstAssetPath(html, pattern, label) {
+  const match = html.match(pattern);
+  if (!match?.[1]) throw new Error(`Homepage did not reference a ${label}.`);
+  const href = match[1].replaceAll('&amp;', '&');
+  const url = new URL(href, 'https://sysadmindoc.example');
+  return `${url.pathname}${url.search}`;
+}
+
 async function checkLiveArtifacts(baseUrl, expected) {
   const summary = [];
+
+  const homepage = await fetchText(baseUrl, '/', 'text/html,*/*');
+  requireHeader(homepage, '/', { contentTypes: ['text/html'], cacheControl: null });
+  const cssAssetPath = findFirstAssetPath(homepage.body, /href=["']([^"']*\/_assets\/[^"']+\.css(?:\?[^"']*)?)["']/i, 'built Astro CSS asset');
+  const cssAsset = await fetchText(baseUrl, cssAssetPath, 'text/css,*/*');
+  requireHeader(cssAsset, cssAssetPath, { contentTypes: ['text/css'], cacheControl: null });
+  summary.push(`Astro CSS asset: ${cssAssetPath}`);
+
+  const pagefindAssetPath = '/pagefind/pagefind.js';
+  const pagefindAsset = await fetchText(baseUrl, pagefindAssetPath, 'application/javascript,text/javascript,*/*');
+  requireHeader(pagefindAsset, pagefindAssetPath, { contentTypes: ['application/javascript', 'text/javascript'], cacheControl: null });
+  summary.push(`Pagefind asset: ${pagefindAssetPath}`);
 
   const sw = await fetchText(baseUrl, '/sw.js', 'application/javascript,text/plain,*/*');
   requireHeader(sw, '/sw.js', { contentTypes: ['application/javascript', 'text/javascript', 'text/plain'], cacheControl: 'max-age=600' });

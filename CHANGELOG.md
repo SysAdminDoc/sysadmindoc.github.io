@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.21] - 2026-07-07
+
+- Added `npm run publish:pages`, a local GitHub Pages publisher that verifies the configured `gh-pages` source branch, runs the deploy preflight, copies `dist/` with root `.nojekyll`, pushes the deploy branch, and smokes the live URL.
+- Extended the live Pages smoke check to verify the deployed homepage serves an Astro `_assets` CSS file and the generated Pagefind runtime asset.
+
 ## [v0.21.20] - 2026-07-07
 
 - Added the catalog drift audit to `npm run deploy:preflight` so active public repository changes block deployment before build/publish.
