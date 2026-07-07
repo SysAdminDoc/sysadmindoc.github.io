@@ -166,6 +166,7 @@ test('deploy preflight script runs strict generated-data gate before tests and b
     pkg.scripts['deploy:preflight'],
     /^npm run data:summary:deploy && npm run catalog:audit && npm test && npm run check && npm run build$/,
   );
+  assert.equal(pkg.scripts['publish:pages'], 'node scripts/publish-pages.mjs');
 });
 
 test('fixture generated-data summary labels reduced corpus without blocking advisory runs', async () => {

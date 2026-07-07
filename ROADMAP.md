@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.20
+Current version: v0.21.21
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P0
-
-- [ ] P0 - Add a verified GitHub Pages publish command
-  Why: GitHub Pages serves the `gh-pages` branch, not `main`; a source push can leave the live site unchanged, and Astro `_assets` plus Pagefind assets require root `.nojekyll` on the published branch.
-  Evidence: GitHub Pages API source `{branch:"gh-pages", path:"/"}`, `CHANGELOG.md` v0.21.19 `.nojekyll` deployment fix, recent live-site stale deploy.
-  Touches: `package.json`, `scripts/publish-pages.mjs`, `scripts/smoke-live-site.mjs`, `README.md`.
-  Acceptance: One local command builds, copies `dist/` to `gh-pages`, guarantees root `.nojekyll`, commits/pushes the deploy branch, then verifies live `/status.json` reports the new version/commit and at least one `_assets` CSS plus one Pagefind asset return HTTP 200.
-  Complexity: M
 
 ### P1
 
