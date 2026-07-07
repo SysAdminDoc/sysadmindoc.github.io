@@ -802,6 +802,9 @@ section{padding:118px 32px}
   background:linear-gradient(180deg, rgba(11,18,32,.78), rgba(8,14,25,.68));
   box-shadow:0 14px 36px rgba(0,0,0,.14);
 }
+.ca.hid{
+  display:none!important;
+}
 html[data-theme="light"] .ca{
   background:rgba(255,255,255,.8);
 }
