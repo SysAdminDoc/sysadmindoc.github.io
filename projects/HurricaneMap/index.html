@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HurricaneMap — Matt Parker</title><meta name="description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-F8uHnKoGhq/Y5Zpr4VKRlHv3vDjzG3AOYBjk61AhbgQ=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v6.4.8"><meta property="og:title" content="HurricaneMap — Matt Parker"><meta property="og:description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/HurricaneMap/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/HurricaneMap.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="HurricaneMap social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/HurricaneMap.png"><meta name="twitter:image:alt" content="HurricaneMap social preview card"><meta name="twitter:title" content="HurricaneMap — Matt Parker"><meta name="twitter:description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><link rel="canonical" href="https://sysadmindoc.github.io/projects/HurricaneMap/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HurricaneMap — Matt Parker</title><meta name="description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-dU00pYxna3ZZYH6iN/WzG7MEQXHSQsGxzWiFeWCN8h0=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="HurricaneMap — Matt Parker"><meta property="og:description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/HurricaneMap/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/HurricaneMap.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="HurricaneMap social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/HurricaneMap.png"><meta name="twitter:image:alt" content="HurricaneMap social preview card"><meta name="twitter:title" content="HurricaneMap — Matt Parker"><meta name="twitter:description" content="Every U.S. hurricane landfall (1851&amp;ndash;present) from NOAA HURDAT2"><link rel="canonical" href="https://sysadmindoc.github.io/projects/HurricaneMap/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
 @layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;
 @layer site.critical {
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -88,23 +88,10 @@ html[data-theme="light"]{
     --border-strong:rgba(53,107,191,.42);
     --focus-ring:0 0 0 4px rgba(16,115,64,.28);
   }
-  #nav,
-  .ng,
-  .theme-toggle,
-  .nav-search,
-  .btn,
-  .hero-proof-link,
-  .hero-pulse .pulse-item,
-  .hero-stage,
-  .term{
+  #nav,.ng,.theme-toggle,.nav-search,.btn,.hero-pulse .pulse-item{
     border-color:var(--border-strong);
   }
-  .hr,
-  .hd,
-  .sd,
-  .hsl,
-  .pulse-copy,
-  .pulse-source{
+  .hr,.hero-summary,.sd,.hsl{
     color:var(--t2);
   }
 }
@@ -205,17 +192,20 @@ html[data-theme="light"] #nav{
   box-shadow:0 1px 8px var(--blue-glow);
 }
 .ni{
-  max-width:1280px;
+  width:100%;
+  max-width:none;
   height:64px;
-  margin:0 auto;
-  padding:0 28px;
-  display:flex;
+  margin:0;
+  padding:0 clamp(24px,4vw,64px);
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) auto minmax(220px,1fr);
   align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  gap:clamp(16px,2vw,32px);
 }
 .nl{
+  grid-column:1;
   flex:0 0 auto;
+  justify-self:start;
   font-family:var(--mono);
   font-weight:600;
   font-size:15px;
@@ -225,9 +215,12 @@ html[data-theme="light"] #nav{
 }
 .nl span{color:var(--t3)}
 .nk{
+  grid-column:2;
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-self:center;
+  min-width:0;
+  gap:clamp(8px,.85vw,14px);
 }
 .nk a{
   min-height:36px;
@@ -242,9 +235,12 @@ html[data-theme="light"] #nav{
 }
 .nk a:hover,.nk a.active{color:var(--t1);background:rgba(255,255,255,.05)}
 .nav-actions{
+  grid-column:3;
   display:flex;
   align-items:center;
+  justify-self:end;
   gap:4px;
+  min-width:max-content;
   padding:4px;
   border:1px solid rgba(255,255,255,.07);
   border-radius:12px;
@@ -291,19 +287,6 @@ html[data-theme="light"] #nav{
 }
 .nav-search svg{width:16px;height:16px;flex-shrink:0}
 .nav-search-label{color:var(--t1)}
-.nav-search-kbd{
-  display:none;
-  align-items:center;
-  justify-content:center;
-  min-width:50px;
-  height:24px;
-  padding:0 8px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);
-  font-size:10px;
-  color:var(--t3);
-}
 html[data-theme="light"] .nav-actions{
   border-color:var(--border-soft);
   background:rgba(255,255,255,.52);
@@ -370,25 +353,17 @@ html[data-theme="light"] .nav-actions{
   width:100%;
   margin:0 auto;
   display:grid;
-  grid-template-columns:minmax(0,1.02fr) minmax(380px,.98fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
   gap:64px;
   align-items:start;
   position:relative;
   z-index:1;
 }
-.ht{max-width:640px;padding-bottom:0}
-.hero-brandline{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:22px;
-  font-family:var(--mono);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.18em;
-  color:var(--t3);
+.ht{
+  width:100%;
+  max-width:720px;
+  padding-bottom:0;
 }
-.hero-brandline span{color:var(--org)}
 .hero-avatar{
   width:56px;
   height:56px;
@@ -443,7 +418,7 @@ html[data-theme="light"] .nav-actions{
   font-size:clamp(16px,2vw,20px);
   line-height:1.65;
 }
-.hd{
+.hero-summary{
   max-width:58ch;
   margin:0 0 20px;
   color:var(--t2);
@@ -615,6 +590,44 @@ html[data-theme="light"] .nav-actions{
   font-size:13px;
   line-height:1.25;
 }
+.hero-evidence{
+  width:100%;
+  max-width:500px;
+  justify-self:end;
+  align-self:start;
+  display:grid;
+  gap:12px;
+}
+.hero-evidence-head{
+  padding:16px 18px;
+  border:1px solid var(--border-soft);
+  border-left:3px solid var(--grn);
+  border-radius:10px;
+  background:linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.025));
+  box-shadow:0 18px 36px rgba(0,0,0,.14);
+}
+.hero-evidence-kicker{
+  display:block;
+  margin-bottom:6px;
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.hero-evidence-head strong{
+  display:block;
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:18px;
+  line-height:1.2;
+}
+.hero-evidence-head p{
+  margin:8px 0 0;
+  color:var(--t2);
+  font-size:13px;
+  line-height:1.45;
+}
 .sr-only{
   position:absolute;
   width:1px;
@@ -626,211 +639,36 @@ html[data-theme="light"] .nav-actions{
   white-space:nowrap;
   border:0;
 }
-.hero-stage{
-  position:relative;
-  overflow:hidden;
-  padding:22px;
-  border:1px solid var(--border-soft);
-  border-radius:var(--radius-xl);
-  background:var(--surface-strong);
-  box-shadow:var(--shadow-strong);
-}
-.hero-stage::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at top right, rgba(124,184,255,.18) 0%, transparent 34%),
-    radial-gradient(circle at bottom left, rgba(198,156,255,.12) 0%, transparent 36%);
-}
-.hero-stage::after{
-  content:'';
-  position:absolute;
-  inset:1px;
-  border:1px solid rgba(255,255,255,.04);
-  border-radius:12px;
-  pointer-events:none;
-}
-.hero-stage-head,.hero-terminal-meta,.hero-flightpath{
-  position:relative;
-  z-index:1;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-.hero-stage-head{margin-bottom:18px}
-.hero-stage-kicker,.hero-terminal-kicker,.hero-flightpath-label{
-  font-family:var(--mono);
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.16em;
-}
-.hero-stage-kicker{margin-bottom:10px;color:var(--org)}
-.hero-stage-title{
-  max-width:12ch;
-  margin:0;
-  font-size:clamp(24px,3vw,38px);
-  line-height:1.02;
-  letter-spacing:-.05em;
-}
-.hero-stage-link,.hero-flightpath-items a{
-  border:1px solid var(--border-soft);
-  border-radius:10px;
-  background:rgba(255,255,255,.03);
-  color:var(--t2);
-  font-family:var(--mono);
-  font-size:12px;
-  text-decoration:none;
-}
-.hero-stage-link{flex-shrink:0;padding:10px 14px}
-.hero-reel{
-  position:relative;
-  z-index:1;
-  display:grid;
-  gap:10px;
-  margin-bottom:16px;
-}
-.hero-reel-item{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  gap:16px;
-  align-items:center;
-  padding:13px 16px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;
-  background:rgba(255,255,255,.025);
-  color:inherit;
-  text-decoration:none;
-}
-.hero-reel-index,.hero-reel-meta,.hero-reel-lang{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--t3);
-}
-.hero-reel-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
-.hero-reel-name{color:var(--t1);font-size:15px;font-weight:600}
-.hero-reel-meta{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  text-transform:uppercase;
-  letter-spacing:var(--ls-caps);
-}
-.hero-reel-lang{
-  padding:6px 10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.05);
-}
-.hero-reel-lang.ps{color:var(--blue);background:var(--blued)}
-.hero-reel-lang.py{color:var(--grn);background:var(--grnd)}
-.hero-reel-lang.ext{color:var(--pur);background:var(--purd)}
-.hero-reel-lang.kt{color:var(--teal);background:var(--teald)}
-.hero-terminal-shell{
-  position:relative;
-  z-index:1;
-  padding:18px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:12px;
-  background:rgba(5,10,18,.38);
-}
-.hero-terminal-meta{margin-bottom:14px}
-.hero-terminal-copy{display:flex;flex-direction:column;gap:4px}
-.hero-terminal-kicker{color:var(--t3)}
-.hero-terminal-note{color:var(--t2);font-size:13px}
-.hero-terminal-badge{
-  flex-shrink:0;
-  padding:8px 12px;
-  border-radius:10px;
-  background:var(--blued);
-  color:var(--blue);
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-}
-.term{
-  overflow:hidden;
-  border:1px solid rgba(124,184,255,.16);
-  border-radius:12px;
-  background:rgba(5,10,18,.72);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.tb{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:14px 18px;
-  border-bottom:1px solid var(--glass-border);
-  background:rgba(255,255,255,.03);
-}
-.td{width:10px;height:10px;border-radius:50%}
-.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
-.tt{
-  flex:1;
-  text-align:center;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:12px;
-}
-.tbd{
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-  padding:20px;
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.8;
-}
-.term-input-line{
-  display:flex;
-  align-items:center;
-  min-height:32px;
-  font-family:var(--mono);
-  font-size:13px;
-}
-.term-input{
-  min-height:32px;
-  padding:4px 0;
-  background:none;
-  border:0;
-  color:var(--t1);
-  font:inherit;
-}
-.term-hint{
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:11px;
-  text-align:center;
-  padding:8px;
-}
-.tp,.ts{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}
-.hero-flightpath{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.hero-flightpath-label{flex:0 0 auto;padding-top:6px;color:var(--t3)}
-.hero-flightpath-items{display:flex;flex-wrap:wrap;gap:10px}
-.hero-flightpath-items a{padding:7px 10px;font-size:11px}
 section{position:relative;z-index:1}
 @media(max-width:1100px){
   .hi{grid-template-columns:1fr;gap:36px;align-items:start}
-  .ht{max-width:none}
-  .hero-stage{max-width:720px}
+  .ht{display:block;max-width:none}
+  .hero-signals{
+    width:auto;
+    max-width:680px;
+    margin:18px 0 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 12px;
+  }
 }
 @media(max-width:900px){
   .nk{display:none}
-  .nav-search-kbd{display:none}
 }
 @media(max-width:640px){
-  .ni{height:64px;padding:0 16px;gap:10px}
+  .ni{
+    height:64px;
+    padding:0 16px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+  .nav-actions{grid-column:2}
+  .nk{grid-column:1 / -1}
   .nl{min-width:0;font-size:14px;white-space:nowrap}
   .nav-actions{gap:8px;flex-shrink:0}
   .route-home .ng{width:40px;min-width:40px;padding:0;justify-content:center;font-size:0}
   .nav-search{width:40px;height:40px;padding:0;justify-content:center}
-  .nav-search-label,.nav-search-kbd{display:none}
+  .nav-search-label{display:none}
   .mt{display:block}
   .nk.open{
     display:flex;
@@ -849,7 +687,7 @@ section{position:relative;z-index:1}
   .hero{padding:96px 16px 56px}
   .hn{font-size:clamp(44px,16vw,68px)}
   .hr{font-size:17px}
-  .hd{font-size:16px}
+  .hero-summary{font-size:16px}
   .hero-proof-strip{grid-template-columns:1fr;gap:8px}
   .hero-proof{padding:11px 12px}
   .hero-proof-value{font-size:20px}
@@ -875,22 +713,13 @@ section{position:relative;z-index:1}
     text-align:right;
   }
   .ha .btn{width:100%;justify-content:center}
-  .hero-stage{padding:20px;border-radius:12px}
-  .hero-stage-head,.hero-terminal-meta,.hero-flightpath{flex-direction:column}
-  .hero-reel-item{grid-template-columns:auto 1fr}
-  .hero-reel-lang{grid-column:2;justify-self:start}
-  .hero-flightpath-items{width:100%}
-  .hero-flightpath-items a{width:calc(50% - 5px);text-align:center}
 }
 @media(max-width:460px){
   .hs{grid-template-columns:1fr}
   .hs-item{padding-right:0}
   .hs-item:not(:last-child){border-right:0;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
-  .hero-flightpath-items a{width:100%}
 }
-.hero::before,
-.hero::after,
-.hero-stage::before{
+.hero::before,.hero::after{
   display:none!important;
 }
 .hero{
@@ -904,14 +733,12 @@ section{position:relative;z-index:1}
 .hi{
   gap:34px;
   align-items:start;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
 }
 .ht{
-  max-width:600px;
+  max-width:720px;
   padding-bottom:0;
-}
-.hero-brandline{
-  margin-bottom:14px;
-  letter-spacing:.14em;
+  display:block;
 }
 .hero-avatar{
   width:48px;
@@ -944,7 +771,7 @@ section{position:relative;z-index:1}
   font-size:clamp(15px,1.4vw,17px);
   line-height:1.45;
 }
-.hd{
+.hero-summary{
   max-width:56ch;
   margin-bottom:14px;
   font-size:15px;
@@ -966,63 +793,23 @@ section{position:relative;z-index:1}
   padding:6px 10px;
 }
 .hero-signals{
+  width:auto;
+  max-width:680px;
+  display:flex;
+  flex-wrap:wrap;
   gap:8px;
-  margin-top:12px;
+  margin:12px 0 0;
 }
 .hero-signal{
   padding:10px;
 }
-.hero-stage{
-  padding:18px;
-}
-.hero-stage-head{
-  margin-bottom:12px;
-}
-.hero-stage-title{
-  max-width:16ch;
-  font-size:clamp(20px,2.1vw,28px);
-  letter-spacing:-.03em;
-}
-.hero-stage-link{
-  padding:8px 10px;
-}
-.hero-reel{
-  gap:8px;
-  margin-bottom:12px;
-}
-.hero-reel-item{
-  gap:12px;
-  padding:10px 12px;
-}
-.hero-terminal-shell{
-  padding:12px;
-}
-.hero-terminal-meta{
-  margin-bottom:10px;
-}
-.hero-terminal-note{
-  font-size:12px;
-}
-.hero-terminal-badge{
-  padding:6px 9px;
-}
-.hero-stage .tbd{
-  height:188px;
-  min-height:188px;
-  padding:14px;
-  font-size:12px;
-  line-height:1.65;
-}
-.hero-flightpath{
-  margin-top:10px;
-  padding-top:10px;
-}
-.hero-flightpath-items{
-  gap:8px;
-}
-.hero-flightpath-items a{
-  padding:6px 8px;
-  font-size:10px;
+@media(max-width:979px){
+  .hi{
+    grid-template-columns:1fr;
+  }
+  .hero-evidence{
+    display:none;
+  }
 }
 @media(min-width:1101px) and (max-height:820px){
   .hero{
@@ -1038,37 +825,11 @@ section{position:relative;z-index:1}
   .hero-proof{
     min-height:74px;
   }
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-flightpath{
+  .hero-summary,.hero-pulse,.hero-signals,.hero-evidence-head p{
     display:none;
   }
-  .hero-stage{
-    padding:14px;
-  }
-  .hero-stage-head{
-    margin-bottom:8px;
-  }
-  .hero-stage-title{
-    font-size:24px;
-  }
-  .hero-reel{
-    gap:6px;
-    margin-bottom:8px;
-  }
-  .hero-reel-item{
-    padding:8px 10px;
-  }
-  .hero-terminal-shell{
-    padding:10px;
-  }
-  .hero-terminal-meta{
-    display:none;
-  }
-  .hero-stage .tbd{
-    height:112px;
-    min-height:112px;
+  .hero-evidence{
+    gap:10px;
   }
 }
 @media(max-width:1320px){
@@ -1116,12 +877,7 @@ section{position:relative;z-index:1}
   .hi{
     gap:24px;
   }
-  .hero-brandline{
-    margin-bottom:16px;
-    font-size:11px;
-    letter-spacing:.14em;
-  }
-  .hero-avatar{
+    .hero-avatar{
     width:52px;
     height:52px;
   }
@@ -1148,11 +904,7 @@ section{position:relative;z-index:1}
   .hero-proof-value{
     font-size:17px;
   }
-  .hero-proof-copy,
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-stage{
+  .hero-proof-copy,.hero-summary,.hero-pulse,.hero-signals{
     display:none;
   }
   .hr{
@@ -1198,21 +950,926 @@ section{position:relative;z-index:1}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .hero-grid,.hero-stage::before,.hero-stage::after{animation:none!important}
+  .hero-grid{animation:none!important}
 }
 @media(forced-colors:active){
   :focus-visible{outline:2px solid Highlight;outline-offset:3px}
-  body::before,.hero-stage::before,.hero-stage::after{display:none!important}
+  body::before{display:none!important}
   .btn,button,.theme-toggle,input,select,textarea{border:1px solid ButtonText}
 }
 }
-</style><link rel="preload" href="/_assets/global.BU5iFfFQ.css" as="style"><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.CsB98N7C.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script>  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#source","name":"HurricaneMap","description":"Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2","codeRepository":"https://github.com/SysAdminDoc/HurricaneMap","programmingLanguage":"JavaScript","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/HurricaneMap.png","keywords":"Web Apps","dateModified":"2026-06-21T01:07:42.000Z","url":"https://sysadmindoc.github.io/HurricaneMap/","targetProduct":{"@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#software-application"}},{"@type":"SoftwareApplication","@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#software-application","name":"HurricaneMap","description":"Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2","url":"https://sysadmindoc.github.io/HurricaneMap/","applicationCategory":"Web Apps application","operatingSystem":"Web","isAccessibleForFree":true,"author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/HurricaneMap.png","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"keywords":"Web Apps","dateModified":"2026-06-21T01:07:42.000Z"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"Web Apps lane","item":"https://sysadmindoc.github.io/lang/web/"},{"@type":"ListItem","position":3,"name":"HurricaneMap","item":"https://sysadmindoc.github.io/projects/HurricaneMap/"}]}]}</script> <a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: HurricaneMap"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">HurricaneMap</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="HurricaneMap" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Web Apps"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-06-21"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Web Apps" data-pagefind-meta="type:Live app"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/web/" class="page-inline-link">Web Apps lane</a> <span>/</span>  <span>HurricaneMap</span> </div> <div class="project-meta"> <span class="cdo web project-meta-dot"></span> <span class="project-category">WEB</span>  <span class="project-badge-live">LIVE</span> </div> <h1 class="project-title">HurricaneMap</h1> <p class="project-desc">Every U.S. hurricane landfall (1851&ndash;present) from NOAA HURDAT2</p> <div class="project-tags"> <span class="ctg">Web Apps</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/HurricaneMap" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+
+/* First-viewport visual refresh */
+:root{
+  --bg:#030812;
+  --bg2:#08111e;
+  --bg3:#0d1a2c;
+  --glass:rgba(9,18,31,.68);
+  --glass-hover:rgba(124,184,255,.095);
+  --glass-border:rgba(150,178,218,.16);
+  --border-soft:rgba(150,178,218,.13);
+  --border-strong:rgba(124,184,255,.3);
+  --surface-1:linear-gradient(180deg, rgba(15,29,48,.88), rgba(7,15,28,.76));
+  --surface-2:linear-gradient(180deg, rgba(17,34,55,.7), rgba(8,17,31,.58));
+  --surface-strong:linear-gradient(150deg, rgba(13,29,50,.96), rgba(5,12,24,.9));
+  --shadow-soft:0 22px 54px rgba(0,0,0,.24);
+  --shadow-strong:0 34px 86px rgba(0,0,0,.42);
+}
+html[data-theme="light"]{
+  --bg:#f7f9fc;
+  --bg2:#eef4fb;
+  --bg3:#e3edf8;
+  --glass:rgba(255,255,255,.82);
+  --glass-hover:rgba(53,107,191,.08);
+  --glass-border:rgba(47,68,104,.15);
+  --border-soft:rgba(47,68,104,.14);
+  --border-strong:rgba(53,107,191,.28);
+  --surface-1:linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,248,253,.82));
+  --surface-2:linear-gradient(180deg, rgba(255,255,255,.82), rgba(238,244,251,.7));
+  --surface-strong:linear-gradient(150deg, rgba(255,255,255,.98), rgba(237,245,252,.88));
+  --shadow-soft:0 20px 48px rgba(29,42,70,.12);
+  --shadow-strong:0 30px 72px rgba(29,42,70,.18);
+}
+body{
+  background:
+    radial-gradient(circle at 72% 8%, rgba(124,184,255,.15), transparent 30%),
+    radial-gradient(circle at 20% 28%, rgba(88,229,214,.09), transparent 26%),
+    linear-gradient(180deg, #030812 0%, #071120 44%, #03101a 100%);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 78% 10%, rgba(53,107,191,.12), transparent 30%),
+    radial-gradient(circle at 16% 30%, rgba(31,157,143,.08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf4fb 100%);
+}
+body::before{
+  opacity:.1;
+  background-size:72px 72px;
+}
+#nav{
+  background:rgba(3,8,18,.76);
+  border-bottom-color:rgba(150,178,218,.12);
+  box-shadow:0 18px 54px rgba(0,0,0,.24);
+}
+html[data-theme="light"] #nav{
+  background:rgba(247,249,252,.82);
+  box-shadow:0 12px 34px rgba(29,42,70,.1);
+}
+.ni{
+  height:68px;
+}
+.nl{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
+  text-shadow:none;
+}
+.nl::before{
+  content:'>_';
+  display:inline-grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(74,222,128,.24);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(74,222,128,.045));
+  box-shadow:0 14px 30px rgba(74,222,128,.08);
+  color:var(--grn);
+  font-size:15px;
+  margin-right:12px;
+}
+.nk{gap:10px}
+.nk a{
+  border-radius:8px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:650;
+  letter-spacing:.01em;
+}
+.nk a:hover,.nk a.active{background:rgba(124,184,255,.09)}
+.nav-actions{
+  border-radius:10px;
+  background:rgba(255,255,255,.035);
+}
+.hero{padding:82px 32px 34px}
+.hero-grid{
+  opacity:.12;
+}
+.hi{
+  max-width:1380px;
+  grid-template-columns:minmax(0,.95fr) minmax(430px,1fr);
+  gap:clamp(42px,5vw,78px);
+  align-items:start;
+}
+.ht{
+  position:relative;
+  max-width:690px;
+  display:flex;
+  flex-direction:column;
+  padding-left:34px;
+}
+.ht::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:62px;
+  bottom:10px;
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(180deg,var(--grn),var(--blue),var(--pur));
+  box-shadow:0 0 22px rgba(88,229,214,.22);
+}
+.hero-avatar{order:2;margin-bottom:18px}
+.htag{order:3}
+.hn{order:4}
+.hr{order:5}
+.hero-summary{order:6}
+.hs{order:7}
+.hero-proof-strip{order:8}
+.hero-pulse{order:9}
+.ha{order:10}
+.hero-signals{order:11}
+.hero-avatar{
+  width:66px;
+  height:66px;
+  border-color:rgba(88,229,214,.46);
+  box-shadow:0 0 0 5px rgba(88,229,214,.08),0 20px 42px rgba(0,0,0,.22);
+}
+.htag{
+  align-self:flex-start;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--grn);
+}
+.hn{
+  margin-bottom:18px;
+  font-size:clamp(62px,6.7vw,104px);
+  line-height:.9;
+  letter-spacing:-.065em;
+}
+.hn .a{
+  background:linear-gradient(135deg,#62e6d8 0%,#79c4ff 44%,#a98bff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+.hr{
+  max-width:30ch;
+  margin-bottom:18px;
+  font-family:var(--sans);
+  font-size:clamp(21px,2vw,28px);
+  font-weight:720;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.hero-summary{
+  max-width:64ch;
+  margin-bottom:22px;
+  color:var(--t2);
+  font-size:16px;
+  line-height:1.68;
+}
+.hs{
+  max-width:620px;
+  margin-bottom:18px;
+  padding:14px 18px;
+  border:1px solid rgba(150,178,218,.16);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(14,30,52,.72), rgba(7,16,29,.54));
+  box-shadow:0 18px 46px rgba(0,0,0,.18);
+}
+html[data-theme="light"] .hs{
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(239,246,252,.7));
+}
+.hsn{
+  background:none;
+  -webkit-text-fill-color:currentColor;
+  color:var(--t1);
+}
+.hero-proof-strip{max-width:620px;display:none}
+.hero-proof{
+  min-height:78px;
+  background:rgba(255,255,255,.025);
+  box-shadow:none;
+}
+.hero-proof-value{font-size:21px}
+.hero-pulse{display:none}
+.ha{margin-top:10px}
+.btn{
+  border-radius:10px;
+  font-family:var(--sans);
+  font-weight:720;
+}
+.hero-evidence{
+  max-width:650px;
+  gap:18px;
+  padding:22px;
+  border:1px solid rgba(124,184,255,.26);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(10,22,38,.92), rgba(4,10,20,.86));
+  box-shadow:0 28px 82px rgba(0,0,0,.32),0 0 0 1px rgba(88,229,214,.08) inset;
+}
+html[data-theme="light"] .hero-evidence{
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(238,246,252,.9));
+  box-shadow:0 24px 70px rgba(29,42,70,.16),0 0 0 1px rgba(53,107,191,.08) inset;
+}
+.hero-evidence-head{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.hero-evidence-kicker{color:var(--grn)}
+.hero-evidence-head strong{
+  font-family:var(--sans);
+  font-size:clamp(24px,2.5vw,34px);
+  letter-spacing:-.025em;
+}
+.hero-evidence-head p{max-width:58ch;font-size:15px}
+.hero-signals{display:none}
+@media(max-width:1160px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{max-width:none;justify-self:stretch}
+}
+@media(min-width:980px) and (max-width:1160px){
+  .hi{
+    grid-template-columns:minmax(0,.92fr) minmax(340px,.78fr);
+    gap:24px;
+  }
+  .ht{
+    max-width:none;
+    padding-left:24px;
+  }
+  .hn{font-size:clamp(52px,6.2vw,70px)}
+  .hr{
+    max-width:31ch;
+    font-size:clamp(18px,2vw,22px);
+  }
+  .hero-summary{display:none}
+  .hs{padding-inline:14px}
+  .hero-evidence{
+    max-width:none;
+    padding:18px;
+    gap:14px;
+  }
+  .hero-evidence-head p{display:none}
+}
+@media(max-width:979px){
+  .hero-evidence{display:grid}
+}
+@media(max-width:720px){
+  .hero{padding:90px 20px 46px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-avatar{width:58px;height:58px}
+  .hn{font-size:clamp(48px,16vw,66px)}
+  .hr{max-width:none;font-size:20px;line-height:1.25}
+  .hero-summary,.hero-pulse,.hero-signals{display:none}
+  .hs{
+    padding:12px 0;
+    border-inline:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .hero-proof-strip{display:none}
+  .hero-evidence{display:none}
+  .nl{
+    max-width:132px;
+    overflow:hidden;
+    font-size:0;
+  }
+  .nl::before{
+    margin-right:8px;
+  }
+  .nl::after{
+    content:'matt';
+    color:var(--grn);
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:700;
+  }
+}
+
+@media(max-width:1500px){
+  .route-interior .nav-actions > .nav-context{
+    display:none;
+  }
+  .route-interior .nav-search,
+  .route-interior .ng{
+    width:40px;
+    min-width:40px;
+    padding:0;
+    justify-content:center;
+  }
+  .route-interior .nav-search-label{
+    display:none;
+  }
+  .route-interior .ng{
+    font-size:0;
+  }
+  .route-interior .ng svg{
+    width:16px;
+    height:16px;
+  }
+}
+
+.route-home .nk{gap:clamp(8px,.8vw,16px)}
+.route-home .nk a{padding-inline:10px}
+.hero{padding:86px 32px 42px}
+.hi{grid-template-columns:minmax(0,.86fr) minmax(560px,1.06fr);gap:clamp(44px,4.8vw,72px)}
+.ht{max-width:610px;padding-left:36px}
+.ht::before{top:48px;bottom:0}
+.hero-identity{order:1;display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
+.hero-avatar{flex:0 0 auto;width:82px;height:82px;margin:2px 0 0}
+.hn{margin:0;font-size:clamp(74px,6vw,110px);line-height:.88;letter-spacing:-.055em}
+.hn .a{display:block}
+.htag{order:2;margin:0 0 24px;font-size:14px}
+.hr{order:3;max-width:31ch;margin:0 0 12px;font-size:clamp(23px,2vw,29px);line-height:1.18}
+.hero-summary{order:4;max-width:55ch;margin:0 0 22px;color:var(--t2);font-size:16px;line-height:1.62}
+.hs{order:5;max-width:640px;margin:0 0 18px;padding:14px 18px}
+.ha{order:6;margin-top:0}
+.hero-proof-strip,.hero-pulse,.hero-signals{display:none}
+.hero-evidence{max-width:720px;padding:22px 26px 24px;gap:14px;justify-self:stretch}
+.hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.12em}
+.hero-evidence-kicker .dot,.hero-live-badge .dot{width:7px;height:7px;border-radius:999px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+.hero-evidence-head strong{font-size:clamp(26px,2.2vw,36px)}
+.hero-evidence-head p{max-width:60ch}
+.hero-live-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;color:var(--t2);background:rgba(255,255,255,.035);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:238px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:12px;background:linear-gradient(180deg, rgba(4,10,18,.94), rgba(5,11,20,.86));color:inherit;text-decoration:none;box-shadow:0 22px 50px rgba(0,0,0,.24)}
+.hero-showcase-brand{min-width:0;display:grid;place-items:center;align-content:center;gap:10px;padding:24px 18px;border-right:1px solid rgba(150,178,218,.16);text-align:center}
+.hero-app-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:14px;color:#f5f7ff;background:linear-gradient(135deg,#5f75ff,#9267ff 54%,#5ce5d7);box-shadow:0 18px 34px rgba(92,117,255,.28)}
+.hero-app-icon svg{width:30px;height:30px}
+.hero-showcase-brand strong{color:#7890ff;font-family:var(--mono);font-size:clamp(20px,1.8vw,28px);letter-spacing:.14em}
+.hero-showcase-brand small{max-width:20ch;color:var(--t2);font-size:13px;line-height:1.4}
+.hero-showcase-shot{position:relative;min-width:0;display:block;overflow:hidden}
+.hero-showcase-shot img{width:100%;height:100%;min-height:238px;display:block;object-fit:cover;object-position:top center;opacity:.92}
+.hero-tool-strip{position:absolute;left:14px;right:14px;top:14px;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
+.hero-tool-strip span{padding:4px 8px;border:1px solid rgba(150,178,218,.18);border-radius:5px;background:rgba(3,8,18,.7);color:var(--t2);font-family:var(--mono);font-size:9px;line-height:1}
+.hero-carousel-ui{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:12px;min-height:36px}
+.hero-carousel-arrow{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.04);color:var(--t1);font-size:25px;line-height:1}
+.hero-carousel-dots{display:flex;justify-content:center;gap:10px}
+.hero-carousel-dots span{width:9px;height:9px;border-radius:999px;background:rgba(150,178,218,.28)}
+.hero-carousel-dots .is-active{background:var(--grn);box-shadow:0 0 14px var(--grn-glow)}
+.hero-app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.hero-app-card{min-width:0;min-height:116px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:14px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.03);color:inherit;text-decoration:none}
+.hero-app-card-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#cdd8f7;background:rgba(124,184,255,.12)}
+.hero-app-card-icon svg{width:18px;height:18px}
+.hero-app-card strong{display:block;color:var(--t1);font-size:13px;line-height:1.2}
+.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:11px;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-app-card em{align-self:end;color:var(--grn);font-family:var(--mono);font-size:10px;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+.hero-app-more em{justify-self:end;color:var(--pur);font-size:18px;letter-spacing:0;text-transform:none}
+html[data-theme="light"] .hero-showcase{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(238,246,252,.9));box-shadow:0 18px 46px rgba(29,42,70,.13)}
+html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badge,html[data-theme="light"] .hero-carousel-arrow{background:rgba(255,255,255,.68)}
+@media(max-width:1320px){
+  .route-home .nk{gap:clamp(4px,.45vw,8px)}
+  .route-home .nk a{padding-inline:8px;font-size:13px}
+}
+@media(max-width:1180px){
+  .hi{grid-template-columns:minmax(0,.9fr) minmax(430px,1fr);gap:28px}
+  .hero-evidence{padding:18px}
+  .hero-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:979px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{display:grid;max-width:none}
+}
+@media(max-width:720px){
+  .hero{padding:88px 20px 44px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-identity{display:grid;gap:16px;margin-bottom:18px}
+  .hero-avatar{width:62px;height:62px}
+  .hn{font-size:clamp(50px,16vw,68px)}
+  .htag{justify-content:flex-start;width:auto}
+  .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
+  .hero-summary{display:block;margin:0 0 20px;font-size:15px;line-height:1.55}
+  .hs{margin:0 0 16px;border:1px solid rgba(150,178,218,.14);border-radius:12px;background:rgba(255,255,255,.025)}
+  .hero-evidence{display:none}
+}
+</style><link rel="preload" href="/_assets/global.DkERpmV2.css" as="style"><link rel="stylesheet" href="/_assets/global.DkERpmV2.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.DkERpmV2.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#source","name":"HurricaneMap","description":"Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2","codeRepository":"https://github.com/SysAdminDoc/HurricaneMap","programmingLanguage":"JavaScript","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/HurricaneMap.png","keywords":"JavaScript, Web Apps","datePublished":"2026-05-03T15:59:47.000Z","dateModified":"2026-07-03T23:37:11.000Z","license":"https://spdx.org/licenses/MIT.html","url":"https://sysadmindoc.github.io/HurricaneMap/","targetProduct":{"@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#software-application"}},{"@type":"SoftwareApplication","@id":"https://sysadmindoc.github.io/projects/HurricaneMap/#software-application","name":"HurricaneMap","description":"Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2","url":"https://sysadmindoc.github.io/HurricaneMap/","applicationCategory":"Web Apps application","operatingSystem":"Web","isAccessibleForFree":true,"author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/HurricaneMap.png","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"keywords":"JavaScript, Web Apps","datePublished":"2026-05-03T15:59:47.000Z","dateModified":"2026-07-03T23:37:11.000Z","license":"https://spdx.org/licenses/MIT.html","softwareVersion":"v1.4.6"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"Web Apps lane","item":"https://sysadmindoc.github.io/lang/web/"},{"@type":"ListItem","position":3,"name":"HurricaneMap","item":"https://sysadmindoc.github.io/projects/HurricaneMap/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: HurricaneMap"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">HurricaneMap</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="HurricaneMap" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Web Apps"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-07-03"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Web Apps" data-pagefind-meta="type:Live app"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/web/" class="page-inline-link">Web Apps lane</a> <span>/</span>  <span>HurricaneMap</span> </div> <div class="project-meta"> <span class="cdo web project-meta-dot"></span> <span class="project-category">WEB</span>  <span class="project-badge-live">LIVE</span> </div> <h1 class="project-title">HurricaneMap</h1> <p class="project-desc">Every U.S. hurricane landfall (1851&ndash;present) from NOAA HURDAT2</p> <div class="project-tags"> <span class="ctg">JavaScript</span><span class="ctg">Web Apps</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/HurricaneMap" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
 Open source on GitHub
 </a> <a href="https://sysadmindoc.github.io/HurricaneMap/" target="_blank" rel="noopener" class="btn bg2"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"></path></svg>
 Open live build
 </a> <button type="button" class="btn bg2 project-share-button" data-project-share data-share-title="HurricaneMap" data-share-text="Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2" data-share-url="https://sysadmindoc.github.io/projects/HurricaneMap/" aria-describedby="project-share-status"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
 Share project
-</button> <a href="/lang/web/" class="page-action-link">Open the Web Apps lane</a>  <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Runs live</div> <div class="project-fact-detail">Launches in the browser with no install wall.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">Web Apps lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-06-21T01:07:42.0000000Z" data-rel="2026-06-21T01:07:42.0000000Z">Jun 21, 2026</time></div> <div class="project-fact-detail">Updated Jun 21, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">No tag yet</div> <div class="project-fact-detail">README is the clearest project overview right now.</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav><span class="page-jump-label">On This Page</span><div class="page-jump-links"><a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"><span class="page-jump-link-label">Overview</span><span class="page-jump-badge">PROJECT</span></a><a href="#project-preview" class="page-jump-link" title="Captured product surface from the live build." data-page-jump-link="project-preview"><span class="page-jump-link-label">Live Preview</span><span class="page-jump-badge">VISUAL</span></a><a href="#project-notes" class="page-jump-link" title="Fallback notes when a cached README is not available yet." data-page-jump-link="project-notes"><span class="page-jump-link-label">Repository Notes</span><span class="page-jump-badge">DOCS</span></a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"><span class="page-jump-link-label">More from This Lane</span><span class="page-jump-badge">RELATED</span></a></div></nav><script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Live Preview</h2> <p class="project-section-copy">Captured from the deployed app so you can judge the real product surface before opening it.</p> </div> </div> <a href="https://sysadmindoc.github.io/HurricaneMap/" class="project-shot-link" role="button" tabindex="0" data-shot-viewer data-shot-src="/screenshots/HurricaneMap.jpg" data-shot-alt="HurricaneMap live screenshot" data-shot-live="https://sysadmindoc.github.io/HurricaneMap/" data-shot-source="https://github.com/SysAdminDoc/HurricaneMap"> <img src="/screenshots/HurricaneMap.jpg" alt="HurricaneMap live screenshot" class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <span class="project-shot-badge">View screenshot</span> </a> <p class="project-readme-hint">
+</button> <a href="/lang/web/" class="page-action-link">Open the Web Apps lane</a>  <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Runs live</div> <div class="project-fact-detail">Launches in the browser with no install wall.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">Web Apps lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-07-03T23:37:11Z" data-rel="2026-07-03T23:37:11Z">Jul 3, 2026</time></div> <div class="project-fact-detail">Updated Jul 3, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">v1.4.6</div> <div class="project-fact-detail">Published Jul 3, 2026</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Captured product surface from the live build." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Live Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"> <span class="page-jump-link-label">README</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-releases" class="page-jump-link" title="Tagged release history pulled from GitHub for this project." data-page-jump-link="project-releases"> <span class="page-jump-link-label">Recent Releases</span> <span class="page-jump-badge">RELEASES</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Live Preview</h2> <p class="project-section-copy">Captured from the deployed app so you can judge the real product surface before opening it.</p> </div> </div> <a href="https://sysadmindoc.github.io/HurricaneMap/" class="project-shot-link" role="button" tabindex="0" data-shot-viewer data-shot-src="/screenshots/HurricaneMap.jpg" data-shot-alt="HurricaneMap live screenshot" data-shot-live="https://sysadmindoc.github.io/HurricaneMap/" data-shot-source="https://github.com/SysAdminDoc/HurricaneMap"> <img src="/screenshots/HurricaneMap.jpg" alt="HurricaneMap live screenshot" class="project-shot" width="1600" height="1000" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <span class="project-shot-badge">View screenshot</span> </a> <p class="project-readme-hint">
 Source at <a href="https://github.com/SysAdminDoc/HurricaneMap" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/HurricaneMap</a>.
-</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>    <div class="si"> <div class="project-readme-wrap project-panel" id="project-notes"> <div class="project-section-head"> <div> <h2 class="project-section-title">Repository Notes</h2> <p class="project-section-copy">GitHub metadata is available, but a readable cached README has not been pulled into the site yet.</p> </div> </div> <div class="project-empty page-empty"> <strong>No cached README yet.</strong> Use the GitHub source and the release history below for the clearest current view of this project.
-</div> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/Openshop/" class="ca" aria-describedby="related-rank-Openshop" data-rank="40.0000" data-rank-position="109" data-rank-label="Rank 109: updated today, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Openshop</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Free browser-based image editor - layers, smart effects, PSD import</span> <span class="ca-rank ca-rank-related" id="related-rank-Openshop" title="Rank 109: updated today, downloadable release"> Recommended #109: updated today, downloadable release </span> </span> <span class="ca-side">   <span class="lb2">LIVE</span> </span> </a><a href="/projects/SkyTrack/" class="ca" aria-describedby="related-rank-SkyTrack" data-rank="40.0000" data-rank-position="110" data-rank-label="Rank 110: updated today, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">SkyTrack</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Real-time aircraft tracker — commercial, military, helicopters</span> <span class="ca-rank ca-rank-related" id="related-rank-SkyTrack" title="Rank 110: updated today, downloadable release"> Recommended #110: updated today, downloadable release </span> </span> <span class="ca-side">   <span class="lb2">LIVE</span> </span> </a><a href="/projects/VIPTrack/" class="ca" aria-describedby="related-rank-VIPTrack" data-rank="40.0000" data-rank-position="111" data-rank-label="Rank 111: updated today, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">VIPTrack</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Military and VIP aircraft tracker</span> <span class="ca-rank ca-rank-related" id="related-rank-VIPTrack" title="Rank 111: updated today, downloadable release"> Recommended #111: updated today, downloadable release </span> </span> <span class="ca-side">   <span class="lb2">LIVE</span> </span> </a><a href="/projects/NukeMap/" class="ca" aria-describedby="related-rank-NukeMap" data-rank="40.0000" data-rank-position="112" data-rank-label="Rank 112: updated today, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">NukeMap</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets</span> <span class="ca-rank ca-rank-related" id="related-rank-NukeMap" title="Rank 112: updated today, downloadable release"> Recommended #112: updated today, downloadable release </span> </span> <span class="ca-side">   <span class="lb2">LIVE</span> </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script> <script src="/scripts/shot-viewer.js"></script> <footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Live Preview","href":"#project-preview","desc":"Captured product surface from the live build.","badge":"VISUAL"},{"label":"Repository Notes","href":"#project-notes","desc":"Fallback notes when a cached README is not available yet.","badge":"DOCS"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script> <script src="/cmdk-data.js"></script> <script src="/scripts/shared.js"></script> <script src="/scripts/cmdk-loader.js"></script> <script src="/scripts/relative-time.js"></script> <script src="/scripts/mobile-nav.js"></script> <script src="/scripts/scroll-reveal.js"></script>   </body> </html>
+</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>19 min read</span> <span>4,081 words</span> <span>28 sections</span> </div> </div> </div> <details class="project-readme-toc" open> <summary>Contents</summary> <ol> <li class="project-readme-toc-depth-1"> <a href="#hurricanemap">HurricaneMap</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-this-is">What this is</a> </li><li class="project-readme-toc-depth-2"> <a href="#quality-plan">Quality plan</a> </li><li class="project-readme-toc-depth-2"> <a href="#highlights">Highlights</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-6-desktop-panel-fit-july-2026">What&amp;#39;s new in v1.4.6 - Desktop panel fit (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-5-desktop-shelf-alignment-july-2026">What&amp;#39;s new in v1.4.5 - Desktop shelf alignment (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-4-desktop-panel-refinement-july-2026">What&amp;#39;s new in v1.4.4 - Desktop panel refinement (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-3-premium-layout-and-settings-polish-july-2026">What&amp;#39;s new in v1.4.3 - Premium layout and settings polish (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-2-playback-map-first-layout-july-2026">What&amp;#39;s new in v1.4.2 — Playback map-first layout (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-1-map-first-overlay-polish-july-2026">What&amp;#39;s new in v1.4.1 — Map-first overlay polish (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-39-s-new-in-v1-4-0-deep-audit-pass-july-2026">What&amp;#39;s new in v1.4.0 — Deep audit pass (July 2026)</a> </li><li class="project-readme-toc-depth-2"> <a href="#premium-ux-ui-polish">Premium UX/UI Polish</a> </li><li class="project-readme-toc-depth-2"> <a href="#phase-8-mobile-optimization-amp-advanced-features">Phase 8: Mobile Optimization &amp;amp; Advanced Features</a> </li><li class="project-readme-toc-depth-2"> <a href="#quick-start">Quick start</a> </li><li class="project-readme-toc-depth-2"> <a href="#data-export-amp-research">Data Export &amp;amp; Research</a> </li><li class="project-readme-toc-depth-2"> <a href="#project-layout">Project layout</a> </li><li class="project-readme-toc-depth-2"> <a href="#how-landfalls-are-detected">How landfalls are detected</a> </li><li class="project-readme-toc-depth-2"> <a href="#saffir-simpson-at-landfall">Saffir-Simpson at landfall</a> </li><li class="project-readme-toc-depth-2"> <a href="#known-data-quirks">Known data quirks</a> </li><li class="project-readme-toc-depth-2"> <a href="#data-sources-licensing-amp-attribution">Data Sources, Licensing &amp;amp; Attribution</a> </li><li class="project-readme-toc-depth-3"> <a href="#data-build-provenance">Data build provenance</a> </li><li class="project-readme-toc-depth-3"> <a href="#open-data-license-clarity">Open Data License Clarity</a> </li><li class="project-readme-toc-depth-3"> <a href="#for-research-amp-publications">For Research &amp;amp; Publications</a> </li><li class="project-readme-toc-depth-3"> <a href="#data-accuracy-notes">Data Accuracy Notes</a> </li><li class="project-readme-toc-depth-2"> <a href="#data-sources-amp-credits-detailed-table">Data sources &amp;amp; credits (Detailed table)</a> </li><li class="project-readme-toc-depth-2"> <a href="#refreshing-the-radar-archive">Refreshing the radar archive</a> </li><li class="project-readme-toc-depth-2"> <a href="#manual-hurdat2-refresh">Manual HURDAT2 Refresh</a> </li><li class="project-readme-toc-depth-2"> <a href="#license-amp-attribution">License &amp;amp; Attribution</a> </li> </ol> </details> <article class="project-readme"><h1 id="hurricanemap">HurricaneMap</h1>
+<p><a href="https://sysadmindoc.github.io/HurricaneMap/" rel="noopener nofollow" target="_blank">![Live demo](https://img.shields.io/badge/live%20demo-sysadmindoc.github.io%2FHurricaneMap-cba6f7.svg)</a>
+<a href="https://github.com/SysAdminDoc/HurricaneMap/releases" rel="noopener nofollow" target="_blank">![Version](https://img.shields.io/badge/version-1.4.6-blue.svg)</a>
+<a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">![License](https://img.shields.io/badge/license-MIT-green.svg)</a>
+<a href="#">![Platform](https://img.shields.io/badge/platform-web-lightgrey.svg)</a>
+<a href="https://www.nhc.noaa.gov/data/" rel="noopener nofollow" target="_blank">![Data](https://img.shields.io/badge/data-NOAA%20HURDAT2-orange.svg)</a></p>
+<blockquote>
+<p><strong>174 years of U.S. hurricane landfalls</strong>, every dot drawn directly from NOAA's HURDAT2 best-track database (1851–2025).</p>
+<p><strong>Live demo:</strong> <a href="https://sysadmindoc.github.io/HurricaneMap/" rel="noopener nofollow" target="_blank">https://sysadmindoc.github.io/HurricaneMap/</a></p>
+</blockquote>
+<img width="2068" height="916" alt="HurricaneMap map-first dark layout" src="https://raw.githubusercontent.com/SysAdminDoc/HurricaneMap/HEAD/example.png" loading="lazy" decoding="async" />
+<br />
+<img width="2402" height="1118" alt="HurricaneMap storm panel with map-preserving lane" src="https://raw.githubusercontent.com/SysAdminDoc/HurricaneMap/HEAD/examplemap.png" loading="lazy" decoding="async" /><h2 id="what-this-is">What this is</h2>
+<p>A static, interactive web map that plots <strong>every recorded hurricane and tropical-storm landfall on U.S. soil</strong>, drawn straight from the National Hurricane Center's HURDAT2 best-track database — the same source the NHC uses for its post-season analyses.</p>
+<p>Click any dot and you get the storm's full track, its peak intensity, every U.S. landfall it made (chronological), and one-click jumps to the Wikipedia article, YouTube footage search, NOAA Tropical Cyclone Report, and the NHC storm wallet.</p>
+<h2 id="quality-plan">Quality plan</h2>
+<p>The active quality improvement tracker lives in <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/QUALITY_IMPROVEMENT_PLAN.md" rel="noopener nofollow" target="_blank">`docs/QUALITY_IMPROVEMENT_PLAN.md`</a>. It covers regression automation, data contracts, URL state, data provenance, service-worker update UX, accessibility coverage, visual snapshots, and maintainability work.</p>
+<p>The app uses an offline-first service worker. Historical lookup data is preinstalled into compressed IndexedDB with CacheStorage fallback, while large local radar PNGs are cached on demand. When shell or offline-data assets change, bump <code>SW_VERSION</code> in <code>sw.js</code>; installed users will then see an in-app reload prompt instead of silently staying on stale UI.</p>
+<p>Local verification:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">install</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">test</span></span></code></pre><p>Fast non-browser verification:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">build</span></span></code></pre><h2 id="highlights">Highlights</h2>
+<ul>
+<li><strong>596 storms · 760 landfall events · 374 hurricane-strength landfalls</strong> spanning 1851–2025.</li>
+<li>Both <strong>Atlantic</strong> and <strong>Eastern North Pacific</strong> HURDAT2 basins ingested (so storms like Iniki '92 on Kauai are included).</li>
+<li><strong>Inferred-landfall detection</strong> for storms whose 6-hourly track grazes U.S. land between synoptic times — fixes Iniki and similar Pacific landfalls that don't carry an explicit <code>L</code> marker in HURDAT2.</li>
+<li><strong>Hotspot / cold-spot analysis</strong>: ranks every coastal state, lists ones that have never recorded a hurricane-strength landfall (Delaware, Maryland, Virginia, New Hampshire, Pennsylvania, DC).</li>
+<li><strong>Multi-state tracking</strong> for storms like Andrew (FL → FL → LA), Charley (FL → FL → SC → SC), Hugo (PR → PR → SC), Katrina (FL → LA → LA).</li>
+<li>Per-segment <strong>intensity-coloured tracks</strong> — you can see exactly where a storm intensified, peaked, and weakened.</li>
+<li><strong>Track animation</strong> — opt-in playback of a spinning hurricane glyph and translucent wind-field disk that travels the full path, both sized in real-time by Saffir-Simpson category at each track point. Starting playback collapses the storm panel to a restore tab and promotes radar sync, speed, restart, close, and scrubber controls into a compact map dock.</li>
+<li><strong>📡 Archived NEXRAD radar — full-storm timeline, offline-capable</strong> — every storm from August 1995 onward ships with <strong>every in-coverage 6-hourly track frame</strong> baked into the repo. Click 📡 next to any landfall and the loop animates the entire U.S. passage of that storm from genesis-in-coverage to dissipation, with the map auto-panning to follow the eye. Katrina '05 plays back 22 frames over five days; Helene '24 shows the eyewall crossing the Big Bend. <strong>No internet required after <code>git clone</code>.</strong> Frames not in the local archive transparently fall back to live IEM URLs.</li>
+<li><strong>Live GOES satellite background</strong> — when active storms exist, an opt-in setting overlays current NOAA/NESDIS/STAR GOES GeoColor sectors behind the official advisory track/cone. Atlantic, Eastern Pacific, and Central Pacific active storms automatically choose the closest live sector; see <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/GOES_REALTIME.md" rel="noopener nofollow" target="_blank">`docs/GOES_REALTIME.md`</a>.</li>
+<li><strong>📈 Intensity time-series chart</strong> — inline SVG in every storm panel showing wind (kt) + pressure (mb) over the storm's life, with category-colored dots, dashed pressure line (inverted so deeper storms read higher), Cat 1-5 reference bands, vertical landfall markers, and a hover crosshair tooltip.</li>
+<li><strong>🌀 Compare mode</strong> — pin up to 4 storms, see their tracks color-coded on the map, side-by-side stat tables, mini intensity charts. Andrew '92 vs Katrina '05 vs Michael '18 in one view.</li>
+<li><strong>🔥 Density heatmap</strong> — toggle a Catppuccin-tinted heat layer weighted by Saffir-Simpson category to show landfall hotspots vs cold spots.</li>
+<li><strong>🗺️ State deep-dive</strong> — click any state polygon (or pick from the filter), get a panel with that state's full landfall history: by-category histogram, by-decade trend, top-5 worst on record, every storm sortable.</li>
+<li><strong>🌊 SLOSH MOM storm surge zones</strong> — overlay NHC's Cat 1-5 maximum-of-maximums inundation maps along the U.S. Gulf, East Coast, Caribbean. Powered by NOAA's pre-rendered ArcGIS tiles — picking a category snaps the worst-case envelope into view.</li>
+<li><strong>🌬️ Wind-field swaths</strong> — for storms 2004+, a checkbox in the storm panel renders the actual HURDAT2 wind-radii analysis (34/50/64 kt asymmetric quadrants per track point) as overlapping polygons along the path.</li>
+<li><strong>🛰️ ✈️ 🍝 🌪️ Quicklinks</strong> — every storm panel links out to GOES satellite imagery (RAMMB SLIDER, 2018+), NOAA Storm Events tornado search filtered to the storm's dates + states, Hurricane Hunters recon archive (Tropical Atlantic mirror), Wikipedia, YouTube footage search, NOAA Tropical Cyclone Reports, and the NHC storm wallet.</li>
+<li><strong>⚠️ Impacts data</strong> — raw Wikipedia infobox deaths/damage text plus normalized numeric fields for fatalities and nominal USD damage (208 storms covered so far; rerun <code>scripts/scrape_impacts.py</code> to fill in more).</li>
+<li><strong>🚨 Active storm tracking</strong> — when NHC reports active storms, a pulsing badge appears at the top with cone-of-uncertainty + advisory tracks rendered on the map, an optional live GOES satellite backdrop, hourly active-season feed checks, retry/backoff status, and quicklinks to spaghetti-model viewers (Tropical Tidbits, Track The Tropics).</li>
+<li><strong>👥 Population density</strong> — toggle the SEDAC GPWv4 1km gridded-population overlay to see how many people live in each storm's path / surge zone.</li>
+<li>Search by name OR year. Filter by year range, Saffir-Simpson category, or state.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-6-desktop-panel-fit-july-2026">What's new in v1.4.6 - Desktop panel fit (July 2026)</h2>
+<ul>
+<li><strong>Right panel uses the shelf space.</strong> The desktop details panel now sits lower and leaves only a 6px gutter above the season/timeline shelf.</li>
+<li><strong>Less dead space.</strong> The panel top and bottom are tuned together so the right column feels deliberately seated in the available map lane.</li>
+<li><strong>Regression coverage.</strong> Smoke tests now fail if the right panel leaves too much empty space above the bottom shelf.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-5-desktop-shelf-alignment-july-2026">What's new in v1.4.5 - Desktop shelf alignment (July 2026)</h2>
+<ul>
+<li><strong>Season and timeline align.</strong> The 2020 season card now sits inline to the left of the timeline as part of one bottom shelf instead of floating above it.</li>
+<li><strong>Panels reserve real space.</strong> Desktop side panels now stop above the bottom shelf, leaving a clean gap and keeping the map readable.</li>
+<li><strong>Cleaner update feedback.</strong> Toasts move into the map lane when a side panel is open instead of covering the details panel.</li>
+<li><strong>Regression coverage.</strong> Smoke tests now assert the actual timeline selector, shelf alignment, panel spacing, and no-overlap behavior across themes and desktop viewports.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-4-desktop-panel-refinement-july-2026">What's new in v1.4.4 - Desktop panel refinement (July 2026)</h2>
+<ul>
+<li><strong>Desktop panels breathe.</strong> Analytical panels now use a wider but bounded inspector lane so charts, records, and controls are readable without covering the whole map.</li>
+<li><strong>State and stats panels are orderly.</strong> Legacy dashboard columns were reshaped into stable two-column desktop grids that do not clip or push content offscreen.</li>
+<li><strong>Less window clutter.</strong> The season summary now hides while a side panel is open, leaving one primary reading surface plus the map.</li>
+<li><strong>Keyboard-accessible state rows.</strong> State storm records now expose button semantics, focus states, and Enter/Space activation.</li>
+<li><strong>Regression coverage.</strong> Smoke tests now prove desktop panel fit, state-row accessibility, hidden competing shelves, and storm/state/stats layout across themes.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-3-premium-layout-and-settings-polish-july-2026">What's new in v1.4.3 - Premium layout and settings polish (July 2026)</h2>
+<ul>
+<li><strong>Playback gives the map priority.</strong> On phones, active track playback now collapses the header to a compact identity strip, keeps the storm panel as a small edge restore tab, and holds the controls in a bounded dock.</li>
+<li><strong>Settings feel intentional.</strong> Preferences now include concise helper copy, localized labels, right-anchored desktop placement, and scroll-safe mobile drawer constraints.</li>
+<li><strong>Cleaner component system.</strong> Chips, badges, toggles, swatches, segmented controls, toasts, and playback controls now use the same 4/6/8/10/12px radius scale instead of mixed pill shapes.</li>
+<li><strong>States are clearer.</strong> Search no-results, loading, missing-record, boot-error, and update-prompt copy now give calm recovery guidance in dark, light, and high-contrast themes.</li>
+<li><strong>Regression coverage.</strong> Smoke tests now assert settings layout, mobile playback header compression, compact playback docks, and oversized-radius regressions across supported themes.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-2-playback-map-first-layout-july-2026">What's new in v1.4.2 — Playback map-first layout (July 2026)</h2>
+<ul>
+<li><strong>Playback clears the map.</strong> Starting a storm track now automatically collapses the details window to a restore tab so the animated storm path stays visible.</li>
+<li><strong>Orderly playback dock.</strong> Animation controls now live in a compact fixed map dock with restart, close, speed, radar sync, and scrubber controls arranged for desktop and phone viewports.</li>
+<li><strong>Less vertical clutter.</strong> The timeline, season summary, compare tray, and standalone radar controls are suppressed while track playback is active.</li>
+<li><strong>Regression coverage.</strong> Smoke tests now verify the playback layout in desktop and mobile viewports across dark, light, and high-contrast themes.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-1-map-first-overlay-polish-july-2026">What's new in v1.4.1 — Map-first overlay polish (July 2026)</h2>
+<ul>
+<li><strong>Map-first overlays.</strong> Filters now start collapsed, open as a bounded scroll drawer, and collapse the active side panel instead of stacking over it.</li>
+<li><strong>Cleaner panel lanes.</strong> Storm, stats, table, compare, and state panels stay in a right-side lane with map controls and the timeline pushed out of their way.</li>
+<li><strong>Mobile vertical space.</strong> The phone layout keeps the header tighter, shortens the filter drawer, hides map controls while filters are open, and leaves more map visible.</li>
+<li><strong>Smoke coverage.</strong> Browser smoke tests now verify the panel layout matrix through an installed Chrome fallback when Playwright's managed browser is unavailable.</li>
+</ul>
+<h2 id="what-39-s-new-in-v1-4-0-deep-audit-pass-july-2026">What's new in v1.4.0 — Deep audit pass (July 2026)</h2>
+<p>A full engineering and product audit landed ~40 verified fixes plus a panel-management upgrade:</p>
+<ul>
+<li><strong>Panel minimize-to-tab</strong> — every side panel (storm, statistics, comparison, state, table view, spatial results) now has a minimize button that collapses it to a slim restore tab at the map edge, so the map, timeline, and zoom controls reclaim the full viewport. Panels also strictly share one exclusive lane — no more stacking or overlap.</li>
+<li><strong>Offline storm data actually works</strong> — the compressed storms bundle was precached but unservable, and the storms web worker had never loaded (wrong fetch paths). Storm tracks and panels now work offline, parsed off the main thread.</li>
+<li><strong>Active-storm tracking fixed on GitHub Pages</strong> — the live NHC feed was permanently dead on the canonical deployment (proxy 404 never triggered the fallback) and was being served stale-first by the service worker.</li>
+<li><strong>Colorblind palette reaches the whole UI</strong> — the legend, category buttons, pills, and timeline bars now switch with the map markers instead of contradicting them; marker colors resolve from the live theme tokens across dark/light/high-contrast.</li>
+<li><strong>Exports repaired</strong> — publication CSV date columns, the statistical report's By-Month chart, and QGIS GeoJSON time attributes all derive correctly from landfall timestamps now.</li>
+<li><strong>Contrast repairs</strong> — high-contrast and light themes meet WCAG minimums on accent controls, category pills, dim text, and focus rings; the climatology chart (previously invisible in every theme) renders.</li>
+<li><strong>Honest data labeling</strong> — the sea-surface-temperature overlay is labeled as the September 2024 snapshot it is.</li>
+</ul>
+<h2 id="premium-ux-ui-polish">Premium UX/UI Polish</h2>
+<p>The interface has undergone a premium-polish pass focused on clarity, trust, accessibility, and a more cohesive product feel:</p>
+<p><strong>Interaction Refinements</strong></p>
+<ul>
+<li><strong>Theme system hardening</strong> — Dark, Light, System, colorblind palette, and high-contrast modes now share semantic tokens for surfaces, controls, focus rings, disabled states, alerts, Leaflet controls, and panel overlays.</li>
+<li><strong>Panel lane stabilized</strong> — Storm, statistics, comparison, state, and "on this date" panels now share one fixed responsive side lane with mobile collision handling, so panels no longer overlap controls or each other.</li>
+<li><strong>Keyboard-friendly search</strong> — Search results now behave like a proper combobox/listbox with arrow-key navigation, Enter selection, Escape close, active-result highlighting, and clearer empty states.</li>
+<li><strong>Resilient loading feedback</strong> — Required data-load failures now surface a calm, actionable error card with retry guidance instead of silently rendering a broken empty map.</li>
+<li><strong>Map-first playback controls</strong> — Track playback now collapses the storm panel to a restore tab and uses a compact fixed map dock, keeping the animated path visible while controls stay orderly.</li>
+<li><strong>Readable playback state</strong> — The active Play/Pause button uses a high-contrast dark active surface with light text so playback state remains legible.</li>
+<li><strong>Reserved overlay shelf</strong> — Compare and radar controls now live above the bottom timeline and outside the side-panel lane, reducing collisions between floating controls.</li>
+<li><strong>Season summary shelf</strong> — Single-year season summaries now sit in the open map shelf instead of underneath the filter/year range panel or bottom timeline.</li>
+<li><strong>Exclusive marker previews</strong> — Landfall marker previews are now single-owner interactions, so one hover card opens at a time and stale previews are cleared when the pointer leaves the marker.</li>
+<li><strong>Cleaner map controls</strong> — The Leaflet zoom control now lives in a side-panel-aware top-right lane, and the year-range Reset button stays inside the left filter panel.</li>
+<li><strong>Deterministic year picking</strong> — Timeline clicks now select the exact clicked year, drags select ranges, and double-click resets the full 1851–2025 span without competing click/drag events.</li>
+<li><strong>State-filtered timeline</strong> — Selecting a state now updates the year timeline to show <em>only</em> that state's landfalls, reducing visual noise and improving clarity.</li>
+<li><strong>Histogram color intensity</strong> — Category and decade bars now feature colored fills (matching Saffir-Simpson category colors), with opacity scaled to storm count, making patterns immediately recognizable.</li>
+</ul>
+<p><strong>Component Polish</strong></p>
+<ul>
+<li><strong>Unified panel surfaces</strong> — Side panels, settings, comparison, empty states, stats sections, compact season summaries, closest-pass cards, and toast feedback now use a consistent surface, radius, spacing, and border language.</li>
+<li><strong>Input focus states</strong> — All inputs, selects, and forms now provide visual feedback with box-shadow rings, color transitions, and smooth 120ms animations.</li>
+<li><strong>Button system refinement</strong> — Across all button types: transform feedback (hover lift via <code>translateY</code>), elevated shadows, improved contrast, and consistent focus visibility.</li>
+<li><strong>Search results</strong> — Fade-in animations, smoother hover feedback with padding animation.</li>
+<li><strong>State storm rows</strong> — Hover effects with background transitions for better affordance.</li>
+<li><strong>Intensity chart</strong> — Subtle border and shadow feedback on interaction.</li>
+<li><strong>Compare cards</strong> — Hover effects with border lightening and shadow elevation.</li>
+<li><strong>Animation scrubber</strong> — Thumb element scales on hover with improved box-shadow feedback.</li>
+<li><strong>Checkbox interactions</strong> — Scale transform on hover (1.05) for better tactile feedback.</li>
+</ul>
+<p><strong>Visual Hierarchy &amp; Consistency</strong></p>
+<ul>
+<li><strong>Unified transition timing</strong> — All animations use consistent 120ms <code>ease</code> or cubic-bezier easing for a cohesive feel.</li>
+<li><strong>Shadow elevation system</strong> — 3-level shadow depth (2px/4px, 4px/12px, 6px/16px) creates clear visual hierarchy.</li>
+<li><strong>Color palette</strong> — Catppuccin Mocha throughout with semantic color usage (category-specific storm coloring, state-specific histogram fills).</li>
+<li><strong>Spacing rhythm</strong> — Consistent 8px grid system respected across all panels, cards, and sections.</li>
+</ul>
+<p><strong>Accessibility Enhancements</strong></p>
+<ul>
+<li><strong>Focus ring visibility</strong> — Subtle but clear <code>0 0 0 3px</code> lavender-tinted rings across all interactive elements.</li>
+<li><strong>Keyboard navigation</strong> — Full support for Escape, Tab, and Enter workflows.</li>
+<li><strong>Screen-reader semantics</strong> — Search, glossary, panels, loading, error, and empty states expose clearer roles, labels, and status messaging.</li>
+<li><strong>Color contrast</strong> — Maintained throughout all states per WCAG standards.</li>
+<li><strong>Reduced motion</strong> — Respected where supported.</li>
+<li><strong>Non-color encoding</strong> — Category markers use distinct dash patterns (solid/dashed/dotted/mixed) in addition to color, satisfying WCAG 1.4.1.</li>
+<li><strong>Data table alternative</strong> — "Table view" button renders filtered landfalls as a sortable, keyboard-navigable HTML table (Section 508 compliance).</li>
+<li><strong>VPAT published</strong> — See <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/VPAT.html" rel="noopener nofollow" target="_blank">`docs/VPAT.html`</a> for the full WCAG 2.2 AA Voluntary Product Accessibility Template.</li>
+<li><strong>Internationalization</strong> — English, Spanish (ES-LA), and Haitian Creole (Kreyòl) locales with browser auto-detection.</li>
+</ul>
+<h2 id="phase-8-mobile-optimization-amp-advanced-features">Phase 8: Mobile Optimization &amp; Advanced Features</h2>
+<p><strong>Mobile-First Responsive Design</strong></p>
+<ul>
+<li><strong>WCAG AAA touch targets</strong> — All interactive elements now meet the 44×44px minimum standard on mobile (720px and below): header icon buttons, Leaflet zoom controls, year inputs, category toggles. Leaflet controls gain rounded corners for better ergonomics.</li>
+<li><strong>Improved mobile panel layout</strong> — Panels and filters optimized for small screens with responsive cascading at 720px, 640px, and 430px breakpoints.</li>
+</ul>
+<p><strong>Dark/Light Theme Toggle</strong></p>
+<ul>
+<li><strong>Catppuccin Mocha and Latte</strong> — Switch between dark and light themes via the settings menu. Selection persists to localStorage. Smooth CSS-variable swap without page reload.</li>
+<li><strong>All elements theme-aware</strong> — Category colors, backgrounds, text colors, and all UI elements adjust automatically.</li>
+</ul>
+<p><strong>Advanced Storm Comparison</strong></p>
+<ul>
+<li><strong>Diff highlighting in comparison table</strong> — Max values highlighted in green, min values in red/pink. Instantly see which pinned storms stand out on each metric (peak wind, pressure, landfall count, track points, ACE).</li>
+</ul>
+<p><strong>Decade-by-Decade Trend Analysis</strong></p>
+<ul>
+<li><strong>New statistics table</strong> — Six-column analysis by decade: named-storm count, major-hurricane %, ACE total, deadliest storm, and costliest storm. Hover reveals death/damage details. Complements the annual climatology chart.</li>
+</ul>
+<p><strong>Performance Optimizations</strong></p>
+<ul>
+<li><strong>Core Web Vitals monitoring</strong> — Opt-in (<code>?perf</code> or <code>hm-debug-perf</code>) tracking of LCP (Largest Contentful Paint), INP (Interaction to Next Paint), and CLS (Cumulative Layout Shift) logged to the browser console.</li>
+<li><strong>CSS rendering optimizations</strong> — <code>will-change</code> hints on frequently-animated elements (buttons, charts, action controls) reduce layout thrashing.</li>
+<li><strong>Lazy-load infrastructure</strong> — Foundation for on-demand loading of non-critical modules (e.g., radar overlay) to reduce initial bundle impact.</li>
+</ul>
+<h2 id="quick-start">Quick start</h2>
+<p>The map is <strong>already published</strong> on GitHub Pages — open <a href="https://sysadmindoc.github.io/HurricaneMap/" rel="noopener nofollow" target="_blank">https://sysadmindoc.github.io/HurricaneMap/</a> and you're done.</p>
+<p>To run locally (e.g. after refreshing the HURDAT2 data):</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-muted"># Clone</span></span>
+<span class="line"><span class="shiki-c-orange">git</span> <span class="shiki-c-cyan">clone</span> <span class="shiki-c-cyan">https://github.com/SysAdminDoc/HurricaneMap.git</span></span>
+<span class="line"><span class="shiki-c-blue">cd</span> <span class="shiki-c-cyan">HurricaneMap</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">install</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Check NOAA for newer HURDAT2 source files.</span></span>
+<span class="line"><span class="shiki-c-muted"># Use --apply before preprocessing when a new revision is detected.</span></span>
+<span class="line"><span class="shiki-c-orange">node</span> <span class="shiki-c-cyan">scripts/refresh-hurdat2.mjs</span> <span class="shiki-c-blue">--dry-run</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Rebuild derived JSON after raw HURDAT2 data changes.</span></span>
+<span class="line"><span class="shiki-c-muted"># (Already pre-built JSON lives in data/ so you can skip this step entirely.)</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/preprocess_hurdat2.py</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Serve locally — `fetch()` won't work over file:// in modern browsers.</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">http.server</span> <span class="shiki-c-blue">8765</span></span>
+<span class="line"><span class="shiki-c-muted"># open http://127.0.0.1:8765/</span></span></code></pre><p>Use <code>node scripts/refresh-hurdat2.mjs --dry-run</code> to check NOAA's HURDAT2 directory locally. When source files change, rerun with <code>--apply</code>, rebuild derived JSON with <code>python scripts/preprocess_hurdat2.py</code>, then validate with <code>npm test</code>.</p>
+<p>Optional edge deployment: <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/CLOUDFLARE_CDN.md" rel="noopener nofollow" target="_blank">`docs/CLOUDFLARE_CDN.md`</a> documents the Cloudflare Worker CDN wrapper, cache policy, image optimization hints, and curl checks for before/after latency validation.</p>
+<p>Self-hosting: <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/SELF_HOSTING.md" rel="noopener nofollow" target="_blank">`docs/SELF_HOSTING.md`</a> documents the Docker image, port mapping, healthcheck, and offline/intranet deployment notes.</p>
+<p>Live satellite backdrop: <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/docs/GOES_REALTIME.md" rel="noopener nofollow" target="_blank">`docs/GOES_REALTIME.md`</a> documents the opt-in NOAA/NESDIS/STAR GOES sector overlay, source URLs, refresh cadence, and static-app tradeoffs.</p>
+<h2 id="data-export-amp-research">Data Export &amp; Research</h2>
+<p><strong>Export filtered data as publication-ready CSV:</strong></p>
+<p>HurricaneMap includes a one-click CSV export button (📄 icon in the header) that downloads your filtered dataset with:</p>
+<ul>
+<li><strong>Full documentation:</strong> data dictionary, methodology notes, NOAA citation, attribution requirements</li>
+<li><strong>All landfall fields:</strong> storm ID, name, year, month, day, hour, latitude, longitude, wind speed (kt/mph), pressure, Saffir-Simpson category, state</li>
+<li><strong>Timestamped filename:</strong> <code>HurricaneMap-Export-YYYY-MM-DD.csv</code></li>
+<li><strong>Proper CSV escaping:</strong> handles commas, quotes, and newlines</li>
+</ul>
+<p>Perfect for:</p>
+<ul>
+<li>Academic research papers (includes full HURDAT2 citation)</li>
+<li>Climate &amp; seasonal analysis</li>
+<li>Geographic &amp; statistical software (ArcGIS, R, Python, QGIS)</li>
+<li>Spreadsheet analysis (Excel, Google Sheets)</li>
+</ul>
+<p>See <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md#how-to-cite-hurricanemap" rel="noopener nofollow" target="_blank">LICENSE.md</a> for citation formats.</p>
+<h2 id="project-layout">Project layout</h2>
+<pre class="readme-code" tabindex="0"><code class="readme-code-inner">HurricaneMap/
+├── index.html              # entry — map shell
+├── manifest.webmanifest    # PWA manifest
+├── src/
+│   ├── main.js             # app boot, filters, search, UI wiring
+│   ├── data.js             # JSON loaders + index helpers
+│   ├── map.js              # Leaflet map, markers, tracks
+│   ├── panel.js            # storm details + Wikipedia/YouTube/NOAA links
+│   ├── animation.js        # spinning hurricane glyph + wind-field disk along the track
+│   ├── radar.js            # NEXRAD overlay — local manifest first, IEM fallback
+│   ├── stats.js            # state hotspot / decade / category breakdowns
+│   └── styles.css          # Catppuccin Mocha + glassmorphism
+├── data/
+│   ├── hurdat2-atlantic.txt    # raw NOAA Atlantic best-track (1851–2025)
+│   ├── hurdat2-nepac.txt       # raw NOAA Eastern Pacific best-track (1949–2025)
+│   ├── us-states.geojson       # US state polygons (point-in-polygon attribution)
+│   ├── landfalls.json          # flat list, one entry per US landfall event
+│   ├── storms.json             # full track + metadata for every US-landfalling storm
+│   ├── stats.json              # pre-computed stats: by state, decade, category, cold spots
+│   ├── metadata.json           # generated source provenance, coverage, and output metadata
+│   └── radar/                  # archived NEXRAD composites (~512 MB, 1700+ frames)
+│       ├── manifest.json           # storm_id → {landfalls, frames}
+│       ├── Katrina-2005/           # one folder per storm
+│       │   ├── t_200508241800.png
+│       │   ├── t_200508250000.png
+│       │   └── ...
+│       └── ...
+├── scripts/
+│   ├── refresh-hurdat2.mjs   # NOAA HURDAT2 detector/downloader for local refreshes
+│   ├── preprocess_hurdat2.py   # HURDAT2 parser + landfall attribution + stats roll-up
+│   ├── scrape_impacts.py       # Wikipedia impact scraper + normalized fatality/damage fields
+│   └── scrape_radar.py         # IEM NEXRAD scraper — populates data/radar/
+└── examplemap.png          # design reference</code></pre><h2 id="how-landfalls-are-detected">How landfalls are detected</h2>
+<p>HURDAT2 marks a <code>L</code> record-identifier on track points where the cyclone center crosses a coastline. We use this <strong>as the primary signal</strong> for every landfall.</p>
+<p>For storms without an <code>L</code> marker — most commonly EPac/CPac storms hitting Hawaii (the marker convention is "continental U.S. only") and a handful of 1971–1990 storms (a documented HURDAT2 marking gap) — we fall back to <strong>inferred landfall detection</strong>:</p>
+<ol>
+<li>For each consecutive pair of 6-hourly track points, classify each as <em>inside-a-state</em> via point-in-polygon against the U.S. Census Bureau state boundaries.</li>
+<li>Whenever the track transitions from offshore → onshore while at TS+ intensity, that's a landfall.</li>
+<li>If both endpoints are offshore but the great-circle segment crosses land (which happens with small islands like Kauai), sample 10 mid-segment positions and place the inferred landfall at the first one inside a state polygon. Wind/pressure interpolated linearly.</li>
+<li>EPac-basin inferred landfalls are restricted to coastal Pacific states (HI, CA, OR, WA, AK) — otherwise EPac storms tracking up through Mexico produce spurious "landfalls" in landlocked Arizona / New Mexico.</li>
+</ol>
+<p>Inferred landfalls are flagged with an <code>inferred</code> tag in the storm panel so you can tell them apart from official <code>L</code>-marker landfalls.</p>
+<h2 id="saffir-simpson-at-landfall">Saffir-Simpson at landfall</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Sustained wind</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TS / sub-hurricane</td>
+<td>34–63 kt</td>
+<td>sapphire</td>
+</tr>
+<tr>
+<td>Cat 1</td>
+<td>64–82 kt</td>
+<td>green</td>
+</tr>
+<tr>
+<td>Cat 2</td>
+<td>83–95 kt</td>
+<td>yellow</td>
+</tr>
+<tr>
+<td>Cat 3 (major)</td>
+<td>96–112 kt</td>
+<td>peach</td>
+</tr>
+<tr>
+<td>Cat 4</td>
+<td>113–136 kt</td>
+<td>pink</td>
+</tr>
+<tr>
+<td>Cat 5</td>
+<td>137+ kt</td>
+<td>mauve</td>
+</tr>
+</tbody></table>
+<p>A storm's <strong>headline landfall category</strong> is the highest category recorded at <em>any</em> of its U.S. landfalls — so a storm that peaks offshore and lands as a TS shows up as TS, not as its peak intensity.</p>
+<h2 id="known-data-quirks">Known data quirks</h2>
+<ul>
+<li><strong>1971–1990 has known gaps in HURDAT2's continental-U.S. landfall marking.</strong> Some real landfalls are missing or under-categorized; the inferred-landfall pass picks up most of them but a few are absent because the 6-hour track doesn't cross a polygon.</li>
+<li><strong>Pre-1944</strong> (no aircraft reconnaissance) and <strong>pre-late-1960s</strong> (no satellite) systematically under-sample storm count and bias intensities low — see Landsea &amp; Franklin 2013.</li>
+<li><strong>Wind radii</strong> (34/50/64 kt) only present from 2004 onward in HURDAT2; modern storms use them for 2D swaths, 3D wind cones, and the screening exposure metric. <strong>Radius of maximum wind</strong> only begins in 2021 and remains too sparse for historical comparison.</li>
+<li><strong>Hawaii 1959 Hurricane Dot, 1992 Iniki</strong> etc. are inferred landfalls because HURDAT2's <code>L</code> marker convention doesn't apply outside continental U.S. The category is interpolated from the nearest 6-hour position.</li>
+</ul>
+<h2 id="data-sources-licensing-amp-attribution">Data Sources, Licensing &amp; Attribution</h2>
+<h3 id="data-build-provenance">Data build provenance</h3>
+<p>Every preprocessing run writes <code>data/metadata.json</code> alongside the generated landfall, storm, and stats files. It records the source HURDAT2 filenames, local source modification dates, source storm-year ranges, output file metadata, generator name, app version, and coverage counts. The About dialog surfaces this build summary so users can confirm exactly which data bundle they are viewing.</p>
+<h3 id="open-data-license-clarity">Open Data License Clarity</h3>
+<p><strong>HurricaneMap is built on entirely open and public data.</strong> All datasets carry clear, permissive licenses:</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Source</th>
+<th>License</th>
+<th>Citation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HURDAT2 Best-Track</strong></td>
+<td><a href="https://www.nhc.noaa.gov/data/" rel="noopener nofollow" target="_blank">NOAA National Hurricane Center</a></td>
+<td>Public Domain (U.S. Govt)</td>
+<td>Landsea, C. W. &amp; Franklin, 2013</td>
+</tr>
+<tr>
+<td><strong>NEXRAD Radar Archive</strong></td>
+<td><a href="https://mesonet.agron.iastate.edu/" rel="noopener nofollow" target="_blank">Iowa State IEM</a></td>
+<td>Public Domain</td>
+<td>Acknowledgment required</td>
+</tr>
+<tr>
+<td><strong>Population Density (GPWv4)</strong></td>
+<td><a href="https://sedac.ciesin.columbia.edu/" rel="noopener nofollow" target="_blank">SEDAC, Columbia University</a></td>
+<td>CC BY 4.0</td>
+<td><a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md#population-density" rel="noopener nofollow" target="_blank">See attribution</a></td>
+</tr>
+<tr>
+<td><strong>State Boundaries</strong></td>
+<td><a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html" rel="noopener nofollow" target="_blank">U.S. Census Bureau TIGER</a></td>
+<td>Public Domain</td>
+<td>Acknowledgment required</td>
+</tr>
+<tr>
+<td><strong>Storm Impacts</strong></td>
+<td><a href="https://en.wikipedia.org/" rel="noopener nofollow" target="_blank">Wikipedia</a></td>
+<td>CC BY-SA 3.0</td>
+<td><a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md#storm-impacts-data" rel="noopener nofollow" target="_blank">See details</a></td>
+</tr>
+<tr>
+<td><strong>Map Tiles</strong></td>
+<td><a href="https://www.openstreetmap.org/" rel="noopener nofollow" target="_blank">OpenStreetMap</a></td>
+<td>ODbL</td>
+<td>© OSM contributors</td>
+</tr>
+</tbody></table>
+<h3 id="for-research-amp-publications">For Research &amp; Publications</h3>
+<p><strong>When using HurricaneMap data in research, reports, or presentations,</strong> please:</p>
+<ol>
+<li><p><strong>Acknowledge NOAA/NHC</strong> as the original data source for all hurricane/landfall data:</p>
+<blockquote>
+<p>"Historical hurricane landfall data sourced from NOAA's National Hurricane Center HURDAT2 database (<a href="https://www.nhc.noaa.gov/data/" rel="noopener nofollow" target="_blank">https://www.nhc.noaa.gov/data/</a>)"</p>
+</blockquote>
+</li>
+<li><p><strong>See <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md" rel="noopener nofollow" target="_blank">LICENSE.md</a> for:</strong></p>
+<ul>
+<li>Per-dataset attribution requirements (SEDAC, Wikipedia, OpenStreetMap, etc.)</li>
+<li>Full citation formats (Chicago, APA, BibTeX)</li>
+<li>Data accuracy &amp; pre-satellite-era caveats</li>
+<li>Landfall detection methodology</li>
+</ul>
+</li>
+<li><p><strong>Link to HurricaneMap GitHub:</strong> <a href="https://github.com/SysAdminDoc/HurricaneMap" rel="noopener nofollow" target="_blank">https://github.com/SysAdminDoc/HurricaneMap</a></p>
+</li>
+</ol>
+<h3 id="data-accuracy-notes">Data Accuracy Notes</h3>
+<ul>
+<li><strong>Pre-1944</strong> (no aircraft) and <strong>pre-1960s</strong> (no satellite): lower completeness and accuracy</li>
+<li><strong>1971–1990</strong>: documented gaps in continental U.S. landfall marking in HURDAT2</li>
+<li><strong>Historical uncertainty:</strong> Pre-1900 tracks have ±100+ km uncertainty; modern (post-1960) ±10–20 km</li>
+<li><strong>More details:</strong> <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md#data-accuracy--disclaimers" rel="noopener nofollow" target="_blank">Data Accuracy &amp; Disclaimers in LICENSE.md</a></li>
+</ul>
+<hr />
+<h2 id="data-sources-amp-credits-detailed-table">Data sources &amp; credits (Detailed table)</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Atlantic best-track (HURDAT2)</td>
+<td><a href="https://www.nhc.noaa.gov/data/" rel="noopener nofollow" target="_blank">https://www.nhc.noaa.gov/data/</a></td>
+</tr>
+<tr>
+<td>Eastern Pacific best-track (HURDAT2)</td>
+<td><a href="https://www.nhc.noaa.gov/data/" rel="noopener nofollow" target="_blank">https://www.nhc.noaa.gov/data/</a></td>
+</tr>
+<tr>
+<td>Format spec</td>
+<td><a href="https://www.aoml.noaa.gov/hrd/Landsea/landsea-franklin-mwr2013.pdf" rel="noopener nofollow" target="_blank">Landsea, C. W. — *Atlantic hurricane database uncertainty*, MWR 2013</a></td>
+</tr>
+<tr>
+<td>Archived radar (NEXRAD composites)</td>
+<td><a href="https://mesonet.agron.iastate.edu/docs/nexrad_mosaic/" rel="noopener nofollow" target="_blank">Iowa State IEM NEXRAD mosaic archive</a> — fetched live (CORS-enabled), no preprocessing</td>
+</tr>
+<tr>
+<td>State boundaries</td>
+<td><a href="https://github.com/PublicaMundi/MappingAPI" rel="noopener nofollow" target="_blank">PublicaMundi MappingAPI</a> (US Census Bureau TIGER)</td>
+</tr>
+<tr>
+<td>Map tiles</td>
+<td><a href="https://carto.com/" rel="noopener nofollow" target="_blank">CartoDB Dark Matter</a> over OpenStreetMap</td>
+</tr>
+<tr>
+<td>Map library</td>
+<td><a href="https://leafletjs.com/" rel="noopener nofollow" target="_blank">Leaflet 1.9</a></td>
+</tr>
+</tbody></table>
+<h2 id="refreshing-the-radar-archive">Refreshing the radar archive</h2>
+<p>Radar PNGs in <code>data/radar/</code> come from the <a href="https://mesonet.agron.iastate.edu/docs/nexrad_mosaic/" rel="noopener nofollow" target="_blank">Iowa State IEM NEXRAD archive</a>. They're committed to the repo so the tool works offline, but you can re-scrape them at any time:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-muted"># Default — every covered landfall + every in-coverage TS+ track point</span></span>
+<span class="line"><span class="shiki-c-muted"># at HURDAT2's native 6-hourly cadence. ~330 MB on first run.</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Subset to hurricane-strength only (~195 MB)</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span> <span class="shiki-c-blue">--hurricane-only</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Major hurricanes only (~68 MB)</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span> <span class="shiki-c-blue">--major-only</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Just the landfall frames, no full track (~35 MB)</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span> <span class="shiki-c-blue">--landfalls-only</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Densify to hourly cadence between HURDAT2 records (multi-GB — needs LFS)</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span> <span class="shiki-c-blue">--cadence</span> <span class="shiki-c-blue">60</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Resume / refill — existing files are skipped automatically</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/scrape_radar.py</span></span></code></pre><p>Scraper flags:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--cadence MIN</code></td>
+<td>360 (= 6h)</td>
+<td>Densify track-point fetches to N-min interpolation between HURDAT2 records</td>
+</tr>
+<tr>
+<td><code>--hurricane-only</code></td>
+<td>off</td>
+<td>Skip storms that landed at TS strength only</td>
+</tr>
+<tr>
+<td><code>--major-only</code></td>
+<td>off</td>
+<td>Skip everything below Cat 3 at landfall</td>
+</tr>
+<tr>
+<td><code>--landfalls-only</code></td>
+<td>off</td>
+<td>Skip the full-track expansion, fetch only landfall frames</td>
+</tr>
+<tr>
+<td><code>--start YYYY</code> / <code>--end YYYY</code></td>
+<td>none</td>
+<td>Year-range filter</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td>off</td>
+<td>Re-download even if file exists locally</td>
+</tr>
+<tr>
+<td><code>--concurrency N</code></td>
+<td>8</td>
+<td>Parallel HTTP fetches</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>off</td>
+<td>Print task count + estimated MB without downloading</td>
+</tr>
+</tbody></table>
+<h2 id="manual-hurdat2-refresh">Manual HURDAT2 Refresh</h2>
+<p>Check for NOAA HURDAT2 updates locally, then apply and rebuild when a newer source file is available:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-muted"># Check current NOAA filenames and whether local files differ.</span></span>
+<span class="line"><span class="shiki-c-orange">node</span> <span class="shiki-c-cyan">scripts/refresh-hurdat2.mjs</span> <span class="shiki-c-blue">--dry-run</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Apply detected updates when changes are available.</span></span>
+<span class="line"><span class="shiki-c-orange">node</span> <span class="shiki-c-cyan">scripts/refresh-hurdat2.mjs</span> <span class="shiki-c-blue">--apply</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Find the latest filenames at https://www.nhc.noaa.gov/data/hurdat/</span></span>
+<span class="line"><span class="shiki-c-muted"># Manual fallback example using a 2026 season update:</span></span>
+<span class="line"><span class="shiki-c-orange">curl</span> <span class="shiki-c-blue">-sSL</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">data/hurdat2-atlantic.txt</span> <span class="shiki-c-red">\</span></span>
+<span class="line">  <span class="shiki-c-cyan">"https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2026-02272026.txt"</span></span>
+<span class="line"><span class="shiki-c-orange">curl</span> <span class="shiki-c-blue">-sSL</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">data/hurdat2-nepac.txt</span> <span class="shiki-c-red">\</span></span>
+<span class="line">  <span class="shiki-c-cyan">"https://www.nhc.noaa.gov/data/hurdat/hurdat2-nepac-1949-2026-02272026.txt"</span></span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-cyan">scripts/preprocess_hurdat2.py</span></span></code></pre><p>The preprocessor refreshes <code>data/landfalls.json</code>, <code>data/storms.json</code>, <code>data/stats.json</code>, and <code>data/metadata.json</code>. Impact rows can be refreshed with <code>python scripts/scrape_impacts.py</code>; use <code>python scripts/scrape_impacts.py --normalize-existing</code> after source-format fixes that should be applied to the existing <code>data/impacts.json</code> without a network scrape. Then run <code>npm test</code>, bump the version, update <code>CHANGELOG.md</code>, commit, and create a release.</p>
+<h2 id="license-amp-attribution">License &amp; Attribution</h2>
+<p><strong>Software:</strong> MIT — see <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">LICENSE</a><br /><strong>Data Sources:</strong> See <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md" rel="noopener nofollow" target="_blank">LICENSE.md</a> for detailed attribution</p>
+<p>This project aggregates data from multiple sources:</p>
+<ul>
+<li><strong>HURDAT2 Best-Track Database</strong> — NOAA National Hurricane Center (public domain)</li>
+<li><strong>SLOSH Storm Surge Zones</strong> — NOAA NHC (public domain)</li>
+<li><strong>NEXRAD Archived Radar</strong> — NOAA / Iowa Environmental Mesonet (public domain)</li>
+<li><strong>Population Density</strong> — SEDAC GPWv4, Columbia University (CC BY 4.0)</li>
+<li><strong>Storm Impacts</strong> — Wikipedia (CC BY-SA 3.0)</li>
+</ul>
+<p><strong>When using HurricaneMap in research or publications:</strong> Cite NOAA/NHC as the original data source. See <a href="https://github.com/SysAdminDoc/HurricaneMap/blob/HEAD/LICENSE.md" rel="noopener nofollow" target="_blank">LICENSE.md</a> for full citation formats and per-dataset attribution requirements.</p>
+</article> <p class="project-readme-hint project-readme-hint-spaced">
+Read on GitHub → <a href="https://github.com/SysAdminDoc/HurricaneMap" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/HurricaneMap</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-releases"> <div class="project-section-head"> <div> <h2 class="project-section-title">Recent Releases</h2> <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this project.</p> </div> </div> <ul class="project-releases"> <li class="project-release"> <a href="https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.6" target="_blank" rel="noopener" class="project-release-tag">v1.4.6</a> <time class="project-release-date" datetime="2026-07-03T23:37:48Z"> Jul 3, 2026 </time> <p class="project-release-body">Desktop panel fit.\n\n- Lowered the right analytical panel lane so it sits closer to the season/timeline shelf.\n- Tightened the shelf gutter from 12px to 6px while preserving separation.\n- Added smoke coverage that fai</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.5" target="_blank" rel="noopener" class="project-release-tag">v1.4.5</a> <time class="project-release-date" datetime="2026-07-03T23:06:13Z"> Jul 3, 2026 </time> <p class="project-release-body">Desktop shelf alignment.\n\n- Moved the season summary inline to the left of the timeline as one bottom shelf.\n- Reserved bottom shelf space so desktop side panels stop above the season/timeline row.\n- Moved update fee</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.4" target="_blank" rel="noopener" class="project-release-tag">v1.4.4</a> <time class="project-release-date" datetime="2026-07-03T22:49:31Z"> Jul 3, 2026 </time> <p class="project-release-body">Desktop panel refinement.\n\n- Rebalanced desktop side panels into a wider bounded inspector lane.\n- Reworked storm, state, and statistics panels into stable two-column desktop grids.\n- Hid the season summary while ana</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.3" target="_blank" rel="noopener" class="project-release-tag">v1.4.3</a> <time class="project-release-date" datetime="2026-07-03T22:22:10Z"> Jul 3, 2026 </time> <p class="project-release-body">Premium layout and settings polish.\n\n- Prioritizes the map during mobile track playback with compact header chrome, a smaller restore handle, and a tighter animation dock.\n- Refines Settings with helper copy, localize</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.2" target="_blank" rel="noopener" class="project-release-tag">v1.4.2</a> <time class="project-release-date" datetime="2026-07-03T21:46:31Z"> Jul 3, 2026 </time> <p class="project-release-body">Playback map-first layout. Starting track playback now collapses the storm details panel to a restore tab, moves animation controls into a compact fixed map dock, hides competing bottom overlays during playback, and adds</p> </li> </ul> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/Openshop/" class="ca" aria-describedby="related-rank-Openshop" data-rank="55.1471" data-rank-position="30" data-rank-label="Rank 30: 3 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Openshop</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Free browser-based image editor - layers, smart effects, PSD import</span> <span class="ca-rank ca-rank-related" id="related-rank-Openshop" title="Rank 30: 3 stars, updated 6d ago, downloadable release"> Recommended #30: 3 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T13:59:26Z" data-rel-short="2026-07-01T13:59:26Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/UserScriptHunt/" class="ca" aria-describedby="related-rank-UserScriptHunt" data-rank="55.1471" data-rank-position="31" data-rank-label="Rank 31: 3 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">UserScriptHunt</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Unified search engine for userscripts</span> <span class="ca-rank ca-rank-related" id="related-rank-UserScriptHunt" title="Rank 31: 3 stars, updated 6d ago, downloadable release"> Recommended #31: 3 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T06:38:41Z" data-rel-short="2026-07-01T06:38:41Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/NukeMap/" class="ca" aria-describedby="related-rank-NukeMap" data-rank="47.1739" data-rank-position="65" data-rank-label="Rank 65: 1 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">NukeMap</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets</span> <span class="ca-rank ca-rank-related" id="related-rank-NukeMap" title="Rank 65: 1 stars, updated 6d ago, downloadable release"> Recommended #65: 1 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T06:27:23Z" data-rel-short="2026-07-01T06:27:23Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/Multistreamer/" class="ca" aria-describedby="related-rank-Multistreamer" data-rank="42.1739" data-rank-position="77" data-rank-label="Rank 77: 1 stars, updated 6d ago"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Multistreamer</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Multi-video streaming viewer with chat</span> <span class="ca-rank ca-rank-related" id="related-rank-Multistreamer" title="Rank 77: 1 stars, updated 6d ago"> Recommended #77: 1 stars, updated 6d ago </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T04:02:04Z" data-rel-short="2026-07-01T04:02:04Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span> <span class="lb2">LIVE</span> </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Live Preview","href":"#project-preview","desc":"Captured product surface from the live build.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"Recent Releases","href":"#project-releases","desc":"Tagged release history pulled from GitHub for this project.","badge":"RELEASES"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>

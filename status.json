@@ -1,19 +1,62 @@
 {
   "schema": "sysadmindoc.status.v1",
-  "version": "0.20.1",
-  "generatedAt": "2026-06-26T17:43:56.792Z",
+  "version": "0.21.17",
+  "generatedAt": "2026-07-07T19:55:48.458Z",
+  "build": {
+    "commit": "e134ec3cca9f98b0d113e290777907a9fda2793a",
+    "commitShort": "e134ec3cca9f",
+    "source": "git"
+  },
   "catalog": {
-    "count": 182,
+    "count": 186,
     "liveApps": 22
   },
   "profileFeed": {
     "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
-    "projectCount": 182
+    "projectCount": 186
   },
   "generatedData": {
-    "fetchedAt": "2026-06-04T14:52:00.000Z",
-    "totalRepos": 16,
-    "totalStars": 138,
-    "readmeEntries": 16
+    "status": "fresh",
+    "mode": "production-fresh",
+    "maxAgeHours": 36,
+    "fetchedAt": "2026-07-07T19:47:47.345Z",
+    "ageHours": 0.1336,
+    "stale": false,
+    "totalRepos": 185,
+    "totalStars": 392,
+    "readmeEntries": 185,
+    "profileFeed": {
+      "active": true,
+      "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
+      "projectCount": 186,
+      "cachedAt": "2026-07-07T19:54:53.265Z",
+      "cachedAgeHours": 0.0153,
+      "stale": false
+    },
+    "coverage": {
+      "threshold": 0.8,
+      "profileProjectCount": 186,
+      "stars": 0.9946,
+      "metadata": 0.9946,
+      "readmes": 0.9946,
+      "releases": 0.3226,
+      "starEntries": 185,
+      "metadataEntries": 185,
+      "readmeEntries": 185,
+      "releaseEntries": 60
+    },
+    "readmeRefresh": {
+      "source": "github-api",
+      "generatedAt": "2026-07-07T19:48:05.291Z",
+      "tokenPresent": true,
+      "targetRepos": 185,
+      "attempted": 185,
+      "cacheEntries": 185,
+      "cacheCoverage": 1,
+      "missRate": 0,
+      "rateLimited": false,
+      "skippedReason": null
+    },
+    "warnings": []
   }
 }

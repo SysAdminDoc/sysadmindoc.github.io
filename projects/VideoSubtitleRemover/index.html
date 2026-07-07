@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VideoSubtitleRemover — Matt Parker</title><meta name="description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-F8uHnKoGhq/Y5Zpr4VKRlHv3vDjzG3AOYBjk61AhbgQ=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v6.4.8"><meta property="og:title" content="VideoSubtitleRemover — Matt Parker"><meta property="og:description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/VideoSubtitleRemover.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="VideoSubtitleRemover social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/VideoSubtitleRemover.png"><meta name="twitter:image:alt" content="VideoSubtitleRemover social preview card"><meta name="twitter:title" content="VideoSubtitleRemover — Matt Parker"><meta name="twitter:description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><link rel="canonical" href="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VideoSubtitleRemover — Matt Parker</title><meta name="description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-dU00pYxna3ZZYH6iN/WzG7MEQXHSQsGxzWiFeWCN8h0=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="VideoSubtitleRemover — Matt Parker"><meta property="og:description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/VideoSubtitleRemover.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="VideoSubtitleRemover social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/VideoSubtitleRemover.png"><meta name="twitter:image:alt" content="VideoSubtitleRemover social preview card"><meta name="twitter:title" content="VideoSubtitleRemover — Matt Parker"><meta name="twitter:description" content="AI-powered removal of hard-coded subtitles and text watermarks from video."><link rel="canonical" href="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
 @layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;
 @layer site.critical {
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -88,23 +88,10 @@ html[data-theme="light"]{
     --border-strong:rgba(53,107,191,.42);
     --focus-ring:0 0 0 4px rgba(16,115,64,.28);
   }
-  #nav,
-  .ng,
-  .theme-toggle,
-  .nav-search,
-  .btn,
-  .hero-proof-link,
-  .hero-pulse .pulse-item,
-  .hero-stage,
-  .term{
+  #nav,.ng,.theme-toggle,.nav-search,.btn,.hero-pulse .pulse-item{
     border-color:var(--border-strong);
   }
-  .hr,
-  .hd,
-  .sd,
-  .hsl,
-  .pulse-copy,
-  .pulse-source{
+  .hr,.hero-summary,.sd,.hsl{
     color:var(--t2);
   }
 }
@@ -205,17 +192,20 @@ html[data-theme="light"] #nav{
   box-shadow:0 1px 8px var(--blue-glow);
 }
 .ni{
-  max-width:1280px;
+  width:100%;
+  max-width:none;
   height:64px;
-  margin:0 auto;
-  padding:0 28px;
-  display:flex;
+  margin:0;
+  padding:0 clamp(24px,4vw,64px);
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) auto minmax(220px,1fr);
   align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  gap:clamp(16px,2vw,32px);
 }
 .nl{
+  grid-column:1;
   flex:0 0 auto;
+  justify-self:start;
   font-family:var(--mono);
   font-weight:600;
   font-size:15px;
@@ -225,9 +215,12 @@ html[data-theme="light"] #nav{
 }
 .nl span{color:var(--t3)}
 .nk{
+  grid-column:2;
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-self:center;
+  min-width:0;
+  gap:clamp(8px,.85vw,14px);
 }
 .nk a{
   min-height:36px;
@@ -242,9 +235,12 @@ html[data-theme="light"] #nav{
 }
 .nk a:hover,.nk a.active{color:var(--t1);background:rgba(255,255,255,.05)}
 .nav-actions{
+  grid-column:3;
   display:flex;
   align-items:center;
+  justify-self:end;
   gap:4px;
+  min-width:max-content;
   padding:4px;
   border:1px solid rgba(255,255,255,.07);
   border-radius:12px;
@@ -291,19 +287,6 @@ html[data-theme="light"] #nav{
 }
 .nav-search svg{width:16px;height:16px;flex-shrink:0}
 .nav-search-label{color:var(--t1)}
-.nav-search-kbd{
-  display:none;
-  align-items:center;
-  justify-content:center;
-  min-width:50px;
-  height:24px;
-  padding:0 8px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);
-  font-size:10px;
-  color:var(--t3);
-}
 html[data-theme="light"] .nav-actions{
   border-color:var(--border-soft);
   background:rgba(255,255,255,.52);
@@ -370,25 +353,17 @@ html[data-theme="light"] .nav-actions{
   width:100%;
   margin:0 auto;
   display:grid;
-  grid-template-columns:minmax(0,1.02fr) minmax(380px,.98fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
   gap:64px;
   align-items:start;
   position:relative;
   z-index:1;
 }
-.ht{max-width:640px;padding-bottom:0}
-.hero-brandline{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:22px;
-  font-family:var(--mono);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.18em;
-  color:var(--t3);
+.ht{
+  width:100%;
+  max-width:720px;
+  padding-bottom:0;
 }
-.hero-brandline span{color:var(--org)}
 .hero-avatar{
   width:56px;
   height:56px;
@@ -443,7 +418,7 @@ html[data-theme="light"] .nav-actions{
   font-size:clamp(16px,2vw,20px);
   line-height:1.65;
 }
-.hd{
+.hero-summary{
   max-width:58ch;
   margin:0 0 20px;
   color:var(--t2);
@@ -615,6 +590,44 @@ html[data-theme="light"] .nav-actions{
   font-size:13px;
   line-height:1.25;
 }
+.hero-evidence{
+  width:100%;
+  max-width:500px;
+  justify-self:end;
+  align-self:start;
+  display:grid;
+  gap:12px;
+}
+.hero-evidence-head{
+  padding:16px 18px;
+  border:1px solid var(--border-soft);
+  border-left:3px solid var(--grn);
+  border-radius:10px;
+  background:linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.025));
+  box-shadow:0 18px 36px rgba(0,0,0,.14);
+}
+.hero-evidence-kicker{
+  display:block;
+  margin-bottom:6px;
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.hero-evidence-head strong{
+  display:block;
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:18px;
+  line-height:1.2;
+}
+.hero-evidence-head p{
+  margin:8px 0 0;
+  color:var(--t2);
+  font-size:13px;
+  line-height:1.45;
+}
 .sr-only{
   position:absolute;
   width:1px;
@@ -626,211 +639,36 @@ html[data-theme="light"] .nav-actions{
   white-space:nowrap;
   border:0;
 }
-.hero-stage{
-  position:relative;
-  overflow:hidden;
-  padding:22px;
-  border:1px solid var(--border-soft);
-  border-radius:var(--radius-xl);
-  background:var(--surface-strong);
-  box-shadow:var(--shadow-strong);
-}
-.hero-stage::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at top right, rgba(124,184,255,.18) 0%, transparent 34%),
-    radial-gradient(circle at bottom left, rgba(198,156,255,.12) 0%, transparent 36%);
-}
-.hero-stage::after{
-  content:'';
-  position:absolute;
-  inset:1px;
-  border:1px solid rgba(255,255,255,.04);
-  border-radius:12px;
-  pointer-events:none;
-}
-.hero-stage-head,.hero-terminal-meta,.hero-flightpath{
-  position:relative;
-  z-index:1;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-.hero-stage-head{margin-bottom:18px}
-.hero-stage-kicker,.hero-terminal-kicker,.hero-flightpath-label{
-  font-family:var(--mono);
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.16em;
-}
-.hero-stage-kicker{margin-bottom:10px;color:var(--org)}
-.hero-stage-title{
-  max-width:12ch;
-  margin:0;
-  font-size:clamp(24px,3vw,38px);
-  line-height:1.02;
-  letter-spacing:-.05em;
-}
-.hero-stage-link,.hero-flightpath-items a{
-  border:1px solid var(--border-soft);
-  border-radius:10px;
-  background:rgba(255,255,255,.03);
-  color:var(--t2);
-  font-family:var(--mono);
-  font-size:12px;
-  text-decoration:none;
-}
-.hero-stage-link{flex-shrink:0;padding:10px 14px}
-.hero-reel{
-  position:relative;
-  z-index:1;
-  display:grid;
-  gap:10px;
-  margin-bottom:16px;
-}
-.hero-reel-item{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  gap:16px;
-  align-items:center;
-  padding:13px 16px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;
-  background:rgba(255,255,255,.025);
-  color:inherit;
-  text-decoration:none;
-}
-.hero-reel-index,.hero-reel-meta,.hero-reel-lang{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--t3);
-}
-.hero-reel-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
-.hero-reel-name{color:var(--t1);font-size:15px;font-weight:600}
-.hero-reel-meta{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  text-transform:uppercase;
-  letter-spacing:var(--ls-caps);
-}
-.hero-reel-lang{
-  padding:6px 10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.05);
-}
-.hero-reel-lang.ps{color:var(--blue);background:var(--blued)}
-.hero-reel-lang.py{color:var(--grn);background:var(--grnd)}
-.hero-reel-lang.ext{color:var(--pur);background:var(--purd)}
-.hero-reel-lang.kt{color:var(--teal);background:var(--teald)}
-.hero-terminal-shell{
-  position:relative;
-  z-index:1;
-  padding:18px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:12px;
-  background:rgba(5,10,18,.38);
-}
-.hero-terminal-meta{margin-bottom:14px}
-.hero-terminal-copy{display:flex;flex-direction:column;gap:4px}
-.hero-terminal-kicker{color:var(--t3)}
-.hero-terminal-note{color:var(--t2);font-size:13px}
-.hero-terminal-badge{
-  flex-shrink:0;
-  padding:8px 12px;
-  border-radius:10px;
-  background:var(--blued);
-  color:var(--blue);
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-}
-.term{
-  overflow:hidden;
-  border:1px solid rgba(124,184,255,.16);
-  border-radius:12px;
-  background:rgba(5,10,18,.72);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.tb{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:14px 18px;
-  border-bottom:1px solid var(--glass-border);
-  background:rgba(255,255,255,.03);
-}
-.td{width:10px;height:10px;border-radius:50%}
-.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
-.tt{
-  flex:1;
-  text-align:center;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:12px;
-}
-.tbd{
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-  padding:20px;
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.8;
-}
-.term-input-line{
-  display:flex;
-  align-items:center;
-  min-height:32px;
-  font-family:var(--mono);
-  font-size:13px;
-}
-.term-input{
-  min-height:32px;
-  padding:4px 0;
-  background:none;
-  border:0;
-  color:var(--t1);
-  font:inherit;
-}
-.term-hint{
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:11px;
-  text-align:center;
-  padding:8px;
-}
-.tp,.ts{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}
-.hero-flightpath{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.hero-flightpath-label{flex:0 0 auto;padding-top:6px;color:var(--t3)}
-.hero-flightpath-items{display:flex;flex-wrap:wrap;gap:10px}
-.hero-flightpath-items a{padding:7px 10px;font-size:11px}
 section{position:relative;z-index:1}
 @media(max-width:1100px){
   .hi{grid-template-columns:1fr;gap:36px;align-items:start}
-  .ht{max-width:none}
-  .hero-stage{max-width:720px}
+  .ht{display:block;max-width:none}
+  .hero-signals{
+    width:auto;
+    max-width:680px;
+    margin:18px 0 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 12px;
+  }
 }
 @media(max-width:900px){
   .nk{display:none}
-  .nav-search-kbd{display:none}
 }
 @media(max-width:640px){
-  .ni{height:64px;padding:0 16px;gap:10px}
+  .ni{
+    height:64px;
+    padding:0 16px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+  .nav-actions{grid-column:2}
+  .nk{grid-column:1 / -1}
   .nl{min-width:0;font-size:14px;white-space:nowrap}
   .nav-actions{gap:8px;flex-shrink:0}
   .route-home .ng{width:40px;min-width:40px;padding:0;justify-content:center;font-size:0}
   .nav-search{width:40px;height:40px;padding:0;justify-content:center}
-  .nav-search-label,.nav-search-kbd{display:none}
+  .nav-search-label{display:none}
   .mt{display:block}
   .nk.open{
     display:flex;
@@ -849,7 +687,7 @@ section{position:relative;z-index:1}
   .hero{padding:96px 16px 56px}
   .hn{font-size:clamp(44px,16vw,68px)}
   .hr{font-size:17px}
-  .hd{font-size:16px}
+  .hero-summary{font-size:16px}
   .hero-proof-strip{grid-template-columns:1fr;gap:8px}
   .hero-proof{padding:11px 12px}
   .hero-proof-value{font-size:20px}
@@ -875,22 +713,13 @@ section{position:relative;z-index:1}
     text-align:right;
   }
   .ha .btn{width:100%;justify-content:center}
-  .hero-stage{padding:20px;border-radius:12px}
-  .hero-stage-head,.hero-terminal-meta,.hero-flightpath{flex-direction:column}
-  .hero-reel-item{grid-template-columns:auto 1fr}
-  .hero-reel-lang{grid-column:2;justify-self:start}
-  .hero-flightpath-items{width:100%}
-  .hero-flightpath-items a{width:calc(50% - 5px);text-align:center}
 }
 @media(max-width:460px){
   .hs{grid-template-columns:1fr}
   .hs-item{padding-right:0}
   .hs-item:not(:last-child){border-right:0;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
-  .hero-flightpath-items a{width:100%}
 }
-.hero::before,
-.hero::after,
-.hero-stage::before{
+.hero::before,.hero::after{
   display:none!important;
 }
 .hero{
@@ -904,14 +733,12 @@ section{position:relative;z-index:1}
 .hi{
   gap:34px;
   align-items:start;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
 }
 .ht{
-  max-width:600px;
+  max-width:720px;
   padding-bottom:0;
-}
-.hero-brandline{
-  margin-bottom:14px;
-  letter-spacing:.14em;
+  display:block;
 }
 .hero-avatar{
   width:48px;
@@ -944,7 +771,7 @@ section{position:relative;z-index:1}
   font-size:clamp(15px,1.4vw,17px);
   line-height:1.45;
 }
-.hd{
+.hero-summary{
   max-width:56ch;
   margin-bottom:14px;
   font-size:15px;
@@ -966,63 +793,23 @@ section{position:relative;z-index:1}
   padding:6px 10px;
 }
 .hero-signals{
+  width:auto;
+  max-width:680px;
+  display:flex;
+  flex-wrap:wrap;
   gap:8px;
-  margin-top:12px;
+  margin:12px 0 0;
 }
 .hero-signal{
   padding:10px;
 }
-.hero-stage{
-  padding:18px;
-}
-.hero-stage-head{
-  margin-bottom:12px;
-}
-.hero-stage-title{
-  max-width:16ch;
-  font-size:clamp(20px,2.1vw,28px);
-  letter-spacing:-.03em;
-}
-.hero-stage-link{
-  padding:8px 10px;
-}
-.hero-reel{
-  gap:8px;
-  margin-bottom:12px;
-}
-.hero-reel-item{
-  gap:12px;
-  padding:10px 12px;
-}
-.hero-terminal-shell{
-  padding:12px;
-}
-.hero-terminal-meta{
-  margin-bottom:10px;
-}
-.hero-terminal-note{
-  font-size:12px;
-}
-.hero-terminal-badge{
-  padding:6px 9px;
-}
-.hero-stage .tbd{
-  height:188px;
-  min-height:188px;
-  padding:14px;
-  font-size:12px;
-  line-height:1.65;
-}
-.hero-flightpath{
-  margin-top:10px;
-  padding-top:10px;
-}
-.hero-flightpath-items{
-  gap:8px;
-}
-.hero-flightpath-items a{
-  padding:6px 8px;
-  font-size:10px;
+@media(max-width:979px){
+  .hi{
+    grid-template-columns:1fr;
+  }
+  .hero-evidence{
+    display:none;
+  }
 }
 @media(min-width:1101px) and (max-height:820px){
   .hero{
@@ -1038,37 +825,11 @@ section{position:relative;z-index:1}
   .hero-proof{
     min-height:74px;
   }
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-flightpath{
+  .hero-summary,.hero-pulse,.hero-signals,.hero-evidence-head p{
     display:none;
   }
-  .hero-stage{
-    padding:14px;
-  }
-  .hero-stage-head{
-    margin-bottom:8px;
-  }
-  .hero-stage-title{
-    font-size:24px;
-  }
-  .hero-reel{
-    gap:6px;
-    margin-bottom:8px;
-  }
-  .hero-reel-item{
-    padding:8px 10px;
-  }
-  .hero-terminal-shell{
-    padding:10px;
-  }
-  .hero-terminal-meta{
-    display:none;
-  }
-  .hero-stage .tbd{
-    height:112px;
-    min-height:112px;
+  .hero-evidence{
+    gap:10px;
   }
 }
 @media(max-width:1320px){
@@ -1116,12 +877,7 @@ section{position:relative;z-index:1}
   .hi{
     gap:24px;
   }
-  .hero-brandline{
-    margin-bottom:16px;
-    font-size:11px;
-    letter-spacing:.14em;
-  }
-  .hero-avatar{
+    .hero-avatar{
     width:52px;
     height:52px;
   }
@@ -1148,11 +904,7 @@ section{position:relative;z-index:1}
   .hero-proof-value{
     font-size:17px;
   }
-  .hero-proof-copy,
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-stage{
+  .hero-proof-copy,.hero-summary,.hero-pulse,.hero-signals{
     display:none;
   }
   .hr{
@@ -1198,23 +950,1317 @@ section{position:relative;z-index:1}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .hero-grid,.hero-stage::before,.hero-stage::after{animation:none!important}
+  .hero-grid{animation:none!important}
 }
 @media(forced-colors:active){
   :focus-visible{outline:2px solid Highlight;outline-offset:3px}
-  body::before,.hero-stage::before,.hero-stage::after{display:none!important}
+  body::before{display:none!important}
   .btn,button,.theme-toggle,input,select,textarea{border:1px solid ButtonText}
 }
 }
-</style><link rel="preload" href="/_assets/global.BU5iFfFQ.css" as="style"><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.CsB98N7C.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script>  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/VideoSubtitleRemover/#source","name":"VideoSubtitleRemover","description":"AI-powered removal of hard-coded subtitles and text watermarks from video.","codeRepository":"https://github.com/SysAdminDoc/VideoSubtitleRemover","programmingLanguage":"Python","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/VideoSubtitleRemover.png","keywords":"Python, Media, AI, Video","datePublished":"2026-01-14T02:17:32.000Z","dateModified":"2026-06-03T17:25:01.000Z","license":"https://spdx.org/licenses/MIT.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"VideoSubtitleRemover","item":"https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"}]}]}</script> <a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: VideoSubtitleRemover"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">VideoSubtitleRemover</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="VideoSubtitleRemover" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Media"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-06-03"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Media" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <span>VideoSubtitleRemover</span> </div> <div class="project-meta"> <span class="cdo media project-meta-dot"></span> <span class="project-category">MEDIA</span> <span class="project-badge-featured">FEATURED</span>  </div> <h1 class="project-title">VideoSubtitleRemover</h1> <p class="project-desc">AI-powered removal of hard-coded subtitles and text watermarks from video.</p> <div class="project-tags"> <span class="ctg">Python</span><span class="ctg">Media</span><span class="ctg">AI</span><span class="ctg">Video</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+
+/* First-viewport visual refresh */
+:root{
+  --bg:#030812;
+  --bg2:#08111e;
+  --bg3:#0d1a2c;
+  --glass:rgba(9,18,31,.68);
+  --glass-hover:rgba(124,184,255,.095);
+  --glass-border:rgba(150,178,218,.16);
+  --border-soft:rgba(150,178,218,.13);
+  --border-strong:rgba(124,184,255,.3);
+  --surface-1:linear-gradient(180deg, rgba(15,29,48,.88), rgba(7,15,28,.76));
+  --surface-2:linear-gradient(180deg, rgba(17,34,55,.7), rgba(8,17,31,.58));
+  --surface-strong:linear-gradient(150deg, rgba(13,29,50,.96), rgba(5,12,24,.9));
+  --shadow-soft:0 22px 54px rgba(0,0,0,.24);
+  --shadow-strong:0 34px 86px rgba(0,0,0,.42);
+}
+html[data-theme="light"]{
+  --bg:#f7f9fc;
+  --bg2:#eef4fb;
+  --bg3:#e3edf8;
+  --glass:rgba(255,255,255,.82);
+  --glass-hover:rgba(53,107,191,.08);
+  --glass-border:rgba(47,68,104,.15);
+  --border-soft:rgba(47,68,104,.14);
+  --border-strong:rgba(53,107,191,.28);
+  --surface-1:linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,248,253,.82));
+  --surface-2:linear-gradient(180deg, rgba(255,255,255,.82), rgba(238,244,251,.7));
+  --surface-strong:linear-gradient(150deg, rgba(255,255,255,.98), rgba(237,245,252,.88));
+  --shadow-soft:0 20px 48px rgba(29,42,70,.12);
+  --shadow-strong:0 30px 72px rgba(29,42,70,.18);
+}
+body{
+  background:
+    radial-gradient(circle at 72% 8%, rgba(124,184,255,.15), transparent 30%),
+    radial-gradient(circle at 20% 28%, rgba(88,229,214,.09), transparent 26%),
+    linear-gradient(180deg, #030812 0%, #071120 44%, #03101a 100%);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 78% 10%, rgba(53,107,191,.12), transparent 30%),
+    radial-gradient(circle at 16% 30%, rgba(31,157,143,.08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf4fb 100%);
+}
+body::before{
+  opacity:.1;
+  background-size:72px 72px;
+}
+#nav{
+  background:rgba(3,8,18,.76);
+  border-bottom-color:rgba(150,178,218,.12);
+  box-shadow:0 18px 54px rgba(0,0,0,.24);
+}
+html[data-theme="light"] #nav{
+  background:rgba(247,249,252,.82);
+  box-shadow:0 12px 34px rgba(29,42,70,.1);
+}
+.ni{
+  height:68px;
+}
+.nl{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
+  text-shadow:none;
+}
+.nl::before{
+  content:'>_';
+  display:inline-grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(74,222,128,.24);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(74,222,128,.045));
+  box-shadow:0 14px 30px rgba(74,222,128,.08);
+  color:var(--grn);
+  font-size:15px;
+  margin-right:12px;
+}
+.nk{gap:10px}
+.nk a{
+  border-radius:8px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:650;
+  letter-spacing:.01em;
+}
+.nk a:hover,.nk a.active{background:rgba(124,184,255,.09)}
+.nav-actions{
+  border-radius:10px;
+  background:rgba(255,255,255,.035);
+}
+.hero{padding:82px 32px 34px}
+.hero-grid{
+  opacity:.12;
+}
+.hi{
+  max-width:1380px;
+  grid-template-columns:minmax(0,.95fr) minmax(430px,1fr);
+  gap:clamp(42px,5vw,78px);
+  align-items:start;
+}
+.ht{
+  position:relative;
+  max-width:690px;
+  display:flex;
+  flex-direction:column;
+  padding-left:34px;
+}
+.ht::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:62px;
+  bottom:10px;
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(180deg,var(--grn),var(--blue),var(--pur));
+  box-shadow:0 0 22px rgba(88,229,214,.22);
+}
+.hero-avatar{order:2;margin-bottom:18px}
+.htag{order:3}
+.hn{order:4}
+.hr{order:5}
+.hero-summary{order:6}
+.hs{order:7}
+.hero-proof-strip{order:8}
+.hero-pulse{order:9}
+.ha{order:10}
+.hero-signals{order:11}
+.hero-avatar{
+  width:66px;
+  height:66px;
+  border-color:rgba(88,229,214,.46);
+  box-shadow:0 0 0 5px rgba(88,229,214,.08),0 20px 42px rgba(0,0,0,.22);
+}
+.htag{
+  align-self:flex-start;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--grn);
+}
+.hn{
+  margin-bottom:18px;
+  font-size:clamp(62px,6.7vw,104px);
+  line-height:.9;
+  letter-spacing:-.065em;
+}
+.hn .a{
+  background:linear-gradient(135deg,#62e6d8 0%,#79c4ff 44%,#a98bff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+.hr{
+  max-width:30ch;
+  margin-bottom:18px;
+  font-family:var(--sans);
+  font-size:clamp(21px,2vw,28px);
+  font-weight:720;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.hero-summary{
+  max-width:64ch;
+  margin-bottom:22px;
+  color:var(--t2);
+  font-size:16px;
+  line-height:1.68;
+}
+.hs{
+  max-width:620px;
+  margin-bottom:18px;
+  padding:14px 18px;
+  border:1px solid rgba(150,178,218,.16);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(14,30,52,.72), rgba(7,16,29,.54));
+  box-shadow:0 18px 46px rgba(0,0,0,.18);
+}
+html[data-theme="light"] .hs{
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(239,246,252,.7));
+}
+.hsn{
+  background:none;
+  -webkit-text-fill-color:currentColor;
+  color:var(--t1);
+}
+.hero-proof-strip{max-width:620px;display:none}
+.hero-proof{
+  min-height:78px;
+  background:rgba(255,255,255,.025);
+  box-shadow:none;
+}
+.hero-proof-value{font-size:21px}
+.hero-pulse{display:none}
+.ha{margin-top:10px}
+.btn{
+  border-radius:10px;
+  font-family:var(--sans);
+  font-weight:720;
+}
+.hero-evidence{
+  max-width:650px;
+  gap:18px;
+  padding:22px;
+  border:1px solid rgba(124,184,255,.26);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(10,22,38,.92), rgba(4,10,20,.86));
+  box-shadow:0 28px 82px rgba(0,0,0,.32),0 0 0 1px rgba(88,229,214,.08) inset;
+}
+html[data-theme="light"] .hero-evidence{
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(238,246,252,.9));
+  box-shadow:0 24px 70px rgba(29,42,70,.16),0 0 0 1px rgba(53,107,191,.08) inset;
+}
+.hero-evidence-head{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.hero-evidence-kicker{color:var(--grn)}
+.hero-evidence-head strong{
+  font-family:var(--sans);
+  font-size:clamp(24px,2.5vw,34px);
+  letter-spacing:-.025em;
+}
+.hero-evidence-head p{max-width:58ch;font-size:15px}
+.hero-signals{display:none}
+@media(max-width:1160px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{max-width:none;justify-self:stretch}
+}
+@media(min-width:980px) and (max-width:1160px){
+  .hi{
+    grid-template-columns:minmax(0,.92fr) minmax(340px,.78fr);
+    gap:24px;
+  }
+  .ht{
+    max-width:none;
+    padding-left:24px;
+  }
+  .hn{font-size:clamp(52px,6.2vw,70px)}
+  .hr{
+    max-width:31ch;
+    font-size:clamp(18px,2vw,22px);
+  }
+  .hero-summary{display:none}
+  .hs{padding-inline:14px}
+  .hero-evidence{
+    max-width:none;
+    padding:18px;
+    gap:14px;
+  }
+  .hero-evidence-head p{display:none}
+}
+@media(max-width:979px){
+  .hero-evidence{display:grid}
+}
+@media(max-width:720px){
+  .hero{padding:90px 20px 46px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-avatar{width:58px;height:58px}
+  .hn{font-size:clamp(48px,16vw,66px)}
+  .hr{max-width:none;font-size:20px;line-height:1.25}
+  .hero-summary,.hero-pulse,.hero-signals{display:none}
+  .hs{
+    padding:12px 0;
+    border-inline:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .hero-proof-strip{display:none}
+  .hero-evidence{display:none}
+  .nl{
+    max-width:132px;
+    overflow:hidden;
+    font-size:0;
+  }
+  .nl::before{
+    margin-right:8px;
+  }
+  .nl::after{
+    content:'matt';
+    color:var(--grn);
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:700;
+  }
+}
+
+@media(max-width:1500px){
+  .route-interior .nav-actions > .nav-context{
+    display:none;
+  }
+  .route-interior .nav-search,
+  .route-interior .ng{
+    width:40px;
+    min-width:40px;
+    padding:0;
+    justify-content:center;
+  }
+  .route-interior .nav-search-label{
+    display:none;
+  }
+  .route-interior .ng{
+    font-size:0;
+  }
+  .route-interior .ng svg{
+    width:16px;
+    height:16px;
+  }
+}
+
+.route-home .nk{gap:clamp(8px,.8vw,16px)}
+.route-home .nk a{padding-inline:10px}
+.hero{padding:86px 32px 42px}
+.hi{grid-template-columns:minmax(0,.86fr) minmax(560px,1.06fr);gap:clamp(44px,4.8vw,72px)}
+.ht{max-width:610px;padding-left:36px}
+.ht::before{top:48px;bottom:0}
+.hero-identity{order:1;display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
+.hero-avatar{flex:0 0 auto;width:82px;height:82px;margin:2px 0 0}
+.hn{margin:0;font-size:clamp(74px,6vw,110px);line-height:.88;letter-spacing:-.055em}
+.hn .a{display:block}
+.htag{order:2;margin:0 0 24px;font-size:14px}
+.hr{order:3;max-width:31ch;margin:0 0 12px;font-size:clamp(23px,2vw,29px);line-height:1.18}
+.hero-summary{order:4;max-width:55ch;margin:0 0 22px;color:var(--t2);font-size:16px;line-height:1.62}
+.hs{order:5;max-width:640px;margin:0 0 18px;padding:14px 18px}
+.ha{order:6;margin-top:0}
+.hero-proof-strip,.hero-pulse,.hero-signals{display:none}
+.hero-evidence{max-width:720px;padding:22px 26px 24px;gap:14px;justify-self:stretch}
+.hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.12em}
+.hero-evidence-kicker .dot,.hero-live-badge .dot{width:7px;height:7px;border-radius:999px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+.hero-evidence-head strong{font-size:clamp(26px,2.2vw,36px)}
+.hero-evidence-head p{max-width:60ch}
+.hero-live-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;color:var(--t2);background:rgba(255,255,255,.035);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:238px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:12px;background:linear-gradient(180deg, rgba(4,10,18,.94), rgba(5,11,20,.86));color:inherit;text-decoration:none;box-shadow:0 22px 50px rgba(0,0,0,.24)}
+.hero-showcase-brand{min-width:0;display:grid;place-items:center;align-content:center;gap:10px;padding:24px 18px;border-right:1px solid rgba(150,178,218,.16);text-align:center}
+.hero-app-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:14px;color:#f5f7ff;background:linear-gradient(135deg,#5f75ff,#9267ff 54%,#5ce5d7);box-shadow:0 18px 34px rgba(92,117,255,.28)}
+.hero-app-icon svg{width:30px;height:30px}
+.hero-showcase-brand strong{color:#7890ff;font-family:var(--mono);font-size:clamp(20px,1.8vw,28px);letter-spacing:.14em}
+.hero-showcase-brand small{max-width:20ch;color:var(--t2);font-size:13px;line-height:1.4}
+.hero-showcase-shot{position:relative;min-width:0;display:block;overflow:hidden}
+.hero-showcase-shot img{width:100%;height:100%;min-height:238px;display:block;object-fit:cover;object-position:top center;opacity:.92}
+.hero-tool-strip{position:absolute;left:14px;right:14px;top:14px;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
+.hero-tool-strip span{padding:4px 8px;border:1px solid rgba(150,178,218,.18);border-radius:5px;background:rgba(3,8,18,.7);color:var(--t2);font-family:var(--mono);font-size:9px;line-height:1}
+.hero-carousel-ui{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:12px;min-height:36px}
+.hero-carousel-arrow{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.04);color:var(--t1);font-size:25px;line-height:1}
+.hero-carousel-dots{display:flex;justify-content:center;gap:10px}
+.hero-carousel-dots span{width:9px;height:9px;border-radius:999px;background:rgba(150,178,218,.28)}
+.hero-carousel-dots .is-active{background:var(--grn);box-shadow:0 0 14px var(--grn-glow)}
+.hero-app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.hero-app-card{min-width:0;min-height:116px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:14px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.03);color:inherit;text-decoration:none}
+.hero-app-card-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#cdd8f7;background:rgba(124,184,255,.12)}
+.hero-app-card-icon svg{width:18px;height:18px}
+.hero-app-card strong{display:block;color:var(--t1);font-size:13px;line-height:1.2}
+.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:11px;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-app-card em{align-self:end;color:var(--grn);font-family:var(--mono);font-size:10px;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+.hero-app-more em{justify-self:end;color:var(--pur);font-size:18px;letter-spacing:0;text-transform:none}
+html[data-theme="light"] .hero-showcase{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(238,246,252,.9));box-shadow:0 18px 46px rgba(29,42,70,.13)}
+html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badge,html[data-theme="light"] .hero-carousel-arrow{background:rgba(255,255,255,.68)}
+@media(max-width:1320px){
+  .route-home .nk{gap:clamp(4px,.45vw,8px)}
+  .route-home .nk a{padding-inline:8px;font-size:13px}
+}
+@media(max-width:1180px){
+  .hi{grid-template-columns:minmax(0,.9fr) minmax(430px,1fr);gap:28px}
+  .hero-evidence{padding:18px}
+  .hero-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:979px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{display:grid;max-width:none}
+}
+@media(max-width:720px){
+  .hero{padding:88px 20px 44px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-identity{display:grid;gap:16px;margin-bottom:18px}
+  .hero-avatar{width:62px;height:62px}
+  .hn{font-size:clamp(50px,16vw,68px)}
+  .htag{justify-content:flex-start;width:auto}
+  .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
+  .hero-summary{display:block;margin:0 0 20px;font-size:15px;line-height:1.55}
+  .hs{margin:0 0 16px;border:1px solid rgba(150,178,218,.14);border-radius:12px;background:rgba(255,255,255,.025)}
+  .hero-evidence{display:none}
+}
+</style><link rel="preload" href="/_assets/global.DkERpmV2.css" as="style"><link rel="stylesheet" href="/_assets/global.DkERpmV2.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.DkERpmV2.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/VideoSubtitleRemover/#source","name":"VideoSubtitleRemover","description":"AI-powered removal of hard-coded subtitles and text watermarks from video.","codeRepository":"https://github.com/SysAdminDoc/VideoSubtitleRemover","programmingLanguage":"Python","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/VideoSubtitleRemover.png","keywords":"Python, Media, AI, Video","datePublished":"2026-01-14T02:17:32.000Z","dateModified":"2026-07-07T19:03:54.000Z","license":"https://spdx.org/licenses/MIT.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"VideoSubtitleRemover","item":"https://sysadmindoc.github.io/projects/VideoSubtitleRemover/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: VideoSubtitleRemover"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">VideoSubtitleRemover</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="VideoSubtitleRemover" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Media"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-07-07"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Media" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <span>VideoSubtitleRemover</span> </div> <div class="project-meta"> <span class="cdo media project-meta-dot"></span> <span class="project-category">MEDIA</span> <span class="project-badge-featured">FEATURED</span>  </div> <h1 class="project-title">VideoSubtitleRemover</h1> <p class="project-desc">AI-powered removal of hard-coded subtitles and text watermarks from video.</p> <div class="project-tags"> <span class="ctg">Python</span><span class="ctg">Media</span><span class="ctg">AI</span><span class="ctg">Video</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
 Open source on GitHub
 </a>  <button type="button" class="btn bg2 project-share-button" data-project-share data-share-title="VideoSubtitleRemover" data-share-text="AI-powered removal of hard-coded subtitles and text watermarks from video." data-share-url="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/" aria-describedby="project-share-status"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
 Share project
-</button>  <span class="project-stars"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> 17</span> <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">Python</div> <div class="project-fact-detail">Media category</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-06-03T17:25:01Z" data-rel="2026-06-03T17:25:01Z">Jun 3, 2026</time></div> <div class="project-fact-detail">Updated Jun 3, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">v3.16.0</div> <div class="project-fact-detail">Published Jun 3, 2026</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav><span class="page-jump-label">On This Page</span><div class="page-jump-links"><a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"><span class="page-jump-link-label">Overview</span><span class="page-jump-badge">PROJECT</span></a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"><span class="page-jump-link-label">Preview</span><span class="page-jump-badge">VISUAL</span></a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"><span class="page-jump-link-label">README</span><span class="page-jump-badge">DOCS</span></a><a href="#project-releases" class="page-jump-link" title="Tagged release history pulled from GitHub for this project." data-page-jump-link="project-releases"><span class="page-jump-link-label">Recent Releases</span><span class="page-jump-badge">RELEASES</span></a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"><span class="page-jump-link-label">More from This Lane</span><span class="page-jump-badge">RELATED</span></a></div></nav><script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/VideoSubtitleRemover.png" alt="VideoSubtitleRemover card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
+</button>  <span class="project-stars"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> 33</span> <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">Python</div> <div class="project-fact-detail">Media category</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-07-07T19:03:54Z" data-rel="2026-07-07T19:03:54Z">Jul 7, 2026</time></div> <div class="project-fact-detail">Updated Jul 7, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">No tag yet</div> <div class="project-fact-detail">README is the clearest project overview right now.</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"> <span class="page-jump-link-label">README</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/VideoSubtitleRemover.png" alt="VideoSubtitleRemover card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
 Source at <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/VideoSubtitleRemover</a>.
-</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>1 min read</span> <span>30 words</span> <span>2 sections</span> </div> </div> </div>  <article class="project-readme"><h1 id="videosubtitleremover">VideoSubtitleRemover</h1>
-<p>Video processing tool for removing hardcoded subtitles with AI-assisted inpainting workflows.</p>
-<h2 id="fixture-coverage">Fixture Coverage</h2>
-<p>This excerpt keeps the Media category and a recent release row in the fixture branch.</p>
+</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>18 min read</span> <span>3,761 words</span> <span>21 sections</span> </div> </div> </div> <details class="project-readme-toc" open> <summary>Contents</summary> <ol> <li class="project-readme-toc-depth-1"> <a href="#video-subtitle-remover-pro">Video Subtitle Remover Pro</a> </li><li class="project-readme-toc-depth-2"> <a href="#overview">Overview</a> </li><li class="project-readme-toc-depth-2"> <a href="#features">Features</a> </li><li class="project-readme-toc-depth-2"> <a href="#system-requirements">System Requirements</a> </li><li class="project-readme-toc-depth-2"> <a href="#installation">Installation</a> </li><li class="project-readme-toc-depth-3"> <a href="#quick-install">Quick Install</a> </li><li class="project-readme-toc-depth-3"> <a href="#manual-install">Manual Install</a> </li><li class="project-readme-toc-depth-3"> <a href="#ffmpeg-required-for-audio">FFmpeg (Required for audio)</a> </li><li class="project-readme-toc-depth-3"> <a href="#validation">Validation</a> </li><li class="project-readme-toc-depth-2"> <a href="#usage">Usage</a> </li><li class="project-readme-toc-depth-3"> <a href="#algorithm-comparison">Algorithm Comparison</a> </li><li class="project-readme-toc-depth-3"> <a href="#detection-engines">Detection Engines</a> </li><li class="project-readme-toc-depth-2"> <a href="#cli-usage">CLI Usage</a> </li><li class="project-readme-toc-depth-3"> <a href="#reference-clip-contributions">Reference Clip Contributions</a> </li><li class="project-readme-toc-depth-2"> <a href="#configuration">Configuration</a> </li><li class="project-readme-toc-depth-3"> <a href="#advanced-settings">Advanced Settings</a> </li><li class="project-readme-toc-depth-2"> <a href="#troubleshooting">Troubleshooting</a> </li><li class="project-readme-toc-depth-3"> <a href="#log-files">Log Files</a> </li><li class="project-readme-toc-depth-2"> <a href="#project-structure">Project Structure</a> </li><li class="project-readme-toc-depth-2"> <a href="#credits">Credits</a> </li><li class="project-readme-toc-depth-2"> <a href="#license">License</a> </li> </ol> </details> <article class="project-readme"><h1 id="video-subtitle-remover-pro">Video Subtitle Remover Pro</h1>
+<div align="center"><p><img src="https://img.shields.io/badge/version-3.17.3-22c55e" alt="Version" loading="lazy" decoding="async" />
+<img src="https://img.shields.io/badge/platform-Windows-60a5fa" alt="Platform" loading="lazy" decoding="async" />
+<img src="https://img.shields.io/badge/license-MIT-4ade80" alt="License" loading="lazy" decoding="async" />
+<img src="https://img.shields.io/badge/python-3.10--3.13%20CUDA-blue" alt="Python" loading="lazy" decoding="async" /></p>
+<p><strong>Professional AI-powered tool for removing hard-coded subtitles from videos and images</strong></p>
+<p><a href="#features">Features</a> | <a href="#installation">Installation</a> | <a href="#usage">Usage</a> | <a href="#configuration">Configuration</a> | <a href="#cli-usage">CLI</a> | <a href="#troubleshooting">Troubleshooting</a></p>
+</div><hr />
+<h2 id="overview">Overview</h2>
+<p>Video Subtitle Remover Pro uses real AI neural networks to remove hard-coded subtitles and text watermarks from videos and images. Unlike simple blur or crop methods, it intelligently fills in removed areas with content that matches the surrounding video.</p>
+<p>Based on <a href="https://github.com/YaoFANGUK/video-subtitle-remover" rel="noopener nofollow" target="_blank">YaoFANGUK/video-subtitle-remover</a>, enhanced with a professional interface, real LaMa inpainting, multi-engine detection, and a 52-code language picker backed by broader OCR engine coverage.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Real Video Inpainting</strong> -- Temporal Background Exposure (TBE) reconstructs the true background from neighbouring frames where the subtitle is absent. No external model weight downloads required.</li>
+<li><strong>Real AI Inpainting</strong> -- LaMa neural network via ONNX Runtime (default, no torch dependency), OpenCV DNN weights, or an explicit PyTorch fallback opt-in</li>
+<li><strong>AUTO Inpaint Routing</strong> -- Per-batch routing between TBE and LaMa based on exposure score</li>
+<li><strong>Multi-Engine Detection</strong> -- RapidOCR (ONNX PP-OCR, 4-5x faster, leak-free) &gt; PaddleOCR &gt; Surya (GPL opt-in) &gt; EasyOCR &gt; OpenCV fallback chain (automatic)</li>
+<li><strong>Lossless Pipeline</strong> -- FFV1 lossless intermediate (only the final encode is lossy) for noticeably cleaner outputs than the legacy mp4v intermediate</li>
+<li><strong>Modern Codec Output</strong> -- Pick H.264 / H.265 / AV1 / VVC (H.266) from a dropdown; NVENC/QSV/AMF where available, libx265 / libsvtav1 software fallback, native SVT-AV1 film grain, and VVC when FFmpeg exposes <code>libvvenc</code></li>
+<li><strong>Multi-region Masks</strong> -- Draw multiple subtitle rects on a scrubbable video frame, optionally with start/end seconds for moving subtitle layouts</li>
+<li><strong>Inpaint Preview</strong> -- "Test cleanup" runs detect + inpaint on the selected frame so you can A/B settings before committing</li>
+<li><strong>Seamless Boundaries</strong> -- Gaussian alpha feathering at every inpaint boundary, no visible cut lines</li>
+<li><strong>Language Support</strong> -- 52 selectable OCR language codes in the GUI, with installed OCR engines reporting broader capacity: RapidOCR 100+, PaddleOCR 106, Surya 90+ (GPL opt-in), and EasyOCR 80+; core GUI surfaces are wired for gettext catalogs dropped into <code>locale/&lt;lang&gt;/LC_MESSAGES/vsr.mo</code></li>
+<li><strong>GPU Acceleration</strong> -- NVIDIA CUDA, AMD/Intel DirectML through ONNX Runtime, hardware-decode hints (D3D11 / VAAPI / MFX), CPU fallback</li>
+<li><strong>Subtitle Region Selector</strong> -- Scrub to any frame and draw one or more rectangles; use optional start/end seconds to save time-ranged manual masks</li>
+<li><strong>Batch Processing</strong> -- Queue files or drag entire folders; per-item cancellation plus safe pause/resume for long videos</li>
+<li><strong>Multi-track Audio + Loudness Normalisation</strong> -- Pass through every audio track on Bluray rips; optional per-stream EBU R128 normalisation to LUFS targets (YouTube -14, Apple -16, broadcast -23)</li>
+<li><strong>Quality Self-Test</strong> -- PSNR / SSIM report, optional FFmpeg/libvmaf VMAF score, ROI-cropped metrics for the inpaint region, and an optional side-by-side comparison PNG</li>
+<li><strong>CLI + Presets</strong> -- <code>python -m backend.processor --pattern ... --preset "YouTube (default)"</code>; six built-in presets + user presets persisted to <code>%APPDATA%</code></li>
+<li><strong>Chyron vs Subtitle Filter</strong> -- Keep persistent text (logos, lower-thirds) and remove dialogue, or vice versa</li>
+<li><strong>Karaoke Grouping</strong> -- Per-syllable boxes fuse into a single line mask so highlighted lyrics do not leak through the gaps</li>
+<li><strong>Live Preview During Processing</strong> -- 15 FPS throttled preview piped from the backend worker</li>
+<li><strong>Pre-batch ETA Estimate</strong> -- 30-frame detect probe seeds the ETA so users see "about X left" from the very first frame</li>
+<li><strong>Pause/Resume Checkpointing</strong> -- SHA-256 input fingerprint per file; finished files are skipped and paused videos resume from durable checkpoint frames</li>
+<li><strong>Backend Status</strong> -- Help shows OCR/inpaint backends, language picker vs. engine capacity, ONNX/OpenCV providers, required model files, hash state, FFmpeg capability profiles, and the next setup action</li>
+<li><strong>Premium Dark UI</strong> -- Cohesive design system with custom controls, rectangular status tiles, responsive workbench scrolling, taskbar progress, and onboarding</li>
+<li><strong>Settings Persistence</strong> -- All knobs saved/restored between sessions; versioned schema with backfill migration</li>
+<li><strong>Release Tooling</strong> -- Local PyInstaller/NSIS build scripts, dependency checks, support bundles, and winget-ready installer metadata</li>
+</ul>
+<h2 id="system-requirements">System Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Minimum</th>
+<th>Recommended</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OS</td>
+<td>Windows 10</td>
+<td>Windows 11</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Intel i5 / AMD Ryzen 5</td>
+<td>Intel i7 / AMD Ryzen 7</td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>8 GB</td>
+<td>16+ GB</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>Any (CPU mode)</td>
+<td>NVIDIA RTX 2060+ (RTX 50-series supported via CUDA 12.8)</td>
+</tr>
+<tr>
+<td>VRAM</td>
+<td>-</td>
+<td>6+ GB</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.10</td>
+<td>3.12 or 3.13 for CUDA</td>
+</tr>
+</tbody></table>
+<h2 id="installation">Installation</h2>
+<h3 id="quick-install">Quick Install</h3>
+<ol>
+<li><strong>Download</strong> or clone this repository</li>
+<li><strong>Double-click</strong> <code>Run_VSR_Pro.bat</code> — first run automatically:<ul>
+<li>Creates a virtual environment</li>
+<li>Detects your GPU and installs appropriate packages</li>
+<li>Installs PaddleOCR, EasyOCR, and LaMa inpainting</li>
+<li>Launches the application</li>
+<li>On later launches, verifies core packages and repairs a broken <code>venv</code>
+without stdin prompts</li>
+<li>Use <code>Run_VSR_Pro_Debug.bat</code> for a visible troubleshooting console, or
+<code>Run_VSR_Pro.ps1</code> when you prefer launching from PowerShell</li>
+</ul>
+</li>
+</ol>
+<p>After the Windows Package Manager manifest is accepted, signed release
+installers can also be installed with:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">winget install SysAdminDoc.VideoSubtitleRemoverPro</span></code></pre><h3 id="manual-install">Manual Install</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">cd VideoSubtitleRemover</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Create virtual environment</span></span>
+<span class="line">python <span class="shiki-c-red">-</span>m venv venv</span>
+<span class="line">.\venv\Scripts\activate</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Install PyTorch (choose one -- Python 3.12/3.13 recommended for CUDA):</span></span>
+<span class="line"><span class="shiki-c-muted"># NVIDIA RTX 20/30/40/50-series:</span></span>
+<span class="line">pip install torch<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">2.10</span>.<span class="shiki-c-blue">0</span> torchvision<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">0.25</span>.<span class="shiki-c-blue">0</span> <span class="shiki-c-red">--</span>index<span class="shiki-c-red">-</span>url https:<span class="shiki-c-red">//</span>download.pytorch.org<span class="shiki-c-red">/</span>whl<span class="shiki-c-red">/</span>cu128</span>
+<span class="line"><span class="shiki-c-muted"># CPU:</span></span>
+<span class="line">pip install torch<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">2.10</span>.<span class="shiki-c-blue">0</span> torchvision<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">0.25</span>.<span class="shiki-c-blue">0</span> <span class="shiki-c-red">--</span>index<span class="shiki-c-red">-</span>url https:<span class="shiki-c-red">//</span>download.pytorch.org<span class="shiki-c-red">/</span>whl<span class="shiki-c-red">/</span>cpu</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Install dependencies</span></span>
+<span class="line">pip install <span class="shiki-c-red">-</span>r requirements.txt</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Run</span></span>
+<span class="line">python VideoSubtitleRemover.py</span></code></pre><h3 id="ffmpeg-required-for-audio">FFmpeg (Required for audio)</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">winget install ffmpeg</span></code></pre><p>Run <code>python -m backend.processor --self-test</code> to confirm the installed build's
+<code>basic</code>, <code>advanced_quality</code>, <code>speech_fallback</code>, and <code>modern_codec</code> profiles.
+Those profiles report missing filters such as <code>loudnorm</code>, <code>libvmaf</code>, or
+<code>whisper</code>, missing encoders such as <code>libvvenc</code>, and OpenCV wheel ownership
+before a long batch starts.</p>
+<h3 id="validation">Validation</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">python <span class="shiki-c-red">-</span>m unittest discover <span class="shiki-c-red">-</span>s tests <span class="shiki-c-red">-</span>v</span>
+<span class="line">python <span class="shiki-c-red">-</span>m backend.reference_corpus <span class="shiki-c-red">--</span>json</span>
+<span class="line">python tools<span class="shiki-c-red">/</span>local_smoke.py</span></code></pre><p><code>build_exe.bat</code> also runs the committed reference corpus during local release
+evidence generation and records the result in <code>release-verification.json</code>.</p>
+<p>For an isolated CPU smoke without touching the Windows launcher, run the same
+check in the local container recipe:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">docker build <span class="shiki-c-red">-</span>t vsr<span class="shiki-c-red">-</span>pro<span class="shiki-c-red">-</span>smoke .</span>
+<span class="line">docker run <span class="shiki-c-red">--</span>rm vsr<span class="shiki-c-red">-</span>pro<span class="shiki-c-red">-</span>smoke</span></code></pre><p>The container path installs only the minimal CPU smoke dependencies, runs
+<code>python -m backend.processor --self-test</code>, then processes a generated tiny
+image through the CLI with a fixed mask.</p>
+<h2 id="usage">Usage</h2>
+<ol>
+<li><strong>Launch</strong> via <code>Run_VSR_Pro.bat</code>, <code>Run_VSR_Pro_Debug.bat</code>, or
+<code>Run_VSR_Pro.ps1</code></li>
+<li><strong>Add files</strong> -- Click to browse, right-click for folders, or drag &amp; drop</li>
+<li><strong>Select algorithm</strong> — LAMA (recommended), STTN, or ProPainter</li>
+<li><strong>Set language</strong> if subtitles are non-English</li>
+<li><strong>Optionally set region</strong> — select a queued item and drag on the preview for a fixed subtitle band, or use the settings card's Set Region action for multi-region and timed ranges</li>
+<li><strong>Start Processing</strong> and monitor progress</li>
+<li><strong>Select a queue item</strong> to preview it, use <strong>Review mask</strong> to confirm detection, and <strong>double-click the preview</strong> for a larger source frame</li>
+</ol>
+<h3 id="algorithm-comparison">Algorithm Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Inpainting Engine</th>
+<th>Speed</th>
+<th>Quality</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>STTN</strong></td>
+<td>Temporal Background Exposure</td>
+<td>Fastest</td>
+<td>Great</td>
+<td>Live-action video with changing subtitles (default)</td>
+</tr>
+<tr>
+<td>LAMA</td>
+<td>Neural (LaMa ONNX/OpenCV DNN; PyTorch opt-in)</td>
+<td>Medium</td>
+<td>Best still-frame</td>
+<td>Images, animations, static backgrounds</td>
+</tr>
+<tr>
+<td>ProPainter</td>
+<td>TBE + LaMa refinement</td>
+<td>Slowest</td>
+<td>Best motion</td>
+<td>Motion-heavy footage, thick/decorative text</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>All three modes now do real inpainting. STTN recovers the literal background from adjacent frames where the subtitle is absent -- this works because hard-coded subtitles are sparse in time, and the pixels behind them are revealed whenever the text changes or disappears. LAMA is a single-frame neural fill. ProPainter is a TBE + LaMa refinement hybrid -- it is <strong>not</strong> the ICCV 2023 ProPainter model or weights (which carry a non-commercial NTU S-Lab license). This implementation uses only MIT-licensed code.</p>
+</blockquote>
+<h3 id="detection-engines">Detection Engines</h3>
+<p>The app automatically selects the best available engine:</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Engine</th>
+<th>Install</th>
+<th>Languages</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>RapidOCR</strong> (ONNX/OpenVINO PP-OCR)</td>
+<td><code>pip install "rapidocr&gt;=2.0.0,&lt;4.0.0"</code>; Intel: <code>pip install "openvino&gt;=2025.0.0"</code></td>
+<td>100+</td>
+<td>ONNX Runtime by default; OpenVINO auto-preferred on CPU/Intel when installed</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PaddleOCR (3.x, PP-OCRv6 default in 3.7)</td>
+<td><code>pip install "paddleocr&gt;=3.0.0,&lt;4.0.0"</code></td>
+<td>106</td>
+<td>High accuracy reference implementation; PP-OCRv5/v6 result payloads are supported</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Surya</td>
+<td><code>pip install surya-ocr</code></td>
+<td>90+</td>
+<td>Layout-aware (GPL)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EasyOCR</td>
+<td><code>pip install easyocr</code></td>
+<td>80+</td>
+<td>Legacy fallback</td>
+</tr>
+<tr>
+<td>5</td>
+<td>OpenCV fallback</td>
+<td>Built-in</td>
+<td>Any</td>
+<td>Threshold-based</td>
+</tr>
+</tbody></table>
+<p>Experimental VLM OCR tiers stay default-off. <code>VSR_VLM_OCR=florence2</code>,
+<code>VSR_VLM_OCR=qwen25vl</code>, and <code>VSR_VLM_OCR=paddleocr-vl</code> try the heavier
+transformer/PaddleOCR adapters before the table above. For CPU/edge
+PaddleOCR-VL-1.5, start a local llama.cpp OpenAI-compatible server with the
+GGUF model, then set <code>VSR_PADDLEOCR_VL=1</code>; use
+<code>VSR_PADDLEOCR_VL_SERVER_URL</code> when the server is not at
+<code>http://127.0.0.1:8080/v1</code>. If the server or PaddleOCRVL entrypoint is not
+available, detection falls back to the normal cascade.</p>
+<p>On NVIDIA systems, setup installs <code>onnxruntime-gpu&gt;=1.21.0</code> for the tested
+CUDA 12.x ONNX Runtime path; CUDA 13.x currently requires ONNX Runtime
+nightly/custom wheels rather than the stable PyPI default. Backend status and
+release evidence distinguish <code>onnxruntime</code>, <code>onnxruntime-gpu</code>, CUDA package
+channel, <code>onnxruntime-directml</code>, and the providers reported at runtime. On
+AMD/Intel systems, setup installs <code>onnxruntime-directml</code>; on Intel systems it
+also tries <code>openvino&gt;=2025.0.0</code> so RapidOCR can use its OpenVINO engine for
+CPU/iGPU OCR acceleration. Set <code>VSR_RAPIDOCR_ENGINE=onnxruntime</code> to force the
+default ONNX Runtime path or <code>VSR_RAPIDOCR_ENGINE=openvino</code> to request
+OpenVINO explicitly. When ONNX Runtime reports <code>DmlExecutionProvider</code>,
+RapidOCR is initialized with its DirectML provider settings; unsupported
+RapidOCR versions or missing providers fall back to CPU automatically.
+OpenVINO initialization failures also fall back to ONNX Runtime. RapidOCR
+legacy tuple output and current structured object/dict output are both
+normalized to the same axis-aligned detector boxes.
+Opt-in ONNX inpainters inspect their model <code>opset_import</code> metadata before
+creating a DirectML session; if the default ONNX opset is newer than DirectML's
+supported ceiling, VSR uses the CPU provider instead of failing at session
+creation.
+Windows ML is currently audit-only, not a replacement for ONNX Runtime
+DirectML. Run <code>python -m backend.processor --audit-windows-ml</code> on Windows to
+check whether the Python bridge, Windows App SDK bootstrap, ONNX Runtime EP
+device catalog, and a tiny ONNX identity-model smoke run are available. Until
+that probe passes on real user machines and the default OCR/inpaint models are
+benchmarked through the Windows ML path, VSR keeps DirectML as the AMD/Intel
+GPU route.</p>
+<p>Optional model paths such as <code>VSR_LAMA_ONNX</code>, <code>VSR_MIGAN_ONNX</code>,
+<code>VSR_FASTDVDNET</code>, <code>VSR_TRANSNETV2</code>, <code>VSR_VACE_CKPT_DIR</code>, and
+<code>VSR_VIDEOPAINTER_CKPT_DIR</code>, and <code>VSR_FLOED_WEIGHTS</code> are checked against a
+local adapter manifest before loading. Known SHA-256 mismatches fall back
+instead of deserializing the file. Legacy adapters without a pinned hash still
+run, but new strict adapters can require a known hash unless
+<code>VSR_ALLOW_UNVERIFIED_MODELS=1</code> is set and recorded in release evidence.
+Local release evidence also writes <code>release-advisories.json</code>; strict mode
+blocks unallowed high/critical dependency advisories while keeping the current
+OpenCV/libpng exception explicit until fixed wheels are available.
+Wan2.1-VACE is available as an opt-in registry mode: set <code>VSR_VACE=1</code>, install
+the reviewed upstream <code>vace</code> package, then either set <code>VSR_VACE_CKPT_DIR</code> to a
+local <code>Wan-AI/Wan2.1-VACE-1.3B</code> snapshot or set <code>VSR_VACE_AUTO_FETCH=1</code> with
+<code>huggingface-hub</code> installed to fetch it into the app model cache.
+VideoPainter is available only as a strict local research adapter: set
+<code>VSR_VIDEOPAINTER=1</code>, review the upstream research/non-commercial and CogVideoX
+license terms, set <code>VSR_VIDEOPAINTER_CKPT_DIR</code> to a local checkpoint root, set
+<code>VSR_VIDEOPAINTER_COMMAND</code> to a local wrapper that accepts <code>--input-video</code>,
+<code>--mask-video</code>, and <code>--output-video</code>, and opt in with
+<code>VSR_ALLOW_UNVERIFIED_MODELS=1</code> for unpinned research weights.
+FloED is available as a strict local research adapter: set <code>VSR_FLOED=1</code>, set
+<code>VSR_FLOED_WEIGHTS</code> or <code>VSR_FLOED_CKPT_DIR</code> to a reviewed FloED checkpoint,
+set <code>VSR_FLOED_COMMAND</code> to a local wrapper that accepts <code>--input-dir</code>,
+<code>--mask-dir</code>, and <code>--output-dir</code>, and opt in with
+<code>VSR_ALLOW_UNVERIFIED_MODELS=1</code> for unpinned research weights.
+MatAnyone 2 is available as an opt-in mask refinement path for decorated or
+thin subtitle masks: pass <code>--matanyone-refine</code>, set <code>VSR_MATANYONE=1</code>, install
+the reviewed upstream <code>matanyone2</code> package, and set <code>VSR_MATANYONE_PATH</code> to a
+local checkpoint or snapshot after reviewing the NTU S-Lab License 1.0 terms.
+Unpinned PyTorch checkpoints require <code>VSR_ALLOW_UNVERIFIED_MODELS=1</code>; malformed
+or missing alpha mattes fall back to the original OCR/SAM mask.
+CoTracker3 can fill OCR-empty masks inside a video batch by propagating sparse
+points from the nearest detected subtitle mask: pass <code>--cotracker-propagate</code>,
+set <code>VSR_COTRACKER=1</code>, and set either <code>VSR_COTRACKER_REPO</code> to a reviewed local
+co-tracker checkout or <code>VSR_COTRACKER_REF</code> to a pinned commit/tag before any
+<code>torch.hub</code> load is allowed. Set <code>VSR_COTRACKER_MODE=online</code> only if you need
+the online model; the default uses the offline CoTracker3 entrypoint.
+NVIDIA users can request PyNvVideoCodec decode with <code>--decode-accel pynv</code>
+or <code>--decode-accel nvdec</code> after installing NVIDIA's <code>PyNvVideoCodec</code> package.
+The decoder uses GPU-backed surfaces when available, then converts to CPU BGR
+frames for the current OpenCV/OCR/inpaint pipeline; missing packages or failed
+opens fall back to software decode.
+Smooth-background clips can trade precision for throughput with
+<code>--rife-fast-stride N</code>: VSR inpaints keyframes every N frames, asks
+Practical-RIFE to synthesize the skipped cleaned frames when <code>practical-rife</code>
+is installed, and duplicates the nearer cleaned keyframe across scene cuts or
+missing RIFE adapters.
+The legacy <code>simple-lama-inpainting</code> PyTorch backend is disabled unless
+<code>VSR_ENABLE_PYTORCH_LAMA=1</code> is set, because broken native torch wheels can
+crash the GUI process during import. Prefer <code>VSR_LAMA_ONNX</code> or
+<code>VSR_OPENCV_LAMA</code> for automatic LaMa acceleration.</p>
+<h2 id="cli-usage">CLI Usage</h2>
+<p>Process files from the command line:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">-i</span> <span class="shiki-c-cyan">input.mp4</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">output.mp4</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">lama</span> <span class="shiki-c-blue">--lang</span> <span class="shiki-c-cyan">en</span> <span class="shiki-c-blue">--crf</span> <span class="shiki-c-blue">20</span></span></code></pre><p>For OCR-empty frames with speech, the optional Whisper fallback can
+mask the bottom subtitle band. The default backend is <code>faster-whisper</code>;
+FFmpeg 8 builds that include the <code>whisper</code> filter can instead use a
+local whisper.cpp ggml model without Python ML dependencies:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">-i</span> <span class="shiki-c-cyan">input.mp4</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">output.mp4</span> <span class="shiki-c-blue">--whisper-fallback</span> <span class="shiki-c-blue">--whisper-backend</span> <span class="shiki-c-cyan">ffmpeg</span> <span class="shiki-c-blue">--ffmpeg-whisper-model</span> <span class="shiki-c-cyan">C:</span><span class="shiki-c-red">\m</span><span class="shiki-c-cyan">odels</span><span class="shiki-c-red">\g</span><span class="shiki-c-cyan">gml-base.en.bin</span></span></code></pre><p>Embedded subtitle tracks can be inspected or remuxed without OCR, frame
+decode, inpainting, or video re-encode:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">-i</span> <span class="shiki-c-cyan">input.mkv</span> <span class="shiki-c-blue">--soft-subtitle-dry-run</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">--pattern</span> <span class="shiki-c-cyan">"inputs/*.mkv"</span> <span class="shiki-c-blue">--soft-subtitle-dry-run</span> <span class="shiki-c-blue">--soft-subtitle-plan-json</span> <span class="shiki-c-cyan">soft-plan.json</span></span>
+<span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">-i</span> <span class="shiki-c-cyan">input.mkv</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">stripped.mkv</span> <span class="shiki-c-blue">--strip-soft-subtitles</span></span></code></pre><p>When the input is a directory of images, <code>--output-frames</code> writes the cleaned
+frames as individual PNGs instead of encoding a video:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">python</span> <span class="shiki-c-blue">-m</span> <span class="shiki-c-cyan">backend.processor</span> <span class="shiki-c-blue">-i</span> <span class="shiki-c-cyan">frames_dir/</span> <span class="shiki-c-blue">-o</span> <span class="shiki-c-cyan">cleaned_dir/</span> <span class="shiki-c-blue">--output-frames</span></span></code></pre><p>In the GUI, queued videos with embedded subtitle tracks show a track summary;
+right-click the item to fast strip, fast remux/keep, or continue with
+burned-in cleanup.</p>
+<p>Pattern batches and GUI batches write <code>vsr-batch-summary.json</code> and
+<code>vsr-batch-summary.md</code> next to their outputs when they finish. The report
+records each input, selected output path, codec/duration/subtitle preflight
+data, source-aware output-quality warning, planned action, final status, and
+elapsed time for skipped, checkpointed, paused, remuxed, processed, or failed
+files.
+They also break each item down by decode, OCR, mask, inpaint, encode, mux, and
+quality-analysis time, with a run-level slowest-stage summary for diagnosing
+slow hardware, OCR, model, or muxing bottlenecks.
+Before processing, CLI and GUI batches compare source codec/resolution/bitrate
+against the selected output codec and CRF; risky settings are shown as
+preflight warnings, and the report records the safer recommendation plus that
+the user continued after the warning. When quality reports are enabled, batch
+summaries also include a <code>passed</code>, <code>review</code>, or <code>unknown</code> quality gate using
+ROI metrics, a cheap residual-text score, and an adjacent-frame temporal
+flicker score, plus any quality-sheet preview path for review-needed outputs.
+A failed gate changes the batch row status to <code>review-needed</code>; skipped and
+remux-only rows are marked <code>not_applicable</code>.
+Review-needed queue items expose <strong>Retry with suggested settings</strong>, which
+applies the quality gate's ladder step to that item only and records the
+before/after retry config in the next batch report.</p>
+<p>Long video runs can pause at safe frame-batch boundaries. In the GUI, click
+<strong>Pause batch</strong> while processing; the current video writes checkpoint frames
+under <code>%APPDATA%\VideoSubtitleRemoverPro\checkpoints\</code> and returns to the queue
+as <code>Paused</code>. Starting the batch again resumes from the first missing frame. In
+the CLI, press Ctrl-C once to request the same safe pause; re-run the same
+command to resume. If the input, output path, frame count, frame rate, size, or
+processing settings changed, VSR warns and restarts that file from the
+beginning instead of trusting stale checkpoint frames.</p>
+<h3 id="reference-clip-contributions">Reference Clip Contributions</h3>
+<p>Use the <strong>Edge-case clip</strong> GitHub issue form before adding real media to
+<code>tests/clips/</code>. Real fixtures must be short, redistributable with this
+MIT-licensed project, and manifest-backed with SHA-256, source URL, license
+proof URL, retrieval date, rights confirmation, reproduction settings, and
+metric floors. Good starting sources are NASA public-domain media, Library of
+Congress public-domain media, Wikimedia Commons compatible-license files, or a
+clip you shot and grant as CC0.</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-i</code>, <code>--input</code></td>
+<td>Input file path</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>-o</code>, <code>--output</code></td>
+<td>Output file path</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>--pattern</code></td>
+<td>Glob pattern for batch (e.g. <code>inputs/*.mp4</code>)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--out-dir</code></td>
+<td>Output directory for batch mode</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--config</code></td>
+<td>JSON config overlay</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--preset NAME</code></td>
+<td>Apply a built-in or user preset by name</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--list-presets</code></td>
+<td>List every preset and exit</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--checkpoint-dir</code></td>
+<td>Directory for done markers and pause/resume checkpoint frames</td>
+<td><code>%APPDATA%</code> app cache</td>
+</tr>
+<tr>
+<td><code>--no-resume</code></td>
+<td>Ignore existing checkpoints and reprocess files; this run still writes new pause checkpoints</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>-m</code>, <code>--mode</code></td>
+<td>Algorithm (sttn/lama/propainter/auto)</td>
+<td>sttn</td>
+</tr>
+<tr>
+<td><code>--codec</code></td>
+<td>Output codec (h264/h265/av1/vvc; VVC requires FFmpeg with <code>libvvenc</code>)</td>
+<td>h264</td>
+</tr>
+<tr>
+<td><code>-g</code>, <code>--gpu</code></td>
+<td>GPU device ID (-1 for CPU)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>-l</code>, <code>--lang</code></td>
+<td>Detection language</td>
+<td>en</td>
+</tr>
+<tr>
+<td><code>--crf</code></td>
+<td>Output quality (15-35, lower=better)</td>
+<td>23</td>
+</tr>
+<tr>
+<td><code>--skip-detection</code></td>
+<td>Use manual region only</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--fast</code></td>
+<td>LAMA fast mode</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--no-audio</code></td>
+<td>Strip audio</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--single-audio</code></td>
+<td>Mux only first audio stream</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--loudnorm &lt;LUFS&gt;</code></td>
+<td>EBU R128 loudness target (0 disables)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--frame-skip N</code></td>
+<td>Reuse mask for N frames (0=every frame)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--rife-fast-stride N</code></td>
+<td>Inpaint keyframes and synthesize skipped frames with Practical-RIFE</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--mask-dilate N</code></td>
+<td>Expand masks by N pixels</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>--no-hw-encode</code></td>
+<td>Force software encoding</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--decode-accel</code></td>
+<td>HW decode hint (off/auto/d3d11/vaapi/mfx/pynv/nvdec)</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--keep-chyrons</code></td>
+<td>Leave persistent text (logos / lower-thirds)</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--keep-subtitles</code></td>
+<td>Leave dialogue subtitles</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--karaoke-grouping</code></td>
+<td>Fuse per-syllable boxes on the same line</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--whisper-fallback</code></td>
+<td>Use Whisper timing to mask OCR-empty speech frames</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--whisper-backend</code></td>
+<td>Whisper backend (<code>faster-whisper</code> or <code>ffmpeg</code>)</td>
+<td>faster-whisper</td>
+</tr>
+<tr>
+<td><code>--whisper-model</code></td>
+<td>faster-whisper model size</td>
+<td>tiny</td>
+</tr>
+<tr>
+<td><code>--ffmpeg-whisper-model</code></td>
+<td>Local whisper.cpp ggml model for FFmpeg Whisper</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--ffmpeg-whisper-queue</code></td>
+<td>FFmpeg whisper queue size in seconds</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td><code>--soft-subtitle-dry-run</code></td>
+<td>Print embedded subtitle tracks and planned action without loading OCR</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--soft-subtitle-plan-json</code></td>
+<td>Write soft-subtitle dry-run preflight details as JSON</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--strip-soft-subtitles</code></td>
+<td>Stream-copy remux that removes embedded subtitle tracks</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--keep-soft-subtitles</code></td>
+<td>Stream-copy remux that keeps embedded subtitle tracks</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--burned-in-only</code></td>
+<td>Ignore embedded tracks and run visual cleanup normally</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--quality-report</code></td>
+<td>Compute PSNR/SSIM and VMAF when libvmaf is available</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--quality-sheet</code></td>
+<td>Side-by-side comparison PNG</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--film-grain STRENGTH</code></td>
+<td>Add film grain after cleanup; AV1 software output uses SVT-AV1 native grain, other codecs use FFmpeg noise (0..0.5)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--audit-onnx</code></td>
+<td>Audit all ONNX models for DirectML opset compatibility and exit</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--audit-windows-ml</code></td>
+<td>Probe Windows ML Python bridge and tiny ONNX smoke inference</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--scan-weights</code></td>
+<td>Scan cached model weights and verify SHA-256 against known hashes</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--cache-info</code></td>
+<td>Print cache directory inventory with sizes and exit</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--cache-clean</code></td>
+<td>Remove stale cache entries (checkpoints, proxies, TRT engines)</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--model-cache-export PATH</code></td>
+<td>Write a portable model-cache zip with SHA-256 manifest</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--model-cache-import PATH</code></td>
+<td>Import a verified model-cache zip into the app model cache</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--support-bundle PATH</code></td>
+<td>Write a redacted diagnostics zip and exit</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--validate-config</code></td>
+<td>Print resolved config and exit</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--self-test</code></td>
+<td>Probe OCR engines, GPU providers, codecs, and FFmpeg capability profiles, then exit</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--auto-lang-probe</code></td>
+<td>Detect subtitle script/language from first frame and exit</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--skip-existing</code></td>
+<td>Skip files whose output already exists</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--no-prefetch</code></td>
+<td>Disable worker-thread frame prefetcher</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--output-frames</code></td>
+<td>Write cleaned frames as individual PNGs instead of a video</td>
+<td>Off</td>
+</tr>
+<tr>
+<td><code>--json-log PATH</code></td>
+<td>Append a structured JSON-line log</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p><code>--config</code> accepts the same manual region schema used by the GUI. Use
+<code>subtitle_area</code> for one global rectangle, <code>subtitle_areas</code> for multiple global
+rectangles, or <code>subtitle_region_spans</code> for frame-time-specific masks:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-json"><span class="line">{</span>
+<span class="line">  <span class="shiki-c-green">"subtitle_region_spans"</span>: [</span>
+<span class="line">    {<span class="shiki-c-green">"rect"</span>: [<span class="shiki-c-blue">80</span>, <span class="shiki-c-blue">720</span>, <span class="shiki-c-blue">1180</span>, <span class="shiki-c-blue">820</span>], <span class="shiki-c-green">"start"</span>: <span class="shiki-c-blue">0.0</span>, <span class="shiki-c-green">"end"</span>: <span class="shiki-c-blue">14.5</span>},</span>
+<span class="line">    {<span class="shiki-c-green">"rect"</span>: [<span class="shiki-c-blue">120</span>, <span class="shiki-c-blue">40</span>, <span class="shiki-c-blue">900</span>, <span class="shiki-c-blue">150</span>], <span class="shiki-c-green">"start"</span>: <span class="shiki-c-blue">14.5</span>, <span class="shiki-c-green">"end"</span>: <span class="shiki-c-blue">0.0</span>}</span>
+<span class="line">  ],</span>
+<span class="line">  <span class="shiki-c-green">"sttn_skip_detection"</span>: <span class="shiki-c-blue">true</span></span>
+<span class="line">}</span></code></pre><p><code>end: 0.0</code> means the region stays active through the end of the processed
+range. With <code>sttn_skip_detection</code> enabled, inactive timed ranges produce an
+empty mask instead of reusing a previous manual mask.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Settings are stored in <code>%APPDATA%\VideoSubtitleRemoverPro\settings.json</code> and persist across sessions.</p>
+<h3 id="advanced-settings">Advanced Settings</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Neighbor Stride</td>
+<td>STTN temporal window</td>
+<td>10</td>
+<td>5-30</td>
+</tr>
+<tr>
+<td>Reference Length</td>
+<td>STTN reference frames</td>
+<td>10</td>
+<td>5-30</td>
+</tr>
+<tr>
+<td>Max Load Frames</td>
+<td>Batch size</td>
+<td>30</td>
+<td>10-100</td>
+</tr>
+<tr>
+<td>CRF Quality</td>
+<td>Output quality (lower=better)</td>
+<td>23</td>
+<td>15-35</td>
+</tr>
+<tr>
+<td>Output Codec</td>
+<td>H.264 / H.265 / AV1 / VVC (H.266)</td>
+<td>h264</td>
+<td>h264/h265/av1/vvc; VVC requires FFmpeg with <code>libvvenc</code></td>
+</tr>
+<tr>
+<td>Frame Skip</td>
+<td>Reuse detection mask for N frames</td>
+<td>0</td>
+<td>0-10</td>
+</tr>
+<tr>
+<td>Mask Dilate</td>
+<td>Expand detected regions (px)</td>
+<td>8</td>
+<td>0-20</td>
+</tr>
+<tr>
+<td>Mask Feather</td>
+<td>Soft alpha-blend at boundary (px)</td>
+<td>4</td>
+<td>0-15</td>
+</tr>
+<tr>
+<td>TBE Coverage</td>
+<td>Min frames a pixel must be unmasked to trust its exposure</td>
+<td>3</td>
+<td>1-10</td>
+</tr>
+<tr>
+<td>HW Encoding</td>
+<td>Use NVENC/QSV/AMF if available</td>
+<td>On</td>
+<td>On/Off</td>
+</tr>
+<tr>
+<td>HW Decode Hint</td>
+<td>OpenCV/PyNvVideoCodec decode hint with software fallback</td>
+<td>off</td>
+<td>off/auto/d3d11/vaapi/mfx/pynv/nvdec</td>
+</tr>
+<tr>
+<td>Loudness Target</td>
+<td>EBU R128 LUFS target (0 = off)</td>
+<td>0</td>
+<td>0 or -70..-5</td>
+</tr>
+<tr>
+<td>Multi-track Audio</td>
+<td>Pass through every audio stream</td>
+<td>On</td>
+<td>On/Off</td>
+</tr>
+<tr>
+<td>Quality Sheet</td>
+<td>Side-by-side PNG next to output</td>
+<td>Off</td>
+<td>On/Off</td>
+</tr>
+</tbody></table>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<details>
+<summary><b>RTX 50-series (Blackwell): "no kernel image is available" or CPU-only</b></summary><p>RTX 50-series cards (5070 / 5080 / 5090, compute capability sm_120) need
+<strong>CUDA 12.8</strong> wheels, i.e. <strong>PyTorch 2.7 or newer</strong> from the <code>cu128</code> index.
+The older <code>cu118</code> / <code>cu121</code> builds contain no Blackwell kernels and will
+either raise <code>no kernel image is available for execution on the device</code>
+or silently fall back to CPU.</p>
+<p><code>Run_VSR_Pro.bat</code> / <code>setup.py</code> now auto-detect 50-series cards and install
+the <code>cu128</code> build. To fix an existing environment manually:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.\venv\Scripts\activate</span>
+<span class="line">pip uninstall <span class="shiki-c-red">-</span>y torch torchvision</span>
+<span class="line">pip install torch<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">2.10</span>.<span class="shiki-c-blue">0</span> torchvision<span class="shiki-c-red">&gt;=</span><span class="shiki-c-blue">0.25</span>.<span class="shiki-c-blue">0</span> <span class="shiki-c-red">--</span>index<span class="shiki-c-red">-</span>url https:<span class="shiki-c-red">//</span>download.pytorch.org<span class="shiki-c-red">/</span>whl<span class="shiki-c-red">/</span>cu128</span></code></pre><p>torch 2.7+ supports Python 3.9-3.13, so a recent Python is fine. If
+PaddleOCR fails to load on Blackwell, detection automatically falls back
+to RapidOCR (ONNX Runtime), which is GPU-generation agnostic.</p>
+</details><details>
+<summary><b>Python 3.14 installs but NVIDIA CUDA is unavailable</b></summary><p>PyTorch does not publish Windows CUDA wheels for Python 3.14 yet. If you
+run setup with Python 3.14 and an NVIDIA GPU, setup stops before silently
+installing a CPU-only torch build and recommends Python 3.12 or 3.13 for
+GPU acceleration.</p>
+<p>CPU-only use is still possible. Set <code>VSR_ALLOW_PY314_CPU=1</code> before
+running setup if you explicitly accept slower CPU inference.</p>
+</details><details>
+<summary><b>Colors shift / look washed out (TV vs full color range)</b></summary><p>The upstream project re-encodes the output without carrying the source's
+color signalling, so a <strong>limited / TV-range (BT.601/709)</strong> clip can come
+back looking washed out or with shifted colors. This fork preserves the
+source's <code>color_primaries</code>, <code>color_transfer</code>, <code>color_space</code>, and
+<strong><code>color_range</code></strong> tags onto the final encode (<code>preserve_color_metadata</code>,
+on by default; CLI <code>--no-color-preserve</code> to disable). Decoding is handled
+by OpenCV's FFmpeg backend, which applies the correct YUV-&gt;RGB conversion
+for the signalled range, and the same tags are re-applied on write so
+players interpret the result the same way as the source.</p>
+<p>For HDR10/HLG sources with color preservation enabled, VSR promotes the final
+encode to an HDR-capable codec when needed (default H.264 becomes HEVC),
+decodes a high-bit <code>bgr48le</code> source surface through FFmpeg when available, and
+requests a 10-bit output surface (<code>yuv420p10le</code>) before re-applying the source
+color tags. OCR and inpainting still operate on 8-bit BGR working copies, so
+the cleaned subtitle pixels are derived from that model path, but unmasked HDR
+pixels are kept from the high-bit source surface instead of being flattened
+through an invalid 8-bit H.264 HDR encode. For standard SDR limited-range
+content, colors are preserved. If you still see a mismatch, attach the
+<code>ffprobe</code> color fields of your source to a bug report.</p>
+</details><details>
+<summary><b>CUDA out of memory</b></summary><ul>
+<li>Reduce Max Load Frames in Advanced Settings</li>
+<li>Switch to LAMA mode (lower VRAM)</li>
+<li>Use CPU mode as fallback</li>
+</ul>
+</details><details>
+<summary><b>No audio in output</b></summary><ul>
+<li>Install FFmpeg: <code>winget install ffmpeg</code></li>
+<li>Ensure "Preserve original audio" is checked</li>
+</ul>
+</details><details>
+<summary><b>Poor detection accuracy</b></summary><ul>
+<li>Try changing the detection language to match your subtitles</li>
+<li>Use "Set Region" to manually define the subtitle area</li>
+<li>Install PaddleOCR for best detection accuracy</li>
+</ul>
+</details><details>
+<summary><b>Application won't start</b></summary><ul>
+<li>Ensure Python 3.10+ is installed; use Python 3.12 or 3.13 for NVIDIA CUDA</li>
+<li>Re-run a launcher to auto-repair a missing or broken <code>venv</code>, or run
+<code>python setup.py --repair</code> from the repo root for the same unattended repair</li>
+<li>Try <code>Run_VSR_Pro_Debug.bat</code> to keep the console open during startup, or
+<code>Run_VSR_Pro.ps1</code> from PowerShell to see setup/launch errors there</li>
+<li>Check the log file: <code>%APPDATA%\VideoSubtitleRemoverPro\vsr_pro.log</code></li>
+<li>If the log or support bundle reports OpenCV's bundled libpng below
+<code>1.6.54</code>, avoid opening untrusted PNG files. As of June 26, 2026,
+opencv-python still needs a fixed bundled-libpng wheel; update this
+guidance only when <code>security.opencv_libpng.vulnerable</code> reports <code>false</code></li>
+<li>If self-test, backend status, or a support bundle reports multiple OpenCV
+wheels, run the printed <code>pip uninstall</code> command for every OpenCV variant,
+then reinstall one wheel, normally <code>opencv-python&gt;=4.12.0</code></li>
+</ul>
+</details><h3 id="log-files">Log Files</h3>
+<ul>
+<li>GUI log panel (collapsible, click "Open Log File" for full log)</li>
+<li>File log: <code>%APPDATA%\VideoSubtitleRemoverPro\vsr_pro.log</code> (5MB rotating)</li>
+<li>About -&gt; Support bundle saves a redacted <code>.zip</code> with runtime facts,
+dependency versions, settings summary, recent log lines, and batch report
+evidence, including per-stage timing summaries. CLI equivalent:
+<code>python -m backend.cli --support-bundle support.zip</code></li>
+<li>About -&gt; Model cache can export/import a portable cache bundle. CLI
+equivalents: <code>python -m backend.cli --model-cache-export models.zip</code>
+and <code>python -m backend.cli --model-cache-import models.zip</code></li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<pre class="readme-code" tabindex="0"><code class="readme-code-inner">VideoSubtitleRemover/
+|-- VideoSubtitleRemover.py   # Main GUI application
+|-- Dockerfile                # Local CPU-only smoke container recipe
+|-- .dockerignore             # Excludes build outputs, models, and venvs
+|-- gui/
+|   |-- app.py                # Main Tk shell and shared UI state
+|   |-- processing_controller.py  # Queue worker, pause/stop, reports, notify
+|   |-- preview_controller.py     # Preview, A/B compare, inline region editor
+|   |-- quality_controller.py     # Quality review, retry, report helpers
+|   |-- support_controller.py     # Support bundle, model cache, About panels
+|   |-- widgets.py            # Custom Tk controls
+|   |-- config.py             # GUI config, queue state, presets
+|   `-- theme.py              # Design tokens
+|-- backend/
+|   |-- __init__.py           # Module exports
+|   |-- processor.py          # Legacy import/CLI compatibility shim
+|   |-- detection.py          # OCR cascade and detector routing
+|   |-- tracking.py           # Kalman, pHash, karaoke helpers
+|   |-- io.py                 # Capture, ffprobe, intermediate writers
+|   |-- cli.py                # Command-line entry point
+|   |-- resume_checkpoint.py  # Durable pause/resume checkpoint helpers
+|   |-- inpainters/           # Built-in STTN/LaMa/ProPainter/AUTO paths
+|   |-- presets.py            # Shared preset library (GUI + CLI)
+|   |-- adapter_manifest.py   # Optional model provenance and hash policy
+|   `-- model_hashes.py       # Vendored SHA-256 weight hashes
+|-- docs/
+|   |-- architecture.md       # Pipeline map for new contributors
+|   |-- edge_case_corpus.md   # Community regression-corpus guide
+|   `-- archive/              # Retired audits and completed checklists
+|-- ROADMAP.md                # Active incomplete work
+|-- RESEARCH.md               # Current research synthesis
+|-- setup.py                  # First-time environment setup
+|-- Run_VSR_Pro.bat           # Windows launcher
+|-- Run_VSR_Pro_Debug.bat     # Windows launcher with a visible console
+|-- Run_VSR_Pro.ps1           # PowerShell launcher
+|-- build_exe.bat             # PyInstaller build script
+|-- requirements.txt          # Python dependencies
+|-- tests/                    # Focused regression coverage for hardened paths
+|-- tools/                    # Local developer smoke helpers
+|-- .github/                  # Issue templates
+|-- assets/                   # Application assets
+|-- models/                   # AI model weights (auto-downloaded)
+`-- output/                   # Default output location</code></pre><p>See <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/blob/HEAD/docs/architecture.md" rel="noopener nofollow" target="_blank">docs/architecture.md</a> for a walkthrough of
+the detect -&gt; tracker -&gt; mask -&gt; TBE -&gt; refine -&gt; mux pipeline and the
+"add a new feature" checklist.</p>
+<p>Planning entry points:
+<a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/blob/HEAD/ROADMAP.md" rel="noopener nofollow" target="_blank">ROADMAP.md</a> for active incomplete work and
+<a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/blob/HEAD/RESEARCH.md" rel="noopener nofollow" target="_blank">RESEARCH.md</a> for current research synthesis. Retired audits
+and completed checklists live under <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/blob/HEAD/docs/archive/" rel="noopener nofollow" target="_blank">docs/archive/</a>.</p>
+<h2 id="credits">Credits</h2>
+<ul>
+<li>Original project: <a href="https://github.com/YaoFANGUK/video-subtitle-remover" rel="noopener nofollow" target="_blank">YaoFANGUK/video-subtitle-remover</a></li>
+<li>LaMa inpainting: <a href="https://github.com/enesmsahin/simple-lama-inpainting" rel="noopener nofollow" target="_blank">simple-lama-inpainting</a></li>
+<li>EasyOCR: <a href="https://github.com/JaidedAI/EasyOCR" rel="noopener nofollow" target="_blank">JaidedAI/EasyOCR</a></li>
+<li>STTN: <a href="https://arxiv.org/abs/2007.10247" rel="noopener nofollow" target="_blank">Learning Joint Spatial-Temporal Transformations</a></li>
+<li>ProPainter (research reference): <a href="https://github.com/sczhou/ProPainter" rel="noopener nofollow" target="_blank">sczhou/ProPainter</a> -- VSR's "ProPainter" mode is a TBE + LaMa hybrid inspired by the concept; it does not use the upstream ProPainter code or weights</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License.</p>
+<hr />
+<div align="center"><p><strong>Video Subtitle Remover Pro</strong> -- Built by SysAdminDoc</p>
+<p><a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/issues" rel="noopener nofollow" target="_blank">Report Bug</a> | <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/issues" rel="noopener nofollow" target="_blank">Request Feature</a></p>
+</div>
 </article> <p class="project-readme-hint project-readme-hint-spaced">
-Read on GitHub → <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/VideoSubtitleRemover</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-releases"> <div class="project-section-head"> <div> <h2 class="project-section-title">Recent Releases</h2> <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this project.</p> </div> </div> <ul class="project-releases"> <li class="project-release"> <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.16.0" target="_blank" rel="noopener" class="project-release-tag">v3.16.0</a> <time class="project-release-date" datetime="2026-06-03T16:23:52Z"> Jun 3, 2026 </time> <p class="project-release-body">Automated build with RTX 50-series support and video inpainting setup updates.</p> </li> </ul> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/VideoCrush/" class="ca" aria-describedby="related-rank-VideoCrush" data-rank="40.0000" data-rank-position="53" data-rank-label="Rank 53: updated today, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">VideoCrush</span> <span class="ca-kind">Media</span> </span> <span class="cds">Video compression and processing</span> <span class="ca-rank ca-rank-related" id="related-rank-VideoCrush" title="Rank 53: updated today, downloadable release"> Recommended #53: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a><a href="/projects/AlphaCut/" class="ca" aria-describedby="related-rank-AlphaCut" data-rank="40.0000" data-rank-position="54" data-rank-label="Rank 54: updated today, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">AlphaCut</span> <span class="ca-kind">Media</span> </span> <span class="cds">Video background removal and compositing</span> <span class="ca-rank ca-rank-related" id="related-rank-AlphaCut" title="Rank 54: updated today, downloadable release"> Recommended #54: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a><a href="/projects/yt_livestream_downloader/" class="ca" aria-describedby="related-rank-yt_livestream_downloader" data-rank="40.0000" data-rank-position="55" data-rank-label="Rank 55: updated today, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">yt_livestream_downloader</span> <span class="ca-kind">Media</span> </span> <span class="cds">Download livestreams while they're still live</span> <span class="ca-rank ca-rank-related" id="related-rank-yt_livestream_downloader" title="Rank 55: updated today, downloadable release"> Recommended #55: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a><a href="/projects/MediaForge/" class="ca" aria-describedby="related-rank-MediaForge" data-rank="40.0000" data-rank-position="56" data-rank-label="Rank 56: updated today, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">MediaForge</span> <span class="ca-kind">Media</span> </span> <span class="cds">Multi-format media converter</span> <span class="ca-rank ca-rank-related" id="related-rank-MediaForge" title="Rank 56: updated today, downloadable release"> Recommended #56: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script> <script src="/scripts/shot-viewer.js"></script> <footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"Recent Releases","href":"#project-releases","desc":"Tagged release history pulled from GitHub for this project.","badge":"RELEASES"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script> <script src="/cmdk-data.js"></script> <script src="/scripts/shared.js"></script> <script src="/scripts/cmdk-loader.js"></script> <script src="/scripts/relative-time.js"></script> <script src="/scripts/mobile-nav.js"></script> <script src="/scripts/scroll-reveal.js"></script>   </body> </html>
+Read on GitHub → <a href="https://github.com/SysAdminDoc/VideoSubtitleRemover" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/VideoSubtitleRemover</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/StreamKeep/" class="ca" aria-describedby="related-rank-StreamKeep" data-rank="51.8379" data-rank-position="41" data-rank-label="Rank 41: 2 stars, updated 6d ago, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">StreamKeep</span> <span class="ca-kind">Media</span> </span> <span class="cds">Multi-platform stream/VOD downloader with built-in media converter</span> <span class="ca-rank ca-rank-related" id="related-rank-StreamKeep" title="Rank 41: 2 stars, updated 6d ago, downloadable release"> Recommended #41: 2 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T05:39:02Z" data-rel-short="2026-07-01T05:39:02Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>2</span> </span>  </span> </a><a href="/projects/AlphaCut/" class="ca" aria-describedby="related-rank-AlphaCut" data-rank="47.1739" data-rank-position="57" data-rank-label="Rank 57: 1 stars, updated 6d ago, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">AlphaCut</span> <span class="ca-kind">Media</span> </span> <span class="cds">Video background removal and compositing</span> <span class="ca-rank ca-rank-related" id="related-rank-AlphaCut" title="Rank 57: 1 stars, updated 6d ago, downloadable release"> Recommended #57: 1 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T02:48:13Z" data-rel-short="2026-07-01T02:48:13Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span>  </span> </a><a href="/projects/VideoCrush/" class="ca" aria-describedby="related-rank-VideoCrush" data-rank="38.8078" data-rank-position="100" data-rank-label="Rank 100: updated 9d ago, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">VideoCrush</span> <span class="ca-kind">Media</span> </span> <span class="cds">Video compression and processing</span> <span class="ca-rank ca-rank-related" id="related-rank-VideoCrush" title="Rank 100: updated 9d ago, downloadable release"> Recommended #100: updated 9d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-06-28T03:39:38Z" data-rel-short="2026-06-28T03:39:38Z"> Jun 28, 2026 </time>   </span> </a><a href="/projects/yt_livestream_downloader/" class="ca" aria-describedby="related-rank-yt_livestream_downloader" data-rank="38.8078" data-rank-position="101" data-rank-label="Rank 101: updated 9d ago, downloadable release"> <span class="cdo media"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">yt_livestream_downloader</span> <span class="ca-kind">Media</span> </span> <span class="cds">Download livestreams while they're still live</span> <span class="ca-rank ca-rank-related" id="related-rank-yt_livestream_downloader" title="Rank 101: updated 9d ago, downloadable release"> Recommended #101: updated 9d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-06-28T03:39:49Z" data-rel-short="2026-06-28T03:39:49Z"> Jun 28, 2026 </time>   </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>

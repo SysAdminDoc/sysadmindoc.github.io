@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-04T14:52:00.000Z",
+  "generatedAt": "2026-07-07T19:47:47.345Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "SysAdminDoc/SysAdminDoc projects.json",
     "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
-    "profileFeedGeneratedAt": "2026-06-01T13:18:55.0998940-07:00",
-    "profileFeedCachedAt": "2026-06-26T16:59:44.161Z",
-    "githubMetadataFetchedAt": "2026-06-04T14:52:00.000Z",
-    "githubLastPushedAt": "2026-06-04T14:51:46Z"
+    "profileFeedGeneratedAt": "2026-06-01T16:18:55.0998940-04:00",
+    "profileFeedCachedAt": "2026-07-07T19:54:53.265Z",
+    "githubMetadataFetchedAt": "2026-07-07T19:47:47.345Z",
+    "githubLastPushedAt": "2026-07-07T19:45:29Z"
   },
   "counts": {
-    "projects": 182,
+    "projects": 186,
     "featured": 10,
     "liveApps": 22,
-    "catalog": 182
+    "catalog": 186
   },
   "projects": [
     {
@@ -41,11 +41,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 41
+        "stars": 49
       },
       "freshness": {
-        "pushedAt": "2026-05-26T19:01:39Z",
-        "updatedAt": "2026-05-30T21:12:01Z"
+        "pushedAt": "2026-07-01T02:56:14Z",
+        "updatedAt": "2026-07-06T20:09:48Z"
       }
     },
     {
@@ -72,11 +72,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 19
+        "stars": 26
       },
       "freshness": {
-        "pushedAt": "2026-06-04T14:51:46Z",
-        "updatedAt": "2026-06-04T14:49:57Z"
+        "pushedAt": "2026-07-01T02:58:56Z",
+        "updatedAt": "2026-07-06T11:56:11Z"
       }
     },
     {
@@ -103,11 +103,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 11
+        "stars": 12
       },
       "freshness": {
-        "pushedAt": "2026-05-19T03:33:34Z",
-        "updatedAt": "2026-05-19T03:33:37Z"
+        "pushedAt": "2026-07-02T05:02:00Z",
+        "updatedAt": "2026-07-06T01:16:05Z"
       }
     },
     {
@@ -116,7 +116,7 @@
       "description": "Spotify customization - automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "C#",
       "featured": true,
       "live": false,
       "tags": [
@@ -134,11 +134,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 12
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-07T19:38:39Z",
+        "updatedAt": "2026-07-07T19:38:48Z"
       }
     },
     {
@@ -165,11 +165,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 17
+        "stars": 33
       },
       "freshness": {
-        "pushedAt": "2026-06-03T16:23:52Z",
-        "updatedAt": "2026-06-03T17:25:01Z"
+        "pushedAt": "2026-07-01T04:06:37Z",
+        "updatedAt": "2026-07-07T19:03:54Z"
       }
     },
     {
@@ -196,11 +196,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 10
+        "stars": 8
       },
       "freshness": {
-        "pushedAt": "2026-06-04T14:31:50Z",
-        "updatedAt": "2026-06-04T13:47:15Z"
+        "pushedAt": "2026-06-29T14:48:45Z",
+        "updatedAt": "2026-06-29T14:49:30Z"
       }
     },
     {
@@ -227,11 +227,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 6
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-05-26T19:01:15Z",
-        "updatedAt": "2026-05-26T19:01:22Z"
+        "pushedAt": "2026-06-28T03:54:08Z",
+        "updatedAt": "2026-06-28T03:54:12Z"
       }
     },
     {
@@ -240,7 +240,7 @@
       "description": "Premium dark weather app — no API keys required",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": true,
       "live": false,
       "tags": [
@@ -258,11 +258,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 7
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-06T00:58:55Z",
+        "updatedAt": "2026-07-06T00:58:59Z"
       }
     },
     {
@@ -271,7 +271,7 @@
       "description": "Full-featured Android video editor - 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": true,
       "live": false,
       "tags": [
@@ -282,18 +282,18 @@
       "urls": {
         "detail": "https://sysadmindoc.github.io/projects/ClearCut/",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "source": "https://github.com/SysAdminDoc/NovaCut",
+        "source": "https://github.com/SysAdminDoc/ClearCut",
         "live": null,
         "ogImage": "https://sysadmindoc.github.io/og/ClearCut.png",
         "screenshot": null,
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 19
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:12:13Z",
+        "updatedAt": "2026-07-07T12:26:02Z"
       }
     },
     {
@@ -302,7 +302,7 @@
       "description": "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": true,
       "live": false,
       "tags": [
@@ -320,11 +320,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 12
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-05T19:20:28Z",
+        "updatedAt": "2026-07-05T19:20:32Z"
       }
     },
     {
@@ -333,7 +333,7 @@
       "description": "Image resizer & converter",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -347,11 +347,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/IconForge.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:11:10Z",
+        "updatedAt": "2026-07-01T03:11:14Z"
       }
     },
     {
@@ -360,7 +360,7 @@
       "description": "Intelligence aggregator - OSINT data feeds",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -374,11 +374,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SPECTRE.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:09Z",
+        "updatedAt": "2026-06-28T03:39:12Z"
       }
     },
     {
@@ -387,7 +387,7 @@
       "description": "Multi-engine reverse image search",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -401,11 +401,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageXpert.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:57Z",
+        "updatedAt": "2026-06-28T03:38:00Z"
       }
     },
     {
@@ -414,7 +414,7 @@
       "description": "Browser media converter",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -428,11 +428,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ConvertFlow.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:15Z",
+        "updatedAt": "2026-06-28T03:37:18Z"
       }
     },
     {
@@ -441,7 +441,7 @@
       "description": "Browser-based video editor",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": true,
       "tags": [],
@@ -455,11 +455,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ClipForge.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:14Z",
+        "updatedAt": "2026-06-28T03:37:17Z"
       }
     },
     {
@@ -468,7 +468,7 @@
       "description": "Text filtering and processing tool",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -482,11 +482,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Text-Filter-Editor.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:25Z",
+        "updatedAt": "2026-06-28T03:39:28Z"
       }
     },
     {
@@ -495,7 +495,7 @@
       "description": "Multi-video streaming viewer with chat",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -509,11 +509,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Multistreamer.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T04:02:04Z",
+        "updatedAt": "2026-07-01T04:02:09Z"
       }
     },
     {
@@ -539,8 +539,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-05-26T19:01:26Z",
-        "updatedAt": "2026-05-26T19:01:33Z"
+        "pushedAt": "2026-06-28T03:39:13Z",
+        "updatedAt": "2026-06-28T03:39:16Z"
       }
     },
     {
@@ -549,7 +549,7 @@
       "description": "Real-time aircraft tracker",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -563,11 +563,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SkyTrack.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:04Z",
+        "updatedAt": "2026-06-28T03:39:07Z"
       }
     },
     {
@@ -576,7 +576,7 @@
       "description": "Browser-based GIF studio",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -590,11 +590,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/GifStudio.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:45Z",
+        "updatedAt": "2026-06-28T03:37:49Z"
       }
     },
     {
@@ -603,7 +603,7 @@
       "description": "Base64 encoder & decoder",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -617,11 +617,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Base64Converter.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:02Z",
+        "updatedAt": "2026-06-28T03:37:06Z"
       }
     },
     {
@@ -630,7 +630,7 @@
       "description": "470+ curated free tools & open source projects",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -644,11 +644,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CoolSites.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:16Z",
+        "updatedAt": "2026-06-28T03:37:19Z"
       }
     },
     {
@@ -657,7 +657,7 @@
       "description": "Bookmark management web app",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -671,11 +671,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/BookmarkVault.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:06Z",
+        "updatedAt": "2026-06-28T03:37:10Z"
       }
     },
     {
@@ -684,7 +684,7 @@
       "description": "Open source image converter",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -698,11 +698,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageForge.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:55Z",
+        "updatedAt": "2026-06-28T03:37:58Z"
       }
     },
     {
@@ -711,7 +711,7 @@
       "description": "Browser-based image editor with layers & filters",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -725,11 +725,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Openshop.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T13:59:26Z",
+        "updatedAt": "2026-07-04T12:10:28Z"
       }
     },
     {
@@ -738,7 +738,7 @@
       "description": "Migration toolkit for leaving Google services",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -752,11 +752,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/DeGoogler.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:24Z",
+        "updatedAt": "2026-06-28T03:37:28Z"
       }
     },
     {
@@ -765,7 +765,7 @@
       "description": "Unified userscript search engine",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -779,11 +779,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/UserScriptHunt.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T06:38:41Z",
+        "updatedAt": "2026-07-01T06:38:45Z"
       }
     },
     {
@@ -792,7 +792,7 @@
       "description": "538 engines across 29 categories",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -806,11 +806,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SearchHub.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:03Z",
+        "updatedAt": "2026-06-28T03:39:06Z"
       }
     },
     {
@@ -819,7 +819,7 @@
       "description": "NATO phonetic alphabet trainer",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -833,11 +833,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/NATO_PHONETIC_TRAINING.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:22Z",
+        "updatedAt": "2026-06-28T03:38:25Z"
       }
     },
     {
@@ -846,7 +846,7 @@
       "description": "Military & VIP aircraft tracker",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -860,11 +860,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/VIPTrack.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:40Z",
+        "updatedAt": "2026-06-28T03:39:43Z"
       }
     },
     {
@@ -873,7 +873,7 @@
       "description": "Every U.S. hurricane landfall (1851-present) from NOAA HURDAT2",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -887,11 +887,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/HurricaneMap.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-03T23:37:19Z",
+        "updatedAt": "2026-07-03T23:37:11Z"
       }
     },
     {
@@ -900,7 +900,7 @@
       "description": "Realtime business-jet tracker vs. 24h baseline",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -914,11 +914,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ApocalypseWatch.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-04T08:13:28Z",
+        "updatedAt": "2026-06-28T03:36:59Z"
       }
     },
     {
@@ -927,7 +927,7 @@
       "description": "Open-source Zedge alternative — wallpapers, video wallpapers, ringtones, YouTube integration",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -941,11 +941,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 10
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-05T21:23:14Z",
+        "updatedAt": "2026-07-05T21:23:18Z"
       }
     },
     {
@@ -954,7 +954,7 @@
       "description": "iOS-style icon pack for Android — 6 iOS eras",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -968,11 +968,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-05T20:27:23Z",
+        "updatedAt": "2026-07-05T20:27:26Z"
       }
     },
     {
@@ -981,7 +981,7 @@
       "description": "Lightweight launcher with 5 built-in dark themes",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -995,11 +995,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-06T01:07:28Z",
+        "updatedAt": "2026-07-06T01:07:32Z"
       }
     },
     {
@@ -1008,7 +1008,7 @@
       "description": "Feature-rich alarm clock with dismiss challenges",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1022,11 +1022,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 6
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-06T01:12:01Z",
+        "updatedAt": "2026-07-06T01:11:46Z"
       }
     },
     {
@@ -1049,11 +1049,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 19
+        "stars": 31
       },
       "freshness": {
-        "pushedAt": "2026-06-04T13:54:54Z",
-        "updatedAt": "2026-06-04T13:54:58Z"
+        "pushedAt": "2026-07-02T06:24:19Z",
+        "updatedAt": "2026-07-03T01:55:48Z"
       }
     },
     {
@@ -1062,7 +1062,7 @@
       "description": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1076,11 +1076,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-07T08:40:54Z",
+        "updatedAt": "2026-07-07T08:40:58Z"
       }
     },
     {
@@ -1089,7 +1089,7 @@
       "description": "Full-featured file manager with root access, archive support, cloud storage",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1103,11 +1103,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:25:08Z",
+        "updatedAt": "2026-07-01T21:20:17Z"
       }
     },
     {
@@ -1116,7 +1116,7 @@
       "description": "Personal Android-app catalog sourced from GitHub Releases — Android sibling of LocalChromeStore",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1130,11 +1130,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:10Z",
+        "updatedAt": "2026-06-28T03:38:13Z"
       }
     },
     {
@@ -1143,7 +1143,7 @@
       "description": "Samsung One UI 7 parity launcher — Compose, clone not a port",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1157,11 +1157,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-05T23:32:19Z",
+        "updatedAt": "2026-07-05T23:32:22Z"
       }
     },
     {
@@ -1170,7 +1170,7 @@
       "description": "Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1184,11 +1184,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:06Z",
+        "updatedAt": "2026-06-28T03:39:09Z"
       }
     },
     {
@@ -1197,7 +1197,7 @@
       "description": "Bill tracker with alarm-style reminders",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1211,11 +1211,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:04Z",
+        "updatedAt": "2026-06-28T03:37:08Z"
       }
     },
     {
@@ -1224,7 +1224,7 @@
       "description": "SwiftKey-inspired Android keyboard — glide typing, prediction, themes, clipboard",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1238,11 +1238,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T13:58:41Z",
+        "updatedAt": "2026-06-30T08:07:39Z"
       }
     },
     {
@@ -1265,11 +1265,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 4
+        "stars": 12
       },
       "freshness": {
-        "pushedAt": "2026-06-04T14:51:42Z",
-        "updatedAt": "2026-06-04T14:38:42Z"
+        "pushedAt": "2026-07-06T03:50:44Z",
+        "updatedAt": "2026-07-06T07:02:03Z"
       }
     },
     {
@@ -1278,7 +1278,7 @@
       "description": "FOSS Tasker alternative for Android",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1292,11 +1292,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 19
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:54:19Z",
+        "updatedAt": "2026-07-04T01:19:43Z"
       }
     },
     {
@@ -1319,11 +1319,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-06-03T05:06:03Z",
-        "updatedAt": "2026-06-03T17:37:11Z"
+        "pushedAt": "2026-07-05T19:31:34Z",
+        "updatedAt": "2026-07-05T19:31:37Z"
       }
     },
     {
@@ -1332,7 +1332,7 @@
       "description": "Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": "Rust",
+      "language": "TypeScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1346,11 +1346,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": "2026-06-02T04:02:40Z",
-        "updatedAt": "2026-06-03T17:41:55Z"
+        "pushedAt": "2026-07-01T04:10:20Z",
+        "updatedAt": "2026-07-05T14:04:51Z"
       }
     },
     {
@@ -1359,7 +1359,7 @@
       "description": "Offline Android acoustic guitar tuner with automatic string detection and local-only microphone processing",
       "category": "kt",
       "categoryLabel": "Android",
-      "language": null,
+      "language": "Kotlin",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1373,11 +1373,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:49Z",
+        "updatedAt": "2026-06-28T03:37:53Z"
       }
     },
     {
@@ -1386,7 +1386,7 @@
       "description": "One Windows desktop catalog for every app I ship — binaries, extensions, APKs from GitHub releases",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1400,11 +1400,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:21Z",
+        "updatedAt": "2026-06-28T03:38:24Z"
       }
     },
     {
@@ -1413,7 +1413,7 @@
       "description": "Personal Chromium extension store sourced from GitHub releases — one-click install/uninstall",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1427,11 +1427,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:46:48Z",
+        "updatedAt": "2026-07-01T03:46:52Z"
       }
     },
     {
@@ -1440,7 +1440,7 @@
       "description": "Private catalog for Windows desktop apps — MSI/Inno/NSIS/ZIP from GitHub releases",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1454,11 +1454,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:12Z",
+        "updatedAt": "2026-06-28T03:38:15Z"
       }
     },
     {
@@ -1467,7 +1467,7 @@
       "description": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1481,11 +1481,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-03T16:19:28Z",
+        "updatedAt": "2026-07-03T16:19:31Z"
       }
     },
     {
@@ -1494,7 +1494,7 @@
       "description": "Thorough Windows uninstaller — removes programs completely, hunts down every leftover",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1508,11 +1508,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:11:51Z",
+        "updatedAt": "2026-07-01T03:11:54Z"
       }
     },
     {
@@ -1521,7 +1521,7 @@
       "description": "High-performance disk cleanup — 12 scanner types, NTFS MFT reading",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1535,11 +1535,38 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:59Z",
+        "updatedAt": "2026-06-28T03:39:03Z"
+      }
+    },
+    {
+      "slug": "HostsGuard",
+      "name": "HostsGuard",
+      "description": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": "C#",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "source": "https://github.com/SysAdminDoc/HostsGuard",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/HostsGuard.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-07-07T19:18:22Z",
+        "updatedAt": "2026-07-07T19:18:27Z"
       }
     },
     {
@@ -1548,7 +1575,7 @@
       "description": "Native Windows file converter with context menu integration — 1000+ formats",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1562,11 +1589,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:17:48Z",
+        "updatedAt": "2026-07-01T05:17:52Z"
       }
     },
     {
@@ -1575,7 +1602,7 @@
       "description": "Unified Windows toolkit for rooted Android — identify, ROM search, partition backup, boot.img patch, flashing",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1589,11 +1616,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:25Z",
+        "updatedAt": "2026-06-28T03:37:29Z"
       }
     },
     {
@@ -1602,7 +1629,7 @@
       "description": "All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1616,11 +1643,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:07Z",
+        "updatedAt": "2026-06-28T03:39:10Z"
       }
     },
     {
@@ -1629,7 +1656,7 @@
       "description": "Local-first contact organizer and deduper — native Windows, no cloud upload",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1643,11 +1670,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:38Z",
+        "updatedAt": "2026-06-28T03:38:41Z"
       }
     },
     {
@@ -1683,7 +1710,7 @@
       "description": "Custom LibreWolf portable distribution",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "Fluent",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1697,11 +1724,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:46Z",
+        "updatedAt": "2026-06-28T03:39:49Z"
       }
     },
     {
@@ -1710,7 +1737,7 @@
       "description": "Customized BitTorrent client with dark theme",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C++",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1724,11 +1751,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:32:31Z",
+        "updatedAt": "2026-07-01T05:32:34Z"
       }
     },
     {
@@ -1737,7 +1764,7 @@
       "description": "Dual-Samsung Android migration tool for Windows -- apps, media, settings, Wi-Fi, roles, and debloat profiles",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1751,11 +1778,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:43Z",
+        "updatedAt": "2026-06-28T03:38:47Z"
       }
     },
     {
@@ -1764,7 +1791,7 @@
       "description": "Always-visible AI usage quota widget for Windows",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1778,11 +1805,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:52Z",
+        "updatedAt": "2026-06-28T03:38:56Z"
       }
     },
     {
@@ -1791,7 +1818,7 @@
       "description": "Single-click clipboard snippet menu -- tray icon, global hotkey, search",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1805,11 +1832,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:23Z",
+        "updatedAt": "2026-06-28T03:39:26Z"
       }
     },
     {
@@ -1818,7 +1845,7 @@
       "description": "Install Android SDK, manage AVDs, root with Magisk, migrate apps",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1832,11 +1859,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T16:44:48Z",
+        "updatedAt": "2026-07-01T16:44:52Z"
       }
     },
     {
@@ -1862,8 +1889,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-05-27T09:50:54Z",
-        "updatedAt": "2026-05-30T21:03:17Z"
+        "pushedAt": "2026-07-01T06:10:21Z",
+        "updatedAt": "2026-07-01T06:10:26Z"
       }
     },
     {
@@ -1872,7 +1899,7 @@
       "description": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "TypeScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1886,11 +1913,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T16:29:00Z",
+        "updatedAt": "2026-07-01T16:29:10Z"
       }
     },
     {
@@ -1899,7 +1926,7 @@
       "description": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1913,11 +1940,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:46:43Z",
+        "updatedAt": "2026-06-28T03:46:46Z"
       }
     },
     {
@@ -1926,7 +1953,7 @@
       "description": "Modern rclone GUI -- file browser, transfer manager, mount handler. Qt/C++ cross-platform desktop app. Community continuation of RcloneBrowser.",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C++",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1940,11 +1967,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:54Z",
+        "updatedAt": "2026-06-28T03:38:58Z"
       }
     },
     {
@@ -1953,7 +1980,7 @@
       "description": "Windows disk partition manager -- WPF disk map, SMART health, maintenance, and image workflows",
       "category": "cs",
       "categoryLabel": "Desktop",
-      "language": null,
+      "language": "C#",
       "featured": false,
       "live": false,
       "tags": [],
@@ -1967,11 +1994,38 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:39:16Z",
+        "updatedAt": "2026-07-01T03:39:20Z"
+      }
+    },
+    {
+      "slug": "OpenNetLimit",
+      "name": "OpenNetLimit",
+      "description": "Per-application bandwidth limiter and network monitor for Windows",
+      "category": "cs",
+      "categoryLabel": "Desktop",
+      "language": "C#",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/OpenNetLimit/",
+        "repository": "https://github.com/SysAdminDoc/OpenNetLimit",
+        "source": "https://github.com/SysAdminDoc/OpenNetLimit",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/OpenNetLimit.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:38:34Z",
+        "updatedAt": "2026-06-28T03:38:37Z"
       }
     },
     {
@@ -1997,8 +2051,8 @@
         "stars": 3
       },
       "freshness": {
-        "pushedAt": "2026-06-04T14:47:17Z",
-        "updatedAt": "2026-06-04T14:50:04Z"
+        "pushedAt": "2026-07-03T00:15:50Z",
+        "updatedAt": "2026-07-05T06:03:11Z"
       }
     },
     {
@@ -2007,7 +2061,7 @@
       "description": "Chrome MV3 Amazon UX cleanup — dark theme, sponsored-result removal, review-quality scoring, 20 locales",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2021,11 +2075,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:46:06Z",
+        "updatedAt": "2026-06-28T03:46:09Z"
       }
     },
     {
@@ -2034,7 +2088,7 @@
       "description": "CSS customization extension — visual editor for any website",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "Vue",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2048,11 +2102,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:43:19Z",
+        "updatedAt": "2026-07-01T02:43:05Z"
       }
     },
     {
@@ -2061,7 +2115,7 @@
       "description": "New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2075,11 +2129,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:41:32Z",
+        "updatedAt": "2026-07-01T02:41:36Z"
       }
     },
     {
@@ -2088,7 +2142,7 @@
       "description": "Undetectable YouTube ad blocker with proxy engine",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2102,11 +2156,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 4
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T04:01:46Z",
+        "updatedAt": "2026-07-01T04:01:50Z"
       }
     },
     {
@@ -2115,7 +2169,7 @@
       "description": "All-in-one Claude.ai enhancement suite — themes, usage monitor, prompt library",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2129,11 +2183,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:11Z",
+        "updatedAt": "2026-06-28T03:37:14Z"
       }
     },
     {
@@ -2142,7 +2196,7 @@
       "description": "Removes visible watermarks from Google Gemini AI-generated images",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2156,11 +2210,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:13Z",
+        "updatedAt": "2026-06-28T03:37:16Z"
       }
     },
     {
@@ -2169,7 +2223,7 @@
       "description": "Auto-generate YouTube chapters, detect filler words, skip pauses",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2183,11 +2237,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:42:41Z",
+        "updatedAt": "2026-06-28T03:42:45Z"
       }
     },
     {
@@ -2196,7 +2250,7 @@
       "description": "Media downloader userscript",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2210,11 +2264,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:15Z",
+        "updatedAt": "2026-06-28T03:38:19Z"
       }
     },
     {
@@ -2223,7 +2277,7 @@
       "description": "uBlock Origin with Catppuccin Mocha and Element Forge panel",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2237,11 +2291,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:30Z",
+        "updatedAt": "2026-06-28T03:39:39Z"
       }
     },
     {
@@ -2250,7 +2304,7 @@
       "description": "Chrome extension — force background tabs + context menu search",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2264,11 +2318,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:01Z",
+        "updatedAt": "2026-06-28T03:37:05Z"
       }
     },
     {
@@ -2277,7 +2331,7 @@
       "description": "Full-featured CSS style editor and manager — Chrome extension",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2291,11 +2345,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:59:21Z",
+        "updatedAt": "2026-07-01T05:59:25Z"
       }
     },
     {
@@ -2304,7 +2358,7 @@
       "description": "Discover userscripts for any website",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2318,11 +2372,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:21:21Z",
+        "updatedAt": "2026-07-01T05:21:27Z"
       }
     },
     {
@@ -2331,7 +2385,7 @@
       "description": "NextDNS control panel userscript",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2345,11 +2399,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-29T13:17:56Z",
+        "updatedAt": "2026-06-29T13:19:35Z"
       }
     },
     {
@@ -2358,7 +2412,7 @@
       "description": "Enhancement suite for old.reddit.com",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2372,11 +2426,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:55Z",
+        "updatedAt": "2026-06-28T03:38:58Z"
       }
     },
     {
@@ -2385,7 +2439,7 @@
       "description": "DoorDash dark mode and feature enhancements",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2399,11 +2453,38 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:29Z",
+        "updatedAt": "2026-06-28T03:37:33Z"
+      }
+    },
+    {
+      "slug": "RES-Slim",
+      "name": "RES-Slim",
+      "description": "Stripped-down Reddit Enhancement Suite fork for old.reddit.com comment tweaks and media expandos",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": "JavaScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/RES-Slim/",
+        "repository": "https://github.com/SysAdminDoc/RES-Slim",
+        "source": "https://github.com/SysAdminDoc/RES-Slim",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/RES-Slim.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:00:07Z",
+        "updatedAt": "2026-07-05T20:22:10Z"
       }
     },
     {
@@ -2412,7 +2493,7 @@
       "description": "Dark Reader as a userscript",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2426,11 +2507,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:19Z",
+        "updatedAt": "2026-06-28T03:37:22Z"
       }
     },
     {
@@ -2439,7 +2520,7 @@
       "description": "Productivity features for Gemini",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2453,11 +2534,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:43Z",
+        "updatedAt": "2026-06-28T03:37:47Z"
       }
     },
     {
@@ -2466,7 +2547,7 @@
       "description": "Comprehensive Rumble.com enhancement",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2480,11 +2561,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:58Z",
+        "updatedAt": "2026-06-28T03:39:02Z"
       }
     },
     {
@@ -2493,7 +2574,7 @@
       "description": "Discord message editor, deleter, and exporter",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "TypeScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2507,11 +2588,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:54Z",
+        "updatedAt": "2026-06-28T03:39:57Z"
       }
     },
     {
@@ -2520,7 +2601,7 @@
       "description": "Usage-limit countdowns and notifications for AI chat tools -- Chrome, Firefox, and userscript builds",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2534,11 +2615,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:36:50Z",
+        "updatedAt": "2026-06-28T03:36:54Z"
       }
     },
     {
@@ -2547,7 +2628,7 @@
       "description": "IMDb enhancement userscript",
       "category": "ext",
       "categoryLabel": "Extensions",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2561,11 +2642,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:58Z",
+        "updatedAt": "2026-06-28T03:38:01Z"
       }
     },
     {
@@ -2588,11 +2669,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:36:51Z",
+        "updatedAt": "2026-06-28T03:36:54Z"
       }
     },
     {
@@ -2601,7 +2682,7 @@
       "description": "Guide for leaving Facebook",
       "category": "guide",
       "categoryLabel": "Guides",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2615,11 +2696,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:35Z",
+        "updatedAt": "2026-06-28T03:37:39Z"
       }
     },
     {
@@ -2655,7 +2736,7 @@
       "description": "Personal portfolio and project showcase site hosted on GitHub Pages",
       "category": "guide",
       "categoryLabel": "Guides",
-      "language": "Astro",
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -2672,8 +2753,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-04T14:48:45Z",
-        "updatedAt": "2026-06-04T14:50:21Z"
+        "pushedAt": "2026-07-07T19:45:29Z",
+        "updatedAt": "2026-07-07T19:45:42Z"
       }
     },
     {
@@ -2682,7 +2763,7 @@
       "description": "Video compression and processing",
       "category": "media",
       "categoryLabel": "Media",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2696,11 +2777,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:38Z",
+        "updatedAt": "2026-06-28T03:39:41Z"
       }
     },
     {
@@ -2709,7 +2790,7 @@
       "description": "Video background removal and compositing",
       "category": "media",
       "categoryLabel": "Media",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2723,11 +2804,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:48:13Z",
+        "updatedAt": "2026-07-01T02:48:11Z"
       }
     },
     {
@@ -2736,7 +2817,7 @@
       "description": "Download livestreams while they're still live",
       "category": "media",
       "categoryLabel": "Media",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2750,11 +2831,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:49Z",
+        "updatedAt": "2026-06-28T03:39:52Z"
       }
     },
     {
@@ -2763,7 +2844,7 @@
       "description": "Multi-format media converter",
       "category": "media",
       "categoryLabel": "Media",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2777,11 +2858,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:16Z",
+        "updatedAt": "2026-06-28T03:38:19Z"
       }
     },
     {
@@ -2790,7 +2871,7 @@
       "description": "Multi-platform stream/VOD downloader with built-in media converter",
       "category": "media",
       "categoryLabel": "Media",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2804,11 +2885,38 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:39:02Z",
+        "updatedAt": "2026-07-01T05:39:05Z"
+      }
+    },
+    {
+      "slug": "GIFM",
+      "name": "GIFM",
+      "description": "Local GIF maker and compressor with Discord-ready target fitting",
+      "category": "media",
+      "categoryLabel": "Media",
+      "language": "JavaScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/GIFM/",
+        "repository": "https://github.com/SysAdminDoc/GIFM",
+        "source": "https://github.com/SysAdminDoc/GIFM",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/GIFM.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:37:44Z",
+        "updatedAt": "2026-06-28T03:37:48Z"
       }
     },
     {
@@ -2831,11 +2939,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-04-26T02:11:10Z",
-        "updatedAt": "2026-04-26T02:22:06Z"
+        "pushedAt": "2026-06-28T03:38:30Z",
+        "updatedAt": "2026-06-28T03:38:33Z"
       }
     },
     {
@@ -2952,7 +3060,7 @@
       "description": "All-in-one Windows provisioning suite — app installer, tweaks, features, updates",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2966,11 +3074,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:44Z",
+        "updatedAt": "2026-06-28T03:39:47Z"
       }
     },
     {
@@ -2979,7 +3087,7 @@
       "description": "Enterprise Windows 11 debloating with AppX removal, Office cleanup, telemetry blocking",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -2993,11 +3101,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T04:28:24Z",
+        "updatedAt": "2026-07-01T04:28:28Z"
       }
     },
     {
@@ -3006,7 +3114,7 @@
       "description": "Reverse debloat changes and restore Windows to factory defaults",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3020,11 +3128,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:57Z",
+        "updatedAt": "2026-06-28T03:39:00Z"
       }
     },
     {
@@ -3033,7 +3141,7 @@
       "description": "WPF GUI to fully disable or re-enable Microsoft Defender",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3047,11 +3155,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T04:05:23Z",
+        "updatedAt": "2026-06-28T04:05:27Z"
       }
     },
     {
@@ -3060,7 +3168,7 @@
       "description": "Defender disabler/remover with CLI + premium WPF GUI; firewall preserved",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3074,11 +3182,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 8
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:33:14Z",
+        "updatedAt": "2026-07-01T03:33:18Z"
       }
     },
     {
@@ -3087,7 +3195,7 @@
       "description": "Repair and restore Windows Defender and Firewall after debloaters",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3101,11 +3209,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:23Z",
+        "updatedAt": "2026-06-28T03:37:26Z"
       }
     },
     {
@@ -3114,7 +3222,7 @@
       "description": "WPF GUI to disable Windows telemetry, data collection, and compatibility bloat",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3128,11 +3236,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T14:02:30Z",
+        "updatedAt": "2026-07-01T14:02:48Z"
       }
     },
     {
@@ -3141,7 +3249,7 @@
       "description": "WPF Windows Firewall manager with live rule editing and offline backup editor",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3155,11 +3263,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:39Z",
+        "updatedAt": "2026-06-28T03:37:43Z"
       }
     },
     {
@@ -3168,7 +3276,7 @@
       "description": "WPF network adapter manager — static/DHCP, DNS presets, profile management",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3182,11 +3290,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T13:43:01Z",
+        "updatedAt": "2026-07-01T13:43:20Z"
       }
     },
     {
@@ -3195,7 +3303,7 @@
       "description": "Enterprise Windows update automation — OEM drivers, Windows Update, winget",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3209,11 +3317,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:22Z",
+        "updatedAt": "2026-06-28T03:39:25Z"
       }
     },
     {
@@ -3222,7 +3330,7 @@
       "description": "Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3236,11 +3344,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T13:51:48Z",
+        "updatedAt": "2026-07-01T13:52:03Z"
       }
     },
     {
@@ -3249,7 +3357,7 @@
       "description": "WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3263,11 +3371,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:08Z",
+        "updatedAt": "2026-06-28T03:39:11Z"
       }
     },
     {
@@ -3276,7 +3384,7 @@
       "description": "Scorched-earth Dell bloatware removal — 8-phase complete cleanup",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3290,11 +3398,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:27Z",
+        "updatedAt": "2026-06-28T03:38:30Z"
       }
     },
     {
@@ -3303,7 +3411,7 @@
       "description": "Comprehensive Adobe telemetry and GrowthSDK suppression for Windows",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3317,11 +3425,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-02T05:05:08Z",
+        "updatedAt": "2026-07-02T05:05:12Z"
       }
     },
     {
@@ -3330,7 +3438,7 @@
       "description": "Discover, select, and bulk install software via Winget",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3344,11 +3452,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-02T02:13:13Z",
+        "updatedAt": "2026-07-02T02:13:16Z"
       }
     },
     {
@@ -3357,7 +3465,7 @@
       "description": "Clean junk, detect broken shortcuts, reorganize Start Menu",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3371,11 +3479,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T16:01:35Z",
+        "updatedAt": "2026-07-03T00:56:28Z"
       }
     },
     {
@@ -3384,7 +3492,7 @@
       "description": "Filesystem repair, stubborn file deletion, path management",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3398,11 +3506,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:40Z",
+        "updatedAt": "2026-06-28T03:38:43Z"
       }
     },
     {
@@ -3411,7 +3519,7 @@
       "description": "Control monitor settings via DDC/CI",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3425,11 +3533,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:50:03Z",
+        "updatedAt": "2026-07-03T20:36:01Z"
       }
     },
     {
@@ -3438,7 +3546,7 @@
       "description": "Wallpaper branding tool with GUI and CLI modes",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3452,11 +3560,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:42Z",
+        "updatedAt": "2026-06-28T03:39:45Z"
       }
     },
     {
@@ -3465,7 +3573,7 @@
       "description": "GUI for managing VoidTools Everything settings, INI editing, CSV filter/bookmark management",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3479,11 +3587,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:41Z",
+        "updatedAt": "2026-06-28T03:39:44Z"
       }
     },
     {
@@ -3492,7 +3600,7 @@
       "description": "GUI for managing pfBlockerNG on pfSense firewalls",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3506,11 +3614,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:41Z",
+        "updatedAt": "2026-06-28T03:38:45Z"
       }
     },
     {
@@ -3519,7 +3627,7 @@
       "description": "Detect and remediate Notepad++ supply chain attack IOCs",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3533,11 +3641,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:26Z",
+        "updatedAt": "2026-06-28T03:38:29Z"
       }
     },
     {
@@ -3546,7 +3654,7 @@
       "description": "Comprehensive automation for JDownloader 2",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3560,11 +3668,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:02Z",
+        "updatedAt": "2026-06-28T03:38:05Z"
       }
     },
     {
@@ -3573,7 +3681,7 @@
       "description": "A tribute to the creator of PowerShell, Jeffrey Snover",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3587,11 +3695,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:26Z",
+        "updatedAt": "2026-06-28T03:39:29Z"
       }
     },
     {
@@ -3600,7 +3708,7 @@
       "description": "Open-source bulk archive extraction tool for Windows",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3614,11 +3722,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:34Z",
+        "updatedAt": "2026-06-28T03:37:38Z"
       }
     },
     {
@@ -3627,7 +3735,7 @@
       "description": "Per-adapter IP lockdown for Windows -- WPF GUI, CLI mode, policy export, and event-log auditing",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3641,11 +3749,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:42:38Z",
+        "updatedAt": "2026-06-28T03:42:41Z"
       }
     },
     {
@@ -3654,7 +3762,7 @@
       "description": "Update Brave inside a Portapps portable install without touching system install",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": null,
+      "language": "PowerShell",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3668,11 +3776,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:07Z",
+        "updatedAt": "2026-06-28T03:37:11Z"
       }
     },
     {
@@ -3681,7 +3789,7 @@
       "description": "Re-render any audio as chiptune (built-in NES synth) or through any SoundFont — Audio→MIDI→SF2/chiptune→WAV, locally",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3695,11 +3803,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:28Z",
+        "updatedAt": "2026-06-28T03:39:31Z"
       }
     },
     {
@@ -3708,7 +3816,7 @@
       "description": "Vertical video studio for short-form creators — turns raw footage into polished 9:16 for Shorts/TikTok/Reels",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3722,11 +3830,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T04:02:15Z",
+        "updatedAt": "2026-06-28T04:02:19Z"
       }
     },
     {
@@ -3735,7 +3843,7 @@
       "description": "A curated, searchable, offline library of the best AI prompts",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3749,11 +3857,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T14:43:28Z",
+        "updatedAt": "2026-06-28T14:42:55Z"
       }
     },
     {
@@ -3762,7 +3870,7 @@
       "description": "Audio fingerprint masking for Suno AI — 10-pass pipeline, PyQt6 GUI, batch processing",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3776,11 +3884,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T04:01:48Z",
+        "updatedAt": "2026-07-07T05:45:34Z"
       }
     },
     {
@@ -3789,7 +3897,7 @@
       "description": "Real-time Windows Firewall manager and network monitor",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3803,38 +3911,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
-      }
-    },
-    {
-      "slug": "HostsGuard",
-      "name": "HostsGuard",
-      "description": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
-      "category": "py",
-      "categoryLabel": "Python",
-      "language": null,
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "source": "https://github.com/SysAdminDoc/HostsGuard",
-        "live": null,
-        "ogImage": "https://sysadmindoc.github.io/og/HostsGuard.png",
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:45:22Z",
+        "updatedAt": "2026-07-01T02:45:26Z"
       }
     },
     {
@@ -3843,7 +3924,7 @@
       "description": "Open source Photoshop alternative",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3857,11 +3938,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:40:48Z",
+        "updatedAt": "2026-07-01T03:40:51Z"
       }
     },
     {
@@ -3870,7 +3951,7 @@
       "description": "Debloated, Greenshot-inspired screenshot tool",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3884,11 +3965,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-03T16:14:01Z",
+        "updatedAt": "2026-07-03T16:09:51Z"
       }
     },
     {
@@ -3897,7 +3978,7 @@
       "description": "Privacy-focused BitTorrent client — PyQt6 + libtorrent",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3911,11 +3992,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:40Z",
+        "updatedAt": "2026-06-28T03:37:43Z"
       }
     },
     {
@@ -3924,7 +4005,7 @@
       "description": "Full GitHub repo manager — clone, sync, diff, manage",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3938,11 +4019,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:47Z",
+        "updatedAt": "2026-06-28T03:37:51Z"
       }
     },
     {
@@ -3951,7 +4032,7 @@
       "description": "AI-powered unified file organization — 5 engines, tag-based library, LLM integration",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3965,11 +4046,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T16:03:07Z",
+        "updatedAt": "2026-07-01T16:03:27Z"
       }
     },
     {
@@ -3978,7 +4059,7 @@
       "description": "Lightning-fast file search for Windows — reads NTFS MFT directly",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -3992,11 +4073,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-02T04:12:13Z",
+        "updatedAt": "2026-07-02T04:12:16Z"
       }
     },
     {
@@ -4005,7 +4086,7 @@
       "description": "AI-powered desktop tool for classifying and organizing design asset folders",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4019,11 +4100,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:49:06Z",
+        "updatedAt": "2026-07-01T05:49:10Z"
       }
     },
     {
@@ -4032,7 +4113,7 @@
       "description": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4046,11 +4127,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T14:20:38Z",
+        "updatedAt": "2026-07-01T14:21:30Z"
       }
     },
     {
@@ -4059,7 +4140,7 @@
       "description": "Browse MP4 videos, mark frames visually, and export precise screenshots",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4073,11 +4154,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:42Z",
+        "updatedAt": "2026-06-28T03:37:46Z"
       }
     },
     {
@@ -4086,7 +4167,7 @@
       "description": "GUI for toggling 50+ Windows File Explorer registry settings with live preview",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4100,11 +4181,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:48:47Z",
+        "updatedAt": "2026-07-01T03:48:51Z"
       }
     },
     {
@@ -4113,7 +4194,7 @@
       "description": "AI face slimming, reshaping, and beautification with real-time preview and GPU acceleration",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4127,11 +4208,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T04:06:16Z",
+        "updatedAt": "2026-07-04T03:54:03Z"
       }
     },
     {
@@ -4140,7 +4221,7 @@
       "description": "AI-powered lip reading tool — transcribes speech from silent video",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4154,11 +4235,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:08Z",
+        "updatedAt": "2026-06-28T03:38:11Z"
       }
     },
     {
@@ -4167,7 +4248,7 @@
       "description": "Sleek GUI frontend for llama.cpp — search, download, and chat with local LLMs",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4181,11 +4262,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:09Z",
+        "updatedAt": "2026-06-28T03:38:13Z"
       }
     },
     {
@@ -4194,7 +4275,7 @@
       "description": "Offline AI music generation suite — song creation, lyrics, MIDI, vocals, stem separation, mastering",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4208,11 +4289,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T05:04:25Z",
+        "updatedAt": "2026-07-01T05:04:29Z"
       }
     },
     {
@@ -4221,7 +4302,7 @@
       "description": "Full Gmail mailbox downloader, AI-powered organizer & analytics suite",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4235,11 +4316,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:48Z",
+        "updatedAt": "2026-06-28T03:37:52Z"
       }
     },
     {
@@ -4248,7 +4329,7 @@
       "description": "All-in-one script-to-EXE compiler",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4262,11 +4343,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:32Z",
+        "updatedAt": "2026-06-28T03:39:35Z"
       }
     },
     {
@@ -4275,7 +4356,7 @@
       "description": "Generate Windows 11 OOBE bypass files",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4289,11 +4370,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:08Z",
+        "updatedAt": "2026-06-28T03:37:12Z"
       }
     },
     {
@@ -4302,7 +4383,7 @@
       "description": "Install Microsoft Store apps without the Store",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4316,11 +4397,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 3
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-29T14:00:42Z",
+        "updatedAt": "2026-06-29T14:00:59Z"
       }
     },
     {
@@ -4329,7 +4410,7 @@
       "description": "AI voice generator powered by Qwen3-TTS",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4343,11 +4424,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:53Z",
+        "updatedAt": "2026-06-28T03:38:56Z"
       }
     },
     {
@@ -4356,7 +4437,7 @@
       "description": "Scan, catalog, and export all installed applications",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4370,11 +4451,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T16:10:20Z",
+        "updatedAt": "2026-07-01T16:10:24Z"
       }
     },
     {
@@ -4383,7 +4464,7 @@
       "description": "Floating widget for medication tracking + sleep analytics",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4397,11 +4478,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:44Z",
+        "updatedAt": "2026-06-28T03:38:48Z"
       }
     },
     {
@@ -4410,7 +4491,7 @@
       "description": "Minimal notepad built for personal workflow",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4424,11 +4505,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:14Z",
+        "updatedAt": "2026-06-28T03:38:17Z"
       }
     },
     {
@@ -4437,7 +4518,7 @@
       "description": "GUI for managing the Windows hosts file",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4451,11 +4532,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:53:44Z",
+        "updatedAt": "2026-06-28T03:53:48Z"
       }
     },
     {
@@ -4464,7 +4545,7 @@
       "description": "AI-powered bookmark manager and categorizer",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4478,11 +4559,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T03:49:39Z",
+        "updatedAt": "2026-07-05T20:05:37Z"
       }
     },
     {
@@ -4491,7 +4572,7 @@
       "description": "QR generator with 98 visual style presets",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4505,11 +4586,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:50Z",
+        "updatedAt": "2026-06-28T03:38:54Z"
       }
     },
     {
@@ -4518,7 +4599,7 @@
       "description": "Convert uBlock cosmetic filters to Stylus CSS",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4532,11 +4613,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:29Z",
+        "updatedAt": "2026-06-28T03:39:32Z"
       }
     },
     {
@@ -4545,7 +4626,7 @@
       "description": "Google Keep importer and note tracker",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4559,11 +4640,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T02:46:57Z",
+        "updatedAt": "2026-07-01T02:47:00Z"
       }
     },
     {
@@ -4572,7 +4653,7 @@
       "description": "Simple PDF editor",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4586,11 +4667,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:41Z",
+        "updatedAt": "2026-06-28T03:38:44Z"
       }
     },
     {
@@ -4599,7 +4680,7 @@
       "description": "Bulk CSV processing and consolidation",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4613,11 +4694,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:18Z",
+        "updatedAt": "2026-06-28T03:37:21Z"
       }
     },
     {
@@ -4626,7 +4707,7 @@
       "description": "Discover, download, and run local AI models tailored to your hardware",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4640,11 +4721,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:36:49Z",
+        "updatedAt": "2026-06-28T03:36:52Z"
       }
     },
     {
@@ -4653,7 +4734,7 @@
       "description": "Stock video collector",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4667,11 +4748,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 2
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T06:15:46Z",
+        "updatedAt": "2026-07-01T06:15:51Z"
       }
     },
     {
@@ -4680,7 +4761,7 @@
       "description": "Animated GIF text editor for meme creation",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4694,11 +4775,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T06:32:51Z",
+        "updatedAt": "2026-07-01T06:32:54Z"
       }
     },
     {
@@ -4707,7 +4788,7 @@
       "description": "Migrate passwords, bookmarks, and extensions from Chromium browsers to Firefox",
       "category": "py",
       "categoryLabel": "Python",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4721,11 +4802,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:41Z",
+        "updatedAt": "2026-06-28T03:37:45Z"
       }
     },
     {
@@ -4748,11 +4829,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-05-26T19:18:03Z",
-        "updatedAt": "2026-05-26T19:18:09Z"
+        "pushedAt": "2026-06-28T14:10:21Z",
+        "updatedAt": "2026-06-28T14:10:25Z"
       }
     },
     {
@@ -4761,7 +4842,7 @@
       "description": "Enhanced NextDNS Control Panel",
       "category": "sec",
       "categoryLabel": "Security",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4775,11 +4856,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:03Z",
+        "updatedAt": "2026-06-28T03:37:07Z"
       }
     },
     {
@@ -4788,7 +4869,7 @@
       "description": "Complete ESET port and address reference lists",
       "category": "sec",
       "categoryLabel": "Security",
-      "language": null,
+      "language": "RouterOS Script",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4802,11 +4883,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:32Z",
+        "updatedAt": "2026-06-28T03:37:36Z"
       }
     },
     {
@@ -4815,7 +4896,7 @@
       "description": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "JavaScript",
       "featured": false,
       "live": true,
       "tags": [],
@@ -4829,11 +4910,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/NukeMap.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-01T06:27:23Z",
+        "updatedAt": "2026-07-01T06:27:27Z"
       }
     },
     {
@@ -4842,7 +4923,7 @@
       "description": "Compatibility-first dating and social platform",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4856,11 +4937,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:05Z",
+        "updatedAt": "2026-06-28T03:38:08Z"
       }
     },
     {
@@ -4869,7 +4950,7 @@
       "description": "MHTML file viewer and inspector",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -4883,11 +4964,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/MHTMLens.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:17Z",
+        "updatedAt": "2026-06-28T03:38:20Z"
       }
     },
     {
@@ -4896,7 +4977,7 @@
       "description": "Log file viewer and analyzer",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -4910,11 +4991,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/LogLens.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:38:13Z",
+        "updatedAt": "2026-06-28T03:38:16Z"
       }
     },
     {
@@ -4923,7 +5004,7 @@
       "description": "Cron expression builder and visualizer",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "HTML",
       "featured": false,
       "live": true,
       "tags": [],
@@ -4937,11 +5018,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CronScope.jpg"
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:37:17Z",
+        "updatedAt": "2026-06-28T03:37:20Z"
       }
     },
     {
@@ -4950,7 +5031,7 @@
       "description": "Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras",
       "category": "web",
       "categoryLabel": "Web Apps",
-      "language": null,
+      "language": "Python",
       "featured": false,
       "live": false,
       "tags": [],
@@ -4964,11 +5045,38 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": null
+        "stars": 0
       },
       "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-06-28T03:39:12Z",
+        "updatedAt": "2026-06-28T03:39:15Z"
+      }
+    },
+    {
+      "slug": "AsteroidSimulator",
+      "name": "AsteroidSimulator",
+      "description": "Asteroid and comet impact simulator with interactive 3D visualization",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": "TypeScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/AsteroidSimulator/",
+        "repository": "https://github.com/SysAdminDoc/AsteroidSimulator",
+        "source": "https://github.com/SysAdminDoc/AsteroidSimulator",
+        "live": null,
+        "ogImage": "https://sysadmindoc.github.io/og/AsteroidSimulator.png",
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:36:59Z",
+        "updatedAt": "2026-06-28T03:37:02Z"
       }
     }
   ]

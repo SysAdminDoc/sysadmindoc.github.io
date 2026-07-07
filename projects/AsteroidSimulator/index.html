@@ -1,0 +1,1447 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AsteroidSimulator — Matt Parker</title><meta name="description" content="Asteroid and comet impact simulator with interactive 3D visualization"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-dU00pYxna3ZZYH6iN/WzG7MEQXHSQsGxzWiFeWCN8h0=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="AsteroidSimulator — Matt Parker"><meta property="og:description" content="Asteroid and comet impact simulator with interactive 3D visualization"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/AsteroidSimulator/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/AsteroidSimulator.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="AsteroidSimulator social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/AsteroidSimulator.png"><meta name="twitter:image:alt" content="AsteroidSimulator social preview card"><meta name="twitter:title" content="AsteroidSimulator — Matt Parker"><meta name="twitter:description" content="Asteroid and comet impact simulator with interactive 3D visualization"><link rel="canonical" href="https://sysadmindoc.github.io/projects/AsteroidSimulator/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
+@layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;
+@layer site.critical {
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Outfit';font-style:normal;font-weight:300 800;font-display:swap;src:url('/fonts/outfit-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  --bg:#050913;
+  --bg:light-dark(#f5f1e8, #050913);
+  --bg2:#0b1220;
+  --bg2:light-dark(#ede7da, #0b1220);
+  --bg3:#111c2f;
+  --bg3:light-dark(#ddd6c7, #111c2f);
+  --glass:rgba(9,16,29,.52);
+  --glass:light-dark(rgba(255,255,255,.62), rgba(9,16,29,.52));
+  --glass-border:rgba(146,169,205,.14);
+  --glass-border:light-dark(rgba(70,83,112,.12), rgba(146,169,205,.14));
+  --glass-hover:rgba(146,169,205,.1);
+  --glass-hover:light-dark(rgba(70,83,112,.08), rgba(146,169,205,.1));
+  --brdb:rgba(124,184,255,.32);
+  --brdb:light-dark(rgba(53,107,191,.22), rgba(124,184,255,.32));
+  --t1:#f4f7fb;
+  --t1:light-dark(#172033, #f4f7fb);
+  --t2:#a7b4cb;
+  --t2:light-dark(#4f5d79, #a7b4cb);
+  --t3:#8b99b0;
+  --t3:light-dark(#74829c, #8b99b0);
+  --blue:#7cb8ff;
+  --blued:rgba(124,184,255,.13);
+  --blue-glow:rgba(124,184,255,.28);
+  --blue-glow:light-dark(rgba(124,184,255,.15), rgba(124,184,255,.28));
+  --org:#e5b169;
+  --orgd:rgba(229,177,105,.14);
+  --pur:#c69cff;
+  --purd:rgba(198,156,255,.13);
+  --teal:#58e5d6;
+  --teald:rgba(88,229,214,.12);
+  --grn:#4ade80;
+  --grnd:rgba(74,222,128,.12);
+  --grn-glow:rgba(74,222,128,.25);
+  --grn-glow:light-dark(rgba(74,222,128,.15), rgba(74,222,128,.25));
+  --yel:#facc15;
+  --red:#f87171;
+  --mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;
+  --surface-1:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+  --surface-1:light-dark(linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58)), linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)));
+  --surface-2:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  --surface-2:light-dark(linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48)), linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)));
+  --surface-strong:linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74));
+  --surface-strong:light-dark(linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82)), linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74)));
+  --border-soft:rgba(255,255,255,.08);
+  --border-soft:light-dark(rgba(70,83,112,.11), rgba(255,255,255,.08));
+  --border-strong:rgba(124,184,255,.18);
+  --border-strong:light-dark(rgba(53,107,191,.18), rgba(124,184,255,.18));
+  --shadow-soft:0 22px 52px rgba(0,0,0,.18);
+  --shadow-soft:light-dark(0 20px 44px rgba(29,42,70,.12), 0 22px 52px rgba(0,0,0,.18));
+  --shadow-strong:0 34px 84px rgba(0,0,0,.34);
+  --shadow-strong:light-dark(0 28px 66px rgba(29,42,70,.16), 0 34px 84px rgba(0,0,0,.34));
+  --radius-xl:12px;
+  --lh-relaxed:1.7;
+  --ls-caps:.08em;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --dur-fast:.18s;
+  --dur-base:.25s;
+  --focus-ring:0 0 0 3px rgba(74,222,128,.28);
+  --focus-outline:var(--grn);
+  color-scheme:dark;
+}
+html[data-theme="light"]{
+  color-scheme:light;
+}
+@media(prefers-contrast:more){
+  :root{
+    --glass-border:rgba(255,255,255,.24);
+    --brdb:rgba(124,184,255,.46);
+    --t2:#dfe8f5;
+    --t3:#c5d2e2;
+    --border-soft:rgba(255,255,255,.24);
+    --border-strong:rgba(124,184,255,.42);
+    --focus-ring:0 0 0 4px rgba(74,222,128,.42);
+  }
+  html[data-theme="light"]{
+    --glass-border:rgba(29,42,70,.24);
+    --brdb:rgba(53,107,191,.42);
+    --t2:#26364f;
+    --t3:#43536b;
+    --border-soft:rgba(29,42,70,.28);
+    --border-strong:rgba(53,107,191,.42);
+    --focus-ring:0 0 0 4px rgba(16,115,64,.28);
+  }
+  #nav,.ng,.theme-toggle,.nav-search,.btn,.hero-pulse .pulse-item{
+    border-color:var(--border-strong);
+  }
+  .hr,.hero-summary,.sd,.hsl{
+    color:var(--t2);
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;
+  min-width:320px;
+  font-family:var(--sans);
+  line-height:1.65;
+  color:var(--t1);
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at top center, rgba(124,184,255,.14), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(198,156,255,.12), transparent 24%),
+    radial-gradient(circle at 18% 82%, rgba(88,229,214,.08), transparent 28%),
+    linear-gradient(180deg, #050913 0%, #08101b 36%, #050913 100%);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at top center, rgba(124,184,255,.12), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(229,177,105,.1), transparent 24%),
+    linear-gradient(180deg, #f8f4ea 0%, #f2ecdf 100%);
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:120px 120px;
+  mask-image:radial-gradient(circle at center, rgba(0,0,0,.95) 0%, rgba(0,0,0,.35) 55%, transparent 82%);
+}
+html[data-theme="light"] body::before{
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
+  opacity:.18;
+}
+a{color:inherit}
+svg{display:block}
+button{font:inherit}
+.skip-link{
+  position:fixed;
+  top:calc(-120px - env(safe-area-inset-top,0px));
+  left:12px;
+  z-index:100000;
+  padding:10px 18px;
+  background:var(--blue);
+  color:var(--bg);
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:600;
+  border-radius:0 0 10px 10px;
+  text-decoration:none;
+  box-shadow:0 12px 32px rgba(88,166,255,.32);
+}
+.skip-link:focus{
+  top:env(safe-area-inset-top,0px);
+  outline:2px solid var(--t1);
+  outline-offset:3px;
+}
+#nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+  background:rgba(6,10,18,.68);
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  box-shadow:0 16px 46px rgba(0,0,0,.2);
+}
+html[data-theme="light"] #nav{
+  background:rgba(248,244,234,.76);
+  border-bottom-color:var(--border-soft);
+  box-shadow:0 8px 28px rgba(29,42,70,.1);
+}
+@media(prefers-contrast:more){
+  #nav{
+    border-bottom-color:var(--border-strong);
+  }
+}
+.scroll-progress{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:1001;
+  width:0;
+  height:3px;
+  pointer-events:none;
+  background:linear-gradient(90deg,var(--blue),var(--pur),var(--teal));
+  box-shadow:0 1px 8px var(--blue-glow);
+}
+.ni{
+  width:100%;
+  max-width:none;
+  height:64px;
+  margin:0;
+  padding:0 clamp(24px,4vw,64px);
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) auto minmax(220px,1fr);
+  align-items:center;
+  gap:clamp(16px,2vw,32px);
+}
+.nl{
+  grid-column:1;
+  flex:0 0 auto;
+  justify-self:start;
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:15px;
+  color:var(--grn);
+  text-decoration:none;
+  text-shadow:0 0 20px var(--grn-glow);
+}
+.nl span{color:var(--t3)}
+.nk{
+  grid-column:2;
+  display:flex;
+  align-items:center;
+  justify-self:center;
+  min-width:0;
+  gap:clamp(8px,.85vw,14px);
+}
+.nk a{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  padding:7px 14px;
+  border-radius:10px;
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--t2);
+  text-decoration:none;
+}
+.nk a:hover,.nk a.active{color:var(--t1);background:rgba(255,255,255,.05)}
+.nav-actions{
+  grid-column:3;
+  display:flex;
+  align-items:center;
+  justify-self:end;
+  gap:4px;
+  min-width:max-content;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
+}
+.ng,.theme-toggle,.nav-search{
+  min-height:40px;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--t2);
+}
+.ng{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 16px;
+  border-radius:10px;
+  font-family:var(--mono);
+  font-size:13px;
+  text-decoration:none;
+}
+.ng svg{width:16px;height:16px;fill:currentColor}
+.theme-toggle{
+  width:40px;
+  height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  cursor:pointer;
+}
+.theme-toggle svg{width:18px;height:18px;fill:currentColor}
+.nav-search{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:0 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:.03em;
+}
+.nav-search svg{width:16px;height:16px;flex-shrink:0}
+.nav-search-label{color:var(--t1)}
+html[data-theme="light"] .nav-actions{
+  border-color:var(--border-soft);
+  background:rgba(255,255,255,.52);
+  box-shadow:0 10px 24px rgba(29,42,70,.08);
+}
+.mt{
+  display:none;
+  width:40px;
+  height:40px;
+  padding:4px;
+  border:0;
+  border-radius:10px;
+  background:none;
+  color:var(--t2);
+  cursor:pointer;
+}
+.mt svg{width:24px;height:24px;stroke:currentColor;fill:none}
+.hero{
+  min-height:100svh;
+  display:flex;
+  align-items:stretch;
+  position:relative;
+  overflow:hidden;
+  padding:84px 32px 58px;
+}
+.hero::before,.hero::after{
+  content:'';
+  position:absolute;
+  pointer-events:none;
+  z-index:0;
+  border-radius:50%;
+}
+.hero::before{
+  inset:-10% -5% auto auto;
+  width:52vw;
+  height:52vw;
+  max-width:720px;
+  max-height:720px;
+  background:radial-gradient(circle, rgba(124,184,255,.18) 0%, rgba(124,184,255,.06) 32%, transparent 70%);
+  filter:blur(12px);
+}
+.hero::after{
+  inset:auto auto -22% -8%;
+  width:48vw;
+  height:48vw;
+  max-width:660px;
+  max-height:660px;
+  background:radial-gradient(circle, rgba(198,156,255,.16) 0%, rgba(88,229,214,.08) 28%, transparent 70%);
+  filter:blur(18px);
+}
+.hero-grid{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:120px 120px;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.35) 48%, transparent 100%);
+}
+.hi{
+  max-width:1320px;
+  width:100%;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
+  gap:64px;
+  align-items:start;
+  position:relative;
+  z-index:1;
+}
+.ht{
+  width:100%;
+  max-width:720px;
+  padding-bottom:0;
+}
+.hero-avatar{
+  width:56px;
+  height:56px;
+  margin-bottom:16px;
+  display:none;
+  border-radius:50%;
+  border:2px solid var(--glass-border);
+  box-shadow:0 0 20px rgba(88,166,255,.12);
+}
+.hero-avatar.loaded{display:block}
+.htag{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:20px;
+  padding:8px 16px;
+  border:1px solid rgba(74,222,128,.22);
+  border-radius:10px;
+  background:rgba(74,222,128,.08);
+  color:var(--grn);
+  font-family:var(--mono);
+  font-size:13px;
+  text-decoration:none;
+  box-shadow:0 0 0 3px rgba(74,222,128,.06),0 12px 28px rgba(74,222,128,.12);
+}
+.htag .dot,.pulse-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--grn);
+  box-shadow:0 0 10px var(--grn-glow);
+  flex-shrink:0;
+}
+.hn{
+  margin:0 0 14px;
+  font-size:clamp(52px,7vw,88px);
+  font-weight:800;
+  line-height:.95;
+  letter-spacing:-.06em;
+}
+.hn .a{
+  background:linear-gradient(135deg,var(--blue),var(--pur),var(--teal),var(--blue));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hr{
+  max-width:32ch;
+  margin:0 0 16px;
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:clamp(16px,2vw,20px);
+  line-height:1.65;
+}
+.hero-summary{
+  max-width:58ch;
+  margin:0 0 20px;
+  color:var(--t2);
+  font-size:17px;
+  line-height:var(--lh-relaxed);
+}
+.hero-proof-strip{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  max-width:640px;
+  margin:0 0 18px;
+}
+.hero-proof{
+  min-width:0;
+  display:grid;
+  gap:5px;
+  padding:12px;
+  border:1px solid var(--border-soft);
+  border-radius:8px;
+  background:rgba(255,255,255,.03);
+  color:inherit;
+  text-decoration:none;
+  box-shadow:0 14px 28px rgba(0,0,0,.12);
+}
+.hero-proof-label{
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+  line-height:1.25;
+  letter-spacing:0;
+  text-transform:uppercase;
+}
+.hero-proof-value{
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:22px;
+  font-weight:800;
+  line-height:1.05;
+}
+.hero-proof-copy{
+  color:var(--t2);
+  font-size:12px;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.hs{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  max-width:580px;
+  margin:0 0 18px;
+  padding:16px 0;
+  border-top:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hs-item{min-width:0;padding-right:12px}
+.hs-item:not(:last-child){border-right:1px solid rgba(255,255,255,.08)}
+.hsn{
+  font-family:var(--mono);
+  font-size:clamp(30px,3.2vw,42px);
+  font-weight:700;
+  line-height:1.15;
+  background:linear-gradient(135deg,var(--t1),var(--blue));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hsl{
+  margin-top:5px;
+  color:var(--t3);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:var(--ls-caps);
+}
+.hero-pulse{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin:0 0 24px;
+  font-family:var(--mono);
+  font-size:12px;
+}
+.hero-pulse .pulse-item{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 12px;
+  border:1px solid var(--border-soft);
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+  color:var(--t2);
+  text-decoration:none;
+}
+.pulse-k{
+  color:var(--t3);
+  font-size:10px;
+  letter-spacing:var(--ls-caps);
+  text-transform:uppercase;
+}
+.pulse-v{color:var(--t1);font-variant-numeric:tabular-nums}
+.pulse-sub{margin-left:4px;color:var(--grn);font-weight:600}
+.ha{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-top:4px;
+}
+.btn{
+  min-height:46px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 22px;
+  border:0;
+  border-radius:10px;
+  color:inherit;
+  font-family:var(--mono);
+  font-size:14px;
+  font-weight:500;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.btn svg{width:16px;height:16px}
+.bp{
+  background:linear-gradient(135deg, #8ec2ff 0%, #7f86ff 45%, #58e5d6 100%);
+  color:#06111d;
+  font-weight:600;
+  box-shadow:0 18px 36px rgba(124,184,255,.2);
+}
+.bg2{
+  border:1px solid var(--border-soft);
+  background:rgba(255,255,255,.025);
+  color:var(--t2);
+}
+.hero-signals{
+  max-width:680px;
+  margin:18px 0 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 12px;
+}
+.hero-signal{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 16px;
+  border:1px solid var(--border-soft);
+  border-radius:10px;
+  background:var(--surface-2);
+  box-shadow:0 14px 28px rgba(0,0,0,.12);
+}
+.hero-signal-label{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--t3);
+}
+.hero-signal-value{
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.25;
+}
+.hero-evidence{
+  width:100%;
+  max-width:500px;
+  justify-self:end;
+  align-self:start;
+  display:grid;
+  gap:12px;
+}
+.hero-evidence-head{
+  padding:16px 18px;
+  border:1px solid var(--border-soft);
+  border-left:3px solid var(--grn);
+  border-radius:10px;
+  background:linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.025));
+  box-shadow:0 18px 36px rgba(0,0,0,.14);
+}
+.hero-evidence-kicker{
+  display:block;
+  margin-bottom:6px;
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.hero-evidence-head strong{
+  display:block;
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:18px;
+  line-height:1.2;
+}
+.hero-evidence-head p{
+  margin:8px 0 0;
+  color:var(--t2);
+  font-size:13px;
+  line-height:1.45;
+}
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  margin:-1px;
+  padding:0;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+section{position:relative;z-index:1}
+@media(max-width:1100px){
+  .hi{grid-template-columns:1fr;gap:36px;align-items:start}
+  .ht{display:block;max-width:none}
+  .hero-signals{
+    width:auto;
+    max-width:680px;
+    margin:18px 0 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 12px;
+  }
+}
+@media(max-width:900px){
+  .nk{display:none}
+}
+@media(max-width:640px){
+  .ni{
+    height:64px;
+    padding:0 16px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+  .nav-actions{grid-column:2}
+  .nk{grid-column:1 / -1}
+  .nl{min-width:0;font-size:14px;white-space:nowrap}
+  .nav-actions{gap:8px;flex-shrink:0}
+  .route-home .ng{width:40px;min-width:40px;padding:0;justify-content:center;font-size:0}
+  .nav-search{width:40px;height:40px;padding:0;justify-content:center}
+  .nav-search-label{display:none}
+  .mt{display:block}
+  .nk.open{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    position:absolute;
+    top:calc(64px + env(safe-area-inset-top,0px));
+    left:0;
+    right:0;
+    padding:12px;
+    border-bottom:1px solid var(--glass-border);
+    background:rgba(10,14,23,.95);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+  .hero{padding:96px 16px 56px}
+  .hn{font-size:clamp(44px,16vw,68px)}
+  .hr{font-size:17px}
+  .hero-summary{font-size:16px}
+  .hero-proof-strip{grid-template-columns:1fr;gap:8px}
+  .hero-proof{padding:11px 12px}
+  .hero-proof-value{font-size:20px}
+  .hs{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .hero-pulse{display:grid;align-items:stretch;gap:10px}
+  .hero-pulse .pulse-dot{display:none}
+  .hero-pulse .pulse-item{
+    width:100%;
+    min-width:0;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    row-gap:4px;
+    padding:10px 12px;
+    border-radius:10px;
+  }
+  .pulse-v{
+    min-width:0;
+    flex:1 1 180px;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.45;
+    text-align:right;
+  }
+  .ha .btn{width:100%;justify-content:center}
+}
+@media(max-width:460px){
+  .hs{grid-template-columns:1fr}
+  .hs-item{padding-right:0}
+  .hs-item:not(:last-child){border-right:0;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
+}
+.hero::before,.hero::after{
+  display:none!important;
+}
+.hero{
+  min-height:auto;
+  padding:76px 32px 44px;
+}
+.hero-grid{
+  opacity:.18;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.68) 0%, rgba(0,0,0,.28) 54%, transparent 100%);
+}
+.hi{
+  gap:34px;
+  align-items:start;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
+}
+.ht{
+  max-width:720px;
+  padding-bottom:0;
+  display:block;
+}
+.hero-avatar{
+  width:48px;
+  height:48px;
+  margin-bottom:12px;
+}
+.htag{
+  margin-bottom:14px;
+  padding:7px 12px;
+}
+.hn{
+  margin-bottom:12px;
+  font-size:clamp(48px,5.8vw,72px);
+  line-height:.96;
+  letter-spacing:-.045em;
+}
+.hero-proof-strip{
+  gap:8px;
+  margin-bottom:14px;
+}
+.hero-proof{
+  padding:10px;
+}
+.hero-proof-value{
+  font-size:20px;
+}
+.hr{
+  max-width:56ch;
+  margin-bottom:12px;
+  font-size:clamp(15px,1.4vw,17px);
+  line-height:1.45;
+}
+.hero-summary{
+  max-width:56ch;
+  margin-bottom:14px;
+  font-size:15px;
+  line-height:1.5;
+}
+.hs{
+  gap:12px;
+  margin-bottom:12px;
+  padding:12px 0;
+}
+.hsn{
+  font-size:clamp(24px,2.4vw,32px);
+}
+.hero-pulse{
+  margin-bottom:12px;
+}
+.hero-pulse .pulse-item{
+  min-height:34px;
+  padding:6px 10px;
+}
+.hero-signals{
+  width:auto;
+  max-width:680px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:12px 0 0;
+}
+.hero-signal{
+  padding:10px;
+}
+@media(max-width:979px){
+  .hi{
+    grid-template-columns:1fr;
+  }
+  .hero-evidence{
+    display:none;
+  }
+}
+@media(min-width:1101px) and (max-height:820px){
+  .hero{
+    padding-top:76px;
+    padding-bottom:18px;
+  }
+  .hi{
+    gap:32px;
+  }
+  .hero-proof-copy{
+    display:none;
+  }
+  .hero-proof{
+    min-height:74px;
+  }
+  .hero-summary,.hero-pulse,.hero-signals,.hero-evidence-head p{
+    display:none;
+  }
+  .hero-evidence{
+    gap:10px;
+  }
+}
+@media(max-width:1320px){
+  .route-interior .ni{
+    gap:10px;
+    padding-inline:20px;
+  }
+  .route-interior .nav-actions{
+    flex-shrink:0;
+  }
+  .route-interior .nav-actions > .nav-context{
+    display:none;
+  }
+  .route-interior .nav-search,
+  .route-interior .ng{
+    width:40px;
+    min-width:40px;
+    padding:0;
+    justify-content:center;
+  }
+  .route-interior .nav-search-label{
+    display:none;
+  }
+  .route-interior .ng{
+    font-size:0;
+  }
+  .route-interior .ng svg{
+    width:16px;
+    height:16px;
+  }
+}
+@media(max-width:1080px){
+  .route-interior .nk{
+    display:none;
+  }
+  .route-interior .mt{
+    display:block;
+    flex:0 0 auto;
+  }
+}
+@media(max-width:640px){
+  .hero{
+    padding:82px 20px 42px;
+  }
+  .hi{
+    gap:24px;
+  }
+    .hero-avatar{
+    width:52px;
+    height:52px;
+  }
+  .htag{
+    width:100%;
+    justify-content:center;
+    margin-bottom:16px;
+  }
+  .hn{
+    font-size:clamp(42px,14vw,58px);
+    letter-spacing:-.04em;
+  }
+  .hero-proof-strip{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
+  .hero-proof{
+    min-height:78px;
+    padding:9px 8px;
+  }
+  .hero-proof-label{
+    font-size:8px;
+  }
+  .hero-proof-value{
+    font-size:17px;
+  }
+  .hero-proof-copy,.hero-summary,.hero-pulse,.hero-signals{
+    display:none;
+  }
+  .hr{
+    margin-bottom:14px;
+    font-size:16px;
+    line-height:1.5;
+  }
+  .hs{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    margin-bottom:14px;
+    padding:12px 0;
+  }
+  .hs-item{
+    padding-right:8px;
+  }
+  .hsn{
+    font-size:20px;
+  }
+  .hsl{
+    font-size:10px;
+  }
+  .ha{
+    gap:10px;
+  }
+  .btn{
+    min-height:44px;
+    padding:10px 14px;
+    font-size:12px;
+  }
+}
+@media(max-width:380px){
+  .hero-proof-strip,
+  .hs{
+    grid-template-columns:1fr;
+  }
+  .hero-proof{
+    min-height:0;
+  }
+  .hero-proof-copy{
+    display:block;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero-grid{animation:none!important}
+}
+@media(forced-colors:active){
+  :focus-visible{outline:2px solid Highlight;outline-offset:3px}
+  body::before{display:none!important}
+  .btn,button,.theme-toggle,input,select,textarea{border:1px solid ButtonText}
+}
+}
+
+/* First-viewport visual refresh */
+:root{
+  --bg:#030812;
+  --bg2:#08111e;
+  --bg3:#0d1a2c;
+  --glass:rgba(9,18,31,.68);
+  --glass-hover:rgba(124,184,255,.095);
+  --glass-border:rgba(150,178,218,.16);
+  --border-soft:rgba(150,178,218,.13);
+  --border-strong:rgba(124,184,255,.3);
+  --surface-1:linear-gradient(180deg, rgba(15,29,48,.88), rgba(7,15,28,.76));
+  --surface-2:linear-gradient(180deg, rgba(17,34,55,.7), rgba(8,17,31,.58));
+  --surface-strong:linear-gradient(150deg, rgba(13,29,50,.96), rgba(5,12,24,.9));
+  --shadow-soft:0 22px 54px rgba(0,0,0,.24);
+  --shadow-strong:0 34px 86px rgba(0,0,0,.42);
+}
+html[data-theme="light"]{
+  --bg:#f7f9fc;
+  --bg2:#eef4fb;
+  --bg3:#e3edf8;
+  --glass:rgba(255,255,255,.82);
+  --glass-hover:rgba(53,107,191,.08);
+  --glass-border:rgba(47,68,104,.15);
+  --border-soft:rgba(47,68,104,.14);
+  --border-strong:rgba(53,107,191,.28);
+  --surface-1:linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,248,253,.82));
+  --surface-2:linear-gradient(180deg, rgba(255,255,255,.82), rgba(238,244,251,.7));
+  --surface-strong:linear-gradient(150deg, rgba(255,255,255,.98), rgba(237,245,252,.88));
+  --shadow-soft:0 20px 48px rgba(29,42,70,.12);
+  --shadow-strong:0 30px 72px rgba(29,42,70,.18);
+}
+body{
+  background:
+    radial-gradient(circle at 72% 8%, rgba(124,184,255,.15), transparent 30%),
+    radial-gradient(circle at 20% 28%, rgba(88,229,214,.09), transparent 26%),
+    linear-gradient(180deg, #030812 0%, #071120 44%, #03101a 100%);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 78% 10%, rgba(53,107,191,.12), transparent 30%),
+    radial-gradient(circle at 16% 30%, rgba(31,157,143,.08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf4fb 100%);
+}
+body::before{
+  opacity:.1;
+  background-size:72px 72px;
+}
+#nav{
+  background:rgba(3,8,18,.76);
+  border-bottom-color:rgba(150,178,218,.12);
+  box-shadow:0 18px 54px rgba(0,0,0,.24);
+}
+html[data-theme="light"] #nav{
+  background:rgba(247,249,252,.82);
+  box-shadow:0 12px 34px rgba(29,42,70,.1);
+}
+.ni{
+  height:68px;
+}
+.nl{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
+  text-shadow:none;
+}
+.nl::before{
+  content:'>_';
+  display:inline-grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(74,222,128,.24);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(74,222,128,.045));
+  box-shadow:0 14px 30px rgba(74,222,128,.08);
+  color:var(--grn);
+  font-size:15px;
+  margin-right:12px;
+}
+.nk{gap:10px}
+.nk a{
+  border-radius:8px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:650;
+  letter-spacing:.01em;
+}
+.nk a:hover,.nk a.active{background:rgba(124,184,255,.09)}
+.nav-actions{
+  border-radius:10px;
+  background:rgba(255,255,255,.035);
+}
+.hero{padding:82px 32px 34px}
+.hero-grid{
+  opacity:.12;
+}
+.hi{
+  max-width:1380px;
+  grid-template-columns:minmax(0,.95fr) minmax(430px,1fr);
+  gap:clamp(42px,5vw,78px);
+  align-items:start;
+}
+.ht{
+  position:relative;
+  max-width:690px;
+  display:flex;
+  flex-direction:column;
+  padding-left:34px;
+}
+.ht::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:62px;
+  bottom:10px;
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(180deg,var(--grn),var(--blue),var(--pur));
+  box-shadow:0 0 22px rgba(88,229,214,.22);
+}
+.hero-avatar{order:2;margin-bottom:18px}
+.htag{order:3}
+.hn{order:4}
+.hr{order:5}
+.hero-summary{order:6}
+.hs{order:7}
+.hero-proof-strip{order:8}
+.hero-pulse{order:9}
+.ha{order:10}
+.hero-signals{order:11}
+.hero-avatar{
+  width:66px;
+  height:66px;
+  border-color:rgba(88,229,214,.46);
+  box-shadow:0 0 0 5px rgba(88,229,214,.08),0 20px 42px rgba(0,0,0,.22);
+}
+.htag{
+  align-self:flex-start;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--grn);
+}
+.hn{
+  margin-bottom:18px;
+  font-size:clamp(62px,6.7vw,104px);
+  line-height:.9;
+  letter-spacing:-.065em;
+}
+.hn .a{
+  background:linear-gradient(135deg,#62e6d8 0%,#79c4ff 44%,#a98bff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+.hr{
+  max-width:30ch;
+  margin-bottom:18px;
+  font-family:var(--sans);
+  font-size:clamp(21px,2vw,28px);
+  font-weight:720;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.hero-summary{
+  max-width:64ch;
+  margin-bottom:22px;
+  color:var(--t2);
+  font-size:16px;
+  line-height:1.68;
+}
+.hs{
+  max-width:620px;
+  margin-bottom:18px;
+  padding:14px 18px;
+  border:1px solid rgba(150,178,218,.16);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(14,30,52,.72), rgba(7,16,29,.54));
+  box-shadow:0 18px 46px rgba(0,0,0,.18);
+}
+html[data-theme="light"] .hs{
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(239,246,252,.7));
+}
+.hsn{
+  background:none;
+  -webkit-text-fill-color:currentColor;
+  color:var(--t1);
+}
+.hero-proof-strip{max-width:620px;display:none}
+.hero-proof{
+  min-height:78px;
+  background:rgba(255,255,255,.025);
+  box-shadow:none;
+}
+.hero-proof-value{font-size:21px}
+.hero-pulse{display:none}
+.ha{margin-top:10px}
+.btn{
+  border-radius:10px;
+  font-family:var(--sans);
+  font-weight:720;
+}
+.hero-evidence{
+  max-width:650px;
+  gap:18px;
+  padding:22px;
+  border:1px solid rgba(124,184,255,.26);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(10,22,38,.92), rgba(4,10,20,.86));
+  box-shadow:0 28px 82px rgba(0,0,0,.32),0 0 0 1px rgba(88,229,214,.08) inset;
+}
+html[data-theme="light"] .hero-evidence{
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(238,246,252,.9));
+  box-shadow:0 24px 70px rgba(29,42,70,.16),0 0 0 1px rgba(53,107,191,.08) inset;
+}
+.hero-evidence-head{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.hero-evidence-kicker{color:var(--grn)}
+.hero-evidence-head strong{
+  font-family:var(--sans);
+  font-size:clamp(24px,2.5vw,34px);
+  letter-spacing:-.025em;
+}
+.hero-evidence-head p{max-width:58ch;font-size:15px}
+.hero-signals{display:none}
+@media(max-width:1160px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{max-width:none;justify-self:stretch}
+}
+@media(min-width:980px) and (max-width:1160px){
+  .hi{
+    grid-template-columns:minmax(0,.92fr) minmax(340px,.78fr);
+    gap:24px;
+  }
+  .ht{
+    max-width:none;
+    padding-left:24px;
+  }
+  .hn{font-size:clamp(52px,6.2vw,70px)}
+  .hr{
+    max-width:31ch;
+    font-size:clamp(18px,2vw,22px);
+  }
+  .hero-summary{display:none}
+  .hs{padding-inline:14px}
+  .hero-evidence{
+    max-width:none;
+    padding:18px;
+    gap:14px;
+  }
+  .hero-evidence-head p{display:none}
+}
+@media(max-width:979px){
+  .hero-evidence{display:grid}
+}
+@media(max-width:720px){
+  .hero{padding:90px 20px 46px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-avatar{width:58px;height:58px}
+  .hn{font-size:clamp(48px,16vw,66px)}
+  .hr{max-width:none;font-size:20px;line-height:1.25}
+  .hero-summary,.hero-pulse,.hero-signals{display:none}
+  .hs{
+    padding:12px 0;
+    border-inline:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .hero-proof-strip{display:none}
+  .hero-evidence{display:none}
+  .nl{
+    max-width:132px;
+    overflow:hidden;
+    font-size:0;
+  }
+  .nl::before{
+    margin-right:8px;
+  }
+  .nl::after{
+    content:'matt';
+    color:var(--grn);
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:700;
+  }
+}
+
+@media(max-width:1500px){
+  .route-interior .nav-actions > .nav-context{
+    display:none;
+  }
+  .route-interior .nav-search,
+  .route-interior .ng{
+    width:40px;
+    min-width:40px;
+    padding:0;
+    justify-content:center;
+  }
+  .route-interior .nav-search-label{
+    display:none;
+  }
+  .route-interior .ng{
+    font-size:0;
+  }
+  .route-interior .ng svg{
+    width:16px;
+    height:16px;
+  }
+}
+
+.route-home .nk{gap:clamp(8px,.8vw,16px)}
+.route-home .nk a{padding-inline:10px}
+.hero{padding:86px 32px 42px}
+.hi{grid-template-columns:minmax(0,.86fr) minmax(560px,1.06fr);gap:clamp(44px,4.8vw,72px)}
+.ht{max-width:610px;padding-left:36px}
+.ht::before{top:48px;bottom:0}
+.hero-identity{order:1;display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
+.hero-avatar{flex:0 0 auto;width:82px;height:82px;margin:2px 0 0}
+.hn{margin:0;font-size:clamp(74px,6vw,110px);line-height:.88;letter-spacing:-.055em}
+.hn .a{display:block}
+.htag{order:2;margin:0 0 24px;font-size:14px}
+.hr{order:3;max-width:31ch;margin:0 0 12px;font-size:clamp(23px,2vw,29px);line-height:1.18}
+.hero-summary{order:4;max-width:55ch;margin:0 0 22px;color:var(--t2);font-size:16px;line-height:1.62}
+.hs{order:5;max-width:640px;margin:0 0 18px;padding:14px 18px}
+.ha{order:6;margin-top:0}
+.hero-proof-strip,.hero-pulse,.hero-signals{display:none}
+.hero-evidence{max-width:720px;padding:22px 26px 24px;gap:14px;justify-self:stretch}
+.hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.12em}
+.hero-evidence-kicker .dot,.hero-live-badge .dot{width:7px;height:7px;border-radius:999px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+.hero-evidence-head strong{font-size:clamp(26px,2.2vw,36px)}
+.hero-evidence-head p{max-width:60ch}
+.hero-live-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;color:var(--t2);background:rgba(255,255,255,.035);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:238px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:12px;background:linear-gradient(180deg, rgba(4,10,18,.94), rgba(5,11,20,.86));color:inherit;text-decoration:none;box-shadow:0 22px 50px rgba(0,0,0,.24)}
+.hero-showcase-brand{min-width:0;display:grid;place-items:center;align-content:center;gap:10px;padding:24px 18px;border-right:1px solid rgba(150,178,218,.16);text-align:center}
+.hero-app-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:14px;color:#f5f7ff;background:linear-gradient(135deg,#5f75ff,#9267ff 54%,#5ce5d7);box-shadow:0 18px 34px rgba(92,117,255,.28)}
+.hero-app-icon svg{width:30px;height:30px}
+.hero-showcase-brand strong{color:#7890ff;font-family:var(--mono);font-size:clamp(20px,1.8vw,28px);letter-spacing:.14em}
+.hero-showcase-brand small{max-width:20ch;color:var(--t2);font-size:13px;line-height:1.4}
+.hero-showcase-shot{position:relative;min-width:0;display:block;overflow:hidden}
+.hero-showcase-shot img{width:100%;height:100%;min-height:238px;display:block;object-fit:cover;object-position:top center;opacity:.92}
+.hero-tool-strip{position:absolute;left:14px;right:14px;top:14px;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
+.hero-tool-strip span{padding:4px 8px;border:1px solid rgba(150,178,218,.18);border-radius:5px;background:rgba(3,8,18,.7);color:var(--t2);font-family:var(--mono);font-size:9px;line-height:1}
+.hero-carousel-ui{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:12px;min-height:36px}
+.hero-carousel-arrow{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.04);color:var(--t1);font-size:25px;line-height:1}
+.hero-carousel-dots{display:flex;justify-content:center;gap:10px}
+.hero-carousel-dots span{width:9px;height:9px;border-radius:999px;background:rgba(150,178,218,.28)}
+.hero-carousel-dots .is-active{background:var(--grn);box-shadow:0 0 14px var(--grn-glow)}
+.hero-app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.hero-app-card{min-width:0;min-height:116px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:14px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.03);color:inherit;text-decoration:none}
+.hero-app-card-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#cdd8f7;background:rgba(124,184,255,.12)}
+.hero-app-card-icon svg{width:18px;height:18px}
+.hero-app-card strong{display:block;color:var(--t1);font-size:13px;line-height:1.2}
+.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:11px;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-app-card em{align-self:end;color:var(--grn);font-family:var(--mono);font-size:10px;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+.hero-app-more em{justify-self:end;color:var(--pur);font-size:18px;letter-spacing:0;text-transform:none}
+html[data-theme="light"] .hero-showcase{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(238,246,252,.9));box-shadow:0 18px 46px rgba(29,42,70,.13)}
+html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badge,html[data-theme="light"] .hero-carousel-arrow{background:rgba(255,255,255,.68)}
+@media(max-width:1320px){
+  .route-home .nk{gap:clamp(4px,.45vw,8px)}
+  .route-home .nk a{padding-inline:8px;font-size:13px}
+}
+@media(max-width:1180px){
+  .hi{grid-template-columns:minmax(0,.9fr) minmax(430px,1fr);gap:28px}
+  .hero-evidence{padding:18px}
+  .hero-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:979px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{display:grid;max-width:none}
+}
+@media(max-width:720px){
+  .hero{padding:88px 20px 44px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-identity{display:grid;gap:16px;margin-bottom:18px}
+  .hero-avatar{width:62px;height:62px}
+  .hn{font-size:clamp(50px,16vw,68px)}
+  .htag{justify-content:flex-start;width:auto}
+  .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
+  .hero-summary{display:block;margin:0 0 20px;font-size:15px;line-height:1.55}
+  .hs{margin:0 0 16px;border:1px solid rgba(150,178,218,.14);border-radius:12px;background:rgba(255,255,255,.025)}
+  .hero-evidence{display:none}
+}
+</style><link rel="preload" href="/_assets/global.DkERpmV2.css" as="style"><link rel="stylesheet" href="/_assets/global.DkERpmV2.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.DkERpmV2.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/AsteroidSimulator/#source","name":"AsteroidSimulator","description":"Asteroid and comet impact simulator with interactive 3D visualization","codeRepository":"https://github.com/SysAdminDoc/AsteroidSimulator","programmingLanguage":"TypeScript","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/AsteroidSimulator.png","keywords":"TypeScript, Web Apps","datePublished":"2026-06-26T16:02:01.000Z","dateModified":"2026-06-28T03:37:02.000Z","license":"https://spdx.org/licenses/MIT.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"Web Apps lane","item":"https://sysadmindoc.github.io/lang/web/"},{"@type":"ListItem","position":3,"name":"AsteroidSimulator","item":"https://sysadmindoc.github.io/projects/AsteroidSimulator/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: AsteroidSimulator"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">AsteroidSimulator</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="AsteroidSimulator" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Web Apps"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-06-28"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Web Apps" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/web/" class="page-inline-link">Web Apps lane</a> <span>/</span>  <span>AsteroidSimulator</span> </div> <div class="project-meta"> <span class="cdo web project-meta-dot"></span> <span class="project-category">WEB</span>   </div> <h1 class="project-title">AsteroidSimulator</h1> <p class="project-desc">Asteroid and comet impact simulator with interactive 3D visualization</p> <div class="project-tags"> <span class="ctg">TypeScript</span><span class="ctg">Web Apps</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/AsteroidSimulator" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+Open source on GitHub
+</a>  <button type="button" class="btn bg2 project-share-button" data-project-share data-share-title="AsteroidSimulator" data-share-text="Asteroid and comet impact simulator with interactive 3D visualization" data-share-url="https://sysadmindoc.github.io/projects/AsteroidSimulator/" aria-describedby="project-share-status"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
+Share project
+</button> <a href="/lang/web/" class="page-action-link">Open the Web Apps lane</a>  <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">Web Apps lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-06-28T03:37:02Z" data-rel="2026-06-28T03:37:02Z">Jun 28, 2026</time></div> <div class="project-fact-detail">Updated Jun 28, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">No tag yet</div> <div class="project-fact-detail">README is the clearest project overview right now.</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"> <span class="page-jump-link-label">README</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/AsteroidSimulator.png" alt="AsteroidSimulator card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
+Source at <a href="https://github.com/SysAdminDoc/AsteroidSimulator" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/AsteroidSimulator</a>.
+</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>2 min read</span> <span>424 words</span> <span>8 sections</span> </div> </div> </div> <details class="project-readme-toc" open> <summary>Contents</summary> <ol> <li class="project-readme-toc-depth-1"> <a href="#asteroidsimulator">AsteroidSimulator</a> </li><li class="project-readme-toc-depth-2"> <a href="#features">Features</a> </li><li class="project-readme-toc-depth-2"> <a href="#physics-references">Physics References</a> </li><li class="project-readme-toc-depth-2"> <a href="#getting-started">Getting Started</a> </li><li class="project-readme-toc-depth-2"> <a href="#usage">Usage</a> </li><li class="project-readme-toc-depth-2"> <a href="#stack">Stack</a> </li><li class="project-readme-toc-depth-2"> <a href="#testing">Testing</a> </li><li class="project-readme-toc-depth-2"> <a href="#license">License</a> </li> </ol> </details> <article class="project-readme"><p><a href="https://github.com/SysAdminDoc/AsteroidSimulator/releases" rel="noopener nofollow" target="_blank">![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)</a>
+<a href="https://github.com/SysAdminDoc/AsteroidSimulator/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">![License](https://img.shields.io/badge/license-MIT-green.svg)</a>
+<a href="https://github.com/SysAdminDoc/AsteroidSimulator/blob/HEAD/" rel="noopener nofollow" target="_blank">![Platform](https://img.shields.io/badge/platform-Web-lightgrey.svg)</a>
+<a href="https://github.com/SysAdminDoc/AsteroidSimulator/blob/HEAD/" rel="noopener nofollow" target="_blank">![Tests](https://img.shields.io/badge/tests-59%20passing-brightgreen.svg)</a></p>
+<h1 id="asteroidsimulator">AsteroidSimulator</h1>
+<p>Simulate asteroid and comet impacts on Earth with precise mathematical models. Visualize crater formation, blast waves, thermal radiation, seismic effects, ejecta, and tsunamis from ocean impacts on an interactive 3D globe.</p>
+<p>The first open-source implementation of the complete Collins et al. 2005 impact effects chain with interactive visualization.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>9 Effect Categories</strong> — Energy, atmospheric entry, crater, thermal radiation, seismic, airblast, ejecta, tsunami, global effects</li>
+<li><strong>Atmospheric Entry</strong> — 6 coupled ODEs (Hills &amp; Goda 1993 pancake model) with RK4 integration, fragmentation, ablation</li>
+<li><strong>Crater Formation</strong> — Holsapple pi-scaling with simple/complex transition, SVG cross-section diagram</li>
+<li><strong>Blast &amp; Thermal</strong> — Overpressure damage rings, thermal burn radii, fireball visualization</li>
+<li><strong>Seismic</strong> — Richter magnitude + Mercalli intensity at observer distance</li>
+<li><strong>Ocean Impacts</strong> — Ward &amp; Asphaug 2000 tsunami model with dispersive attenuation + Synolakis runup</li>
+<li><strong>NASA NEO Database</strong> — Search real asteroids (Apophis, Bennu, 2024 YR4) via JPL SBDB API with orbital velocity</li>
+<li><strong>Close Approach Table</strong> — Upcoming asteroid flybys from CNEOS with "what if it hit?" simulation</li>
+<li><strong>Atmospheric Absorption</strong> — Thermal radiation reduced by realistic atmospheric transmittance</li>
+<li><strong>Ground Reflection</strong> — Mach stem amplification for surface burst overpressure (1.0-1.8x)</li>
+<li><strong>Global Effects</strong> — Extinction-level impact consequences (impact winter, wildfires, acid rain)</li>
+<li><strong>Export</strong> — Download simulation as JSON or copy shareable link</li>
+<li><strong>Interactive 3D Globe</strong> — CesiumJS with damage ring overlays, trajectory arc, animated blast wave</li>
+<li><strong>6 Historical Presets</strong> — Chelyabinsk, Tunguska, Meteor Crater, Ries, Chesapeake Bay, Chicxulub</li>
+<li><strong>Observer Marker</strong> — Right-click to place observer, auto-computes great-circle distance</li>
+<li><strong>Auto Land/Ocean Detection</strong> — Click coordinates auto-set target type</li>
+<li><strong>Shareable URLs</strong> — All parameters encoded in URL hash</li>
+<li><strong>Responsive</strong> — Desktop three-panel layout, mobile stacked layout</li>
+</ul>
+<h2 id="physics-references">Physics References</h2>
+<p>Based on peer-reviewed impact science:</p>
+<ul>
+<li>Collins, Melosh &amp; Marcus (2005) — <em>Earth Impact Effects Program</em> (MAPS 40:817-840)</li>
+<li>Holsapple (1993) — Pi-group crater scaling laws</li>
+<li>Hills &amp; Goda (1993) — Atmospheric fragmentation model (AJ 105:1114-1144)</li>
+<li>Collins et al. (2017) — Airblast model validation (MAPS 52:1542-1560)</li>
+<li>Ward &amp; Asphaug (2000) — Impact tsunami (Icarus 145:64-78)</li>
+<li>Glasstone &amp; Dolan (1977) — Blast/thermal scaling (adapted)</li>
+<li>Synolakis (1987) — Tsunami coastal runup</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">git</span> <span class="shiki-c-cyan">clone</span> <span class="shiki-c-cyan">https://github.com/SysAdminDoc/AsteroidSimulator.git</span></span>
+<span class="line"><span class="shiki-c-blue">cd</span> <span class="shiki-c-cyan">AsteroidSimulator</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">install</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">dev</span></span></code></pre><h2 id="usage">Usage</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Left click globe</td>
+<td>Set impact location (ground zero)</td>
+</tr>
+<tr>
+<td>Right click globe</td>
+<td>Set observer location (computes distance)</td>
+</tr>
+<tr>
+<td>Preset buttons</td>
+<td>Load historical impact parameters</td>
+</tr>
+<tr>
+<td>NASA NEO search</td>
+<td>Look up real asteroid properties</td>
+</tr>
+<tr>
+<td>Sliders</td>
+<td>Adjust diameter, velocity, angle, distance</td>
+</tr>
+<tr>
+<td>URL hash</td>
+<td>Share or bookmark any simulation</td>
+</tr>
+</tbody></table>
+<h2 id="stack">Stack</h2>
+<ul>
+<li>React 19 + TypeScript + Vite</li>
+<li>CesiumJS (3D globe, no token required)</li>
+<li>Vitest (43 tests)</li>
+</ul>
+<h2 id="testing">Testing</h2>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">test</span>       <span class="shiki-c-muted"># run all tests</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">test:watch</span> <span class="shiki-c-muted"># watch mode</span></span>
+<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">build</span>      <span class="shiki-c-muted"># production build</span></span></code></pre><h2 id="license">License</h2>
+<p><a href="https://github.com/SysAdminDoc/AsteroidSimulator/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">MIT</a></p>
+</article> <p class="project-readme-hint project-readme-hint-spaced">
+Read on GitHub → <a href="https://github.com/SysAdminDoc/AsteroidSimulator" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/AsteroidSimulator</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/Openshop/" class="ca" aria-describedby="related-rank-Openshop" data-rank="55.1471" data-rank-position="30" data-rank-label="Rank 30: 3 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Openshop</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Free browser-based image editor - layers, smart effects, PSD import</span> <span class="ca-rank ca-rank-related" id="related-rank-Openshop" title="Rank 30: 3 stars, updated 6d ago, downloadable release"> Recommended #30: 3 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T13:59:26Z" data-rel-short="2026-07-01T13:59:26Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/UserScriptHunt/" class="ca" aria-describedby="related-rank-UserScriptHunt" data-rank="55.1471" data-rank-position="31" data-rank-label="Rank 31: 3 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">UserScriptHunt</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Unified search engine for userscripts</span> <span class="ca-rank ca-rank-related" id="related-rank-UserScriptHunt" title="Rank 31: 3 stars, updated 6d ago, downloadable release"> Recommended #31: 3 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T06:38:41Z" data-rel-short="2026-07-01T06:38:41Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/NukeMap/" class="ca" aria-describedby="related-rank-NukeMap" data-rank="47.1739" data-rank-position="65" data-rank-label="Rank 65: 1 stars, updated 6d ago, downloadable release"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">NukeMap</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets</span> <span class="ca-rank ca-rank-related" id="related-rank-NukeMap" title="Rank 65: 1 stars, updated 6d ago, downloadable release"> Recommended #65: 1 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T06:27:23Z" data-rel-short="2026-07-01T06:27:23Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span> <span class="lb2">LIVE</span> </span> </a><a href="/projects/Multistreamer/" class="ca" aria-describedby="related-rank-Multistreamer" data-rank="42.1739" data-rank-position="77" data-rank-label="Rank 77: 1 stars, updated 6d ago"> <span class="cdo web"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Multistreamer</span> <span class="ca-kind">Web Apps</span> </span> <span class="cds">Multi-video streaming viewer with chat</span> <span class="ca-rank ca-rank-related" id="related-rank-Multistreamer" title="Rank 77: 1 stars, updated 6d ago"> Recommended #77: 1 stars, updated 6d ago </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T04:02:04Z" data-rel-short="2026-07-01T04:02:04Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span> <span class="lb2">LIVE</span> </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>

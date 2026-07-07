@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WURepair — Matt Parker</title><meta name="description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-F8uHnKoGhq/Y5Zpr4VKRlHv3vDjzG3AOYBjk61AhbgQ=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v6.4.8"><meta property="og:title" content="WURepair — Matt Parker"><meta property="og:description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/WURepair/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/WURepair.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="WURepair social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/WURepair.png"><meta name="twitter:image:alt" content="WURepair social preview card"><meta name="twitter:title" content="WURepair — Matt Parker"><meta name="twitter:description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><link rel="canonical" href="https://sysadmindoc.github.io/projects/WURepair/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WURepair — Matt Parker</title><meta name="description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-dU00pYxna3ZZYH6iN/WzG7MEQXHSQsGxzWiFeWCN8h0=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="WURepair — Matt Parker"><meta property="og:description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/WURepair/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/WURepair.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="WURepair social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/WURepair.png"><meta name="twitter:image:alt" content="WURepair social preview card"><meta name="twitter:title" content="WURepair — Matt Parker"><meta name="twitter:description" content="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset"><link rel="canonical" href="https://sysadmindoc.github.io/projects/WURepair/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
 @layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;
 @layer site.critical {
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -88,23 +88,10 @@ html[data-theme="light"]{
     --border-strong:rgba(53,107,191,.42);
     --focus-ring:0 0 0 4px rgba(16,115,64,.28);
   }
-  #nav,
-  .ng,
-  .theme-toggle,
-  .nav-search,
-  .btn,
-  .hero-proof-link,
-  .hero-pulse .pulse-item,
-  .hero-stage,
-  .term{
+  #nav,.ng,.theme-toggle,.nav-search,.btn,.hero-pulse .pulse-item{
     border-color:var(--border-strong);
   }
-  .hr,
-  .hd,
-  .sd,
-  .hsl,
-  .pulse-copy,
-  .pulse-source{
+  .hr,.hero-summary,.sd,.hsl{
     color:var(--t2);
   }
 }
@@ -205,17 +192,20 @@ html[data-theme="light"] #nav{
   box-shadow:0 1px 8px var(--blue-glow);
 }
 .ni{
-  max-width:1280px;
+  width:100%;
+  max-width:none;
   height:64px;
-  margin:0 auto;
-  padding:0 28px;
-  display:flex;
+  margin:0;
+  padding:0 clamp(24px,4vw,64px);
+  display:grid;
+  grid-template-columns:minmax(170px,1fr) auto minmax(220px,1fr);
   align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  gap:clamp(16px,2vw,32px);
 }
 .nl{
+  grid-column:1;
   flex:0 0 auto;
+  justify-self:start;
   font-family:var(--mono);
   font-weight:600;
   font-size:15px;
@@ -225,9 +215,12 @@ html[data-theme="light"] #nav{
 }
 .nl span{color:var(--t3)}
 .nk{
+  grid-column:2;
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-self:center;
+  min-width:0;
+  gap:clamp(8px,.85vw,14px);
 }
 .nk a{
   min-height:36px;
@@ -242,9 +235,12 @@ html[data-theme="light"] #nav{
 }
 .nk a:hover,.nk a.active{color:var(--t1);background:rgba(255,255,255,.05)}
 .nav-actions{
+  grid-column:3;
   display:flex;
   align-items:center;
+  justify-self:end;
   gap:4px;
+  min-width:max-content;
   padding:4px;
   border:1px solid rgba(255,255,255,.07);
   border-radius:12px;
@@ -291,19 +287,6 @@ html[data-theme="light"] #nav{
 }
 .nav-search svg{width:16px;height:16px;flex-shrink:0}
 .nav-search-label{color:var(--t1)}
-.nav-search-kbd{
-  display:none;
-  align-items:center;
-  justify-content:center;
-  min-width:50px;
-  height:24px;
-  padding:0 8px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);
-  font-size:10px;
-  color:var(--t3);
-}
 html[data-theme="light"] .nav-actions{
   border-color:var(--border-soft);
   background:rgba(255,255,255,.52);
@@ -370,25 +353,17 @@ html[data-theme="light"] .nav-actions{
   width:100%;
   margin:0 auto;
   display:grid;
-  grid-template-columns:minmax(0,1.02fr) minmax(380px,.98fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
   gap:64px;
   align-items:start;
   position:relative;
   z-index:1;
 }
-.ht{max-width:640px;padding-bottom:0}
-.hero-brandline{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:22px;
-  font-family:var(--mono);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.18em;
-  color:var(--t3);
+.ht{
+  width:100%;
+  max-width:720px;
+  padding-bottom:0;
 }
-.hero-brandline span{color:var(--org)}
 .hero-avatar{
   width:56px;
   height:56px;
@@ -443,7 +418,7 @@ html[data-theme="light"] .nav-actions{
   font-size:clamp(16px,2vw,20px);
   line-height:1.65;
 }
-.hd{
+.hero-summary{
   max-width:58ch;
   margin:0 0 20px;
   color:var(--t2);
@@ -615,6 +590,44 @@ html[data-theme="light"] .nav-actions{
   font-size:13px;
   line-height:1.25;
 }
+.hero-evidence{
+  width:100%;
+  max-width:500px;
+  justify-self:end;
+  align-self:start;
+  display:grid;
+  gap:12px;
+}
+.hero-evidence-head{
+  padding:16px 18px;
+  border:1px solid var(--border-soft);
+  border-left:3px solid var(--grn);
+  border-radius:10px;
+  background:linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.025));
+  box-shadow:0 18px 36px rgba(0,0,0,.14);
+}
+.hero-evidence-kicker{
+  display:block;
+  margin-bottom:6px;
+  color:var(--t3);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.hero-evidence-head strong{
+  display:block;
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:18px;
+  line-height:1.2;
+}
+.hero-evidence-head p{
+  margin:8px 0 0;
+  color:var(--t2);
+  font-size:13px;
+  line-height:1.45;
+}
 .sr-only{
   position:absolute;
   width:1px;
@@ -626,211 +639,36 @@ html[data-theme="light"] .nav-actions{
   white-space:nowrap;
   border:0;
 }
-.hero-stage{
-  position:relative;
-  overflow:hidden;
-  padding:22px;
-  border:1px solid var(--border-soft);
-  border-radius:var(--radius-xl);
-  background:var(--surface-strong);
-  box-shadow:var(--shadow-strong);
-}
-.hero-stage::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at top right, rgba(124,184,255,.18) 0%, transparent 34%),
-    radial-gradient(circle at bottom left, rgba(198,156,255,.12) 0%, transparent 36%);
-}
-.hero-stage::after{
-  content:'';
-  position:absolute;
-  inset:1px;
-  border:1px solid rgba(255,255,255,.04);
-  border-radius:12px;
-  pointer-events:none;
-}
-.hero-stage-head,.hero-terminal-meta,.hero-flightpath{
-  position:relative;
-  z-index:1;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-.hero-stage-head{margin-bottom:18px}
-.hero-stage-kicker,.hero-terminal-kicker,.hero-flightpath-label{
-  font-family:var(--mono);
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.16em;
-}
-.hero-stage-kicker{margin-bottom:10px;color:var(--org)}
-.hero-stage-title{
-  max-width:12ch;
-  margin:0;
-  font-size:clamp(24px,3vw,38px);
-  line-height:1.02;
-  letter-spacing:-.05em;
-}
-.hero-stage-link,.hero-flightpath-items a{
-  border:1px solid var(--border-soft);
-  border-radius:10px;
-  background:rgba(255,255,255,.03);
-  color:var(--t2);
-  font-family:var(--mono);
-  font-size:12px;
-  text-decoration:none;
-}
-.hero-stage-link{flex-shrink:0;padding:10px 14px}
-.hero-reel{
-  position:relative;
-  z-index:1;
-  display:grid;
-  gap:10px;
-  margin-bottom:16px;
-}
-.hero-reel-item{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  gap:16px;
-  align-items:center;
-  padding:13px 16px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;
-  background:rgba(255,255,255,.025);
-  color:inherit;
-  text-decoration:none;
-}
-.hero-reel-index,.hero-reel-meta,.hero-reel-lang{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--t3);
-}
-.hero-reel-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
-.hero-reel-name{color:var(--t1);font-size:15px;font-weight:600}
-.hero-reel-meta{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  text-transform:uppercase;
-  letter-spacing:var(--ls-caps);
-}
-.hero-reel-lang{
-  padding:6px 10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.05);
-}
-.hero-reel-lang.ps{color:var(--blue);background:var(--blued)}
-.hero-reel-lang.py{color:var(--grn);background:var(--grnd)}
-.hero-reel-lang.ext{color:var(--pur);background:var(--purd)}
-.hero-reel-lang.kt{color:var(--teal);background:var(--teald)}
-.hero-terminal-shell{
-  position:relative;
-  z-index:1;
-  padding:18px;
-  border:1px solid rgba(255,255,255,.05);
-  border-radius:12px;
-  background:rgba(5,10,18,.38);
-}
-.hero-terminal-meta{margin-bottom:14px}
-.hero-terminal-copy{display:flex;flex-direction:column;gap:4px}
-.hero-terminal-kicker{color:var(--t3)}
-.hero-terminal-note{color:var(--t2);font-size:13px}
-.hero-terminal-badge{
-  flex-shrink:0;
-  padding:8px 12px;
-  border-radius:10px;
-  background:var(--blued);
-  color:var(--blue);
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-}
-.term{
-  overflow:hidden;
-  border:1px solid rgba(124,184,255,.16);
-  border-radius:12px;
-  background:rgba(5,10,18,.72);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.tb{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:14px 18px;
-  border-bottom:1px solid var(--glass-border);
-  background:rgba(255,255,255,.03);
-}
-.td{width:10px;height:10px;border-radius:50%}
-.td.r{background:#f87171}.td.y{background:#facc15}.td.g{background:#4ade80}
-.tt{
-  flex:1;
-  text-align:center;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:12px;
-}
-.tbd{
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-  padding:20px;
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.8;
-}
-.term-input-line{
-  display:flex;
-  align-items:center;
-  min-height:32px;
-  font-family:var(--mono);
-  font-size:13px;
-}
-.term-input{
-  min-height:32px;
-  padding:4px 0;
-  background:none;
-  border:0;
-  color:var(--t1);
-  font:inherit;
-}
-.term-hint{
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:11px;
-  text-align:center;
-  padding:8px;
-}
-.tp,.ts{color:var(--grn)}.tpa{color:var(--blue)}.tc{color:var(--t1)}.tcm{color:var(--t3)}.tk{color:var(--pur)}.tv{color:var(--org)}
-.hero-flightpath{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.hero-flightpath-label{flex:0 0 auto;padding-top:6px;color:var(--t3)}
-.hero-flightpath-items{display:flex;flex-wrap:wrap;gap:10px}
-.hero-flightpath-items a{padding:7px 10px;font-size:11px}
 section{position:relative;z-index:1}
 @media(max-width:1100px){
   .hi{grid-template-columns:1fr;gap:36px;align-items:start}
-  .ht{max-width:none}
-  .hero-stage{max-width:720px}
+  .ht{display:block;max-width:none}
+  .hero-signals{
+    width:auto;
+    max-width:680px;
+    margin:18px 0 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 12px;
+  }
 }
 @media(max-width:900px){
   .nk{display:none}
-  .nav-search-kbd{display:none}
 }
 @media(max-width:640px){
-  .ni{height:64px;padding:0 16px;gap:10px}
+  .ni{
+    height:64px;
+    padding:0 16px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+  .nav-actions{grid-column:2}
+  .nk{grid-column:1 / -1}
   .nl{min-width:0;font-size:14px;white-space:nowrap}
   .nav-actions{gap:8px;flex-shrink:0}
   .route-home .ng{width:40px;min-width:40px;padding:0;justify-content:center;font-size:0}
   .nav-search{width:40px;height:40px;padding:0;justify-content:center}
-  .nav-search-label,.nav-search-kbd{display:none}
+  .nav-search-label{display:none}
   .mt{display:block}
   .nk.open{
     display:flex;
@@ -849,7 +687,7 @@ section{position:relative;z-index:1}
   .hero{padding:96px 16px 56px}
   .hn{font-size:clamp(44px,16vw,68px)}
   .hr{font-size:17px}
-  .hd{font-size:16px}
+  .hero-summary{font-size:16px}
   .hero-proof-strip{grid-template-columns:1fr;gap:8px}
   .hero-proof{padding:11px 12px}
   .hero-proof-value{font-size:20px}
@@ -875,22 +713,13 @@ section{position:relative;z-index:1}
     text-align:right;
   }
   .ha .btn{width:100%;justify-content:center}
-  .hero-stage{padding:20px;border-radius:12px}
-  .hero-stage-head,.hero-terminal-meta,.hero-flightpath{flex-direction:column}
-  .hero-reel-item{grid-template-columns:auto 1fr}
-  .hero-reel-lang{grid-column:2;justify-self:start}
-  .hero-flightpath-items{width:100%}
-  .hero-flightpath-items a{width:calc(50% - 5px);text-align:center}
 }
 @media(max-width:460px){
   .hs{grid-template-columns:1fr}
   .hs-item{padding-right:0}
   .hs-item:not(:last-child){border-right:0;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
-  .hero-flightpath-items a{width:100%}
 }
-.hero::before,
-.hero::after,
-.hero-stage::before{
+.hero::before,.hero::after{
   display:none!important;
 }
 .hero{
@@ -904,14 +733,12 @@ section{position:relative;z-index:1}
 .hi{
   gap:34px;
   align-items:start;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.85fr);
 }
 .ht{
-  max-width:600px;
+  max-width:720px;
   padding-bottom:0;
-}
-.hero-brandline{
-  margin-bottom:14px;
-  letter-spacing:.14em;
+  display:block;
 }
 .hero-avatar{
   width:48px;
@@ -944,7 +771,7 @@ section{position:relative;z-index:1}
   font-size:clamp(15px,1.4vw,17px);
   line-height:1.45;
 }
-.hd{
+.hero-summary{
   max-width:56ch;
   margin-bottom:14px;
   font-size:15px;
@@ -966,63 +793,23 @@ section{position:relative;z-index:1}
   padding:6px 10px;
 }
 .hero-signals{
+  width:auto;
+  max-width:680px;
+  display:flex;
+  flex-wrap:wrap;
   gap:8px;
-  margin-top:12px;
+  margin:12px 0 0;
 }
 .hero-signal{
   padding:10px;
 }
-.hero-stage{
-  padding:18px;
-}
-.hero-stage-head{
-  margin-bottom:12px;
-}
-.hero-stage-title{
-  max-width:16ch;
-  font-size:clamp(20px,2.1vw,28px);
-  letter-spacing:-.03em;
-}
-.hero-stage-link{
-  padding:8px 10px;
-}
-.hero-reel{
-  gap:8px;
-  margin-bottom:12px;
-}
-.hero-reel-item{
-  gap:12px;
-  padding:10px 12px;
-}
-.hero-terminal-shell{
-  padding:12px;
-}
-.hero-terminal-meta{
-  margin-bottom:10px;
-}
-.hero-terminal-note{
-  font-size:12px;
-}
-.hero-terminal-badge{
-  padding:6px 9px;
-}
-.hero-stage .tbd{
-  height:188px;
-  min-height:188px;
-  padding:14px;
-  font-size:12px;
-  line-height:1.65;
-}
-.hero-flightpath{
-  margin-top:10px;
-  padding-top:10px;
-}
-.hero-flightpath-items{
-  gap:8px;
-}
-.hero-flightpath-items a{
-  padding:6px 8px;
-  font-size:10px;
+@media(max-width:979px){
+  .hi{
+    grid-template-columns:1fr;
+  }
+  .hero-evidence{
+    display:none;
+  }
 }
 @media(min-width:1101px) and (max-height:820px){
   .hero{
@@ -1038,37 +825,11 @@ section{position:relative;z-index:1}
   .hero-proof{
     min-height:74px;
   }
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-flightpath{
+  .hero-summary,.hero-pulse,.hero-signals,.hero-evidence-head p{
     display:none;
   }
-  .hero-stage{
-    padding:14px;
-  }
-  .hero-stage-head{
-    margin-bottom:8px;
-  }
-  .hero-stage-title{
-    font-size:24px;
-  }
-  .hero-reel{
-    gap:6px;
-    margin-bottom:8px;
-  }
-  .hero-reel-item{
-    padding:8px 10px;
-  }
-  .hero-terminal-shell{
-    padding:10px;
-  }
-  .hero-terminal-meta{
-    display:none;
-  }
-  .hero-stage .tbd{
-    height:112px;
-    min-height:112px;
+  .hero-evidence{
+    gap:10px;
   }
 }
 @media(max-width:1320px){
@@ -1116,12 +877,7 @@ section{position:relative;z-index:1}
   .hi{
     gap:24px;
   }
-  .hero-brandline{
-    margin-bottom:16px;
-    font-size:11px;
-    letter-spacing:.14em;
-  }
-  .hero-avatar{
+    .hero-avatar{
     width:52px;
     height:52px;
   }
@@ -1148,11 +904,7 @@ section{position:relative;z-index:1}
   .hero-proof-value{
     font-size:17px;
   }
-  .hero-proof-copy,
-  .hd,
-  .hero-pulse,
-  .hero-signals,
-  .hero-stage{
+  .hero-proof-copy,.hero-summary,.hero-pulse,.hero-signals{
     display:none;
   }
   .hr{
@@ -1198,19 +950,1206 @@ section{position:relative;z-index:1}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .hero-grid,.hero-stage::before,.hero-stage::after{animation:none!important}
+  .hero-grid{animation:none!important}
 }
 @media(forced-colors:active){
   :focus-visible{outline:2px solid Highlight;outline-offset:3px}
-  body::before,.hero-stage::before,.hero-stage::after{display:none!important}
+  body::before{display:none!important}
   .btn,button,.theme-toggle,input,select,textarea{border:1px solid ButtonText}
 }
 }
-</style><link rel="preload" href="/_assets/global.BU5iFfFQ.css" as="style"><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.BU5iFfFQ.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.CsB98N7C.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script>  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/WURepair/#source","name":"WURepair","description":"Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset","codeRepository":"https://github.com/SysAdminDoc/WURepair","programmingLanguage":"PowerShell","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/WURepair.png","keywords":"PowerShell","dateModified":"2026-06-15T23:19:17.000Z"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"PowerShell lane","item":"https://sysadmindoc.github.io/lang/powershell/"},{"@type":"ListItem","position":3,"name":"WURepair","item":"https://sysadmindoc.github.io/projects/WURepair/"}]}]}</script> <a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: WURepair"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">WURepair</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="WURepair" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:PowerShell"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-06-15"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:PowerShell" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/powershell/" class="page-inline-link">PowerShell lane</a> <span>/</span>  <span>WURepair</span> </div> <div class="project-meta"> <span class="cdo ps project-meta-dot"></span> <span class="project-category">PS</span>   </div> <h1 class="project-title">WURepair</h1> <p class="project-desc">Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset</p> <div class="project-tags"> <span class="ctg">PowerShell</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/WURepair" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+
+/* First-viewport visual refresh */
+:root{
+  --bg:#030812;
+  --bg2:#08111e;
+  --bg3:#0d1a2c;
+  --glass:rgba(9,18,31,.68);
+  --glass-hover:rgba(124,184,255,.095);
+  --glass-border:rgba(150,178,218,.16);
+  --border-soft:rgba(150,178,218,.13);
+  --border-strong:rgba(124,184,255,.3);
+  --surface-1:linear-gradient(180deg, rgba(15,29,48,.88), rgba(7,15,28,.76));
+  --surface-2:linear-gradient(180deg, rgba(17,34,55,.7), rgba(8,17,31,.58));
+  --surface-strong:linear-gradient(150deg, rgba(13,29,50,.96), rgba(5,12,24,.9));
+  --shadow-soft:0 22px 54px rgba(0,0,0,.24);
+  --shadow-strong:0 34px 86px rgba(0,0,0,.42);
+}
+html[data-theme="light"]{
+  --bg:#f7f9fc;
+  --bg2:#eef4fb;
+  --bg3:#e3edf8;
+  --glass:rgba(255,255,255,.82);
+  --glass-hover:rgba(53,107,191,.08);
+  --glass-border:rgba(47,68,104,.15);
+  --border-soft:rgba(47,68,104,.14);
+  --border-strong:rgba(53,107,191,.28);
+  --surface-1:linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,248,253,.82));
+  --surface-2:linear-gradient(180deg, rgba(255,255,255,.82), rgba(238,244,251,.7));
+  --surface-strong:linear-gradient(150deg, rgba(255,255,255,.98), rgba(237,245,252,.88));
+  --shadow-soft:0 20px 48px rgba(29,42,70,.12);
+  --shadow-strong:0 30px 72px rgba(29,42,70,.18);
+}
+body{
+  background:
+    radial-gradient(circle at 72% 8%, rgba(124,184,255,.15), transparent 30%),
+    radial-gradient(circle at 20% 28%, rgba(88,229,214,.09), transparent 26%),
+    linear-gradient(180deg, #030812 0%, #071120 44%, #03101a 100%);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(circle at 78% 10%, rgba(53,107,191,.12), transparent 30%),
+    radial-gradient(circle at 16% 30%, rgba(31,157,143,.08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf4fb 100%);
+}
+body::before{
+  opacity:.1;
+  background-size:72px 72px;
+}
+#nav{
+  background:rgba(3,8,18,.76);
+  border-bottom-color:rgba(150,178,218,.12);
+  box-shadow:0 18px 54px rgba(0,0,0,.24);
+}
+html[data-theme="light"] #nav{
+  background:rgba(247,249,252,.82);
+  box-shadow:0 12px 34px rgba(29,42,70,.1);
+}
+.ni{
+  height:68px;
+}
+.nl{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
+  text-shadow:none;
+}
+.nl::before{
+  content:'>_';
+  display:inline-grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(74,222,128,.24);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(74,222,128,.045));
+  box-shadow:0 14px 30px rgba(74,222,128,.08);
+  color:var(--grn);
+  font-size:15px;
+  margin-right:12px;
+}
+.nk{gap:10px}
+.nk a{
+  border-radius:8px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:650;
+  letter-spacing:.01em;
+}
+.nk a:hover,.nk a.active{background:rgba(124,184,255,.09)}
+.nav-actions{
+  border-radius:10px;
+  background:rgba(255,255,255,.035);
+}
+.hero{padding:82px 32px 34px}
+.hero-grid{
+  opacity:.12;
+}
+.hi{
+  max-width:1380px;
+  grid-template-columns:minmax(0,.95fr) minmax(430px,1fr);
+  gap:clamp(42px,5vw,78px);
+  align-items:start;
+}
+.ht{
+  position:relative;
+  max-width:690px;
+  display:flex;
+  flex-direction:column;
+  padding-left:34px;
+}
+.ht::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:62px;
+  bottom:10px;
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(180deg,var(--grn),var(--blue),var(--pur));
+  box-shadow:0 0 22px rgba(88,229,214,.22);
+}
+.hero-avatar{order:2;margin-bottom:18px}
+.htag{order:3}
+.hn{order:4}
+.hr{order:5}
+.hero-summary{order:6}
+.hs{order:7}
+.hero-proof-strip{order:8}
+.hero-pulse{order:9}
+.ha{order:10}
+.hero-signals{order:11}
+.hero-avatar{
+  width:66px;
+  height:66px;
+  border-color:rgba(88,229,214,.46);
+  box-shadow:0 0 0 5px rgba(88,229,214,.08),0 20px 42px rgba(0,0,0,.22);
+}
+.htag{
+  align-self:flex-start;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--grn);
+}
+.hn{
+  margin-bottom:18px;
+  font-size:clamp(62px,6.7vw,104px);
+  line-height:.9;
+  letter-spacing:-.065em;
+}
+.hn .a{
+  background:linear-gradient(135deg,#62e6d8 0%,#79c4ff 44%,#a98bff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+.hr{
+  max-width:30ch;
+  margin-bottom:18px;
+  font-family:var(--sans);
+  font-size:clamp(21px,2vw,28px);
+  font-weight:720;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+.hero-summary{
+  max-width:64ch;
+  margin-bottom:22px;
+  color:var(--t2);
+  font-size:16px;
+  line-height:1.68;
+}
+.hs{
+  max-width:620px;
+  margin-bottom:18px;
+  padding:14px 18px;
+  border:1px solid rgba(150,178,218,.16);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(14,30,52,.72), rgba(7,16,29,.54));
+  box-shadow:0 18px 46px rgba(0,0,0,.18);
+}
+html[data-theme="light"] .hs{
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(239,246,252,.7));
+}
+.hsn{
+  background:none;
+  -webkit-text-fill-color:currentColor;
+  color:var(--t1);
+}
+.hero-proof-strip{max-width:620px;display:none}
+.hero-proof{
+  min-height:78px;
+  background:rgba(255,255,255,.025);
+  box-shadow:none;
+}
+.hero-proof-value{font-size:21px}
+.hero-pulse{display:none}
+.ha{margin-top:10px}
+.btn{
+  border-radius:10px;
+  font-family:var(--sans);
+  font-weight:720;
+}
+.hero-evidence{
+  max-width:650px;
+  gap:18px;
+  padding:22px;
+  border:1px solid rgba(124,184,255,.26);
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(10,22,38,.92), rgba(4,10,20,.86));
+  box-shadow:0 28px 82px rgba(0,0,0,.32),0 0 0 1px rgba(88,229,214,.08) inset;
+}
+html[data-theme="light"] .hero-evidence{
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(238,246,252,.9));
+  box-shadow:0 24px 70px rgba(29,42,70,.16),0 0 0 1px rgba(53,107,191,.08) inset;
+}
+.hero-evidence-head{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.hero-evidence-kicker{color:var(--grn)}
+.hero-evidence-head strong{
+  font-family:var(--sans);
+  font-size:clamp(24px,2.5vw,34px);
+  letter-spacing:-.025em;
+}
+.hero-evidence-head p{max-width:58ch;font-size:15px}
+.hero-signals{display:none}
+@media(max-width:1160px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{max-width:none;justify-self:stretch}
+}
+@media(min-width:980px) and (max-width:1160px){
+  .hi{
+    grid-template-columns:minmax(0,.92fr) minmax(340px,.78fr);
+    gap:24px;
+  }
+  .ht{
+    max-width:none;
+    padding-left:24px;
+  }
+  .hn{font-size:clamp(52px,6.2vw,70px)}
+  .hr{
+    max-width:31ch;
+    font-size:clamp(18px,2vw,22px);
+  }
+  .hero-summary{display:none}
+  .hs{padding-inline:14px}
+  .hero-evidence{
+    max-width:none;
+    padding:18px;
+    gap:14px;
+  }
+  .hero-evidence-head p{display:none}
+}
+@media(max-width:979px){
+  .hero-evidence{display:grid}
+}
+@media(max-width:720px){
+  .hero{padding:90px 20px 46px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-avatar{width:58px;height:58px}
+  .hn{font-size:clamp(48px,16vw,66px)}
+  .hr{max-width:none;font-size:20px;line-height:1.25}
+  .hero-summary,.hero-pulse,.hero-signals{display:none}
+  .hs{
+    padding:12px 0;
+    border-inline:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .hero-proof-strip{display:none}
+  .hero-evidence{display:none}
+  .nl{
+    max-width:132px;
+    overflow:hidden;
+    font-size:0;
+  }
+  .nl::before{
+    margin-right:8px;
+  }
+  .nl::after{
+    content:'matt';
+    color:var(--grn);
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:700;
+  }
+}
+
+@media(max-width:1500px){
+  .route-interior .nav-actions > .nav-context{
+    display:none;
+  }
+  .route-interior .nav-search,
+  .route-interior .ng{
+    width:40px;
+    min-width:40px;
+    padding:0;
+    justify-content:center;
+  }
+  .route-interior .nav-search-label{
+    display:none;
+  }
+  .route-interior .ng{
+    font-size:0;
+  }
+  .route-interior .ng svg{
+    width:16px;
+    height:16px;
+  }
+}
+
+.route-home .nk{gap:clamp(8px,.8vw,16px)}
+.route-home .nk a{padding-inline:10px}
+.hero{padding:86px 32px 42px}
+.hi{grid-template-columns:minmax(0,.86fr) minmax(560px,1.06fr);gap:clamp(44px,4.8vw,72px)}
+.ht{max-width:610px;padding-left:36px}
+.ht::before{top:48px;bottom:0}
+.hero-identity{order:1;display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
+.hero-avatar{flex:0 0 auto;width:82px;height:82px;margin:2px 0 0}
+.hn{margin:0;font-size:clamp(74px,6vw,110px);line-height:.88;letter-spacing:-.055em}
+.hn .a{display:block}
+.htag{order:2;margin:0 0 24px;font-size:14px}
+.hr{order:3;max-width:31ch;margin:0 0 12px;font-size:clamp(23px,2vw,29px);line-height:1.18}
+.hero-summary{order:4;max-width:55ch;margin:0 0 22px;color:var(--t2);font-size:16px;line-height:1.62}
+.hs{order:5;max-width:640px;margin:0 0 18px;padding:14px 18px}
+.ha{order:6;margin-top:0}
+.hero-proof-strip,.hero-pulse,.hero-signals{display:none}
+.hero-evidence{max-width:720px;padding:22px 26px 24px;gap:14px;justify-self:stretch}
+.hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.12em}
+.hero-evidence-kicker .dot,.hero-live-badge .dot{width:7px;height:7px;border-radius:999px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+.hero-evidence-head strong{font-size:clamp(26px,2.2vw,36px)}
+.hero-evidence-head p{max-width:60ch}
+.hero-live-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;color:var(--t2);background:rgba(255,255,255,.035);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:238px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:12px;background:linear-gradient(180deg, rgba(4,10,18,.94), rgba(5,11,20,.86));color:inherit;text-decoration:none;box-shadow:0 22px 50px rgba(0,0,0,.24)}
+.hero-showcase-brand{min-width:0;display:grid;place-items:center;align-content:center;gap:10px;padding:24px 18px;border-right:1px solid rgba(150,178,218,.16);text-align:center}
+.hero-app-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:14px;color:#f5f7ff;background:linear-gradient(135deg,#5f75ff,#9267ff 54%,#5ce5d7);box-shadow:0 18px 34px rgba(92,117,255,.28)}
+.hero-app-icon svg{width:30px;height:30px}
+.hero-showcase-brand strong{color:#7890ff;font-family:var(--mono);font-size:clamp(20px,1.8vw,28px);letter-spacing:.14em}
+.hero-showcase-brand small{max-width:20ch;color:var(--t2);font-size:13px;line-height:1.4}
+.hero-showcase-shot{position:relative;min-width:0;display:block;overflow:hidden}
+.hero-showcase-shot img{width:100%;height:100%;min-height:238px;display:block;object-fit:cover;object-position:top center;opacity:.92}
+.hero-tool-strip{position:absolute;left:14px;right:14px;top:14px;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
+.hero-tool-strip span{padding:4px 8px;border:1px solid rgba(150,178,218,.18);border-radius:5px;background:rgba(3,8,18,.7);color:var(--t2);font-family:var(--mono);font-size:9px;line-height:1}
+.hero-carousel-ui{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:12px;min-height:36px}
+.hero-carousel-arrow{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.04);color:var(--t1);font-size:25px;line-height:1}
+.hero-carousel-dots{display:flex;justify-content:center;gap:10px}
+.hero-carousel-dots span{width:9px;height:9px;border-radius:999px;background:rgba(150,178,218,.28)}
+.hero-carousel-dots .is-active{background:var(--grn);box-shadow:0 0 14px var(--grn-glow)}
+.hero-app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.hero-app-card{min-width:0;min-height:116px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:14px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.03);color:inherit;text-decoration:none}
+.hero-app-card-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#cdd8f7;background:rgba(124,184,255,.12)}
+.hero-app-card-icon svg{width:18px;height:18px}
+.hero-app-card strong{display:block;color:var(--t1);font-size:13px;line-height:1.2}
+.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:11px;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-app-card em{align-self:end;color:var(--grn);font-family:var(--mono);font-size:10px;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+.hero-app-more em{justify-self:end;color:var(--pur);font-size:18px;letter-spacing:0;text-transform:none}
+html[data-theme="light"] .hero-showcase{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(238,246,252,.9));box-shadow:0 18px 46px rgba(29,42,70,.13)}
+html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badge,html[data-theme="light"] .hero-carousel-arrow{background:rgba(255,255,255,.68)}
+@media(max-width:1320px){
+  .route-home .nk{gap:clamp(4px,.45vw,8px)}
+  .route-home .nk a{padding-inline:8px;font-size:13px}
+}
+@media(max-width:1180px){
+  .hi{grid-template-columns:minmax(0,.9fr) minmax(430px,1fr);gap:28px}
+  .hero-evidence{padding:18px}
+  .hero-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:979px){
+  .hi{grid-template-columns:1fr}
+  .hero-evidence{display:grid;max-width:none}
+}
+@media(max-width:720px){
+  .hero{padding:88px 20px 44px}
+  .ht{padding-left:0}
+  .ht::before{display:none}
+  .hero-identity{display:grid;gap:16px;margin-bottom:18px}
+  .hero-avatar{width:62px;height:62px}
+  .hn{font-size:clamp(50px,16vw,68px)}
+  .htag{justify-content:flex-start;width:auto}
+  .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
+  .hero-summary{display:block;margin:0 0 20px;font-size:15px;line-height:1.55}
+  .hs{margin:0 0 16px;border:1px solid rgba(150,178,218,.14);border-radius:12px;background:rgba(255,255,255,.025)}
+  .hero-evidence{display:none}
+}
+</style><link rel="preload" href="/_assets/global.DkERpmV2.css" as="style"><link rel="stylesheet" href="/_assets/global.DkERpmV2.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.DkERpmV2.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DdNNXZYx.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Open-source projects spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Medical Imaging","DICOM","PACS","Active Directory","Hyper-V","Cisco Networking","HIPAA"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/WURepair/#source","name":"WURepair","description":"Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset","codeRepository":"https://github.com/SysAdminDoc/WURepair","programmingLanguage":"PowerShell","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/WURepair.png","keywords":"PowerShell","datePublished":"2026-03-18T04:58:53.000Z","dateModified":"2026-07-01T13:52:03.000Z","license":"https://spdx.org/licenses/MIT.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"PowerShell lane","item":"https://sysadmindoc.github.io/lang/powershell/"},{"@type":"ListItem","position":3,"name":"WURepair","item":"https://sysadmindoc.github.io/projects/WURepair/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: WURepair"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">WURepair</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Toggle navigation menu" aria-controls="navLinks" aria-expanded="false"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="WURepair" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:PowerShell"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-07-01"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:PowerShell" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/powershell/" class="page-inline-link">PowerShell lane</a> <span>/</span>  <span>WURepair</span> </div> <div class="project-meta"> <span class="cdo ps project-meta-dot"></span> <span class="project-category">PS</span>   </div> <h1 class="project-title">WURepair</h1> <p class="project-desc">Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset</p> <div class="project-tags"> <span class="ctg">PowerShell</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/WURepair" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
 Open source on GitHub
 </a>  <button type="button" class="btn bg2 project-share-button" data-project-share data-share-title="WURepair" data-share-text="Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset" data-share-url="https://sysadmindoc.github.io/projects/WURepair/" aria-describedby="project-share-status"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
 Share project
-</button> <a href="/lang/powershell/" class="page-action-link">Open the PowerShell lane</a>  <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">PowerShell lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-06-15T23:19:17.0000000Z" data-rel="2026-06-15T23:19:17.0000000Z">Jun 15, 2026</time></div> <div class="project-fact-detail">Updated Jun 15, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">No tag yet</div> <div class="project-fact-detail">README is the clearest project overview right now.</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav><span class="page-jump-label">On This Page</span><div class="page-jump-links"><a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"><span class="page-jump-link-label">Overview</span><span class="page-jump-badge">PROJECT</span></a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"><span class="page-jump-link-label">Preview</span><span class="page-jump-badge">VISUAL</span></a><a href="#project-notes" class="page-jump-link" title="Fallback notes when a cached README is not available yet." data-page-jump-link="project-notes"><span class="page-jump-link-label">Repository Notes</span><span class="page-jump-badge">DOCS</span></a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"><span class="page-jump-link-label">More from This Lane</span><span class="page-jump-badge">RELATED</span></a></div></nav><script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/WURepair.png" alt="WURepair card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
+</button> <a href="/lang/powershell/" class="page-action-link">Open the PowerShell lane</a> <span class="project-stars"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> 1</span> <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">PowerShell lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-07-01T13:52:03Z" data-rel="2026-07-01T13:52:03Z">Jul 1, 2026</time></div> <div class="project-fact-detail">Updated Jul 1, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">v2.17.0</div> <div class="project-fact-detail">Published Jun 28, 2026</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"> <span class="page-jump-link-label">README</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-releases" class="page-jump-link" title="Tagged release history pulled from GitHub for this project." data-page-jump-link="project-releases"> <span class="page-jump-link-label">Recent Releases</span> <span class="page-jump-badge">RELEASES</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/WURepair.png" alt="WURepair card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
 Source at <a href="https://github.com/SysAdminDoc/WURepair" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/WURepair</a>.
-</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>    <div class="si"> <div class="project-readme-wrap project-panel" id="project-notes"> <div class="project-section-head"> <div> <h2 class="project-section-title">Repository Notes</h2> <p class="project-section-copy">GitHub metadata is available, but a readable cached README has not been pulled into the site yet.</p> </div> </div> <div class="project-empty page-empty"> <strong>No cached README yet.</strong> Use the GitHub source and the release history below for the clearest current view of this project.
-</div> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/win11-nvme-driver-patcher/" class="ca" aria-describedby="related-rank-win11-nvme-driver-patcher" data-rank="85.0000" data-rank-position="2" data-rank-label="Rank 2: 41 stars, updated today, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">win11-nvme-driver-patcher</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">GUI to enable Windows Server 2025 NVMe driver on Win11</span> <span class="ca-rank ca-rank-related" id="related-rank-win11-nvme-driver-patcher" title="Rank 2: 41 stars, updated today, downloadable release"> Recommended #2: 41 stars, updated today, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-05-26T19:01:39Z" data-rel-short="2026-05-26T19:01:39Z"> May 26, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>41</span> </span>  </span> </a><a href="/projects/Network_Security_Auditor/" class="ca" aria-describedby="related-rank-Network_Security_Auditor" data-rank="63.4280" data-rank-position="8" data-rank-label="Rank 8: 6 stars, updated today, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Network_Security_Auditor</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">67 automated checks across 8 security domains, MITRE ATT&CK mapping</span> <span class="ca-rank ca-rank-related" id="related-rank-Network_Security_Auditor" title="Rank 8: 6 stars, updated today, downloadable release"> Recommended #8: 6 stars, updated today, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-05-26T19:01:15Z" data-rel-short="2026-05-26T19:01:15Z"> May 26, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>6</span> </span>  </span> </a><a href="/projects/LibreSpot/" class="ca" aria-describedby="related-rank-LibreSpot" data-rank="40.0000" data-rank-position="59" data-rank-label="Rank 59: updated today, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">LibreSpot</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">Spotify customization — automates Spicetify, themes, extensions</span> <span class="ca-rank ca-rank-related" id="related-rank-LibreSpot" title="Rank 59: updated today, downloadable release"> Recommended #59: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a><a href="/projects/WinForge/" class="ca" aria-describedby="related-rank-WinForge" data-rank="40.0000" data-rank-position="60" data-rank-label="Rank 60: updated today, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">WinForge</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">All-in-one Windows provisioning suite — app installer, tweaks, features, updates</span> <span class="ca-rank ca-rank-related" id="related-rank-WinForge" title="Rank 60: updated today, downloadable release"> Recommended #60: updated today, downloadable release </span> </span> <span class="ca-side">    </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script> <script src="/scripts/shot-viewer.js"></script> <footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"Repository Notes","href":"#project-notes","desc":"Fallback notes when a cached README is not available yet.","badge":"DOCS"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script> <script src="/cmdk-data.js"></script> <script src="/scripts/shared.js"></script> <script src="/scripts/cmdk-loader.js"></script> <script src="/scripts/relative-time.js"></script> <script src="/scripts/mobile-nav.js"></script> <script src="/scripts/scroll-reveal.js"></script>   </body> </html>
+</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>13 min read</span> <span>2,761 words</span> <span>75 sections</span> </div> </div> </div> <details class="project-readme-toc" open> <summary>Contents</summary> <ol> <li class="project-readme-toc-depth-1"> <a href="#wurepair">WURepair</a> </li><li class="project-readme-toc-depth-2"> <a href="#overview">Overview</a> </li><li class="project-readme-toc-depth-2"> <a href="#features">Features</a> </li><li class="project-readme-toc-depth-3"> <a href="#network-amp-connectivity-repairs">🌐 Network &amp;amp; Connectivity Repairs</a> </li><li class="project-readme-toc-depth-3"> <a href="#service-repairs">⚙️ Service Repairs</a> </li><li class="project-readme-toc-depth-3"> <a href="#policy-amp-registry-repairs">📋 Policy &amp;amp; Registry Repairs</a> </li><li class="project-readme-toc-depth-3"> <a href="#system-repairs">🔧 System Repairs</a> </li><li class="project-readme-toc-depth-3"> <a href="#diagnostics-amp-verification">📊 Diagnostics &amp;amp; Verification</a> </li><li class="project-readme-toc-depth-2"> <a href="#screenshots">Screenshots</a> </li><li class="project-readme-toc-depth-2"> <a href="#requirements">Requirements</a> </li><li class="project-readme-toc-depth-2"> <a href="#installation">Installation</a> </li><li class="project-readme-toc-depth-2"> <a href="#usage">Usage</a> </li><li class="project-readme-toc-depth-3"> <a href="#method-1-right-click-run">Method 1: Right-Click Run</a> </li><li class="project-readme-toc-depth-3"> <a href="#method-2-powershell-direct">Method 2: PowerShell Direct</a> </li><li class="project-readme-toc-depth-3"> <a href="#command-line-options">Command Line Options</a> </li><li class="project-readme-toc-depth-3"> <a href="#selective-repair-switches">Selective Repair Switches</a> </li><li class="project-readme-toc-depth-3"> <a href="#unattended-exit-codes">Unattended Exit Codes</a> </li><li class="project-readme-toc-depth-3"> <a href="#examples">Examples</a> </li><li class="project-readme-toc-depth-3"> <a href="#local-validation">Local Validation</a> </li><li class="project-readme-toc-depth-2"> <a href="#what-gets-fixed">What Gets Fixed</a> </li><li class="project-readme-toc-depth-3"> <a href="#hosts-file-domains-unblocked">Hosts File Domains Unblocked</a> </li><li class="project-readme-toc-depth-3"> <a href="#registry-policies-removed">Registry Policies Removed</a> </li><li class="project-readme-toc-depth-3"> <a href="#services-repaired">Services Repaired</a> </li><li class="project-readme-toc-depth-2"> <a href="#intune-proactive-remediation">Intune Proactive Remediation</a> </li><li class="project-readme-toc-depth-3"> <a href="#setup">Setup</a> </li><li class="project-readme-toc-depth-3"> <a href="#what-the-detection-script-checks">What the Detection Script Checks</a> </li><li class="project-readme-toc-depth-3"> <a href="#output">Output</a> </li><li class="project-readme-toc-depth-2"> <a href="#troubleshooting">Troubleshooting</a> </li><li class="project-readme-toc-depth-3"> <a href="#quot-script-won-39-t-run-quot-execution-policy-error">&amp;quot;Script won&amp;#39;t run&amp;quot; / Execution Policy Error</a> </li><li class="project-readme-toc-depth-3"> <a href="#still-getting-403-forbidden-errors-after-repair">Still getting 403 Forbidden errors after repair</a> </li><li class="project-readme-toc-depth-3"> <a href="#bits-service-still-won-39-t-start">BITS service still won&amp;#39;t start</a> </li><li class="project-readme-toc-depth-3"> <a href="#updates-found-but-won-39-t-install">Updates found but won&amp;#39;t install</a> </li><li class="project-readme-toc-depth-3"> <a href="#ltsc-iot-edition-limited-updates">LTSC/IoT Edition - Limited Updates</a> </li><li class="project-readme-toc-depth-2"> <a href="#files-created">Files Created</a> </li><li class="project-readme-toc-depth-2"> <a href="#recovery">Recovery</a> </li><li class="project-readme-toc-depth-2"> <a href="#how-it-works">How It Works</a> </li><li class="project-readme-toc-depth-2"> <a href="#privacy-amp-safety">Privacy &amp;amp; Safety</a> </li><li class="project-readme-toc-depth-2"> <a href="#contributing">Contributing</a> </li><li class="project-readme-toc-depth-2"> <a href="#changelog">Changelog</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-31-0">v2.31.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-30-0">v2.30.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-29-0">v2.29.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-28-0">v2.28.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-27-0">v2.27.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-26-0">v2.26.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-25-0">v2.25.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-24-0">v2.24.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-23-0">v2.23.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-22-0">v2.22.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-21-0">v2.21.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-20-0">v2.20.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-19-0">v2.19.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-18-0">v2.18.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-17-0">v2.17.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-16-0">v2.16.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-15-0">v2.15.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-14-0">v2.14.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-13-0">v2.13.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-12-0">v2.12.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-11-0">v2.11.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-10-0">v2.10.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-9-0">v2.9.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-8-0">v2.8.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-7-0">v2.7.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-6-0">v2.6.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-5-0">v2.5.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-4-0">v2.4.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-3-0">v2.3.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-2-0">v2.2.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-1-0">v2.1.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v2-0-0">v2.0.0</a> </li><li class="project-readme-toc-depth-3"> <a href="#v1-0-0">v1.0.0</a> </li><li class="project-readme-toc-depth-2"> <a href="#license">License</a> </li><li class="project-readme-toc-depth-2"> <a href="#disclaimer">Disclaimer</a> </li><li class="project-readme-toc-depth-2"> <a href="#related-tools">Related Tools</a> </li> </ol> </details> <article class="project-readme"><p><img src="https://raw.githubusercontent.com/SysAdminDoc/WURepair/HEAD/icon.svg" width="128" height="128" alt="WURepair" loading="lazy" decoding="async" /></p><h1 id="wurepair">WURepair</h1>
+<p>
+  <img src="https://img.shields.io/badge/Platform-Windows%2010%2F11-blue?style=for-the-badge&amp;logo=windows" alt="Platform" loading="lazy" decoding="async" />
+  <img src="https://img.shields.io/badge/Language-PowerShell-5391FE?style=for-the-badge&amp;logo=powershell" alt="PowerShell" loading="lazy" decoding="async" />
+  <img src="https://img.shields.io/badge/Version-2.31.0-orange?style=for-the-badge" alt="Version" loading="lazy" decoding="async" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" loading="lazy" decoding="async" />
+</p><p>
+  <b>Comprehensive Windows Update Repair Tool</b><br />
+  <i>Fix Windows Update when nothing else works</i>
+</p><hr />
+<h2 id="overview">Overview</h2>
+<p><strong>WURepair</strong> is a comprehensive repair tool that fixes Windows Update issues caused by privacy tools, malware, system corruption, or misconfiguration. It goes beyond basic troubleshooting by addressing root causes like hosts file blocks, disabled services, SSL/TLS misconfigurations, and blocking policies.</p>
+<p>If you've run tools like <a href="https://privacy.sexy" rel="noopener nofollow" target="_blank">privacy.sexy</a>, O&amp;O ShutUp10, or Windows debloaters and now Windows Update won't work, this tool can help restore functionality.</p>
+<h2 id="features">Features</h2>
+<h3 id="network-amp-connectivity-repairs">🌐 Network &amp; Connectivity Repairs</h3>
+<ul>
+<li><strong>Hosts File Cleanup</strong>: Removes blocks for 25+ Microsoft update domains using a versioned Microsoft endpoint manifest, including regional Delivery Optimization hosts</li>
+<li><strong>SSL/TLS Repair</strong>: Enables TLS 1.2, configures .NET for strong cryptography</li>
+<li><strong>Firewall Rules</strong>: Removes blocking rules, ensures update services are allowed</li>
+<li><strong>Winsock/TCP Reset</strong>: Full network stack reset</li>
+<li><strong>Proxy Cleanup</strong>: Clears proxy settings that may interfere</li>
+</ul>
+<h3 id="service-repairs">⚙️ Service Repairs</h3>
+<ul>
+<li><strong>BITS Repair</strong>: Fixes Background Intelligent Transfer Service dependencies and configuration</li>
+<li><strong>Delivery Optimization</strong>: Re-enables if disabled by privacy tools</li>
+<li><strong>Service Dependencies</strong>: Ensures RpcSs, EventSystem, SystemEventsBroker are running</li>
+<li><strong>Correct Start Types</strong>: Resets all update services to proper configurations</li>
+<li><strong>WaaS / USO Repair</strong>: Resets Update Orchestrator services and re-enables disabled USO scheduled tasks</li>
+<li><strong>Delivery Optimization Reset</strong>: Clears Delivery Optimization cache and removes stale download-mode policy values</li>
+</ul>
+<h3 id="policy-amp-registry-repairs">📋 Policy &amp; Registry Repairs</h3>
+<ul>
+<li><strong>Removes Blocking Policies</strong>: Clears manifest-defined registry values that disable Windows Update</li>
+<li><strong>WSUS Detection</strong>: Identifies WSUS/SUP/WUfB source policy and preserves manifest-marked managed-source values unless explicitly reset</li>
+<li><strong>Registry Cleanup</strong>: Removes stuck reboot flags and pending update markers</li>
+<li><strong>Group Policy Refresh</strong>: Forces policy update after changes</li>
+</ul>
+<h3 id="system-repairs">🔧 System Repairs</h3>
+<ul>
+<li><strong>SoftwareDistribution Reset</strong>: Backs up and clears update cache</li>
+<li><strong>Catroot2 Reset</strong>: Clears cryptographic catalog cache</li>
+<li><strong>DLL Re-registration</strong>: Re-registers 35+ Windows Update DLLs</li>
+<li><strong>DISM Integration</strong>: Repairs component store corruption</li>
+<li><strong>DISM Source Fallback</strong>: Optional <code>-DismSource</code> uses mounted Windows media, <code>install.wim</code>, or <code>install.esd</code>; <code>-DismLimitAccess</code> prevents Windows Update source fallback</li>
+<li><strong>Component Store Analysis</strong>: Parses <code>DISM /AnalyzeComponentStore</code> and uses <code>/ResetBase</code> only when cleanup is recommended and reclaimable data is at least 1024 MB</li>
+<li><strong>Servicing Stack Preflight</strong>: Optional <code>-StageSSU</code> path downloads and installs an applicable Servicing Stack Update before DISM</li>
+<li><strong>Catalog SSU Repair</strong>: Optional <code>-RepairServicingStack</code> searches Microsoft Update Catalog, downloads the newest matching SSU <code>.msu</code>, validates SHA256 plus Microsoft Authenticode signature, and retries the next match if <code>wusa.exe</code> returns <code>0x800f0922</code></li>
+<li><strong>SFC Integration</strong>: Scans and repairs system file integrity</li>
+</ul>
+<h3 id="diagnostics-amp-verification">📊 Diagnostics &amp; Verification</h3>
+<ul>
+<li><strong>Diagnostic Pre-Check Report</strong>: Formatted status table showing service states, folder sizes, DISM health, pending reboot status, last successful update date, and last 5 Windows Update errors from event log</li>
+<li><strong>Ranked HRESULT Summary</strong>: Parses <code>%WINDIR%\WindowsUpdate.log</code> and converted Windows Update ETW traces into the top 10 recurring error codes with Microsoft reference links</li>
+<li><strong>Structured Update Log Timeline</strong>: Optional <code>-AnalyzeLogs</code> exports timestamped Windows Update log entries with component, level, HRESULT, source file, and redacted message fields</li>
+<li><strong>WaaSMedic &amp; Delivery Optimization Health</strong>: Surfaces Windows Update Medic service state, recent medic warnings/errors, Delivery Optimization peer cache health, active jobs, peer counts, and transfer byte totals</li>
+<li><strong>Update Health Tools Detection</strong>: Detects Microsoft Update Health Tools / Windows Remediation presence, <code>uhssvc</code>, <code>sedsvc</code>, <code>sedlauncher</code>, remediation processes, and <code>rempl</code> scheduled tasks</li>
+<li><strong>WSUS / SUP Posture</strong>: Resolves <code>WUServer</code> / <code>WUStatusServer</code>, target group, <code>UseWUServer</code>, dual-scan, policy-driven update-source settings, and managed-source guardrail status</li>
+<li><strong>WinRE &amp; Quick Machine Recovery</strong>: Reports WinRE enabled/disabled state, recovery partition path, image version, and Quick Machine Recovery policy status</li>
+<li><strong>Connectivity Testing</strong>: Tests all Microsoft update endpoints</li>
+<li><strong>LTSC/IoT Detection</strong>: Identifies editions with limited update availability</li>
+<li><strong>Post-repair Before/After Comparison</strong>: Re-runs diagnostic check after repairs and displays side-by-side comparison table</li>
+<li><strong>JSON RMM Report</strong>: Optional <code>-JsonReport &lt;path&gt;</code> writes pre/post diagnostics, changed fields, service deltas, phase results, and run metadata</li>
+<li><strong>Support Bundle</strong>: Optional <code>-SupportBundle &lt;path&gt;</code> writes a redacted zip with WURepair logs, JSON report, Windows Update log, event exports, and CBS/DISM tails</li>
+<li><strong>Unattended Automation</strong>: Optional <code>-Unattended</code> suppresses host UI/prompts/progress and returns stable exit codes for RMM tools</li>
+<li><strong>Plain Text Output</strong>: Optional <code>-PlainText</code> emits deterministic ASCII status lines for RMM consoles, screen readers, and log capture</li>
+<li><strong>Mutation Journal &amp; Rollback</strong>: Writes a per-run JSON journal of hosts, registry, policy, and cache mutations; <code>-RollbackJournal</code> previews/apply reversible changes</li>
+<li><strong>Module &amp; Release Packaging</strong>: <code>WURepair.psd1</code> / <code>WURepair.psm1</code> expose phase wrappers, and <code>tools\Build-WURepairPackage.ps1</code> builds script and module ZIPs with SHA256 receipts plus optional file catalogs/signing</li>
+<li><strong>Progress Tracking</strong>: Phase-by-phase progress bar with percentage (<code>Write-Progress</code>)</li>
+<li><strong>Event Log Integration</strong>: Writes repair summary to Windows Application event log (Source: <code>WURepair</code>) for RMM tool detection</li>
+<li><strong>Selective Repair</strong>: Run individual phases via <code>-RepairServices</code>, <code>-RepairDLLs</code>, <code>-RepairStore</code>, <code>-RepairDISM</code>, <code>-RepairSFC</code>, <code>-RepairNetwork</code>, <code>-RepairWaaS</code>, <code>-RepairDelivery</code></li>
+</ul>
+<h2 id="screenshots">Screenshots</h2>
+<p>
+  <i>Diagnostics Output</i>
+</p><pre class="readme-code" tabindex="0"><code class="readme-code-inner">    ╦ ╦╦ ╦  ╦═╗┌─┐┌─┐┌─┐┬┬─┐
+    ║║║║ ║  ╠╦╝├┤ ├─┘├─┤│├┬┘
+    ╚╩╝╚═╝  ╩╚═└─┘┴  ┴ ┴┴┴└─
+Windows Update Repair Tool v2.28.0
+
+======================================================================
+  DIAGNOSTICS - Gathering System Information
+======================================================================
+    OS: Microsoft Windows 11 Pro (10.0.22631) Build 22631
+    Architecture: 64-bit
+    System Drive: 150.32 GB free of 476.94 GB
+
+    Windows Update Service Status:
+      Windows Update: Stopped (Manual)
+      Background Intelligent Transfer Service: Running (Manual)
+      Cryptographic Services: Running (Automatic)
+      Delivery Optimization: Running (Automatic)
+
+[+] No pending reboot detected
+[+] No Microsoft blocks in hosts file
+
+======================================================================
+  CONNECTIVITY - Testing Windows Update Servers
+======================================================================
+[+] Windows Update: Reachable
+[+] Microsoft Update: Reachable
+[+] Download Center: Reachable
+[+] Windows Update Catalog: Reachable
+[+] Delivery Optimization: Reachable</code></pre><h2 id="requirements">Requirements</h2>
+<ul>
+<li><strong>OS</strong>: Windows 10 / Windows 11 (all editions including LTSC/IoT)</li>
+<li><strong>Privileges</strong>: Administrator</li>
+<li><strong>PowerShell</strong>: 5.1 or later (included with Windows)</li>
+<li><strong>Disk Space</strong>: At least 5 GB free recommended</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<ol>
+<li>Download <code>WURepair.ps1</code> from the <a href="https://github.com/SysAdminDoc/WURepair/blob/HEAD/../../releases" rel="noopener nofollow" target="_blank">Releases</a> page</li>
+<li>Save to a convenient location (e.g., Desktop)</li>
+</ol>
+<p>To build local release artifacts from source:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.<span class="shiki-c-blue">\tools\Build-WURepairPackage.ps1</span></span>
+<span class="line">.<span class="shiki-c-blue">\tools\Test-WURepairPackage.ps1</span></span></code></pre><h2 id="usage">Usage</h2>
+<h3 id="method-1-right-click-run">Method 1: Right-Click Run</h3>
+<ol>
+<li>Right-click <code>WURepair.ps1</code></li>
+<li>Select <strong>Run with PowerShell</strong></li>
+<li>If prompted by UAC, click <strong>Yes</strong></li>
+</ol>
+<h3 id="method-2-powershell-direct">Method 2: PowerShell Direct</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line"><span class="shiki-c-blue">Set-ExecutionPolicy</span> <span class="shiki-c-red">-</span>ExecutionPolicy Bypass <span class="shiki-c-red">-</span>Scope <span class="shiki-c-red">Process</span> <span class="shiki-c-red">-</span>Force</span>
+<span class="line">.\WURepair.ps1</span></code></pre><h3 id="command-line-options">Command Line Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-Quick</code></td>
+<td>Skip DISM and SFC scans (faster, less thorough)</td>
+</tr>
+<tr>
+<td><code>-SkipDISM</code></td>
+<td>Skip only DISM component store repair</td>
+</tr>
+<tr>
+<td><code>-SkipSFC</code></td>
+<td>Skip only System File Checker</td>
+</tr>
+<tr>
+<td><code>-SkipBackup</code></td>
+<td>Skip backup of Windows Update folders</td>
+</tr>
+<tr>
+<td><code>-StageSSU</code></td>
+<td>Before DISM, download and install an applicable Servicing Stack Update through Windows Update Agent</td>
+</tr>
+<tr>
+<td><code>-DismSource &lt;path&gt;</code></td>
+<td>Use mounted Windows media, <code>install.wim</code>, or <code>install.esd</code> as the DISM <code>RestoreHealth</code> repair source</td>
+</tr>
+<tr>
+<td><code>-DismLimitAccess</code></td>
+<td>Prevent DISM from using Windows Update as a repair source</td>
+</tr>
+<tr>
+<td><code>-AnalyzeLogs</code></td>
+<td>Export a structured Windows Update log timeline and compact JSON summary</td>
+</tr>
+<tr>
+<td><code>-JsonReport &lt;path&gt;</code></td>
+<td>Write pre/post diagnostic delta as machine-parseable JSON</td>
+</tr>
+<tr>
+<td><code>-SupportBundle &lt;path&gt;</code></td>
+<td>Create a redacted zip with WURepair log, JSON report, WindowsUpdate.log, relevant events, and CBS/DISM tails</td>
+</tr>
+<tr>
+<td><code>-JournalPath &lt;path&gt;</code></td>
+<td>Override the mutation journal JSON path</td>
+</tr>
+<tr>
+<td><code>-RollbackJournal &lt;path&gt;</code></td>
+<td>Preview reversible changes from a mutation journal</td>
+</tr>
+<tr>
+<td><code>-ApplyRollback</code></td>
+<td>Apply reversible changes when used with <code>-RollbackJournal</code></td>
+</tr>
+<tr>
+<td><code>-ResetManagedUpdatePolicy</code></td>
+<td>Remove managed WSUS/SUP/WUfB source policy values intentionally; default repair preserves them</td>
+</tr>
+<tr>
+<td><code>-OverrideReadinessBlock</code></td>
+<td>Allow unattended repair to proceed when pending-reboot readiness is blocked; records the override in JSON output</td>
+</tr>
+<tr>
+<td><code>-NoRedact</code></td>
+<td>Keep usernames, device names, profile paths, and SIDs in support bundles</td>
+</tr>
+<tr>
+<td><code>-PlainText</code></td>
+<td>Emit deterministic ASCII output and suppress progress rendering</td>
+</tr>
+<tr>
+<td><code>-Unattended</code></td>
+<td>Suppress host UI/prompts/progress and return automation exit codes</td>
+</tr>
+<tr>
+<td><code>-Help</code></td>
+<td>Display help information</td>
+</tr>
+</tbody></table>
+<h3 id="selective-repair-switches">Selective Repair Switches</h3>
+<p>Run individual repair phases instead of the full pipeline:</p>
+<table>
+<thead>
+<tr>
+<th>Switch</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-RepairServices</code></td>
+<td>Only reset/restart Windows Update services</td>
+</tr>
+<tr>
+<td><code>-RepairDLLs</code></td>
+<td>Only re-register Windows Update DLLs</td>
+</tr>
+<tr>
+<td><code>-RepairStore</code></td>
+<td>Only rename SoftwareDistribution/catroot2</td>
+</tr>
+<tr>
+<td><code>-RepairDISM</code></td>
+<td>Only run DISM component store repair</td>
+</tr>
+<tr>
+<td><code>-RepairSFC</code></td>
+<td>Only run System File Checker</td>
+</tr>
+<tr>
+<td><code>-RepairNetwork</code></td>
+<td>Only reset network stack</td>
+</tr>
+<tr>
+<td><code>-RepairWaaS</code></td>
+<td>Only reset Update Orchestrator services and USO tasks</td>
+</tr>
+<tr>
+<td><code>-RepairDelivery</code></td>
+<td>Only reset Delivery Optimization cache and download mode</td>
+</tr>
+<tr>
+<td><code>-RepairServicingStack</code></td>
+<td>Only download and install a matching Microsoft Update Catalog SSU package</td>
+</tr>
+<tr>
+<td><code>-RepairAll</code></td>
+<td>Run all phases (default when no switch given)</td>
+</tr>
+</tbody></table>
+<p>Switches can be combined (e.g., <code>-RepairStore -RepairDLLs</code>).</p>
+<h3 id="unattended-exit-codes">Unattended Exit Codes</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0</code></td>
+<td>Success</td>
+</tr>
+<tr>
+<td><code>10</code></td>
+<td>Completed with warnings</td>
+</tr>
+<tr>
+<td><code>20</code></td>
+<td>One or more repair phases reported errors</td>
+</tr>
+<tr>
+<td><code>30</code></td>
+<td>Repair ran, but post-repair connectivity still failed</td>
+</tr>
+<tr>
+<td><code>40</code></td>
+<td>Administrator rights missing</td>
+</tr>
+<tr>
+<td><code>50</code></td>
+<td>Run cancelled before repair</td>
+</tr>
+</tbody></table>
+<h3 id="examples">Examples</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line"><span class="shiki-c-muted"># Full repair (recommended)</span></span>
+<span class="line">.\WURepair.ps1</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Quick repair - skip lengthy scans</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>Quick</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Skip only DISM</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>SkipDISM</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Skip backup (if low on disk space)</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>SkipBackup</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Only reset services</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RepairServices</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Reset data stores + re-register DLLs</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RepairStore <span class="shiki-c-red">-</span>RepairDLLs</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Run DISM with Servicing Stack Update preflight</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RepairDISM <span class="shiki-c-red">-</span>StageSSU</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Run DISM with a mounted ISO/WIM/ESD source and no Windows Update fallback</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RepairDISM <span class="shiki-c-red">-</span>DismSource D:\sources\install.wim <span class="shiki-c-red">-</span>DismLimitAccess</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Export a structured Windows Update log timeline into JSON reporting</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>AnalyzeLogs <span class="shiki-c-red">-</span>JsonReport C:\Temp\WURepair<span class="shiki-c-red">-</span>report.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Repair Servicing Stack directly from Microsoft Update Catalog</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RepairServicingStack</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Full repair with RMM-readable JSON report</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>JsonReport C:\Temp\WURepair<span class="shiki-c-red">-</span>report.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Full repair with a redacted support bundle</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>SupportBundle C:\Temp\WURepair<span class="shiki-c-red">-</span>support.zip</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Plain-text output for RMM consoles or screen readers</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>PlainText <span class="shiki-c-red">-</span>JsonReport C:\Temp\WURepair<span class="shiki-c-red">-</span>report.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># RMM-safe run with no host UI and stable exit code</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>Unattended <span class="shiki-c-red">-</span>JsonReport C:\Temp\WURepair<span class="shiki-c-red">-</span>report.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># RMM run that intentionally proceeds despite a pending-reboot readiness block</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>Unattended <span class="shiki-c-red">-</span>OverrideReadinessBlock <span class="shiki-c-red">-</span>JsonReport C:\Temp\WURepair<span class="shiki-c-red">-</span>report.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Explicitly remove managed WSUS/SUP/WUfB source policy values</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>ResetManagedUpdatePolicy</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Preview reversible changes from a previous run</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RollbackJournal C:\Temp\WURepair_Journal.json</span>
+<span class="line"></span>
+<span class="line"><span class="shiki-c-muted"># Apply reversible changes from a previous run</span></span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RollbackJournal C:\Temp\WURepair_Journal.json <span class="shiki-c-red">-</span>ApplyRollback</span></code></pre><h3 id="local-validation">Local Validation</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.<span class="shiki-c-blue">\Invoke-LocalChecks.ps1</span></span></code></pre><p>This runs PowerShell parser validation, PSScriptAnalyzer, and the Pester static-contract tests before release packaging.</p>
+<p>To check tool versions without running validation:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.<span class="shiki-c-blue">\Invoke-LocalChecks.ps1</span> <span class="shiki-c-red">-</span>ListToolVersions</span></code></pre><p>To include an opt-in coverage report:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.<span class="shiki-c-blue">\Invoke-LocalChecks.ps1</span> <span class="shiki-c-red">-</span>CoverageOutputPath .\coverage\pester<span class="shiki-c-red">-</span>coverage.xml</span></code></pre><p>Local release packaging:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.<span class="shiki-c-blue">\tools\Build-WURepairPackage.ps1</span></span>
+<span class="line">.<span class="shiki-c-blue">\tools\Build-WURepairPackage.ps1</span> <span class="shiki-c-red">-</span>CertificateThumbprint <span class="shiki-c-cyan">'&lt;thumbprint&gt;'</span> <span class="shiki-c-red">-</span>RequireSignature</span>
+<span class="line">.<span class="shiki-c-blue">\tools\Test-WURepairPackage.ps1</span> <span class="shiki-c-red">-</span>PackageRoot .\dist</span></code></pre><h2 id="what-gets-fixed">What Gets Fixed</h2>
+<h3 id="hosts-file-domains-unblocked">Hosts File Domains Unblocked</h3>
+<p>The tool removes blocks for these Microsoft domains (and more):</p>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>update.microsoft.com</code></td>
+<td>Windows Update service</td>
+</tr>
+<tr>
+<td><code>download.windowsupdate.com</code></td>
+<td>Update downloads</td>
+</tr>
+<tr>
+<td><code>download.delivery.mp.microsoft.com</code></td>
+<td>Delivery Optimization</td>
+</tr>
+<tr>
+<td><code>ctldl.windowsupdate.com</code></td>
+<td>Certificate Trust List</td>
+</tr>
+<tr>
+<td><code>settings-win.data.microsoft.com</code></td>
+<td>Windows settings sync</td>
+</tr>
+</tbody></table>
+<h3 id="registry-policies-removed">Registry Policies Removed</h3>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DisableWindowsUpdateAccess</code></td>
+<td>Blocks WU UI access</td>
+</tr>
+<tr>
+<td><code>DoNotConnectToWindowsUpdateInternetLocations</code></td>
+<td>Blocks online updates</td>
+</tr>
+<tr>
+<td><code>NoAutoUpdate</code></td>
+<td>Disables automatic updates</td>
+</tr>
+<tr>
+<td><code>UseWUServer</code></td>
+<td>Forces WSUS; preserved on managed devices unless <code>-ResetManagedUpdatePolicy</code> is supplied</td>
+</tr>
+<tr>
+<td><code>SetDisableUXWUAccess</code></td>
+<td>Hides update settings</td>
+</tr>
+</tbody></table>
+<h3 id="services-repaired">Services Repaired</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Default State</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wuauserv</code> (Windows Update)</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td><code>bits</code> (BITS)</td>
+<td>Manual (Delayed Start)</td>
+</tr>
+<tr>
+<td><code>cryptsvc</code> (Cryptographic Services)</td>
+<td>Automatic</td>
+</tr>
+<tr>
+<td><code>dosvc</code> (Delivery Optimization)</td>
+<td>Automatic (Delayed Start)</td>
+</tr>
+<tr>
+<td><code>msiserver</code> (Windows Installer)</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td><code>TrustedInstaller</code> (Modules Installer)</td>
+<td>Manual</td>
+</tr>
+</tbody></table>
+<h2 id="intune-proactive-remediation">Intune Proactive Remediation</h2>
+<p>Deploy WURepair as an Intune proactive remediation to automatically detect and fix Windows Update issues across managed devices.</p>
+<h3 id="setup">Setup</h3>
+<ol>
+<li>Deploy <code>WURepair.ps1</code> to managed devices at <code>%ProgramData%\WURepair\WURepair.ps1</code></li>
+<li>In Intune, create a new Proactive Remediation:<ul>
+<li><strong>Detection script</strong>: Upload <code>Intune\Detect-WURepair.ps1</code></li>
+<li><strong>Remediation script</strong>: Upload <code>Intune\Remediate-WURepair.ps1</code></li>
+<li><strong>Run script in 64-bit PowerShell</strong>: Yes</li>
+<li><strong>Run this script using the logged-on credentials</strong>: No (run as SYSTEM)</li>
+</ul>
+</li>
+<li>Assign to device groups and set a schedule</li>
+</ol>
+<h3 id="what-the-detection-script-checks">What the Detection Script Checks</h3>
+<ul>
+<li>Windows Update, BITS, and Cryptographic Services are not disabled</li>
+<li>No Microsoft update domains are blocked in the hosts file</li>
+<li>No blocking policies (<code>DisableWindowsUpdateAccess</code>, <code>NoAutoUpdate</code>, <code>SetDisableUXWUAccess</code>)</li>
+<li>DISM component store is healthy</li>
+<li>Microsoft update endpoints are reachable</li>
+</ul>
+<h3 id="output">Output</h3>
+<ul>
+<li>Detection: <code>Compliant</code> (exit 0) or <code>Non-compliant: N issue(s)</code> (exit 1)</li>
+<li>Remediation: JSON report and mutation journal written to <code>%ProgramData%\WURepair\Reports\</code></li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="quot-script-won-39-t-run-quot-execution-policy-error">"Script won't run" / Execution Policy Error</h3>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line"><span class="shiki-c-blue">Set-ExecutionPolicy</span> <span class="shiki-c-red">-</span>ExecutionPolicy Bypass <span class="shiki-c-red">-</span>Scope <span class="shiki-c-red">Process</span> <span class="shiki-c-red">-</span>Force</span></code></pre><h3 id="still-getting-403-forbidden-errors-after-repair">Still getting 403 Forbidden errors after repair</h3>
+<ul>
+<li>Check for third-party firewall software (Norton, McAfee, etc.)</li>
+<li>Disable VPN temporarily</li>
+<li>Check corporate proxy settings</li>
+<li>Run the script again after restart</li>
+</ul>
+<h3 id="bits-service-still-won-39-t-start">BITS service still won't start</h3>
+<ol>
+<li>Restart your computer</li>
+<li>Run the script again</li>
+<li>If still failing, check Event Viewer for BITS errors</li>
+</ol>
+<h3 id="updates-found-but-won-39-t-install">Updates found but won't install</h3>
+<ul>
+<li>Ensure at least 10 GB free disk space</li>
+<li>Try installing updates one at a time</li>
+<li>Run <code>DISM /Online /Cleanup-Image /RestoreHealth</code> manually</li>
+<li>If Windows Update repair sources are blocked, mount matching Windows installation media and run <code>.\WURepair.ps1 -RepairDISM -DismSource D:\sources\install.wim -DismLimitAccess</code></li>
+</ul>
+<h3 id="ltsc-iot-edition-limited-updates">LTSC/IoT Edition - Limited Updates</h3>
+<p>Windows 10/11 LTSC and IoT editions only receive security updates. Feature updates are not available. This is by design, not a bug.</p>
+<h2 id="files-created">Files Created</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WURepair_[timestamp].log</code></td>
+<td>Desktop</td>
+<td>Detailed operation log</td>
+</tr>
+<tr>
+<td><code>WURepair_Journal_[timestamp].json</code></td>
+<td>Desktop</td>
+<td>Machine-readable mutation journal and rollback data</td>
+</tr>
+<tr>
+<td><code>WURepair-support.zip</code></td>
+<td>User-supplied <code>-SupportBundle</code> path</td>
+<td>Redacted support bundle with logs, JSON report, event exports, WindowsUpdate.log, structured WU timeline, and CBS/DISM tails</td>
+</tr>
+<tr>
+<td><code>SoftwareDistribution.bak.[timestamp]</code></td>
+<td>C:\Windows</td>
+<td>Backup of update cache</td>
+</tr>
+<tr>
+<td><code>catroot2.bak.[timestamp]</code></td>
+<td>C:\Windows\System32</td>
+<td>Backup of crypto cache</td>
+</tr>
+<tr>
+<td><code>hosts.backup.[timestamp]</code></td>
+<td>C:\Windows\System32\drivers\etc</td>
+<td>Backup of hosts file</td>
+</tr>
+</tbody></table>
+<h2 id="recovery">Recovery</h2>
+<p>If something goes wrong:</p>
+<ol>
+<li><strong>System Restore</strong>: The script creates a restore point before making changes</li>
+<li><strong>Mutation Journal</strong>: Reversible hosts, registry, policy, and cache-folder mutations are written to <code>WURepair_Journal_[timestamp].json</code></li>
+<li><strong>Folder Backups</strong>: SoftwareDistribution and catroot2 are renamed, not deleted</li>
+<li><strong>Hosts Backup</strong>: Original hosts file is preserved with timestamp</li>
+</ol>
+<p>To restore the hosts file manually:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line"><span class="shiki-c-blue">Copy-Item</span> <span class="shiki-c-cyan">"C:\Windows\System32\drivers\etc\hosts.backup.[timestamp]"</span> <span class="shiki-c-cyan">"C:\Windows\System32\drivers\etc\hosts"</span> <span class="shiki-c-red">-</span>Force</span></code></pre><p>To preview or apply journal rollback:</p>
+<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RollbackJournal C:\Temp\WURepair_Journal.json</span>
+<span class="line">.\WURepair.ps1 <span class="shiki-c-red">-</span>RollbackJournal C:\Temp\WURepair_Journal.json <span class="shiki-c-red">-</span>ApplyRollback</span></code></pre><h2 id="how-it-works">How It Works</h2>
+<pre class="readme-code" tabindex="0"><code class="readme-code-inner">┌─────────────────────────────────────────────────────────────────┐
+│                      WURepair v2.31.0 Flow                      │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Diagnostic Pre-Check Report (status table)                  │
+│  2. Create System Restore Point                                 │
+│  3. Run Diagnostics (OS, services, disk, connectivity)         │
+│  4. Repair Hosts File (remove Microsoft blocks)                 │
+│  5. Repair SSL/TLS (enable TLS 1.2, strong crypto)             │
+│  6. Repair Firewall Rules (allow update traffic)               │
+│  7. Repair Service Dependencies (BITS, DO)                      │
+│  8. Remove Blocking Policies (registry cleanup)                 │
+│  9. Stop Update Services                                        │
+│ 10. Backup &amp; Clear Caches (SoftwareDistribution, catroot2)     │
+│ 11. Re-register DLLs (35+ Windows Update DLLs)                 │
+│ 12. Reset Network Stack (Winsock, TCP/IP, DNS, proxy)          │
+│ 13. Reset Windows Update Agent                                  │
+│ 14. Optional SSU staging before DISM (-StageSSU)                │
+│ 15. Optional verified Catalog SSU repair (-RepairServicingStack)│
+│ 16. Run DISM + optional local source + analyzed cleanup         │
+│ 17. Run SFC (system file check)                                │
+│ 18. Start Update Services                                       │
+│ 19. Refresh Group Policy                                        │
+│ 20. Post-Repair Connectivity Test                               │
+│ 21. Post-Repair Verification (before/after comparison)          │
+│ 22. Trigger Update Scan                                         │
+│ 23. Write Event Log Summary / JSON report / support bundle      │
+│ 24. Write mutation journal / exit code                          │
+└─────────────────────────────────────────────────────────────────┘</code></pre><h2 id="privacy-amp-safety">Privacy &amp; Safety</h2>
+<ul>
+<li>✅ <strong>No data collection</strong> - Everything runs locally</li>
+<li>✅ <strong>No external downloads by default</strong> - <code>-StageSSU</code> and <code>-RepairServicingStack</code> are opt-in update download paths; <code>-DismSource</code> can keep RestoreHealth on local media</li>
+<li>✅ <strong>Open source</strong> - Full source code available for review</li>
+<li>✅ <strong>Creates backups</strong> - Cache and registry repairs can be reversed; <code>/ResetBase</code> is intentionally permanent for superseded updates</li>
+<li>✅ <strong>Restore point reporting</strong> - Full repair attempts a system restore point and records success, skip, throttle, or failure details in JSON and support bundles</li>
+<li>✅ <strong>Readiness checks</strong> - JSON reports include pending-reboot and system-drive BitLocker status; unattended runs stop on pending-reboot readiness blocks unless <code>-OverrideReadinessBlock</code> is supplied</li>
+<li>✅ <strong>Detailed logging</strong> - Full audit trail saved to Desktop</li>
+<li>✅ <strong>Redacted support bundles</strong> - <code>-SupportBundle</code> redacts usernames, device names, profile paths, SIDs, and structured Windows Update log timeline messages unless <code>-NoRedact</code> is supplied</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>Contributions are welcome! If you encounter a Windows Update issue that WURepair doesn't fix:</p>
+<ol>
+<li>Run the script and save the log file</li>
+<li>Note any error messages</li>
+<li>Open an issue with the log and description</li>
+</ol>
+<h2 id="changelog">Changelog</h2>
+<h3 id="v2-31-0">v2.31.0</h3>
+<ul>
+<li>Added <code>Intune\Detect-WURepair.ps1</code> detection script for Intune proactive remediations: checks service states, hosts file blocks, blocking policies, DISM health, and endpoint connectivity.</li>
+<li>Added <code>Intune\Remediate-WURepair.ps1</code> remediation script: runs WURepair in unattended mode with JSON reporting and stable exit codes.</li>
+</ul>
+<h3 id="v2-30-0">v2.30.0</h3>
+<ul>
+<li>Added WinRE diagnostics: reports Windows Recovery Environment enabled/disabled state, recovery partition path, and image version via <code>reagentc /info</code>.</li>
+<li>Added Quick Machine Recovery policy detection from Group Policy and Update Orchestrator registry keys.</li>
+</ul>
+<h3 id="v2-29-0">v2.29.0</h3>
+<ul>
+<li>Local validation now prints detected Pester and PSScriptAnalyzer versions and enforces tested minimums with actionable install/update guidance.</li>
+<li>Added <code>-ListToolVersions</code> switch to <code>Invoke-LocalChecks.ps1</code> for no-network version diagnostics.</li>
+</ul>
+<h3 id="v2-28-0">v2.28.0</h3>
+<ul>
+<li>Added <code>tools\Test-WURepairPackage.ps1</code> to verify release ZIP checksums, optional file catalogs, Authenticode status, release receipt parity, and extracted module import without touching installed modules.</li>
+</ul>
+<h3 id="v2-27-0">v2.27.0</h3>
+<ul>
+<li>JSON reports and support-bundle manifests now record system restore-point attempted/skipped/succeeded/failed outcomes, including failure kind and error detail.</li>
+</ul>
+<h3 id="v2-26-0">v2.26.0</h3>
+<ul>
+<li>Added repair-readiness gating that reports pending reboot and system-drive BitLocker risk before repair; unattended runs stop before destructive phases unless <code>-OverrideReadinessBlock</code> is supplied.</li>
+</ul>
+<h3 id="v2-25-0">v2.25.0</h3>
+<ul>
+<li>JSON reports and support-bundle manifests now have generated schema fixture coverage, including required fields, schema versions, redaction markers, and bundled file entries.</li>
+</ul>
+<h3 id="v2-24-0">v2.24.0</h3>
+<ul>
+<li>Added public option parity contract tests across script parameters, module wrapper forwarding, CLI parsing, help output, and README option tables.</li>
+</ul>
+<h3 id="v2-23-0">v2.23.0</h3>
+<ul>
+<li>Local validation now runs the complete Pester suite by default instead of hard-coded name-filtered batches.</li>
+<li>Added optional Pester coverage output with <code>.\Invoke-LocalChecks.ps1 -CoverageOutputPath &lt;path&gt;</code>.</li>
+</ul>
+<h3 id="v2-22-0">v2.22.0</h3>
+<ul>
+<li>Versioned endpoint/policy knowledge manifest used by hosts cleanup and policy repair.</li>
+<li>Regional Delivery Optimization host matching covers <code>*.dl.delivery.mp.microsoft.com</code> and <code>*.prod.do.dsp.mp.microsoft.com</code> entries in blocked hosts files.</li>
+</ul>
+<h3 id="v2-21-0">v2.21.0</h3>
+<ul>
+<li>Added <code>WURepair.psd1</code> and <code>WURepair.psm1</code> module metadata/wrappers for phase-oriented invocation</li>
+<li>Added <code>tools\Build-WURepairPackage.ps1</code> to build script and module ZIPs with local checks, SHA256 receipts, optional file catalogs, and optional Authenticode signing</li>
+</ul>
+<h3 id="v2-20-0">v2.20.0</h3>
+<ul>
+<li>Added <code>-AnalyzeLogs</code> to export a structured Windows Update log timeline</li>
+<li>Support bundles now include <code>logs/WURepair-wulog.json</code></li>
+<li>JSON reports include a compact Windows Update log timeline summary when log analysis runs</li>
+</ul>
+<h3 id="v2-19-0">v2.19.0</h3>
+<ul>
+<li>Added behavior-level validation for CLI option parsing, phase selection, DISM source arguments, release version drift, and optional package/remediation artifact parsing</li>
+</ul>
+<h3 id="v2-18-0">v2.18.0</h3>
+<ul>
+<li>Added <code>-DismSource &lt;path&gt;</code> for mounted Windows media, <code>install.wim</code>, or <code>install.esd</code> RestoreHealth repair sources</li>
+<li>Added <code>-DismLimitAccess</code> to prevent Windows Update source fallback during DISM repair</li>
+<li>JSON reports now include DISM source and <code>/LimitAccess</code> option fields</li>
+</ul>
+<h3 id="v2-17-0">v2.17.0</h3>
+<ul>
+<li>Added <code>-PlainText</code> deterministic ASCII console output for automation logs and screen readers</li>
+<li>Plain-text mode suppresses progress rendering and color-only status while preserving log file output</li>
+</ul>
+<h3 id="v2-16-0">v2.16.0</h3>
+<ul>
+<li>Added <code>-SupportBundle &lt;path&gt;</code> to create redacted diagnostic zip archives</li>
+<li>Support bundles include WURepair log, JSON report, WindowsUpdate.log, CBS/DISM tails, relevant event exports, and a manifest</li>
+<li>Catalog package SHA256 validation now falls back to .NET hashing when <code>Get-FileHash</code> is unavailable</li>
+</ul>
+<h3 id="v2-15-0">v2.15.0</h3>
+<ul>
+<li>Added managed update-source guardrails for WSUS/SUP/WUfB policy values</li>
+<li>Full repair now preserves managed source policy by default and requires <code>-ResetManagedUpdatePolicy</code> for intentional removal</li>
+</ul>
+<h3 id="v2-14-0">v2.14.0</h3>
+<ul>
+<li>Catalog SSU downloads now require SHA256 hashing plus valid Microsoft Authenticode signature before <code>wusa.exe</code> runs</li>
+<li>JSON reports include Catalog package validation records with hash, signature status, and signer metadata</li>
+</ul>
+<h3 id="v2-13-0">v2.13.0</h3>
+<ul>
+<li>Added per-run mutation journal JSON for hosts, registry, policy, and cache changes</li>
+<li>Added <code>-RollbackJournal &lt;path&gt;</code> preview and <code>-ApplyRollback</code> restore mode for reversible journal entries</li>
+<li>JSON reports now include mutation journal path and entry counts</li>
+</ul>
+<h3 id="v2-12-0">v2.12.0</h3>
+<ul>
+<li>Added <code>-Unattended</code> mode for RMM/Intune/PDQ/Tanium runs</li>
+<li>Replaced blocking service cmdlets with timeout-safe <code>sc.exe</code> service control</li>
+<li>Phase results now report <code>Success</code>, <code>Warnings</code>, or <code>Errors</code> with warning/error counts, overall status, and automation exit code</li>
+<li>Added <code>Invoke-LocalChecks.ps1</code> with parser, PSScriptAnalyzer, and Pester validation</li>
+</ul>
+<h3 id="v2-11-0">v2.11.0</h3>
+<ul>
+<li>Added optional <code>-JsonReport &lt;path&gt;</code> output for RMM ingestion</li>
+<li>JSON reports include run metadata, options, phase results, pre/post diagnostics, changed fields, and service deltas</li>
+</ul>
+<h3 id="v2-10-0">v2.10.0</h3>
+<ul>
+<li>Added optional <code>-RepairServicingStack</code> Microsoft Update Catalog SSU repair path</li>
+<li>Catalog repair downloads the newest matching SSU <code>.msu</code>, installs it with <code>wusa.exe /quiet /norestart</code>, and retries the next match on <code>0x800f0922</code></li>
+</ul>
+<h3 id="v2-9-0">v2.9.0</h3>
+<ul>
+<li>Added <code>DISM /AnalyzeComponentStore</code> parsing before component cleanup</li>
+<li><code>StartComponentCleanup /ResetBase</code> now runs only when cleanup is recommended and reclaimable component-store data is at least 1024 MB</li>
+</ul>
+<h3 id="v2-8-0">v2.8.0</h3>
+<ul>
+<li>Added optional <code>-StageSSU</code> / <code>-StageServicingStack</code> preflight before DISM</li>
+<li>Uses Windows Update Agent to find, download, and install the latest applicable Servicing Stack Update before <code>RestoreHealth</code></li>
+</ul>
+<h3 id="v2-7-0">v2.7.0</h3>
+<ul>
+<li>Added <code>-RepairDelivery</code> to reset Delivery Optimization cache and stale download-mode policy values</li>
+<li>Full repair now includes Delivery Optimization cache/policy reset</li>
+</ul>
+<h3 id="v2-6-0">v2.6.0</h3>
+<ul>
+<li>Added <code>-RepairWaaS</code> to reset Update Orchestrator services and USO scheduled tasks</li>
+<li>Full repair now refreshes USO settings and re-enables disabled <code>\Microsoft\Windows\UpdateOrchestrator\*</code> tasks</li>
+</ul>
+<h3 id="v2-5-0">v2.5.0</h3>
+<ul>
+<li>Added WSUS / SUP posture diagnostics for <code>WUServer</code>, <code>WUStatusServer</code>, target groups, <code>UseWUServer</code>, dual-scan, and policy-driven update source settings</li>
+<li>Added DNS resolution summaries and posture warnings for mismatched or incomplete WSUS policy state</li>
+</ul>
+<h3 id="v2-4-0">v2.4.0</h3>
+<ul>
+<li>Added Microsoft Update Health Tools / Windows Remediation detection</li>
+<li>Added <code>uhssvc</code>, <code>sedsvc</code>, <code>sedlauncher</code>, remediation process, install path/version, and <code>rempl</code> task diagnostics</li>
+</ul>
+<h3 id="v2-3-0">v2.3.0</h3>
+<ul>
+<li>Added WaaSMedic service/task/event diagnostics to the pre-check report</li>
+<li>Added Delivery Optimization peer cache health, active job count, peer count, cache size, and transfer byte totals</li>
+</ul>
+<h3 id="v2-2-0">v2.2.0</h3>
+<ul>
+<li>Added ranked Windows Update HRESULT diagnostics from <code>%WINDIR%\WindowsUpdate.log</code> and converted ETW traces</li>
+<li>Added Microsoft reference links for the top recurring Windows Update error codes</li>
+</ul>
+<h3 id="v2-1-0">v2.1.0</h3>
+<ul>
+<li>Diagnostic pre-check report with formatted status table (services, folders, DISM health, pending reboot, last update, recent errors)</li>
+<li>Selective repair via <code>-RepairServices</code>, <code>-RepairDLLs</code>, <code>-RepairStore</code>, <code>-RepairDISM</code>, <code>-RepairSFC</code>, <code>-RepairNetwork</code> switches</li>
+<li>Progress tracking with <code>Write-Progress</code> (Phase X of Y with percentage)</li>
+<li>Event log integration: writes start/completion summary to Application log under source "WURepair"</li>
+<li>Post-repair before/after comparison table</li>
+<li>Triggers Windows Update check after all repairs</li>
+</ul>
+<h3 id="v2-0-0">v2.0.0</h3>
+<ul>
+<li>Added hosts file cleanup for Microsoft domains</li>
+<li>Added SSL/TLS configuration repair</li>
+<li>Added firewall rules repair</li>
+<li>Added service dependency repair (BITS, Delivery Optimization)</li>
+<li>Added Windows Update policy removal</li>
+<li>Added post-repair connectivity verification</li>
+<li>Added LTSC/IoT edition detection</li>
+<li>Improved service start logic (checks for disabled state)</li>
+<li>Better error messages with actionable guidance</li>
+</ul>
+<h3 id="v1-0-0">v1.0.0</h3>
+<ul>
+<li>Initial release</li>
+<li>Basic service stop/start</li>
+<li>Cache clearing</li>
+<li>DLL re-registration</li>
+<li>DISM/SFC integration</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License - see the <a href="https://github.com/SysAdminDoc/WURepair/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">LICENSE</a> file for details.</p>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>This tool modifies Windows system settings, registry values, and network configuration. While it creates backups and is designed to be safe:</p>
+<ul>
+<li><strong>Use at your own risk</strong></li>
+<li><strong>Always have backups</strong> of important data</li>
+<li><strong>Test in a VM first</strong> if unsure</li>
+<li><strong>A restart is required</strong> after running</li>
+<li>The author is not responsible for any issues arising from use of this tool</li>
+</ul>
+<h2 id="related-tools">Related Tools</h2>
+<ul>
+<li><a href="https://github.com/SysAdminDoc/WURepair/blob/HEAD/../DefenderShield" rel="noopener nofollow" target="_blank">DefenderShield</a> - Repair Windows Defender and Firewall after privacy tools disable them</li>
+</ul>
+<hr />
+<p>
+  Made with ☕ by Matt
+</p>
+</article> <p class="project-readme-hint project-readme-hint-spaced">
+Read on GitHub → <a href="https://github.com/SysAdminDoc/WURepair" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/WURepair</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-releases"> <div class="project-section-head"> <div> <h2 class="project-section-title">Recent Releases</h2> <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this project.</p> </div> </div> <ul class="project-releases"> <li class="project-release"> <a href="https://github.com/SysAdminDoc/WURepair/releases/tag/v2.17.0" target="_blank" rel="noopener" class="project-release-tag">v2.17.0</a> <time class="project-release-date" datetime="2026-06-28T14:50:36Z"> Jun 28, 2026 </time> <p class="project-release-body">Adds -PlainText deterministic ASCII console output for automation logs, RMM consoles, and screen readers. Plain-text mode suppresses progress rendering and color-only status while preserving log file output. · SHA256: 6b</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/WURepair/releases/tag/v2.16.0" target="_blank" rel="noopener" class="project-release-tag">v2.16.0</a> <time class="project-release-date" datetime="2026-06-28T14:43:39Z"> Jun 28, 2026 </time> <p class="project-release-body">Adds -SupportBundle for redacted diagnostic zip creation with WURepair log, JSON report, WindowsUpdate.log, CBS/DISM tails, relevant event exports, and manifest. Adds -NoRedact for intentional raw support bundles and a .</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/WURepair/releases/tag/v2.15.0" target="_blank" rel="noopener" class="project-release-tag">v2.15.0</a> <time class="project-release-date" datetime="2026-06-28T14:33:37Z"> Jun 28, 2026 </time> <p class="project-release-body">Adds managed update-source guardrails for WSUS/SUP/WUfB policy values. Full repair preserves managed source policy by default and requires -ResetManagedUpdatePolicy for intentional removal. · SHA256: 77f5c9c3f7f4655df0aa</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/WURepair/releases/tag/v2.14.0" target="_blank" rel="noopener" class="project-release-tag">v2.14.0</a> <time class="project-release-date" datetime="2026-06-28T14:26:02Z"> Jun 28, 2026 </time> <p class="project-release-body">Validates Microsoft Update Catalog SSU packages with SHA256 plus Microsoft Authenticode signature before wusa.exe runs and records validation metadata in JSON reports. · SHA256: 47128d186a8dfdafa2056d9ab1277fcfa8259631c8</p> </li><li class="project-release"> <a href="https://github.com/SysAdminDoc/WURepair/releases/tag/v2.13.0" target="_blank" rel="noopener" class="project-release-tag">v2.13.0</a> <time class="project-release-date" datetime="2026-06-28T14:19:01Z"> Jun 28, 2026 </time> <p class="project-release-body">Adds per-run mutation journal JSON for hosts, registry, policy, and cache changes; adds -RollbackJournal preview plus -ApplyRollback restore mode for reversible entries; and includes journal path/counts in JSON reports.\</p> </li> </ul> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/win11-nvme-driver-patcher/" class="ca" aria-describedby="related-rank-win11-nvme-driver-patcher" data-rank="84.2006" data-rank-position="2" data-rank-label="Rank 2: 49 stars, updated 6d ago, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">win11-nvme-driver-patcher</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">GUI to enable Windows Server 2025 NVMe driver on Win11</span> <span class="ca-rank ca-rank-related" id="related-rank-win11-nvme-driver-patcher" title="Rank 2: 49 stars, updated 6d ago, downloadable release"> Recommended #2: 49 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T02:56:14Z" data-rel-short="2026-07-01T02:56:14Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>49</span> </span>  </span> </a><a href="/projects/LibreSpot/" class="ca" aria-describedby="related-rank-LibreSpot" data-rank="69.5046" data-rank-position="8" data-rank-label="Rank 8: 12 stars, updated today, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">LibreSpot</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">Spotify customization — automates Spicetify, themes, extensions</span> <span class="ca-rank ca-rank-related" id="related-rank-LibreSpot" title="Rank 8: 12 stars, updated today, downloadable release"> Recommended #8: 12 stars, updated today, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-07T19:38:39Z" data-rel-short="2026-07-07T19:38:39Z"> Jul 7, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>12</span> </span>  </span> </a><a href="/projects/DisableDefender/" class="ca" aria-describedby="related-rank-DisableDefender" data-rank="64.4753" data-rank-position="13" data-rank-label="Rank 13: 8 stars, updated 6d ago, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">DisableDefender</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">Defender disabler/remover with CLI + premium WPF GUI; firewall preserved</span> <span class="ca-rank ca-rank-related" id="related-rank-DisableDefender" title="Rank 13: 8 stars, updated 6d ago, downloadable release"> Recommended #13: 8 stars, updated 6d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T03:33:14Z" data-rel-short="2026-07-01T03:33:14Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>8</span> </span>  </span> </a><a href="/projects/Network_Security_Auditor/" class="ca" aria-describedby="related-rank-Network_Security_Auditor" data-rank="59.4184" data-rank-position="23" data-rank-label="Rank 23: 5 stars, updated 9d ago, downloadable release"> <span class="cdo ps"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Network_Security_Auditor</span> <span class="ca-kind">PowerShell</span> </span> <span class="cds">67 automated checks across 8 security domains, MITRE ATT&CK mapping</span> <span class="ca-rank ca-rank-related" id="related-rank-Network_Security_Auditor" title="Rank 23: 5 stars, updated 9d ago, downloadable release"> Recommended #23: 5 stars, updated 9d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-06-28T03:54:08Z" data-rel-short="2026-06-28T03:54:08Z"> Jun 28, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>5</span> </span>  </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"Recent Releases","href":"#project-releases","desc":"Tagged release history pulled from GitHub for this project.","badge":"RELEASES"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>

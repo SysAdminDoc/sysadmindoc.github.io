@@ -39,7 +39,7 @@
 - [ApocalypseWatch](https://sysadmindoc.github.io/projects/ApocalypseWatch/): Realtime business-jet tracker vs. 24h baseline
 
 ## Pages
-- [Portfolio home](https://sysadmindoc.github.io/): 182 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
+- [Portfolio home](https://sysadmindoc.github.io/): 186 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
 - [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
 - [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, healthcare imaging support, and public software projects.
 - [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio projects, rendered README excerpts, releases, timeline entries, and public pages.
@@ -50,7 +50,7 @@
 - [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.
 - [Screenshots](https://sysadmindoc.github.io/screenshots/): Visual evidence gallery of live-app product surfaces captured from deployed builds.
 - [Releases](https://sysadmindoc.github.io/releases/): Chronological release stream across the active public portfolio archive.
-- [Full catalog](https://sysadmindoc.github.io/#catalog): All 182 public projects with search and filters.
+- [Full catalog](https://sysadmindoc.github.io/#catalog): All 186 public projects with search and filters.
 
 ## Language lanes
 - [PowerShell](https://sysadmindoc.github.io/lang/powershell/): Where the real sysadmin work lives.

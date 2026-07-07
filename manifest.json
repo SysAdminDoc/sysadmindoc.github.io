@@ -40,6 +40,22 @@
       "purpose": "any"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/screenshots/install/wide.jpg",
+      "sizes": "1600x1000",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Desktop portfolio homepage with featured project evidence and live app previews."
+    },
+    {
+      "src": "/screenshots/install/narrow.jpg",
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile portfolio homepage with availability, proof stats, and primary portfolio actions."
+    }
+  ],
   "shortcuts": [
     {
       "name": "Catalog",
