@@ -8,6 +8,7 @@ const siteUrl = 'https://sysadmindoc.github.io';
 const errors = [];
 const generatedEndpointCacheControl = 'public, max-age=300';
 const generatedImageCacheControl = 'public, max-age=86400';
+const releaseProvenanceLevels = new Set(['no-assets', 'unsigned', 'checksum', 'attested', 'unknown']);
 
 const discoveryLinks = [
   { href: '/rss.xml', type: 'application/rss+xml', label: 'recent projects RSS' },
@@ -221,6 +222,10 @@ function auditReleasesIndex(releasesIndex) {
     requireString(release, 'projectName', label);
     requireString(release, 'tag', label);
     requireString(release, 'name', label);
+    const provenance = requireString(release, 'provenance', label);
+    if (provenance && !releaseProvenanceLevels.has(provenance)) {
+      fail(`${label}.provenance "${provenance}" is not recognized.`);
+    }
     if (typeof release.summary !== 'string') fail(`${label}.summary must be a string.`);
     if (repo) repos.add(repo);
     requireDate(release.publishedAt, `${label}.publishedAt`);
@@ -325,6 +330,30 @@ function auditStatusEndpoint(statusIndex, { projectCount }) {
     requireNullableNumber(readmeRefresh, 'missRate', 'status.json generatedData.readmeRefresh');
     if (readmeRefresh.rateLimited !== null && typeof readmeRefresh.rateLimited !== 'boolean') {
       fail('status.json generatedData.readmeRefresh.rateLimited must be a boolean or null.');
+    }
+  }
+
+  const releaseProvenance = generatedData.releaseProvenance;
+  if (!isObject(releaseProvenance)) {
+    fail('status.json generatedData.releaseProvenance must be an object.');
+  } else {
+    for (const key of ['no-assets', 'unsigned', 'checksum', 'attested', 'unknown', 'total', 'trusted']) {
+      requireNumber(releaseProvenance, key, 'status.json generatedData.releaseProvenance');
+    }
+    if (
+      Number.isFinite(releaseProvenance.total) &&
+      Number.isFinite(generatedData.coverage?.releaseEntries) &&
+      releaseProvenance.total !== generatedData.coverage.releaseEntries
+    ) {
+      fail('status.json generatedData.releaseProvenance.total must match generatedData.coverage.releaseEntries.');
+    }
+    if (
+      Number.isFinite(releaseProvenance.trusted) &&
+      Number.isFinite(releaseProvenance.checksum) &&
+      Number.isFinite(releaseProvenance.attested) &&
+      releaseProvenance.trusted !== releaseProvenance.checksum + releaseProvenance.attested
+    ) {
+      fail('status.json generatedData.releaseProvenance.trusted must equal checksum + attested.');
     }
   }
 

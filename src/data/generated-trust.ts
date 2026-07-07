@@ -28,6 +28,19 @@ type TrustReadmeRefresh = {
   skippedReason?: string | null;
 };
 
+type TrustRelease = {
+  provenance?: string | null;
+};
+
+export const RELEASE_PROVENANCE_LEVELS = ['no-assets', 'unsigned', 'checksum', 'attested'] as const;
+
+export type ReleaseProvenanceLevel = (typeof RELEASE_PROVENANCE_LEVELS)[number];
+
+export type ReleaseProvenanceDistribution = Record<ReleaseProvenanceLevel | 'unknown', number> & {
+  total: number;
+  trusted: number;
+};
+
 export type GeneratedDataTrust = {
   status: 'fresh' | 'attention-required';
   mode: 'fixture' | 'unauthenticated-partial' | 'production-fresh' | 'production-attention';
@@ -70,6 +83,7 @@ export type GeneratedDataTrust = {
     rateLimited: boolean | null;
     skippedReason: string | null;
   };
+  releaseProvenance: ReleaseProvenanceDistribution;
   warnings: string[];
 };
 
@@ -79,6 +93,7 @@ export type GeneratedDataTrustInput = {
   metadataEntries: number;
   readmeEntries: number;
   releaseEntries: number;
+  releases?: TrustRelease[] | null;
   profileFeedInfo: TrustProfileFeedInfo;
   readmeRefresh?: TrustReadmeRefresh | null;
   now?: Date;
@@ -113,6 +128,41 @@ function coverageBelowThreshold(value: number | null) {
   return value != null && value < GENERATED_DATA_COVERAGE_THRESHOLD;
 }
 
+export function buildReleaseProvenanceDistribution(
+  releases: TrustRelease[] | null | undefined,
+  fallbackTotal = 0,
+): ReleaseProvenanceDistribution {
+  const counts = Object.fromEntries(RELEASE_PROVENANCE_LEVELS.map((level) => [level, 0])) as Record<
+    ReleaseProvenanceLevel,
+    number
+  >;
+  let unknown = 0;
+
+  if (Array.isArray(releases)) {
+    for (const release of releases) {
+      const provenance = release?.provenance;
+      if (RELEASE_PROVENANCE_LEVELS.includes(provenance as ReleaseProvenanceLevel)) {
+        counts[provenance as ReleaseProvenanceLevel] += 1;
+      } else {
+        unknown += 1;
+      }
+    }
+  } else if (fallbackTotal > 0) {
+    unknown = fallbackTotal;
+  }
+
+  const total = Array.isArray(releases)
+    ? RELEASE_PROVENANCE_LEVELS.reduce((sum, level) => sum + counts[level], unknown)
+    : fallbackTotal;
+
+  return {
+    ...counts,
+    unknown,
+    total,
+    trusted: counts.checksum + counts.attested,
+  };
+}
+
 export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): GeneratedDataTrust {
   const now = input.now ?? new Date();
   const maxAgeHours = input.maxAgeHours ?? GENERATED_DATA_MAX_AGE_HOURS;
@@ -137,6 +187,7 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
     readmeRefreshAttempted && readmeRefreshAttempted > 0 && readmeRefreshMisses != null
       ? roundMetric(readmeRefreshMisses / readmeRefreshAttempted)
       : null;
+  const releaseProvenance = buildReleaseProvenanceDistribution(input.releases, input.releaseEntries);
   const warnings: string[] = [];
 
   if (dataStale) warnings.push(`Generated GitHub data is stale or unavailable; refresh within ${maxAgeHours}h before deploy.`);
@@ -199,6 +250,7 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
       rateLimited: typeof readmeRefresh?.rateLimited === 'boolean' ? readmeRefresh.rateLimited : null,
       skippedReason: readmeRefresh?.skippedReason ?? null,
     },
+    releaseProvenance,
     warnings,
   };
 }

@@ -2,7 +2,7 @@ import type { APIContext } from 'astro';
 import { buildIdentity } from '../data/build-identity';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { buildGeneratedDataTrust } from '../data/generated-trust';
-import type { GeneratedReadmeRefresh, GeneratedStats } from '../data/generated';
+import type { GeneratedReadmeRefresh, GeneratedRelease, GeneratedStats } from '../data/generated';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
 import pkg from '../../package.json';
 
@@ -32,10 +32,11 @@ try {
   readmeEntries = Object.keys(mod.default ?? mod).length;
 } catch {}
 
-let releaseEntries = 0;
+let releases: GeneratedRelease[] = [];
 try {
   const mod = await import('../data/_releases.json');
-  releaseEntries = Array.isArray(mod.default ?? mod) ? (mod.default ?? mod).length : 0;
+  const rows = mod.default ?? mod;
+  releases = Array.isArray(rows) ? (rows as GeneratedRelease[]) : [];
 } catch {}
 
 let readmeRefresh: Partial<GeneratedReadmeRefresh> | null = null;
@@ -50,7 +51,8 @@ export async function GET(_context: APIContext) {
     starEntries,
     metadataEntries,
     readmeEntries,
-    releaseEntries,
+    releaseEntries: releases.length,
+    releases,
     profileFeedInfo,
     readmeRefresh,
   });

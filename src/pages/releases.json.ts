@@ -1,26 +1,18 @@
 import type { APIContext } from 'astro';
 import { endpointHeaders } from '../data/endpoint-headers';
+import type { GeneratedRelease } from '../data/generated';
 import { catalog, featured, liveApps } from '../data/portfolio';
 
 export const prerender = true;
-
-type Release = {
-  repo: string;
-  tag: string;
-  name: string;
-  publishedAt: string;
-  url: string;
-  bodyFirst: string;
-};
 
 type Stats = {
   fetchedAt?: string | null;
 };
 
-let releases: Release[] = [];
+let releases: GeneratedRelease[] = [];
 try {
   const mod = await import('../data/_releases.json');
-  releases = (mod.default ?? mod) as Release[];
+  releases = (mod.default ?? mod) as GeneratedRelease[];
 } catch {}
 
 let stats: Stats = {};
@@ -70,6 +62,7 @@ export async function GET(context: APIContext) {
       tag: release.tag,
       name: release.name,
       publishedAt: release.publishedAt,
+      provenance: release.provenance ?? 'unknown',
       summary: release.bodyFirst,
       urls: {
         release: release.url,

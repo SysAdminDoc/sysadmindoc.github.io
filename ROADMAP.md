@@ -3,19 +3,10 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.22
+Current version: v0.21.23
 Last normalized: 2026-06-29
 
 ## Research-Driven Additions
-
-### P1
-
-- [ ] P1 - Expose release provenance on status and release pages
-  Why: Generated release data classifies artifact trust, but visitors cannot see that the current cache has 60 releases, 0 attested, 19 checksum-backed, and 41 unsigned.
-  Evidence: `scripts/fetch-stars.mjs`, `scripts/summarize-generated-data.mjs`, `src/pages/status.astro`, `src/pages/status.json.ts`, `src/pages/releases.astro`, GitHub artifact-attestation docs, SLSA provenance spec.
-  Touches: `src/data/generated-trust.ts`, `src/pages/status.astro`, `src/pages/status.json.ts`, `src/pages/releases.astro`, `scripts/summarize-generated-data.mjs`, endpoint/feed tests.
-  Acceptance: `/status/` and `/status.json` expose the provenance distribution; `/releases/` badges each release as attested/checksum/unsigned/no-assets; deploy summary can fail on featured downloadable releases without checksum or attestation when strict mode requests it.
-  Complexity: M
 
 ### P2
 
