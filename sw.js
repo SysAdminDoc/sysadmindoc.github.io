@@ -1,4 +1,4 @@
-const CACHE = 'portfolio-v0.21.17';
+const CACHE = 'portfolio-v0.21.18';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE = [
   "/",
@@ -53,8 +53,8 @@ const PRECACHE = [
   "/fonts/jetbrains-mono-latin.woff2",
   "/fonts/outfit-latin-ext.woff2",
   "/fonts/outfit-latin.woff2",
-  "/pagefind/filter/en_5e1b226.pf_filter",
-  "/pagefind/filter/en_b47ad9f.pf_filter",
+  "/pagefind/filter/en_4950a4b.pf_filter",
+  "/pagefind/filter/en_d8aa877.pf_filter",
   "/pagefind/fragment/en_1053b62.pf_fragment",
   "/pagefind/fragment/en_118a597.pf_fragment",
   "/pagefind/fragment/en_14f2187.pf_fragment",
@@ -75,6 +75,7 @@ const PRECACHE = [
   "/pagefind/fragment/en_2ba296f.pf_fragment",
   "/pagefind/fragment/en_2c7d03a.pf_fragment",
   "/pagefind/fragment/en_2d5b317.pf_fragment",
+  "/pagefind/fragment/en_2da8b14.pf_fragment",
   "/pagefind/fragment/en_30cdcf2.pf_fragment",
   "/pagefind/fragment/en_30fdd3a.pf_fragment",
   "/pagefind/fragment/en_324bf28.pf_fragment",
@@ -113,7 +114,6 @@ const PRECACHE = [
   "/pagefind/fragment/en_542c846.pf_fragment",
   "/pagefind/fragment/en_54758d5.pf_fragment",
   "/pagefind/fragment/en_54fb83d.pf_fragment",
-  "/pagefind/fragment/en_5754772.pf_fragment",
   "/pagefind/fragment/en_5840d6c.pf_fragment",
   "/pagefind/fragment/en_58e481f.pf_fragment",
   "/pagefind/fragment/en_592b38c.pf_fragment",
@@ -268,7 +268,7 @@ const PRECACHE = [
   "/pagefind/index/en_49d31e5.pf_index",
   "/pagefind/index/en_4bfd355.pf_index",
   "/pagefind/index/en_4ca64c3.pf_index",
-  "/pagefind/index/en_4e1a2b1.pf_index",
+  "/pagefind/index/en_4e67465.pf_index",
   "/pagefind/index/en_4fcffa9.pf_index",
   "/pagefind/index/en_53ebd38.pf_index",
   "/pagefind/index/en_554652c.pf_index",
@@ -284,9 +284,9 @@ const PRECACHE = [
   "/pagefind/index/en_83413b7.pf_index",
   "/pagefind/index/en_8810a92.pf_index",
   "/pagefind/index/en_92ee5ce.pf_index",
-  "/pagefind/index/en_9c10aff.pf_index",
   "/pagefind/index/en_9eddaff.pf_index",
   "/pagefind/index/en_a1c0a3c.pf_index",
+  "/pagefind/index/en_a9c5368.pf_index",
   "/pagefind/index/en_b5464a8.pf_index",
   "/pagefind/index/en_bbd2133.pf_index",
   "/pagefind/index/en_da15e5f.pf_index",
@@ -305,7 +305,7 @@ const PRECACHE = [
   "/pagefind/pagefind-ui.css",
   "/pagefind/pagefind-ui.js",
   "/pagefind/pagefind-worker.js",
-  "/pagefind/pagefind.en_3d186ab9b3.pf_meta",
+  "/pagefind/pagefind.en_57d442e71f.pf_meta",
   "/pagefind/pagefind.js",
   "/pagefind/wasm.en.pagefind",
   "/pagefind/wasm.unknown.pagefind"
