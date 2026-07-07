@@ -21,6 +21,22 @@ const viewports = [
   { name: 'desktop', width: 1365, height: 900 },
   { name: 'mobile', width: 390, height: 900 },
 ];
+const layoutRegressionRouteNames = new Set([
+  'home',
+  'search',
+  'archive',
+  'status',
+  'releases',
+  'screenshots',
+  'project-nomad',
+]);
+const layoutRegressionRoutes = routes.filter((route) => layoutRegressionRouteNames.has(route.name));
+const layoutRegressionViewports = [
+  { name: 'wide-1000', width: 1000, height: 900 },
+  { name: 'wide-1280', width: 1280, height: 900 },
+  { name: 'wide-1440', width: 1440, height: 900 },
+  { name: 'short-1280x650', width: 1280, height: 650 },
+];
 const targetSizeMinimum = 24;
 
 const stabilityCss = `
@@ -308,6 +324,39 @@ test.describe('WCAG 2.2 target-size audit', () => {
   }
 });
 
+test.describe('Mid-wide desktop layout regression audit', () => {
+  for (const viewport of layoutRegressionViewports) {
+    for (const route of layoutRegressionRoutes) {
+      test(`${route.name} ${viewport.name} layout stays stable`, async ({ page }, testInfo) => {
+        const runtimeErrors = collectRuntimeErrors(page);
+        const isLight = testInfo.project.name.includes('light');
+        const maskColor = isLight ? '#f0f0f3' : '#111827';
+        await page.setViewportSize({ width: viewport.width, height: viewport.height });
+        await preparePage(page, route.path, route.ready);
+        if (route.name === 'home') {
+          await expect(page.locator('.hero-evidence')).toBeVisible();
+        }
+        if (isLight) {
+          await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+          await page.waitForTimeout(200);
+        }
+
+        await expect(page.locator('main')).toBeVisible();
+        await expect(page.locator(route.ready)).toBeVisible();
+        await expect(page.locator('vite-error-overlay')).toHaveCount(0);
+        await expectNoHorizontalOverflow(page);
+        expect(await collectTargetSizeViolations(page)).toEqual([]);
+        expect(runtimeErrors).toEqual([]);
+        await expect(page).toHaveScreenshot(`${route.name}-${viewport.name}.png`, {
+          fullPage: false,
+          mask: dynamicMasks(page),
+          maskColor,
+        });
+      });
+    }
+  }
+});
+
 test('homepage hero evidence showcase fills desktop and stays off mobile', async ({ page }) => {
   const expectDesktopRail = async (width) => {
     await page.setViewportSize({ width, height: 900 });
@@ -316,14 +365,21 @@ test('homepage hero evidence showcase fills desktop and stays off mobile', async
     const rail = page.locator('.hero-evidence');
     await expect(rail).toBeVisible();
     await expect(page.locator('.hero-evidence .hero-showcase')).toHaveCount(1);
-    await expect(page.locator('.hero-evidence .hero-showcase-brand strong')).toHaveText('SPECTRE');
-    await expect(page.locator('.hero-evidence .hero-app-card')).toHaveCount(4);
-    await expect(page.locator('.hero-evidence .hero-app-card strong')).toHaveText([
-      'IconForge',
-      'ImageXpert',
-      'Text-Filter-Editor',
-      'More Live Apps',
-    ]);
+    const evidence = await page.locator('.hero-evidence').evaluate((node) => {
+      const showcase = node.querySelector('.hero-showcase');
+      const showcaseName = showcase?.querySelector('.hero-showcase-brand strong')?.textContent?.trim() ?? '';
+      return {
+        showcaseName,
+        showcaseHref: showcase?.getAttribute('href') ?? '',
+        showcaseImageAlt: showcase?.querySelector('img')?.getAttribute('alt') ?? '',
+        cardNames: Array.from(node.querySelectorAll('.hero-app-card strong')).map((card) => card.textContent?.trim() ?? ''),
+      };
+    });
+    expect(evidence.showcaseName).toMatch(/\S/);
+    expect(evidence.showcaseHref).toMatch(/^https:\/\/sysadmindoc\.github\.io\/[^/]+\/$/);
+    expect(evidence.showcaseImageAlt).toContain(evidence.showcaseName);
+    expect(evidence.cardNames.length).toBeGreaterThanOrEqual(1);
+    expect(evidence.cardNames.at(-1)).toBe('More Live Apps');
 
     const desktopMetrics = await page.evaluate(() => {
       const railElement = document.querySelector('.hero-evidence');

@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.24] - 2026-07-07
+
+- Added mid-wide and short-height Playwright layout regression coverage for home, search, archive, status, releases, screenshots, and project detail routes, including no-overflow, runtime-error, target-size, and visual-baseline assertions.
+
 ## [v0.21.23] - 2026-07-07
 
 - Exposed release artifact provenance on `/status/`, `/status.json`, `/releases/`, and `releases.json`, including attested/checksum/unsigned/no-assets badges and aggregate trusted counts.
