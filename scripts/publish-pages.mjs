@@ -47,6 +47,17 @@ function output(command, args, { cwd = root } = {}) {
   return String(result.stdout ?? '').trim();
 }
 
+function optionalOutput(command, args, { cwd = root } = {}) {
+  const result = spawnSync(commandName(command), args, {
+    cwd,
+    env: process.env,
+    stdio: 'pipe',
+    encoding: 'utf8',
+  });
+  if (result.error || result.status !== 0) return null;
+  return String(result.stdout ?? '').trim();
+}
+
 function normalizeVersion(value) {
   const version = String(value ?? '').trim().replace(/^v/i, '');
   if (!version) throw new Error('Package version is empty.');
@@ -90,6 +101,13 @@ async function verifyGitHubPagesSource(repoSlug, pagesBranch) {
     return;
   }
 
+  const ghSource = optionalOutput('gh', ['api', `repos/${repoSlug}/pages`, '--jq', '.source']);
+  if (ghSource) {
+    const source = JSON.parse(ghSource);
+    requirePagesSource(repoSlug, source, pagesBranch);
+    return;
+  }
+
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
   const response = await fetch(`https://api.github.com/repos/${repoSlug}/pages`, {
     headers: {
@@ -104,8 +122,12 @@ async function verifyGitHubPagesSource(repoSlug, pagesBranch) {
   }
 
   const pages = JSON.parse(body);
-  const sourceBranch = pages.source?.branch;
-  const sourcePath = pages.source?.path;
+  requirePagesSource(repoSlug, pages.source, pagesBranch);
+}
+
+function requirePagesSource(repoSlug, source, pagesBranch) {
+  const sourceBranch = source?.branch;
+  const sourcePath = source?.path;
   if (sourceBranch !== pagesBranch || sourcePath !== '/') {
     throw new Error(`GitHub Pages source is ${sourceBranch}:${sourcePath}; expected ${pagesBranch}:/`);
   }
