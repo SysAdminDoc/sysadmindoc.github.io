@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.19] - 2026-07-07
+
+- Restored visual hiding for filtered catalog cards after the modern card grid rules override the earlier hidden-state declaration.
+
 ## [v0.21.18] - 2026-07-07
 
 - Added the GitHub Pages `.nojekyll` marker so the deployed Astro `_assets` and Pagefind output are served by the legacy Pages branch publisher.
