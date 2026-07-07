@@ -149,7 +149,22 @@ const heroProofItems = homepageProofHighlights.map((highlight) => ({
   ...highlight,
   sourceText: resolveHomepageProofSource(projectProof[highlight.repo], highlight.source),
 }));
-const heroEvidenceApps = liveApps.slice(0, 3);
+const heroEvidencePrimary = liveApps.find((app) => app.slug === 'SPECTRE') ?? liveApps[0] ?? null;
+const heroEvidenceCards = ['IconForge', 'ImageXpert', 'Text-Filter-Editor']
+  .map((slug) => liveApps.find((app) => app.slug === slug))
+  .filter(Boolean) as typeof liveApps;
+const heroEvidenceMoreCount = Math.max(0, liveApps.length - heroEvidenceCards.length - (heroEvidencePrimary ? 1 : 0));
+function plainHeroText(value: string) {
+  return value
+    .replace(/&mdash;/g, '\u2014')
+    .replace(/&ndash;/g, '\u2013')
+    .replace(/&rarr;/g, '\u2192')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const heroReleaseDate = compactUtcDate;
 const heatmapMonthDate = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' });
@@ -357,15 +372,14 @@ const cmdkSections = [
     <div class="ni">
       <a href="#hero" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
       <div class="nk" id="navLinks">
-        <a href="#greatest-hits">Hits</a>
-        <a href="#live">Live</a>
+        <a href="#greatest-hits">Highlights</a>
+        <a href="#live">Live Apps</a>
         <a href="#catalog">Catalog</a>
-        <a href="/search/">Search</a>
-        <a href="/releases/">Releases</a>
-        <a href="/timeline/">Timeline</a>
-        <a href="/archive/">Archive</a>
-        <a href="/now/">Now</a>
+        <a href="#skills">Stack</a>
         <a href="#career">Career</a>
+        <a href="#journey">Journey</a>
+        <a href="#beyond">Beyond Code</a>
+        <a href="#connect">Connect</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
       <div class="nav-actions">
@@ -390,10 +404,11 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <div class="hero-brandline">SysAdminDoc <span>/</span> Open Source Portfolio</div>
-        <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="56" height="56" decoding="async" fetchpriority="high">
+        <div class="hero-identity">
+          <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
+          <h1 class="hn">Matt <span class="a">Parker</span></h1>
+        </div>
         <a class="htag" id="heroTag" href="#connect"><span class="dot"></span> Available for work</a>
-        <h1 class="hn">Matt <span class="a">Parker</span></h1>
         <div class="hero-proof-strip" aria-label="Source-backed project outcomes">
           {heroProofItems.map((proof) => (
             <a href={`/projects/${proof.repo}/`} class="hero-proof" title={proof.sourceText} aria-label={`${proof.value} ${proof.label}. ${proof.copy} Source: ${proof.sourceText}`}>
@@ -403,8 +418,8 @@ const cmdkSections = [
             </a>
           ))}
         </div>
-        <p class="hr">Senior Technical Support Manager &amp; systems administrator &mdash; 15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
-        <p class="hd">By day I architect PACS migrations, DR panel deployments, and cloud transitions for healthcare facilities. By night (and most weekends) I ship the utilities that should have existed already: fast starts, calm UX, offline resilience, and direct access to the source.</p>
+        <p class="hr">Senior Technical Support Manager &amp; systems administrator</p>
+        <p class="hero-summary">15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus the open-source tools that grew out of that work.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -447,35 +462,82 @@ const cmdkSections = [
       </div>
       <aside class="hero-evidence" aria-label="Live project evidence">
         <div class="hero-evidence-head">
-          <span class="hero-evidence-kicker">Live evidence</span>
-          <strong>Projects that open now</strong>
-          <p>{liveApps.length} browser apps plus source-backed outcomes, surfaced before the full catalog.</p>
+          <div>
+            <span class="hero-evidence-kicker"><span class="dot"></span> Live evidence</span>
+            <strong>Projects that open now</strong>
+            <p>{liveApps.length} browser apps plus source-backed outcomes, surfaced before the full catalog.</p>
+          </div>
+          <span class="hero-live-badge"><span class="dot"></span> Live Apps</span>
         </div>
-        <div class="hero-evidence-stack">
-          {heroEvidenceApps.map((app, index) => (
-            <a href={app.url} target="_blank" rel="noopener" class="hero-shot" aria-label={`Open ${app.name} live app in a new tab`}>
+        {heroEvidencePrimary && (
+          <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
+            <span class="hero-showcase-brand">
+              <span class="hero-app-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="7"></circle>
+                  <circle cx="12" cy="12" r="2.5"></circle>
+                  <path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
+                </svg>
+              </span>
+              <strong>{heroEvidencePrimary.name}</strong>
+              <small>{plainHeroText(heroEvidencePrimary.desc)}</small>
+            </span>
+            <span class="hero-showcase-shot">
+              <span class="hero-tool-strip" aria-hidden="true">
+                <span>Google Lens</span>
+                <span>Yandex</span>
+                <span>Bing</span>
+                <span>TinEye</span>
+              </span>
               <img
-                src={`/screenshots/thumbs/${app.slug}.jpg`}
-                alt={`${app.name} live app screenshot`}
+                src={`/screenshots/thumbs/${heroEvidencePrimary.slug}.jpg`}
+                alt={`${heroEvidencePrimary.name} live app screenshot`}
                 width="640"
                 height="400"
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading="eager"
                 decoding="async"
               >
-              <span class="hero-shot-meta">
-                <span>{app.name}</span>
-                <small>Live app</small>
-              </span>
-            </a>
-          ))}
+            </span>
+          </a>
+        )}
+        <div class="hero-carousel-ui" aria-hidden="true">
+          <span class="hero-carousel-arrow">‹</span>
+          <span class="hero-carousel-dots">
+            <span class="is-active"></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="hero-carousel-arrow">›</span>
         </div>
-        <div class="hero-evidence-links" aria-label="Source-backed proof links">
-          {heroProofItems.map((proof) => (
-            <a href={`/projects/${proof.repo}/`} class="hero-evidence-proof" title={proof.sourceText}>
-              <span>{proof.label}</span>
-              <strong>{proof.value}</strong>
+        <div class="hero-app-grid" aria-label="Featured live app shortcuts">
+          {heroEvidenceCards.map((app) => (
+            <a href={app.url} target="_blank" rel="noopener" class="hero-app-card" aria-label={`Open ${app.name} live app in a new tab`}>
+              <span class="hero-app-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                  <path d="M8 12h8M12 8v8"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>{app.name}</strong>
+                <small>{plainHeroText(app.desc)}</small>
+              </span>
+              <em>Live</em>
             </a>
           ))}
+          <a href="#live" class="hero-app-card hero-app-more">
+            <span class="hero-app-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="7" cy="7" r="2.5"></circle>
+                <circle cx="17" cy="7" r="2.5"></circle>
+                <circle cx="7" cy="17" r="2.5"></circle>
+                <circle cx="17" cy="17" r="2.5"></circle>
+              </svg>
+            </span>
+            <span>
+              <strong>More Live Apps</strong>
+              <small>{heroEvidenceMoreCount} more apps in the catalog</small>
+            </span>
+            <em>→</em>
+          </a>
         </div>
       </aside>
     </div>

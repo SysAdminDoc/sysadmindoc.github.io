@@ -308,14 +308,22 @@ test.describe('WCAG 2.2 target-size audit', () => {
   }
 });
 
-test('homepage hero evidence rail fills desktop and stays off mobile', async ({ page }) => {
+test('homepage hero evidence showcase fills desktop and stays off mobile', async ({ page }) => {
   const expectDesktopRail = async (width) => {
     await page.setViewportSize({ width, height: 900 });
     await preparePage(page, '/', '#hero');
 
     const rail = page.locator('.hero-evidence');
     await expect(rail).toBeVisible();
-    await expect(page.locator('.hero-evidence .hero-shot')).toHaveCount(3);
+    await expect(page.locator('.hero-evidence .hero-showcase')).toHaveCount(1);
+    await expect(page.locator('.hero-evidence .hero-showcase-brand strong')).toHaveText('SPECTRE');
+    await expect(page.locator('.hero-evidence .hero-app-card')).toHaveCount(4);
+    await expect(page.locator('.hero-evidence .hero-app-card strong')).toHaveText([
+      'IconForge',
+      'ImageXpert',
+      'Text-Filter-Editor',
+      'More Live Apps',
+    ]);
 
     const desktopMetrics = await page.evaluate(() => {
       const railElement = document.querySelector('.hero-evidence');
@@ -331,7 +339,7 @@ test('homepage hero evidence rail fills desktop and stays off mobile', async ({ 
     });
     expect(desktopMetrics.scrollWidth).toBeLessThanOrEqual(desktopMetrics.clientWidth + 1);
     expect(desktopMetrics.railTop).toBeLessThan(160);
-    expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.48);
+    expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.47);
     expect(desktopMetrics.railRight).toBeLessThanOrEqual(desktopMetrics.clientWidth);
     expect(desktopMetrics.railHeight).toBeGreaterThan(420);
   };
