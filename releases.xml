@@ -5,23 +5,55 @@
     <link>https://sysadmindoc.github.io/releases/</link>
     <description>Tagged releases across the public archive by Matt Parker.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jul 2026 19:18:40 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2026 21:21:53 GMT</lastBuildDate>
     <atom:link href="https://sysadmindoc.github.io/releases.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HostsGuard v0.12.5</title>
-      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.5</link>
-      <description>Changed: · - Added the 2026-07-07 improvement backlog to the local roadmap split. · - Modernized roadmap target language to the shipped .NET 10 architecture.</description>
+      <title>HostsGuard v0.12.10</title>
+      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.10</link>
+      <description>Adds a rule decision explainer and simulator across FirewallControl, WPF Firewall Activity, and HostsGuard.Cli explain. The decision chain reports hosts entries, firewall rules/groups, trusted publishers/folders, profile</description>
       <category>HostsGuard</category>
-      <pubDate>Tue, 07 Jul 2026 19:18:40 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.5</guid>
+      <pubDate>Tue, 07 Jul 2026 21:21:53 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.10</guid>
     </item>
     <item>
-      <title>HostsGuard v0.12.4</title>
-      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.4</link>
-      <description>Changed: · - Refined WPF parity with native dark title bar, Tools/update actions, observed DNS status labels, blocked-row danger cue, and a closable inspector header. · - Refreshed dark/light Hosts Activity screenshots a</description>
+      <title>HostsGuard v0.12.9</title>
+      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.9</link>
+      <description>Adds source-scoped blocklist preview, enable/disable, and rollback across WPF, CLI, and ListControl. Imports now track per-source domain ownership so source removal deletes only sole-owned domains while preserving manual</description>
       <category>HostsGuard</category>
-      <pubDate>Tue, 07 Jul 2026 19:02:35 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.4</guid>
+      <pubDate>Tue, 07 Jul 2026 20:58:35 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.9</guid>
+    </item>
+    <item>
+      <title>HostsGuard v0.12.8</title>
+      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.8</link>
+      <description>Adds first-class persisted event-ledger browsing through WPF, CLI, and Monitoring.ListEvents. Includes paging and time/action/reason/domain/process/category filters, plus redacted CSV export for shareable event evidence.</description>
+      <category>HostsGuard</category>
+      <pubDate>Tue, 07 Jul 2026 20:43:21 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.8</guid>
+    </item>
+    <item>
+      <title>HostsGuard v0.12.7</title>
+      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.7</link>
+      <description>Portable-policy export/import now carries non-secret mutable privacy posture across machines, including consent trust, DNS privacy toggles, DoH intelligence, kill-switch intent, AI knowledge/overrides, and webhook endpoi</description>
+      <category>HostsGuard</category>
+      <pubDate>Tue, 07 Jul 2026 20:29:02 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.7</guid>
+    </item>
+    <item>
+      <title>HostsGuard v0.12.6</title>
+      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.6</link>
+      <description>Fixed: hardened outbound event webhooks against SSRF. Loopback API configuration now rejects non-HTTPS, loopback, private, link-local, metadata, ULA, and CGNAT destinations before saving, and webhook delivery uses the sa</description>
+      <category>HostsGuard</category>
+      <pubDate>Tue, 07 Jul 2026 20:14:33 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.6</guid>
+    </item>
+    <item>
+      <title>SysAdminDoc v4.9.153</title>
+      <link>https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.153</link>
+      <description>Profile mock-parity refresh: centered line-art header, icon category nav, signal-based Start Here routing, generated Tool Catalog, footer action strip, and refreshed local validation evidence.</description>
+      <category>SysAdminDoc</category>
+      <pubDate>Tue, 07 Jul 2026 19:56:24 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.153</guid>
     </item>
     <item>
       <title>SysAdminDoc v4.9.152</title>
@@ -30,22 +62,6 @@
       <category>SysAdminDoc</category>
       <pubDate>Tue, 07 Jul 2026 17:58:47 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.152</guid>
-    </item>
-    <item>
-      <title>HostsGuard v0.12.3</title>
-      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.3</link>
-      <description>Changed: · - Tightened the WPF shell against the generated design reference with a concept-scale 1280x800 default window, icon-led main navigation, and a denser operational left rail. · - Reworked Hosts Activity controls</description>
-      <category>HostsGuard</category>
-      <pubDate>Tue, 07 Jul 2026 16:59:28 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.3</guid>
-    </item>
-    <item>
-      <title>HostsGuard v0.12.2</title>
-      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.2</link>
-      <description>Changed: · - Re-imagined the WPF shell around a persistent status rail with service health, filtering posture, key counters, refresh/reset actions, scale, and theme controls visible across the app. · - Modernized the act</description>
-      <category>HostsGuard</category>
-      <pubDate>Tue, 07 Jul 2026 16:27:32 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.2</guid>
     </item>
     <item>
       <title>sysadmindoc.github.io v0.21.8</title>
@@ -102,14 +118,6 @@
       <category>AlarmClockXtreme</category>
       <pubDate>Sun, 05 Jul 2026 22:10:56 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.23</guid>
-    </item>
-    <item>
-      <title>HostsGuard v0.12.1</title>
-      <link>https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.1</link>
-      <description>- Premium-polished the WPF shell and core controls across dark and light themes. · - Reduced startup lockout after the service handshake while tab data continues loading. · - Refined confirmation, consent, and text-input</description>
-      <category>HostsGuard</category>
-      <pubDate>Sun, 05 Jul 2026 19:26:20 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.1</guid>
     </item>
     <item>
       <title>HurricaneMap v1.4.6</title>
@@ -398,14 +406,6 @@
       <category>Start-Menu-Organizer</category>
       <pubDate>Sun, 28 Jun 2026 14:37:34 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.11.0</guid>
-    </item>
-    <item>
-      <title>WURepair v2.15.0</title>
-      <link>https://github.com/SysAdminDoc/WURepair/releases/tag/v2.15.0</link>
-      <description>Adds managed update-source guardrails for WSUS/SUP/WUfB policy values. Full repair preserves managed source policy by default and requires -ResetManagedUpdatePolicy for intentional removal. · SHA256: 77f5c9c3f7f4655df0aa</description>
-      <category>WURepair</category>
-      <pubDate>Sun, 28 Jun 2026 14:33:37 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/WURepair/releases/tag/v2.15.0</guid>
     </item>
   </channel>
 </rss>

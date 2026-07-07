@@ -19,7 +19,7 @@
       "url": "https://sysadmindoc.github.io/projects/Vigil/",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Desktop"
       ]
@@ -29,17 +29,7 @@
       "url": "https://sysadmindoc.github.io/projects/android-debloat-list/",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-07T19:45:29.000Z",
-      "tags": [
-        "Guides"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
-      "url": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
-      "title": "sysadmindoc.github.io",
-      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Guides"
       ]
@@ -49,7 +39,7 @@
       "url": "https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Other"
       ]
@@ -59,7 +49,7 @@
       "url": "https://sysadmindoc.github.io/projects/RcloneBrowser/",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Other"
       ]
@@ -69,7 +59,7 @@
       "url": "https://sysadmindoc.github.io/projects/TabExplorer/",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Other"
       ]
@@ -79,7 +69,7 @@
       "url": "https://sysadmindoc.github.io/projects/TagStudio/",
       "title": "TagStudio",
       "content_text": "User-focused photo & file management system",
-      "date_modified": "2026-07-07T19:45:29.000Z",
+      "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Other"
       ]
@@ -89,9 +79,19 @@
       "url": "https://sysadmindoc.github.io/projects/LibreSpot/",
       "title": "LibreSpot",
       "content_text": "Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
-      "date_modified": "2026-07-07T19:38:39.000Z",
+      "date_modified": "2026-07-07T21:36:58.000Z",
       "tags": [
         "Featured"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+      "url": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+      "title": "sysadmindoc.github.io",
+      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "date_modified": "2026-07-07T21:32:07.000Z",
+      "tags": [
+        "Guides"
       ]
     },
     {
@@ -99,7 +99,7 @@
       "url": "https://sysadmindoc.github.io/projects/HostsGuard/",
       "title": "HostsGuard",
       "content_text": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
-      "date_modified": "2026-07-07T19:18:22.000Z",
+      "date_modified": "2026-07-07T21:21:33.000Z",
       "tags": [
         "Desktop"
       ]

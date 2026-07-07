@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-07T19:47:47.345Z",
+  "generatedAt": "2026-07-07T21:51:22.241Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-07T19:47:47.345Z"
+    "githubMetadataFetchedAt": "2026-07-07T21:51:22.241Z"
   },
   "counts": {
     "releases": 60,
@@ -14,13 +14,13 @@
     {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.5",
-      "name": "v0.12.5",
-      "publishedAt": "2026-07-07T19:18:40Z",
+      "tag": "v0.12.10",
+      "name": "v0.12.10",
+      "publishedAt": "2026-07-07T21:21:53Z",
       "provenance": "unsigned",
-      "summary": "Changed: · - Added the 2026-07-07 improvement backlog to the local roadmap split. · - Modernized roadmap target language to the shipped .NET 10 architecture.",
+      "summary": "Adds a rule decision explainer and simulator across FirewallControl, WPF Firewall Activity, and HostsGuard.Cli explain. The decision chain reports hosts entries, firewall rules/groups, trusted publishers/folders, profile",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.5",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.10",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
@@ -28,15 +28,71 @@
     {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.4",
-      "name": "v0.12.4",
-      "publishedAt": "2026-07-07T19:02:35Z",
+      "tag": "v0.12.9",
+      "name": "v0.12.9",
+      "publishedAt": "2026-07-07T20:58:35Z",
       "provenance": "unsigned",
-      "summary": "Changed: · - Refined WPF parity with native dark title bar, Tools/update actions, observed DNS status labels, blocked-row danger cue, and a closable inspector header. · - Refreshed dark/light Hosts Activity screenshots a",
+      "summary": "Adds source-scoped blocklist preview, enable/disable, and rollback across WPF, CLI, and ListControl. Imports now track per-source domain ownership so source removal deletes only sole-owned domains while preserving manual",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.4",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.9",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.8",
+      "name": "v0.12.8",
+      "publishedAt": "2026-07-07T20:43:21Z",
+      "provenance": "unsigned",
+      "summary": "Adds first-class persisted event-ledger browsing through WPF, CLI, and Monitoring.ListEvents. Includes paging and time/action/reason/domain/process/category filters, plus redacted CSV export for shareable event evidence.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.8",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.7",
+      "name": "v0.12.7",
+      "publishedAt": "2026-07-07T20:29:02Z",
+      "provenance": "unsigned",
+      "summary": "Portable-policy export/import now carries non-secret mutable privacy posture across machines, including consent trust, DNS privacy toggles, DoH intelligence, kill-switch intent, AI knowledge/overrides, and webhook endpoi",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.7",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.6",
+      "name": "v0.12.6",
+      "publishedAt": "2026-07-07T20:14:33Z",
+      "provenance": "unsigned",
+      "summary": "Fixed: hardened outbound event webhooks against SSRF. Loopback API configuration now rejects non-HTTPS, loopback, private, link-local, metadata, ULA, and CGNAT destinations before saving, and webhook delivery uses the sa",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.6",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "SysAdminDoc",
+      "projectName": "SysAdminDoc",
+      "tag": "v4.9.153",
+      "name": "v4.9.153",
+      "publishedAt": "2026-07-07T19:56:24Z",
+      "provenance": "unsigned",
+      "summary": "Profile mock-parity refresh: centered line-art header, icon category nav, signal-based Start Here routing, generated Tool Catalog, footer action strip, and refreshed local validation evidence.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.153",
+        "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
+        "detail": null
       }
     },
     {
@@ -51,34 +107,6 @@
         "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.152",
         "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
         "detail": null
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.3",
-      "name": "v0.12.3",
-      "publishedAt": "2026-07-07T16:59:28Z",
-      "provenance": "unsigned",
-      "summary": "Changed: · - Tightened the WPF shell against the generated design reference with a concept-scale 1280x800 default window, icon-led main navigation, and a denser operational left rail. · - Reworked Hosts Activity controls",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.3",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.2",
-      "name": "v0.12.2",
-      "publishedAt": "2026-07-07T16:27:32Z",
-      "provenance": "unsigned",
-      "summary": "Changed: · - Re-imagined the WPF shell around a persistent status rail with service health, filtering posture, key counters, refresh/reset actions, scale, and theme controls visible across the app. · - Modernized the act",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.2",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
     },
     {
@@ -177,20 +205,6 @@
         "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.23",
         "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
         "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.1",
-      "name": "v0.12.1",
-      "publishedAt": "2026-07-05T19:26:20Z",
-      "provenance": "unsigned",
-      "summary": "- Premium-polished the WPF shell and core controls across dark and light themes. · - Reduced startup lockout after the service handshake while tab data continues loading. · - Refined confirmation, consent, and text-input",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.1",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
     },
     {
@@ -835,20 +849,6 @@
         "release": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry/releases/tag/v2.3.5",
         "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
         "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/"
-      }
-    },
-    {
-      "repo": "ImgConverter",
-      "projectName": "ImgConverter",
-      "tag": "v3.3.3",
-      "name": "v3.3.3",
-      "publishedAt": "2026-06-28T14:01:45Z",
-      "provenance": "checksum",
-      "summary": "- **Entry-point plugin trust pinning**: Package entry-point plugins now store and verify a digest of installed module and distribution metadata files, so same-version package code changes are reported as changed and skip",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ImgConverter/releases/tag/v3.3.3",
-        "repository": "https://github.com/SysAdminDoc/ImgConverter",
-        "detail": "https://sysadmindoc.github.io/projects/ImgConverter/"
       }
     }
   ]
