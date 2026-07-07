@@ -5,7 +5,7 @@
     "label": "Senior Technical Support Manager",
     "email": "matt_parker@outlook.com",
     "url": "https://sysadmindoc.github.io",
-    "summary": "15+ years in enterprise IT, the last six in medical imaging (DICOM/PACS, DR panels, cloud migrations), plus open-source tooling across PowerShell, Python, JavaScript, Kotlin, C#, and C++.",
+    "summary": "15+ years in enterprise IT and systems administration, with recent focus on medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting.",
     "location": {
       "city": "Sarasota",
       "region": "FL",
@@ -29,23 +29,23 @@
       "name": "Maven Imaging",
       "position": "Senior Technical Support Manager",
       "location": "Sarasota, FL",
-      "summary": "Feb 2021 — Present — Tier II escalation lead for PACS, DR panels, and cloud migrations. Architected 10+ PACS migrations (including a 1M+ file Candelis legacy transfer when vendor tooling failed), drove a 54-account cross-vendor cloud restoration, and support clinics across the Caribbean, East Africa, and East Asia. Built the in-house tooling that makes it possible.",
+      "summary": "Feb 2021 — Present — Tier II escalation and support management for PACS, DR panel, acquisition workstation, and cloud-hosted imaging workflows. Work centers on clinical imaging troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
       "highlights": [
-        "Led 10+ PACS migrations — single largest moved 1M+ files after writing a custom C-Store sender to bypass broken vendor tooling",
-        "Restored 54 customer cloud accounts during a cross-vendor PatientImage / RADinfo transition",
-        "Diagnosed and fixed a fleet-wide Windows 11 random-MAC licensing bug; set the shipping-PC standard to prevent recurrence",
-        "Built production tooling adopted company-wide: DICOM PACS Migrator, WiFi Tool, acquisition-PC network scanner",
-        "Produces the Maven Imaging YouTube tutorial library (VoyanceX, VXvue, Rayence, Genoray, AMRAD) and trains a major OEM’s field engineers"
+        "Coordinate PACS and imaging-system migrations, including legacy archive transfers, customer cutovers, and validation follow-up",
+        "Support DR panel acquisition environments, Windows workstations, network connectivity, and vendor application issues",
+        "Troubleshoot licensing, workstation, networking, VPN, and cloud-account access issues across customer environments",
+        "Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support",
+        "Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps"
       ],
       "keywords": [
-        "DICOM C-Store",
-        "Candelis ImageGrid",
-        "Voyance / VoyanceX",
-        "Patient Image Cloud",
-        "VXvue",
-        "Rayence DR",
+        "DICOM",
+        "PACS",
+        "DR panels",
+        "Acquisition workstations",
+        "Windows imaging PCs",
+        "Cloud imaging workflows",
         "Hyper-V",
-        "UniFi VPN",
+        "VPN",
         "Freshdesk"
       ]
     },
@@ -53,12 +53,12 @@
       "name": "ThinkTV (PBS Affiliate)",
       "position": "Systems Administrator",
       "location": "Dayton, OH",
-      "summary": "Apr 2014 — Feb 2025 — Administered the full network and server stack for a regional PBS station serving Dayton and Cincinnati — physical and virtual Windows Servers, Cisco networking, SCCM, and the broadcast-automation infrastructure that had to stay on-air 24/7.",
+      "summary": "Apr 2014 — Feb 2025 — Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.",
       "highlights": [
-        "Led Hyper-V virtualization initiative, consolidating physical hardware",
-        "Implemented SCCM from scratch to manage 100+ Win7/10 workstations",
-        "Deployed Cisco ISR 4300, ASA firewalls, and Catalyst 2960/3560/SG300 switches",
-        "Maintained Grass Valley K2 video servers + Harmonic encoders on the broadcast side"
+        "Supported Hyper-V virtualization and server consolidation for Windows Server workloads",
+        "Administered endpoint management for Windows workstation fleets using SCCM-era tooling",
+        "Maintained Cisco routing, firewall, and switching infrastructure with monitoring and troubleshooting",
+        "Supported broadcast-related server and encoder infrastructure with escalation and maintenance as needed"
       ],
       "keywords": [
         "Windows Server 2008–2016",
@@ -74,11 +74,11 @@
       "name": "Dayton Technology Group (MSP)",
       "position": "IT Support Technician",
       "location": "Dayton, OH",
-      "summary": "Jun 2010 — Apr 2014 — Managed day-to-day operations across multiple MSP client environments — Active Directory, Group Policy, DNS/DHCP, legacy server decommissioning, and 24/7/365 network monitoring with escalation to senior admins when needed.",
+      "summary": "Jun 2010 — Apr 2014 — Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.",
       "highlights": [
-        "Migrated file servers + legacy apps off Windows Server 2003 R2 to 2012 R2",
-        "Built network/system documentation — topology diagrams and runbooks",
-        "Onboarded new users and trained them on workflows, software, and phone systems"
+        "Assisted with server refreshes and legacy Windows Server decommissioning",
+        "Documented client networks, topology notes, runbooks, and recurring support procedures",
+        "Onboarded users and provided practical training on business software, phone systems, and account access"
       ],
       "keywords": [
         "Windows Server 2003–2012 R2",
@@ -91,56 +91,53 @@
   ],
   "skills": [
     {
-      "name": "PowerShell",
+      "name": "Healthcare Imaging Support",
       "keywords": [
-        "WPF",
-        "Automation"
+        "PACS",
+        "DICOM",
+        "DR acquisition"
       ]
     },
     {
-      "name": "Python",
+      "name": "Systems Administration",
       "keywords": [
-        "PyQt6",
-        "CLI Tools"
+        "Windows Server",
+        "AD",
+        "GPO",
+        "Hyper-V"
       ]
     },
     {
-      "name": "JavaScript",
+      "name": "Networking",
       "keywords": [
-        "Userscripts",
-        "Web Apps"
+        "Cisco",
+        "VPN",
+        "DNS/DHCP",
+        "monitoring"
       ]
     },
     {
-      "name": "Kotlin",
+      "name": "Customer Escalation",
       "keywords": [
-        "Android Apps"
+        "troubleshooting",
+        "recovery",
+        "vendor coordination"
       ]
     },
     {
-      "name": "C#",
+      "name": "Migration Coordination",
       "keywords": [
-        "WinForms",
-        ".NET"
+        "archive transfers",
+        "cutovers",
+        "validation"
       ]
     },
     {
-      "name": "C++",
+      "name": "Documentation",
       "keywords": [
-        "Desktop Apps"
-      ]
-    },
-    {
-      "name": "HTML / CSS",
-      "keywords": [
-        "Single-file Apps"
-      ]
-    },
-    {
-      "name": "pfSense",
-      "keywords": [
-        "Firewall",
-        "DNS"
+        "runbooks",
+        "knowledge base",
+        "training material"
       ]
     }
   ]
