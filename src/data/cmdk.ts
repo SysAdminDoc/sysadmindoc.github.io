@@ -165,7 +165,7 @@ export const cmdkQuickLinks = [
   {
     label: 'Healthcare IT Track',
     url: '/healthcare-it/',
-    desc: 'Operational context, imaging systems, and the environment that shaped the work.',
+    desc: 'Operational context for PACS/DICOM, DR acquisition, cloud imaging access, and customer support work.',
     badge: 'TRACK',
     tone: 'amber',
     searchTerms: ['clinical', 'medical imaging', 'healthcare'],

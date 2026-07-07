@@ -3,8 +3,7 @@ import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
-import { skills } from '../data/projects';
-import { careerRoles } from '../data/career';
+import { careerRoles, careerSkills } from '../data/career';
 
 const title = 'Resume - Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
@@ -52,7 +51,7 @@ const cmdkSections = [
       <section class="resume-section" aria-labelledby="resume-skills-title">
         <h2 id="resume-skills-title">Skills</h2>
         <div class="resume-skills">
-          {skills.map((skill) => (
+          {careerSkills.map((skill) => (
             <span class="resume-skill">{skill.name}<small>{skill.sub}</small></span>
           ))}
         </div>

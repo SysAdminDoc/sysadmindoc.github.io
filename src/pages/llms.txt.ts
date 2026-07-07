@@ -56,7 +56,7 @@ export async function GET(context: APIContext) {
   lines.push('# Matt Parker — Portfolio');
   lines.push('');
   lines.push(
-    '> Senior Technical Support Manager and builder with 15+ years in enterprise IT and six in medical imaging (DICOM/PACS). Open-source projects across PowerShell, Python, JavaScript, Kotlin, C#, and C++. Static, privacy-first site — no analytics, no cookies, no third-party scripts.',
+    '> Senior Technical Support Manager with 15+ years in enterprise IT and systems administration, with recent medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.',
   );
   lines.push('');
 
