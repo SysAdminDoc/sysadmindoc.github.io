@@ -1,6 +1,6 @@
 # Matt Parker — Portfolio
 
-> Senior Technical Support Manager with 15+ years in enterprise IT and systems administration, with recent medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.
+> Senior Technical Support Manager with 15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.
 
 ## Featured projects
 - [win11-nvme-driver-patcher](https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/): GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.
@@ -41,12 +41,12 @@
 ## Pages
 - [Portfolio home](https://sysadmindoc.github.io/): 186 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
 - [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
-- [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, systems administration, healthcare imaging support, and customer-facing escalation work.
+- [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, systems administration, healthcare technology support, and customer-facing escalation work.
 - [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio projects, rendered README excerpts, releases, timeline entries, and public pages.
 - [Timeline](https://sysadmindoc.github.io/timeline/): Year-in-review timeline generated from GitHub releases and project metadata.
 - [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
 - [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
-- [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Healthcare IT context for PACS/DICOM support, DR acquisition workstations, customer migrations, cloud imaging access, and support documentation.
+- [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Healthcare IT context for customer support, hosted workflows, migrations, vendor coordination, and support documentation.
 - [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.
 - [Screenshots](https://sysadmindoc.github.io/screenshots/): Visual evidence gallery of live-app product surfaces captured from deployed builds.
 - [Releases](https://sysadmindoc.github.io/releases/): Chronological release stream across the active public portfolio archive.
@@ -58,7 +58,7 @@
 - [JavaScript](https://sysadmindoc.github.io/lang/javascript/): Userscripts and Chrome MV3 extensions — document-start injection, anti-FOUC styling, Trusted Types, split-context patterns for ad blocking.
 - [Web Apps](https://sysadmindoc.github.io/lang/web/): Single-file HTML apps that deploy to GitHub Pages and just work.
 - [Kotlin / Android](https://sysadmindoc.github.io/lang/kotlin/): Jetpack Compose with Material 3, AMOLED-black by default, R8 + resource shrinking in release builds.
-- [C# / Desktop](https://sysadmindoc.github.io/lang/cs/): C# WPF on .NET 9 for medical imaging — fo-dicom for DICOM, SQLite for local persistence, published as self-contained single-exe.
+- [C# / Desktop](https://sysadmindoc.github.io/lang/cs/): C# WPF on .NET 9 for Windows desktop utilities, SQLite for local persistence, published as self-contained single-exe.
 - [Security](https://sysadmindoc.github.io/lang/security/): Defensive security tooling — pfSense automations, NextDNS panels, network auditing.
 
 ## Feeds

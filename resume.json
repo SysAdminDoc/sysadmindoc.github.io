@@ -5,7 +5,7 @@
     "label": "Senior Technical Support Manager",
     "email": "matt_parker@outlook.com",
     "url": "https://sysadmindoc.github.io",
-    "summary": "15+ years in enterprise IT and systems administration, with recent focus on medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting.",
+    "summary": "15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting.",
     "location": {
       "city": "Sarasota",
       "region": "FL",
@@ -29,21 +29,20 @@
       "name": "Maven Imaging",
       "position": "Senior Technical Support Manager",
       "location": "Sarasota, FL",
-      "summary": "Feb 2021 — Present — Tier II escalation and support management for PACS, DR panel, acquisition workstation, and cloud-hosted imaging workflows. Work centers on clinical imaging troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
+      "summary": "Feb 2021 — Present — Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
       "highlights": [
-        "Coordinate PACS and imaging-system migrations, including legacy archive transfers, customer cutovers, and validation follow-up",
-        "Support DR panel acquisition environments, Windows workstations, network connectivity, and vendor application issues",
-        "Troubleshoot licensing, workstation, networking, VPN, and cloud-account access issues across customer environments",
+        "Coordinate customer migrations, legacy archive transfers, cutovers, and validation follow-up",
+        "Support customer workstations, network connectivity, account access, and vendor application issues",
+        "Troubleshoot licensing, workstation, networking, VPN, and hosted-service access issues across customer environments",
         "Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support",
         "Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps"
       ],
       "keywords": [
-        "DICOM",
-        "PACS",
-        "DR panels",
-        "Acquisition workstations",
-        "Windows imaging PCs",
-        "Cloud imaging workflows",
+        "Healthcare IT",
+        "Customer systems",
+        "Windows workstations",
+        "Hosted services",
+        "Migration coordination",
         "Hyper-V",
         "VPN",
         "Freshdesk"
@@ -91,11 +90,11 @@
   ],
   "skills": [
     {
-      "name": "Healthcare Imaging Support",
+      "name": "Healthcare IT Support",
       "keywords": [
-        "PACS",
-        "DICOM",
-        "DR acquisition"
+        "customer systems",
+        "workflows",
+        "escalation"
       ]
     },
     {
