@@ -68,7 +68,7 @@
       "id": "https://sysadmindoc.github.io/projects/TagStudio/",
       "url": "https://sysadmindoc.github.io/projects/TagStudio/",
       "title": "TagStudio",
-      "content_text": "User-focused photo & file management system",
+      "content_text": "User-focused photo file management system",
       "date_modified": "2026-07-07T21:42:35.000Z",
       "tags": [
         "Other"
@@ -1518,7 +1518,7 @@
       "id": "https://sysadmindoc.github.io/projects/GmailDownloader/",
       "url": "https://sysadmindoc.github.io/projects/GmailDownloader/",
       "title": "GmailDownloader",
-      "content_text": "Full Gmail mailbox downloader, AI-powered organizer & analytics suite",
+      "content_text": "Full Gmail mailbox downloader, AI-powered organizer analytics suite",
       "date_modified": "2026-06-28T03:37:48.000Z",
       "tags": [
         "Python"
