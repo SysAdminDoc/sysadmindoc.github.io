@@ -75,11 +75,11 @@ export const manifesto: ManifestoRule[] = [
 
 /**
  * Healthcare IT track — the moat.
- * Repos that solve real problems for healthcare facilities running medical imaging.
+ * Repos and work context from healthcare support environments.
  */
 export const healthcareIT = {
   intro:
-    "I'm the Senior Technical Support Manager at Maven Imaging, supporting medical imaging equipment and software environments that include PACS, DICOM workflows, DR acquisition workstations, and cloud-hosted imaging access. The work is customer-facing and operational: troubleshoot imaging issues, coordinate migrations and archive transfers, support cutovers, document repeatable procedures, and work with vendors and internal teams when clinical workflows are interrupted.",
+    "I'm the Senior Technical Support Manager at Maven Imaging, supporting healthcare technology environments. The work is customer-facing and operational: troubleshoot system issues, coordinate migrations and archive transfers, support cutovers, document repeatable procedures, and work with vendors and internal teams when customer workflows are interrupted.",
   // Public showcases for this track currently live as private internal tooling.
   // Kept as a track narrative; project cards intentionally omitted.
   repos: [] as string[],
@@ -94,14 +94,14 @@ export const now = {
   location: 'Sarasota, FL',
   building: [
     `Portfolio site v0.21 - ${fallbackRepoCount}+ repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
-    'Medical imaging support workflows: PACS/DICOM migration coordination, customer cutover validation, and documentation cleanup',
-    'Healthcare support operations: cloud imaging account transitions, acquisition workstation support, and vendor handoffs',
-    'Customer-facing documentation and tutorial updates for imaging workflows',
+    'Healthcare support workflows: migration coordination, customer cutover validation, and documentation cleanup',
+    'Customer support operations: hosted account transitions, workstation support, and vendor handoffs',
+    'Customer-facing documentation and tutorial updates for support workflows',
     'Portfolio copy cleanup so career claims stay conservative, field-accurate, and easy to verify',
   ],
   thinking: [
     'Preparing for npm v12 install-script changes hitting native deps in July 2026',
-    'How small medical imaging environments balance vendor support, local IT constraints, and reliable recovery plans',
+    'How small healthcare environments balance vendor support, local IT constraints, and reliable recovery plans',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Whatever keeps the focus session going.',

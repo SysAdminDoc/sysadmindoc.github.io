@@ -44,12 +44,12 @@ const repos = healthcareIT.repos.map((slug) => {
 const hasRepos = repos.length > 0;
 const cmdkSections = hasRepos
   ? [
-      { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
-      { label: 'Projects', href: '#clinical-projects', desc: 'Healthcare IT projects shaped by imaging, migration, and support workflows.', badge: 'ARCHIVE' },
+      { label: 'Overview', href: '#track-overview', desc: 'Healthcare support summary, headline metrics, and route actions.', badge: 'TRACK' },
+      { label: 'Projects', href: '#support-projects', desc: 'Healthcare IT projects shaped by migration, support, and operations workflows.', badge: 'ARCHIVE' },
       { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
     ]
   : [
-      { label: 'Overview', href: '#track-overview', desc: 'Clinical-track summary, headline metrics, and route actions.', badge: 'TRACK' },
+      { label: 'Overview', href: '#track-overview', desc: 'Healthcare support summary, headline metrics, and route actions.', badge: 'TRACK' },
       { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
     ];
 ---
@@ -78,19 +78,19 @@ const cmdkSections = hasRepos
 
       <div class="hcit-stats page-stat-grid rv">
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">PACS</div>
-          <div class="hcit-stat-label page-stat-label">DICOM workflows</div>
-          <div class="page-stat-copy">Support for image archive access, migration coordination, routing checks, and customer cutover validation.</div>
+          <div class="hcit-stat-num page-stat-value">Support</div>
+          <div class="hcit-stat-label page-stat-label">Customer systems</div>
+          <div class="page-stat-copy">Troubleshooting, workflow checks, migration coordination, and customer cutover validation.</div>
         </div>
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">DR</div>
-          <div class="hcit-stat-label page-stat-label">Acquisition support</div>
-          <div class="page-stat-copy">Troubleshooting for detector panels, Windows acquisition workstations, networking, licensing, and vendor applications.</div>
+          <div class="hcit-stat-num page-stat-value">Endpoints</div>
+          <div class="hcit-stat-label page-stat-label">Workstation support</div>
+          <div class="page-stat-copy">Troubleshooting for customer workstations, networking, licensing, and vendor applications.</div>
         </div>
         <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">Cloud</div>
-          <div class="hcit-stat-label page-stat-label">Imaging access</div>
-          <div class="page-stat-copy">Customer support for account access, hosted imaging workflows, transition issues, and recovery communication.</div>
+          <div class="hcit-stat-num page-stat-value">Hosted</div>
+          <div class="hcit-stat-label page-stat-label">Account access</div>
+          <div class="page-stat-copy">Customer support for account access, hosted workflows, transition issues, and recovery communication.</div>
         </div>
       </div>
       <div class="hcit-actions page-actions rv">
@@ -103,10 +103,10 @@ const cmdkSections = hasRepos
 
     {!hasRepos && (
       <>
-        <div class="si" id="clinical-projects">
+        <div class="si" id="support-projects">
           <h2 class="hcit-h2">Projects in this track</h2>
           <div class="hcit-why rv">
-            <p>Most healthcare imaging support work is <strong>operational and customer-specific</strong>: migration notes, acquisition-workstation troubleshooting, account recovery, workflow validation, and communication during service-impacting issues.</p>
+            <p>Most healthcare support work is <strong>operational and customer-specific</strong>: migration notes, workstation troubleshooting, account recovery, workflow validation, and communication during service-impacting issues.</p>
             <p>The useful public summary is the role context above and the <a href="/resume/" class="page-inline-link">resume</a>, not customer-specific implementation detail.</p>
           </div>
         </div>
@@ -115,7 +115,7 @@ const cmdkSections = hasRepos
     )}
     {hasRepos && (
       <>
-        <div class="si" id="clinical-projects">
+        <div class="si" id="support-projects">
           <h2 class="hcit-h2">Projects in this track</h2>
           <div class="hcit-grid">
             {repos.map((r) => (
@@ -141,9 +141,9 @@ const cmdkSections = hasRepos
     <div class="si" id="track-context">
       <h2 class="hcit-h2">Why this track exists</h2>
       <div class="hcit-why rv">
-        <p>Healthcare IT rewards steady operations more than novelty. PACS access, DICOM routing, DR acquisition, workstation reliability, and cloud imaging access all matter because they sit close to clinical care.</p>
-        <p>The practical work is diagnosis, documentation, recovery planning, vendor coordination, and clear communication when imaging workflows are interrupted.</p>
-        <p>For healthcare imaging support or systems work, <a href="/#connect" class="page-inline-link">use the contact links</a>.</p>
+        <p>Healthcare IT rewards steady operations more than novelty. Customer access, workstation reliability, hosted services, vendor coordination, and recovery communication all matter because they sit close to daily operations.</p>
+        <p>The practical work is diagnosis, documentation, recovery planning, vendor coordination, and clear communication when support workflows are interrupted.</p>
+        <p>For healthcare IT support or systems work, <a href="/#connect" class="page-inline-link">use the contact links</a>.</p>
       </div>
     </div>
   </main>

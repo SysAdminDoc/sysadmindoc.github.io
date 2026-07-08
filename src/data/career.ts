@@ -16,7 +16,7 @@ export interface CareerRole {
 }
 
 export const careerSkills = [
-  { name: 'Healthcare Imaging Support', sub: 'PACS, DICOM, DR acquisition' },
+  { name: 'Healthcare IT Support', sub: 'customer systems, workflows, escalation' },
   { name: 'Systems Administration', sub: 'Windows Server, AD, GPO, Hyper-V' },
   { name: 'Networking', sub: 'Cisco, VPN, DNS/DHCP, monitoring' },
   { name: 'Customer Escalation', sub: 'troubleshooting, recovery, vendor coordination' },
@@ -32,15 +32,15 @@ export const careerRoles: readonly CareerRole[] = [
     period: 'Feb 2021 — Present',
     tag: 'Current',
     tone: 'current',
-    summary: 'Tier II escalation and support management for PACS, DR panel, acquisition workstation, and cloud-hosted imaging workflows. Work centers on clinical imaging troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.',
+    summary: 'Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.',
     highlights: [
-      'Coordinate PACS and imaging-system migrations, including legacy archive transfers, customer cutovers, and validation follow-up',
-      'Support DR panel acquisition environments, Windows workstations, network connectivity, and vendor application issues',
-      'Troubleshoot licensing, workstation, networking, VPN, and cloud-account access issues across customer environments',
+      'Coordinate customer migrations, legacy archive transfers, cutovers, and validation follow-up',
+      'Support customer workstations, network connectivity, account access, and vendor application issues',
+      'Troubleshoot licensing, workstation, networking, VPN, and hosted-service access issues across customer environments',
       'Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support',
       'Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps',
     ],
-    stack: ['DICOM', 'PACS', 'DR panels', 'Acquisition workstations', 'Windows imaging PCs', 'Cloud imaging workflows', 'Hyper-V', 'VPN', 'Freshdesk'],
+    stack: ['Healthcare IT', 'Customer systems', 'Windows workstations', 'Hosted services', 'Migration coordination', 'Hyper-V', 'VPN', 'Freshdesk'],
   },
   {
     role: 'Systems Administrator',

@@ -27,11 +27,11 @@
   "privacyReviewRequired": [
     {
       "repo": "RadAtlas",
-      "reason": "Public X-ray and medical-imaging repo. Keep excluded from the portfolio until visibility and public-safety review is explicitly resolved."
+      "reason": "Public employer-adjacent repo. Keep excluded from the portfolio until visibility and public-safety review is explicitly resolved."
     },
     {
       "repo": "GeneratorSpecs",
-      "reason": "Removed medical-imaging live app artifact. Keep excluded from portfolio data and public screenshots."
+      "reason": "Removed employer-adjacent live app artifact. Keep excluded from portfolio data and public screenshots."
     }
   ]
 }
