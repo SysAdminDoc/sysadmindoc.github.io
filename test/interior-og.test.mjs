@@ -67,3 +67,11 @@ test('OG endpoint generates interior and project social-card routes', async () =
   assert.match(source, /liveApps\.forEach/, 'project live-app slugs should still be generated');
   assert.match(source, /catalog\.forEach/, 'project catalog slugs should still be generated');
 });
+
+test('OG endpoint returns exact cached font buffers to Satori', async () => {
+  const source = await fs.readFile(ogEndpointPath, 'utf8');
+
+  assert.match(source, /function bufferToExactArrayBuffer\(buffer: Buffer\): ArrayBuffer/);
+  assert.match(source, /new Uint8Array\(buffer\)\.buffer/);
+  assert.doesNotMatch(source, /readFileSync\(cachePath\)\.buffer as ArrayBuffer/);
+});

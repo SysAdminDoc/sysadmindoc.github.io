@@ -51,3 +51,12 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   assert.match(index, /id="beyond"/);
   assert.match(index, /id="connect"/);
 });
+
+test('command palette resolves hash jumps by id without selector parsing', async () => {
+  const cmdk = await fs.readFile(path.join(root, 'public', 'scripts', 'cmdk.js'), 'utf8');
+
+  assert.match(cmdk, /function getHashTarget\(hash\)/);
+  assert.match(cmdk, /document\.getElementById\(id\)/);
+  assert.doesNotMatch(cmdk, /document\.querySelector\(href\)/);
+  assert.doesNotMatch(cmdk, /document\.querySelector\(url\.hash\)/);
+});

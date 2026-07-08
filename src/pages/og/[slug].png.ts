@@ -11,10 +11,14 @@ import { featured, liveApps, catalog } from '../../data/portfolio';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FONT_CACHE = join(__dirname, '..', '..', '..', '.astro', 'fonts');
 
+function bufferToExactArrayBuffer(buffer: Buffer): ArrayBuffer {
+  return new Uint8Array(buffer).buffer;
+}
+
 async function loadFont(weight: 400 | 700): Promise<ArrayBuffer> {
   mkdirSync(FONT_CACHE, { recursive: true });
   const cachePath = join(FONT_CACHE, `jetbrains-mono-${weight}.ttf`);
-  if (existsSync(cachePath)) return readFileSync(cachePath).buffer as ArrayBuffer;
+  if (existsSync(cachePath)) return bufferToExactArrayBuffer(readFileSync(cachePath));
   // JetBrains Mono from GitHub release (single TTF per weight, well-cached CDN)
   const urlByWeight: Record<number, string> = {
     400: 'https://github.com/JetBrains/JetBrainsMono/raw/v2.304/fonts/ttf/JetBrainsMono-Regular.ttf',

@@ -125,6 +125,17 @@
     }, 900);
   }
 
+  function getHashTarget(hash) {
+    if (!hash || hash === '#') return null;
+    var id = String(hash).replace(/^#/, '');
+    try {
+      id = decodeURIComponent(id);
+    } catch (error) {
+      /* Keep the raw fragment if it is not URI-encoded cleanly. */
+    }
+    return id ? document.getElementById(id) : null;
+  }
+
   function fuzzy(query, text) {
     if (!query) return 1;
     const q = query.toLowerCase();
@@ -350,7 +361,7 @@
   function navigateTo(href) {
     if (!href) return;
     if (href.startsWith('#')) {
-      const section = document.querySelector(href);
+      const section = getHashTarget(href);
       if (section) {
         activateHashTarget(section, href);
         return;
@@ -369,7 +380,7 @@
 
     const isSamePage = url.pathname === window.location.pathname && url.search === window.location.search;
     if (isSamePage && url.hash) {
-      const target = document.querySelector(url.hash);
+      const target = getHashTarget(url.hash);
       if (target) {
         activateHashTarget(target, url.hash);
         return;

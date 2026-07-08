@@ -1,5 +1,6 @@
 import { categoryLabels } from './categories';
 import { buildSkillsWithMetrics } from './skill-metrics.mjs';
+import sanitizeHtml from 'sanitize-html';
 import {
   catalog as localCatalog,
   featured as localFeatured,
@@ -124,7 +125,11 @@ function mapCategory(value?: string): Lang {
 }
 
 function cleanDescription(value?: string | null) {
-  return String(value ?? '').trim();
+  return sanitizeHtml(String(value ?? '').trim(), {
+    allowedTags: [],
+    allowedAttributes: {},
+    disallowedTagsMode: 'discard',
+  }).replace(/\s+/g, ' ').trim();
 }
 
 function githubUrl(repo: string) {
