@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.27] - 2026-07-08
+
+- Sanitized feed-backed project descriptions before rendered HTML usage across cards, detail pages, and language tracks.
+- Hardened command-palette hash navigation against malformed fragments, fixed cached OG font buffer handling, and rejected invalid resume-PDF port settings before serving local build files.
+- Added regression coverage for description sanitization, hash navigation, OG font buffers, and resume PDF port validation.
+
 ## [v0.21.26] - 2026-07-07
 
 - Generalized experience-facing copy across the homepage, resume, healthcare track, metadata, and AI-readable summary to remove named imaging technology details.

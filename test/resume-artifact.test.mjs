@@ -59,3 +59,14 @@ test('internal link audit accepts generated resume PDF artifacts', async () => {
     await fs.rm(tmp, { recursive: true, force: true });
   }
 });
+
+test('resume PDF generator rejects invalid port settings before serving files', () => {
+  const result = spawnSync(process.execPath, ['scripts/generate-resume-pdf.mjs'], {
+    cwd: root,
+    env: { ...process.env, RESUME_PDF_PORT: '70000' },
+    encoding: 'utf8',
+  });
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /RESUME_PDF_PORT must be an integer from 1 to 65535/);
+});

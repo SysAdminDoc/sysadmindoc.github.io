@@ -7,12 +7,30 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(root, 'dist');
 const outPath = join(distDir, 'resume.pdf');
 
+function readPdfPort() {
+  const raw = process.env.RESUME_PDF_PORT || '4326';
+  if (!/^\d+$/.test(raw)) {
+    throw new Error(`RESUME_PDF_PORT must be an integer from 1 to 65535; received "${raw}".`);
+  }
+  const nextPort = Number(raw);
+  if (!Number.isInteger(nextPort) || nextPort < 1 || nextPort > 65535) {
+    throw new Error(`RESUME_PDF_PORT must be an integer from 1 to 65535; received "${raw}".`);
+  }
+  return nextPort;
+}
+
+let port;
+try {
+  port = readPdfPort();
+} catch (error) {
+  console.error(`generate-resume-pdf: ${error.message}`);
+  process.exit(1);
+}
+
 if (!existsSync(distDir)) {
   console.error('generate-resume-pdf: dist/ not found. Run Astro build before generating the PDF.');
   process.exit(1);
 }
-
-const port = parseInt(process.env.RESUME_PDF_PORT || '4326', 10);
 
 async function generate() {
   const { chromium } = await import('playwright');
