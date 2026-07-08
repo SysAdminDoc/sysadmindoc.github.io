@@ -496,6 +496,13 @@ test.describe('rendered interaction smoke', () => {
       backdropShown: false,
     });
 
+    await preparePage(page, '/', '#hero');
+    await page.locator('#mobileToggle').click();
+    await expect(page.locator('#navLinks')).toHaveClass(/open/);
+    await page.locator('#navLinks a[href="#catalog"]').click();
+    await expect(page.locator('#navLinks')).not.toHaveClass(/open/);
+    await expect.poll(() => page.evaluate(() => document.activeElement?.id || '')).not.toBe('mobileToggle');
+
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
@@ -779,6 +786,20 @@ test.describe('screenshots gallery filters', () => {
     await page.reload({ waitUntil: 'load' });
     await page.locator('#screenshots-gallery').waitFor({ state: 'visible' });
     await expect(page.locator(`.screenshots-filter-btn[data-filter="${category}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('invalid screenshot category query resets to the all view', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/screenshots/?cat=not-a-category', '#screenshots-gallery');
+
+    await expect(page.locator('.screenshots-filter-btn[data-filter="all"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(() => page.url()).not.toContain('cat=not-a-category');
+    const filterBox = await page.locator('.screenshots-filter-btn[data-filter="all"]').boundingBox();
+    expect(filterBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await expect(page.locator('#screenshotsStatus')).toContainText('Showing all');
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
