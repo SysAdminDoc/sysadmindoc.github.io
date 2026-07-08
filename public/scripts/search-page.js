@@ -41,13 +41,13 @@
     var initial = getInitialQuery();
     var hasComponents = Boolean(window.PagefindComponents);
     var instance = hasComponents ? getInstance() : null;
-    if (hasComponents && (!initial || instance)) {
+    if (hasComponents && instance) {
       setSearchState('ready');
       triggerInitialSearch(instance, initial);
       return;
     }
     if (now() - startedAt >= readyTimeoutMs) {
-      setSearchState(hasComponents ? 'ready' : 'degraded');
+      setSearchState('degraded');
       return;
     }
     window.setTimeout(function () {
