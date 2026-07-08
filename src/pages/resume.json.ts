@@ -12,7 +12,7 @@ export async function GET(_context: APIContext) {
       label: 'Senior Technical Support Manager',
       email: 'matt_parker@outlook.com',
       url: 'https://sysadmindoc.github.io',
-      summary: '15+ years in enterprise IT and systems administration, with recent focus on medical imaging support across PACS/DICOM workflows, DR acquisition workstations, cloud-hosted imaging access, customer migrations, documentation, and escalation-heavy troubleshooting.',
+      summary: '15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting.',
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
       profiles: [
         { network: 'GitHub', username: 'SysAdminDoc', url: 'https://github.com/SysAdminDoc' },

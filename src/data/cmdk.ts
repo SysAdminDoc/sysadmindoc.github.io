@@ -165,10 +165,10 @@ export const cmdkQuickLinks = [
   {
     label: 'Healthcare IT Track',
     url: '/healthcare-it/',
-    desc: 'Operational context for PACS/DICOM, DR acquisition, cloud imaging access, and customer support work.',
+    desc: 'Operational context for healthcare technology support, customer migrations, documentation, and escalation work.',
     badge: 'TRACK',
     tone: 'amber',
-    searchTerms: ['clinical', 'medical imaging', 'healthcare'],
+    searchTerms: ['healthcare', 'support', 'customer systems'],
   },
   {
     label: 'GitHub Workspace',

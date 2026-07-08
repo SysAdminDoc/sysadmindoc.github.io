@@ -24,11 +24,11 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'Now', href: '/now/', desc: 'Open the current focus page and short-range work queue.', badge: 'PAGE' },
   { label: 'Uses', href: '/uses/', desc: 'Development environment, tools, and design conventions.', badge: 'PAGE' },
   { label: 'Resume', href: '/resume/', desc: 'Printable career summary with skills and experience.', badge: 'PAGE' },
-  { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context for imaging systems, support workflows, and customer migrations.', badge: 'TRACK' },
+  { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context for customer systems, support workflows, and migrations.', badge: 'TRACK' },
 ];
 const {
   title = 'Matt Parker - Senior Technical Support Manager',
-  description = 'Career portfolio for Matt Parker - 15+ years in enterprise IT and systems administration, with recent medical imaging support across PACS/DICOM, DR acquisition workstations, cloud-hosted imaging workflows, and customer migrations.',
+  description = 'Career portfolio for Matt Parker - 15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, and escalation-heavy troubleshooting.',
   ogImage = '/og.png',
   ogImageAlt = description,
   cmdkSections = defaultCmdkSections,
@@ -63,7 +63,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     '@id': 'https://sysadmindoc.github.io/#website',
     url: 'https://sysadmindoc.github.io',
     name: 'Matt Parker Portfolio',
-    description: 'Career portfolio and public project archive spanning systems administration, healthcare imaging support, and practical software work.',
+    description: 'Career portfolio and public project archive spanning systems administration, healthcare technology support, and practical software work.',
     publisher: { '@id': personId },
   },
   {
@@ -74,7 +74,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     jobTitle: 'Senior Technical Support Manager',
     worksFor: { '@type': 'Organization', name: 'Maven Imaging' },
     address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' },
-    knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Medical Imaging','DICOM','PACS','Active Directory','Hyper-V','Cisco Networking'],
+    knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Healthcare IT','Customer Support','Technical Documentation','Active Directory','Hyper-V','Cisco Networking'],
     sameAs: ['https://github.com/SysAdminDoc','https://www.linkedin.com/in/matthewryanparker'],
   },
 ];

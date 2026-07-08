@@ -42,7 +42,7 @@ export const LANGS: Record<string, { label: string; category: string; intro: str
     category: 'cs',
     accent: '--pur',
     intro:
-      "C# WPF on .NET 9 for medical imaging — fo-dicom for DICOM, SQLite for local persistence, published as self-contained single-exe. C++ desktop apps with WebView2 for embedded web UI.",
+      "C# WPF on .NET 9 for Windows desktop utilities, SQLite for local persistence, published as self-contained single-exe. C++ desktop apps with WebView2 for embedded web UI.",
   },
   security: {
     label: 'Security',

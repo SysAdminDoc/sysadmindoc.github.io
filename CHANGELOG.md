@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.26] - 2026-07-07
+
+- Generalized experience-facing copy across the homepage, resume, healthcare track, metadata, and AI-readable summary to remove named imaging technology details.
+- Reworded healthcare/support proof and language-lane copy around customer environments, regulated operations, support workflows, and vendor coordination instead of named clinical systems.
+
 ## [v0.21.25] - 2026-07-07
 
 - Reworked experience-facing copy across the homepage, resume, JSON resume, healthcare track, metadata, and feeds to use conservative healthcare IT/support language and remove unsupported counts, internal-tool names, geography/OEM claims, and open-source-tool framing.
