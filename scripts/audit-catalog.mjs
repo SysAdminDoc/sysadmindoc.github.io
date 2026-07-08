@@ -1,11 +1,28 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { collectPortfolioRepos } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
+const execFileAsync = promisify(execFile);
+
+async function resolveGithubToken() {
+  const envToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+  if (envToken.trim()) return envToken.trim();
+  try {
+    const { stdout } = await execFileAsync('gh', ['auth', 'token'], {
+      timeout: 10_000,
+      windowsHide: true,
+    });
+    return stdout.trim();
+  } catch {
+    return '';
+  }
+}
 
 async function fetchPublicRepos(owner, token) {
   const repos = [];
@@ -54,7 +71,7 @@ const portfolioRefs = collectPortfolioRepos(projectsPath, sourceText);
 const skipped = exceptionMap(policy.intentionallySkippedPublicRepos);
 const privacyReview = exceptionMap(policy.privacyReviewRequired);
 const reviewedExceptions = new Map([...skipped, ...privacyReview]);
-const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+const token = await resolveGithubToken();
 
 const repos = await fetchPublicRepos(policy.owner, token);
 const activePublic = repos.filter((repo) => !repo.private && !repo.archived);
@@ -88,6 +105,7 @@ privacyScreenshots.sort((a, b) => a.repo.localeCompare(b.repo));
 
 console.log('Catalog audit');
 console.log(`  owner: ${policy.owner}`);
+console.log(`  github auth: ${token ? 'authenticated' : 'anonymous'}`);
 console.log(`  active public repos: ${activePublic.length}`);
 console.log(`  active public non-forks: ${activePublicNonFork.length}`);
 console.log(`  portfolio repo refs: ${portfolioRefs.size}`);
