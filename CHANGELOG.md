@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.30] - 2026-07-08
+
+- Nested embedded README headings under project page sections and repaired empty README table headers before sanitization.
+- Added renderer regression coverage for upstream heading jumps and blank table header cells.
+
 ## [v0.21.29] - 2026-07-08
 
 - Kept mobile navigation from returning focus to the menu toggle after link activation.

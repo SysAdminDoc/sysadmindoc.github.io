@@ -69,16 +69,39 @@ test('README renderer returns heading outline and reading-time metadata', async 
   const result = await renderProjectReadme(markdown, 'DemoRepo');
 
   assert.ok(result);
-  assert.match(result.html, /<h2 id="install">Install<\/h2>/);
-  assert.match(result.html, /<h3 id="install-2">Install<\/h3>/);
+  assert.match(result.html, /<h4 id="install">Install<\/h4>/);
+  assert.match(result.html, /<h5 id="install-2">Install<\/h5>/);
   assert.deepEqual(result.outline, [
-    { depth: 1, id: 'demo', text: 'Demo' },
-    { depth: 2, id: 'install', text: 'Install' },
-    { depth: 3, id: 'install-2', text: 'Install' },
-    { depth: 2, id: 'usage', text: 'Usage' },
+    { depth: 3, id: 'demo', text: 'Demo' },
+    { depth: 4, id: 'install', text: 'Install' },
+    { depth: 5, id: 'install-2', text: 'Install' },
+    { depth: 4, id: 'usage', text: 'Usage' },
   ]);
   assert.equal(result.readingTime.label, '1 min read');
   assert.ok(result.readingTime.words > 0);
+});
+
+test('README renderer nests headings and repairs empty table headers for embedded pages', async () => {
+  const markdown = [
+    '# Demo',
+    '',
+    '### Jumped source heading',
+    '',
+    '|  |  |',
+    '|---|---|',
+    '| Name | Value |',
+  ].join('\n');
+
+  const result = await renderProjectReadme(markdown, 'DemoRepo');
+
+  assert.match(result.html, /<h3 id="demo">Demo<\/h3>/);
+  assert.match(result.html, /<h4 id="jumped-source-heading">Jumped source heading<\/h4>/);
+  assert.match(result.html, /<th>Column 1<\/th>/);
+  assert.match(result.html, /<th>Column 2<\/th>/);
+  assert.deepEqual(result.outline.slice(0, 2), [
+    { depth: 3, id: 'demo', text: 'Demo' },
+    { depth: 4, id: 'jumped-source-heading', text: 'Jumped source heading' },
+  ]);
 });
 
 test('README reading-time helper rounds up by technical-document word count', () => {
