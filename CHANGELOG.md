@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.29] - 2026-07-08
+
+- Kept mobile navigation from returning focus to the menu toggle after link activation.
+- Reset invalid screenshot gallery category URLs back to the all view and raised gallery filter controls to 44px mobile touch targets.
+- Added rendered interaction smoke coverage for mobile-nav focus and invalid screenshot category recovery.
+
 ## [v0.21.28] - 2026-07-08
 
 - Treated stalled Pagefind component initialization as a degraded search state instead of silently marking search ready without results.

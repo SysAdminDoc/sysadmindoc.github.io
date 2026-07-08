@@ -37,7 +37,7 @@
   });
 
   navLinks.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => setMobileNav(false));
+    a.addEventListener('click', () => setMobileNav(false, { returnFocus: false }));
   });
 
   if(navBackdrop){

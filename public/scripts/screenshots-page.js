@@ -11,6 +11,12 @@
     }) || buttons[0];
   }
 
+  function hasFilter(filter) {
+    return Array.from(buttons).some(function (button) {
+      return button.getAttribute('data-filter') === filter;
+    });
+  }
+
   function syncUrl(filter) {
     try {
       var url = new URL(window.location.href);
@@ -55,7 +61,8 @@
 
   try {
     var initial = new URLSearchParams(window.location.search).get('cat') || 'all';
-    applyFilter(initial, { syncUrl: false });
+    var validInitial = hasFilter(initial);
+    applyFilter(validInitial ? initial : 'all', { syncUrl: validInitial ? false : true });
   } catch (error) {
     applyFilter('all', { syncUrl: false });
   }
