@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.28] - 2026-07-08
+
+- Treated stalled Pagefind component initialization as a degraded search state instead of silently marking search ready without results.
+- Updated the search fallback copy and rendered interaction smoke coverage for missing and stalled Pagefind startup paths.
+
 ## [v0.21.27] - 2026-07-08
 
 - Sanitized feed-backed project descriptions before rendered HTML usage across cards, detail pages, and language tracks.

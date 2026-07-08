@@ -271,6 +271,32 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('search stalled component initialization exposes fallback recovery', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.route('**/pagefind/pagefind-component-ui.js', (route) =>
+      route.fulfill({
+        contentType: 'text/javascript; charset=utf-8',
+        body: [
+          'window.PagefindComponents={',
+          '  getInstanceManager(){',
+          '    return { getInstance(){ return null; } };',
+          '  }',
+          '};',
+        ].join('\n'),
+      }),
+    );
+
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/search/?q=archive', '#pagefindSearch');
+    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expect(page.locator('#pagefindLoading')).toBeHidden();
+    await expect(page.locator('#pagefindFallback')).toContainText('did not finish loading');
+    await expect(page.locator('#pagefindFallback a[href="#search-fallbacks"]')).toBeVisible();
+    await expect(page.locator('#pagefindFallback a[href="/#catalog"]')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
