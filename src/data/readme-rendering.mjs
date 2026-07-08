@@ -119,6 +119,21 @@ function stripMarkdownForReading(value) {
     .trim();
 }
 
+function normalizeEmbeddedHeadingDepth(rawDepth, previousDepth) {
+  const nestedDepth = Math.min(6, Math.max(3, Number(rawDepth) + 2));
+  return Math.min(nestedDepth, previousDepth + 1);
+}
+
+function labelEmptyTableHeaders(html) {
+  return String(html).replace(/<thead>([\s\S]*?)<\/thead>/gi, (theadHtml) => {
+    let column = 0;
+    return theadHtml.replace(/<th\b([^>]*)>([\s\S]*?)<\/th>/gi, (match, attrs, inner) => {
+      column += 1;
+      return stripHtml(inner) ? match : `<th${attrs}>Column ${column}</th>`;
+    });
+  });
+}
+
 export function getReadmeReadingTime(rawMd) {
   const text = stripMarkdownForReading(rawMd);
   const words = text ? text.split(/\s+/).length : 0;
@@ -207,8 +222,10 @@ export async function renderProjectReadme(rawMd, slug, options = {}) {
   const rendered = await marked.parse(rawMd);
   const headingCounts = new Map();
   const outline = [];
+  let previousHeadingDepth = 2;
   const renderedWithHeadingIds = String(rendered).replace(/<h([1-6])>([\s\S]*?)<\/h\1>/g, (_match, level, inner) => {
-    const depth = Number(level);
+    const depth = normalizeEmbeddedHeadingDepth(level, previousHeadingDepth);
+    previousHeadingDepth = depth;
     const text = stripHtml(inner);
     const baseId = text
       .toLowerCase()
@@ -220,8 +237,9 @@ export async function renderProjectReadme(rawMd, slug, options = {}) {
     outline.push({ depth, id, text });
     return `<h${depth} id="${escapeAttr(id)}">${inner}</h${depth}>`;
   });
+  const accessibleReadmeHtml = labelEmptyTableHeaders(renderedWithHeadingIds);
 
-  const html = sanitizeHtml(renderedWithHeadingIds, {
+  const html = sanitizeHtml(accessibleReadmeHtml, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'picture', 'source', 'details', 'summary', 'kbd', 'del', 'input']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
