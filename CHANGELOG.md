@@ -2,6 +2,10 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.21.31] - 2026-07-08
+
+- Let the catalog deploy audit use the authenticated GitHub CLI token when `GITHUB_TOKEN` or `GH_TOKEN` is not exported, avoiding anonymous REST rate-limit failures during local Pages publishing.
+
 ## [v0.21.30] - 2026-07-08
 
 - Nested embedded README headings under project page sections and repaired empty README table headers before sanitization.
