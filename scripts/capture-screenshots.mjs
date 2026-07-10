@@ -8,6 +8,7 @@
 //   npm install --no-save playwright   # one-time install
 //   npx playwright install chromium    # one-time install
 //   npm run capture-screenshots
+//   npm run capture-screenshots -- --slug=BetterTTS
 //
 // Why separate script: Chromium is ~170MB, and full screenshot recapture is
 // intentionally local. Capture locally, commit the JPGs, ship them. Only need
@@ -46,10 +47,21 @@ function collectLiveEntries() {
   return results;
 }
 
-const entries = collectLiveEntries().filter((entry) => /^https?:\/\//.test(entry.url));
+const allEntries = collectLiveEntries().filter((entry) => /^https?:\/\//.test(entry.url));
+const requestedSlugs = new Set(
+  process.argv.slice(2)
+    .filter((argument) => argument.startsWith('--slug='))
+    .map((argument) => argument.slice('--slug='.length).trim())
+    .filter(Boolean),
+);
+const entries = requestedSlugs.size > 0
+  ? allEntries.filter((entry) => requestedSlugs.has(entry.slug))
+  : allEntries;
 
 if (entries.length === 0) {
-  console.error('No live app entries were parsed from src/data/projects.ts');
+  console.error(requestedSlugs.size > 0
+    ? `No matching live apps found for: ${[...requestedSlugs].join(', ')}`
+    : 'No live app entries were parsed from src/data/projects.ts');
   process.exit(1);
 }
 
@@ -174,8 +186,19 @@ await Promise.all(Array.from({ length: Math.min(CONCURRENCY, entries.length) }, 
 
 await browser.close();
 
-const liveOrder = new Map(entries.map((entry, index) => [entry.slug, index]));
-manifest.sort((a, b) => (liveOrder.get(a.slug) ?? 9999) - (liveOrder.get(b.slug) ?? 9999));
+const liveOrder = new Map(allEntries.map((entry, index) => [entry.slug, index]));
+const captures = requestedSlugs.size > 0 && existsSync(manifestPath)
+  ? (() => {
+      const previous = JSON.parse(readFileSync(manifestPath, 'utf8'));
+      const captureBySlug = new Map(
+        (Array.isArray(previous.captures) ? previous.captures : [])
+          .filter((capture) => liveOrder.has(capture.slug))
+          .map((capture) => [capture.slug, capture]),
+      );
+      manifest.forEach((capture) => captureBySlug.set(capture.slug, capture));
+      return allEntries.map((entry) => captureBySlug.get(entry.slug)).filter(Boolean);
+    })()
+  : manifest.sort((a, b) => (liveOrder.get(a.slug) ?? 9999) - (liveOrder.get(b.slug) ?? 9999));
 
 writeFileSync(manifestPath, JSON.stringify({
   schema: 'sysadmindoc.screenshot-manifest.v1',
@@ -183,9 +206,9 @@ writeFileSync(manifestPath, JSON.stringify({
   viewport: VIEWPORT,
   deviceScaleFactor: DEVICE_SCALE,
   colorScheme: COLOR_SCHEME,
-  captures: manifest,
+  captures,
 }, null, 2) + '\n');
-console.log(`Wrote ${manifestPath}: ${manifest.length} entries.`);
+console.log(`Wrote ${manifestPath}: ${captures.length} entries.`);
 
 console.log(`\nDone: ${ok} captured, ${fail} failed.`);
 if (fail > 0) process.exit(1);
