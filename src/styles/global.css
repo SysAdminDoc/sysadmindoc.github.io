@@ -332,8 +332,6 @@
         .lang-tone-css{background:#a78bfa}
         .lang-tone-other{background:#7080a0}
         .lang-legend-pct{color:var(--t3);margin-left:auto;min-width:35px;text-align:right}
-        .copy-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(74,222,128,.12);color:var(--grn);font-family:var(--mono);font-size:13px;padding:8px 20px;border-radius:8px;border-left:3px solid var(--grn);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:10000;box-shadow:0 4px 20px rgba(74,222,128,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(74,222,128,.2);border-left:3px solid var(--grn)}
-        .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
         .sw-update-toast{position:fixed;right:18px;bottom:18px;display:flex;align-items:center;gap:14px;max-width:min(420px,calc(100vw - 36px));padding:14px 14px 14px 16px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.45;box-shadow:var(--shadow-strong);opacity:0;transform:translateY(14px);transition:opacity .25s ease,transform .25s ease;z-index:10001}
         .sw-update-toast.show{opacity:1;transform:translateY(0)}
         .sw-update-message{min-width:0}
@@ -347,9 +345,6 @@
         /* Animated Conic-Gradient Card Borders */
         @property --border-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
         @keyframes borderSpin{to{--border-angle:360deg}}
-        @keyframes matrixFall{0%{transform:translateY(0);opacity:.8}100%{transform:translateY(calc(100vh + 200px));opacity:0}}
-        .matrix-overlay{position:fixed;inset:0;z-index:100000;pointer-events:none;overflow:hidden}
-        .matrix-column{position:absolute;top:-100%;font-family:var(--mono);font-size:13px;color:var(--grn);text-shadow:0 0 8px var(--grn-glow);line-height:1.2;writing-mode:vertical-lr;white-space:nowrap;animation-name:matrixFall;animation-timing-function:linear;animation-fill-mode:forwards}
         .lc2:hover::before{
             opacity:1;background:conic-gradient(from var(--border-angle),transparent 40%,var(--blue),var(--pur),var(--teal),var(--grn),transparent 60%);
             inset:-1px;height:auto;border-radius:inherit;z-index:-1;
@@ -3831,14 +3826,6 @@ html[data-theme="light"] ::selection{
   transition-duration:var(--dur-fast);
 }
 
-/* ---------- H. Copy toast premium feel ---------- */
-.copy-toast{
-  font-weight:500;
-  letter-spacing:.02em;
-  backdrop-filter:blur(16px) saturate(1.2);
-  -webkit-backdrop-filter:blur(16px) saturate(1.2);
-}
-
 /* ---------- I. Hero avatar hover ---------- */
 .hero-avatar.loaded:hover{
   box-shadow:0 0 28px rgba(124,184,255,.2);
@@ -3966,7 +3953,6 @@ html[data-theme="light"] .lc2:hover::before{
   .hero::after,
   .scroll-progress,
   .btt,
-  .matrix-overlay,
   #nav,
   .skip-link{
     display:none!important;
@@ -4321,26 +4307,6 @@ html[data-theme="light"] .cmdk-subtitle mark{
   background:var(--blue);
 }
 
-.copy-toast{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  min-height:40px;
-  padding:9px 16px;
-  border-radius:10px;
-  border-left-width:3px;
-  box-shadow:0 14px 34px rgba(0,0,0,.18);
-}
-.copy-toast[popover]{inset:auto;margin:0;position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(14px)}
-.copy-toast::before{
-  content:"";
-  width:10px;
-  height:10px;
-  border-radius:3px;
-  background:var(--grn);
-  box-shadow:0 0 0 4px rgba(74,222,128,.12);
-}
-
 .sw-update-toast{
   align-items:flex-start;
   gap:16px;
@@ -4495,10 +4461,6 @@ html[data-theme="light"] .cmdk-item:hover{
   border-color:rgba(53,107,191,.16);
   background:linear-gradient(90deg,rgba(53,107,191,.09),rgba(255,255,255,.72));
   box-shadow:0 8px 18px rgba(29,42,70,.08);
-}
-html[data-theme="light"] .copy-toast{
-  background:rgba(237,255,244,.92);
-  box-shadow:0 14px 34px rgba(29,42,70,.12);
 }
 }
 

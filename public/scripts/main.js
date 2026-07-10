@@ -36,25 +36,6 @@
 
     function getClosestTarget(target,selector){return target instanceof Element?target.closest(selector):null}
 
-    const copyToast=document.createElement('div');
-    copyToast.className='copy-toast';
-    copyToast.textContent='Link copied';
-    copyToast.setAttribute('role','status');
-    copyToast.setAttribute('aria-live','polite');
-    if('popover' in HTMLElement.prototype){copyToast.setAttribute('popover','manual')}
-    document.body.appendChild(copyToast);
-    let copyToastTimer=0;
-
-    function showCopyToast(){
-        clearTimeout(copyToastTimer);
-        if(copyToast.showPopover){try{copyToast.showPopover()}catch(e){}}
-        copyToast.classList.add('show');
-        copyToastTimer=setTimeout(function(){
-            copyToast.classList.remove('show');
-            if(copyToast.hidePopover){try{copyToast.hidePopover()}catch(e){}}
-        },1500);
-    }
-
     const footerYear=document.getElementById('footerYear');
     if(footerYear)footerYear.textContent=new Date().getFullYear();
 
@@ -66,7 +47,6 @@
         isFreshCache,
         scheduleIdle,
         fetchWithTimeout,
-        getClosestTarget,
-        showCopyToast
+        getClosestTarget
     });
 })();

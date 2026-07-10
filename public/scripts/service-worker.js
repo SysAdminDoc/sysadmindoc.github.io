@@ -14,19 +14,21 @@
         if(!worker||document.querySelector('.sw-update-toast'))return;
         const toast=document.createElement('div');
         toast.className='sw-update-toast';
-        toast.setAttribute('role','status');
-        toast.setAttribute('aria-live','polite');
+        toast.setAttribute('role','region');
+        toast.setAttribute('aria-label','Portfolio update');
         const message=document.createElement('span');
         message.className='sw-update-message';
+        message.setAttribute('role','status');
+        message.setAttribute('aria-live','polite');
         setMessage(message,'Update ready','Refresh to load the newest portfolio build.');
         const actions=document.createElement('div');
         actions.className='sw-update-actions';
         const refresh=document.createElement('button');
         refresh.type='button';
-        refresh.textContent='Refresh';
+        refresh.textContent='Refresh now';
         const dismiss=document.createElement('button');
         dismiss.type='button';
-        dismiss.textContent='Later';
+        dismiss.textContent='Not now';
         actions.append(refresh,dismiss);
         toast.append(message,actions);
         refresh.addEventListener('click',()=>{
@@ -51,7 +53,9 @@
                 if(worker.state==='installed'&&navigator.serviceWorker.controller)showServiceWorkerUpdateToast(worker);
             });
         });
-    }).catch(function(){});
+    }).catch(function(error){
+        console.warn('Offline support is unavailable in this browser session.',error);
+    });
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
         if(!serviceWorkerRefreshRequested)return;
         window.location.reload();

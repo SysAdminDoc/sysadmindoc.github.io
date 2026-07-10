@@ -2,6 +2,12 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [Unreleased]
+
+- Removed the hidden keyboard-sequence effect and its unused styling, along with the obsolete homepage copy-toast surface.
+- Made the mobile navigation an inert-backed disclosure with a decorative backdrop, contained focus, focus-aware desktop navigation cues, and current-section semantics.
+- Clarified service-worker update actions and corrected theme-toggle icon and state announcements.
+
 ## [v0.21.31] - 2026-07-08
 
 - Let the catalog deploy audit use the authenticated GitHub CLI token when `GITHUB_TOKEN` or `GH_TOKEN` is not exported, avoiding anonymous REST rate-limit failures during local Pages publishing.
