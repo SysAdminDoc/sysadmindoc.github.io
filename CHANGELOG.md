@@ -12,6 +12,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Put the full-text search control before explanatory metrics and removed decorative carousel controls that implied unavailable behavior.
 - Added visible command-search failure recovery, resilient clipboard fallbacks with focus restoration, and actionable sharing errors.
 - Kept timeline expansion focus-stable, added a true zero-activity state, guarded malformed section hashes, and removed the screenshot viewer's hidden zoom shortcut.
+- Enforced the compact radius scale across avatars, status markers, ambient surfaces, and chart fallbacks, and removed the unused button-ripple effect.
 
 ## [v0.21.31] - 2026-07-08
 
