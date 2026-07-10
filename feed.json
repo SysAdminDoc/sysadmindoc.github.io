@@ -19,7 +19,7 @@
       "url": "https://sysadmindoc.github.io/projects/Vigil/",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Desktop"
       ]
@@ -29,7 +29,17 @@
       "url": "https://sysadmindoc.github.io/projects/android-debloat-list/",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
+      "tags": [
+        "Guides"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+      "url": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+      "title": "sysadmindoc.github.io",
+      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Guides"
       ]
@@ -39,7 +49,7 @@
       "url": "https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Other"
       ]
@@ -49,7 +59,7 @@
       "url": "https://sysadmindoc.github.io/projects/RcloneBrowser/",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Other"
       ]
@@ -59,7 +69,7 @@
       "url": "https://sysadmindoc.github.io/projects/TabExplorer/",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Other"
       ]
@@ -69,9 +79,19 @@
       "url": "https://sysadmindoc.github.io/projects/TagStudio/",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
-      "date_modified": "2026-07-07T21:42:35.000Z",
+      "date_modified": "2026-07-10T04:51:51.000Z",
       "tags": [
         "Other"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/AppManagerNG/",
+      "url": "https://sysadmindoc.github.io/projects/AppManagerNG/",
+      "title": "AppManagerNG",
+      "content_text": "Power-user package manager — continuation of MuntashirAkon/AppManager",
+      "date_modified": "2026-07-10T04:48:17.000Z",
+      "tags": [
+        "Android"
       ]
     },
     {
@@ -79,19 +99,139 @@
       "url": "https://sysadmindoc.github.io/projects/LibreSpot/",
       "title": "LibreSpot",
       "content_text": "Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
-      "date_modified": "2026-07-07T21:36:58.000Z",
+      "date_modified": "2026-07-10T04:48:16.000Z",
       "tags": [
         "Featured"
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
-      "url": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
-      "title": "sysadmindoc.github.io",
-      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-07T21:32:07.000Z",
+      "id": "https://sysadmindoc.github.io/projects/ClearCut/",
+      "url": "https://sysadmindoc.github.io/projects/ClearCut/",
+      "title": "ClearCut",
+      "content_text": "Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
+      "date_modified": "2026-07-10T04:40:52.000Z",
       "tags": [
-        "Guides"
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/ImgConverter/",
+      "url": "https://sysadmindoc.github.io/projects/ImgConverter/",
+      "title": "ImgConverter",
+      "content_text": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
+      "date_modified": "2026-07-10T04:29:20.000Z",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
+      "url": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
+      "title": "Bookmark-Organizer-Pro",
+      "content_text": "AI-powered bookmark manager and categorizer",
+      "date_modified": "2026-07-10T04:19:23.000Z",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/ScriptVault/",
+      "url": "https://sysadmindoc.github.io/projects/ScriptVault/",
+      "title": "ScriptVault",
+      "content_text": "Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs",
+      "date_modified": "2026-07-10T04:15:07.000Z",
+      "tags": [
+        "Extensions"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/NukeMap/",
+      "url": "https://sysadmindoc.github.io/projects/NukeMap/",
+      "title": "NukeMap",
+      "content_text": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
+      "date_modified": "2026-07-10T04:13:01.000Z",
+      "tags": [
+        "Web Apps"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/Astra-Deck/",
+      "url": "https://sysadmindoc.github.io/projects/Astra-Deck/",
+      "title": "Astra-Deck",
+      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
+      "date_modified": "2026-07-10T04:11:17.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/SwiftFloris/",
+      "url": "https://sysadmindoc.github.io/projects/SwiftFloris/",
+      "title": "SwiftFloris",
+      "content_text": "SwiftKey-inspired keyboard built on FlorisBoard's foundation",
+      "date_modified": "2026-07-10T04:08:35.000Z",
+      "tags": [
+        "Android"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/Wingetter/",
+      "url": "https://sysadmindoc.github.io/projects/Wingetter/",
+      "title": "Wingetter",
+      "content_text": "Discover, select, and bulk install software via Winget",
+      "date_modified": "2026-07-10T04:02:09.000Z",
+      "tags": [
+        "PowerShell"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
+      "url": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
+      "title": "TsunamiSimulator",
+      "content_text": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
+      "date_modified": "2026-07-10T03:54:41.000Z",
+      "tags": [
+        "Desktop"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/HurricaneMap/",
+      "url": "https://sysadmindoc.github.io/projects/HurricaneMap/",
+      "title": "HurricaneMap (live)",
+      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
+      "date_modified": "2026-07-10T03:52:43.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/BetterTTS/",
+      "url": "https://sysadmindoc.github.io/projects/BetterTTS/",
+      "title": "BetterTTS (live)",
+      "content_text": "Private, in-browser text-to-speech studio",
+      "date_modified": "2026-07-10T03:46:49.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
+      "url": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
+      "title": "Network_Security_Auditor",
+      "content_text": "67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.",
+      "date_modified": "2026-07-09T23:28:12.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://sysadmindoc.github.io/projects/Images/",
+      "url": "https://sysadmindoc.github.io/projects/Images/",
+      "title": "Images",
+      "content_text": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
+      "date_modified": "2026-07-09T23:27:27.000Z",
+      "tags": [
+        "Desktop"
       ]
     },
     {
@@ -99,7 +239,7 @@
       "url": "https://sysadmindoc.github.io/projects/HostsGuard/",
       "title": "HostsGuard",
       "content_text": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
-      "date_modified": "2026-07-07T21:21:33.000Z",
+      "date_modified": "2026-07-09T23:26:59.000Z",
       "tags": [
         "Desktop"
       ]
@@ -109,19 +249,19 @@
       "url": "https://sysadmindoc.github.io/projects/CallShield/",
       "title": "CallShield",
       "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
-      "date_modified": "2026-07-07T08:40:54.000Z",
+      "date_modified": "2026-07-09T22:02:12.000Z",
       "tags": [
         "Android"
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SwiftFloris/",
-      "url": "https://sysadmindoc.github.io/projects/SwiftFloris/",
-      "title": "SwiftFloris",
-      "content_text": "SwiftKey-inspired keyboard built on FlorisBoard's foundation",
-      "date_modified": "2026-07-06T03:50:44.000Z",
+      "id": "https://sysadmindoc.github.io/projects/SwiftShot/",
+      "url": "https://sysadmindoc.github.io/projects/SwiftShot/",
+      "title": "SwiftShot",
+      "content_text": "Debloated, Greenshot-inspired screenshot tool",
+      "date_modified": "2026-07-08T03:28:22.000Z",
       "tags": [
-        "Android"
+        "Python"
       ]
     },
     {
@@ -215,56 +355,6 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/HurricaneMap/",
-      "url": "https://sysadmindoc.github.io/projects/HurricaneMap/",
-      "title": "HurricaneMap (live)",
-      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
-      "date_modified": "2026-07-03T23:37:19.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/Images/",
-      "url": "https://sysadmindoc.github.io/projects/Images/",
-      "title": "Images",
-      "content_text": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
-      "date_modified": "2026-07-03T16:19:28.000Z",
-      "tags": [
-        "Desktop"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/SwiftShot/",
-      "url": "https://sysadmindoc.github.io/projects/SwiftShot/",
-      "title": "SwiftShot",
-      "content_text": "Debloated, Greenshot-inspired screenshot tool",
-      "date_modified": "2026-07-03T16:14:01.000Z",
-      "tags": [
-        "Python"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/ScriptVault/",
-      "url": "https://sysadmindoc.github.io/projects/ScriptVault/",
-      "title": "ScriptVault",
-      "content_text": "Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs",
-      "date_modified": "2026-07-03T00:15:50.000Z",
-      "tags": [
-        "Extensions"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/AppManagerNG/",
-      "url": "https://sysadmindoc.github.io/projects/AppManagerNG/",
-      "title": "AppManagerNG",
-      "content_text": "Power-user package manager — continuation of MuntashirAkon/AppManager",
-      "date_modified": "2026-07-02T06:24:19.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
       "id": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/",
       "url": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/",
       "title": "Disable-AdobeTelemetry",
@@ -295,31 +385,11 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Wingetter/",
-      "url": "https://sysadmindoc.github.io/projects/Wingetter/",
-      "title": "Wingetter",
-      "content_text": "Discover, select, and bulk install software via Winget",
-      "date_modified": "2026-07-02T02:13:13.000Z",
-      "tags": [
-        "PowerShell"
-      ]
-    },
-    {
       "id": "https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/",
       "url": "https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/",
       "title": "AndroidEmulatorPlus",
       "content_text": "Install Android SDK, manage AVDs, root with Magisk, migrate apps",
       "date_modified": "2026-07-01T16:44:48.000Z",
-      "tags": [
-        "Desktop"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
-      "url": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
-      "title": "TsunamiSimulator",
-      "content_text": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
-      "date_modified": "2026-07-01T16:29:00.000Z",
       "tags": [
         "Desktop"
       ]
@@ -352,16 +422,6 @@
       "date_modified": "2026-07-01T16:01:35.000Z",
       "tags": [
         "PowerShell"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/ImgConverter/",
-      "url": "https://sysadmindoc.github.io/projects/ImgConverter/",
-      "title": "ImgConverter",
-      "content_text": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
-      "date_modified": "2026-07-01T14:20:38.000Z",
-      "tags": [
-        "Python"
       ]
     },
     {
@@ -422,16 +482,6 @@
       "date_modified": "2026-07-01T06:32:51.000Z",
       "tags": [
         "Python"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/NukeMap/",
-      "url": "https://sysadmindoc.github.io/projects/NukeMap/",
-      "title": "NukeMap",
-      "content_text": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
-      "date_modified": "2026-07-01T06:27:23.000Z",
-      "tags": [
-        "Web Apps"
       ]
     },
     {
@@ -595,16 +645,6 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
-      "url": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
-      "title": "Bookmark-Organizer-Pro",
-      "content_text": "AI-powered bookmark manager and categorizer",
-      "date_modified": "2026-07-01T03:49:39.000Z",
-      "tags": [
-        "Python"
-      ]
-    },
-    {
       "id": "https://sysadmindoc.github.io/projects/ExplorerTweaks/",
       "url": "https://sysadmindoc.github.io/projects/ExplorerTweaks/",
       "title": "ExplorerTweaks",
@@ -662,16 +702,6 @@
       "date_modified": "2026-07-01T03:25:08.000Z",
       "tags": [
         "Android"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/ClearCut/",
-      "url": "https://sysadmindoc.github.io/projects/ClearCut/",
-      "title": "ClearCut",
-      "content_text": "Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
-      "date_modified": "2026-07-01T03:12:13.000Z",
-      "tags": [
-        "Featured"
       ]
     },
     {
@@ -785,16 +815,6 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Astra-Deck/",
-      "url": "https://sysadmindoc.github.io/projects/Astra-Deck/",
-      "title": "Astra-Deck",
-      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
-      "date_modified": "2026-06-29T14:48:45.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
       "id": "https://sysadmindoc.github.io/projects/MSStoreHelper/",
       "url": "https://sysadmindoc.github.io/projects/MSStoreHelper/",
       "title": "MSStoreHelper",
@@ -862,16 +882,6 @@
       "date_modified": "2026-06-28T04:02:15.000Z",
       "tags": [
         "Python"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
-      "url": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
-      "title": "Network_Security_Auditor",
-      "content_text": "67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.",
-      "date_modified": "2026-06-28T03:54:08.000Z",
-      "tags": [
-        "Featured"
       ]
     },
     {
@@ -1862,16 +1872,6 @@
       "date_modified": "2026-06-28T03:36:49.000Z",
       "tags": [
         "Python"
-      ]
-    },
-    {
-      "id": "https://sysadmindoc.github.io/projects/RES-Slim/",
-      "url": "https://sysadmindoc.github.io/projects/RES-Slim/",
-      "title": "RES-Slim",
-      "content_text": "Stripped-down Reddit Enhancement Suite fork for old.reddit.com comment tweaks and media expandos",
-      "date_modified": "2026-06-28T03:00:07.000Z",
-      "tags": [
-        "Extensions"
       ]
     }
   ]

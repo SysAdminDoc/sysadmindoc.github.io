@@ -1,6 +1,6 @@
 {
   "schema": "sysadmindoc.screenshot-manifest.v1",
-  "generatedAt": "2026-07-07T21:00:58.247Z",
+  "generatedAt": "2026-07-10T05:11:26.954Z",
   "viewport": {
     "width": 1280,
     "height": 800
@@ -512,6 +512,29 @@
       "bytes": 84159,
       "thumbBytes": 11476,
       "sha256": "07eda8069750aa382ecdf6d2f64c5c97b0c4b8a2214a0cccc00c86aec6bc4a86",
+      "result": "ok"
+    },
+    {
+      "slug": "BetterTTS",
+      "url": "https://sysadmindoc.github.io/BetterTTS/",
+      "capturedAt": "2026-07-10T05:11:26.905Z",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "deviceScaleFactor": 1.25,
+      "colorScheme": "dark",
+      "dimensions": {
+        "width": 1600,
+        "height": 1000
+      },
+      "thumbDimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "bytes": 147694,
+      "thumbBytes": 22173,
+      "sha256": "6a3cbbff1e6a4b9a03dd5f91e43aae647a9661134657421bbc4d4854fada12ed",
       "result": "ok"
     }
   ]

@@ -37,6 +37,7 @@
 - [VIPTrack](https://sysadmindoc.github.io/projects/VIPTrack/): Military VIP aircraft tracker
 - [HurricaneMap](https://sysadmindoc.github.io/projects/HurricaneMap/): Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2
 - [ApocalypseWatch](https://sysadmindoc.github.io/projects/ApocalypseWatch/): Realtime business-jet tracker vs. 24h baseline
+- [BetterTTS](https://sysadmindoc.github.io/projects/BetterTTS/): Private, in-browser text-to-speech studio
 
 ## Pages
 - [Portfolio home](https://sysadmindoc.github.io/): 186 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.

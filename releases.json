@@ -1,26 +1,292 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-07T21:51:22.241Z",
+  "generatedAt": "2026-07-10T04:55:16.879Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-07T21:51:22.241Z"
+    "githubMetadataFetchedAt": "2026-07-10T04:55:16.879Z"
   },
   "counts": {
     "releases": 60,
-    "repositories": 20
+    "repositories": 25
   },
   "releases": [
     {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.74.110",
+      "name": "ClearCut v3.74.110",
+      "publishedAt": "2026-07-10T04:41:10Z",
+      "provenance": "checksum",
+      "summary": "Premium mobile creator workspace: a dominant preview, calmer timeline hierarchy, compact six-category editing tools, clearer primary actions, sharper shared chrome, and streamlined gallery, settings, recovery, and export",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.110",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "ImgConverter",
+      "projectName": "ImgConverter",
+      "tag": "v3.5.0",
+      "name": "ImgConverter v3.5.0",
+      "publishedAt": "2026-07-10T04:33:32Z",
+      "provenance": "checksum",
+      "summary": "- Reframed the desktop workflow as **Source → Output recipe → Batch summary** with responsive wide and compact layouts. · - Added a unified line-icon system, new ImgConverter app icon, clearer hierarchy, progressive disc",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ImgConverter/releases/tag/v3.5.0",
+        "repository": "https://github.com/SysAdminDoc/ImgConverter",
+        "detail": "https://sysadmindoc.github.io/projects/ImgConverter/"
+      }
+    },
+    {
+      "repo": "Bookmark-Organizer-Pro",
+      "projectName": "Bookmark-Organizer-Pro",
+      "tag": "v6.10.0",
+      "name": "v6.10.0",
+      "publishedAt": "2026-07-10T04:19:39Z",
+      "provenance": "checksum",
+      "summary": "Premium workspace redesign and interaction-quality release. Rebuilds the desktop first-run experience, collection pulse, contextual actions, and assistant rail; hardens live themes, focus behavior, WCAG contrast, and non",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.10.0",
+        "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.19.1",
+      "name": "ScriptVault v3.19.1",
+      "publishedAt": "2026-07-10T04:15:54Z",
+      "provenance": "checksum",
+      "summary": "Premium workbench parity release: canonical navigation, deeper dashboard destinations, reliable settings autosave, recoverable editor fallback, polished compact surfaces, four-theme rendered evidence, and verified Chrome",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.1",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+      }
+    },
+    {
+      "repo": "NukeMap",
+      "projectName": "NukeMap",
+      "tag": "v3.8.0",
+      "name": "v3.8.0",
+      "publishedAt": "2026-07-10T04:13:22Z",
+      "provenance": "unsigned",
+      "summary": "Premium analysis workspace with a map-first navigation dock, editable model/status bar, ground-zero context, responsive desktop/tablet/mobile layouts, refreshed PWA identity, recoverable analysis actions, stronger access",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/NukeMap/releases/tag/v3.8.0",
+        "repository": "https://github.com/SysAdminDoc/NukeMap",
+        "detail": "https://sysadmindoc.github.io/projects/NukeMap/"
+      }
+    },
+    {
+      "repo": "Wingetter",
+      "projectName": "Wingetter",
+      "tag": "v6.2.0",
+      "name": "Wingetter v6.2.0",
+      "publishedAt": "2026-07-10T04:02:09Z",
+      "provenance": "unsigned",
+      "summary": "Premium GUI and UX release with a redesigned discovery workspace, responsive catalog, persistent reviewed-selection panel, corrected dark/light theming, keyboard and screen-reader improvements, polished dialogs, determin",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Wingetter/releases/tag/v6.2.0",
+        "repository": "https://github.com/SysAdminDoc/Wingetter",
+        "detail": "https://sysadmindoc.github.io/projects/Wingetter/"
+      }
+    },
+    {
+      "repo": "TsunamiSimulator",
+      "projectName": "TsunamiSimulator",
+      "tag": "v0.5.0",
+      "name": "v0.5.0 — Validation, corrected physics, classroom tooling",
+      "publishedAt": "2026-07-10T03:55:03Z",
+      "provenance": "unsigned",
+      "summary": "- **Okada vertical-displacement kernel corrected** against Okada 1985 Table 2 (4-significant-figure agreement on cases 2 and 3). The previous strike-slip term produced non-physical displacement growing with fault length;",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/TsunamiSimulator/releases/tag/v0.5.0",
+        "repository": "https://github.com/SysAdminDoc/TsunamiSimulator",
+        "detail": "https://sysadmindoc.github.io/projects/TsunamiSimulator/"
+      }
+    },
+    {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.19.0",
+      "name": "BetterTTS v0.19.0",
+      "publishedAt": "2026-07-10T03:48:19Z",
+      "provenance": "checksum",
+      "summary": "Premium product-quality release for the web and Windows editions.\\n\\nHighlights:\\n- Recoverable Queue and Library deletion with Undo\\n- Complete mobile workspace rail and editor-level Generate action\\n- Keyboard tab navi",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.19.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+      }
+    },
+    {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.25",
+      "name": "Images v0.2.25",
+      "publishedAt": "2026-07-09T22:11:34Z",
+      "provenance": "checksum",
+      "summary": "Premium image-first viewer redesign with a compact 52px rail, dominant canvas, focused Details inspector, streamlined gallery and settings hierarchy, and reduced permanent chrome. Includes WPF dispatcher reliability and ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.25",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.19.0",
+      "name": "ScriptVault v3.19.0",
+      "publishedAt": "2026-07-09T21:56:49Z",
+      "provenance": "checksum",
+      "summary": "Professional workbench redesign with a premium graphite-and-emerald dashboard, live vault metrics, contextual script inspection, unified popup/side-panel/install/DevTools surfaces, and browser-rendered visual regression ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.0",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+      }
+    },
+    {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.10",
-      "name": "v0.12.10",
-      "publishedAt": "2026-07-07T21:21:53Z",
+      "tag": "v0.12.65",
+      "name": "HostsGuard v0.12.65",
+      "publishedAt": "2026-07-09T21:55:13Z",
       "provenance": "unsigned",
-      "summary": "Adds a rule decision explainer and simulator across FirewallControl, WPF Firewall Activity, and HostsGuard.Cli explain. The decision chain reports hosts entries, firewall rules/groups, trusted publishers/folders, profile",
+      "summary": "Premium WPF workbench redesign with a vector product identity, continuous primary and secondary navigation, refined dark/light surface hierarchy, semantic alert and focus states, unified themed dialogs, localized About s",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.10",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.65",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "projectName": "Network_Security_Auditor",
+      "tag": "v5.3.1",
+      "name": "v5.3.1",
+      "publishedAt": "2026-07-09T21:49:50Z",
+      "provenance": "checksum",
+      "summary": "Adds live assessment save-status feedback and protects Save state and Load state while scans or report exports mutate audit data. All persisted check fields, scan results, profile changes, and theme changes now mark the ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.1",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+      }
+    },
+    {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.17.0",
+      "name": "BetterTTS v0.17.0",
+      "publishedAt": "2026-07-09T21:46:13Z",
+      "provenance": "checksum",
+      "summary": "Premium production-workspace redesign for the web and Windows desktop app. Adds persistent workspace navigation, real Output/Queue/Library tabs, integrated output transport, compact properties controls, neutral dark/ligh",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.17.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+      }
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "projectName": "Network_Security_Auditor",
+      "tag": "v5.3.0",
+      "name": "v5.3.0",
+      "publishedAt": "2026-07-09T21:12:15Z",
+      "provenance": "checksum",
+      "summary": "Premium C# security posture workstation redesign with a resizable checks and evidence inspector, truthful readiness and unscanned states, stronger accessibility, recoverable scan failures, deterministic GUI capture, and ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.0",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+      }
+    },
+    {
+      "repo": "RES-Slim",
+      "projectName": "RES-Slim",
+      "tag": "v0.15.1",
+      "name": "RES-Slim v0.15.1",
+      "publishedAt": "2026-07-09T14:42:57Z",
+      "provenance": "unsigned",
+      "summary": "Old.reddit-focused fork of Reddit Enhancement Suite. Chrome MV3 + Firefox MV2. 494 contract tests. Bundles everything since v0.14.1 (v0.14.2, v0.15.0, v0.15.1). · - New `pageTheme` module (disabled by default) — an opt-i",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.15.1",
+        "repository": "https://github.com/SysAdminDoc/RES-Slim",
+        "detail": null
+      }
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "projectName": "Network_Security_Auditor",
+      "tag": "v5.2.9",
+      "name": "v5.2.9",
+      "publishedAt": "2026-07-09T14:19:51Z",
+      "provenance": "checksum",
+      "summary": "Reliability fix release. C# GUI scans now generate and open the HTML report automatically after successful completion, and CF02 egress checks no longer abandon timed-out socket connect tasks that can surface as unobserve",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.9",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+      }
+    },
+    {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.15.0",
+      "name": "v0.15.0",
+      "publishedAt": "2026-07-09T14:04:09Z",
+      "provenance": "unsigned",
+      "summary": "Changed: Reworked the studio shell into a professional workstation layout with a six-tile command summary, side-by-side script/output workbench, tabbed waveform-style output deck, denser queue/library treatment, refreshe",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.15.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+      }
+    },
+    {
+      "repo": "Astra-Deck",
+      "projectName": "Astra-Deck",
+      "tag": "v4.46.34",
+      "name": "v4.46.34",
+      "publishedAt": "2026-07-09T13:53:48Z",
+      "provenance": "checksum",
+      "summary": "Polishes the extension settings overlay into an executive command deck: red hairline shell, top command search, compact navigation rail, denser setting rows, right-side status/profile/health inspector, and persistent bot",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.34",
+        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
+        "detail": "https://sysadmindoc.github.io/projects/Astra-Deck/"
+      }
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "projectName": "Network_Security_Auditor",
+      "tag": "v5.2.8",
+      "name": "v5.2.8",
+      "publishedAt": "2026-07-09T13:45:12Z",
+      "provenance": "checksum",
+      "summary": "C# rewrite v5.2.8 and PowerShell v4.11.2 audit hardening release. · - Hardened generated HTML links, branding contact email handling, and local import file-size limits. · - Improved CF01 SYSVOL scanning bounds, saved-sta",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.8",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.62",
+      "name": "v0.12.62",
+      "publishedAt": "2026-07-09T13:42:16Z",
+      "provenance": "unsigned",
+      "summary": "Security and reliability audit release. Hardened CSV exports against spreadsheet formula injection; fixed repeated support-bundle export collisions and empty-log diagnostics; clarified app/service version-mismatch errors",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.62",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
@@ -28,13 +294,13 @@
     {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.9",
-      "name": "v0.12.9",
-      "publishedAt": "2026-07-07T20:58:35Z",
+      "tag": "v0.12.61",
+      "name": "v0.12.61",
+      "publishedAt": "2026-07-09T12:58:30Z",
       "provenance": "unsigned",
-      "summary": "Adds source-scoped blocklist preview, enable/disable, and rollback across WPF, CLI, and ListControl. Imports now track per-source domain ownership so source removal deletes only sole-owned domains while preserving manual",
+      "summary": "Added redacted metadata-only traffic profile exports for support bundles, FW Activity, and HostsGuard.Cli traffic-profile, with time/app/action/protocol filters, JSON/CSV output, Wireshark display-filter hints, and an ex",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.9",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.61",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
@@ -42,13 +308,13 @@
     {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.8",
-      "name": "v0.12.8",
-      "publishedAt": "2026-07-07T20:43:21Z",
+      "tag": "v0.12.60",
+      "name": "v0.12.60",
+      "publishedAt": "2026-07-09T12:21:39Z",
       "provenance": "unsigned",
-      "summary": "Adds first-class persisted event-ledger browsing through WPF, CLI, and Monitoring.ListEvents. Includes paging and time/action/reason/domain/process/category filters, plus redacted CSV export for shareable event evidence.",
+      "summary": "Added optional app/domain usage-budget alert rules backed by retained daily usage rollups, with usage_budget alert inbox entries when thresholds are crossed. Added WPF Firewall Activity controls and HostsGuard.Cli usage-",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.8",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.60",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
@@ -56,29 +322,127 @@
     {
       "repo": "HostsGuard",
       "projectName": "HostsGuard",
-      "tag": "v0.12.7",
-      "name": "v0.12.7",
-      "publishedAt": "2026-07-07T20:29:02Z",
+      "tag": "v0.12.59",
+      "name": "v0.12.59",
+      "publishedAt": "2026-07-09T11:49:59Z",
       "provenance": "unsigned",
-      "summary": "Portable-policy export/import now carries non-secret mutable privacy posture across machines, including consent trust, DNS privacy toggles, DoH intelligence, kill-switch intent, AI knowledge/overrides, and webhook endpoi",
+      "summary": "Changed: · - Made dependency hygiene transitive deferrals source-backed: the ratchet now prints each owning package/version, observed resolved-to-latest drift, reason, and revisit trigger while continuing to fail vulnera",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.7",
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.59",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
         "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
       }
     },
     {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.6",
-      "name": "v0.12.6",
-      "publishedAt": "2026-07-07T20:14:33Z",
+      "repo": "SwiftFloris",
+      "projectName": "SwiftFloris",
+      "tag": "v1.9.56",
+      "name": "v1.9.56",
+      "publishedAt": "2026-07-09T11:44:19Z",
       "provenance": "unsigned",
-      "summary": "Fixed: hardened outbound event webhooks against SSRF. Loopback API configuration now rejects non-HTTPS, loopback, private, link-local, metadata, ULA, and CGNAT destinations before saving, and webhook delivery uses the sa",
+      "summary": "Roadmap hardening: Han DB access serialization, typed-text log redaction, SQLCipher refresh and freshness gate, bounded sync and translation addon bridges with typed failure/timeout/cancel copy, runtime addon capability ",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.6",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "release": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.9.56",
+        "repository": "https://github.com/SysAdminDoc/SwiftFloris",
+        "detail": "https://sysadmindoc.github.io/projects/SwiftFloris/"
+      }
+    },
+    {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.14.0",
+      "name": "v0.14.0",
+      "publishedAt": "2026-07-09T10:18:27Z",
+      "provenance": "unsigned",
+      "summary": "Deep audit hardening release. Includes import/library/queue recovery guardrails, UI accessibility and contrast fixes, diagnostics privacy hardening, bounded article imports, safer service-worker cache keys, exact Kokoro ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+      }
+    },
+    {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.13.0",
+      "name": "v0.13.0",
+      "publishedAt": "2026-07-09T09:30:20Z",
+      "provenance": "unsigned",
+      "summary": "Roadmap drain release: adds experimental Piper-plus engine wiring, offline/runtime diagnostics hardening, document import and playback reliability improvements, queue editing, local smoke coverage, and v0.13.0 version sy",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.13.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+      }
+    },
+    {
+      "repo": "Network_Security_Auditor",
+      "projectName": "Network_Security_Auditor",
+      "tag": "v5.2.7",
+      "name": "v5.2.7",
+      "publishedAt": "2026-07-09T07:14:34Z",
+      "provenance": "checksum",
+      "summary": "Network Security Auditor v5.2.7 / PowerShell v4.11.1 · - Aligns C# scoring metadata, framework profile counts, rounding, and waiver expiry semantics. · - Hardens C# CLI/check parsing, scan lifecycle, invariant export dat",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.7",
+        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+      }
+    },
+    {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.22",
+      "name": "v0.2.22",
+      "publishedAt": "2026-07-09T06:41:23Z",
+      "provenance": "checksum",
+      "summary": "Images v0.2.22 · Changed: · - Tightened the command palette so common viewer commands rank first, advanced utilities are grouped under Advanced tools, and task synonyms improve search.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.22",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.20",
+      "name": "v0.2.20",
+      "publishedAt": "2026-07-09T00:23:50Z",
+      "provenance": "unsigned",
+      "summary": "Removed the main viewer Review workflow, rating/pick/reject side panel, assisted culling, Review workflow mode, Review hotkeys, and command-palette rating import to keep Images leaner.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.20",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.19",
+      "name": "v0.2.19",
+      "publishedAt": "2026-07-08T23:57:25Z",
+      "provenance": "unsigned",
+      "summary": "Fixed: removed the floating viewer top command bar with Compare and Export actions so image viewing keeps the top of the viewport clear.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.19",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "RES-Slim",
+      "projectName": "RES-Slim",
+      "tag": "v0.14.1",
+      "name": "RES-Slim v0.14.1",
+      "publishedAt": "2026-07-08T21:35:04Z",
+      "provenance": "unsigned",
+      "summary": "Old.reddit-focused fork of Reddit Enhancement Suite. Chrome MV3 + Firefox MV2. 482→487 contract tests. This is the first tagged release since v0.12.7 and bundles the v0.13.0, v0.14.0, and v0.14.1 work. · - `commentHighli",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.14.1",
+        "repository": "https://github.com/SysAdminDoc/RES-Slim",
+        "detail": null
       }
     },
     {
@@ -348,20 +712,6 @@
       }
     },
     {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.15.0",
-      "name": "v3.15.0",
-      "publishedAt": "2026-07-02T21:33:40Z",
-      "provenance": "unsigned",
-      "summary": "- **Script Store tab removed entirely.** The eagerly-loaded multi-source discovery tab (~2,100 lines) is gone; script discovery lives in the lighter Find Scripts dialog (toolbar, popup, side panel), Collections, and Gist",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.15.0",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
-      }
-    },
-    {
       "repo": "one-ui-home-clone",
       "projectName": "one-ui-home-clone",
       "tag": "v0.2.3",
@@ -385,20 +735,6 @@
       "summary": "- **AsyncRelayCommand catches non-cancellation exceptions** — Exceptions from command methods now log + toast instead of propagating through `async void` to `DispatcherUnhandledException` and terminating the app. Static ",
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.15",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
-      }
-    },
-    {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.14",
-      "name": "v0.2.14",
-      "publishedAt": "2026-07-02T05:21:03Z",
-      "provenance": "unsigned",
-      "summary": "- GoBack/GoForward no longer corrupt history on failed navigation · - OpenRecentArchiveCommand converted to AsyncRelayCommand (crash fix) · - SaveAsCopyAsync captures source path before yield (TOCTOU race fix)",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.14",
         "repository": "https://github.com/SysAdminDoc/Images",
         "detail": "https://sysadmindoc.github.io/projects/Images/"
       }
@@ -502,76 +838,6 @@
       }
     },
     {
-      "repo": "Keepr",
-      "projectName": "Keepr",
-      "tag": "v0.25.14",
-      "name": "v0.25.14",
-      "publishedAt": "2026-07-01T05:05:48Z",
-      "provenance": "unsigned",
-      "summary": "Microsoft Store installer lane. Adds src-tauri/tauri.microsoftstore.conf.json and npm run build:store-installer so Store-flavored NSIS/MSI installers use offline WebView2 mode for Partner Center validation. Partner Cente",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.25.14",
-        "repository": "https://github.com/SysAdminDoc/Keepr",
-        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
-      }
-    },
-    {
-      "repo": "Keepr",
-      "projectName": "Keepr",
-      "tag": "v0.25.13",
-      "name": "v0.25.13",
-      "publishedAt": "2026-07-01T04:47:26Z",
-      "provenance": "unsigned",
-      "summary": "Zustand pin removal. Upgrades Zustand from the exact 5.0.1 pin to ^5.0.14 after the existing static/dynamic ESM import regression guard passed, proving the app keeps one shared store instance. npm outdated --long now rep",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.25.13",
-        "repository": "https://github.com/SysAdminDoc/Keepr",
-        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
-      }
-    },
-    {
-      "repo": "Keepr",
-      "projectName": "Keepr",
-      "tag": "v0.25.12",
-      "name": "v0.25.12",
-      "publishedAt": "2026-07-01T04:36:49Z",
-      "provenance": "unsigned",
-      "summary": "TypeScript 6 and ESLint 10 lane. Upgrades TypeScript to 6.0.3, ESLint to 10.6.0, @eslint/js to 10.0.1, and @types/node to 26.0.1. Removes eslint-plugin-react because its latest peer range stops at ESLint 9 and Keepr only",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.25.12",
-        "repository": "https://github.com/SysAdminDoc/Keepr",
-        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
-      }
-    },
-    {
-      "repo": "Keepr",
-      "projectName": "Keepr",
-      "tag": "v0.25.11",
-      "name": "v0.25.11",
-      "publishedAt": "2026-07-01T04:24:06Z",
-      "provenance": "unsigned",
-      "summary": "Tailwind 4 migration. Upgrades Tailwind CSS to 4.3.2, moves CSS generation to @tailwindcss/vite, removes the old PostCSS config plus top-level autoprefixer/postcss, preserves Keepr's class-based dark mode with @custom-va",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.25.11",
-        "repository": "https://github.com/SysAdminDoc/Keepr",
-        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
-      }
-    },
-    {
-      "repo": "Keepr",
-      "projectName": "Keepr",
-      "tag": "v0.25.10",
-      "name": "v0.25.10",
-      "publishedAt": "2026-07-01T04:06:26Z",
-      "provenance": "unsigned",
-      "summary": "Vite 8 migration: upgraded Vite to 8.1.2 and @vitejs/plugin-react to 6.0.3, removed the completed Vite roadmap lane, and cleared npm audit. Verification: npm test, npm run lint, npm run build, npm run build:clipper, carg",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Keepr/releases/tag/v0.25.10",
-        "repository": "https://github.com/SysAdminDoc/Keepr",
-        "detail": "https://sysadmindoc.github.io/projects/Keepr/"
-      }
-    },
-    {
       "repo": "Start-Menu-Organizer",
       "projectName": "Start-Menu-Organizer",
       "tag": "v0.13.0",
@@ -583,272 +849,6 @@
         "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.13.0",
         "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
         "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
-      }
-    },
-    {
-      "repo": "NetForge",
-      "projectName": "NetForge",
-      "tag": "v1.51.0",
-      "name": "v1.51.0",
-      "publishedAt": "2026-06-30T00:44:49Z",
-      "provenance": "checksum",
-      "summary": "- Adds diagnostics export privacy mode with preview manifest and bundled redaction-report.json.\\n- Redacts webhook URLs, proxy hosts, mapped-drive UNC paths, SSIDs, MACs, adapter names, and local paths when privacy mode ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NetForge/releases/tag/v1.51.0",
-        "repository": "https://github.com/SysAdminDoc/NetForge",
-        "detail": "https://sysadmindoc.github.io/projects/NetForge/"
-      }
-    },
-    {
-      "repo": "NetForge",
-      "projectName": "NetForge",
-      "tag": "v1.50.0",
-      "name": "v1.50.0",
-      "publishedAt": "2026-06-30T00:34:12Z",
-      "provenance": "checksum",
-      "summary": "- App interface guards now persist program path plus allowed adapter for drift repair.\\n- Startup, NetworkChange, and manual Refresh Guards reconcile missing or stale NetForge-owned firewall rules.\\n- Adds Pester coverag",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NetForge/releases/tag/v1.50.0",
-        "repository": "https://github.com/SysAdminDoc/NetForge",
-        "detail": "https://sysadmindoc.github.io/projects/NetForge/"
-      }
-    },
-    {
-      "repo": "NetForge",
-      "projectName": "NetForge",
-      "tag": "v1.49.0",
-      "name": "v1.49.0",
-      "publishedAt": "2026-06-30T00:23:58Z",
-      "provenance": "checksum",
-      "summary": "Changed: Discord webhook URLs now migrate from plaintext settings to current-user DPAPI-protected storage. · Added: Pester coverage for protected webhook storage, legacy migration, missing secret, and invalid protected d",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NetForge/releases/tag/v1.49.0",
-        "repository": "https://github.com/SysAdminDoc/NetForge",
-        "detail": "https://sysadmindoc.github.io/projects/NetForge/"
-      }
-    },
-    {
-      "repo": "NetForge",
-      "projectName": "NetForge",
-      "tag": "v1.48.0",
-      "name": "v1.48.0",
-      "publishedAt": "2026-06-29T18:59:00Z",
-      "provenance": "checksum",
-      "summary": "Added Network Tools app interface guard for restricting a selected executable to one allowed adapter using Windows Firewall/WFP interface filters. Added apply, remove, refresh, and list controls for NetForge-owned per-ap",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NetForge/releases/tag/v1.48.0",
-        "repository": "https://github.com/SysAdminDoc/NetForge",
-        "detail": "https://sysadmindoc.github.io/projects/NetForge/"
-      }
-    },
-    {
-      "repo": "NetForge",
-      "projectName": "NetForge",
-      "tag": "v1.47.0",
-      "name": "v1.47.0",
-      "publishedAt": "2026-06-29T18:51:11Z",
-      "provenance": "checksum",
-      "summary": "Added optional Discord webhook notifications after successful profile applies from GUI, tray, scheduled, auto-apply, RDP, and CLI paths. Added Diagnostics endpoint-policy controls for saving the webhook URL with token-re",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NetForge/releases/tag/v1.47.0",
-        "repository": "https://github.com/SysAdminDoc/NetForge",
-        "detail": "https://sysadmindoc.github.io/projects/NetForge/"
-      }
-    },
-    {
-      "repo": "WURepair",
-      "projectName": "WURepair",
-      "tag": "v2.17.0",
-      "name": "v2.17.0",
-      "publishedAt": "2026-06-28T14:50:36Z",
-      "provenance": "unsigned",
-      "summary": "Adds -PlainText deterministic ASCII console output for automation logs, RMM consoles, and screen readers. Plain-text mode suppresses progress rendering and color-only status while preserving log file output. · SHA256: 6b",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/WURepair/releases/tag/v2.17.0",
-        "repository": "https://github.com/SysAdminDoc/WURepair",
-        "detail": "https://sysadmindoc.github.io/projects/WURepair/"
-      }
-    },
-    {
-      "repo": "Start-Menu-Organizer",
-      "projectName": "Start-Menu-Organizer",
-      "tag": "v0.12.0",
-      "name": "v0.12.0",
-      "publishedAt": "2026-06-28T14:49:55Z",
-      "provenance": "unsigned",
-      "summary": "Added centralized UI strings with optional JSON localization overrides, automation names and help text for core controls, predictable tab order, raised muted-text contrast, WPF XAML load coverage, and accessibility/local",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.12.0",
-        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
-      }
-    },
-    {
-      "repo": "WURepair",
-      "projectName": "WURepair",
-      "tag": "v2.16.0",
-      "name": "v2.16.0",
-      "publishedAt": "2026-06-28T14:43:39Z",
-      "provenance": "unsigned",
-      "summary": "Adds -SupportBundle for redacted diagnostic zip creation with WURepair log, JSON report, WindowsUpdate.log, CBS/DISM tails, relevant event exports, and manifest. Adds -NoRedact for intentional raw support bundles and a .",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/WURepair/releases/tag/v2.16.0",
-        "repository": "https://github.com/SysAdminDoc/WURepair",
-        "detail": "https://sysadmindoc.github.io/projects/WURepair/"
-      }
-    },
-    {
-      "repo": "Start-Menu-Organizer",
-      "projectName": "Start-Menu-Organizer",
-      "tag": "v0.11.0",
-      "name": "v0.11.0",
-      "publishedAt": "2026-06-28T14:37:34Z",
-      "provenance": "unsigned",
-      "summary": "Added dated JSONL file logging under LOCALAPPDATA, crash-log files for unhandled WPF dispatcher/AppDomain/top-level runtime exceptions, operation IDs in guarded operation and journal logs, log rotation, and structured lo",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.11.0",
-        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
-      }
-    },
-    {
-      "repo": "WURepair",
-      "projectName": "WURepair",
-      "tag": "v2.15.0",
-      "name": "v2.15.0",
-      "publishedAt": "2026-06-28T14:33:37Z",
-      "provenance": "unsigned",
-      "summary": "Adds managed update-source guardrails for WSUS/SUP/WUfB policy values. Full repair preserves managed source policy by default and requires -ResetManagedUpdatePolicy for intentional removal. · SHA256: 77f5c9c3f7f4655df0aa",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/WURepair/releases/tag/v2.15.0",
-        "repository": "https://github.com/SysAdminDoc/WURepair",
-        "detail": "https://sysadmindoc.github.io/projects/WURepair/"
-      }
-    },
-    {
-      "repo": "Stock-Video-Collector",
-      "projectName": "Stock-Video-Collector",
-      "tag": "v0.7.8",
-      "name": "v0.7.8",
-      "publishedAt": "2026-06-28T14:33:30Z",
-      "provenance": "unsigned",
-      "summary": "- Sensitive config values now migrate out of plaintext config.json into an encrypted local vault with __secret_ref__ pointers.\\n- Crash output, GUI logs, download logs, config import errors, and diagnostics redact tokens",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Stock-Video-Collector/releases/tag/v0.7.8",
-        "repository": "https://github.com/SysAdminDoc/Stock-Video-Collector",
-        "detail": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/"
-      }
-    },
-    {
-      "repo": "Start-Menu-Organizer",
-      "projectName": "Start-Menu-Organizer",
-      "tag": "v0.10.0",
-      "name": "v0.10.0",
-      "publishedAt": "2026-06-28T14:29:39Z",
-      "provenance": "unsigned",
-      "summary": "Added a local release-package builder that creates StartMenuOrganizer-v0.10.0.zip. Added current-user install and uninstall scripts with Start Menu shortcut wiring, execution-policy launch guidance, package regression co",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.10.0",
-        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
-      }
-    },
-    {
-      "repo": "ImgConverter",
-      "projectName": "ImgConverter",
-      "tag": "v3.3.4",
-      "name": "v3.3.4",
-      "publishedAt": "2026-06-28T14:29:24Z",
-      "provenance": "checksum",
-      "summary": "- Persistent batch session history: completed GUI and CLI batches append redacted local history records with option summaries, counts, byte totals, failure counts, and report/support-bundle pointers. The GUI exposes a re",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ImgConverter/releases/tag/v3.3.4",
-        "repository": "https://github.com/SysAdminDoc/ImgConverter",
-        "detail": "https://sysadmindoc.github.io/projects/ImgConverter/"
-      }
-    },
-    {
-      "repo": "WURepair",
-      "projectName": "WURepair",
-      "tag": "v2.14.0",
-      "name": "v2.14.0",
-      "publishedAt": "2026-06-28T14:26:02Z",
-      "provenance": "unsigned",
-      "summary": "Validates Microsoft Update Catalog SSU packages with SHA256 plus Microsoft Authenticode signature before wusa.exe runs and records validation metadata in JSON reports. · SHA256: 47128d186a8dfdafa2056d9ab1277fcfa8259631c8",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/WURepair/releases/tag/v2.14.0",
-        "repository": "https://github.com/SysAdminDoc/WURepair",
-        "detail": "https://sysadmindoc.github.io/projects/WURepair/"
-      }
-    },
-    {
-      "repo": "Stock-Video-Collector",
-      "projectName": "Stock-Video-Collector",
-      "tag": "v0.7.7",
-      "name": "v0.7.7",
-      "publishedAt": "2026-06-28T14:22:41Z",
-      "provenance": "unsigned",
-      "summary": "- Clear DB now creates a timestamped SQLite backup and clears immediately without a confirmation dialog.\\n- Added Restore Last Backup in-app, with toast/status/log feedback for clear and restore actions.\\n- Added SQLite ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Stock-Video-Collector/releases/tag/v0.7.7",
-        "repository": "https://github.com/SysAdminDoc/Stock-Video-Collector",
-        "detail": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/"
-      }
-    },
-    {
-      "repo": "WURepair",
-      "projectName": "WURepair",
-      "tag": "v2.13.0",
-      "name": "v2.13.0",
-      "publishedAt": "2026-06-28T14:19:01Z",
-      "provenance": "unsigned",
-      "summary": "Adds per-run mutation journal JSON for hosts, registry, policy, and cache changes; adds -RollbackJournal preview plus -ApplyRollback restore mode for reversible entries; and includes journal path/counts in JSON reports.\\",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/WURepair/releases/tag/v2.13.0",
-        "repository": "https://github.com/SysAdminDoc/WURepair",
-        "detail": "https://sysadmindoc.github.io/projects/WURepair/"
-      }
-    },
-    {
-      "repo": "Disable-AdobeTelemetry",
-      "projectName": "Disable-AdobeTelemetry",
-      "tag": "v2.3.6",
-      "name": "v2.3.6",
-      "publishedAt": "2026-06-28T14:14:37Z",
-      "provenance": "checksum",
-      "summary": "- Expanded JSON status registry convergence for Adobe enterprise, Acrobat/Reader, Wow6432Node, Substance 3D, and current-user policies. · - Registry status entries now include Phase, Path, Name, Type, Expected, Actual, V",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry/releases/tag/v2.3.6",
-        "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-        "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/"
-      }
-    },
-    {
-      "repo": "Stock-Video-Collector",
-      "projectName": "Stock-Video-Collector",
-      "tag": "v0.7.6",
-      "name": "v0.7.6",
-      "publishedAt": "2026-06-28T14:10:29Z",
-      "provenance": "unsigned",
-      "summary": "- Downloader writes to .part files, validates completed videos, and atomically promotes only verified MP4s.\\n- Archive verification now flags invalid local video files and can reset missing/invalid records to pending.\\n-",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Stock-Video-Collector/releases/tag/v0.7.6",
-        "repository": "https://github.com/SysAdminDoc/Stock-Video-Collector",
-        "detail": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/"
-      }
-    },
-    {
-      "repo": "Disable-AdobeTelemetry",
-      "projectName": "Disable-AdobeTelemetry",
-      "tag": "v2.3.5",
-      "name": "v2.3.5",
-      "publishedAt": "2026-06-28T14:07:34Z",
-      "provenance": "checksum",
-      "summary": "- Added mocked behavioral Pester coverage for firewall rule creation/removal, persistent route add/delete, Dynamic Keyword creation/removal, watchdog register/update/remove, and manifest undo order. · - Added mockable re",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry/releases/tag/v2.3.5",
-        "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-        "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/"
       }
     }
   ]

@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-07T21:51:22.241Z",
+  "generatedAt": "2026-07-10T04:55:16.879Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "SysAdminDoc/SysAdminDoc projects.json",
     "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
     "profileFeedGeneratedAt": "2026-06-01T16:18:55.0998940-04:00",
-    "profileFeedCachedAt": "2026-07-08T05:01:53.081Z",
-    "githubMetadataFetchedAt": "2026-07-07T21:51:22.241Z",
-    "githubLastPushedAt": "2026-07-07T21:42:35Z"
+    "profileFeedCachedAt": "2026-07-10T05:37:54.027Z",
+    "githubMetadataFetchedAt": "2026-07-10T04:55:16.879Z",
+    "githubLastPushedAt": "2026-07-10T04:51:51Z"
   },
   "counts": {
     "projects": 186,
     "featured": 10,
-    "liveApps": 22,
+    "liveApps": 23,
     "catalog": 186
   },
   "projects": [
@@ -41,11 +41,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 49
+        "stars": 50
       },
       "freshness": {
         "pushedAt": "2026-07-01T02:56:14Z",
-        "updatedAt": "2026-07-06T20:09:48Z"
+        "updatedAt": "2026-07-09T21:44:00Z"
       }
     },
     {
@@ -137,8 +137,8 @@
         "stars": 12
       },
       "freshness": {
-        "pushedAt": "2026-07-07T21:36:58Z",
-        "updatedAt": "2026-07-07T21:37:09Z"
+        "pushedAt": "2026-07-10T04:48:16Z",
+        "updatedAt": "2026-07-10T04:46:50Z"
       }
     },
     {
@@ -169,7 +169,7 @@
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:06:37Z",
-        "updatedAt": "2026-07-07T19:03:54Z"
+        "updatedAt": "2026-07-08T10:32:45Z"
       }
     },
     {
@@ -199,8 +199,8 @@
         "stars": 8
       },
       "freshness": {
-        "pushedAt": "2026-06-29T14:48:45Z",
-        "updatedAt": "2026-06-29T14:49:30Z"
+        "pushedAt": "2026-07-10T04:11:17Z",
+        "updatedAt": "2026-07-10T04:11:21Z"
       }
     },
     {
@@ -209,7 +209,7 @@
       "description": "67 automated checks across 8 security domains with MITRE ATT&CK mapping and multi-tier compliance reports.",
       "category": "ps",
       "categoryLabel": "PowerShell",
-      "language": "PowerShell",
+      "language": "C#",
       "featured": true,
       "live": false,
       "tags": [
@@ -230,8 +230,8 @@
         "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:54:08Z",
-        "updatedAt": "2026-06-28T03:54:12Z"
+        "pushedAt": "2026-07-09T23:28:12Z",
+        "updatedAt": "2026-07-09T23:28:16Z"
       }
     },
     {
@@ -292,8 +292,8 @@
         "stars": 19
       },
       "freshness": {
-        "pushedAt": "2026-07-01T03:12:13Z",
-        "updatedAt": "2026-07-07T12:26:02Z"
+        "pushedAt": "2026-07-10T04:40:52Z",
+        "updatedAt": "2026-07-10T04:40:19Z"
       }
     },
     {
@@ -890,8 +890,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-03T23:37:19Z",
-        "updatedAt": "2026-07-03T23:37:11Z"
+        "pushedAt": "2026-07-10T03:52:43Z",
+        "updatedAt": "2026-07-10T03:52:47Z"
       }
     },
     {
@@ -919,6 +919,33 @@
       "freshness": {
         "pushedAt": "2026-07-04T08:13:28Z",
         "updatedAt": "2026-06-28T03:36:59Z"
+      }
+    },
+    {
+      "slug": "BetterTTS",
+      "name": "BetterTTS",
+      "description": "Private, in-browser text-to-speech studio",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": "TypeScript",
+      "featured": false,
+      "live": true,
+      "tags": [],
+      "urls": {
+        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "source": "https://github.com/SysAdminDoc/BetterTTS",
+        "live": "https://sysadmindoc.github.io/BetterTTS/",
+        "ogImage": "https://sysadmindoc.github.io/og/BetterTTS.png",
+        "screenshot": "https://sysadmindoc.github.io/screenshots/BetterTTS.jpg",
+        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/BetterTTS.jpg"
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-07-10T03:46:49Z",
+        "updatedAt": "2026-07-10T03:44:51Z"
       }
     },
     {
@@ -1022,11 +1049,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 6
+        "stars": 7
       },
       "freshness": {
         "pushedAt": "2026-07-06T01:12:01Z",
-        "updatedAt": "2026-07-06T01:11:46Z"
+        "updatedAt": "2026-07-08T21:53:06Z"
       }
     },
     {
@@ -1049,11 +1076,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 31
+        "stars": 32
       },
       "freshness": {
-        "pushedAt": "2026-07-02T06:24:19Z",
-        "updatedAt": "2026-07-03T01:55:48Z"
+        "pushedAt": "2026-07-10T04:48:17Z",
+        "updatedAt": "2026-07-10T04:48:21Z"
       }
     },
     {
@@ -1079,8 +1106,8 @@
         "stars": 3
       },
       "freshness": {
-        "pushedAt": "2026-07-07T08:40:54Z",
-        "updatedAt": "2026-07-07T08:40:58Z"
+        "pushedAt": "2026-07-09T22:02:12Z",
+        "updatedAt": "2026-07-09T22:02:29Z"
       }
     },
     {
@@ -1130,11 +1157,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:10Z",
-        "updatedAt": "2026-06-28T03:38:13Z"
+        "updatedAt": "2026-07-08T14:29:58Z"
       }
     },
     {
@@ -1265,11 +1292,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 12
+        "stars": 13
       },
       "freshness": {
-        "pushedAt": "2026-07-06T03:50:44Z",
-        "updatedAt": "2026-07-06T07:02:03Z"
+        "pushedAt": "2026-07-10T04:08:35Z",
+        "updatedAt": "2026-07-10T04:08:40Z"
       }
     },
     {
@@ -1323,7 +1350,7 @@
       },
       "freshness": {
         "pushedAt": "2026-07-05T19:31:34Z",
-        "updatedAt": "2026-07-05T19:31:37Z"
+        "updatedAt": "2026-07-09T15:08:55Z"
       }
     },
     {
@@ -1484,8 +1511,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-03T16:19:28Z",
-        "updatedAt": "2026-07-03T16:19:31Z"
+        "pushedAt": "2026-07-09T23:27:27Z",
+        "updatedAt": "2026-07-09T23:27:30Z"
       }
     },
     {
@@ -1565,8 +1592,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-07T21:21:33Z",
-        "updatedAt": "2026-07-07T21:21:26Z"
+        "pushedAt": "2026-07-09T23:26:59Z",
+        "updatedAt": "2026-07-09T23:27:03Z"
       }
     },
     {
@@ -1916,8 +1943,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-01T16:29:00Z",
-        "updatedAt": "2026-07-01T16:29:10Z"
+        "pushedAt": "2026-07-10T03:54:41Z",
+        "updatedAt": "2026-07-10T03:54:43Z"
       }
     },
     {
@@ -2051,8 +2078,8 @@
         "stars": 3
       },
       "freshness": {
-        "pushedAt": "2026-07-03T00:15:50Z",
-        "updatedAt": "2026-07-05T06:03:11Z"
+        "pushedAt": "2026-07-10T04:15:07Z",
+        "updatedAt": "2026-07-10T04:09:51Z"
       }
     },
     {
@@ -2156,11 +2183,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:01:46Z",
-        "updatedAt": "2026-07-07T20:23:29Z"
+        "updatedAt": "2026-07-09T14:06:01Z"
       }
     },
     {
@@ -2461,33 +2488,6 @@
       }
     },
     {
-      "slug": "RES-Slim",
-      "name": "RES-Slim",
-      "description": "Stripped-down Reddit Enhancement Suite fork for old.reddit.com comment tweaks and media expandos",
-      "category": "ext",
-      "categoryLabel": "Extensions",
-      "language": "JavaScript",
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://sysadmindoc.github.io/projects/RES-Slim/",
-        "repository": "https://github.com/SysAdminDoc/RES-Slim",
-        "source": "https://github.com/SysAdminDoc/RES-Slim",
-        "live": null,
-        "ogImage": "https://sysadmindoc.github.io/og/RES-Slim.png",
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": 0
-      },
-      "freshness": {
-        "pushedAt": "2026-06-28T03:00:07Z",
-        "updatedAt": "2026-07-05T20:22:10Z"
-      }
-    },
-    {
       "slug": "DarkModer",
       "name": "DarkModer",
       "description": "Dark Reader as a userscript",
@@ -2588,11 +2588,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:54Z",
-        "updatedAt": "2026-06-28T03:39:57Z"
+        "updatedAt": "2026-07-10T01:46:54Z"
       }
     },
     {
@@ -2753,8 +2753,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-07T21:32:07Z",
-        "updatedAt": "2026-07-07T21:32:12Z"
+        "pushedAt": "2026-07-10T04:51:51Z",
+        "updatedAt": "2026-07-10T04:51:53Z"
       }
     },
     {
@@ -2885,11 +2885,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-01T05:39:02Z",
-        "updatedAt": "2026-07-01T05:39:05Z"
+        "updatedAt": "2026-07-08T13:45:30Z"
       }
     },
     {
@@ -3182,11 +3182,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 8
+        "stars": 9
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:33:14Z",
-        "updatedAt": "2026-07-01T03:33:18Z"
+        "updatedAt": "2026-07-07T23:07:46Z"
       }
     },
     {
@@ -3455,8 +3455,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-02T02:13:13Z",
-        "updatedAt": "2026-07-02T02:13:16Z"
+        "pushedAt": "2026-07-10T04:02:09Z",
+        "updatedAt": "2026-07-10T04:01:19Z"
       }
     },
     {
@@ -3884,11 +3884,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:01:48Z",
-        "updatedAt": "2026-07-07T05:45:34Z"
+        "updatedAt": "2026-07-10T03:24:32Z"
       }
     },
     {
@@ -3968,8 +3968,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-03T16:14:01Z",
-        "updatedAt": "2026-07-03T16:09:51Z"
+        "pushedAt": "2026-07-08T03:28:22Z",
+        "updatedAt": "2026-07-08T03:28:32Z"
       }
     },
     {
@@ -4130,8 +4130,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-01T14:20:38Z",
-        "updatedAt": "2026-07-01T14:21:30Z"
+        "pushedAt": "2026-07-10T04:29:20Z",
+        "updatedAt": "2026-07-10T04:29:21Z"
       }
     },
     {
@@ -4562,8 +4562,8 @@
         "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-07-01T03:49:39Z",
-        "updatedAt": "2026-07-05T20:05:37Z"
+        "pushedAt": "2026-07-10T04:19:23Z",
+        "updatedAt": "2026-07-10T04:19:00Z"
       }
     },
     {
@@ -4913,8 +4913,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-01T06:27:23Z",
-        "updatedAt": "2026-07-01T06:27:27Z"
+        "pushedAt": "2026-07-10T04:13:01Z",
+        "updatedAt": "2026-07-10T04:12:39Z"
       }
     },
     {

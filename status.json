@@ -1,15 +1,15 @@
 {
   "schema": "sysadmindoc.status.v1",
-  "version": "0.21.31",
-  "generatedAt": "2026-07-08T05:02:48.953Z",
+  "version": "0.22.0",
+  "generatedAt": "2026-07-10T05:38:53.604Z",
   "build": {
-    "commit": "d9c699b9733d8731bdf3da8ff87fa6cc5dc466c4",
-    "commitShort": "d9c699b9733d",
+    "commit": "208a776958941d34ba280fc745562acc8aab3353",
+    "commitShort": "208a77695894",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
     "count": 186,
-    "liveApps": 22
+    "liveApps": 23
   },
   "profileFeed": {
     "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
@@ -19,39 +19,39 @@
     "status": "fresh",
     "mode": "production-fresh",
     "maxAgeHours": 36,
-    "fetchedAt": "2026-07-07T21:51:22.241Z",
-    "ageHours": 7.1908,
+    "fetchedAt": "2026-07-10T04:55:16.879Z",
+    "ageHours": 0.7269,
     "stale": false,
-    "totalRepos": 185,
-    "totalStars": 393,
-    "readmeEntries": 185,
+    "totalRepos": 186,
+    "totalStars": 403,
+    "readmeEntries": 186,
     "profileFeed": {
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
       "projectCount": 186,
-      "cachedAt": "2026-07-08T05:01:53.081Z",
-      "cachedAgeHours": 0.0155,
+      "cachedAt": "2026-07-10T05:37:54.027Z",
+      "cachedAgeHours": 0.0165,
       "stale": false
     },
     "coverage": {
       "threshold": 0.8,
       "profileProjectCount": 186,
-      "stars": 0.9946,
-      "metadata": 0.9946,
-      "readmes": 0.9946,
+      "stars": 1,
+      "metadata": 1,
+      "readmes": 1,
       "releases": 0.3226,
-      "starEntries": 185,
-      "metadataEntries": 185,
-      "readmeEntries": 185,
+      "starEntries": 186,
+      "metadataEntries": 186,
+      "readmeEntries": 186,
       "releaseEntries": 60
     },
     "readmeRefresh": {
       "source": "github-api",
-      "generatedAt": "2026-07-07T21:51:39.843Z",
+      "generatedAt": "2026-07-10T04:55:34.589Z",
       "tokenPresent": true,
-      "targetRepos": 185,
-      "attempted": 185,
-      "cacheEntries": 185,
+      "targetRepos": 186,
+      "attempted": 186,
+      "cacheEntries": 186,
       "cacheCoverage": 1,
       "missRate": 0,
       "rateLimited": false,
@@ -59,12 +59,12 @@
     },
     "releaseProvenance": {
       "no-assets": 0,
-      "unsigned": 42,
-      "checksum": 18,
+      "unsigned": 35,
+      "checksum": 25,
       "attested": 0,
       "unknown": 0,
       "total": 60,
-      "trusted": 18
+      "trusted": 25
     },
     "warnings": []
   }
