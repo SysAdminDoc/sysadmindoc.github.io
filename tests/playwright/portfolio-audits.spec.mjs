@@ -37,7 +37,8 @@ const layoutRegressionViewports = [
   { name: 'wide-1440', width: 1440, height: 900 },
   { name: 'short-1280x650', width: 1280, height: 650 },
 ];
-const targetSizeMinimum = 24;
+const desktopTargetSizeMinimum = 24;
+const mobileTargetSizeMinimum = 44;
 
 const stabilityCss = `
   *, *::before, *::after {
@@ -129,7 +130,7 @@ async function expectAxeClean(page, include = 'main') {
   expect(summarizeViolations(results.violations)).toEqual([]);
 }
 
-async function collectTargetSizeViolations(page) {
+async function collectTargetSizeViolations(page, minimum) {
   return page.evaluate((minimum) => {
     const selector = [
       'a[href]',
@@ -168,6 +169,10 @@ async function collectTargetSizeViolations(page) {
       .map((element) => {
         const rect = element.getBoundingClientRect();
         const style = window.getComputedStyle(element);
+        const after = window.getComputedStyle(element, '::after');
+        const label = element.closest('label')
+          ?? (element.id ? document.querySelector(`label[for="${CSS.escape(element.id)}"]`) : null);
+        const labelRect = label?.getBoundingClientRect();
         return {
           element,
           rect: {
@@ -180,6 +185,12 @@ async function collectTargetSizeViolations(page) {
           },
           display: style.display,
           lineHeight: Number.parseFloat(style.lineHeight) || rect.height,
+          stretched: after.position === 'absolute'
+            && after.top === '0px'
+            && after.right === '0px'
+            && after.bottom === '0px'
+            && after.left === '0px',
+          labeledTarget: Boolean(labelRect && labelRect.width >= minimum && labelRect.height >= minimum),
         };
       })
       .filter((target) => target.rect.width > 0 && target.rect.height > 0);
@@ -233,6 +244,8 @@ async function collectTargetSizeViolations(page) {
 
     return pageTargets.flatMap((target, index) => {
       if (target.rect.width >= minimum && target.rect.height >= minimum) return [];
+      if (target.stretched) return [];
+      if (target.labeledTarget) return [];
       if (isInlineException(target)) return [];
       if (passesSpacingException(target, index)) return [];
       return [{
@@ -243,7 +256,7 @@ async function collectTargetSizeViolations(page) {
         exception: 'none',
       }];
     });
-  }, targetSizeMinimum);
+  }, minimum);
 }
 
 function collectRuntimeErrors(page) {
@@ -290,18 +303,26 @@ test.describe('Rendered public route health', () => {
 
 test.describe('Playwright axe accessibility audit', () => {
   for (const route of routes) {
-    test(`${route.name} route has no axe violations`, async ({ page }) => {
+    test(`${route.name} route has no axe violations`, async ({ page }, testInfo) => {
       await preparePage(page, route.path, route.ready);
+      if (testInfo.project.name.includes('light')) {
+        await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+      }
       await expectAxeClean(page);
     });
   }
 
-  test('hydrated command palette state has no axe violations', async ({ page }) => {
+  test('hydrated command palette state has no axe violations', async ({ page }, testInfo) => {
     await preparePage(page, '/', '#hero');
+    if (testInfo.project.name.includes('light')) {
+      await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+    }
 
     await page.locator('#cmdkToggle').click();
     await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
+    const inputRowShadow = await page.locator('.cmdk-input-row').evaluate((node) => getComputedStyle(node).boxShadow);
+    expect(inputRowShadow).not.toBe('none');
     await expectAxeClean(page, '#cmdk');
   });
 
@@ -310,7 +331,8 @@ test.describe('Playwright axe accessibility audit', () => {
 test.describe('WCAG 2.2 target-size audit', () => {
   for (const viewport of viewports) {
     for (const route of routes) {
-      test(`${route.name} ${viewport.name} targets are at least ${targetSizeMinimum}px or spaced`, async ({ page }, testInfo) => {
+      const minimum = viewport.width <= 640 ? mobileTargetSizeMinimum : desktopTargetSizeMinimum;
+      test(`${route.name} ${viewport.name} targets are at least ${minimum}px or spaced`, async ({ page }, testInfo) => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await preparePage(page, route.path, route.ready);
         if (testInfo.project.name.includes('light')) {
@@ -318,7 +340,7 @@ test.describe('WCAG 2.2 target-size audit', () => {
           await page.waitForTimeout(200);
         }
 
-        expect(await collectTargetSizeViolations(page)).toEqual([]);
+        expect(await collectTargetSizeViolations(page, minimum)).toEqual([]);
       });
     }
   }
@@ -345,7 +367,7 @@ test.describe('Mid-wide desktop layout regression audit', () => {
         await expect(page.locator(route.ready)).toBeVisible();
         await expect(page.locator('vite-error-overlay')).toHaveCount(0);
         await expectNoHorizontalOverflow(page);
-        expect(await collectTargetSizeViolations(page)).toEqual([]);
+        expect(await collectTargetSizeViolations(page, desktopTargetSizeMinimum)).toEqual([]);
         expect(runtimeErrors).toEqual([]);
         await expect(page).toHaveScreenshot(`${route.name}-${viewport.name}.png`, {
           fullPage: false,

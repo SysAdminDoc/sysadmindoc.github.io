@@ -112,13 +112,14 @@ const cmdkSections = [
 </Base>
 
 <style is:global>
-  .resume-page{min-height:calc(100vh - 200px)}
+  .resume-page{min-height:calc(100vh - 200px);padding-top:112px;padding-bottom:80px}
   .resume-shell{max-width:860px;margin:0 auto;display:grid;gap:38px}
   .resume-header{display:flex;align-items:start;justify-content:space-between;gap:24px;flex-wrap:wrap}
   .resume-name-block h1{font-size:clamp(34px,4.8vw,48px);line-height:1.1;margin:0}
   .resume-title-line{font-size:18px;color:var(--t2);margin:6px 0 0}
   .resume-location{font-size:14px;color:var(--t3);margin:4px 0 0;font-family:var(--mono)}
-  .resume-actions{display:flex;gap:10px;flex-shrink:0}
+  .resume-actions{display:flex;gap:10px;max-width:100%;flex-wrap:wrap}
+  .resume-actions .btn{justify-content:center;white-space:normal}
   .resume-section h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--grn);margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-soft)}
   .resume-skills{display:flex;flex-wrap:wrap;gap:8px}
   .resume-skill{display:inline-flex;align-items:baseline;gap:6px;padding:6px 10px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-1);font-size:14px;font-weight:600;color:var(--t1)}
@@ -136,17 +137,24 @@ const cmdkSections = [
   .resume-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft)}
   .resume-stack span{font-family:var(--mono);font-size:11px;color:var(--t3);padding:4px 8px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.03)}
   .resume-link-list{display:flex;gap:16px;flex-wrap:wrap}
-  .resume-link-list a{font-family:var(--mono);font-size:14px;color:var(--grn);text-decoration:none}
+  .resume-link-list a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--mono);font-size:14px;color:var(--grn);text-decoration:none}
   .resume-link-list a:hover{text-decoration:underline}
 
   @media(max-width:640px){
+    .resume-page{padding-top:96px;padding-bottom:64px}
     .resume-header{flex-direction:column}
+    .resume-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
     .resume-role-header{flex-direction:column}
     .resume-role{padding:20px}
     .resume-name-block h1{font-size:clamp(28px,8vw,36px)}
   }
 
+  @media(max-width:380px){
+    .resume-actions{grid-template-columns:1fr}
+  }
+
   @media print{
+    .resume-page{padding:0}
     :root{--t1:#111!important;--t2:#333!important;--t3:#666!important;--surface-1:#fff!important;--border-soft:#ddd!important;--grn:#111!important;--bg:#fff!important}
     body{background:#fff!important;color:#111!important;font-size:11pt}
     .no-print,#nav,.scroll-progress,footer,.skip-link,#cmdk,.theme-toggle,.nav-search,.mt,.ng{display:none!important}
