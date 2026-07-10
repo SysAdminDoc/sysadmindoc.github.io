@@ -69,7 +69,7 @@
     const secs=document.querySelectorAll('section[id]');
     const nla=document.querySelectorAll('.nk a');
     if('IntersectionObserver' in window&&secs.length&&nla.length){
-        const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>a.classList.remove('active'));const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a)a.classList.add('active');if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
+        const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>{a.classList.remove('active');a.removeAttribute('aria-current')});const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a){a.classList.add('active');a.setAttribute('aria-current','location')}if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
         secs.forEach(s=>so.observe(s));
     }
 
@@ -130,10 +130,15 @@
     }
     document.querySelectorAll('.nk a:not(.nav-indicator)').forEach(a=>{
         a.addEventListener('mouseenter',()=>moveIndicator(a));
+        a.addEventListener('focus',()=>moveIndicator(a));
     });
-    navLinksContainer.addEventListener('mouseleave',()=>{
+    function restoreActiveIndicator(){
         const active=navLinksContainer.querySelector('a.active');
         if(active)moveIndicator(active);else indicator.classList.remove('vis');
+    }
+    navLinksContainer.addEventListener('mouseleave',restoreActiveIndicator);
+    navLinksContainer.addEventListener('focusout',function(event){
+        if(!navLinksContainer.contains(event.relatedTarget))restoreActiveIndicator();
     });
     const navMO=new MutationObserver(()=>{
         const active=navLinksContainer.querySelector('a.active');

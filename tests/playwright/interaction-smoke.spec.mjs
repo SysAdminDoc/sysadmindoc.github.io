@@ -466,15 +466,22 @@ test.describe('rendered interaction smoke', () => {
     await page.locator('#mobileToggle').click();
     await expect(page.locator('#navLinks')).toHaveClass(/open/);
     await expect(page.locator('#navBackdrop')).toHaveClass(/show/);
+    await expect(page.locator('#navBackdrop')).toHaveAttribute('aria-hidden', 'true');
     await expect.poll(() => page.locator('#navBackdrop').evaluate((node) => getComputedStyle(node).display)).toBe('block');
     await expect(page.locator('html')).toHaveClass(/mobile-nav-open/);
     await expect(page.locator('#mobileToggle')).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#navLinks')).not.toHaveAttribute('role', 'dialog');
+    await expect(page.locator('main')).toHaveAttribute('inert', '');
+    await expect(page.locator('.nl')).toHaveAttribute('inert', '');
 
     await page.evaluate(() => window.PortfolioNav.closeMobileNav({ returnFocus: false }));
     await expect(page.locator('#navLinks')).not.toHaveClass(/open/);
     await expect(page.locator('#navBackdrop')).not.toHaveClass(/show/);
+    await expect(page.locator('#navBackdrop')).toHaveAttribute('aria-hidden', 'true');
     await expect(page.locator('html')).not.toHaveClass(/mobile-nav-open/);
     await expect(page.locator('#mobileToggle')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('main')).not.toHaveAttribute('inert', '');
+    await expect(page.locator('.nl')).not.toHaveAttribute('inert', '');
 
     await page.setViewportSize({ width: 390, height: 900 });
     await preparePage(page, '/', '#hero');

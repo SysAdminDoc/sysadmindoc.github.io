@@ -5,6 +5,8 @@
   const navBackdrop = document.getElementById('navBackdrop');
   if(!mobileToggle || !navLinks) return;
   const root = document.documentElement;
+  var modalTargets = Array.from(document.querySelectorAll('main,footer,.nl,.nav-actions > :not(#mobileToggle)'));
+  var priorInert = new Map();
 
   var focusableSelector = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
   function setMobileNav(open, options){
@@ -17,10 +19,18 @@
     mobileToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
     mobileToggle.setAttribute('title', open ? 'Close navigation menu' : 'Open navigation menu');
     if(open){
+      modalTargets.forEach(function(target){
+        priorInert.set(target, target.inert);
+        target.inert = true;
+      });
       var firstLink = navLinks.querySelector('a');
       if(firstLink) firstLink.focus();
       return;
     }
+    modalTargets.forEach(function(target){
+      target.inert = priorInert.get(target) === true;
+    });
+    priorInert.clear();
     if(wasOpen && options.returnFocus !== false) mobileToggle.focus();
   }
 

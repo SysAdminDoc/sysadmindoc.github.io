@@ -45,10 +45,10 @@
     if (meta) meta.setAttribute('content', theme === 'dark' ? '#050913' : '#f5f1e8');
     var btn = document.getElementById('themeToggle');
     if (btn) {
-      btn.setAttribute('aria-pressed', String(theme === 'light'));
+      btn.removeAttribute('aria-pressed');
       btn.setAttribute('aria-label', 'Switch to ' + nextTheme + ' theme');
       btn.setAttribute('title', 'Switch to ' + nextTheme + ' theme');
-      setIcon(btn, theme);
+      setIcon(btn, nextTheme);
     }
   }
 

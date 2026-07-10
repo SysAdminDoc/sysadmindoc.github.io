@@ -38,6 +38,8 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   for (const token of removedRuntimeTokens) {
     assert.equal(scripts.includes(token), false);
   }
+  assert.doesNotMatch(scripts, /matrix-overlay|matrix-column|triggerEasterEgg|showCopyToast/);
+  assert.doesNotMatch(await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8'), /copy-toast|matrix-overlay|matrixFall/);
   assert.match(nav, /function revealHomepageScrollSections\(\)/);
   assert.match(nav, /#live,#volume,#catalog,#skills,#career,#journey,#beyond,#connect/);
   assert.match(nav, /el\.style\.contentVisibility='visible'/);
