@@ -35,7 +35,8 @@ export const liveApps: LiveApp[] = [
   { slug: "NATO_PHONETIC_TRAINING", name: "NATO_PHONETIC_TRAINING", url: "https://sysadmindoc.github.io/NATO_PHONETIC_TRAINING/", desc: "NATO phonetic alphabet trainer" },
   { slug: "VIPTrack", name: "VIPTrack", url: "https://sysadmindoc.github.io/VIPTrack/?filter=vip", desc: "Military &amp; VIP aircraft tracker" },
   { slug: "HurricaneMap", name: "HurricaneMap", url: "https://sysadmindoc.github.io/HurricaneMap/", desc: "Every U.S. hurricane landfall (1851&ndash;present) from NOAA HURDAT2" },
-  { slug: "ApocalypseWatch", name: "ApocalypseWatch", url: "https://sysadmindoc.github.io/ApocalypseWatch/", desc: "Realtime business-jet tracker vs. 24h baseline" }
+  { slug: "ApocalypseWatch", name: "ApocalypseWatch", url: "https://sysadmindoc.github.io/ApocalypseWatch/", desc: "Realtime business-jet tracker vs. 24h baseline" },
+  { slug: "BetterTTS", name: "BetterTTS", url: "https://sysadmindoc.github.io/BetterTTS/", desc: "Private, in-browser text-to-speech studio" }
 ];
 
 export const catalog: CatalogEntry[] = [
@@ -146,6 +147,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "ImageXpert", name: "ImageXpert", url: "https://sysadmindoc.github.io/ImageXpert/", category: "web", desc: "Multi-engine reverse image search", live: true },
   { repo: "TsunamiSimulator", name: "TsunamiSimulator", url: "https://github.com/SysAdminDoc/TsunamiSimulator", category: "web", desc: "3D-globe tsunami simulator &mdash; asteroid impacts, nuclear bursts, earthquakes" },
   { repo: "Keepr", name: "Keepr", url: "https://github.com/SysAdminDoc/Keepr", category: "web", desc: "Pixel-close offline-first Google Keep clone &mdash; Tauri 2 + React + Rust + SQLite" },
+  { repo: "BetterTTS", name: "BetterTTS", url: "https://sysadmindoc.github.io/BetterTTS/", category: "web", desc: "Private, in-browser text-to-speech studio with 28 voices and WAV/MP3 export", live: true },
   { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
   { repo: "NDNS", name: "NDNS", url: "https://github.com/SysAdminDoc/NDNS", category: "ext", desc: "NextDNS floating panel & analytics" },
   { repo: "BackgroundSearch", name: "BackgroundSearch", url: "https://github.com/SysAdminDoc/BackgroundSearch", category: "ext", desc: "Background tab opener extension" },
