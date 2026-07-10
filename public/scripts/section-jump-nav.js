@@ -78,7 +78,12 @@
       window.addEventListener('resize', scheduleSync);
       window.addEventListener('hashchange', scheduleSync);
 
-      var initialId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+      var initialId = window.location.hash.replace(/^#/, '');
+      try {
+        initialId = decodeURIComponent(initialId);
+      } catch (error) {
+        initialId = '';
+      }
       if (initialId) setActive(initialId);
       scheduleSync();
     });

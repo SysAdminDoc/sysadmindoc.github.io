@@ -293,39 +293,41 @@ const pageJsonLd = reviewedWebPageJsonLd({
         <form class="timeline-controls" id="timelineFilters">
           <label>
             <span>Year</span>
-            <select id="timelineYear" name="year">
+            <select id="timelineYear" name="year" disabled={events.length === 0}>
               <option value="all">All years</option>
               {yearOptions.map((option) => <option value={option.id}>{option.label}</option>)}
             </select>
           </label>
           <label>
             <span>Platform</span>
-            <select id="timelinePlatform" name="platform">
+            <select id="timelinePlatform" name="platform" disabled={events.length === 0}>
               <option value="all">All platforms</option>
               {platformOptions.map((option) => <option value={option.id}>{option.label}</option>)}
             </select>
           </label>
           <label>
             <span>Category</span>
-            <select id="timelineCategory" name="category">
+            <select id="timelineCategory" name="category" disabled={events.length === 0}>
               <option value="all">All categories</option>
               {categoryOptions.map((option) => <option value={option.id}>{option.label}</option>)}
             </select>
           </label>
           <label>
             <span>Language</span>
-            <select id="timelineLanguage" name="language">
+            <select id="timelineLanguage" name="language" disabled={events.length === 0}>
               <option value="all">All languages</option>
               {languageOptions.map((option) => <option value={option.id}>{option.label}</option>)}
             </select>
           </label>
-          <button type="button" class="timeline-reset" id="timelineReset">Reset</button>
+          <button type="button" class="timeline-reset" id="timelineReset" disabled>Reset filters</button>
         </form>
         </search>
-        <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">{events.length} timeline events shown.</p>
-        <div class="page-empty timeline-empty" id="timelineEmpty" hidden>
-          <strong>No timeline events match these filters.</strong>
-          <span>Reset the timeline or broaden one filter to return to the generated activity stream.</span>
+        <p class="timeline-status" id="timelineStatus" role="status" aria-live="polite">
+          {events.length === 0 ? 'No timeline activity is available yet.' : `${events.length} timeline events shown.`}
+        </p>
+        <div class="page-empty timeline-empty" id="timelineEmpty" hidden={events.length > 0}>
+          <strong>{events.length === 0 ? 'No timeline activity yet.' : 'No timeline events match these filters.'}</strong>
+          <span>{events.length === 0 ? 'Project and release activity will appear here as it is published.' : 'Reset the filters or broaden one selection to return to the full activity stream.'}</span>
         </div>
 
         <ol class="timeline-list" id="timelineList" data-initial-count="50">
@@ -361,7 +363,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
         </ol>
         {events.length > 50 && (
           <div class="timeline-show-more" id="timelineShowMore">
-            <button type="button" class="btn bg2" id="timelineShowMoreBtn">
+            <button type="button" class="btn bg2" id="timelineShowMoreBtn" aria-expanded="false" aria-controls="timelineList">
               Show {events.length - 50} more events
             </button>
           </div>
