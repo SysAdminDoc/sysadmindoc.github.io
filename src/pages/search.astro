@@ -85,24 +85,6 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         </p>
       </div>
 
-      <div class="search-overview page-stat-grid rv">
-        <div class="page-stat">
-          <div class="page-stat-value">Static</div>
-          <div class="page-stat-label">No Backend</div>
-          <div class="page-stat-copy">Pagefind indexes the built HTML after Astro and ships a static bundle with the site.</div>
-        </div>
-        <div class="page-stat">
-          <div class="page-stat-value">Scope + Category</div>
-          <div class="page-stat-label">Facets Indexed</div>
-          <div class="page-stat-copy">Route types and project lanes are indexed as static facets, so broad searches can be narrowed without leaving the page.</div>
-        </div>
-        <div class="page-stat">
-          <div class="page-stat-value">Command</div>
-          <div class="page-stat-label">Direct Open</div>
-          <div class="page-stat-copy">The header search button opens a focused destination menu for known project names and site sections.</div>
-        </div>
-      </div>
-
       <search aria-label="Full-text site search">
       <div class="search-shell rv" data-pagefind-shell data-pagefind-state="loading">
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
@@ -143,6 +125,24 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
       </search>
 
       <SectionJumpNav items={cmdkSections} />
+
+      <div class="search-overview page-stat-grid rv">
+        <div class="page-stat">
+          <div class="page-stat-value">Static</div>
+          <div class="page-stat-label">No Backend</div>
+          <div class="page-stat-copy">Pagefind indexes the built HTML after Astro and ships a static bundle with the site.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">Scope + Category</div>
+          <div class="page-stat-label">Facets Indexed</div>
+          <div class="page-stat-copy">Route types and project lanes are indexed as static facets, so broad searches can be narrowed without leaving the page.</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-value">Command</div>
+          <div class="page-stat-label">Direct Open</div>
+          <div class="page-stat-copy">The header search button opens a focused destination menu for known project names and site sections.</div>
+        </div>
+      </div>
     </div>
 
     <section class="si search-fallbacks" id="search-fallbacks" aria-labelledby="search-fallbacks-title">
@@ -197,11 +197,13 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-degraded[hidden]{display:none!important}
   .search-degraded span{display:block;margin-top:6px}
   .search-recovery-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-  .search-recovery-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 13px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-2);color:var(--t1);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
-  .search-recovery-actions a:hover,.search-recovery-actions a:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring)}
+  .search-recovery-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 13px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-2);color:var(--t1);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+  .search-recovery-actions a:hover{border-color:var(--grn);box-shadow:var(--control-shadow-soft)}
+  .search-recovery-actions a:focus-visible{border-color:var(--grn);outline:2px solid var(--focus-outline);outline-offset:3px;box-shadow:var(--focus-ring)}
   .search-noscript{margin-top:18px}
   .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:13px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
   .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane{display:block;min-width:0;max-width:100%}
+  .portfolio-pagefind .pf-filter-group-title,.portfolio-pagefind .pf-filter-checkbox{min-height:44px!important}
   .search-input-row{min-width:0}
   .search-result-layout{display:grid;grid-template-columns:minmax(180px,236px) minmax(0,1fr);gap:18px;align-items:start;min-width:0}
   .search-filter-panel{display:grid;gap:8px;min-width:0}
@@ -226,7 +228,8 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-section-head p{color:var(--t3);font-size:14px;line-height:1.6;max-width:52ch;margin:0}
   .search-fallback-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
   .search-fallback-grid a{display:grid;gap:8px;min-height:124px;padding:18px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);color:var(--t1);text-decoration:none;box-shadow:var(--shadow-soft)}
-  .search-fallback-grid a:hover,.search-fallback-grid a:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--focus-ring)}
+  .search-fallback-grid a:hover{border-color:var(--grn);box-shadow:var(--control-shadow-soft)}
+  .search-fallback-grid a:focus-visible{border-color:var(--grn);outline:2px solid var(--focus-outline);outline-offset:3px;box-shadow:var(--focus-ring)}
   .search-fallback-grid span{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.1em}
   .search-fallback-grid small{color:var(--t3);font-size:13px;line-height:1.55}
   @media(max-width:980px){.search-fallback-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

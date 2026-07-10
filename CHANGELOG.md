@@ -7,6 +7,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Removed the hidden keyboard-sequence effect and its unused styling, along with the obsolete homepage copy-toast surface.
 - Made the mobile navigation an inert-backed disclosure with a decorative backdrop, contained focus, focus-aware desktop navigation cues, and current-section semantics.
 - Clarified service-worker update actions and corrected theme-toggle icon and state announcements.
+- Rebuilt light-theme semantic foreground colors for AA contrast and fixed shared focus treatments for command search, update actions, search recovery, and timeline controls.
+- Raised mobile and overlay touch targets, made project preview affordances discoverable without hover, and kept the resume header and actions clear of the fixed navigation on narrow screens.
+- Put the full-text search control before explanatory metrics and removed decorative carousel controls that implied unavailable behavior.
 
 ## [v0.21.31] - 2026-07-08
 

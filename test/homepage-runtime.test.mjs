@@ -20,6 +20,7 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   const nav = await fs.readFile(path.join(root, 'public', 'scripts', 'home-nav.js'), 'utf8');
   const index = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
   const greatestHits = await fs.readFile(path.join(root, 'src', 'components', 'GreatestHits.astro'), 'utf8');
+  const critical = await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8');
   const removedRuntimeTokens = [
     ['hero', 'Term'],
     ['term', 'Body'],
@@ -40,6 +41,7 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   }
   assert.doesNotMatch(scripts, /matrix-overlay|matrix-column|triggerEasterEgg|showCopyToast/);
   assert.doesNotMatch(await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8'), /copy-toast|matrix-overlay|matrixFall/);
+  assert.doesNotMatch(`${index}\n${critical}`, /hero-carousel-(?:ui|arrow|dots)/);
   assert.match(nav, /function revealHomepageScrollSections\(\)/);
   assert.match(nav, /#live,#volume,#catalog,#skills,#career,#journey,#beyond,#connect/);
   assert.match(nav, /el\.style\.contentVisibility='visible'/);
