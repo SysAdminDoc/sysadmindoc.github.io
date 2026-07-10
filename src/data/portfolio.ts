@@ -118,6 +118,11 @@ const feedBacked = visibleFeedProjects.length > 0;
 
 const localCatalogByRepo = new Map(localCatalog.map((entry) => [entry.repo, entry]));
 const localFeaturedByRepo = new Map(localFeatured.map((entry) => [entry.repo, entry]));
+const reviewedFeedProjects = visibleFeedProjects.filter((project) => localCatalogByRepo.has(project.repo!));
+const reviewedFeedRepos = new Set(reviewedFeedProjects.map((project) => project.repo));
+const localLiveFeedFallbacks = localCatalog.filter(
+  (entry) => entry.live && !reviewedFeedRepos.has(entry.repo),
+);
 
 function mapCategory(value?: string): Lang {
   if (!value) return 'other';
@@ -188,7 +193,7 @@ function projectToFeatured(project: ProfileProject): Featured | null {
 
 function buildFeatured(): Featured[] {
   if (!feedBacked) return localFeatured;
-  const projects = visibleFeedProjects
+  const projects = reviewedFeedProjects
     .filter((project) => project.featured)
     .sort((a, b) => (a.featuredRank ?? 9999) - (b.featuredRank ?? 9999));
   const mapped = projects.map(projectToFeatured).filter(Boolean) as Featured[];
@@ -198,16 +203,18 @@ function buildFeatured(): Featured[] {
 function buildLiveApps(): LiveApp[] {
   if (!feedBacked) return localLiveApps;
   const liveFeedSlugs = new Set(
-    visibleFeedProjects
+    reviewedFeedProjects
       .filter((project) => project.hasLiveDemo && project.liveUrl)
       .map((project) => project.repo),
   );
-  return localLiveApps.filter((app) => liveFeedSlugs.has(app.slug));
+  const fallbackSlugs = new Set(localLiveFeedFallbacks.map((entry) => entry.repo));
+  return localLiveApps.filter((app) => liveFeedSlugs.has(app.slug) || fallbackSlugs.has(app.slug));
 }
 
 function buildCatalog(): CatalogEntry[] {
   if (!feedBacked) return localCatalog;
-  return visibleFeedProjects.map(projectToCatalog).filter(Boolean) as CatalogEntry[];
+  const mapped = reviewedFeedProjects.map(projectToCatalog).filter(Boolean) as CatalogEntry[];
+  return [...mapped, ...localLiveFeedFallbacks];
 }
 
 export const profileFeedInfo = {
@@ -217,7 +224,7 @@ export const profileFeedInfo = {
   feedSourceUrl: profileFeed?.feedSourceUrl ?? null,
   source: profileFeed?.source ?? null,
   publicRepoCount: profileFeed?.publicRepoCount ?? null,
-  projectCount: feedBacked ? visibleFeedProjects.length : localCatalog.length,
+  projectCount: feedBacked ? reviewedFeedProjects.length + localLiveFeedFallbacks.length : localCatalog.length,
   suppressedCount: profileFeed?.suppressedCount ?? null,
 };
 

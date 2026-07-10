@@ -16,6 +16,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Kept timeline expansion focus-stable, added a true zero-activity state, guarded malformed section hashes, and removed the screenshot viewer's hidden zoom shortcut.
 - Enforced the compact radius scale across avatars, status markers, ambient surfaces, and chart fallbacks, and removed the unused button-ripple effect.
 - Added the deployed BetterTTS studio to the live-app fallback and searchable catalog so public-repository drift checks and offline portfolio data remain complete.
+- Reconciled profile-feed metadata against the locally reviewed catalog boundary so stale upstream rows cannot reintroduce excluded projects or hide newly reviewed live apps.
 
 ## [v0.21.31] - 2026-07-08
 

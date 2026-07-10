@@ -67,3 +67,12 @@ test('portfolio adapter sanitizes feed descriptions before rendered set:html usa
   assert.match(source, /allowedAttributes:\s*\{\}/);
   assert.doesNotMatch(source, /return String\(value \?\? ''\)\.trim\(\);/);
 });
+
+test('portfolio adapter keeps the local reviewed catalog as the feed visibility boundary', async () => {
+  const source = await fs.readFile(path.join(root, 'src', 'data', 'portfolio.ts'), 'utf8');
+
+  assert.match(source, /const reviewedFeedProjects = visibleFeedProjects\.filter/);
+  assert.match(source, /localCatalogByRepo\.has\(project\.repo!\)/);
+  assert.match(source, /const localLiveFeedFallbacks = localCatalog\.filter/);
+  assert.match(source, /return \[\.\.\.mapped, \.\.\.localLiveFeedFallbacks\]/);
+});
