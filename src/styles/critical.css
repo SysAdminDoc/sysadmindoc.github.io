@@ -324,7 +324,7 @@ html[data-theme="light"] .nav-actions{
   position:absolute;
   pointer-events:none;
   z-index:0;
-  border-radius:50%;
+  border-radius:12px;
 }
 .hero::before{
   inset:-10% -5% auto auto;
@@ -376,7 +376,7 @@ html[data-theme="light"] .nav-actions{
   height:56px;
   margin-bottom:16px;
   display:none;
-  border-radius:50%;
+  border-radius:12px;
   border:2px solid var(--glass-border);
   box-shadow:0 0 20px rgba(88,166,255,.12);
 }
@@ -399,7 +399,7 @@ html[data-theme="light"] .nav-actions{
 .htag .dot,.pulse-dot{
   width:7px;
   height:7px;
-  border-radius:50%;
+  border-radius:4px;
   background:var(--grn);
   box-shadow:0 0 10px var(--grn-glow);
   flex-shrink:0;
