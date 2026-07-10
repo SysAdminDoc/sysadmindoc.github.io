@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.22.0] - 2026-07-10
+
 - Removed the hidden keyboard-sequence effect and its unused styling, along with the obsolete homepage copy-toast surface.
 - Made the mobile navigation an inert-backed disclosure with a decorative backdrop, contained focus, focus-aware desktop navigation cues, and current-section semantics.
 - Clarified service-worker update actions and corrected theme-toggle icon and state announcements.
