@@ -29,12 +29,9 @@
     }, 3200);
   }
 
-  function fallbackCopy(text) {
-    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-      return navigator.clipboard.writeText(text);
-    }
-
+  function legacyCopy(text) {
     return new Promise(function (resolve, reject) {
+      var previousFocus = document.activeElement;
       var textarea = document.createElement('textarea');
       textarea.value = text;
       textarea.className = 'copy-buffer';
@@ -52,11 +49,29 @@
         reject(error);
       } finally {
         textarea.remove();
+        if (previousFocus && typeof previousFocus.focus === 'function') {
+          previousFocus.focus({ preventScroll: true });
+        }
       }
     });
   }
 
+  function fallbackCopy(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(function () {
+        return legacyCopy(text);
+      });
+    }
+    return legacyCopy(text);
+  }
+
+  function setShareBusy(isBusy) {
+    shareButton.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+    shareButton.setAttribute('aria-disabled', isBusy ? 'true' : 'false');
+  }
+
   shareButton.addEventListener('click', function () {
+    if (shareButton.getAttribute('aria-busy') === 'true') return;
     var shareUrl = shareButton.getAttribute('data-share-url') || window.location.href;
     var shareData = {
       title: shareButton.getAttribute('data-share-title') || document.title,
@@ -64,22 +79,24 @@
       url: shareUrl,
     };
 
+    setShareBusy(true);
+    var sharePromise;
     if (navigator.share) {
-      navigator.share(shareData)
+      sharePromise = navigator.share(shareData)
         .then(function () {
           setShareStatus('Project shared.');
         })
         .catch(function (error) {
           if (error && error.name === 'AbortError') return;
-          fallbackCopy(shareUrl)
-            .then(function () { setShareStatus('Project link copied.'); })
-            .catch(function () { setShareStatus('Copy failed.'); });
+          return fallbackCopy(shareUrl)
+            .then(function () { setShareStatus('Project link copied.'); });
         });
-      return;
+    } else {
+      sharePromise = fallbackCopy(shareUrl)
+        .then(function () { setShareStatus('Project link copied.'); });
     }
-
-    fallbackCopy(shareUrl)
-      .then(function () { setShareStatus('Project link copied.'); })
-      .catch(function () { setShareStatus('Copy failed.'); });
+    sharePromise
+      .catch(function () { setShareStatus("Couldn't copy. Copy the address from your browser."); })
+      .finally(function () { setShareBusy(false); });
   });
 })();

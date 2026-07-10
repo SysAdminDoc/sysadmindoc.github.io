@@ -6,7 +6,7 @@
   var showMoreWrap = document.getElementById('timelineShowMore');
   var showMoreBtn = document.getElementById('timelineShowMoreBtn');
   var events = Array.from(document.querySelectorAll('[data-timeline-event]'));
-  if (!form || !status || events.length === 0) return;
+  if (!form || !status) return;
 
   // Track whether the user has expanded the list beyond the initial fold.
   var expanded = false;
@@ -18,6 +18,17 @@
     language: document.getElementById('timelineLanguage'),
   };
   var filterKeys = Object.keys(controls);
+
+  if (events.length === 0) {
+    filterKeys.forEach(function (key) {
+      if (controls[key]) controls[key].disabled = true;
+    });
+    if (reset) reset.disabled = true;
+    if (empty) empty.hidden = false;
+    if (showMoreWrap) showMoreWrap.hidden = true;
+    status.textContent = 'No timeline activity is available yet.';
+    return;
+  }
 
   function getValue(key) {
     return controls[key] && controls[key].value ? controls[key].value : 'all';
@@ -97,19 +108,25 @@
     if (reset) reset.disabled = !filterActive && !expanded;
     if (options.syncUrl !== false) syncUrl(filters);
 
-    // Show/hide the "Show more" button.
+    // Keep the fold control mounted so keyboard focus is never discarded.
     if (showMoreWrap) {
-      var shouldShowButton = !filterActive && !expanded && hiddenBeyondFold > 0;
+      var hasFoldedEvents = events.some(function (event) {
+        return event.hasAttribute('data-beyond-fold');
+      });
+      var shouldShowButton = !filterActive && hasFoldedEvents;
       showMoreWrap.hidden = !shouldShowButton;
       if (showMoreBtn && shouldShowButton) {
-        showMoreBtn.textContent = 'Show ' + hiddenBeyondFold + ' more events';
+        showMoreBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        showMoreBtn.textContent = expanded
+          ? 'Show fewer events'
+          : 'Show ' + hiddenBeyondFold + ' more events';
       }
     }
   }
 
   if (showMoreBtn) {
     showMoreBtn.addEventListener('click', function () {
-      expanded = true;
+      expanded = !expanded;
       apply();
     });
   }

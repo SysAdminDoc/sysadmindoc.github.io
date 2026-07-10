@@ -88,12 +88,9 @@
     return url.toString();
   }
 
-  function fallbackCopy(text) {
-    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-      return navigator.clipboard.writeText(text);
-    }
-
+  function legacyCopy(text) {
     return new Promise(function (resolve, reject) {
+      var previousFocus = document.activeElement;
       var textarea = document.createElement('textarea');
       textarea.value = text;
       textarea.className = 'copy-buffer';
@@ -111,8 +108,25 @@
         reject(error);
       } finally {
         textarea.remove();
+        if (previousFocus && typeof previousFocus.focus === 'function') {
+          previousFocus.focus({ preventScroll: true });
+        }
       }
     });
+  }
+
+  function fallbackCopy(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(function () {
+        return legacyCopy(text);
+      });
+    }
+    return legacyCopy(text);
+  }
+
+  function setShareBusy(isBusy) {
+    shareBtn.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+    shareBtn.setAttribute('aria-disabled', isBusy ? 'true' : 'false');
   }
 
   function open(trigger, options) {
@@ -194,35 +208,31 @@
   img.addEventListener('click', function () { setZoom(!zoomed); });
 
   shareBtn.addEventListener('click', function () {
+    if (shareBtn.getAttribute('aria-busy') === 'true') return;
     var url = shotUrl();
+    setShareBusy(true);
+    var sharePromise;
     if (navigator.share) {
-      navigator.share({ title: img.alt || document.title, url: url })
+      sharePromise = navigator.share({ title: img.alt || document.title, url: url })
         .then(function () { setStatus('Screenshot link shared.'); })
         .catch(function (error) {
           if (error && error.name === 'AbortError') return;
-          fallbackCopy(url)
-            .then(function () { setStatus('Screenshot link copied.'); })
-            .catch(function () { setStatus('Copy failed.'); });
+          return fallbackCopy(url)
+            .then(function () { setStatus('Screenshot link copied.'); });
         });
-      return;
+    } else {
+      sharePromise = fallbackCopy(url)
+        .then(function () { setStatus('Screenshot link copied.'); });
     }
-    fallbackCopy(url)
-      .then(function () { setStatus('Screenshot link copied.'); })
-      .catch(function () { setStatus('Copy failed.'); });
+    sharePromise
+      .catch(function () { setStatus("Couldn't copy. Copy the address from your browser."); })
+      .finally(function () { setShareBusy(false); });
   });
 
   dialog.addEventListener('cancel', clearShotUrl);
   dialog.addEventListener('close', cleanupAfterClose);
   dialog.addEventListener('click', function (e) {
     if (e.target === dialog) close();
-  });
-
-  dialog.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') return;
-    if (e.key === 'f' || e.key === 'F') {
-      e.preventDefault();
-      setZoom(!zoomed);
-    }
   });
 
   if (new URLSearchParams(window.location.search).get('shot') === '1' && triggers[0]) {

@@ -10,6 +10,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Rebuilt light-theme semantic foreground colors for AA contrast and fixed shared focus treatments for command search, update actions, search recovery, and timeline controls.
 - Raised mobile and overlay touch targets, made project preview affordances discoverable without hover, and kept the resume header and actions clear of the fixed navigation on narrow screens.
 - Put the full-text search control before explanatory metrics and removed decorative carousel controls that implied unavailable behavior.
+- Added visible command-search failure recovery, resilient clipboard fallbacks with focus restoration, and actionable sharing errors.
+- Kept timeline expansion focus-stable, added a true zero-activity state, guarded malformed section hashes, and removed the screenshot viewer's hidden zoom shortcut.
 
 ## [v0.21.31] - 2026-07-08
 

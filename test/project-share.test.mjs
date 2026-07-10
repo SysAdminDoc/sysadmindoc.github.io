@@ -18,8 +18,33 @@ test('project pages expose a native share action with copy fallback wiring', asy
 
   assert.match(script, /navigator\.share/);
   assert.match(script, /navigator\.clipboard\.writeText/);
+  assert.match(script, /navigator\.clipboard\.writeText\(text\)\.catch/);
+  assert.match(script, /return legacyCopy\(text\)/);
   assert.match(script, /textarea\.focus\(\)/);
+  assert.match(script, /previousFocus\.focus\(\{ preventScroll: true \}\)/);
   assert.match(script, /document\.execCommand\('copy'\)/);
   assert.match(script, /Project link copied\./);
+  assert.match(script, /Copy the address from your browser\./);
   assert.match(script, /AbortError/);
+});
+
+test('screenshot sharing recovers from clipboard rejection without hidden shortcuts', async () => {
+  const script = await fs.readFile(path.join(root, 'public', 'scripts', 'shot-viewer.js'), 'utf8');
+
+  assert.match(script, /navigator\.clipboard\.writeText\(text\)\.catch/);
+  assert.match(script, /return legacyCopy\(text\)/);
+  assert.match(script, /previousFocus\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(script, /Copy the address from your browser\./);
+  assert.doesNotMatch(script, /e\.key === 'f'/);
+});
+
+test('deferred command search exposes a retry state and malformed jump hashes stay safe', async () => {
+  const loader = await fs.readFile(path.join(root, 'public', 'scripts', 'cmdk-loader.js'), 'utf8');
+  const jumpNav = await fs.readFile(path.join(root, 'public', 'scripts', 'section-jump-nav.js'), 'utf8');
+
+  assert.match(loader, /Command search couldn't load\. Try again\./);
+  assert.match(loader, /loading = null/);
+  assert.match(loader, /script\.remove\(\)/);
+  assert.match(loader, /data-load-state', 'error'/);
+  assert.match(jumpNav, /try \{\s*initialId = decodeURIComponent\(initialId\)/);
 });

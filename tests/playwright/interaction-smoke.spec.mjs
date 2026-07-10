@@ -392,6 +392,42 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('command search reports a load failure and retries successfully', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    const commandScript = '**/scripts/cmdk.js';
+    await page.route(commandScript, route => route.fulfill({
+      contentType: 'application/javascript; charset=utf-8',
+      body: '/* Simulated command search initialization failure. */',
+    }));
+    await preparePage(page, '/', '#hero');
+
+    const toggle = page.locator('#cmdkToggle');
+    await toggle.click();
+    await expect(page.locator('.cmdk-load-feedback')).toContainText("Command search couldn't load. Try again.");
+    await expect(toggle).toHaveAttribute('aria-label', 'Retry command search');
+    await expect(toggle).toHaveAttribute('data-load-state', 'error');
+    await expect(toggle).toBeFocused();
+
+    await page.unroute(commandScript);
+    await toggle.click();
+    await expectCommandPaletteState(page, true);
+    await expect(page.locator('.cmdk-load-feedback')).toBeHidden();
+    await expect(toggle).toHaveAttribute('aria-label', 'Open command search');
+    await page.keyboard.press('Escape');
+
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('malformed section hashes do not break page navigation', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/uses/#%E0%A4%A', '#uses-overview');
+
+    await expect(page.locator('main')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('command palette section results update the hash and focus the target section', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
@@ -535,15 +571,18 @@ test.describe('rendered interaction smoke', () => {
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
       Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: async () => undefined },
+        value: { writeText: async () => { throw new Error('clipboard unavailable'); } },
         configurable: true,
       });
+      Document.prototype.execCommand = () => true;
     });
     await preparePage(page, '/projects/project-nomad-desktop/', '[data-project-slug="project-nomad-desktop"]');
 
     await expectNoHorizontalOverflow(page);
     await page.locator('[data-project-share]').click();
     await expect(page.locator('#project-share-status')).toContainText(/copied/i);
+    await expect(page.locator('[data-project-share]')).toHaveAttribute('aria-busy', 'false');
+    await expect(page.locator('[data-project-share]')).toBeFocused();
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
@@ -567,11 +606,11 @@ test.describe('rendered interaction smoke', () => {
     await expect(dialog.locator('.sv-source')).toBeVisible();
     await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
 
-    await page.keyboard.press('f');
+    await dialog.locator('.sv-zoom').click();
     await expect(dialog.locator('.sv-zoom')).toContainText('100%');
     await expect(dialog.locator('.sv-img')).toHaveClass(/sv-img-zoom/);
 
-    await page.keyboard.press('f');
+    await dialog.locator('.sv-zoom').click();
     await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
 
     await page.keyboard.press('Escape');
@@ -590,6 +629,7 @@ test.describe('rendered interaction smoke', () => {
         value: { writeText: async () => { throw new Error('clipboard unavailable'); } },
         configurable: true,
       });
+      Document.prototype.execCommand = () => false;
     });
     await preparePage(page, '/projects/StormviewRadar/', '[data-project-slug="StormviewRadar"]');
 
@@ -603,7 +643,7 @@ test.describe('rendered interaction smoke', () => {
     const dialog = page.locator('#shotViewer');
     await expect(dialog).toBeVisible();
     await dialog.locator('.sv-share').click();
-    await expect(dialog.locator('.sv-status')).toContainText('Copy failed.');
+    await expect(dialog.locator('.sv-status')).toContainText("Couldn't copy. Copy the address from your browser.");
     await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
 
@@ -694,6 +734,32 @@ test.describe('catalog URL-state persistence', () => {
 });
 
 test.describe('timeline URL-state persistence', () => {
+  test('the timeline fold toggles without discarding keyboard focus', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/timeline/', '#timeline-events');
+
+    const fold = page.locator('#timelineShowMoreBtn');
+    if (!(await fold.count())) {
+      test.skip(true, 'Timeline does not exceed the initial fold in this build');
+      return;
+    }
+
+    await fold.focus();
+    await fold.click();
+    await expect(fold).toHaveAttribute('aria-expanded', 'true');
+    await expect(fold).toContainText('Show fewer events');
+    await expect(fold).toBeFocused();
+    await expect(page.locator('[data-beyond-fold]:visible')).not.toHaveCount(0);
+
+    await fold.click();
+    await expect(fold).toHaveAttribute('aria-expanded', 'false');
+    await expect(fold).toContainText(/Show \d+ more events/);
+    await expect(fold).toBeFocused();
+    await expect(page.locator('[data-beyond-fold]:visible')).toHaveCount(0);
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
   test('filters update URL, survive reload, and expose an empty state', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 390, height: 900 });
