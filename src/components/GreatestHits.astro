@@ -75,17 +75,24 @@ try {
   .gh-card:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
   .gh-card-primary{
     grid-column:span 12;
-    min-height:240px;
-    padding:28px 0;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(320px,.95fr);
+    grid-template-areas:
+      'head foot'
+      'name why';
+    align-items:start;
+    gap:14px 48px;
+    min-height:0;
+    padding:24px 0;
     background:transparent;
     box-shadow:none;
   }
   .gh-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .gh-rank{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--org);font-weight:700}
   .gh-tag{font-family:var(--mono);font-size:12px;color:var(--t3);padding:0;border:0;border-radius:0;letter-spacing:.06em;text-transform:uppercase;background:transparent}
-  .gh-stars{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--yel)}
+  .gh-stars{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--yel)}
   .gh-stars svg{width:12px;height:12px;fill:currentColor}
-  .gh-name{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--t1);word-break:break-word;line-height:1.15;max-width:18ch}
+  .gh-name{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--t1);overflow-wrap:anywhere;word-break:normal;line-height:1.15;max-width:22ch}
   .gh-why{color:var(--t2);font-size:15px;line-height:1.7;margin:0;max-width:42ch}
   .gh-foot{
     margin-top:auto;
@@ -113,15 +120,25 @@ try {
   }
   .gh-card:hover .gh-foot-cta::after,
   .gh-card:focus-visible .gh-foot-cta::after{transform:translateX(3px)}
-  .gh-card-primary .gh-name{font-size:clamp(30px,4.4vw,42px);max-width:12ch;letter-spacing:-.05em}
-  .gh-card-primary .gh-why{font-size:16px;max-width:58ch}
+  .gh-card-primary .gh-head{grid-area:head}
+  .gh-card-primary .gh-name{grid-area:name;font-size:clamp(28px,3vw,38px);max-width:24ch;letter-spacing:-.04em}
+  .gh-card-primary .gh-why{grid-area:why;font-size:16px;max-width:48ch}
+  .gh-card-primary .gh-foot{grid-area:foot;margin:0;padding:0;justify-content:flex-end}
   @media(max-width:980px){
     .gh-card{grid-column:span 6}
     .gh-card-primary{grid-column:span 12}
   }
+  @media(max-width:760px){
+    .gh-card-primary{
+      grid-template-columns:1fr;
+      grid-template-areas:'head' 'name' 'why' 'foot';
+      gap:10px;
+    }
+    .gh-card-primary .gh-foot{justify-content:flex-start}
+  }
   @media(max-width:640px){
     .gh-grid{grid-template-columns:1fr}
-    .gh-card,.gh-card-primary{grid-column:auto;min-height:auto;padding:22px}
+    .gh-card,.gh-card-primary{grid-column:auto;min-height:auto;padding:20px 0}
     .gh-card-primary .gh-name{font-size:28px}
     .gh-head{gap:8px}
     .gh-foot{align-items:flex-start;flex-direction:column}

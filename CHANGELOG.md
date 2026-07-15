@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Reworked the primary Selected Work card into a compact two-column row so long repository names no longer stack into narrow fragments and metadata/actions no longer float across a large empty area.
 - Removed the generated-data refresh age from the homepage footer.
 - Removed the Career timeline from the homepage, including its navigation and command-search entries.
 - Removed the `NEW` and `DOWNLOAD` status pills from catalog cards while keeping the corresponding catalog filters available.
