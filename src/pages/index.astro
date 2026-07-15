@@ -169,52 +169,6 @@ function plainHeroText(value: string) {
 }
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const heroReleaseDate = compactUtcDate;
-const heatmapMonthDate = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' });
-const heatmapDayMs = 86_400_000;
-const heatmapCell = 10;
-const heatmapGap = 3;
-const heatmapLeft = 28;
-const heatmapTop = 18;
-const heatmapWeeksCount = 53;
-const heatmapWidth = heatmapLeft + heatmapWeeksCount * (heatmapCell + heatmapGap);
-const heatmapHeight = heatmapTop + 7 * (heatmapCell + heatmapGap);
-const heatmapEndSource = new Date(stats.fetchedAt ?? stats.lastPushedAt ?? Date.now());
-const heatmapEnd = Number.isNaN(heatmapEndSource.getTime())
-  ? new Date()
-  : new Date(Date.UTC(heatmapEndSource.getUTCFullYear(), heatmapEndSource.getUTCMonth(), heatmapEndSource.getUTCDate()));
-const heatmapStart = new Date(heatmapEnd.getTime() - 364 * heatmapDayMs);
-const heatmapGridStart = new Date(heatmapStart);
-heatmapGridStart.setUTCDate(heatmapGridStart.getUTCDate() - heatmapGridStart.getUTCDay());
-const heatmapPushDays = new Set((stats.pushDays ?? []).filter(Boolean));
-const heatmapCells = Array.from({ length: heatmapWeeksCount * 7 }, (_, index) => {
-  const week = Math.floor(index / 7);
-  const day = index % 7;
-  const date = new Date(heatmapGridStart.getTime() + index * heatmapDayMs);
-  const key = date.toISOString().slice(0, 10);
-  const inRange = date >= heatmapStart && date <= heatmapEnd;
-  const active = inRange && heatmapPushDays.has(key);
-  const state = active ? 'active' : 'inactive';
-  return {
-    key,
-    week,
-    day,
-    x: heatmapLeft + week * (heatmapCell + heatmapGap),
-    y: heatmapTop + day * (heatmapCell + heatmapGap),
-    active,
-    state,
-    title: `${key}: ${active ? 'public push recorded' : 'no public push recorded'}`,
-  };
-});
-const heatmapMonthLabels = heatmapCells
-  .filter((cell) => cell.day === 0)
-  .map((cell) => ({ ...cell, date: new Date(`${cell.key}T00:00:00Z`) }))
-  .filter((cell, index, cells) => index === 0 || cell.date.getUTCMonth() !== cells[index - 1].date.getUTCMonth())
-  .map((cell) => ({
-    label: heatmapMonthDate.format(cell.date),
-    x: cell.x,
-  }));
-const heatmapActiveDays = heatmapCells.filter((cell) => cell.active).length;
-const heatmapLabel = `GitHub public push-day calendar for the last year ending ${compactUtcDate.format(heatmapEnd)}: ${heatmapActiveDays} active day${heatmapActiveDays === 1 ? '' : 's'}. Source data records whether at least one public push was observed on each UTC day, not commit volume.`;
 const journeyMilestones = [
   {
     title: 'Healthcare IT & Systems Administration',
@@ -609,37 +563,6 @@ const cmdkSections = [
               <span class="stack-action-meta">{route.meta}</span>
             </a>
           ))}
-        </div>
-        <div class="heatmap-card" aria-label="GitHub activity">
-          <div class="heatmap-head">
-            <div>
-              <span class="stack-kicker">Recent activity</span>
-              <span class="heatmap-note">Push days, not commit volume</span>
-            </div>
-            <strong>{heatmapActiveDays} active day{heatmapActiveDays === 1 ? '' : 's'}</strong>
-          </div>
-          <div class="heatmap-scroll" role="region" aria-label="Scrollable GitHub activity heatmap" tabindex="0">
-            <svg class="heatmap-svg" viewBox={`0 0 ${heatmapWidth} ${heatmapHeight}`} role="img" aria-label={heatmapLabel}>
-              <title>{heatmapLabel}</title>
-              {heatmapMonthLabels.map((month) => (
-                <text class="hm-month" x={month.x} y="10">{month.label}</text>
-              ))}
-              <text class="hm-day" x="0" y={heatmapTop + 2 * (heatmapCell + heatmapGap) + heatmapCell - 1}>Mon</text>
-              <text class="hm-day" x="0" y={heatmapTop + 4 * (heatmapCell + heatmapGap) + heatmapCell - 1}>Wed</text>
-              <text class="hm-day" x="0" y={heatmapTop + 6 * (heatmapCell + heatmapGap) + heatmapCell - 1}>Fri</text>
-              {heatmapCells.map((cell) => (
-                <rect class={`hm-cell hm-${cell.state}`} x={cell.x} y={cell.y} width={heatmapCell} height={heatmapCell} rx="2" data-day={cell.key} data-state={cell.state}>
-                  <title>{cell.title}</title>
-                </rect>
-              ))}
-            </svg>
-          </div>
-          <div class="heatmap-legend" aria-label="Push-day legend">
-            <span class="hm-swatch hm-inactive" aria-hidden="true"></span>
-            <span>No push</span>
-            <span class="hm-swatch hm-active" aria-hidden="true"></span>
-            <span>Push day</span>
-          </div>
         </div>
       </div>
       <div class="lang-donut-wrap rv" id="langDonut">

@@ -313,15 +313,6 @@ const auditExpression = String.raw`
   details.forcedColors = matchMedia('(forced-colors: active)').matches;
   if (!details.forcedColors) issues.push('forced-colors media emulation is inactive');
 
-  const heatmap = document.querySelector('.heatmap-svg');
-  const heatmapCells = heatmap ? Array.from(heatmap.querySelectorAll('rect')) : [];
-  const heatmapPainted = heatmapCells.filter(hasPaint).length;
-  details.heatmap = { cells: heatmapCells.length, painted: heatmapPainted, label: heatmap?.getAttribute('aria-label') || '' };
-  if (!heatmap || !isVisibleBox(heatmap)) issues.push('heatmap svg is missing or collapsed');
-  if (heatmapCells.length < 300) issues.push('heatmap has too few cells to represent the year');
-  if (heatmapPainted < Math.min(300, heatmapCells.length)) issues.push('heatmap cells are not visibly painted in forced colors');
-  if (!details.heatmap.label) issues.push('heatmap is missing its aria-label text equivalent');
-
   const donut = document.querySelector('.lang-donut svg');
   const donutSegments = donut ? Array.from(donut.querySelectorAll('circle')) : [];
   const donutPainted = donutSegments.filter(hasPaint).length;
@@ -384,7 +375,7 @@ try {
   console.log(`Forced-colors data-viz audit (${serverInfo.baseUrl})`);
   for (const result of results) {
     const status = result.issues.length === 0 ? 'PASS' : 'FAIL';
-    console.log(`  ${status} ${result.label}: heatmap ${result.details.heatmap.painted}/${result.details.heatmap.cells} cells, donut ${result.details.languageDonut.painted}/${result.details.languageDonut.segments} segments, skill rings ${result.details.skillRings.count}`);
+    console.log(`  ${status} ${result.label}: donut ${result.details.languageDonut.painted}/${result.details.languageDonut.segments} segments, skill rings ${result.details.skillRings.count}`);
     for (const issue of result.issues) console.log(`    - ${issue}`);
   }
   if (results.some((result) => result.issues.length > 0)) exitCode = 1;

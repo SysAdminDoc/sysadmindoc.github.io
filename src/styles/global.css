@@ -2167,15 +2167,8 @@ html[data-theme="light"] .fb{
   .btn,button,.ctg,.lb2,.theme-toggle,input,select,textarea{
     border:1px solid ButtonText;
   }
-  .hm-swatch{
-    border:1px solid CanvasText;
-    background:Canvas!important;
-  }
-  .hm-swatch.hm-active,
   .lang-legend-dot{
     background:Highlight!important;
-  }
-  .lang-legend-dot{
     border:1px solid CanvasText;
   }
   .lang-donut circle,
@@ -3217,143 +3210,8 @@ html[data-theme="light"] .lc2 .lc2-thumb::after{
 }
 }
 
-/* ===== R33: Contribution heatmap ===== */
-@layer site.additions {
-.heatmap-card{
-  display:grid;
-  gap:12px;
-  margin-top:18px;
-  padding:14px;
-  border:1px solid var(--border-soft);
-  border-radius:8px;
-  background:rgba(255,255,255,.025);
-}
-.heatmap-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.heatmap-head strong{
-  color:var(--t1);
-  font-family:var(--mono);
-  font-size:13px;
-}
-.heatmap-note{
-  display:block;
-  margin-top:4px;
-  color:var(--t3);
-  font-size:12px;
-  line-height:1.45;
-}
-.heatmap-scroll{
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding-bottom:4px;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(124,184,255,.24) transparent;
-  border-radius:10px;
-}
-.heatmap-scroll:focus-visible{
-  outline:2px solid var(--focus);
-  outline-offset:3px;
-}
-.heatmap-svg{
-  display:block;
-  width:100%;
-  min-width:690px;
-  height:auto;
-  color:var(--t2);
-}
-.hm-cell{
-  stroke:rgba(255,255,255,.08);
-  stroke-width:.6;
-}
-.hm-month{
-  fill:var(--t3);
-  font-family:var(--mono);
-  font-size:10px;
-}
-.hm-day{
-  fill:var(--t3);
-  font-family:var(--mono);
-  font-size:9px;
-  dominant-baseline:auto;
-}
-.hm-empty{
-  fill:transparent;
-}
-.hm-inactive{
-  fill:rgba(255,255,255,.04);
-}
-.hm-active{
-  fill:rgba(74,222,128,.96);
-  stroke:rgba(187,247,208,.34);
-}
-html[data-theme="light"] .hm-inactive{
-  fill:rgba(70,83,112,.06);
-}
-html[data-theme="light"] .hm-active{
-  fill:rgba(34,160,80,.92);
-  stroke:rgba(21,128,61,.36);
-}
-.hm-swatch{
-  display:inline-block;
-  width:12px;
-  height:12px;
-  border-radius:2px;
-}
-.hm-swatch.hm-inactive{background:rgba(255,255,255,.04)}
-.hm-swatch.hm-active{background:rgba(74,222,128,.96)}
-html[data-theme="light"] .hm-swatch.hm-inactive{background:rgba(70,83,112,.06)}
-html[data-theme="light"] .hm-swatch.hm-active{background:rgba(34,160,80,.92)}
-.heatmap-legend{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:6px;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:10px;
-}
-@media(forced-colors:active){
-  .heatmap-card{
-    border-color:CanvasText;
-    background:Canvas;
-  }
-  .heatmap-svg{
-    color:CanvasText;
-  }
-  .hm-month,
-  .hm-day{
-    fill:CanvasText;
-  }
-  .hm-cell{
-    stroke:Canvas;
-    stroke-width:1;
-  }
-  .hm-inactive{
-    fill:GrayText;
-  }
-  .hm-active{
-    fill:Highlight;
-  }
-  .hm-swatch{
-    border:1px solid CanvasText;
-  }
-}
-@media(max-width:640px){
-  .heatmap-card{
-    margin-top:16px;
-    padding:12px;
-  }
-  .heatmap-head{
-    align-items:flex-start;
-    flex-direction:column;
-  }
-}
-
 /* ===== R38: Light theme completion ===== */
+@layer site.additions {
 
 /* Nav link hovers — rgba(255,255,255,.05) invisible on light bg */
 html[data-theme="light"] .nk a:hover,
