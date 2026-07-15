@@ -1,10 +1,10 @@
 {
   "schema": "sysadmindoc.status.v1",
   "version": "0.22.0",
-  "generatedAt": "2026-07-15T15:50:50.256Z",
+  "generatedAt": "2026-07-15T15:53:17.999Z",
   "build": {
-    "commit": "fe997c0878667e68d7c2a5b159e45367abb42837",
-    "commitShort": "fe997c087866",
+    "commit": "2021f972f25da7d67693ae6c0210def7bb1ca326",
+    "commitShort": "2021f972f25d",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
@@ -20,7 +20,7 @@
     "mode": "production-fresh",
     "maxAgeHours": 36,
     "fetchedAt": "2026-07-15T15:01:18.356Z",
-    "ageHours": 0.8255,
+    "ageHours": 0.8666,
     "stale": false,
     "totalRepos": 183,
     "totalStars": 413,
@@ -29,8 +29,8 @@
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
       "projectCount": 186,
-      "cachedAt": "2026-07-15T15:50:06.612Z",
-      "cachedAgeHours": 0.0121,
+      "cachedAt": "2026-07-15T15:52:48.532Z",
+      "cachedAgeHours": 0.0082,
       "stale": false
     },
     "coverage": {
