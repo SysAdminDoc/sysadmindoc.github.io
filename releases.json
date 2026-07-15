@@ -22,7 +22,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.27",
         "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
+        "detail": "https://github.com/SysAdminDoc/Images"
       }
     },
     {
@@ -36,7 +36,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.9.0",
         "repository": "https://github.com/SysAdminDoc/SwiftShot",
-        "detail": "https://sysadmindoc.github.io/projects/SwiftShot/"
+        "detail": "https://github.com/SysAdminDoc/SwiftShot"
       }
     },
     {
@@ -50,7 +50,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.110.0",
         "repository": "https://github.com/SysAdminDoc/StormScope",
-        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+        "detail": "https://github.com/SysAdminDoc/StormScope"
       }
     },
     {
@@ -64,7 +64,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.109.0",
         "repository": "https://github.com/SysAdminDoc/StormScope",
-        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+        "detail": "https://github.com/SysAdminDoc/StormScope"
       }
     },
     {
@@ -78,7 +78,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.2",
         "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+        "detail": "https://github.com/SysAdminDoc/ScriptVault"
       }
     },
     {
@@ -92,7 +92,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ForceBGTab/releases/tag/v0.1.1",
         "repository": "https://github.com/SysAdminDoc/ForceBGTab",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/ForceBGTab"
       }
     },
     {
@@ -106,7 +106,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ForceBGTab/releases/tag/v0.1.0",
         "repository": "https://github.com/SysAdminDoc/ForceBGTab",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/ForceBGTab"
       }
     },
     {
@@ -120,7 +120,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.89.0",
         "repository": "https://github.com/SysAdminDoc/SnapCrop",
-        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
       }
     },
     {
@@ -134,7 +134,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.26",
         "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
+        "detail": "https://github.com/SysAdminDoc/Images"
       }
     },
     {
@@ -148,7 +148,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.88.0",
         "repository": "https://github.com/SysAdminDoc/SnapCrop",
-        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
       }
     },
     {
@@ -162,7 +162,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.3",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
     },
     {
@@ -176,7 +176,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.93.0",
         "repository": "https://github.com/SysAdminDoc/StormScope",
-        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+        "detail": "https://github.com/SysAdminDoc/StormScope"
       }
     },
     {
@@ -190,7 +190,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.92.0",
         "repository": "https://github.com/SysAdminDoc/StormScope",
-        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+        "detail": "https://github.com/SysAdminDoc/StormScope"
       }
     },
     {
@@ -204,7 +204,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.91.0",
         "repository": "https://github.com/SysAdminDoc/StormScope",
-        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+        "detail": "https://github.com/SysAdminDoc/StormScope"
       }
     },
     {
@@ -218,7 +218,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.2",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
     },
     {
@@ -232,7 +232,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.12.0",
         "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
-        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+        "detail": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro"
       }
     },
     {
@@ -246,7 +246,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.68.0",
         "repository": "https://github.com/SysAdminDoc/SnapCrop",
-        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
       }
     },
     {
@@ -260,7 +260,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.11.0",
         "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
-        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+        "detail": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro"
       }
     },
     {
@@ -274,7 +274,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.67.0",
         "repository": "https://github.com/SysAdminDoc/SnapCrop",
-        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
       }
     },
     {
@@ -288,7 +288,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.0",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
     },
     {
@@ -302,7 +302,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.1",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
     },
     {
@@ -316,7 +316,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.0",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
     },
     {
@@ -330,7 +330,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.117",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
     },
     {
@@ -344,7 +344,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.116",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
     },
     {
@@ -358,7 +358,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.115",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
     },
     {
@@ -372,7 +372,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.114",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
     },
     {
@@ -386,7 +386,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.113",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
     },
     {
@@ -400,7 +400,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.67",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "detail": "https://github.com/SysAdminDoc/HostsGuard"
       }
     },
     {
@@ -414,7 +414,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.66",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "detail": "https://github.com/SysAdminDoc/HostsGuard"
       }
     },
     {
@@ -428,7 +428,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SurfaceMedic/releases/tag/v0.2.1",
         "repository": "https://github.com/SysAdminDoc/SurfaceMedic",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/SurfaceMedic"
       }
     },
     {
@@ -442,7 +442,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SurfaceMedic/releases/tag/v0.2.0",
         "repository": "https://github.com/SysAdminDoc/SurfaceMedic",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/SurfaceMedic"
       }
     },
     {
@@ -456,7 +456,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5",
         "repository": "https://github.com/SysAdminDoc/AppManagerNG",
-        "detail": "https://sysadmindoc.github.io/projects/AppManagerNG/"
+        "detail": "https://github.com/SysAdminDoc/AppManagerNG"
       }
     },
     {
@@ -470,7 +470,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.22.0",
         "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-        "detail": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/"
+        "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
       }
     },
     {
@@ -484,7 +484,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ImgConverter/releases/tag/v3.5.0",
         "repository": "https://github.com/SysAdminDoc/ImgConverter",
-        "detail": "https://sysadmindoc.github.io/projects/ImgConverter/"
+        "detail": "https://github.com/SysAdminDoc/ImgConverter"
       }
     },
     {
@@ -498,7 +498,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.10.0",
         "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
-        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+        "detail": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro"
       }
     },
     {
@@ -512,7 +512,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.1",
         "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+        "detail": "https://github.com/SysAdminDoc/ScriptVault"
       }
     },
     {
@@ -526,7 +526,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Wingetter/releases/tag/v6.2.0",
         "repository": "https://github.com/SysAdminDoc/Wingetter",
-        "detail": "https://sysadmindoc.github.io/projects/Wingetter/"
+        "detail": "https://github.com/SysAdminDoc/Wingetter"
       }
     },
     {
@@ -540,7 +540,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.19.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }
     },
     {
@@ -554,7 +554,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.25",
         "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
+        "detail": "https://github.com/SysAdminDoc/Images"
       }
     },
     {
@@ -568,7 +568,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.0",
         "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+        "detail": "https://github.com/SysAdminDoc/ScriptVault"
       }
     },
     {
@@ -582,7 +582,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.65",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "detail": "https://github.com/SysAdminDoc/HostsGuard"
       }
     },
     {
@@ -596,7 +596,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.1",
         "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
       }
     },
     {
@@ -610,7 +610,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.17.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }
     },
     {
@@ -624,7 +624,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.0",
         "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
       }
     },
     {
@@ -638,7 +638,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.15.1",
         "repository": "https://github.com/SysAdminDoc/RES-Slim",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/RES-Slim"
       }
     },
     {
@@ -652,7 +652,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.9",
         "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
       }
     },
     {
@@ -666,7 +666,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.15.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }
     },
     {
@@ -680,7 +680,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.34",
         "repository": "https://github.com/SysAdminDoc/Astra-Deck",
-        "detail": "https://sysadmindoc.github.io/projects/Astra-Deck/"
+        "detail": "https://github.com/SysAdminDoc/Astra-Deck"
       }
     },
     {
@@ -694,7 +694,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.8",
         "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
       }
     },
     {
@@ -708,7 +708,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.62",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "detail": "https://github.com/SysAdminDoc/HostsGuard"
       }
     },
     {
@@ -722,7 +722,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.61",
         "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+        "detail": "https://github.com/SysAdminDoc/HostsGuard"
       }
     },
     {
@@ -736,7 +736,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.9.56",
         "repository": "https://github.com/SysAdminDoc/SwiftFloris",
-        "detail": "https://sysadmindoc.github.io/projects/SwiftFloris/"
+        "detail": "https://github.com/SysAdminDoc/SwiftFloris"
       }
     },
     {
@@ -750,7 +750,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }
     },
     {
@@ -764,7 +764,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.13.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://sysadmindoc.github.io/projects/BetterTTS/"
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }
     },
     {
@@ -778,7 +778,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.7",
         "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/"
+        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
       }
     },
     {
@@ -792,7 +792,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.22",
         "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
+        "detail": "https://github.com/SysAdminDoc/Images"
       }
     },
     {
@@ -806,7 +806,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.20",
         "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
+        "detail": "https://github.com/SysAdminDoc/Images"
       }
     },
     {
@@ -820,7 +820,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.14.1",
         "repository": "https://github.com/SysAdminDoc/RES-Slim",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/RES-Slim"
       }
     },
     {
@@ -834,7 +834,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.153",
         "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/SysAdminDoc"
       }
     },
     {
@@ -848,7 +848,7 @@
       "urls": {
         "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.152",
         "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
-        "detail": null
+        "detail": "https://github.com/SysAdminDoc/SysAdminDoc"
       }
     }
   ]

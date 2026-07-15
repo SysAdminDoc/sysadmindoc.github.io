@@ -15,8 +15,8 @@
   ],
   "items": [
     {
-      "id": "https://sysadmindoc.github.io/projects/ImageForge/",
-      "url": "https://sysadmindoc.github.io/projects/ImageForge/",
+      "id": "https://github.com/SysAdminDoc/ImageForge",
+      "url": "https://github.com/SysAdminDoc/ImageForge",
       "title": "ImageForge (live)",
       "content_text": "Open source image converter",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -25,8 +25,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Vigil/",
-      "url": "https://sysadmindoc.github.io/projects/Vigil/",
+      "id": "https://github.com/SysAdminDoc/Vigil",
+      "url": "https://github.com/SysAdminDoc/Vigil",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -35,8 +35,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
-      "url": "https://sysadmindoc.github.io/projects/TsunamiSimulator/",
+      "id": "https://github.com/SysAdminDoc/TsunamiSimulator",
+      "url": "https://github.com/SysAdminDoc/TsunamiSimulator",
       "title": "TsunamiSimulator",
       "content_text": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -45,8 +45,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Discrub/",
-      "url": "https://sysadmindoc.github.io/projects/Discrub/",
+      "id": "https://github.com/SysAdminDoc/Discrub",
+      "url": "https://github.com/SysAdminDoc/Discrub",
       "title": "Discrub",
       "content_text": "Discord message editor, deleter, and exporter",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -55,8 +55,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/android-debloat-list/",
-      "url": "https://sysadmindoc.github.io/projects/android-debloat-list/",
+      "id": "https://github.com/SysAdminDoc/android-debloat-list",
+      "url": "https://github.com/SysAdminDoc/android-debloat-list",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -65,8 +65,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
-      "url": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/",
+      "id": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
       "title": "sysadmindoc.github.io",
       "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -75,8 +75,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/",
-      "url": "https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/",
+      "id": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
+      "url": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -85,8 +85,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/RcloneBrowser/",
-      "url": "https://sysadmindoc.github.io/projects/RcloneBrowser/",
+      "id": "https://github.com/SysAdminDoc/RcloneBrowser",
+      "url": "https://github.com/SysAdminDoc/RcloneBrowser",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -95,8 +95,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/TabExplorer/",
-      "url": "https://sysadmindoc.github.io/projects/TabExplorer/",
+      "id": "https://github.com/SysAdminDoc/TabExplorer",
+      "url": "https://github.com/SysAdminDoc/TabExplorer",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -105,8 +105,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/TagStudio/",
-      "url": "https://sysadmindoc.github.io/projects/TagStudio/",
+      "id": "https://github.com/SysAdminDoc/TagStudio",
+      "url": "https://github.com/SysAdminDoc/TagStudio",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -115,8 +115,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SoftwareScannerGUI/",
-      "url": "https://sysadmindoc.github.io/projects/SoftwareScannerGUI/",
+      "id": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
+      "url": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
       "title": "SoftwareScannerGUI",
       "content_text": "WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -125,8 +125,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/NukeMap/",
-      "url": "https://sysadmindoc.github.io/projects/NukeMap/",
+      "id": "https://github.com/SysAdminDoc/NukeMap",
+      "url": "https://github.com/SysAdminDoc/NukeMap",
       "title": "NukeMap",
       "content_text": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -135,8 +135,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AsteroidSimulator/",
-      "url": "https://sysadmindoc.github.io/projects/AsteroidSimulator/",
+      "id": "https://github.com/SysAdminDoc/AsteroidSimulator",
+      "url": "https://github.com/SysAdminDoc/AsteroidSimulator",
       "title": "AsteroidSimulator",
       "content_text": "Asteroid and comet impact simulator with interactive 3D visualization",
       "date_modified": "2026-07-15T14:55:28.000Z",
@@ -145,8 +145,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Astra-Deck/",
-      "url": "https://sysadmindoc.github.io/projects/Astra-Deck/",
+      "id": "https://github.com/SysAdminDoc/Astra-Deck",
+      "url": "https://github.com/SysAdminDoc/Astra-Deck",
       "title": "Astra-Deck",
       "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
       "date_modified": "2026-07-15T14:55:02.000Z",
@@ -155,8 +155,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Droidsmith/",
-      "url": "https://sysadmindoc.github.io/projects/Droidsmith/",
+      "id": "https://github.com/SysAdminDoc/Droidsmith",
+      "url": "https://github.com/SysAdminDoc/Droidsmith",
       "title": "Droidsmith",
       "content_text": "Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*",
       "date_modified": "2026-07-15T14:50:10.000Z",
@@ -165,8 +165,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OpenTasker/",
-      "url": "https://sysadmindoc.github.io/projects/OpenTasker/",
+      "id": "https://github.com/SysAdminDoc/OpenTasker",
+      "url": "https://github.com/SysAdminDoc/OpenTasker",
       "title": "OpenTasker",
       "content_text": "FOSS Tasker alternative for Android",
       "date_modified": "2026-07-15T14:02:51.000Z",
@@ -175,8 +175,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/",
-      "url": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/",
+      "id": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+      "url": "https://github.com/SysAdminDoc/AlarmClockXtreme",
       "title": "AlarmClockXtreme",
       "content_text": "Feature-rich alarm clock with dismiss challenges",
       "date_modified": "2026-07-15T11:50:27.000Z",
@@ -185,8 +185,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SnapCrop/",
-      "url": "https://sysadmindoc.github.io/projects/SnapCrop/",
+      "id": "https://github.com/SysAdminDoc/SnapCrop",
+      "url": "https://github.com/SysAdminDoc/SnapCrop",
       "title": "SnapCrop",
       "content_text": "Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup",
       "date_modified": "2026-07-15T11:19:43.000Z",
@@ -195,8 +195,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AppManagerNG/",
-      "url": "https://sysadmindoc.github.io/projects/AppManagerNG/",
+      "id": "https://github.com/SysAdminDoc/AppManagerNG",
+      "url": "https://github.com/SysAdminDoc/AppManagerNG",
       "title": "AppManagerNG",
       "content_text": "Power-user package manager — continuation of MuntashirAkon/AppManager",
       "date_modified": "2026-07-15T09:46:41.000Z",
@@ -205,8 +205,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/HostsGuard/",
-      "url": "https://sysadmindoc.github.io/projects/HostsGuard/",
+      "id": "https://github.com/SysAdminDoc/HostsGuard",
+      "url": "https://github.com/SysAdminDoc/HostsGuard",
       "title": "HostsGuard",
       "content_text": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
       "date_modified": "2026-07-15T08:06:33.000Z",
@@ -215,8 +215,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ZeusWatch/",
-      "url": "https://sysadmindoc.github.io/projects/ZeusWatch/",
+      "id": "https://github.com/SysAdminDoc/ZeusWatch",
+      "url": "https://github.com/SysAdminDoc/ZeusWatch",
       "title": "ZeusWatch",
       "content_text": "Premium dark weather app — no API keys required",
       "date_modified": "2026-07-15T07:22:47.000Z",
@@ -225,8 +225,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ClearCut/",
-      "url": "https://sysadmindoc.github.io/projects/ClearCut/",
+      "id": "https://github.com/SysAdminDoc/ClearCut",
+      "url": "https://github.com/SysAdminDoc/ClearCut",
       "title": "ClearCut",
       "content_text": "Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
       "date_modified": "2026-07-15T06:34:40.000Z",
@@ -235,8 +235,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/CallShield/",
-      "url": "https://sysadmindoc.github.io/projects/CallShield/",
+      "id": "https://github.com/SysAdminDoc/CallShield",
+      "url": "https://github.com/SysAdminDoc/CallShield",
       "title": "CallShield",
       "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
       "date_modified": "2026-07-15T03:52:15.000Z",
@@ -245,8 +245,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OpenCut/",
-      "url": "https://sysadmindoc.github.io/projects/OpenCut/",
+      "id": "https://github.com/SysAdminDoc/OpenCut",
+      "url": "https://github.com/SysAdminDoc/OpenCut",
       "title": "OpenCut",
       "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
       "date_modified": "2026-07-15T03:46:21.000Z",
@@ -255,8 +255,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ScriptVault/",
-      "url": "https://sysadmindoc.github.io/projects/ScriptVault/",
+      "id": "https://github.com/SysAdminDoc/ScriptVault",
+      "url": "https://github.com/SysAdminDoc/ScriptVault",
       "title": "ScriptVault",
       "content_text": "Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs",
       "date_modified": "2026-07-15T02:10:56.000Z",
@@ -265,8 +265,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/VideoSubtitleRemover/",
-      "url": "https://sysadmindoc.github.io/projects/VideoSubtitleRemover/",
+      "id": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+      "url": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
       "title": "VideoSubtitleRemover",
       "content_text": "AI-powered removal of hard-coded subtitles and text watermarks from video.",
       "date_modified": "2026-07-15T02:04:19.000Z",
@@ -275,8 +275,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LibreSpot/",
-      "url": "https://sysadmindoc.github.io/projects/LibreSpot/",
+      "id": "https://github.com/SysAdminDoc/LibreSpot",
+      "url": "https://github.com/SysAdminDoc/LibreSpot",
       "title": "LibreSpot",
       "content_text": "Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
       "date_modified": "2026-07-15T00:40:16.000Z",
@@ -285,8 +285,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/StormScope/",
-      "url": "https://sysadmindoc.github.io/projects/StormScope/",
+      "id": "https://github.com/SysAdminDoc/StormScope",
+      "url": "https://github.com/SysAdminDoc/StormScope",
       "title": "StormScope",
       "content_text": "Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras",
       "date_modified": "2026-07-15T00:37:02.000Z",
@@ -295,8 +295,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/",
-      "url": "https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/",
+      "id": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
+      "url": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
       "title": "win11-nvme-driver-patcher",
       "content_text": "GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.",
       "date_modified": "2026-07-14T23:31:54.000Z",
@@ -305,8 +305,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Images/",
-      "url": "https://sysadmindoc.github.io/projects/Images/",
+      "id": "https://github.com/SysAdminDoc/Images",
+      "url": "https://github.com/SysAdminDoc/Images",
       "title": "Images",
       "content_text": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
       "date_modified": "2026-07-14T23:31:41.000Z",
@@ -315,8 +315,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
-      "url": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/",
+      "id": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+      "url": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
       "title": "Bookmark-Organizer-Pro",
       "content_text": "AI-powered bookmark manager and categorizer",
       "date_modified": "2026-07-14T22:10:54.000Z",
@@ -325,8 +325,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SwiftShot/",
-      "url": "https://sysadmindoc.github.io/projects/SwiftShot/",
+      "id": "https://github.com/SysAdminDoc/SwiftShot",
+      "url": "https://github.com/SysAdminDoc/SwiftShot",
       "title": "SwiftShot",
       "content_text": "Debloated, Greenshot-inspired screenshot tool",
       "date_modified": "2026-07-14T20:03:14.000Z",
@@ -335,8 +335,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ApocalypseWatch/",
-      "url": "https://sysadmindoc.github.io/projects/ApocalypseWatch/",
+      "id": "https://github.com/SysAdminDoc/ApocalypseWatch",
+      "url": "https://github.com/SysAdminDoc/ApocalypseWatch",
       "title": "ApocalypseWatch (live)",
       "content_text": "Realtime business-jet tracker vs. 24h baseline",
       "date_modified": "2026-07-11T08:13:02.000Z",
@@ -345,8 +345,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AppList/",
-      "url": "https://sysadmindoc.github.io/projects/AppList/",
+      "id": "https://github.com/SysAdminDoc/AppList",
+      "url": "https://github.com/SysAdminDoc/AppList",
       "title": "AppList",
       "content_text": "Scan, catalog, and export all installed applications",
       "date_modified": "2026-07-10T20:55:20.000Z",
@@ -355,8 +355,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ImgConverter/",
-      "url": "https://sysadmindoc.github.io/projects/ImgConverter/",
+      "id": "https://github.com/SysAdminDoc/ImgConverter",
+      "url": "https://github.com/SysAdminDoc/ImgConverter",
       "title": "ImgConverter",
       "content_text": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
       "date_modified": "2026-07-10T20:07:02.000Z",
@@ -365,8 +365,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SwiftFloris/",
-      "url": "https://sysadmindoc.github.io/projects/SwiftFloris/",
+      "id": "https://github.com/SysAdminDoc/SwiftFloris",
+      "url": "https://github.com/SysAdminDoc/SwiftFloris",
       "title": "SwiftFloris",
       "content_text": "SwiftKey-inspired keyboard built on FlorisBoard's foundation",
       "date_modified": "2026-07-10T04:08:35.000Z",
@@ -375,8 +375,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Wingetter/",
-      "url": "https://sysadmindoc.github.io/projects/Wingetter/",
+      "id": "https://github.com/SysAdminDoc/Wingetter",
+      "url": "https://github.com/SysAdminDoc/Wingetter",
       "title": "Wingetter",
       "content_text": "Discover, select, and bulk install software via Winget",
       "date_modified": "2026-07-10T04:02:09.000Z",
@@ -385,8 +385,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/HurricaneMap/",
-      "url": "https://sysadmindoc.github.io/projects/HurricaneMap/",
+      "id": "https://github.com/SysAdminDoc/HurricaneMap",
+      "url": "https://github.com/SysAdminDoc/HurricaneMap",
       "title": "HurricaneMap (live)",
       "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
       "date_modified": "2026-07-10T03:52:43.000Z",
@@ -395,8 +395,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/BetterTTS/",
-      "url": "https://sysadmindoc.github.io/projects/BetterTTS/",
+      "id": "https://github.com/SysAdminDoc/BetterTTS",
+      "url": "https://github.com/SysAdminDoc/BetterTTS",
       "title": "BetterTTS (live)",
       "content_text": "Private, in-browser text-to-speech studio",
       "date_modified": "2026-07-10T03:46:49.000Z",
@@ -405,8 +405,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
-      "url": "https://sysadmindoc.github.io/projects/Network_Security_Auditor/",
+      "id": "https://github.com/SysAdminDoc/Network_Security_Auditor",
+      "url": "https://github.com/SysAdminDoc/Network_Security_Auditor",
       "title": "Network_Security_Auditor",
       "content_text": "67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.",
       "date_modified": "2026-07-09T23:28:12.000Z",
@@ -415,8 +415,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Lawnchair-Lite/",
-      "url": "https://sysadmindoc.github.io/projects/Lawnchair-Lite/",
+      "id": "https://github.com/SysAdminDoc/Lawnchair-Lite",
+      "url": "https://github.com/SysAdminDoc/Lawnchair-Lite",
       "title": "Lawnchair-Lite",
       "content_text": "Lightweight launcher with 5 built-in dark themes",
       "date_modified": "2026-07-06T01:07:28.000Z",
@@ -425,8 +425,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/one-ui-home-clone/",
-      "url": "https://sysadmindoc.github.io/projects/one-ui-home-clone/",
+      "id": "https://github.com/SysAdminDoc/one-ui-home-clone",
+      "url": "https://github.com/SysAdminDoc/one-ui-home-clone",
       "title": "one-ui-home-clone",
       "content_text": "Samsung One UI 7 parity launcher — Compose, clone not a port",
       "date_modified": "2026-07-05T23:32:19.000Z",
@@ -435,8 +435,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Aura/",
-      "url": "https://sysadmindoc.github.io/projects/Aura/",
+      "id": "https://github.com/SysAdminDoc/Aura",
+      "url": "https://github.com/SysAdminDoc/Aura",
       "title": "Aura",
       "content_text": "Open-source Zedge alternative — wallpapers, video wallpapers, ringtones, YouTube integration",
       "date_modified": "2026-07-05T21:23:14.000Z",
@@ -445,8 +445,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/iOSIconPack/",
-      "url": "https://sysadmindoc.github.io/projects/iOSIconPack/",
+      "id": "https://github.com/SysAdminDoc/iOSIconPack",
+      "url": "https://github.com/SysAdminDoc/iOSIconPack",
       "title": "iOSIconPack",
       "content_text": "iOS-style icon pack for Android — 6 iOS eras",
       "date_modified": "2026-07-05T20:27:23.000Z",
@@ -455,8 +455,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OpenLumen/",
-      "url": "https://sysadmindoc.github.io/projects/OpenLumen/",
+      "id": "https://github.com/SysAdminDoc/OpenLumen",
+      "url": "https://github.com/SysAdminDoc/OpenLumen",
       "title": "OpenLumen",
       "content_text": "Open-source CF.Lumen successor -- root-grade display color filter for Android with rootless fallback",
       "date_modified": "2026-07-05T19:31:34.000Z",
@@ -465,8 +465,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/HostShield/",
-      "url": "https://sysadmindoc.github.io/projects/HostShield/",
+      "id": "https://github.com/SysAdminDoc/HostShield",
+      "url": "https://github.com/SysAdminDoc/HostShield",
       "title": "HostShield",
       "content_text": "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.",
       "date_modified": "2026-07-05T19:20:28.000Z",
@@ -475,8 +475,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/",
-      "url": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/",
+      "id": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
+      "url": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
       "title": "Disable-AdobeTelemetry",
       "content_text": "Comprehensive Adobe telemetry and GrowthSDK suppression for Windows",
       "date_modified": "2026-07-02T05:05:08.000Z",
@@ -485,8 +485,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/project-nomad-desktop/",
-      "url": "https://sysadmindoc.github.io/projects/project-nomad-desktop/",
+      "id": "https://github.com/SysAdminDoc/project-nomad-desktop",
+      "url": "https://github.com/SysAdminDoc/project-nomad-desktop",
       "title": "project-nomad-desktop",
       "content_text": "Offline survival command center maps, AI chat, situation room, NukeMap, supply tracking. 600+ routes, 95+ tables.",
       "date_modified": "2026-07-02T05:02:00.000Z",
@@ -495,8 +495,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/QuickFind/",
-      "url": "https://sysadmindoc.github.io/projects/QuickFind/",
+      "id": "https://github.com/SysAdminDoc/QuickFind",
+      "url": "https://github.com/SysAdminDoc/QuickFind",
       "title": "QuickFind",
       "content_text": "Lightning-fast file search for Windows — reads NTFS MFT directly",
       "date_modified": "2026-07-02T04:12:13.000Z",
@@ -505,8 +505,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/",
-      "url": "https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/",
+      "id": "https://github.com/SysAdminDoc/AndroidEmulatorPlus",
+      "url": "https://github.com/SysAdminDoc/AndroidEmulatorPlus",
       "title": "AndroidEmulatorPlus",
       "content_text": "Install Android SDK, manage AVDs, root with Magisk, migrate apps",
       "date_modified": "2026-07-01T16:44:48.000Z",
@@ -515,8 +515,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/UniFile/",
-      "url": "https://sysadmindoc.github.io/projects/UniFile/",
+      "id": "https://github.com/SysAdminDoc/UniFile",
+      "url": "https://github.com/SysAdminDoc/UniFile",
       "title": "UniFile",
       "content_text": "AI-powered unified file organization — 5 engines, tag-based library, LLM integration",
       "date_modified": "2026-07-01T16:03:07.000Z",
@@ -525,8 +525,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/",
-      "url": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/",
+      "id": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
+      "url": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
       "title": "Start-Menu-Organizer",
       "content_text": "Clean junk, detect broken shortcuts, reorganize Start Menu",
       "date_modified": "2026-07-01T16:01:35.000Z",
@@ -535,8 +535,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/TelemetrySlayer/",
-      "url": "https://sysadmindoc.github.io/projects/TelemetrySlayer/",
+      "id": "https://github.com/SysAdminDoc/TelemetrySlayer",
+      "url": "https://github.com/SysAdminDoc/TelemetrySlayer",
       "title": "TelemetrySlayer",
       "content_text": "WPF GUI to disable Windows telemetry, data collection, and compatibility bloat",
       "date_modified": "2026-07-01T14:02:30.000Z",
@@ -545,8 +545,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Openshop/",
-      "url": "https://sysadmindoc.github.io/projects/Openshop/",
+      "id": "https://github.com/SysAdminDoc/Openshop",
+      "url": "https://github.com/SysAdminDoc/Openshop",
       "title": "Openshop (live)",
       "content_text": "Browser-based image editor with layers filters",
       "date_modified": "2026-07-01T13:59:26.000Z",
@@ -555,8 +555,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/WURepair/",
-      "url": "https://sysadmindoc.github.io/projects/WURepair/",
+      "id": "https://github.com/SysAdminDoc/WURepair",
+      "url": "https://github.com/SysAdminDoc/WURepair",
       "title": "WURepair",
       "content_text": "Comprehensive Windows Update component repair — DLL re-registration, DISM, SFC, network reset",
       "date_modified": "2026-07-01T13:51:48.000Z",
@@ -565,8 +565,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/NetForge/",
-      "url": "https://sysadmindoc.github.io/projects/NetForge/",
+      "id": "https://github.com/SysAdminDoc/NetForge",
+      "url": "https://github.com/SysAdminDoc/NetForge",
       "title": "NetForge",
       "content_text": "WPF network adapter manager — static/DHCP, DNS presets, profile management",
       "date_modified": "2026-07-01T13:43:01.000Z",
@@ -575,8 +575,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/UserScriptHunt/",
-      "url": "https://sysadmindoc.github.io/projects/UserScriptHunt/",
+      "id": "https://github.com/SysAdminDoc/UserScriptHunt",
+      "url": "https://github.com/SysAdminDoc/UserScriptHunt",
       "title": "UserScriptHunt (live)",
       "content_text": "Unified userscript search engine",
       "date_modified": "2026-07-01T06:38:41.000Z",
@@ -585,8 +585,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GifText/",
-      "url": "https://sysadmindoc.github.io/projects/GifText/",
+      "id": "https://github.com/SysAdminDoc/GifText",
+      "url": "https://github.com/SysAdminDoc/GifText",
       "title": "GifText",
       "content_text": "Animated GIF text editor for meme creation",
       "date_modified": "2026-07-01T06:32:51.000Z",
@@ -595,8 +595,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/",
-      "url": "https://sysadmindoc.github.io/projects/Stock-Video-Collector/",
+      "id": "https://github.com/SysAdminDoc/Stock-Video-Collector",
+      "url": "https://github.com/SysAdminDoc/Stock-Video-Collector",
       "title": "Stock-Video-Collector",
       "content_text": "Stock video collector",
       "date_modified": "2026-07-01T06:15:46.000Z",
@@ -605,8 +605,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Keepr/",
-      "url": "https://sysadmindoc.github.io/projects/Keepr/",
+      "id": "https://github.com/SysAdminDoc/Keepr",
+      "url": "https://github.com/SysAdminDoc/Keepr",
       "title": "Keepr",
       "content_text": "Pixel-close offline-first Google Keep clone -- Tauri 2 + React + Rust + SQLite",
       "date_modified": "2026-07-01T06:10:21.000Z",
@@ -615,8 +615,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/StyleCraft/",
-      "url": "https://sysadmindoc.github.io/projects/StyleCraft/",
+      "id": "https://github.com/SysAdminDoc/StyleCraft",
+      "url": "https://github.com/SysAdminDoc/StyleCraft",
       "title": "StyleCraft",
       "content_text": "Full-featured CSS style editor and manager — Chrome extension",
       "date_modified": "2026-07-01T05:59:21.000Z",
@@ -625,8 +625,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FileOrganizer/",
-      "url": "https://sysadmindoc.github.io/projects/FileOrganizer/",
+      "id": "https://github.com/SysAdminDoc/FileOrganizer",
+      "url": "https://github.com/SysAdminDoc/FileOrganizer",
       "title": "FileOrganizer",
       "content_text": "AI-powered desktop tool for classifying and organizing design asset folders",
       "date_modified": "2026-07-01T05:49:06.000Z",
@@ -635,8 +635,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/StreamKeep/",
-      "url": "https://sysadmindoc.github.io/projects/StreamKeep/",
+      "id": "https://github.com/SysAdminDoc/StreamKeep",
+      "url": "https://github.com/SysAdminDoc/StreamKeep",
       "title": "StreamKeep",
       "content_text": "Multi-platform stream/VOD downloader with built-in media converter",
       "date_modified": "2026-07-01T05:39:02.000Z",
@@ -645,8 +645,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/qBittorrent-Vanced/",
-      "url": "https://sysadmindoc.github.io/projects/qBittorrent-Vanced/",
+      "id": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
+      "url": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
       "title": "qBittorrent-Vanced",
       "content_text": "Customized BitTorrent client with dark theme",
       "date_modified": "2026-07-01T05:32:31.000Z",
@@ -655,8 +655,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/UserScript-Finder/",
-      "url": "https://sysadmindoc.github.io/projects/UserScript-Finder/",
+      "id": "https://github.com/SysAdminDoc/UserScript-Finder",
+      "url": "https://github.com/SysAdminDoc/UserScript-Finder",
       "title": "UserScript-Finder",
       "content_text": "Discover userscripts for any website",
       "date_modified": "2026-07-01T05:21:21.000Z",
@@ -665,8 +665,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/UniversalConverterX/",
-      "url": "https://sysadmindoc.github.io/projects/UniversalConverterX/",
+      "id": "https://github.com/SysAdminDoc/UniversalConverterX",
+      "url": "https://github.com/SysAdminDoc/UniversalConverterX",
       "title": "UniversalConverterX",
       "content_text": "Native Windows file converter with context menu integration — 1000+ formats",
       "date_modified": "2026-07-01T05:17:48.000Z",
@@ -675,8 +675,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SlunderStudio/",
-      "url": "https://sysadmindoc.github.io/projects/SlunderStudio/",
+      "id": "https://github.com/SysAdminDoc/SlunderStudio",
+      "url": "https://github.com/SysAdminDoc/SlunderStudio",
       "title": "SlunderStudio",
       "content_text": "Offline AI music generation suite — song creation, lyrics, MIDI, vocals, stem separation, mastering",
       "date_modified": "2026-07-01T05:04:25.000Z",
@@ -685,8 +685,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Debloat-Win11/",
-      "url": "https://sysadmindoc.github.io/projects/Debloat-Win11/",
+      "id": "https://github.com/SysAdminDoc/Debloat-Win11",
+      "url": "https://github.com/SysAdminDoc/Debloat-Win11",
       "title": "Debloat-Win11",
       "content_text": "Enterprise Windows 11 debloating with AppX removal, Office cleanup, telemetry blocking",
       "date_modified": "2026-07-01T04:28:24.000Z",
@@ -695,8 +695,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FaceSlim/",
-      "url": "https://sysadmindoc.github.io/projects/FaceSlim/",
+      "id": "https://github.com/SysAdminDoc/FaceSlim",
+      "url": "https://github.com/SysAdminDoc/FaceSlim",
       "title": "FaceSlim",
       "content_text": "AI face slimming, reshaping, and beautification with real-time preview and GPU acceleration",
       "date_modified": "2026-07-01T04:06:16.000Z",
@@ -705,8 +705,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Multistreamer/",
-      "url": "https://sysadmindoc.github.io/projects/Multistreamer/",
+      "id": "https://github.com/SysAdminDoc/Multistreamer",
+      "url": "https://github.com/SysAdminDoc/Multistreamer",
       "title": "Multistreamer (live)",
       "content_text": "Multi-video streaming viewer with chat",
       "date_modified": "2026-07-01T04:02:04.000Z",
@@ -715,8 +715,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SunoJump/",
-      "url": "https://sysadmindoc.github.io/projects/SunoJump/",
+      "id": "https://github.com/SysAdminDoc/SunoJump",
+      "url": "https://github.com/SysAdminDoc/SunoJump",
       "title": "SunoJump",
       "content_text": "Audio fingerprint masking for Suno AI — 10-pass pipeline, PyQt6 GUI, batch processing",
       "date_modified": "2026-07-01T04:01:48.000Z",
@@ -725,8 +725,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/YoutubeAdblock/",
-      "url": "https://sysadmindoc.github.io/projects/YoutubeAdblock/",
+      "id": "https://github.com/SysAdminDoc/YoutubeAdblock",
+      "url": "https://github.com/SysAdminDoc/YoutubeAdblock",
       "title": "YoutubeAdblock",
       "content_text": "Undetectable YouTube ad blocker with proxy engine",
       "date_modified": "2026-07-01T04:01:46.000Z",
@@ -735,8 +735,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ExplorerTweaks/",
-      "url": "https://sysadmindoc.github.io/projects/ExplorerTweaks/",
+      "id": "https://github.com/SysAdminDoc/ExplorerTweaks",
+      "url": "https://github.com/SysAdminDoc/ExplorerTweaks",
       "title": "ExplorerTweaks",
       "content_text": "GUI for toggling 50+ Windows File Explorer registry settings with live preview",
       "date_modified": "2026-07-01T03:48:47.000Z",
@@ -745,8 +745,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LocalChromeStore/",
-      "url": "https://sysadmindoc.github.io/projects/LocalChromeStore/",
+      "id": "https://github.com/SysAdminDoc/LocalChromeStore",
+      "url": "https://github.com/SysAdminDoc/LocalChromeStore",
       "title": "LocalChromeStore",
       "content_text": "Personal Chromium extension store sourced from GitHub releases — one-click install/uninstall",
       "date_modified": "2026-07-01T03:46:48.000Z",
@@ -755,8 +755,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PyShop/",
-      "url": "https://sysadmindoc.github.io/projects/PyShop/",
+      "id": "https://github.com/SysAdminDoc/PyShop",
+      "url": "https://github.com/SysAdminDoc/PyShop",
       "title": "PyShop",
       "content_text": "Open source Photoshop alternative",
       "date_modified": "2026-07-01T03:40:48.000Z",
@@ -765,8 +765,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PartitionPilot/",
-      "url": "https://sysadmindoc.github.io/projects/PartitionPilot/",
+      "id": "https://github.com/SysAdminDoc/PartitionPilot",
+      "url": "https://github.com/SysAdminDoc/PartitionPilot",
       "title": "PartitionPilot",
       "content_text": "Windows disk partition manager -- WPF disk map, SMART health, maintenance, and image workflows",
       "date_modified": "2026-07-01T03:39:16.000Z",
@@ -775,8 +775,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DisableDefender/",
-      "url": "https://sysadmindoc.github.io/projects/DisableDefender/",
+      "id": "https://github.com/SysAdminDoc/DisableDefender",
+      "url": "https://github.com/SysAdminDoc/DisableDefender",
       "title": "DisableDefender",
       "content_text": "Defender disabler/remover with CLI + premium WPF GUI; firewall preserved",
       "date_modified": "2026-07-01T03:33:14.000Z",
@@ -785,8 +785,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FileExplorer/",
-      "url": "https://sysadmindoc.github.io/projects/FileExplorer/",
+      "id": "https://github.com/SysAdminDoc/FileExplorer",
+      "url": "https://github.com/SysAdminDoc/FileExplorer",
       "title": "FileExplorer",
       "content_text": "Full-featured file manager with root access, archive support, cloud storage",
       "date_modified": "2026-07-01T03:25:08.000Z",
@@ -795,8 +795,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DeepPurge/",
-      "url": "https://sysadmindoc.github.io/projects/DeepPurge/",
+      "id": "https://github.com/SysAdminDoc/DeepPurge",
+      "url": "https://github.com/SysAdminDoc/DeepPurge",
       "title": "DeepPurge",
       "content_text": "Thorough Windows uninstaller — removes programs completely, hunts down every leftover",
       "date_modified": "2026-07-01T03:11:51.000Z",
@@ -805,8 +805,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/IconForge/",
-      "url": "https://sysadmindoc.github.io/projects/IconForge/",
+      "id": "https://github.com/SysAdminDoc/IconForge",
+      "url": "https://github.com/SysAdminDoc/IconForge",
       "title": "IconForge (live)",
       "content_text": "Image resizer converter",
       "date_modified": "2026-07-01T03:11:10.000Z",
@@ -815,8 +815,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MonitorControl/",
-      "url": "https://sysadmindoc.github.io/projects/MonitorControl/",
+      "id": "https://github.com/SysAdminDoc/MonitorControl",
+      "url": "https://github.com/SysAdminDoc/MonitorControl",
       "title": "MonitorControl",
       "content_text": "Control monitor settings via DDC/CI",
       "date_modified": "2026-07-01T02:50:03.000Z",
@@ -825,8 +825,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AlphaCut/",
-      "url": "https://sysadmindoc.github.io/projects/AlphaCut/",
+      "id": "https://github.com/SysAdminDoc/AlphaCut",
+      "url": "https://github.com/SysAdminDoc/AlphaCut",
       "title": "AlphaCut",
       "content_text": "Video background removal and compositing",
       "date_modified": "2026-07-01T02:48:13.000Z",
@@ -835,8 +835,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/KeepSyncNotes/",
-      "url": "https://sysadmindoc.github.io/projects/KeepSyncNotes/",
+      "id": "https://github.com/SysAdminDoc/KeepSyncNotes",
+      "url": "https://github.com/SysAdminDoc/KeepSyncNotes",
       "title": "KeepSyncNotes",
       "content_text": "Google Keep importer and note tracker",
       "date_modified": "2026-07-01T02:46:57.000Z",
@@ -845,8 +845,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PyWall/",
-      "url": "https://sysadmindoc.github.io/projects/PyWall/",
+      "id": "https://github.com/SysAdminDoc/PyWall",
+      "url": "https://github.com/SysAdminDoc/PyWall",
       "title": "PyWall",
       "content_text": "Real-time Windows Firewall manager and network monitor",
       "date_modified": "2026-07-01T02:45:22.000Z",
@@ -855,8 +855,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/StyleKit/",
-      "url": "https://sysadmindoc.github.io/projects/StyleKit/",
+      "id": "https://github.com/SysAdminDoc/StyleKit",
+      "url": "https://github.com/SysAdminDoc/StyleKit",
       "title": "StyleKit",
       "content_text": "CSS customization extension — visual editor for any website",
       "date_modified": "2026-07-01T02:43:19.000Z",
@@ -865,8 +865,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Vantage/",
-      "url": "https://sysadmindoc.github.io/projects/Vantage/",
+      "id": "https://github.com/SysAdminDoc/Vantage",
+      "url": "https://github.com/SysAdminDoc/Vantage",
       "title": "Vantage",
       "content_text": "New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links",
       "date_modified": "2026-07-01T02:41:32.000Z",
@@ -875,8 +875,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MSStoreHelper/",
-      "url": "https://sysadmindoc.github.io/projects/MSStoreHelper/",
+      "id": "https://github.com/SysAdminDoc/MSStoreHelper",
+      "url": "https://github.com/SysAdminDoc/MSStoreHelper",
       "title": "MSStoreHelper",
       "content_text": "Install Microsoft Store apps without the Store",
       "date_modified": "2026-06-29T14:00:42.000Z",
@@ -885,8 +885,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/NDNS/",
-      "url": "https://sysadmindoc.github.io/projects/NDNS/",
+      "id": "https://github.com/SysAdminDoc/NDNS",
+      "url": "https://github.com/SysAdminDoc/NDNS",
       "title": "NDNS",
       "content_text": "NextDNS control panel userscript",
       "date_modified": "2026-06-29T13:17:56.000Z",
@@ -895,8 +895,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PromptCompanion/",
-      "url": "https://sysadmindoc.github.io/projects/PromptCompanion/",
+      "id": "https://github.com/SysAdminDoc/PromptCompanion",
+      "url": "https://github.com/SysAdminDoc/PromptCompanion",
       "title": "PromptCompanion",
       "content_text": "A curated, searchable, offline library of the best AI prompts",
       "date_modified": "2026-06-28T14:43:28.000Z",
@@ -905,8 +905,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/pfSenseSuite/",
-      "url": "https://sysadmindoc.github.io/projects/pfSenseSuite/",
+      "id": "https://github.com/SysAdminDoc/pfSenseSuite",
+      "url": "https://github.com/SysAdminDoc/pfSenseSuite",
       "title": "pfSenseSuite",
       "content_text": "pfSense scripts and customizations toolkit",
       "date_modified": "2026-06-28T14:10:21.000Z",
@@ -915,8 +915,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OpenSwift/",
-      "url": "https://sysadmindoc.github.io/projects/OpenSwift/",
+      "id": "https://github.com/SysAdminDoc/OpenSwift",
+      "url": "https://github.com/SysAdminDoc/OpenSwift",
       "title": "OpenSwift",
       "content_text": "SwiftKey-inspired Android keyboard — glide typing, prediction, themes, clipboard",
       "date_modified": "2026-06-28T13:58:41.000Z",
@@ -925,8 +925,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DefenderControl/",
-      "url": "https://sysadmindoc.github.io/projects/DefenderControl/",
+      "id": "https://github.com/SysAdminDoc/DefenderControl",
+      "url": "https://github.com/SysAdminDoc/DefenderControl",
       "title": "DefenderControl",
       "content_text": "WPF GUI to fully disable or re-enable Microsoft Defender",
       "date_modified": "2026-06-28T04:05:23.000Z",
@@ -935,8 +935,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Vertigo/",
-      "url": "https://sysadmindoc.github.io/projects/Vertigo/",
+      "id": "https://github.com/SysAdminDoc/Vertigo",
+      "url": "https://github.com/SysAdminDoc/Vertigo",
       "title": "Vertigo",
       "content_text": "Vertical video studio for short-form creators — turns raw footage into polished 9:16 for Shorts/TikTok/Reels",
       "date_modified": "2026-06-28T04:02:15.000Z",
@@ -945,8 +945,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/HostsFileGet/",
-      "url": "https://sysadmindoc.github.io/projects/HostsFileGet/",
+      "id": "https://github.com/SysAdminDoc/HostsFileGet",
+      "url": "https://github.com/SysAdminDoc/HostsFileGet",
       "title": "HostsFileGet",
       "content_text": "GUI for managing the Windows hosts file",
       "date_modified": "2026-06-28T03:53:44.000Z",
@@ -955,8 +955,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/REDplusplus/",
-      "url": "https://sysadmindoc.github.io/projects/REDplusplus/",
+      "id": "https://github.com/SysAdminDoc/REDplusplus",
+      "url": "https://github.com/SysAdminDoc/REDplusplus",
       "title": "REDplusplus",
       "content_text": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
       "date_modified": "2026-06-28T03:46:43.000Z",
@@ -965,8 +965,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AmazonEnhanced/",
-      "url": "https://sysadmindoc.github.io/projects/AmazonEnhanced/",
+      "id": "https://github.com/SysAdminDoc/AmazonEnhanced",
+      "url": "https://github.com/SysAdminDoc/AmazonEnhanced",
       "title": "AmazonEnhanced",
       "content_text": "Chrome MV3 Amazon UX cleanup — dark theme, sponsored-result removal, review-quality scoring, 20 locales",
       "date_modified": "2026-06-28T03:46:06.000Z",
@@ -975,8 +975,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Chapterizer/",
-      "url": "https://sysadmindoc.github.io/projects/Chapterizer/",
+      "id": "https://github.com/SysAdminDoc/Chapterizer",
+      "url": "https://github.com/SysAdminDoc/Chapterizer",
       "title": "Chapterizer",
       "content_text": "Auto-generate YouTube chapters, detect filler words, skip pauses",
       "date_modified": "2026-06-28T03:42:41.000Z",
@@ -985,8 +985,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AdapterLock/",
-      "url": "https://sysadmindoc.github.io/projects/AdapterLock/",
+      "id": "https://github.com/SysAdminDoc/AdapterLock",
+      "url": "https://github.com/SysAdminDoc/AdapterLock",
       "title": "AdapterLock",
       "content_text": "Per-adapter IP lockdown for Windows -- WPF GUI, CLI mode, policy export, and event-log auditing",
       "date_modified": "2026-06-28T03:42:38.000Z",
@@ -995,8 +995,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/yt_livestream_downloader/",
-      "url": "https://sysadmindoc.github.io/projects/yt_livestream_downloader/",
+      "id": "https://github.com/SysAdminDoc/yt_livestream_downloader",
+      "url": "https://github.com/SysAdminDoc/yt_livestream_downloader",
       "title": "yt_livestream_downloader",
       "content_text": "Download livestreams while they're still live",
       "date_modified": "2026-06-28T03:39:49.000Z",
@@ -1005,8 +1005,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/WolfPack/",
-      "url": "https://sysadmindoc.github.io/projects/WolfPack/",
+      "id": "https://github.com/SysAdminDoc/WolfPack",
+      "url": "https://github.com/SysAdminDoc/WolfPack",
       "title": "WolfPack",
       "content_text": "Custom LibreWolf portable distribution",
       "date_modified": "2026-06-28T03:39:46.000Z",
@@ -1015,8 +1015,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/WinForge/",
-      "url": "https://sysadmindoc.github.io/projects/WinForge/",
+      "id": "https://github.com/SysAdminDoc/WinForge",
+      "url": "https://github.com/SysAdminDoc/WinForge",
       "title": "WinForge",
       "content_text": "All-in-one Windows provisioning suite — app installer, tweaks, features, updates",
       "date_modified": "2026-06-28T03:39:44.000Z",
@@ -1025,8 +1025,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/WallBrand/",
-      "url": "https://sysadmindoc.github.io/projects/WallBrand/",
+      "id": "https://github.com/SysAdminDoc/WallBrand",
+      "url": "https://github.com/SysAdminDoc/WallBrand",
       "title": "WallBrand",
       "content_text": "Wallpaper branding tool with GUI and CLI modes",
       "date_modified": "2026-06-28T03:39:42.000Z",
@@ -1035,8 +1035,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/VoidTools-Everything-Settings-Manager/",
-      "url": "https://sysadmindoc.github.io/projects/VoidTools-Everything-Settings-Manager/",
+      "id": "https://github.com/SysAdminDoc/VoidTools-Everything-Settings-Manager",
+      "url": "https://github.com/SysAdminDoc/VoidTools-Everything-Settings-Manager",
       "title": "VoidTools-Everything-Settings-Manager",
       "content_text": "GUI for managing VoidTools Everything settings, INI editing, CSV filter/bookmark management",
       "date_modified": "2026-06-28T03:39:41.000Z",
@@ -1045,8 +1045,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/VIPTrack/",
-      "url": "https://sysadmindoc.github.io/projects/VIPTrack/",
+      "id": "https://github.com/SysAdminDoc/VIPTrack",
+      "url": "https://github.com/SysAdminDoc/VIPTrack",
       "title": "VIPTrack (live)",
       "content_text": "Military VIP aircraft tracker",
       "date_modified": "2026-06-28T03:39:40.000Z",
@@ -1055,8 +1055,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/VideoCrush/",
-      "url": "https://sysadmindoc.github.io/projects/VideoCrush/",
+      "id": "https://github.com/SysAdminDoc/VideoCrush",
+      "url": "https://github.com/SysAdminDoc/VideoCrush",
       "title": "VideoCrush",
       "content_text": "Video compression and processing",
       "date_modified": "2026-06-28T03:39:38.000Z",
@@ -1065,8 +1065,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/UniversalCompiler/",
-      "url": "https://sysadmindoc.github.io/projects/UniversalCompiler/",
+      "id": "https://github.com/SysAdminDoc/UniversalCompiler",
+      "url": "https://github.com/SysAdminDoc/UniversalCompiler",
       "title": "UniversalCompiler",
       "content_text": "All-in-one script-to-EXE compiler",
       "date_modified": "2026-06-28T03:39:32.000Z",
@@ -1075,8 +1075,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/uBlockVanced/",
-      "url": "https://sysadmindoc.github.io/projects/uBlockVanced/",
+      "id": "https://github.com/SysAdminDoc/uBlockVanced",
+      "url": "https://github.com/SysAdminDoc/uBlockVanced",
       "title": "uBlockVanced",
       "content_text": "uBlock Origin with Catppuccin Mocha and Element Forge panel",
       "date_modified": "2026-06-28T03:39:30.000Z",
@@ -1085,8 +1085,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/uBlock-Stylus-Converter/",
-      "url": "https://sysadmindoc.github.io/projects/uBlock-Stylus-Converter/",
+      "id": "https://github.com/SysAdminDoc/uBlock-Stylus-Converter",
+      "url": "https://github.com/SysAdminDoc/uBlock-Stylus-Converter",
       "title": "uBlock-Stylus-Converter",
       "content_text": "Convert uBlock cosmetic filters to Stylus CSS",
       "date_modified": "2026-06-28T03:39:29.000Z",
@@ -1095,8 +1095,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Tunerize/",
-      "url": "https://sysadmindoc.github.io/projects/Tunerize/",
+      "id": "https://github.com/SysAdminDoc/Tunerize",
+      "url": "https://github.com/SysAdminDoc/Tunerize",
       "title": "Tunerize",
       "content_text": "Re-render any audio as chiptune (built-in NES synth) or through any SoundFont — Audio→MIDI→SF2/chiptune→WAV, locally",
       "date_modified": "2026-06-28T03:39:28.000Z",
@@ -1105,8 +1105,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ThankYouJeffrey/",
-      "url": "https://sysadmindoc.github.io/projects/ThankYouJeffrey/",
+      "id": "https://github.com/SysAdminDoc/ThankYouJeffrey",
+      "url": "https://github.com/SysAdminDoc/ThankYouJeffrey",
       "title": "ThankYouJeffrey",
       "content_text": "A tribute to the creator of PowerShell, Jeffrey Snover",
       "date_modified": "2026-06-28T03:39:26.000Z",
@@ -1115,8 +1115,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Text-Filter-Editor/",
-      "url": "https://sysadmindoc.github.io/projects/Text-Filter-Editor/",
+      "id": "https://github.com/SysAdminDoc/Text-Filter-Editor",
+      "url": "https://github.com/SysAdminDoc/Text-Filter-Editor",
       "title": "Text-Filter-Editor (live)",
       "content_text": "Text filtering and processing tool",
       "date_modified": "2026-06-28T03:39:25.000Z",
@@ -1125,8 +1125,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/TaskCopy/",
-      "url": "https://sysadmindoc.github.io/projects/TaskCopy/",
+      "id": "https://github.com/SysAdminDoc/TaskCopy",
+      "url": "https://github.com/SysAdminDoc/TaskCopy",
       "title": "TaskCopy",
       "content_text": "Single-click clipboard snippet menu -- tray icon, global hotkey, search",
       "date_modified": "2026-06-28T03:39:23.000Z",
@@ -1135,8 +1135,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SystemUpdatePro/",
-      "url": "https://sysadmindoc.github.io/projects/SystemUpdatePro/",
+      "id": "https://github.com/SysAdminDoc/SystemUpdatePro",
+      "url": "https://github.com/SysAdminDoc/SystemUpdatePro",
       "title": "SystemUpdatePro",
       "content_text": "Enterprise Windows update automation — OEM drivers, Windows Update, winget",
       "date_modified": "2026-06-28T03:39:22.000Z",
@@ -1145,8 +1145,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/StormviewRadar/",
-      "url": "https://sysadmindoc.github.io/projects/StormviewRadar/",
+      "id": "https://github.com/SysAdminDoc/StormviewRadar",
+      "url": "https://github.com/SysAdminDoc/StormviewRadar",
       "title": "StormviewRadar (live)",
       "content_text": "Open source weather radar viewer",
       "date_modified": "2026-06-28T03:39:13.000Z",
@@ -1155,8 +1155,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SPECTRE/",
-      "url": "https://sysadmindoc.github.io/projects/SPECTRE/",
+      "id": "https://github.com/SysAdminDoc/SPECTRE",
+      "url": "https://github.com/SysAdminDoc/SPECTRE",
       "title": "SPECTRE (live)",
       "content_text": "Intelligence aggregator OSINT data feeds",
       "date_modified": "2026-06-28T03:39:09.000Z",
@@ -1165,8 +1165,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Snapture/",
-      "url": "https://sysadmindoc.github.io/projects/Snapture/",
+      "id": "https://github.com/SysAdminDoc/Snapture",
+      "url": "https://github.com/SysAdminDoc/Snapture",
       "title": "Snapture",
       "content_text": "All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry",
       "date_modified": "2026-06-28T03:39:07.000Z",
@@ -1175,8 +1175,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SkyTrack/",
-      "url": "https://sysadmindoc.github.io/projects/SkyTrack/",
+      "id": "https://github.com/SysAdminDoc/SkyTrack",
+      "url": "https://github.com/SysAdminDoc/SkyTrack",
       "title": "SkyTrack (live)",
       "content_text": "Real-time aircraft tracker",
       "date_modified": "2026-06-28T03:39:04.000Z",
@@ -1185,8 +1185,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/SearchHub/",
-      "url": "https://sysadmindoc.github.io/projects/SearchHub/",
+      "id": "https://github.com/SysAdminDoc/SearchHub",
+      "url": "https://github.com/SysAdminDoc/SearchHub",
       "title": "SearchHub (live)",
       "content_text": "538 engines across 29 categories",
       "date_modified": "2026-06-28T03:39:03.000Z",
@@ -1195,8 +1195,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Scour/",
-      "url": "https://sysadmindoc.github.io/projects/Scour/",
+      "id": "https://github.com/SysAdminDoc/Scour",
+      "url": "https://github.com/SysAdminDoc/Scour",
       "title": "Scour",
       "content_text": "High-performance disk cleanup — 12 scanner types, NTFS MFT reading",
       "date_modified": "2026-06-28T03:38:59.000Z",
@@ -1205,8 +1205,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/RumbleX/",
-      "url": "https://sysadmindoc.github.io/projects/RumbleX/",
+      "id": "https://github.com/SysAdminDoc/RumbleX",
+      "url": "https://github.com/SysAdminDoc/RumbleX",
       "title": "RumbleX",
       "content_text": "Comprehensive Rumble.com enhancement",
       "date_modified": "2026-06-28T03:38:58.000Z",
@@ -1215,8 +1215,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Restore-WindowsDefaults/",
-      "url": "https://sysadmindoc.github.io/projects/Restore-WindowsDefaults/",
+      "id": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
+      "url": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
       "title": "Restore-WindowsDefaults",
       "content_text": "Reverse debloat changes and restore Windows to factory defaults",
       "date_modified": "2026-06-28T03:38:57.000Z",
@@ -1225,8 +1225,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Reddit-Enhancement-Continued/",
-      "url": "https://sysadmindoc.github.io/projects/Reddit-Enhancement-Continued/",
+      "id": "https://github.com/SysAdminDoc/Reddit-Enhancement-Continued",
+      "url": "https://github.com/SysAdminDoc/Reddit-Enhancement-Continued",
       "title": "Reddit-Enhancement-Continued",
       "content_text": "Enhancement suite for old.reddit.com",
       "date_modified": "2026-06-28T03:38:55.000Z",
@@ -1235,8 +1235,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/RcloneBrowserNG/",
-      "url": "https://sysadmindoc.github.io/projects/RcloneBrowserNG/",
+      "id": "https://github.com/SysAdminDoc/RcloneBrowserNG",
+      "url": "https://github.com/SysAdminDoc/RcloneBrowserNG",
       "title": "RcloneBrowserNG",
       "content_text": "Modern rclone GUI -- file browser, transfer manager, mount handler. Qt/C++ cross-platform desktop app. Community continuation of RcloneBrowser.",
       "date_modified": "2026-06-28T03:38:54.000Z",
@@ -1245,8 +1245,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Qwen3-TTS-Studio/",
-      "url": "https://sysadmindoc.github.io/projects/Qwen3-TTS-Studio/",
+      "id": "https://github.com/SysAdminDoc/Qwen3-TTS-Studio",
+      "url": "https://github.com/SysAdminDoc/Qwen3-TTS-Studio",
       "title": "Qwen3-TTS-Studio",
       "content_text": "AI voice generator powered by Qwen3-TTS",
       "date_modified": "2026-06-28T03:38:53.000Z",
@@ -1255,8 +1255,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/QuotaGlass/",
-      "url": "https://sysadmindoc.github.io/projects/QuotaGlass/",
+      "id": "https://github.com/SysAdminDoc/QuotaGlass",
+      "url": "https://github.com/SysAdminDoc/QuotaGlass",
       "title": "QuotaGlass",
       "content_text": "Always-visible AI usage quota widget for Windows",
       "date_modified": "2026-06-28T03:38:52.000Z",
@@ -1265,8 +1265,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/QR-Code-Generator-Pro/",
-      "url": "https://sysadmindoc.github.io/projects/QR-Code-Generator-Pro/",
+      "id": "https://github.com/SysAdminDoc/QR-Code-Generator-Pro",
+      "url": "https://github.com/SysAdminDoc/QR-Code-Generator-Pro",
       "title": "QR-Code-Generator-Pro",
       "content_text": "QR generator with 98 visual style presets",
       "date_modified": "2026-06-28T03:38:50.000Z",
@@ -1275,8 +1275,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PillSleepTracker/",
-      "url": "https://sysadmindoc.github.io/projects/PillSleepTracker/",
+      "id": "https://github.com/SysAdminDoc/PillSleepTracker",
+      "url": "https://github.com/SysAdminDoc/PillSleepTracker",
       "title": "PillSleepTracker",
       "content_text": "Floating widget for medication tracking + sleep analytics",
       "date_modified": "2026-06-28T03:38:44.000Z",
@@ -1285,8 +1285,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PhoneFork/",
-      "url": "https://sysadmindoc.github.io/projects/PhoneFork/",
+      "id": "https://github.com/SysAdminDoc/PhoneFork",
+      "url": "https://github.com/SysAdminDoc/PhoneFork",
       "title": "PhoneFork",
       "content_text": "Dual-Samsung Android migration tool for Windows -- apps, media, settings, Wi-Fi, roles, and debloat profiles",
       "date_modified": "2026-06-28T03:38:43.000Z",
@@ -1295,8 +1295,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PfblockerngManager/",
-      "url": "https://sysadmindoc.github.io/projects/PfblockerngManager/",
+      "id": "https://github.com/SysAdminDoc/PfblockerngManager",
+      "url": "https://github.com/SysAdminDoc/PfblockerngManager",
       "title": "PfblockerngManager",
       "content_text": "GUI for managing pfBlockerNG on pfSense firewalls",
       "date_modified": "2026-06-28T03:38:41.000Z",
@@ -1305,8 +1305,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PDFedit/",
-      "url": "https://sysadmindoc.github.io/projects/PDFedit/",
+      "id": "https://github.com/SysAdminDoc/PDFedit",
+      "url": "https://github.com/SysAdminDoc/PDFedit",
       "title": "PDFedit",
       "content_text": "Simple PDF editor",
       "date_modified": "2026-06-28T03:38:41.000Z",
@@ -1315,8 +1315,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/PathForge/",
-      "url": "https://sysadmindoc.github.io/projects/PathForge/",
+      "id": "https://github.com/SysAdminDoc/PathForge",
+      "url": "https://github.com/SysAdminDoc/PathForge",
       "title": "PathForge",
       "content_text": "Filesystem repair, stubborn file deletion, path management",
       "date_modified": "2026-06-28T03:38:40.000Z",
@@ -1325,8 +1325,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OrganizeContacts/",
-      "url": "https://sysadmindoc.github.io/projects/OrganizeContacts/",
+      "id": "https://github.com/SysAdminDoc/OrganizeContacts",
+      "url": "https://github.com/SysAdminDoc/OrganizeContacts",
       "title": "OrganizeContacts",
       "content_text": "Local-first contact organizer and deduper — native Windows, no cloud upload",
       "date_modified": "2026-06-28T03:38:38.000Z",
@@ -1335,8 +1335,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/OpenNetLimit/",
-      "url": "https://sysadmindoc.github.io/projects/OpenNetLimit/",
+      "id": "https://github.com/SysAdminDoc/OpenNetLimit",
+      "url": "https://github.com/SysAdminDoc/OpenNetLimit",
       "title": "OpenNetLimit",
       "content_text": "Per-application bandwidth limiter and network monitor for Windows",
       "date_modified": "2026-06-28T03:38:34.000Z",
@@ -1345,8 +1345,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/octopus-factory/",
-      "url": "https://sysadmindoc.github.io/projects/octopus-factory/",
+      "id": "https://github.com/SysAdminDoc/octopus-factory",
+      "url": "https://github.com/SysAdminDoc/octopus-factory",
       "title": "octopus-factory",
       "content_text": "Recipe-driven autonomous coding pipeline - multi-agent build/audit/release",
       "date_modified": "2026-06-28T03:38:30.000Z",
@@ -1355,8 +1355,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/NuclearDellRemover/",
-      "url": "https://sysadmindoc.github.io/projects/NuclearDellRemover/",
+      "id": "https://github.com/SysAdminDoc/NuclearDellRemover",
+      "url": "https://github.com/SysAdminDoc/NuclearDellRemover",
       "title": "NuclearDellRemover",
       "content_text": "Scorched-earth Dell bloatware removal — 8-phase complete cleanup",
       "date_modified": "2026-06-28T03:38:27.000Z",
@@ -1365,8 +1365,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/npp-sc-scanner/",
-      "url": "https://sysadmindoc.github.io/projects/npp-sc-scanner/",
+      "id": "https://github.com/SysAdminDoc/npp-sc-scanner",
+      "url": "https://github.com/SysAdminDoc/npp-sc-scanner",
       "title": "npp-sc-scanner",
       "content_text": "Detect and remediate Notepad++ supply chain attack IOCs",
       "date_modified": "2026-06-28T03:38:26.000Z",
@@ -1375,8 +1375,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/NATO_PHONETIC_TRAINING/",
-      "url": "https://sysadmindoc.github.io/projects/NATO_PHONETIC_TRAINING/",
+      "id": "https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING",
+      "url": "https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING",
       "title": "NATO_PHONETIC_TRAINING (live)",
       "content_text": "NATO phonetic alphabet trainer",
       "date_modified": "2026-06-28T03:38:22.000Z",
@@ -1385,8 +1385,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MyPortfolio/",
-      "url": "https://sysadmindoc.github.io/projects/MyPortfolio/",
+      "id": "https://github.com/SysAdminDoc/MyPortfolio",
+      "url": "https://github.com/SysAdminDoc/MyPortfolio",
       "title": "MyPortfolio",
       "content_text": "One Windows desktop catalog for every app I ship — binaries, extensions, APKs from GitHub releases",
       "date_modified": "2026-06-28T03:38:21.000Z",
@@ -1395,8 +1395,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MHTMLens/",
-      "url": "https://sysadmindoc.github.io/projects/MHTMLens/",
+      "id": "https://github.com/SysAdminDoc/MHTMLens",
+      "url": "https://github.com/SysAdminDoc/MHTMLens",
       "title": "MHTMLens",
       "content_text": "MHTML file viewer and inspector",
       "date_modified": "2026-06-28T03:38:17.000Z",
@@ -1405,8 +1405,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MediaForge/",
-      "url": "https://sysadmindoc.github.io/projects/MediaForge/",
+      "id": "https://github.com/SysAdminDoc/MediaForge",
+      "url": "https://github.com/SysAdminDoc/MediaForge",
       "title": "MediaForge",
       "content_text": "Multi-format media converter",
       "date_modified": "2026-06-28T03:38:16.000Z",
@@ -1415,8 +1415,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/MediaDL/",
-      "url": "https://sysadmindoc.github.io/projects/MediaDL/",
+      "id": "https://github.com/SysAdminDoc/MediaDL",
+      "url": "https://github.com/SysAdminDoc/MediaDL",
       "title": "MediaDL",
       "content_text": "Media downloader userscript",
       "date_modified": "2026-06-28T03:38:15.000Z",
@@ -1425,8 +1425,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Mattpad/",
-      "url": "https://sysadmindoc.github.io/projects/Mattpad/",
+      "id": "https://github.com/SysAdminDoc/Mattpad",
+      "url": "https://github.com/SysAdminDoc/Mattpad",
       "title": "Mattpad",
       "content_text": "Minimal notepad built for personal workflow",
       "date_modified": "2026-06-28T03:38:14.000Z",
@@ -1435,8 +1435,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LogLens/",
-      "url": "https://sysadmindoc.github.io/projects/LogLens/",
+      "id": "https://github.com/SysAdminDoc/LogLens",
+      "url": "https://github.com/SysAdminDoc/LogLens",
       "title": "LogLens",
       "content_text": "Log file viewer and analyzer",
       "date_modified": "2026-06-28T03:38:13.000Z",
@@ -1445,8 +1445,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LocalDesktopStore/",
-      "url": "https://sysadmindoc.github.io/projects/LocalDesktopStore/",
+      "id": "https://github.com/SysAdminDoc/LocalDesktopStore",
+      "url": "https://github.com/SysAdminDoc/LocalDesktopStore",
       "title": "LocalDesktopStore",
       "content_text": "Private catalog for Windows desktop apps — MSI/Inno/NSIS/ZIP from GitHub releases",
       "date_modified": "2026-06-28T03:38:12.000Z",
@@ -1455,8 +1455,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LocalAndroidStore/",
-      "url": "https://sysadmindoc.github.io/projects/LocalAndroidStore/",
+      "id": "https://github.com/SysAdminDoc/LocalAndroidStore",
+      "url": "https://github.com/SysAdminDoc/LocalAndroidStore",
       "title": "LocalAndroidStore",
       "content_text": "Personal Android-app catalog sourced from GitHub Releases — Android sibling of LocalChromeStore",
       "date_modified": "2026-06-28T03:38:10.000Z",
@@ -1465,8 +1465,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LlamaLink/",
-      "url": "https://sysadmindoc.github.io/projects/LlamaLink/",
+      "id": "https://github.com/SysAdminDoc/LlamaLink",
+      "url": "https://github.com/SysAdminDoc/LlamaLink",
       "title": "LlamaLink",
       "content_text": "Sleek GUI frontend for llama.cpp — search, download, and chat with local LLMs",
       "date_modified": "2026-06-28T03:38:09.000Z",
@@ -1475,8 +1475,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/LipSight/",
-      "url": "https://sysadmindoc.github.io/projects/LipSight/",
+      "id": "https://github.com/SysAdminDoc/LipSight",
+      "url": "https://github.com/SysAdminDoc/LipSight",
       "title": "LipSight",
       "content_text": "AI-powered lip reading tool — transcribes speech from silent video",
       "date_modified": "2026-06-28T03:38:08.000Z",
@@ -1485,8 +1485,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/kindred/",
-      "url": "https://sysadmindoc.github.io/projects/kindred/",
+      "id": "https://github.com/SysAdminDoc/kindred",
+      "url": "https://github.com/SysAdminDoc/kindred",
       "title": "kindred",
       "content_text": "Compatibility-first dating and social platform",
       "date_modified": "2026-06-28T03:38:05.000Z",
@@ -1495,8 +1495,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/JDownloader-2-Ultimate-Manager/",
-      "url": "https://sysadmindoc.github.io/projects/JDownloader-2-Ultimate-Manager/",
+      "id": "https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager",
+      "url": "https://github.com/SysAdminDoc/JDownloader-2-Ultimate-Manager",
       "title": "JDownloader-2-Ultimate-Manager",
       "content_text": "Comprehensive automation for JDownloader 2",
       "date_modified": "2026-06-28T03:38:02.000Z",
@@ -1505,8 +1505,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/IMDb_Enhanced/",
-      "url": "https://sysadmindoc.github.io/projects/IMDb_Enhanced/",
+      "id": "https://github.com/SysAdminDoc/IMDb_Enhanced",
+      "url": "https://github.com/SysAdminDoc/IMDb_Enhanced",
       "title": "IMDb_Enhanced",
       "content_text": "IMDb enhancement userscript",
       "date_modified": "2026-06-28T03:37:58.000Z",
@@ -1515,8 +1515,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ImageXpert/",
-      "url": "https://sysadmindoc.github.io/projects/ImageXpert/",
+      "id": "https://github.com/SysAdminDoc/ImageXpert",
+      "url": "https://github.com/SysAdminDoc/ImageXpert",
       "title": "ImageXpert (live)",
       "content_text": "Multi-engine reverse image search",
       "date_modified": "2026-06-28T03:37:57.000Z",
@@ -1525,8 +1525,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GuitarTuner/",
-      "url": "https://sysadmindoc.github.io/projects/GuitarTuner/",
+      "id": "https://github.com/SysAdminDoc/GuitarTuner",
+      "url": "https://github.com/SysAdminDoc/GuitarTuner",
       "title": "GuitarTuner",
       "content_text": "Offline Android acoustic guitar tuner with automatic string detection and local-only microphone processing",
       "date_modified": "2026-06-28T03:37:49.000Z",
@@ -1535,8 +1535,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GmailDownloader/",
-      "url": "https://sysadmindoc.github.io/projects/GmailDownloader/",
+      "id": "https://github.com/SysAdminDoc/GmailDownloader",
+      "url": "https://github.com/SysAdminDoc/GmailDownloader",
       "title": "GmailDownloader",
       "content_text": "Full Gmail mailbox downloader, AI-powered organizer analytics suite",
       "date_modified": "2026-06-28T03:37:48.000Z",
@@ -1545,8 +1545,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GitForge/",
-      "url": "https://sysadmindoc.github.io/projects/GitForge/",
+      "id": "https://github.com/SysAdminDoc/GitForge",
+      "url": "https://github.com/SysAdminDoc/GitForge",
       "title": "GitForge",
       "content_text": "Full GitHub repo manager — clone, sync, diff, manage",
       "date_modified": "2026-06-28T03:37:47.000Z",
@@ -1555,8 +1555,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GifStudio/",
-      "url": "https://sysadmindoc.github.io/projects/GifStudio/",
+      "id": "https://github.com/SysAdminDoc/GifStudio",
+      "url": "https://github.com/SysAdminDoc/GifStudio",
       "title": "GifStudio (live)",
       "content_text": "Browser-based GIF studio",
       "date_modified": "2026-06-28T03:37:45.000Z",
@@ -1565,8 +1565,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GIFM/",
-      "url": "https://sysadmindoc.github.io/projects/GIFM/",
+      "id": "https://github.com/SysAdminDoc/GIFM",
+      "url": "https://github.com/SysAdminDoc/GIFM",
       "title": "GIFM",
       "content_text": "Local GIF maker and compressor with Discord-ready target fitting",
       "date_modified": "2026-06-28T03:37:44.000Z",
@@ -1575,8 +1575,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/GeminiBuddy/",
-      "url": "https://sysadmindoc.github.io/projects/GeminiBuddy/",
+      "id": "https://github.com/SysAdminDoc/GeminiBuddy",
+      "url": "https://github.com/SysAdminDoc/GeminiBuddy",
       "title": "GeminiBuddy",
       "content_text": "Productivity features for Gemini",
       "date_modified": "2026-06-28T03:37:43.000Z",
@@ -1585,8 +1585,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FrameSnap/",
-      "url": "https://sysadmindoc.github.io/projects/FrameSnap/",
+      "id": "https://github.com/SysAdminDoc/FrameSnap",
+      "url": "https://github.com/SysAdminDoc/FrameSnap",
       "title": "FrameSnap",
       "content_text": "Browse MP4 videos, mark frames visually, and export precise screenshots",
       "date_modified": "2026-06-28T03:37:42.000Z",
@@ -1595,8 +1595,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FoxPort/",
-      "url": "https://sysadmindoc.github.io/projects/FoxPort/",
+      "id": "https://github.com/SysAdminDoc/FoxPort",
+      "url": "https://github.com/SysAdminDoc/FoxPort",
       "title": "FoxPort",
       "content_text": "Migrate passwords, bookmarks, and extensions from Chromium browsers to Firefox",
       "date_modified": "2026-06-28T03:37:41.000Z",
@@ -1605,8 +1605,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Flux/",
-      "url": "https://sysadmindoc.github.io/projects/Flux/",
+      "id": "https://github.com/SysAdminDoc/Flux",
+      "url": "https://github.com/SysAdminDoc/Flux",
       "title": "Flux",
       "content_text": "Privacy-focused BitTorrent client — PyQt6 + libtorrent",
       "date_modified": "2026-06-28T03:37:40.000Z",
@@ -1615,8 +1615,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/FirewallForge/",
-      "url": "https://sysadmindoc.github.io/projects/FirewallForge/",
+      "id": "https://github.com/SysAdminDoc/FirewallForge",
+      "url": "https://github.com/SysAdminDoc/FirewallForge",
       "title": "FirewallForge",
       "content_text": "WPF Windows Firewall manager with live rule editing and offline backup editor",
       "date_modified": "2026-06-28T03:37:39.000Z",
@@ -1625,8 +1625,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/facebook-exit-guide/",
-      "url": "https://sysadmindoc.github.io/projects/facebook-exit-guide/",
+      "id": "https://github.com/SysAdminDoc/facebook-exit-guide",
+      "url": "https://github.com/SysAdminDoc/facebook-exit-guide",
       "title": "facebook-exit-guide",
       "content_text": "Guide for leaving Facebook",
       "date_modified": "2026-06-28T03:37:35.000Z",
@@ -1635,8 +1635,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/EXTRACTORX/",
-      "url": "https://sysadmindoc.github.io/projects/EXTRACTORX/",
+      "id": "https://github.com/SysAdminDoc/EXTRACTORX",
+      "url": "https://github.com/SysAdminDoc/EXTRACTORX",
       "title": "EXTRACTORX",
       "content_text": "Open-source bulk archive extraction tool for Windows",
       "date_modified": "2026-06-28T03:37:34.000Z",
@@ -1645,8 +1645,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ESET/",
-      "url": "https://sysadmindoc.github.io/projects/ESET/",
+      "id": "https://github.com/SysAdminDoc/ESET",
+      "url": "https://github.com/SysAdminDoc/ESET",
       "title": "ESET",
       "content_text": "Complete ESET port and address reference lists",
       "date_modified": "2026-06-28T03:37:32.000Z",
@@ -1655,8 +1655,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Doordash-Enhanced/",
-      "url": "https://sysadmindoc.github.io/projects/Doordash-Enhanced/",
+      "id": "https://github.com/SysAdminDoc/Doordash-Enhanced",
+      "url": "https://github.com/SysAdminDoc/Doordash-Enhanced",
       "title": "Doordash-Enhanced",
       "content_text": "DoorDash dark mode and feature enhancements",
       "date_modified": "2026-06-28T03:37:29.000Z",
@@ -1665,8 +1665,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Devicer/",
-      "url": "https://sysadmindoc.github.io/projects/Devicer/",
+      "id": "https://github.com/SysAdminDoc/Devicer",
+      "url": "https://github.com/SysAdminDoc/Devicer",
       "title": "Devicer",
       "content_text": "Unified Windows toolkit for rooted Android — identify, ROM search, partition backup, boot.img patch, flashing",
       "date_modified": "2026-06-28T03:37:25.000Z",
@@ -1675,8 +1675,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DeGoogler/",
-      "url": "https://sysadmindoc.github.io/projects/DeGoogler/",
+      "id": "https://github.com/SysAdminDoc/DeGoogler",
+      "url": "https://github.com/SysAdminDoc/DeGoogler",
       "title": "DeGoogler (live)",
       "content_text": "Migration toolkit for leaving Google services",
       "date_modified": "2026-06-28T03:37:24.000Z",
@@ -1685,8 +1685,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DefenderShield/",
-      "url": "https://sysadmindoc.github.io/projects/DefenderShield/",
+      "id": "https://github.com/SysAdminDoc/DefenderShield",
+      "url": "https://github.com/SysAdminDoc/DefenderShield",
       "title": "DefenderShield",
       "content_text": "Repair and restore Windows Defender and Firewall after debloaters",
       "date_modified": "2026-06-28T03:37:23.000Z",
@@ -1695,8 +1695,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/DarkModer/",
-      "url": "https://sysadmindoc.github.io/projects/DarkModer/",
+      "id": "https://github.com/SysAdminDoc/DarkModer",
+      "url": "https://github.com/SysAdminDoc/DarkModer",
       "title": "DarkModer",
       "content_text": "Dark Reader as a userscript",
       "date_modified": "2026-06-28T03:37:19.000Z",
@@ -1705,8 +1705,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/CSV_Power_Tool/",
-      "url": "https://sysadmindoc.github.io/projects/CSV_Power_Tool/",
+      "id": "https://github.com/SysAdminDoc/CSV_Power_Tool",
+      "url": "https://github.com/SysAdminDoc/CSV_Power_Tool",
       "title": "CSV_Power_Tool",
       "content_text": "Bulk CSV processing and consolidation",
       "date_modified": "2026-06-28T03:37:18.000Z",
@@ -1715,8 +1715,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/CronScope/",
-      "url": "https://sysadmindoc.github.io/projects/CronScope/",
+      "id": "https://github.com/SysAdminDoc/CronScope",
+      "url": "https://github.com/SysAdminDoc/CronScope",
       "title": "CronScope",
       "content_text": "Cron expression builder and visualizer",
       "date_modified": "2026-06-28T03:37:17.000Z",
@@ -1725,8 +1725,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/CoolSites/",
-      "url": "https://sysadmindoc.github.io/projects/CoolSites/",
+      "id": "https://github.com/SysAdminDoc/CoolSites",
+      "url": "https://github.com/SysAdminDoc/CoolSites",
       "title": "CoolSites (live)",
       "content_text": "470+ curated free tools open source projects",
       "date_modified": "2026-06-28T03:37:16.000Z",
@@ -1735,8 +1735,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ConvertFlow/",
-      "url": "https://sysadmindoc.github.io/projects/ConvertFlow/",
+      "id": "https://github.com/SysAdminDoc/ConvertFlow",
+      "url": "https://github.com/SysAdminDoc/ConvertFlow",
       "title": "ConvertFlow (live)",
       "content_text": "Browser media converter",
       "date_modified": "2026-06-28T03:37:15.000Z",
@@ -1745,8 +1745,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ClipForge/",
-      "url": "https://sysadmindoc.github.io/projects/ClipForge/",
+      "id": "https://github.com/SysAdminDoc/ClipForge",
+      "url": "https://github.com/SysAdminDoc/ClipForge",
       "title": "ClipForge (live)",
       "content_text": "Browser-based video editor",
       "date_modified": "2026-06-28T03:37:14.000Z",
@@ -1755,8 +1755,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/ClearGem/",
-      "url": "https://sysadmindoc.github.io/projects/ClearGem/",
+      "id": "https://github.com/SysAdminDoc/ClearGem",
+      "url": "https://github.com/SysAdminDoc/ClearGem",
       "title": "ClearGem",
       "content_text": "Removes visible watermarks from Google Gemini AI-generated images",
       "date_modified": "2026-06-28T03:37:13.000Z",
@@ -1765,8 +1765,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Claude-Ultimate-Enhancer/",
-      "url": "https://sysadmindoc.github.io/projects/Claude-Ultimate-Enhancer/",
+      "id": "https://github.com/SysAdminDoc/Claude-Ultimate-Enhancer",
+      "url": "https://github.com/SysAdminDoc/Claude-Ultimate-Enhancer",
       "title": "Claude-Ultimate-Enhancer",
       "content_text": "All-in-one Claude.ai enhancement suite — themes, usage monitor, prompt library",
       "date_modified": "2026-06-28T03:37:11.000Z",
@@ -1775,8 +1775,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/bypassnroGen/",
-      "url": "https://sysadmindoc.github.io/projects/bypassnroGen/",
+      "id": "https://github.com/SysAdminDoc/bypassnroGen",
+      "url": "https://github.com/SysAdminDoc/bypassnroGen",
       "title": "bypassnroGen",
       "content_text": "Generate Windows 11 OOBE bypass files",
       "date_modified": "2026-06-28T03:37:08.000Z",
@@ -1785,8 +1785,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Brave-Portable-Updater/",
-      "url": "https://sysadmindoc.github.io/projects/Brave-Portable-Updater/",
+      "id": "https://github.com/SysAdminDoc/Brave-Portable-Updater",
+      "url": "https://github.com/SysAdminDoc/Brave-Portable-Updater",
       "title": "Brave-Portable-Updater",
       "content_text": "Update Brave inside a Portapps portable install without touching system install",
       "date_modified": "2026-06-28T03:37:07.000Z",
@@ -1795,8 +1795,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/BookmarkVault/",
-      "url": "https://sysadmindoc.github.io/projects/BookmarkVault/",
+      "id": "https://github.com/SysAdminDoc/BookmarkVault",
+      "url": "https://github.com/SysAdminDoc/BookmarkVault",
       "title": "BookmarkVault (live)",
       "content_text": "Bookmark management web app",
       "date_modified": "2026-06-28T03:37:06.000Z",
@@ -1805,8 +1805,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/BillMinder/",
-      "url": "https://sysadmindoc.github.io/projects/BillMinder/",
+      "id": "https://github.com/SysAdminDoc/BillMinder",
+      "url": "https://github.com/SysAdminDoc/BillMinder",
       "title": "BillMinder",
       "content_text": "Bill tracker with alarm-style reminders",
       "date_modified": "2026-06-28T03:37:04.000Z",
@@ -1815,8 +1815,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/BetterNext/",
-      "url": "https://sysadmindoc.github.io/projects/BetterNext/",
+      "id": "https://github.com/SysAdminDoc/BetterNext",
+      "url": "https://github.com/SysAdminDoc/BetterNext",
       "title": "BetterNext",
       "content_text": "Enhanced NextDNS Control Panel",
       "date_modified": "2026-06-28T03:37:03.000Z",
@@ -1825,8 +1825,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/Base64Converter/",
-      "url": "https://sysadmindoc.github.io/projects/Base64Converter/",
+      "id": "https://github.com/SysAdminDoc/Base64Converter",
+      "url": "https://github.com/SysAdminDoc/Base64Converter",
       "title": "Base64Converter (live)",
       "content_text": "Base64 encoder decoder",
       "date_modified": "2026-06-28T03:37:02.000Z",
@@ -1835,8 +1835,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/BackgroundSearch/",
-      "url": "https://sysadmindoc.github.io/projects/BackgroundSearch/",
+      "id": "https://github.com/SysAdminDoc/BackgroundSearch",
+      "url": "https://github.com/SysAdminDoc/BackgroundSearch",
       "title": "BackgroundSearch",
       "content_text": "Chrome extension — force background tabs + context menu search",
       "date_modified": "2026-06-28T03:37:01.000Z",
@@ -1845,8 +1845,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AI_Realism/",
-      "url": "https://sysadmindoc.github.io/projects/AI_Realism/",
+      "id": "https://github.com/SysAdminDoc/AI_Realism",
+      "url": "https://github.com/SysAdminDoc/AI_Realism",
       "title": "AI_Realism",
       "content_text": "Field guide for ultra-realistic AI video generation",
       "date_modified": "2026-06-28T03:36:51.000Z",
@@ -1855,8 +1855,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AI-Usage_Tracker/",
-      "url": "https://sysadmindoc.github.io/projects/AI-Usage_Tracker/",
+      "id": "https://github.com/SysAdminDoc/AI-Usage_Tracker",
+      "url": "https://github.com/SysAdminDoc/AI-Usage_Tracker",
       "title": "AI-Usage_Tracker",
       "content_text": "Usage-limit countdowns and notifications for AI chat tools -- Chrome, Firefox, and userscript builds",
       "date_modified": "2026-06-28T03:36:50.000Z",
@@ -1865,8 +1865,8 @@
       ]
     },
     {
-      "id": "https://sysadmindoc.github.io/projects/AI-Model-Compass/",
-      "url": "https://sysadmindoc.github.io/projects/AI-Model-Compass/",
+      "id": "https://github.com/SysAdminDoc/AI-Model-Compass",
+      "url": "https://github.com/SysAdminDoc/AI-Model-Compass",
       "title": "AI-Model-Compass",
       "content_text": "Discover, download, and run local AI models tailored to your hardware",
       "date_modified": "2026-06-28T03:36:49.000Z",

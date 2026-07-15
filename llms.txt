@@ -3,47 +3,47 @@
 > Senior Technical Support Manager with 15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.
 
 ## Featured projects
-- [win11-nvme-driver-patcher](https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/): GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.
-- [OpenCut](https://sysadmindoc.github.io/projects/OpenCut/): AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.
-- [project-nomad-desktop](https://sysadmindoc.github.io/projects/project-nomad-desktop/): Offline survival command center maps, AI chat, situation room, NukeMap, supply tracking. 600+ routes, 95+ tables.
-- [LibreSpot](https://sysadmindoc.github.io/projects/LibreSpot/): Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.
-- [VideoSubtitleRemover](https://sysadmindoc.github.io/projects/VideoSubtitleRemover/): AI-powered removal of hard-coded subtitles and text watermarks from video.
-- [Astra-Deck](https://sysadmindoc.github.io/projects/Astra-Deck/): Premium YouTube enhancement extension 150+ features for Chrome Firefox.
-- [Network_Security_Auditor](https://sysadmindoc.github.io/projects/Network_Security_Auditor/): 67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.
-- [ZeusWatch](https://sysadmindoc.github.io/projects/ZeusWatch/): Premium dark weather app — no API keys required
-- [ClearCut](https://sysadmindoc.github.io/projects/ClearCut/): Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.
-- [HostShield](https://sysadmindoc.github.io/projects/HostShield/): AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.
+- [win11-nvme-driver-patcher](https://github.com/SysAdminDoc/win11-nvme-driver-patcher): GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.
+- [OpenCut](https://github.com/SysAdminDoc/OpenCut): AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.
+- [project-nomad-desktop](https://github.com/SysAdminDoc/project-nomad-desktop): Offline survival command center maps, AI chat, situation room, NukeMap, supply tracking. 600+ routes, 95+ tables.
+- [LibreSpot](https://github.com/SysAdminDoc/LibreSpot): Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.
+- [VideoSubtitleRemover](https://github.com/SysAdminDoc/VideoSubtitleRemover): AI-powered removal of hard-coded subtitles and text watermarks from video.
+- [Astra-Deck](https://github.com/SysAdminDoc/Astra-Deck): Premium YouTube enhancement extension 150+ features for Chrome Firefox.
+- [Network_Security_Auditor](https://github.com/SysAdminDoc/Network_Security_Auditor): 67 automated checks across 8 security domains with MITRE ATT CK mapping and multi-tier compliance reports.
+- [ZeusWatch](https://github.com/SysAdminDoc/ZeusWatch): Premium dark weather app — no API keys required
+- [ClearCut](https://github.com/SysAdminDoc/ClearCut): Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.
+- [HostShield](https://github.com/SysAdminDoc/HostShield): AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.
 
 ## Live apps
-- [IconForge](https://sysadmindoc.github.io/projects/IconForge/): Image resizer converter
-- [SPECTRE](https://sysadmindoc.github.io/projects/SPECTRE/): Intelligence aggregator OSINT data feeds
-- [ImageXpert](https://sysadmindoc.github.io/projects/ImageXpert/): Multi-engine reverse image search
-- [ConvertFlow](https://sysadmindoc.github.io/projects/ConvertFlow/): Browser media converter
-- [ClipForge](https://sysadmindoc.github.io/projects/ClipForge/): Browser-based video editor
-- [Text-Filter-Editor](https://sysadmindoc.github.io/projects/Text-Filter-Editor/): Text filtering and processing tool
-- [Multistreamer](https://sysadmindoc.github.io/projects/Multistreamer/): Multi-video streaming viewer with chat
-- [StormviewRadar](https://sysadmindoc.github.io/projects/StormviewRadar/): Open source weather radar viewer
-- [SkyTrack](https://sysadmindoc.github.io/projects/SkyTrack/): Real-time aircraft tracker
-- [GifStudio](https://sysadmindoc.github.io/projects/GifStudio/): Browser-based GIF studio
-- [Base64Converter](https://sysadmindoc.github.io/projects/Base64Converter/): Base64 encoder decoder
-- [CoolSites](https://sysadmindoc.github.io/projects/CoolSites/): 470+ curated free tools open source projects
-- [BookmarkVault](https://sysadmindoc.github.io/projects/BookmarkVault/): Bookmark management web app
-- [ImageForge](https://sysadmindoc.github.io/projects/ImageForge/): Open source image converter
-- [Openshop](https://sysadmindoc.github.io/projects/Openshop/): Browser-based image editor with layers filters
-- [DeGoogler](https://sysadmindoc.github.io/projects/DeGoogler/): Migration toolkit for leaving Google services
-- [UserScriptHunt](https://sysadmindoc.github.io/projects/UserScriptHunt/): Unified userscript search engine
-- [SearchHub](https://sysadmindoc.github.io/projects/SearchHub/): 538 engines across 29 categories
-- [NATO_PHONETIC_TRAINING](https://sysadmindoc.github.io/projects/NATO_PHONETIC_TRAINING/): NATO phonetic alphabet trainer
-- [VIPTrack](https://sysadmindoc.github.io/projects/VIPTrack/): Military VIP aircraft tracker
-- [HurricaneMap](https://sysadmindoc.github.io/projects/HurricaneMap/): Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2
-- [ApocalypseWatch](https://sysadmindoc.github.io/projects/ApocalypseWatch/): Realtime business-jet tracker vs. 24h baseline
-- [BetterTTS](https://sysadmindoc.github.io/projects/BetterTTS/): Private, in-browser text-to-speech studio
+- [IconForge](https://github.com/SysAdminDoc/IconForge): Image resizer converter
+- [SPECTRE](https://github.com/SysAdminDoc/SPECTRE): Intelligence aggregator OSINT data feeds
+- [ImageXpert](https://github.com/SysAdminDoc/ImageXpert): Multi-engine reverse image search
+- [ConvertFlow](https://github.com/SysAdminDoc/ConvertFlow): Browser media converter
+- [ClipForge](https://github.com/SysAdminDoc/ClipForge): Browser-based video editor
+- [Text-Filter-Editor](https://github.com/SysAdminDoc/Text-Filter-Editor): Text filtering and processing tool
+- [Multistreamer](https://github.com/SysAdminDoc/Multistreamer): Multi-video streaming viewer with chat
+- [StormviewRadar](https://github.com/SysAdminDoc/StormviewRadar): Open source weather radar viewer
+- [SkyTrack](https://github.com/SysAdminDoc/SkyTrack): Real-time aircraft tracker
+- [GifStudio](https://github.com/SysAdminDoc/GifStudio): Browser-based GIF studio
+- [Base64Converter](https://github.com/SysAdminDoc/Base64Converter): Base64 encoder decoder
+- [CoolSites](https://github.com/SysAdminDoc/CoolSites): 470+ curated free tools open source projects
+- [BookmarkVault](https://github.com/SysAdminDoc/BookmarkVault): Bookmark management web app
+- [ImageForge](https://github.com/SysAdminDoc/ImageForge): Open source image converter
+- [Openshop](https://github.com/SysAdminDoc/Openshop): Browser-based image editor with layers filters
+- [DeGoogler](https://github.com/SysAdminDoc/DeGoogler): Migration toolkit for leaving Google services
+- [UserScriptHunt](https://github.com/SysAdminDoc/UserScriptHunt): Unified userscript search engine
+- [SearchHub](https://github.com/SysAdminDoc/SearchHub): 538 engines across 29 categories
+- [NATO_PHONETIC_TRAINING](https://github.com/SysAdminDoc/NATO_PHONETIC_TRAINING): NATO phonetic alphabet trainer
+- [VIPTrack](https://github.com/SysAdminDoc/VIPTrack): Military VIP aircraft tracker
+- [HurricaneMap](https://github.com/SysAdminDoc/HurricaneMap): Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2
+- [ApocalypseWatch](https://github.com/SysAdminDoc/ApocalypseWatch): Realtime business-jet tracker vs. 24h baseline
+- [BetterTTS](https://github.com/SysAdminDoc/BetterTTS): Private, in-browser text-to-speech studio
 
 ## Pages
 - [Portfolio home](https://sysadmindoc.github.io/): 186 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
 - [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
 - [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, systems administration, healthcare technology support, and customer-facing escalation work.
-- [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio projects, rendered README excerpts, releases, timeline entries, and public pages.
+- [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio routes, language lanes, releases, timeline entries, and archive decisions.
 - [Timeline](https://sysadmindoc.github.io/timeline/): Year-in-review timeline generated from GitHub releases and project metadata.
 - [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
 - [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
@@ -69,8 +69,8 @@
 - [Release RSS](https://sysadmindoc.github.io/releases.xml): RSS feed for GitHub release activity across represented projects.
 
 ## Machine-readable endpoints
-- [Project index (JSON)](https://sysadmindoc.github.io/projects.json): Schema-versioned project list with detail, source, live, image, and freshness URLs.
-- [Release index (JSON)](https://sysadmindoc.github.io/releases.json): Schema-versioned release list with project, tag, repository, and detail URLs.
+- [Project index (JSON)](https://sysadmindoc.github.io/projects.json): Schema-versioned project list with repository, live, image, and freshness URLs.
+- [Release index (JSON)](https://sysadmindoc.github.io/releases.json): Schema-versioned release list with project, tag, repository, and release URLs.
 - [Resume data (JSON)](https://sysadmindoc.github.io/resume.json): Structured resume data for career, skills, and experience surfaces.
 - [Command palette data (JS)](https://sysadmindoc.github.io/cmdk-data.js): Cached project and quick-link data used by the global command palette.
 - [Sitemap index](https://sysadmindoc.github.io/sitemap-index.xml): Search-engine sitemap index for generated public routes.
