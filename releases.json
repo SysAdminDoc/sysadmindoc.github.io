@@ -1,28 +1,476 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-10T04:55:16.879Z",
+  "generatedAt": "2026-07-15T15:01:18.356Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-10T04:55:16.879Z"
+    "githubMetadataFetchedAt": "2026-07-15T15:01:18.356Z"
   },
   "counts": {
     "releases": 60,
-    "repositories": 25
+    "repositories": 21
   },
   "releases": [
     {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.27",
+      "name": "Images v0.2.27",
+      "publishedAt": "2026-07-14T23:32:11Z",
+      "provenance": "checksum",
+      "summary": "- Archive books now offer a persisted continuous vertical-reading mode for webtoons and long strips; the virtualized reader lazily decodes nearby pages, recycles offscreen pixels, preserves per-book position, exposes cal",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.27",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "SwiftShot",
+      "projectName": "SwiftShot",
+      "tag": "v2.9.0",
+      "name": "SwiftShot v2.9.0",
+      "publishedAt": "2026-07-14T20:03:14Z",
+      "provenance": "checksum",
+      "summary": "SwiftShot v2.9.0 is a substantial reliability, accessibility, security, and workflow release built from the 59 commits after v2.8.0. · - Added macOS- and Windows-style backdrop frames, a scriptable headless capture CLI, ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.9.0",
+        "repository": "https://github.com/SysAdminDoc/SwiftShot",
+        "detail": "https://sysadmindoc.github.io/projects/SwiftShot/"
+      }
+    },
+    {
+      "repo": "StormScope",
+      "projectName": "StormScope",
+      "tag": "v0.110.0",
+      "name": "StormScope v0.110.0",
+      "publishedAt": "2026-07-14T19:19:13Z",
+      "provenance": "unsigned",
+      "summary": "Surfaced bounded, provider-authored NWS Impact-Based Warning details near alert headlines, including damage threats, official headlines, hail/wind values, storm motion, detection sources, and Wireless Emergency Alert han",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.110.0",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+      }
+    },
+    {
+      "repo": "StormScope",
+      "projectName": "StormScope",
+      "tag": "v0.109.0",
+      "name": "StormScope v0.109.0",
+      "publishedAt": "2026-07-14T18:46:05Z",
+      "provenance": "unsigned",
+      "summary": "Current release restoring package, deployment, and repository metadata parity. · Highlights: · - Atomic, dry-run-capable release preparation updates all version, cache, changelog, lockfile, badge, and User-Agent surfaces",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.109.0",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.19.2",
+      "name": "ScriptVault v3.19.2",
+      "publishedAt": "2026-07-14T04:41:00Z",
+      "provenance": "checksum",
+      "summary": "v3.18.x/3.19.0–3.19.1 scoped the Chromium build to `optional_host_permissions` and enabled a `scopedHostPermissions` gate by default. Together these stranded userscripts behind a **\"Site Access Needed\"** prompt and refus",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.2",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
+      }
+    },
+    {
+      "repo": "ForceBGTab",
+      "projectName": "ForceBGTab",
+      "tag": "v0.1.1",
+      "name": "v0.1.1",
+      "publishedAt": "2026-07-13T20:05:56Z",
+      "provenance": "unsigned",
+      "summary": "Minimizes the brief foreground **flash** when a tab is sent to the background. · **What changed:** the new tab is now reverted to the opener at the earliest possible signal (`onCreated`, via `openerTabId`) instead of onl",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ForceBGTab/releases/tag/v0.1.1",
+        "repository": "https://github.com/SysAdminDoc/ForceBGTab",
+        "detail": null
+      }
+    },
+    {
+      "repo": "ForceBGTab",
+      "projectName": "ForceBGTab",
+      "tag": "v0.1.0",
+      "name": "v0.1.0",
+      "publishedAt": "2026-07-13T19:57:33Z",
+      "provenance": "unsigned",
+      "summary": "Initial release of ForceBGTab — an open-source, background-only Manifest V3 extension that forces new tabs opened from links, `target=\"_blank\"`, or `window.open()` to open in the **background** instead of stealing focus.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ForceBGTab/releases/tag/v0.1.0",
+        "repository": "https://github.com/SysAdminDoc/ForceBGTab",
+        "detail": null
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.89.0",
+      "name": "SnapCrop v6.89.0",
+      "publishedAt": "2026-07-13T16:18:07Z",
+      "provenance": "unsigned",
+      "summary": "Capture-first redesign and prompt-free replacement. · - Save & Replace now publishes the edited crop first, then moves the source MediaStore item into the visible `Pictures/trashed/` album instead of Android Trash. Manua",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.89.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+      }
+    },
+    {
+      "repo": "Images",
+      "projectName": "Images",
+      "tag": "v0.2.26",
+      "name": "Images v0.2.26",
+      "publishedAt": "2026-07-13T16:16:58Z",
+      "provenance": "checksum",
+      "summary": "- **Loupe and zoom-to-selection are documented** - The `?` keyboard-shortcuts overlay now lists the middle-button loupe and Ctrl+Shift+drag zoom-to-selection gestures so they are discoverable. · - **Serilog updated to 4.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.26",
+        "repository": "https://github.com/SysAdminDoc/Images",
+        "detail": "https://sysadmindoc.github.io/projects/Images/"
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.88.0",
+      "name": "SnapCrop v6.88.0",
+      "publishedAt": "2026-07-13T11:04:49Z",
+      "provenance": "unsigned",
+      "summary": "- Adds a deterministic Unfiled screenshot inbox with File, Remind, Keep unfiled, and recoverable Trash actions. · - Adds private local two-screenshot comparison and user-managed optional ML model delivery. · - Adds a gen",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.88.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.10.3",
+      "name": "Cataclysm v0.10.3",
+      "publishedAt": "2026-07-13T04:10:59Z",
+      "provenance": "unsigned",
+      "summary": "- Reimagines the desktop shell, scenario library, results rail, transport, and dark/light themes around a calmer mission-control layout. · - Adds Outcome, Science, and Validation result views with named-place arrival and",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.3",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": null
+      }
+    },
+    {
+      "repo": "StormScope",
+      "projectName": "StormScope",
+      "tag": "v0.93.0",
+      "name": "StormScope v0.93.0",
+      "publishedAt": "2026-07-13T02:59:28Z",
+      "provenance": "unsigned",
+      "summary": "Synchronized two-map comparison with independent radar time, GOES satellite, and NWS hazard sources; low-data, lifecycle, request, tile, decoded-memory, desktop/mobile heap, and synchronization budgets are verified local",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.93.0",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+      }
+    },
+    {
+      "repo": "StormScope",
+      "projectName": "StormScope",
+      "tag": "v0.92.0",
+      "name": "StormScope v0.92.0",
+      "publishedAt": "2026-07-13T02:41:05Z",
+      "provenance": "unsigned",
+      "summary": "Strict distribution-time RainViewer-v2-compatible radar configuration with exact-origin CSP synchronization, immutable capabilities and attribution, and independent NOAA/NWS MRMS fallback.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.92.0",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+      }
+    },
+    {
+      "repo": "StormScope",
+      "projectName": "StormScope",
+      "tag": "v0.91.0",
+      "name": "StormScope v0.91.0",
+      "publishedAt": "2026-07-13T02:22:44Z",
+      "provenance": "unsigned",
+      "summary": "Typed camera provider adapters and extracted shared traveler/geospatial feed protocols, with preserved CLI ordering, atomic failure handling, and byte-identical camera data artifacts.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StormScope/releases/tag/v0.91.0",
+        "repository": "https://github.com/SysAdminDoc/StormScope",
+        "detail": "https://sysadmindoc.github.io/projects/StormScope/"
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.10.2",
+      "name": "Cataclysm v0.10.2",
+      "publishedAt": "2026-07-13T02:12:08Z",
+      "provenance": "unsigned",
+      "summary": "Hardens the desktop trust and release boundary: explicit main-window permissions for every custom Tauri command, fail-safe mandatory safety guidance when settings persistence is unavailable, and bounded reference capture",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.2",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": null
+      }
+    },
+    {
+      "repo": "Bookmark-Organizer-Pro",
+      "projectName": "Bookmark-Organizer-Pro",
+      "tag": "v6.12.0",
+      "name": "v6.12.0",
+      "publishedAt": "2026-07-13T00:57:36Z",
+      "provenance": "unsigned",
+      "summary": "Portable capture, migration, localization, and product-contract release. Adds bounded authenticated extension capture, real loaded-MV3 verification, resumable imports, versioned snapshot history, RFC 2557 MHTML, pseudo-l",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.12.0",
+        "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.68.0",
+      "name": "SnapCrop v6.68.0",
+      "publishedAt": "2026-07-12T22:41:15Z",
+      "provenance": "unsigned",
+      "summary": "Privacy-safe home widget with Latest, Quick Crop, and Gallery actions that never render screenshot pixels. Focused PDF and crop raster renderers reduce activity complexity without behavior changes. Lossless dimension/lum",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.68.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+      }
+    },
+    {
+      "repo": "Bookmark-Organizer-Pro",
+      "projectName": "Bookmark-Organizer-Pro",
+      "tag": "v6.11.0",
+      "name": "v6.11.0",
+      "publishedAt": "2026-07-12T22:01:18Z",
+      "provenance": "unsigned",
+      "summary": "Portable research workflows and local observability release. Adds authenticated sanitized browser snapshots, template-driven annotation exports, migration fidelity preflights, a local job health ledger, locked package co",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.11.0",
+        "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
+        "detail": "https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/"
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.67.0",
+      "name": "SnapCrop v6.67.0",
+      "publishedAt": "2026-07-12T21:24:03Z",
+      "provenance": "unsigned",
+      "summary": "Premium interface release: status-led Home, focused Edit action, structured quick tools and Recent states, complete light/dark design tokens, accessible full-row Settings toggles, recoverable Gallery empty states, a simp",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.67.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://sysadmindoc.github.io/projects/SnapCrop/"
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.10.0",
+      "name": "Cataclysm v0.10.0",
+      "publishedAt": "2026-07-12T10:34:09Z",
+      "provenance": "unsigned",
+      "summary": "Cataclysm now opens in a progressively disclosed simulator workspace. Simple keeps the scenario, live globe, Run & Watch journey, timeline, and outcomes dominant. Customize reveals a small understandable control set. Adv",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.0",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": null
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.9.1",
+      "name": "Cataclysm v0.9.1",
+      "publishedAt": "2026-07-12T09:20:01Z",
+      "provenance": "unsigned",
+      "summary": "Run & Watch is now a guided Prepare, Calculate, Watch, and Understand journey. Outcomes open automatically, cached results replay immediately, manual controls remain available, solver failures provide local retry, and th",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.1",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": null
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.9.0",
+      "name": "Cataclysm v0.9.0",
+      "publishedAt": "2026-07-12T07:47:49Z",
+      "provenance": "unsigned",
+      "summary": "Universal scenario library and Quick Start milestone. One persistent rail now spans tsunami reference events and complete direct asteroid/nuclear what-if scenarios, with preview-only camera framing, one explicit Run & Wa",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.0",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": null
+      }
+    },
+    {
       "repo": "ClearCut",
       "projectName": "ClearCut",
-      "tag": "v3.74.110",
-      "name": "ClearCut v3.74.110",
-      "publishedAt": "2026-07-10T04:41:10Z",
-      "provenance": "checksum",
-      "summary": "Premium mobile creator workspace: a dominant preview, calmer timeline hierarchy, compact six-category editing tools, clearer primary actions, sharper shared chrome, and streamlined gallery, settings, recovery, and export",
+      "tag": "v3.74.117",
+      "name": "v3.74.117",
+      "publishedAt": "2026-07-11T23:29:37Z",
+      "provenance": "unsigned",
+      "summary": "Fixes Merge Next shifting later clips backward into overlaps. Includes regression coverage and retains the v3.74.116 timeline playback, preview spacing, delete control, silent autosave, and snoozable editing suggestions.",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.110",
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.117",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
         "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.74.116",
+      "name": "v3.74.116",
+      "publishedAt": "2026-07-11T23:12:19Z",
+      "provenance": "unsigned",
+      "summary": "Cut playback continuity release. Manual cuts keep the prepared Media3 timeline instead of resetting the decoder; stored player listeners attach during lazy creation; transport state follows actual playback; replay restar",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.116",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.74.115",
+      "name": "v3.74.115",
+      "publishedAt": "2026-07-11T22:21:27Z",
+      "provenance": "unsigned",
+      "summary": "Timeline editor and preview hardening. The preview consumes flexible phone height; Cut uses the live playhead and preserves playback; selected clips expose a clear Delete action; ripple deletes retain preview position; a",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.115",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.74.114",
+      "name": "v3.74.114",
+      "publishedAt": "2026-07-11T21:49:30Z",
+      "provenance": "unsigned",
+      "summary": "Preview-space and edit-playback release. The preview now consumes flexible phone height while the bounded timeline and tool dock remain anchored together. Split uses the live frame position, timeline rebuilds resume atom",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.114",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.74.113",
+      "name": "v3.74.113",
+      "publishedAt": "2026-07-11T20:58:26Z",
+      "provenance": "checksum",
+      "summary": "Timeline and preview reliability release. Linked trims and splits are atomic across A/V pairs; Beat Sync and Cut Assistant reject unsafe cuts and preserve marker alignment. Retimed clips now seek and play against the cor",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.113",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://sysadmindoc.github.io/projects/ClearCut/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.67",
+      "name": "v0.12.67",
+      "publishedAt": "2026-07-11T03:17:22Z",
+      "provenance": "unsigned",
+      "summary": "Packaging release — adds **portable, install-free executables**. · - **Portable single-file builds**: `win-x64` and `win-arm64` portable ZIPs, each containing self-contained single-file `HostsGuard.App.exe`, `HostsGuard.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.67",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "HostsGuard",
+      "projectName": "HostsGuard",
+      "tag": "v0.12.66",
+      "name": "v0.12.66",
+      "publishedAt": "2026-07-11T01:59:54Z",
+      "provenance": "unsigned",
+      "summary": "2026-07-10 roadmap drain — nine items, 1063 tests green. · - **IP-format blocklists → firewall rules**: subscribe HTTPS sources of IPv4/IPv6/CIDR entries (e.g. HaGeZi ips/doh, ips/tif) enforced as chunked `HG_IPBlock_*` ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.66",
+        "repository": "https://github.com/SysAdminDoc/HostsGuard",
+        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
+      }
+    },
+    {
+      "repo": "SurfaceMedic",
+      "projectName": "SurfaceMedic",
+      "tag": "v0.2.1",
+      "name": "SurfaceMedic v0.2.1",
+      "publishedAt": "2026-07-10T18:48:08Z",
+      "provenance": "unsigned",
+      "summary": "Fixes thermal scans that reported matches without revealing the populated results table. Collection visibility now tracks live item counts, and explicit grid columns prevent duplicated fields. Verified with 9/9 tests, a ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SurfaceMedic/releases/tag/v0.2.1",
+        "repository": "https://github.com/SysAdminDoc/SurfaceMedic",
+        "detail": null
+      }
+    },
+    {
+      "repo": "SurfaceMedic",
+      "projectName": "SurfaceMedic",
+      "tag": "v0.2.0",
+      "name": "SurfaceMedic v0.2.0",
+      "publishedAt": "2026-07-10T17:27:43Z",
+      "provenance": "checksum",
+      "summary": "SurfaceMedic v0.2.0 introduces a premium .NET 9 WPF/MVVM desktop shell with complete dark and light themes, seven purpose-built views, a typed asynchronous Windows adapter, persistent settings and logs, a branded executa",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SurfaceMedic/releases/tag/v0.2.0",
+        "repository": "https://github.com/SysAdminDoc/SurfaceMedic",
+        "detail": null
+      }
+    },
+    {
+      "repo": "AppManagerNG",
+      "projectName": "AppManagerNG",
+      "tag": "v0.6.5",
+      "name": "AppManagerNG v0.6.5",
+      "publishedAt": "2026-07-10T06:42:49Z",
+      "provenance": "checksum",
+      "summary": "- Privileged-server sessions now keep secrets device-local, rebind safely after port changes, and roll back failed transitions. · - Startup authentication, component-rule reset, archive handling, and destructive-operatio",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5",
+        "repository": "https://github.com/SysAdminDoc/AppManagerNG",
+        "detail": "https://sysadmindoc.github.io/projects/AppManagerNG/"
+      }
+    },
+    {
+      "repo": "sysadmindoc.github.io",
+      "projectName": "sysadmindoc.github.io",
+      "tag": "v0.22.0",
+      "name": "v0.22.0",
+      "publishedAt": "2026-07-10T05:05:01Z",
+      "provenance": "unsigned",
+      "summary": "Premium product-quality pass across the full portfolio: stronger navigation and responsive hierarchy, accessible dark/light contrast and focus states, resilient search and sharing recovery, clearer empty/loading/error/su",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.22.0",
+        "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+        "detail": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/"
       }
     },
     {
@@ -68,20 +516,6 @@
       }
     },
     {
-      "repo": "NukeMap",
-      "projectName": "NukeMap",
-      "tag": "v3.8.0",
-      "name": "v3.8.0",
-      "publishedAt": "2026-07-10T04:13:22Z",
-      "provenance": "unsigned",
-      "summary": "Premium analysis workspace with a map-first navigation dock, editable model/status bar, ground-zero context, responsive desktop/tablet/mobile layouts, refreshed PWA identity, recoverable analysis actions, stronger access",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/NukeMap/releases/tag/v3.8.0",
-        "repository": "https://github.com/SysAdminDoc/NukeMap",
-        "detail": "https://sysadmindoc.github.io/projects/NukeMap/"
-      }
-    },
-    {
       "repo": "Wingetter",
       "projectName": "Wingetter",
       "tag": "v6.2.0",
@@ -93,20 +527,6 @@
         "release": "https://github.com/SysAdminDoc/Wingetter/releases/tag/v6.2.0",
         "repository": "https://github.com/SysAdminDoc/Wingetter",
         "detail": "https://sysadmindoc.github.io/projects/Wingetter/"
-      }
-    },
-    {
-      "repo": "TsunamiSimulator",
-      "projectName": "TsunamiSimulator",
-      "tag": "v0.5.0",
-      "name": "v0.5.0 — Validation, corrected physics, classroom tooling",
-      "publishedAt": "2026-07-10T03:55:03Z",
-      "provenance": "unsigned",
-      "summary": "- **Okada vertical-displacement kernel corrected** against Okada 1985 Table 2 (4-significant-figure agreement on cases 2 and 3). The previous strike-slip term produced non-physical displacement growing with fault length;",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/TsunamiSimulator/releases/tag/v0.5.0",
-        "repository": "https://github.com/SysAdminDoc/TsunamiSimulator",
-        "detail": "https://sysadmindoc.github.io/projects/TsunamiSimulator/"
       }
     },
     {
@@ -306,34 +726,6 @@
       }
     },
     {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.60",
-      "name": "v0.12.60",
-      "publishedAt": "2026-07-09T12:21:39Z",
-      "provenance": "unsigned",
-      "summary": "Added optional app/domain usage-budget alert rules backed by retained daily usage rollups, with usage_budget alert inbox entries when thresholds are crossed. Added WPF Firewall Activity controls and HostsGuard.Cli usage-",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.60",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.59",
-      "name": "v0.12.59",
-      "publishedAt": "2026-07-09T11:49:59Z",
-      "provenance": "unsigned",
-      "summary": "Changed: · - Made dependency hygiene transitive deferrals source-backed: the ratchet now prints each owning package/version, observed resolved-to-latest drift, reason, and revisit trigger while continuing to fail vulnera",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.59",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://sysadmindoc.github.io/projects/HostsGuard/"
-      }
-    },
-    {
       "repo": "SwiftFloris",
       "projectName": "SwiftFloris",
       "tag": "v1.9.56",
@@ -418,20 +810,6 @@
       }
     },
     {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.19",
-      "name": "v0.2.19",
-      "publishedAt": "2026-07-08T23:57:25Z",
-      "provenance": "unsigned",
-      "summary": "Fixed: removed the floating viewer top command bar with Compare and Export actions so image viewing keeps the top of the viewport clear.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.19",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
-      }
-    },
-    {
       "repo": "RES-Slim",
       "projectName": "RES-Slim",
       "tag": "v0.14.1",
@@ -471,384 +849,6 @@
         "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.152",
         "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
         "detail": null
-      }
-    },
-    {
-      "repo": "sysadmindoc.github.io",
-      "projectName": "sysadmindoc.github.io",
-      "tag": "v0.21.8",
-      "name": "v0.21.8",
-      "publishedAt": "2026-07-06T03:04:32Z",
-      "provenance": "unsigned",
-      "summary": "Restored the homepage contribution heatmap with accessible keyboard and forced-colors support. Corrected the performance audit so load-phase LCP is measured before scripted interaction checks. Includes the built static s",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.21.8",
-        "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-        "detail": "https://sysadmindoc.github.io/projects/sysadmindoc.github.io/"
-      }
-    },
-    {
-      "repo": "SwiftFloris",
-      "projectName": "SwiftFloris",
-      "tag": "v1.9.55",
-      "name": "v1.9.55",
-      "publishedAt": "2026-07-06T02:05:51Z",
-      "provenance": "unsigned",
-      "summary": "Smart-compose ghost text no longer blocks while reading personal trigram/bigram storage. The heuristic provider and cache now expose a suspend-aware prediction path used by the NLP worker, reducing per-keystroke stalls w",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.9.55",
-        "repository": "https://github.com/SysAdminDoc/SwiftFloris",
-        "detail": "https://sysadmindoc.github.io/projects/SwiftFloris/"
-      }
-    },
-    {
-      "repo": "AlarmClockXtreme",
-      "projectName": "AlarmClockXtreme",
-      "tag": "v1.15.27",
-      "name": "v1.15.27",
-      "publishedAt": "2026-07-06T01:12:19Z",
-      "provenance": "checksum",
-      "summary": "AlarmClockXtreme v1.15.27 · Added rotating shift-pattern scheduling for DDNNO, 4-on-4-off, Panama, DuPont, and Pitman cycles. · Shift patterns can act as the recurring schedule by themselves or narrow existing weekday se",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.27",
-        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "AlarmClockXtreme",
-      "projectName": "AlarmClockXtreme",
-      "tag": "v1.15.26",
-      "name": "v1.15.26",
-      "publishedAt": "2026-07-06T00:33:14Z",
-      "provenance": "checksum",
-      "summary": "AlarmClockXtreme v1.15.26 · - Adds Bedtime pre-sleep factor tiles for caffeine, exercise, alcohol, and stress. · - Adds a local correlation chart comparing tagged nights with Sonar/smart-wake restlessness.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.26",
-        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "AlarmClockXtreme",
-      "projectName": "AlarmClockXtreme",
-      "tag": "v1.15.25",
-      "name": "v1.15.25",
-      "publishedAt": "2026-07-06T00:09:42Z",
-      "provenance": "checksum",
-      "summary": "AlarmClockXtreme v1.15.25 · - Adds a local Sonar snore/loud-sound event timeline on the Bedtime screen. · - Stores compact start/end/duration/peak/average dB metadata only; no raw audio is retained.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.25",
-        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "AlarmClockXtreme",
-      "projectName": "AlarmClockXtreme",
-      "tag": "v1.15.24",
-      "name": "v1.15.24",
-      "publishedAt": "2026-07-05T23:08:39Z",
-      "provenance": "checksum",
-      "summary": "AlarmClockXtreme v1.15.24 · - Adds a local chronotype quiz on the Bedtime screen. · - Estimates ideal bedtime and wake windows from five on-device answers and the sleep-duration target.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.24",
-        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "AlarmClockXtreme",
-      "projectName": "AlarmClockXtreme",
-      "tag": "v1.15.23",
-      "name": "v1.15.23",
-      "publishedAt": "2026-07-05T22:10:56Z",
-      "provenance": "checksum",
-      "summary": "v1.15.23 · - Adds a local bedtime room-noise baseline when microphone permission is already granted. · - Bedtime reminders now adapt copy for quiet, moderate, or loud room baseline results.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.23",
-        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-        "detail": "https://sysadmindoc.github.io/projects/AlarmClockXtreme/"
-      }
-    },
-    {
-      "repo": "HurricaneMap",
-      "projectName": "HurricaneMap",
-      "tag": "v1.4.6",
-      "name": "v1.4.6",
-      "publishedAt": "2026-07-03T23:37:48Z",
-      "provenance": "unsigned",
-      "summary": "Desktop panel fit.\\n\\n- Lowered the right analytical panel lane so it sits closer to the season/timeline shelf.\\n- Tightened the shelf gutter from 12px to 6px while preserving separation.\\n- Added smoke coverage that fai",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.6",
-        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
-        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/"
-      }
-    },
-    {
-      "repo": "HurricaneMap",
-      "projectName": "HurricaneMap",
-      "tag": "v1.4.5",
-      "name": "v1.4.5",
-      "publishedAt": "2026-07-03T23:06:13Z",
-      "provenance": "unsigned",
-      "summary": "Desktop shelf alignment.\\n\\n- Moved the season summary inline to the left of the timeline as one bottom shelf.\\n- Reserved bottom shelf space so desktop side panels stop above the season/timeline row.\\n- Moved update fee",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.5",
-        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
-        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/"
-      }
-    },
-    {
-      "repo": "HurricaneMap",
-      "projectName": "HurricaneMap",
-      "tag": "v1.4.4",
-      "name": "v1.4.4",
-      "publishedAt": "2026-07-03T22:49:31Z",
-      "provenance": "unsigned",
-      "summary": "Desktop panel refinement.\\n\\n- Rebalanced desktop side panels into a wider bounded inspector lane.\\n- Reworked storm, state, and statistics panels into stable two-column desktop grids.\\n- Hid the season summary while ana",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.4",
-        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
-        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/"
-      }
-    },
-    {
-      "repo": "HurricaneMap",
-      "projectName": "HurricaneMap",
-      "tag": "v1.4.3",
-      "name": "v1.4.3",
-      "publishedAt": "2026-07-03T22:22:10Z",
-      "provenance": "unsigned",
-      "summary": "Premium layout and settings polish.\\n\\n- Prioritizes the map during mobile track playback with compact header chrome, a smaller restore handle, and a tighter animation dock.\\n- Refines Settings with helper copy, localize",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.3",
-        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
-        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/"
-      }
-    },
-    {
-      "repo": "HurricaneMap",
-      "projectName": "HurricaneMap",
-      "tag": "v1.4.2",
-      "name": "v1.4.2",
-      "publishedAt": "2026-07-03T21:46:31Z",
-      "provenance": "unsigned",
-      "summary": "Playback map-first layout. Starting track playback now collapses the storm details panel to a restore tab, moves animation controls into a compact fixed map dock, hides competing bottom overlays during playback, and adds",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.2",
-        "repository": "https://github.com/SysAdminDoc/HurricaneMap",
-        "detail": "https://sysadmindoc.github.io/projects/HurricaneMap/"
-      }
-    },
-    {
-      "repo": "SwiftShot",
-      "projectName": "SwiftShot",
-      "tag": "v2.8.0",
-      "name": "SwiftShot v2.8.0",
-      "publishedAt": "2026-07-03T16:14:01Z",
-      "provenance": "unsigned",
-      "summary": "Audit-backlog drain: all 14 verified-but-deferred findings from the v2.7.0 deep audit are now fixed end-to-end, with regression tests (54 -> 75). · - Rotate View no longer breaks mouse-to-image mapping; a shared view tra",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.8.0",
-        "repository": "https://github.com/SysAdminDoc/SwiftShot",
-        "detail": "https://sysadmindoc.github.io/projects/SwiftShot/"
-      }
-    },
-    {
-      "repo": "SwiftShot",
-      "projectName": "SwiftShot",
-      "tag": "v2.7.0",
-      "name": "SwiftShot v2.7.0",
-      "publishedAt": "2026-07-03T15:32:22Z",
-      "provenance": "unsigned",
-      "summary": "Deep audit release: ~50 verified fixes across correctness, data safety, UX, theming, accessibility and performance. Test suite grew from 34 to 54 tests. · **Capture** · - Freehand region capture masks to the drawn shape ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.7.0",
-        "repository": "https://github.com/SysAdminDoc/SwiftShot",
-        "detail": "https://sysadmindoc.github.io/projects/SwiftShot/"
-      }
-    },
-    {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.17.0",
-      "name": "v3.17.0",
-      "publishedAt": "2026-07-03T00:16:05Z",
-      "provenance": "unsigned",
-      "summary": "Trust enforcement, sync data-safety, and backup slimming. · - **Subresource Integrity \"Require\" mode is now enforced** — refuses to run any @require/@resource without a verifiable SRI hash; the install review flags every",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.17.0",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
-      }
-    },
-    {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.16.0",
-      "name": "v3.16.0",
-      "publishedAt": "2026-07-02T22:57:07Z",
-      "provenance": "unsigned",
-      "summary": "Deep engineering + product-quality audit pass. · - **GM networking bound to the authenticated caller.** GM_xmlhttpRequest / GM_webSocket / GM_download, GM_getResourceText/URL, GM_loadScript, and menu register/unregister ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.16.0",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
-      }
-    },
-    {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.15.1",
-      "name": "v3.15.1",
-      "publishedAt": "2026-07-02T21:52:23Z",
-      "provenance": "unsigned",
-      "summary": "- **Editor screen was unusable in v3.15.0.** The full-screen editor overlay stacked below the sticky dashboard header, which painted over the Save/Close row and panel tabs — nothing in the top band was visible or clickab",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.15.1",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://sysadmindoc.github.io/projects/ScriptVault/"
-      }
-    },
-    {
-      "repo": "one-ui-home-clone",
-      "projectName": "one-ui-home-clone",
-      "tag": "v0.2.3",
-      "name": "v0.2.3",
-      "publishedAt": "2026-07-02T15:05:19Z",
-      "provenance": "unsigned",
-      "summary": "Roadmap drain release: adds Finder app shortcut results, records the SESL interop decision, and includes the accumulated launcher reliability/parity work for baseline profiles, backup/restore, diagnostics, privacy disclo",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/one-ui-home-clone/releases/tag/v0.2.3",
-        "repository": "https://github.com/SysAdminDoc/one-ui-home-clone",
-        "detail": "https://sysadmindoc.github.io/projects/one-ui-home-clone/"
-      }
-    },
-    {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.15",
-      "name": "v0.2.15",
-      "publishedAt": "2026-07-02T06:39:14Z",
-      "provenance": "unsigned",
-      "summary": "- **AsyncRelayCommand catches non-cancellation exceptions** — Exceptions from command methods now log + toast instead of propagating through `async void` to `DispatcherUnhandledException` and terminating the app. Static ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.15",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://sysadmindoc.github.io/projects/Images/"
-      }
-    },
-    {
-      "repo": "Disable-AdobeTelemetry",
-      "projectName": "Disable-AdobeTelemetry",
-      "tag": "v2.5.0",
-      "name": "v2.5.0",
-      "publishedAt": "2026-07-02T05:04:32Z",
-      "provenance": "checksum",
-      "summary": "Research-driven roadmap drain: 30+ fixes and features across security, fleet operations, coverage, and UX. · - Firewall phase no longer deletes the CCXProcess/AdobeIPCBroker rules created by earlier phases (they survived",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry/releases/tag/v2.5.0",
-        "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-        "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/"
-      }
-    },
-    {
-      "repo": "AppList",
-      "projectName": "AppList",
-      "tag": "v1.8.0",
-      "name": "v1.8.0",
-      "publishedAt": "2026-07-01T15:00:43Z",
-      "provenance": "checksum",
-      "summary": "- **WSL distro inventory** -- discovers installed WSL distributions with version and state · - **Portable-app detection** -- scans user-local Programs/Portable/Tools/Apps and PortableApps directories · - **Driver invento",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AppList/releases/tag/v1.8.0",
-        "repository": "https://github.com/SysAdminDoc/AppList",
-        "detail": "https://sysadmindoc.github.io/projects/AppList/"
-      }
-    },
-    {
-      "repo": "AppList",
-      "projectName": "AppList",
-      "tag": "v1.7.0",
-      "name": "v1.7.0",
-      "publishedAt": "2026-07-01T14:35:55Z",
-      "provenance": "checksum",
-      "summary": "- **Frozen pip scan guard** — PyInstaller builds no longer relaunch the packed exe for pip scanning · - **Non-destructive bundle writes** — Restore bundles refuse non-empty folders by default, use atomic staging · - **Ve",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/AppList/releases/tag/v1.7.0",
-        "repository": "https://github.com/SysAdminDoc/AppList",
-        "detail": "https://sysadmindoc.github.io/projects/AppList/"
-      }
-    },
-    {
-      "repo": "UniFile",
-      "projectName": "UniFile",
-      "tag": "v9.3.32",
-      "name": "v9.3.32",
-      "publishedAt": "2026-07-01T14:31:44Z",
-      "provenance": "checksum",
-      "summary": "- Schema-validated structured outputs for all LLM classify calls (Ollama `format` + OpenAI `response_format`) · - Centralized `ai_request()` helper with retry, backoff, API key redaction, and normalized errors · - Full t",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/UniFile/releases/tag/v9.3.32",
-        "repository": "https://github.com/SysAdminDoc/UniFile",
-        "detail": "https://sysadmindoc.github.io/projects/UniFile/"
-      }
-    },
-    {
-      "repo": "Start-Menu-Organizer",
-      "projectName": "Start-Menu-Organizer",
-      "tag": "v0.14.0",
-      "name": "v0.14.0",
-      "publishedAt": "2026-07-01T14:26:45Z",
-      "provenance": "unsigned",
-      "summary": "- Block reparse-point (junction/symlink) traversal in scans and mutations · - Full shortcut metadata extraction with risk classification (ScriptHost, NetworkTarget, HiddenExecution, LongArguments, WebTarget, ScriptTarget",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.14.0",
-        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
-      }
-    },
-    {
-      "repo": "TelemetrySlayer",
-      "projectName": "TelemetrySlayer",
-      "tag": "v1.6.0",
-      "name": "v1.6.0",
-      "publishedAt": "2026-07-01T14:02:56Z",
-      "provenance": "unsigned",
-      "summary": "- **Silent RMM mode**: `-Silent -Preset Balanced|Minimal|Paranoid -ConfigPath <json> -WhatIf -LogPath <path>` for automated deployment · - **Edge Copilot/sidebar/WebView2 coverage**: UserFeedbackAllowed, HubsSidebarEnabl",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/TelemetrySlayer/releases/tag/v1.6.0",
-        "repository": "https://github.com/SysAdminDoc/TelemetrySlayer",
-        "detail": "https://sysadmindoc.github.io/projects/TelemetrySlayer/"
-      }
-    },
-    {
-      "repo": "Disable-AdobeTelemetry",
-      "projectName": "Disable-AdobeTelemetry",
-      "tag": "v2.4.0",
-      "name": "v2.4.0",
-      "publishedAt": "2026-07-01T05:52:13Z",
-      "provenance": "checksum",
-      "summary": "- GUI at full CLI parity: watchdog install/remove, profile import/export file pickers, WFP trace configuration, plumbing test controls, and JSON status save with file capture. · - Dark-themed TextBox styling consistent w",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry/releases/tag/v2.4.0",
-        "repository": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-        "detail": "https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/"
-      }
-    },
-    {
-      "repo": "Start-Menu-Organizer",
-      "projectName": "Start-Menu-Organizer",
-      "tag": "v0.13.0",
-      "name": "v0.13.0",
-      "publishedAt": "2026-06-30T15:44:41Z",
-      "provenance": "unsigned",
-      "summary": "Added Selected Profile and Default User scope options with explicit profile-root validation, separate Profile and DefaultUser backup/restore scopes, admin-gated profile/default mutations through the guarded file-operatio",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Start-Menu-Organizer/releases/tag/v0.13.0",
-        "repository": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-        "detail": "https://sysadmindoc.github.io/projects/Start-Menu-Organizer/"
       }
     }
   ]

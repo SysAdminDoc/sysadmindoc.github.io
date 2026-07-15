@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TsunamiSimulator — Matt Parker</title><meta name="description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-WSGqvfOmiia9qrbuyWRdFVIQhVOXSGxNNLzIVvjDy90=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="TsunamiSimulator — Matt Parker"><meta property="og:description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/TsunamiSimulator/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/TsunamiSimulator.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="TsunamiSimulator social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/TsunamiSimulator.png"><meta name="twitter:image:alt" content="TsunamiSimulator social preview card"><meta name="twitter:title" content="TsunamiSimulator — Matt Parker"><meta name="twitter:description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><link rel="canonical" href="https://sysadmindoc.github.io/projects/TsunamiSimulator/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TsunamiSimulator — Matt Parker</title><meta name="description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#050913"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SysAdminDoc"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self' 'sha256-lIV2Z8Wrct7BNeJWeMbsm85Db2O2GDpZmkxd8+EKUCQ=' 'sha256-fhXEzLRL2WG8EuNEefYBMuJw0UHROgxh4zJA9nteUUA='; style-src-attr 'none'; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="strict-origin-when-cross-origin"><meta name="generator" content="Astro v7.0.6"><meta property="og:title" content="TsunamiSimulator — Matt Parker"><meta property="og:description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><meta property="og:type" content="website"><meta property="og:url" content="https://sysadmindoc.github.io/projects/TsunamiSimulator/"><meta property="og:site_name" content="Matt Parker Portfolio"><meta property="og:image" content="https://sysadmindoc.github.io/og/TsunamiSimulator.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="TsunamiSimulator social preview card"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://sysadmindoc.github.io/og/TsunamiSimulator.png"><meta name="twitter:image:alt" content="TsunamiSimulator social preview card"><meta name="twitter:title" content="TsunamiSimulator — Matt Parker"><meta name="twitter:description" content="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides"><link rel="canonical" href="https://sysadmindoc.github.io/projects/TsunamiSimulator/"><link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin><style>/* Critical first-viewport CSS. Keep this small; global.css loads async. */
 @layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;
 @layer site.critical {
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/jetbrains-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -972,16 +972,18 @@ section{position:relative;z-index:1}
   --bg:#030812;
   --bg2:#08111e;
   --bg3:#0d1a2c;
-  --glass:rgba(9,18,31,.68);
+  --sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
+  --nav-h:60px;
+  --glass:rgba(9,18,31,.9);
   --glass-hover:rgba(124,184,255,.095);
   --glass-border:rgba(150,178,218,.16);
   --border-soft:rgba(150,178,218,.13);
   --border-strong:rgba(124,184,255,.3);
-  --surface-1:linear-gradient(180deg, rgba(15,29,48,.88), rgba(7,15,28,.76));
-  --surface-2:linear-gradient(180deg, rgba(17,34,55,.7), rgba(8,17,31,.58));
-  --surface-strong:linear-gradient(150deg, rgba(13,29,50,.96), rgba(5,12,24,.9));
-  --shadow-soft:0 22px 54px rgba(0,0,0,.24);
-  --shadow-strong:0 34px 86px rgba(0,0,0,.42);
+  --surface-1:rgba(11,22,38,.72);
+  --surface-2:rgba(13,27,45,.5);
+  --surface-strong:rgba(9,19,34,.9);
+  --shadow-soft:none;
+  --shadow-strong:0 18px 48px rgba(0,0,0,.3);
 }
 html[data-theme="light"]{
   --bg:#f7f9fc;
@@ -992,39 +994,33 @@ html[data-theme="light"]{
   --glass-border:rgba(47,68,104,.15);
   --border-soft:rgba(47,68,104,.14);
   --border-strong:rgba(53,107,191,.28);
-  --surface-1:linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,248,253,.82));
-  --surface-2:linear-gradient(180deg, rgba(255,255,255,.82), rgba(238,244,251,.7));
-  --surface-strong:linear-gradient(150deg, rgba(255,255,255,.98), rgba(237,245,252,.88));
-  --shadow-soft:0 20px 48px rgba(29,42,70,.12);
-  --shadow-strong:0 30px 72px rgba(29,42,70,.18);
+  --surface-1:rgba(255,255,255,.78);
+  --surface-2:rgba(244,248,253,.68);
+  --surface-strong:rgba(255,255,255,.92);
+  --shadow-soft:none;
+  --shadow-strong:0 18px 44px rgba(29,42,70,.13);
 }
 body{
-  background:
-    radial-gradient(circle at 72% 8%, rgba(124,184,255,.15), transparent 30%),
-    radial-gradient(circle at 20% 28%, rgba(88,229,214,.09), transparent 26%),
-    linear-gradient(180deg, #030812 0%, #071120 44%, #03101a 100%);
+  background:linear-gradient(180deg,#030812 0%,#07101c 100%);
 }
 html[data-theme="light"] body{
-  background:
-    radial-gradient(circle at 78% 10%, rgba(53,107,191,.12), transparent 30%),
-    radial-gradient(circle at 16% 30%, rgba(31,157,143,.08), transparent 26%),
-    linear-gradient(180deg, #f7f9fc 0%, #edf4fb 100%);
+  background:linear-gradient(180deg,#f7f9fc 0%,#eef3f8 100%);
 }
 body::before{
-  opacity:.1;
+  opacity:.035;
   background-size:72px 72px;
 }
 #nav{
-  background:rgba(3,8,18,.76);
+  background:rgba(3,8,18,.9);
   border-bottom-color:rgba(150,178,218,.12);
-  box-shadow:0 18px 54px rgba(0,0,0,.24);
+  box-shadow:none;
 }
 html[data-theme="light"] #nav{
-  background:rgba(247,249,252,.82);
-  box-shadow:0 12px 34px rgba(29,42,70,.1);
+  background:rgba(247,249,252,.94);
+  box-shadow:none;
 }
 .ni{
-  height:68px;
+  height:var(--nav-h);
 }
 .nl{
   display:inline-flex;
@@ -1036,19 +1032,20 @@ html[data-theme="light"] #nav{
   content:'>_';
   display:inline-grid;
   place-items:center;
-  width:38px;
-  height:38px;
-  border:1px solid rgba(74,222,128,.24);
-  border-radius:10px;
-  background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(74,222,128,.045));
-  box-shadow:0 14px 30px rgba(74,222,128,.08);
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
   color:var(--grn);
-  font-size:15px;
-  margin-right:12px;
+  font-size:14px;
+  margin-right:8px;
 }
-.nk{gap:10px}
+.nk{gap:2px}
 .nk a{
-  border-radius:8px;
+  min-height:36px;
+  border-radius:4px;
   font-family:var(--sans);
   font-size:14px;
   font-weight:650;
@@ -1056,8 +1053,11 @@ html[data-theme="light"] #nav{
 }
 .nk a:hover,.nk a.active{background:rgba(124,184,255,.09)}
 .nav-actions{
-  border-radius:10px;
-  background:rgba(255,255,255,.035);
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
 }
 .hero{padding:82px 32px 34px}
 .hero-grid{
@@ -1284,49 +1284,44 @@ html[data-theme="light"] .hero-evidence{
   }
 }
 
-.route-home .nk{gap:clamp(8px,.8vw,16px)}
-.route-home .nk a{padding-inline:10px}
-.hero{padding:86px 32px 42px}
-.hi{grid-template-columns:minmax(0,.86fr) minmax(560px,1.06fr);gap:clamp(44px,4.8vw,72px)}
-.ht{max-width:610px;padding-left:36px}
-.ht::before{top:48px;bottom:0}
-.hero-identity{order:1;display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
-.hero-avatar{flex:0 0 auto;width:82px;height:82px;margin:2px 0 0}
-.hn{margin:0;font-size:clamp(74px,6vw,110px);line-height:.88;letter-spacing:-.055em}
-.hn .a{display:block}
-.htag{order:2;margin:0 0 24px;font-size:14px}
-.hr{order:3;max-width:31ch;margin:0 0 12px;font-size:clamp(23px,2vw,29px);line-height:1.18}
-.hero-summary{order:4;max-width:55ch;margin:0 0 22px;color:var(--t2);font-size:16px;line-height:1.62}
-.hs{order:5;max-width:640px;margin:0 0 18px;padding:14px 18px}
-.ha{order:6;margin-top:0}
+.route-home .nk{gap:2px}
+.route-home .nk a{padding-inline:9px}
+.hero{padding:72px 32px 34px}
+.hi{grid-template-columns:minmax(0,.9fr) minmax(460px,1fr);gap:clamp(32px,4vw,56px)}
+.ht{max-width:640px;padding-left:0}
+.ht::before{display:none}
+.hero-identity{order:1;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.hero-avatar{flex:0 0 auto;width:64px;height:64px;margin:0;border-width:1px;box-shadow:none}
+.hn{margin:0;font-size:clamp(58px,5.5vw,84px);line-height:.94;letter-spacing:-.045em}
+.hn .a{display:inline;background:none;color:var(--blue);-webkit-text-fill-color:currentColor}
+.htag{order:2;margin:0 0 18px;font-size:13px}
+.hr{order:3;max-width:31ch;margin:0 0 16px;font-size:clamp(21px,1.8vw,27px);line-height:1.22}
+.hero-summary{order:5;max-width:55ch;margin:0 0 16px;color:var(--t2);font-size:16px;line-height:1.55}
+.hs{order:6;max-width:640px;margin:0;padding:14px 0;border:1px solid var(--border-soft);border-inline:0;border-radius:0;background:transparent;box-shadow:none}
+.ha{order:4;margin:0 0 18px}
 .hero-proof-strip,.hero-pulse,.hero-signals{display:none}
-.hero-evidence{max-width:720px;padding:22px 26px 24px;gap:14px;justify-self:stretch}
+.hero-evidence{max-width:720px;padding:0;gap:16px;justify-self:stretch;border:0;border-radius:0;background:transparent;box-shadow:none}
 .hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
-.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.12em}
-.hero-evidence-kicker .dot,.hero-live-badge .dot{width:7px;height:7px;border-radius:4px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
-.hero-evidence-head strong{font-size:clamp(26px,2.2vw,36px)}
+.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.08em}
+.hero-evidence-kicker .dot{width:7px;height:7px;border-radius:4px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
+.hero-evidence-head strong{font-size:clamp(24px,2vw,32px)}
 .hero-evidence-head p{max-width:60ch}
-.hero-live-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid var(--border-soft);border-radius:8px;color:var(--t2);background:rgba(255,255,255,.035);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:238px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:12px;background:linear-gradient(180deg, rgba(4,10,18,.94), rgba(5,11,20,.86));color:inherit;text-decoration:none;box-shadow:0 22px 50px rgba(0,0,0,.24)}
+.hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:220px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:6px;background:rgba(4,10,18,.78);color:inherit;text-decoration:none;box-shadow:none}
 .hero-showcase-brand{min-width:0;display:grid;place-items:center;align-content:center;gap:10px;padding:24px 18px;border-right:1px solid rgba(150,178,218,.16);text-align:center}
 .hero-app-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;color:#f5f7ff;background:linear-gradient(135deg,#5f75ff,#9267ff 54%,#5ce5d7);box-shadow:0 18px 34px rgba(92,117,255,.28)}
 .hero-app-icon svg{width:30px;height:30px}
 .hero-showcase-brand strong{color:#7890ff;font-family:var(--mono);font-size:clamp(20px,1.8vw,28px);letter-spacing:.14em}
 .hero-showcase-brand small{max-width:20ch;color:var(--t2);font-size:13px;line-height:1.4}
 .hero-showcase-shot{position:relative;min-width:0;display:block;overflow:hidden}
-.hero-showcase-shot img{width:100%;height:100%;min-height:238px;display:block;object-fit:cover;object-position:top center;opacity:.92}
-.hero-tool-strip{position:absolute;left:14px;right:14px;top:14px;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
-.hero-tool-strip span{padding:4px 8px;border:1px solid rgba(150,178,218,.18);border-radius:4px;background:rgba(3,8,18,.7);color:var(--t2);font-family:var(--mono);font-size:10px;line-height:1}
-.hero-app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.hero-app-card{min-width:0;min-height:116px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:14px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.03);color:inherit;text-decoration:none}
-.hero-app-card-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#cdd8f7;background:rgba(124,184,255,.12)}
-.hero-app-card-icon svg{width:18px;height:18px}
-.hero-app-card strong{display:block;color:var(--t1);font-size:13px;line-height:1.2}
-.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:11px;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-showcase-shot img{width:100%;height:100%;min-height:220px;display:block;object-fit:cover;object-position:top center;opacity:.92}
+.hero-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;border-block:1px solid var(--border-soft)}
+.hero-app-card{min-width:0;min-height:76px;display:block;padding:12px 0;border:0;border-bottom:1px solid var(--border-soft);border-radius:0;background:transparent;color:inherit;text-decoration:none}
+.hero-app-card strong{display:block;color:var(--t1);font-size:15px;line-height:1.2}
+.hero-app-card small{display:-webkit-box;margin-top:4px;color:var(--t3);font-size:13px;line-height:1.4;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .hero-app-card em{align-self:end;color:var(--grn);font-family:var(--mono);font-size:10px;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
 .hero-app-more em{justify-self:end;color:var(--pur);font-size:18px;letter-spacing:0;text-transform:none}
-html[data-theme="light"] .hero-showcase{background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(238,246,252,.9));box-shadow:0 18px 46px rgba(29,42,70,.13)}
-html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badge{background:rgba(255,255,255,.68)}
+html[data-theme="light"] .hero-showcase{background:rgba(255,255,255,.72);box-shadow:none}
+html[data-theme="light"] .hero-app-card{background:transparent}
 @media(max-width:1320px){
   .route-home .nk{gap:clamp(4px,.45vw,8px)}
   .route-home .nk a{padding-inline:8px;font-size:13px}
@@ -1341,403 +1336,23 @@ html[data-theme="light"] .hero-app-card,html[data-theme="light"] .hero-live-badg
   .hero-evidence{display:grid;max-width:none}
 }
 @media(max-width:720px){
-  .hero{padding:88px 20px 44px}
+  .hero{padding:72px 20px 32px}
   .ht{padding-left:0}
   .ht::before{display:none}
-  .hero-identity{display:grid;gap:16px;margin-bottom:18px}
+  .hero-identity{display:flex;gap:12px;margin-bottom:14px}
   .hero-avatar{width:62px;height:62px}
-  .hn{font-size:clamp(50px,16vw,68px)}
+  .hn{font-size:clamp(42px,12.5vw,58px)}
   .htag{justify-content:flex-start;width:auto}
   .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
-  .hero-summary{display:block;margin:0 0 20px;font-size:15px;line-height:1.55}
-  .hs{margin:0 0 16px;border:1px solid rgba(150,178,218,.14);border-radius:12px;background:rgba(255,255,255,.025)}
+  .hero-summary{display:block;margin:0 0 16px;font-size:16px;line-height:1.55}
+  .hs{margin:0;border-inline:0;border-radius:0;background:transparent}
   .hero-evidence{display:none}
 }
-</style><link rel="preload" href="/_assets/global.DsBilBnu.css" as="style"><link rel="stylesheet" href="/_assets/global.DsBilBnu.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.DsBilBnu.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DZyICMMz.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Career portfolio and public project archive spanning systems administration, healthcare technology support, and practical software work.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Healthcare IT","Customer Support","Technical Documentation","Active Directory","Hyper-V","Cisco Networking"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/TsunamiSimulator/#source","name":"TsunamiSimulator","description":"3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides","codeRepository":"https://github.com/SysAdminDoc/TsunamiSimulator","programmingLanguage":"TypeScript","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/TsunamiSimulator.png","keywords":"TypeScript, Desktop","datePublished":"2026-05-25T03:20:43.000Z","dateModified":"2026-07-10T03:54:43.000Z","license":"https://spdx.org/licenses/MIT.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"C# / Desktop lane","item":"https://sysadmindoc.github.io/lang/cs/"},{"@type":"ListItem","position":3,"name":"TsunamiSimulator","item":"https://sysadmindoc.github.io/projects/TsunamiSimulator/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: TsunamiSimulator"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">TsunamiSimulator</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Open navigation menu" aria-controls="navLinks" aria-expanded="false" title="Open navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="TsunamiSimulator" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Desktop"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-07-10"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Desktop" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/cs/" class="page-inline-link">C# / Desktop lane</a> <span>/</span>  <span>TsunamiSimulator</span> </div> <div class="project-meta"> <span class="cdo cs project-meta-dot"></span> <span class="project-category">CS</span>   </div> <h1 class="project-title">TsunamiSimulator</h1> <p class="project-desc">3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides</p> <div class="project-tags"> <span class="ctg">TypeScript</span><span class="ctg">Desktop</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/TsunamiSimulator" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+</style><link rel="preload" href="/_assets/global.B-8P1YAC.css" as="style"><link rel="stylesheet" href="/_assets/global.B-8P1YAC.css" media="print" data-async-style><script src="/scripts/head-init.js"></script><script src="/scripts/theme-toggle.js"></script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Matt Parker — recent projects" href="/rss.xml"><link rel="alternate" type="application/rss+xml" title="Matt Parker — releases" href="/releases.xml"><link rel="alternate" type="application/atom+xml" title="Matt Parker — projects (Atom)" href="/atom.xml"><link rel="alternate" type="application/feed+json" title="Matt Parker — projects (JSON Feed)" href="/feed.json"><link rel="alternate" type="application/json" title="Matt Parker — project index" href="/projects.json"><link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json"><link rel="preconnect" href="https://api.github.com" crossorigin><link rel="dns-prefetch" href="https://api.github.com"><link rel="dns-prefetch" href="https://img.youtube.com"><link rel="dns-prefetch" href="https://opengraph.githubassets.com"><link rel="manifest" href="/manifest.json"><noscript><link rel="stylesheet" href="/_assets/global.B-8P1YAC.css"><style>.rv,.card-enter{opacity:1!important;transform:none!important}</style></noscript><link rel="stylesheet" href="/_assets/_slug_.DZyICMMz.css"><script type="module" src="/_assets/page.ChryR_Se.js"></script></head> <body class="route-interior">  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sysadmindoc.github.io/#website","url":"https://sysadmindoc.github.io","name":"Matt Parker Portfolio","description":"Career portfolio and public project archive spanning systems administration, healthcare technology support, and practical software work.","publisher":{"@id":"https://sysadmindoc.github.io/#matt-parker"}},{"@type":"Person","@id":"https://sysadmindoc.github.io/#matt-parker","name":"Matt Parker","url":"https://github.com/SysAdminDoc","jobTitle":"Senior Technical Support Manager","worksFor":{"@type":"Organization","name":"Maven Imaging"},"address":{"@type":"PostalAddress","addressLocality":"Sarasota","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["PowerShell","Python","JavaScript","Kotlin","C#","C++","Systems Administration","Healthcare IT","Customer Support","Technical Documentation","Active Directory","Hyper-V","Cisco Networking"],"sameAs":["https://github.com/SysAdminDoc","https://www.linkedin.com/in/matthewryanparker"]}]}</script> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareSourceCode","@id":"https://sysadmindoc.github.io/projects/TsunamiSimulator/#source","name":"TsunamiSimulator","description":"3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides","codeRepository":"https://github.com/SysAdminDoc/TsunamiSimulator","programmingLanguage":"C#","author":{"@id":"https://sysadmindoc.github.io/#matt-parker"},"image":"https://sysadmindoc.github.io/og/TsunamiSimulator.png","keywords":"Desktop","dateModified":"2026-07-01T16:29:00.000Z"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Portfolio","item":"https://sysadmindoc.github.io/"},{"@type":"ListItem","position":2,"name":"C# / Desktop lane","item":"https://sysadmindoc.github.io/lang/cs/"},{"@type":"ListItem","position":3,"name":"TsunamiSimulator","item":"https://sysadmindoc.github.io/projects/TsunamiSimulator/"}]}]}</script><a href="#main" class="skip-link">Skip to content</a> <nav id="nav" aria-label="Main navigation"> <div class="ni"> <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a> <div class="nk" id="navLinks"> <a href="/#greatest-hits">Hits</a> <a href="/#live">Live</a> <a href="/#catalog">Catalog</a> <a href="/search/">Search</a> <a href="/releases/">Releases</a> <a href="/timeline/">Timeline</a> <a href="/archive/">Archive</a> <a href="/now/">Now</a> <a href="/uses/">Uses</a> <a href="/resume/">Resume</a> </div> <div class="nav-actions"> <span class="nav-context nav-context-slate" aria-label="Current view: TsunamiSimulator"> <span class="nav-context-eyebrow">Viewing</span> <span class="nav-context-value">TsunamiSimulator</span> </span> <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></button> <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search"> <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <span class="nav-search-label">Search</span> </button> <a href="/" class="ng" aria-label="Home">← Home</a> <button type="button" class="mt" id="mobileToggle" aria-label="Open navigation menu" aria-controls="navLinks" aria-expanded="false" title="Open navigation menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button> </div> </div> </nav> <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div> <main id="main" class="project-page" data-pagefind-body data-project-slug="TsunamiSimulator" data-pagefind-filter="Scope:Project"> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Project"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Desktop"></span> <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="updated:2026-07-01"></span> <div class="si page-shell"> <div class="project-header" id="project-overview" data-pagefind-filter="Category:Desktop" data-pagefind-meta="type:Project"> <div class="project-breadcrumbs"> <a href="/#catalog" class="page-inline-link">Portfolio</a> <span>/</span>  <a href="/lang/cs/" class="page-inline-link">C# / Desktop lane</a> <span>/</span>  <span>TsunamiSimulator</span> </div> <div class="project-meta"> <span class="cdo cs project-meta-dot"></span> <span class="project-category">CS</span>   </div> <h1 class="project-title">TsunamiSimulator</h1> <p class="project-desc">3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides</p> <div class="project-tags"> <span class="ctg">Desktop</span> </div> <div class="project-actions page-actions"> <a href="https://github.com/SysAdminDoc/TsunamiSimulator" target="_blank" rel="noopener" class="btn bp"> <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
 Open source on GitHub
 </a>  <button type="button" class="btn bg2 project-share-button" data-project-share data-share-title="TsunamiSimulator" data-share-text="3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides" data-share-url="https://sysadmindoc.github.io/projects/TsunamiSimulator/" aria-describedby="project-share-status"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
 Share project
-</button> <a href="/lang/cs/" class="page-action-link">Open the C# / Desktop lane</a> <span class="project-stars"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> 1</span> <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">C# / Desktop lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-07-10T03:54:43Z" data-rel="2026-07-10T03:54:43Z">Jul 10, 2026</time></div> <div class="project-fact-detail">Updated Jul 10, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">v0.5.0</div> <div class="project-fact-detail">Published Jul 10, 2026</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-readme" class="page-jump-link" title="Cached project documentation cleaned up for in-site reading." data-page-jump-link="project-readme"> <span class="page-jump-link-label">README</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-releases" class="page-jump-link" title="Tagged release history pulled from GitHub for this project." data-page-jump-link="project-releases"> <span class="page-jump-link-label">Recent Releases</span> <span class="page-jump-badge">RELEASES</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/TsunamiSimulator.png" alt="TsunamiSimulator card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
+</button> <a href="/lang/cs/" class="page-action-link">Open the C# / Desktop lane</a>  <span id="project-share-status" class="project-share-status" aria-live="polite"></span> </div> <div class="project-overview" aria-label="Project snapshot"> <div class="project-fact"> <div class="project-fact-label">Delivery</div> <div class="project-fact-value">Source-first</div> <div class="project-fact-detail">Browse code, README, and release notes on GitHub.</div> </div><div class="project-fact"> <div class="project-fact-label">Primary lane</div> <div class="project-fact-value">C# / Desktop lane</div> <div class="project-fact-detail">The clearest adjacent context for this project inside the portfolio.</div> </div><div class="project-fact"> <div class="project-fact-label">Freshness</div> <div class="project-fact-value"><time datetime="2026-07-01T16:29:00.0000000Z" data-rel="2026-07-01T16:29:00.0000000Z">Jul 1, 2026</time></div> <div class="project-fact-detail">Updated Jul 1, 2026</div> </div><div class="project-fact"> <div class="project-fact-label">Latest release</div> <div class="project-fact-value">No tag yet</div> <div class="project-fact-detail">README is the clearest project overview right now.</div> </div> </div> <nav class="page-jump-nav rv" aria-label="On This Page" data-page-jump-nav> <span class="page-jump-label">On This Page</span> <div class="page-jump-links"> <a href="#project-overview" class="page-jump-link" title="Project snapshot, delivery details, and primary actions." data-page-jump-link="project-overview"> <span class="page-jump-link-label">Overview</span> <span class="page-jump-badge">PROJECT</span> </a><a href="#project-preview" class="page-jump-link" title="Generated fallback card until a live capture is available." data-page-jump-link="project-preview"> <span class="page-jump-link-label">Preview</span> <span class="page-jump-badge">VISUAL</span> </a><a href="#project-notes" class="page-jump-link" title="Fallback notes when a cached README is not available yet." data-page-jump-link="project-notes"> <span class="page-jump-link-label">Repository Notes</span> <span class="page-jump-badge">DOCS</span> </a><a href="#project-related" class="page-jump-link" title="Adjacent work from the same category, ranked by signal and freshness." data-page-jump-link="project-related"> <span class="page-jump-link-label">More from This Lane</span> <span class="page-jump-badge">RELATED</span> </a> </div> </nav> <script src="/scripts/section-jump-nav.js"></script> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>  <div class="si"> <div class="project-readme-wrap project-panel" id="project-preview"> <div class="project-section-head"> <div> <h2 class="project-section-title">Preview</h2> <p class="project-section-copy">Using the generated project card as a clean fallback until a live capture is available.</p> </div> </div> <img src="/og/TsunamiSimulator.png" alt="TsunamiSimulator card" class="project-og" width="1200" height="630" decoding="async" fetchpriority="high" data-pagefind-meta="image[src], image_alt[alt]"> <p class="project-readme-hint">
 Source at <a href="https://github.com/SysAdminDoc/TsunamiSimulator" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/TsunamiSimulator</a>.
-</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-readme"> <div class="project-section-head"> <div> <h2 class="project-section-title">README</h2> <p class="project-section-copy">Cached at build time, cleaned up for in-site reading, and linked back to the canonical GitHub source.</p> <div class="project-readme-meta" aria-label="README summary"> <span>8 min read</span> <span>1,680 words</span> <span>11 sections</span> </div> </div> </div> <details class="project-readme-toc" open> <summary>Contents</summary> <ol> <li class="project-readme-toc-depth-3"> <a href="#tsunamisimulator">TsunamiSimulator</a> </li><li class="project-readme-toc-depth-4"> <a href="#visual-tour">Visual tour</a> </li><li class="project-readme-toc-depth-4"> <a href="#why-this-exists">Why this exists</a> </li><li class="project-readme-toc-depth-4"> <a href="#features-current-build-roadmap">Features (current build + roadmap)</a> </li><li class="project-readme-toc-depth-4"> <a href="#install">Install</a> </li><li class="project-readme-toc-depth-4"> <a href="#architecture">Architecture</a> </li><li class="project-readme-toc-depth-4"> <a href="#the-science-and-its-limits">The science (and its limits)</a> </li><li class="project-readme-toc-depth-4"> <a href="#citations-anchors-full-list-in-docs-science-references-bib">Citations (anchors, full list in docs/science/REFERENCES.bib )</a> </li><li class="project-readme-toc-depth-4"> <a href="#roadmap-amp-research">Roadmap &amp;amp; research</a> </li><li class="project-readme-toc-depth-4"> <a href="#license">License</a> </li><li class="project-readme-toc-depth-4"> <a href="#author">Author</a> </li> </ol> </details> <article class="project-readme"><h3 id="tsunamisimulator">TsunamiSimulator</h3>
-<p><a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/CHANGELOG.md" rel="noopener nofollow" target="_blank">![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)</a>
-<a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">![License](https://img.shields.io/badge/license-MIT-green.svg)</a>
-<a href="#install">![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)</a>
-<a href="#architecture">![Stack](https://img.shields.io/badge/stack-Tauri%202%20%2B%20React%20%2B%20CesiumJS%20%2B%20Rust-orange.svg)</a>
-<a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/docs/science" rel="noopener nofollow" target="_blank">![Physics](https://img.shields.io/badge/physics-Ward%E2%80%93Asphaug%20%7C%20Synolakis%20%7C%20Okada%20%7C%20Glasstone-purple.svg)</a></p>
-<blockquote>
-<p>A scientifically grounded 3D-globe desktop application for simulating tsunami generation, propagation, and first-order coastal effects from asteroid impacts, nuclear detonations (atmospheric and underwater), seafloor earthquakes, and subaerial landslides — with peer-reviewed historical presets like Chicxulub (66 Ma), Tōhoku 2011, Indian Ocean 2004, and Lituya Bay 1958.</p>
-</blockquote>
-<p>This is the <strong>NukeMap for tsunamis</strong> — but with a 3D globe, peer-reviewed source models, a coarse bathymetry-aware shallow-water solver, and presets you can scrub through frame-by-frame.</p>
-<hr />
-<h4 id="visual-tour">Visual tour</h4>
-<p><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/chicxulub-demo.gif" alt="Animated Chicxulub playback demo" loading="lazy" decoding="async" /></p>
-<table>
-<thead>
-<tr>
-<th>Historical preset + source readout</th>
-<th>Live SWE playback</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/preset-tohoku.png" alt="Tohoku preset selected on the globe" loading="lazy" decoding="async" /></td>
-<td><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/swe-running.png" alt="Live shallow-water-equation playback with a wave overlay" loading="lazy" decoding="async" /></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>Side-by-side comparison</th>
-<th>Scenario builder + globe pick</th>
-<th>Citations</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/compare-poseidon.png" alt="Poseidon realistic versus exaggerated comparison mode" loading="lazy" decoding="async" /></td>
-<td><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/scenario-builder.png" alt="Custom scenario builder with globe pick mode enabled" loading="lazy" decoding="async" /></td>
-<td><img src="https://raw.githubusercontent.com/SysAdminDoc/TsunamiSimulator/HEAD/assets/screenshots/citations.png" alt="Citations modal with peer-reviewed references" loading="lazy" decoding="async" /></td>
-</tr>
-</tbody></table>
-<hr />
-<h4 id="why-this-exists">Why this exists</h4>
-<p>Existing tools each do one piece:</p>
-<ul>
-<li><strong><a href="https://nuclearsecrecy.com/nukemap/" rel="noopener nofollow" target="_blank">NukeMap</a></strong> — nuclear airburst effects only, 2D map, no water.</li>
-<li><strong><a href="https://neal.fun/asteroid-launcher/" rel="noopener nofollow" target="_blank">Asteroid Launcher</a></strong> — fun, 2D map, no propagating tsunami.</li>
-<li><strong><a href="https://impact.ese.ic.ac.uk/ImpactEarth/" rel="noopener nofollow" target="_blank">Purdue "Impact: Earth!"</a></strong> — accurate formulas, single-point readout, no animation.</li>
-<li><strong><a href="http://depts.washington.edu/clawpack/geoclaw/" rel="noopener nofollow" target="_blank">GeoClaw</a></strong> / <strong><a href="https://www.researchgate.net/publication/374553562" rel="noopener nofollow" target="_blank">COMCOT</a></strong> / <strong><a href="https://www.pmel.noaa.gov/news-story/first-global-tsunami-simulation-chicxulub-asteroid-impact-66-million-years-ago" rel="noopener nofollow" target="_blank">MOST</a></strong> — operational accuracy, Fortran/Python, no consumer UI.</li>
-</ul>
-<p><code>TsunamiSimulator</code> combines them: <strong>peer-reviewed source physics + consumer-grade interactive globe</strong>. Pick a source (asteroid, nuke, fault, slide), drop it anywhere on Earth, and watch a shallow-water solution propagate over the app's low-confidence coarse basin/shelf bathymetry, estimate runup at named coastal points, and produce first-order inundation discs. Optional Cesium World Bathymetry improves visual terrain only; it is not the backend solver grid.</p>
-<hr />
-<h4 id="features-current-build-roadmap">Features (current build + roadmap)</h4>
-<h5 id="source-models-energy-initial-water-surface-displacement">Source models (energy → initial water-surface displacement)</h5>
-<table>
-<thead>
-<tr>
-<th>Source</th>
-<th>Status</th>
-<th>Reference</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Asteroid / comet impact</strong></td>
-<td>✅ formulas wired</td>
-<td>Ward &amp; Asphaug 2000 <em>Icarus</em> 145:64; Schmidt &amp; Holsapple 1982</td>
-</tr>
-<tr>
-<td><strong>Underwater nuclear</strong></td>
-<td>✅ formulas wired</td>
-<td>Glasstone &amp; Dolan 1977; Le Méhauté 1996; DNA 1996 (5% energy → wave)</td>
-</tr>
-<tr>
-<td><strong>Atmospheric / surface nuclear (ocean)</strong></td>
-<td>✅ formulas wired</td>
-<td>Van Dorn et al. 1968; Adams 1972</td>
-</tr>
-<tr>
-<td><strong>"Russia Poseidon" tsunami torpedo</strong></td>
-<td>✅ realistic mode</td>
-<td>Skeptical physics — 360° dispersion, ~5% efficiency</td>
-</tr>
-<tr>
-<td><strong>Earthquake (Okada fault dislocation)</strong></td>
-<td>✅ full Okada I-term wired</td>
-<td>Okada 1985; Mansinha &amp; Smylie 1971</td>
-</tr>
-<tr>
-<td><strong>Subaerial landslide</strong></td>
-<td>✅ Heller–Hager 2D channel</td>
-<td>Fritz &amp; Hager 2001 (Lituya); Slingerland &amp; Voight</td>
-</tr>
-<tr>
-<td><strong>Submarine landslide</strong></td>
-<td>✅ Watts 2003 best-fit</td>
-<td>Watts et al. 2005</td>
-</tr>
-<tr>
-<td><strong>Volcanic caldera collapse</strong></td>
-<td>🔲 planned</td>
-<td>Krakatoa 1883, Hunga Tonga 2022</td>
-</tr>
-</tbody></table>
-<h5 id="propagation">Propagation</h5>
-<ul>
-<li>✅ <strong>Linear long-wave</strong> (deep-ocean, fast preview).</li>
-<li>✅ <strong>Shallow-water equations</strong> — depth-averaged 2D leapfrog with <code>rayon</code>
-row-parallel updates, Manning bottom friction, CFL-safe Δt, snapshots
-rendered as PNG overlays on the Cesium globe.</li>
-<li>🔲 <strong>Boussinesq</strong> for dispersive waves (impact-tsunami wavelengths shorter than ocean depth — important for Ward–Asphaug regime).</li>
-<li>🔲 <strong>Adaptive mesh refinement</strong> (AMR) like GeoClaw — coarse far-field, fine coastal.</li>
-<li>✅ <strong>GPU compute</strong> via <code>wgpu</code> behind the <code>gpu</code> feature flag, with CPU fallback when no adapter is available.</li>
-</ul>
-<h5 id="coastal-inundation">Coastal inundation</h5>
-<ul>
-<li>✅ <strong>Synolakis 1987 runup law</strong> sampled at 60+ named coastal points,
-rendered as colour-graded 3D bars on the globe.</li>
-<li>🔲 <strong>MOST-style wetting/drying</strong> on bathymetric grid.</li>
-<li>✅ <strong>First-order inundation discs</strong> from runup/slope estimates.</li>
-<li>🔲 <strong>Real flood polygons</strong> rendered as GeoJSON overlays on Cesium.</li>
-</ul>
-<h5 id="presets-historical-events-with-peer-reviewed-parameters">Presets (historical events with peer-reviewed parameters)</h5>
-<table>
-<thead>
-<tr>
-<th>Event</th>
-<th>Date</th>
-<th>Source type</th>
-<th>Magnitude</th>
-<th>Peak wave</th>
-<th>Reference</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Chicxulub impact</strong></td>
-<td>66 Ma</td>
-<td>Asteroid, 14 km dia</td>
-<td>~10⁸ Mt TNT</td>
-<td>4.5 km initial, 1.5 km @ 220 km</td>
-<td>Range et al. 2022 <em>AGU Adv</em></td>
-</tr>
-<tr>
-<td><strong>Tōhoku</strong></td>
-<td>2011-03-11</td>
-<td>M 9.1 megathrust</td>
-<td>—</td>
-<td>40 m runup</td>
-<td>Mori et al. 2011</td>
-</tr>
-<tr>
-<td><strong>Indian Ocean</strong></td>
-<td>2004-12-26</td>
-<td>M 9.2 megathrust</td>
-<td>—</td>
-<td>30 m runup, 230k dead</td>
-<td>Synolakis et al. 2005</td>
-</tr>
-<tr>
-<td><strong>Lituya Bay</strong></td>
-<td>1958-07-09</td>
-<td>Rockslide, 30 M m³</td>
-<td>M 7.8 trigger</td>
-<td><strong>524 m runup</strong></td>
-<td>Fritz et al. 2001</td>
-</tr>
-<tr>
-<td><strong>Krakatoa</strong></td>
-<td>1883-08-27</td>
-<td>Caldera collapse</td>
-<td>VEI 6</td>
-<td>42 m</td>
-<td>Choi et al. 2003</td>
-</tr>
-<tr>
-<td><strong>Storegga slide</strong></td>
-<td>~8150 BP</td>
-<td>Submarine slide, 3000 km³</td>
-<td>—</td>
-<td>20 m+ in Scotland</td>
-<td>Bondevik et al. 2005</td>
-</tr>
-<tr>
-<td><strong>Hunga Tonga</strong></td>
-<td>2022-01-15</td>
-<td>Submarine volcano</td>
-<td>VEI 5–6</td>
-<td>15 m local + atmospheric Lamb wave</td>
-<td>Carvajal et al. 2022</td>
-</tr>
-<tr>
-<td><strong>Eltanin</strong></td>
-<td>2.51 Ma</td>
-<td>Asteroid, ~1 km dia</td>
-<td>South Pacific</td>
-<td>Globally significant</td>
-<td>Gersonde et al. 1997</td>
-</tr>
-<tr>
-<td><strong>Hypothetical Cumbre Vieja</strong></td>
-<td>—</td>
-<td>Flank collapse (La Palma)</td>
-<td>500 km³ scenario</td>
-<td>Disputed; 5–25 m E coast US</td>
-<td>Ward &amp; Day 2001 (controversial)</td>
-</tr>
-<tr>
-<td><strong>"Poseidon" deployment</strong></td>
-<td>—</td>
-<td>100 Mt underwater</td>
-<td>—</td>
-<td>~1–5 m at 100 km (realistic)</td>
-<td>DNA 1996, Glasstone 1977</td>
-</tr>
-<tr>
-<td><strong>Kamchatka</strong></td>
-<td>2025-07-29</td>
-<td>M 8.8 megathrust</td>
-<td>—</td>
-<td>0.85 m at DART 21416 (2nd-largest ever recorded)</td>
-<td>USGS us6000qw60; NCTR</td>
-</tr>
-<tr>
-<td><strong>Sanriku (Miyako)</strong></td>
-<td>2026-04-20</td>
-<td>M 7.4 thrust</td>
-<td>—</td>
-<td>modest; warning in 17 min</td>
-<td>USGS us6000sri7; NCTR</td>
-</tr>
-<tr>
-<td><strong>Lisbon</strong></td>
-<td>1755-11-01</td>
-<td>M ~8.7 thrust</td>
-<td>—</td>
-<td>trans-Atlantic</td>
-<td>Barkan et al. 2009</td>
-</tr>
-<tr>
-<td><strong>Amorgos</strong></td>
-<td>1956-07-09</td>
-<td>M 7.7 normal fault</td>
-<td>—</td>
-<td>30 m local (landslide-driven)</td>
-<td>Okal et al. 2009</td>
-</tr>
-<tr>
-<td><strong>Anak Krakatau</strong></td>
-<td>2018-12-22</td>
-<td>Flank collapse, 0.27 km³</td>
-<td>—</td>
-<td>~50 m near volcano</td>
-<td>Grilli et al. 2019</td>
-</tr>
-<tr>
-<td><strong>2024 YR4 what-if</strong></td>
-<td>—</td>
-<td>Asteroid, 60 m (impact ruled out)</td>
-<td>~7.7 Mt</td>
-<td>myth-busting upper bound</td>
-<td>NASA/JWST</td>
-</tr>
-</tbody></table>
-<h5 id="ux">UX</h5>
-<ul>
-<li><strong>5 globe styles</strong>: Natural Earth II (default, local-first), OpenStreetMap,
-Esri World Imagery, Cesium World Imagery, Cesium World Bathymetry.</li>
-<li><strong>Scenario builder</strong> — tabbed Asteroid / Nuclear / Earthquake / Landslide
-forms; click-globe-to-pick location.</li>
-<li><strong>Timeline scrubber + SWE playback</strong> — scrub a 24-frame snapshot sequence
-through the live shallow-water solver, with classic or colorblind-safe
-overlay colormaps.</li>
-<li><strong>Effect overlays</strong> — wavefront ring, coastal runup bars at 60+ named
-coastal points, DART buoy historical observations with per-buoy
-model-vs-observed RMSE for the four instrumented presets.</li>
-<li><strong>Max-field products</strong> — fgmax-style peak-amplitude, time-of-maximum, and
-energy-directivity overlays for every solver run, plus labelled
-first-arrival isochrones (NOAA travel-time-map style) exportable as
-GeoJSON.</li>
-<li><strong>Teacher mode</strong> — lockable classroom settings profiles (via settings
-export/import) and a printable worksheet for each of the 7 guided lessons.</li>
-<li><strong>Side-by-side comparison mode</strong> — two scenarios on synchronised globes.</li>
-<li><strong>Catppuccin Mocha</strong> dark theme default + <strong>Latte</strong> light theme toggle.</li>
-</ul>
-<hr />
-<h4 id="install">Install</h4>
-<p>Prebuilt Windows installers for the latest release are on the
-<a href="https://github.com/SysAdminDoc/TsunamiSimulator/releases" rel="noopener nofollow" target="_blank">Releases page</a>:
-an MSI package and an NSIS setup executable. The v0.5.0 Windows installers are
-locally built from this repository and are currently unsigned until a Windows
-code-signing certificate is configured, so Windows may show an unknown-publisher
-warning. macOS and Linux remain supported source-build targets; platform
-installers for those systems should be produced locally on those platforms when
-signing/build hosts are available.</p>
-<p><strong>Verify your download</strong> — each release includes a <code>checksums-sha256.txt</code> file.
-Compare the SHA256 of the downloaded file to the published value:</p>
-<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-powershell"><span class="line"><span class="shiki-c-muted"># PowerShell</span></span>
-<span class="line">(<span class="shiki-c-blue">Get-FileHash</span> .\TsunamiSimulator_0.<span class="shiki-c-blue">5.</span>0_x64_en<span class="shiki-c-red">-</span>US.msi <span class="shiki-c-red">-</span>Algorithm SHA256).Hash</span></code></pre><pre class="readme-code" tabindex="0"><code class="readme-code-inner language-cmd">:: Command Prompt
-certutil -hashfile TsunamiSimulator_0.5.0_x64_en-US.msi SHA256</code></pre><p>See <a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/docs/release/CODESIGNING.md" rel="noopener nofollow" target="_blank">`docs/release/CODESIGNING.md`</a> for full
-verification details and the maintainer release checklist.</p>
-<p>The app launches on the bundled <strong>Natural Earth II</strong> globe by default and is
-fully usable without network tiles or a token. OpenStreetMap and Esri imagery
-remain no-token online options, and a free Cesium ion token unlocks
-high-resolution satellite imagery and visual bathymetric terrain from Settings.
-Solver bathymetry remains the app's low-confidence coarse basin/shelf
-approximation until the blocked GEBCO_2026/TID-backed local data path is
-resolved.</p>
-<h5 id="build-from-source">Build from source</h5>
-<p>Prerequisites:</p>
-<ul>
-<li><strong>Node.js</strong> ≥ 20 LTS</li>
-<li><strong>Rust</strong> ≥ 1.78 (stable) with <code>rustup</code></li>
-<li>Windows: Visual Studio 2022/2026 with "Desktop development with C++"
-workload (provides MSVC <code>link.exe</code>); WebView2 runtime (preinstalled on Win11)</li>
-<li>macOS: Xcode Command Line Tools</li>
-<li>Linux: <code>libwebkit2gtk-4.1-dev</code>, <code>libgtk-3-dev</code>,
-<code>libayatana-appindicator3-dev</code>, <code>librsvg2-dev</code>, <code>libsoup-3.0-dev</code></li>
-</ul>
-<p>The Tauri CLI ships via the <code>@tauri-apps/cli</code> npm dev dependency — no
-separate <code>cargo install</code> step.</p>
-<pre class="readme-code shiki shiki-github-dark-default" tabindex="0"><code class="readme-code-inner language-shellscript"><span class="line"><span class="shiki-c-orange">git</span> <span class="shiki-c-cyan">clone</span> <span class="shiki-c-cyan">https://github.com/SysAdminDoc/TsunamiSimulator</span></span>
-<span class="line"><span class="shiki-c-blue">cd</span> <span class="shiki-c-cyan">TsunamiSimulator</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">install</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">doctor</span>             <span class="shiki-c-muted"># local toolchain preflight with actionable fixes</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">dev</span>                <span class="shiki-c-muted"># browser preview with deterministic demo data</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">tauri</span> <span class="shiki-c-cyan">dev</span>          <span class="shiki-c-muted"># full desktop app with Rust/Tauri IPC</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">verify</span>             <span class="shiki-c-muted"># local type/lint/test/audit/build verification gate</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">verify:release</span>     <span class="shiki-c-muted"># strict release gate; requires Rust advisory/license tools</span></span>
-<span class="line"><span class="shiki-c-orange">npm</span> <span class="shiki-c-cyan">run</span> <span class="shiki-c-cyan">tauri</span> <span class="shiki-c-cyan">build</span>        <span class="shiki-c-muted"># platform installer(s) in src-tauri/target/release/bundle/</span></span></code></pre><p>To bake a Cesium ion token at build time, <code>cp .env.example .env</code> and paste
-it in; otherwise leave it blank and paste at runtime in <strong>Settings</strong>.</p>
-<hr />
-<h4 id="architecture">Architecture</h4>
-<pre class="readme-code" tabindex="0"><code class="readme-code-inner">┌─────────────────────────── Tauri 2 Window ───────────────────────────┐
-│ ┌─────────────────────────────────────────────────────────────────┐  │
-│ │  React 19 + TypeScript + Vite (frontend / WebView2)             │  │
-│ │  ─ CesiumJS 1.142+ globe with optional bathymetric terrain        │  │
-│ │  ─ Scenario builder, timeline, overlays, results panel           │  │
-│ └──────────────────────────────  ▲  ───────────────────────────────┘  │
-│                                  │ tauri::invoke (JSON over IPC)      │
-│ ┌──────────────────────────────  ▼  ───────────────────────────────┐  │
-│ │  Rust backend (src-tauri/)                                       │  │
-│ │  ─ physics::asteroid    Ward–Asphaug + Schmidt–Holsapple         │  │
-│ │  ─ physics::nuclear     Glasstone–Dolan + Le Méhauté             │  │
-│ │  ─ physics::landslide   Fritz–Hager + Slingerland–Voight         │  │
-│ │  ─ physics::earthquake  Okada 1985 (full I-term)                  │  │
-│ │  ─ physics::shallow_water  NSWE + Synolakis runup                │  │
-│ │  ─ data::bathymetry     coarse basin/shelf depth sampler         │  │
-│ │  ─ presets              Chicxulub / Tōhoku / Lituya / …          │  │
-│ └──────────────────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────────────────────────────┘</code></pre><p>Heavy physics runs in the Rust backend (multi-threaded via <code>rayon</code>, GPU via <code>wgpu</code> behind the <code>gpu</code> feature flag). The frontend only handles globe rendering, controls, and result visualization. The IPC boundary keeps the WebView from blocking on million-cell SWE solves.</p>
-<hr />
-<h4 id="the-science-and-its-limits">The science (and its limits)</h4>
-<p>This is not a forecast tool. Compared to operational models like NOAA MOST:</p>
-<ul>
-<li><strong>What's accurate</strong> — initial conditions (cavity geometry from Ward–Asphaug, fault displacement from Okada), idealized open-ocean propagation in deep water, far-field arrival times.</li>
-<li><strong>What's approximate</strong> — solver bathymetry (coarse basin means with a shelf taper, not GEBCO_2026/TID-backed terrain), coastal runup (we use Synolakis 1987 analytical instead of full wetting/drying), first-order inundation discs, dispersion (linear long-wave first, Boussinesq later).</li>
-<li><strong>What's wrong</strong> — anything involving the atmosphere coupling (Hunga Tonga–style Lamb-wave coupling is a research frontier), tsunami earthquake source-time functions (we use static dislocation), submarine landslide rheology.</li>
-<li><strong>The "Russia Poseidon" honest take</strong> — Russian state media's 500-m-wave claim is propaganda. The 1996 Defense Nuclear Agency study put underwater-explosion wave-generation efficiency at ~5%. A 100-Mt warhead at 100 km open ocean produces a ~few-meter wave, not a city-killer. We model both the propaganda yield and a realistic one — the comparison is the point.</li>
-</ul>
-<p>See <a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/docs/science" rel="noopener nofollow" target="_blank">`docs/science/`</a> for formula derivations and citations.</p>
-<hr />
-<h4 id="citations-anchors-full-list-in-docs-science-references-bib">Citations (anchors, full list in <code>docs/science/REFERENCES.bib</code>)</h4>
-<ul>
-<li>Ward, S. N., &amp; Asphaug, E. (2000). Asteroid impact tsunami: a probabilistic hazard assessment. <em>Icarus</em>, 145, 64–78.</li>
-<li>Range, M. M., et al. (2022). The Chicxulub Impact Produced a Powerful Global Tsunami. <em>AGU Advances</em>. <a href="https://doi.org/10.1029/2021AV000627" rel="noopener nofollow" target="_blank">https://doi.org/10.1029/2021AV000627</a></li>
-<li>Synolakis, C. E. (1987). The runup of solitary waves. <em>J. Fluid Mech.</em>, 185, 523–545.</li>
-<li>Okada, Y. (1985). Surface deformation due to shear and tensile faults in a half-space. <em>BSSA</em>, 75, 1135–1154.</li>
-<li>Fritz, H. M., Hager, W. H., &amp; Minor, H.-E. (2001). Lituya Bay case: rockslide impact and wave run-up. <em>Sci. Tsunami Hazards</em>, 19, 3–22.</li>
-<li>Glasstone, S., &amp; Dolan, P. J. (1977). <em>The Effects of Nuclear Weapons</em> (3rd ed.). USDOE.</li>
-<li>Le Méhauté, B., &amp; Wang, S. (1996). <em>Water Waves Generated by Underwater Explosion</em>. World Scientific.</li>
-<li>Collins, G. S., Melosh, H. J., &amp; Marcus, R. A. (2005). Earth Impact Effects Program. <em>Meteoritics &amp; Planetary Science</em>, 40, 817–840.</li>
-<li>Berger, M. J., George, D. L., LeVeque, R. J., &amp; Mandli, K. T. (2011). The GeoClaw software for depth-averaged flows. <em>Advances in Water Resources</em>, 34(9), 1195–1206.</li>
-</ul>
-<hr />
-<h4 id="roadmap-amp-research">Roadmap &amp; research</h4>
-<ul>
-<li><a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/ROADMAP.md" rel="noopener nofollow" target="_blank">`ROADMAP.md`</a> — phased delivery plan (v0.1.0 → v1.0.0).</li>
-<li><a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/CHANGELOG.md" rel="noopener nofollow" target="_blank">`CHANGELOG.md`</a> — shipped feature summary.</li>
-</ul>
-<h4 id="license">License</h4>
-<p><a href="https://github.com/SysAdminDoc/TsunamiSimulator/blob/HEAD/LICENSE" rel="noopener nofollow" target="_blank">MIT</a>. For scientific education and hazard-awareness visualization only. Not for evacuation planning. Use NOAA NTWC/PTWC for real warnings.</p>
-<h4 id="author">Author</h4>
-<p><a href="https://github.com/SysAdminDoc" rel="noopener nofollow" target="_blank">@SysAdminDoc</a> — Senior Systems Administrator, medical-imaging IT, side projects in physics-based simulators.</p>
-</article> <p class="project-readme-hint project-readme-hint-spaced">
-Read on GitHub → <a href="https://github.com/SysAdminDoc/TsunamiSimulator" target="_blank" rel="noopener" class="project-link">github.com/SysAdminDoc/TsunamiSimulator</a> </p> </div> </div>  <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-releases"> <div class="project-section-head"> <div> <h2 class="project-section-title">Recent Releases</h2> <p class="project-section-copy">Latest tagged notes pulled from GitHub release history for this project.</p> </div> </div> <ul class="project-releases"> <li class="project-release"> <a href="https://github.com/SysAdminDoc/TsunamiSimulator/releases/tag/v0.5.0" target="_blank" rel="noopener" class="project-release-tag">v0.5.0</a> <time class="project-release-date" datetime="2026-07-10T03:55:03Z"> Jul 10, 2026 </time> <p class="project-release-body">- **Okada vertical-displacement kernel corrected** against Okada 1985 Table 2 (4-significant-figure agreement on cases 2 and 3). The previous strike-slip term produced non-physical displacement growing with fault length;</p> </li> </ul> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div> <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/DeepPurge/" class="ca" aria-describedby="related-rank-DeepPurge" data-rank="59.3146" data-rank-position="22" data-rank-label="Rank 22: 5 stars, updated 9d ago, downloadable release"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">DeepPurge</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Thorough Windows uninstaller — removes programs completely, hunts down every leftover</span> <span class="ca-rank ca-rank-related" id="related-rank-DeepPurge" title="Rank 22: 5 stars, updated 9d ago, downloadable release"> Recommended #22: 5 stars, updated 9d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T03:11:51Z" data-rel-short="2026-07-01T03:11:51Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>5</span> </span>  </span> </a><a href="/projects/qBittorrent-Vanced/" class="ca" aria-describedby="related-rank-qBittorrent-Vanced" data-rank="51.5119" data-rank-position="36" data-rank-label="Rank 36: 2 stars, updated 8d ago, downloadable release"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">qBittorrent-Vanced</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Customized BitTorrent client with dark theme</span> <span class="ca-rank ca-rank-related" id="related-rank-qBittorrent-Vanced" title="Rank 36: 2 stars, updated 8d ago, downloadable release"> Recommended #36: 2 stars, updated 8d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T05:32:31Z" data-rel-short="2026-07-01T05:32:31Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>2</span> </span>  </span> </a><a href="/projects/Images/" class="ca" aria-describedby="related-rank-Images" data-rank="50.3147" data-rank-position="45" data-rank-label="Rank 45: 1 stars, updated 1d ago, 3 release downloads"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Images</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing</span> <span class="ca-rank ca-rank-related" id="related-rank-Images" title="Rank 45: 1 stars, updated 1d ago, 3 release downloads"> Recommended #45: 1 stars, updated 1d ago, 3 release downloads </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-09T23:27:27Z" data-rel-short="2026-07-09T23:27:27Z"> Jul 9, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span>  </span> </a><a href="/projects/UniversalConverterX/" class="ca" aria-describedby="related-rank-UniversalConverterX" data-rank="49.8044" data-rank-position="46" data-rank-label="Rank 46: 3 stars, updated 8d ago"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">UniversalConverterX</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Native Windows file converter with context menu integration — 1000+ formats</span> <span class="ca-rank ca-rank-related" id="related-rank-UniversalConverterX" title="Rank 46: 3 stars, updated 8d ago"> Recommended #46: 3 stars, updated 8d ago </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T05:17:48Z" data-rel-short="2026-07-01T05:17:48Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span>  </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"> <span>Choose a result to open it.</span> <span>Projects, pages, categories, and sections are indexed.</span> </div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"README","href":"#project-readme","desc":"Cached project documentation cleaned up for in-site reading.","badge":"DOCS"},{"label":"Recent Releases","href":"#project-releases","desc":"Tagged release history pulled from GitHub for this project.","badge":"RELEASES"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>
+</p> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>    <div class="si"> <div class="project-readme-wrap project-panel" id="project-notes"> <div class="project-section-head"> <div> <h2 class="project-section-title">Repository Notes</h2> <p class="project-section-copy">GitHub metadata is available, but a readable cached README has not been pulled into the site yet.</p> </div> </div> <div class="project-empty page-empty"> <strong>No cached README yet.</strong> Use the GitHub source and the release history below for the clearest current view of this project.
+</div> </div> </div> <div class="dv"> <span class="dv-line" aria-hidden="true"></span> </div>   <div class="si"> <div class="project-readme-wrap project-panel" id="project-related"> <div class="project-section-head"> <div> <h2 class="project-section-title">More from this lane</h2> <p class="project-section-copy">More work from the same lane, ranked by the same build-time blend of stars, freshness, and release-download activity used in the catalog.</p> </div> </div> <div class="cg project-related-grid"> <a href="/projects/DeepPurge/" class="ca" aria-describedby="related-rank-DeepPurge" data-rank="58.5691" data-rank-position="22" data-rank-label="Rank 22: 5 stars, updated 14d ago, downloadable release"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">DeepPurge</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Thorough Windows uninstaller — removes programs completely, hunts down every leftover</span> <span class="ca-rank ca-rank-related" id="related-rank-DeepPurge" title="Rank 22: 5 stars, updated 14d ago, downloadable release"> Recommended #22: 5 stars, updated 14d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T03:11:51Z" data-rel-short="2026-07-01T03:11:51Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>5</span> </span>  </span> </a><a href="/projects/Images/" class="ca" aria-describedby="related-rank-Images" data-rank="51.1746" data-rank-position="34" data-rank-label="Rank 34: 1 stars, updated 7d ago, 8 release downloads"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">Images</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing</span> <span class="ca-rank ca-rank-related" id="related-rank-Images" title="Rank 34: 1 stars, updated 7d ago, 8 release downloads"> Recommended #34: 1 stars, updated 7d ago, 8 release downloads </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-14T23:31:41Z" data-rel-short="2026-07-14T23:31:41Z"> Jul 14, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>1</span> </span>  </span> </a><a href="/projects/qBittorrent-Vanced/" class="ca" aria-describedby="related-rank-qBittorrent-Vanced" data-rank="50.6750" data-rank-position="36" data-rank-label="Rank 36: 2 stars, updated 14d ago, downloadable release"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">qBittorrent-Vanced</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Customized BitTorrent client with dark theme</span> <span class="ca-rank ca-rank-related" id="related-rank-qBittorrent-Vanced" title="Rank 36: 2 stars, updated 14d ago, downloadable release"> Recommended #36: 2 stars, updated 14d ago, downloadable release </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T05:32:31Z" data-rel-short="2026-07-01T05:32:31Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>2</span> </span>  </span> </a><a href="/projects/UniversalConverterX/" class="ca" aria-describedby="related-rank-UniversalConverterX" data-rank="48.9513" data-rank-position="45" data-rank-label="Rank 45: 3 stars, updated 14d ago"> <span class="cdo cs"></span> <span class="ca-copy"> <span class="cna"> <span class="cna-label">UniversalConverterX</span> <span class="ca-kind">Desktop</span> </span> <span class="cds">Native Windows file converter with context menu integration — 1000+ formats</span> <span class="ca-rank ca-rank-related" id="related-rank-UniversalConverterX" title="Rank 45: 3 stars, updated 14d ago"> Recommended #45: 3 stars, updated 14d ago </span> </span> <span class="ca-side"> <time class="ca-age age-cool" datetime="2026-07-01T05:17:48Z" data-rel-short="2026-07-01T05:17:48Z"> Jul 1, 2026 </time> <span class="ca-stars"> <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg> <span>3</span> </span>  </span> </a> </div> </div> </div> </main> <script src="/scripts/project-page.js"></script><script src="/scripts/shot-viewer.js"></script><footer> <div class="fi page-footer-shell"> <div class="footer-brand"> <div class="ft"> <a href="/" class="footer-backlink">← Back to portfolio</a> </div> <p class="footer-summary">This project is easier to judge in context: the surrounding lane explains the pattern, while the release stream and wider archive show how it fits into the rest of the work.</p> </div> <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav> </div> </footer>  <dialog class="cmdk-backdrop" id="cmdk" aria-label="Command palette" aria-modal="true"> <div class="cmdk"> <div class="cmdk-input-row"> <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects and pages..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false"> <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search"> <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg> </button> </div> <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Search by project, page, category, or section.</div> <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div> <div class="cmdk-footer" aria-hidden="true"><span>Enter to open · Esc to close</span></div> </div> </dialog>  <script type="application/json" id="cmdk-sections-data">[{"label":"Overview","href":"#project-overview","desc":"Project snapshot, delivery details, and primary actions.","badge":"PROJECT"},{"label":"Preview","href":"#project-preview","desc":"Generated fallback card until a live capture is available.","badge":"VISUAL"},{"label":"Repository Notes","href":"#project-notes","desc":"Fallback notes when a cached README is not available yet.","badge":"DOCS"},{"label":"More from This Lane","href":"#project-related","desc":"Adjacent work from the same category, ranked by signal and freshness.","badge":"RELATED"}]</script><script src="/cmdk-data.js"></script><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/relative-time.js"></script><script src="/scripts/mobile-nav.js"></script><script src="/scripts/scroll-reveal.js"></script><script src="/scripts/service-worker.js"></script>       </body> </html>

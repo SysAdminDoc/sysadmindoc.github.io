@@ -5,26 +5,53 @@
   <link href="https://sysadmindoc.github.io/" />
   <link href="https://sysadmindoc.github.io/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://sysadmindoc.github.io/</id>
-  <updated>2026-07-10T04:51:51.000Z</updated>
+  <updated>2026-07-15T14:55:28.000Z</updated>
   <author>
     <name>Matt Parker</name>
     <uri>https://github.com/SysAdminDoc</uri>
   </author>
   <logo>https://sysadmindoc.github.io/icon-512.png</logo>
   <entry>
+    <title>ImageForge (live)</title>
+    <link href="https://sysadmindoc.github.io/projects/ImageForge/" />
+    <id>https://sysadmindoc.github.io/projects/ImageForge/</id>
+    <updated>2026-07-15T14:55:28.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Open source image converter</summary>
+    <content type="html">&lt;p&gt;Open source image converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ImageForge/&quot;&gt;View ImageForge (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>Vigil</title>
     <link href="https://sysadmindoc.github.io/projects/Vigil/" />
     <id>https://sysadmindoc.github.io/projects/Vigil/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Desktop" />
     <summary type="text">Windows packaging for ungoogled-chromium</summary>
     <content type="html">&lt;p&gt;Windows packaging for ungoogled-chromium&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Vigil/&quot;&gt;View Vigil on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title>TsunamiSimulator</title>
+    <link href="https://sysadmindoc.github.io/projects/TsunamiSimulator/" />
+    <id>https://sysadmindoc.github.io/projects/TsunamiSimulator/</id>
+    <updated>2026-07-15T14:55:28.000Z</updated>
+    <category term="Desktop" />
+    <summary type="text">3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides</summary>
+    <content type="html">&lt;p&gt;3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/TsunamiSimulator/&quot;&gt;View TsunamiSimulator on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Discrub</title>
+    <link href="https://sysadmindoc.github.io/projects/Discrub/" />
+    <id>https://sysadmindoc.github.io/projects/Discrub/</id>
+    <updated>2026-07-15T14:55:28.000Z</updated>
+    <category term="Extensions" />
+    <summary type="text">Discord message editor, deleter, and exporter</summary>
+    <content type="html">&lt;p&gt;Discord message editor, deleter, and exporter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Discrub/&quot;&gt;View Discrub on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>android-debloat-list</title>
     <link href="https://sysadmindoc.github.io/projects/android-debloat-list/" />
     <id>https://sysadmindoc.github.io/projects/android-debloat-list/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Guides" />
     <summary type="text">Curated Android debloat list with vulnerability notes — companion to AppManagerNG</summary>
     <content type="html">&lt;p&gt;Curated Android debloat list with vulnerability notes — companion to AppManagerNG&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/android-debloat-list/&quot;&gt;View android-debloat-list on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
@@ -33,7 +60,7 @@
     <title>sysadmindoc.github.io</title>
     <link href="https://sysadmindoc.github.io/projects/sysadmindoc.github.io/" />
     <id>https://sysadmindoc.github.io/projects/sysadmindoc.github.io/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Guides" />
     <summary type="text">Personal portfolio and project showcase site hosted on GitHub Pages</summary>
     <content type="html">&lt;p&gt;Personal portfolio and project showcase site hosted on GitHub Pages&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/sysadmindoc.github.io/&quot;&gt;View sysadmindoc.github.io on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
@@ -42,7 +69,7 @@
     <title>LTSC-MicrosoftStore</title>
     <link href="https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/" />
     <id>https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Other" />
     <summary type="text">Add Windows Store to Win11 24H2 LTSC</summary>
     <content type="html">&lt;p&gt;Add Windows Store to Win11 24H2 LTSC&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/LTSC-MicrosoftStore/&quot;&gt;View LTSC-MicrosoftStore on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
@@ -51,7 +78,7 @@
     <title>RcloneBrowser</title>
     <link href="https://sysadmindoc.github.io/projects/RcloneBrowser/" />
     <id>https://sysadmindoc.github.io/projects/RcloneBrowser/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Other" />
     <summary type="text">Cross-platform GUI for rclone</summary>
     <content type="html">&lt;p&gt;Cross-platform GUI for rclone&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/RcloneBrowser/&quot;&gt;View RcloneBrowser on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
@@ -60,7 +87,7 @@
     <title>TabExplorer</title>
     <link href="https://sysadmindoc.github.io/projects/TabExplorer/" />
     <id>https://sysadmindoc.github.io/projects/TabExplorer/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Other" />
     <summary type="text">Tabbed file manager for Windows</summary>
     <content type="html">&lt;p&gt;Tabbed file manager for Windows&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/TabExplorer/&quot;&gt;View TabExplorer on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
@@ -69,82 +96,235 @@
     <title>TagStudio</title>
     <link href="https://sysadmindoc.github.io/projects/TagStudio/" />
     <id>https://sysadmindoc.github.io/projects/TagStudio/</id>
-    <updated>2026-07-10T04:51:51.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Other" />
     <summary type="text">User-focused photo file management system</summary>
     <content type="html">&lt;p&gt;User-focused photo &amp;amp; file management system&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/TagStudio/&quot;&gt;View TagStudio on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>AppManagerNG</title>
-    <link href="https://sysadmindoc.github.io/projects/AppManagerNG/" />
-    <id>https://sysadmindoc.github.io/projects/AppManagerNG/</id>
-    <updated>2026-07-10T04:48:17.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Power-user package manager — continuation of MuntashirAkon/AppManager</summary>
-    <content type="html">&lt;p&gt;Power-user package manager — continuation of MuntashirAkon/AppManager&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AppManagerNG/&quot;&gt;View AppManagerNG on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>LibreSpot</title>
-    <link href="https://sysadmindoc.github.io/projects/LibreSpot/" />
-    <id>https://sysadmindoc.github.io/projects/LibreSpot/</id>
-    <updated>2026-07-10T04:48:16.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</summary>
-    <content type="html">&lt;p&gt;Spotify customization — automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/LibreSpot/&quot;&gt;View LibreSpot on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>ClearCut</title>
-    <link href="https://sysadmindoc.github.io/projects/ClearCut/" />
-    <id>https://sysadmindoc.github.io/projects/ClearCut/</id>
-    <updated>2026-07-10T04:40:52.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.</summary>
-    <content type="html">&lt;p&gt;Full-featured Android video editor — 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ClearCut/&quot;&gt;View ClearCut on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>ImgConverter</title>
-    <link href="https://sysadmindoc.github.io/projects/ImgConverter/" />
-    <id>https://sysadmindoc.github.io/projects/ImgConverter/</id>
-    <updated>2026-07-10T04:29:20.000Z</updated>
-    <category term="Python" />
-    <summary type="text">Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity</summary>
-    <content type="html">&lt;p&gt;Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ImgConverter/&quot;&gt;View ImgConverter on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Bookmark-Organizer-Pro</title>
-    <link href="https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/" />
-    <id>https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/</id>
-    <updated>2026-07-10T04:19:23.000Z</updated>
-    <category term="Python" />
-    <summary type="text">AI-powered bookmark manager and categorizer</summary>
-    <content type="html">&lt;p&gt;AI-powered bookmark manager and categorizer&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/&quot;&gt;View Bookmark-Organizer-Pro on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>ScriptVault</title>
-    <link href="https://sysadmindoc.github.io/projects/ScriptVault/" />
-    <id>https://sysadmindoc.github.io/projects/ScriptVault/</id>
-    <updated>2026-07-10T04:15:07.000Z</updated>
-    <category term="Extensions" />
-    <summary type="text">Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs</summary>
-    <content type="html">&lt;p&gt;Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ScriptVault/&quot;&gt;View ScriptVault on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+    <title>SoftwareScannerGUI</title>
+    <link href="https://sysadmindoc.github.io/projects/SoftwareScannerGUI/" />
+    <id>https://sysadmindoc.github.io/projects/SoftwareScannerGUI/</id>
+    <updated>2026-07-15T14:55:28.000Z</updated>
+    <category term="PowerShell" />
+    <summary type="text">WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries</summary>
+    <content type="html">&lt;p&gt;WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SoftwareScannerGUI/&quot;&gt;View SoftwareScannerGUI on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>NukeMap</title>
     <link href="https://sysadmindoc.github.io/projects/NukeMap/" />
     <id>https://sysadmindoc.github.io/projects/NukeMap/</id>
-    <updated>2026-07-10T04:13:01.000Z</updated>
+    <updated>2026-07-15T14:55:28.000Z</updated>
     <category term="Web Apps" />
     <summary type="text">Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets</summary>
     <content type="html">&lt;p&gt;Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/NukeMap/&quot;&gt;View NukeMap on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title>AsteroidSimulator</title>
+    <link href="https://sysadmindoc.github.io/projects/AsteroidSimulator/" />
+    <id>https://sysadmindoc.github.io/projects/AsteroidSimulator/</id>
+    <updated>2026-07-15T14:55:28.000Z</updated>
+    <category term="Web Apps" />
+    <summary type="text">Asteroid and comet impact simulator with interactive 3D visualization</summary>
+    <content type="html">&lt;p&gt;Asteroid and comet impact simulator with interactive 3D visualization&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AsteroidSimulator/&quot;&gt;View AsteroidSimulator on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>Astra-Deck</title>
     <link href="https://sysadmindoc.github.io/projects/Astra-Deck/" />
     <id>https://sysadmindoc.github.io/projects/Astra-Deck/</id>
-    <updated>2026-07-10T04:11:17.000Z</updated>
+    <updated>2026-07-15T14:55:02.000Z</updated>
     <category term="Featured" />
     <summary type="text">Premium YouTube enhancement extension 150+ features for Chrome Firefox.</summary>
     <content type="html">&lt;p&gt;Premium YouTube enhancement extension — 150+ features for Chrome &amp;amp; Firefox.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Astra-Deck/&quot;&gt;View Astra-Deck on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Droidsmith</title>
+    <link href="https://sysadmindoc.github.io/projects/Droidsmith/" />
+    <id>https://sysadmindoc.github.io/projects/Droidsmith/</id>
+    <updated>2026-07-15T14:50:10.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*</summary>
+    <content type="html">&lt;p&gt;Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Droidsmith/&quot;&gt;View Droidsmith on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>OpenTasker</title>
+    <link href="https://sysadmindoc.github.io/projects/OpenTasker/" />
+    <id>https://sysadmindoc.github.io/projects/OpenTasker/</id>
+    <updated>2026-07-15T14:02:51.000Z</updated>
+    <category term="Android" />
+    <summary type="text">FOSS Tasker alternative for Android</summary>
+    <content type="html">&lt;p&gt;FOSS Tasker alternative for Android&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/OpenTasker/&quot;&gt;View OpenTasker on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>AlarmClockXtreme</title>
+    <link href="https://sysadmindoc.github.io/projects/AlarmClockXtreme/" />
+    <id>https://sysadmindoc.github.io/projects/AlarmClockXtreme/</id>
+    <updated>2026-07-15T11:50:27.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Feature-rich alarm clock with dismiss challenges</summary>
+    <content type="html">&lt;p&gt;Feature-rich alarm clock with dismiss challenges&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AlarmClockXtreme/&quot;&gt;View AlarmClockXtreme on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>SnapCrop</title>
+    <link href="https://sysadmindoc.github.io/projects/SnapCrop/" />
+    <id>https://sysadmindoc.github.io/projects/SnapCrop/</id>
+    <updated>2026-07-15T11:19:43.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup</summary>
+    <content type="html">&lt;p&gt;Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SnapCrop/&quot;&gt;View SnapCrop on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>AppManagerNG</title>
+    <link href="https://sysadmindoc.github.io/projects/AppManagerNG/" />
+    <id>https://sysadmindoc.github.io/projects/AppManagerNG/</id>
+    <updated>2026-07-15T09:46:41.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Power-user package manager — continuation of MuntashirAkon/AppManager</summary>
+    <content type="html">&lt;p&gt;Power-user package manager — continuation of MuntashirAkon/AppManager&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AppManagerNG/&quot;&gt;View AppManagerNG on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>HostsGuard</title>
+    <link href="https://sysadmindoc.github.io/projects/HostsGuard/" />
+    <id>https://sysadmindoc.github.io/projects/HostsGuard/</id>
+    <updated>2026-07-15T08:06:33.000Z</updated>
+    <category term="Desktop" />
+    <summary type="text">Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules</summary>
+    <content type="html">&lt;p&gt;Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/HostsGuard/&quot;&gt;View HostsGuard on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ZeusWatch</title>
+    <link href="https://sysadmindoc.github.io/projects/ZeusWatch/" />
+    <id>https://sysadmindoc.github.io/projects/ZeusWatch/</id>
+    <updated>2026-07-15T07:22:47.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Premium dark weather app — no API keys required</summary>
+    <content type="html">&lt;p&gt;Premium dark weather app — no API keys required&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ZeusWatch/&quot;&gt;View ZeusWatch on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ClearCut</title>
+    <link href="https://sysadmindoc.github.io/projects/ClearCut/" />
+    <id>https://sysadmindoc.github.io/projects/ClearCut/</id>
+    <updated>2026-07-15T06:34:40.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.</summary>
+    <content type="html">&lt;p&gt;Full-featured Android video editor — 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ClearCut/&quot;&gt;View ClearCut on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>CallShield</title>
+    <link href="https://sysadmindoc.github.io/projects/CallShield/" />
+    <id>https://sysadmindoc.github.io/projects/CallShield/</id>
+    <updated>2026-07-15T03:52:15.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions</summary>
+    <content type="html">&lt;p&gt;Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/CallShield/&quot;&gt;View CallShield on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>OpenCut</title>
+    <link href="https://sysadmindoc.github.io/projects/OpenCut/" />
+    <id>https://sysadmindoc.github.io/projects/OpenCut/</id>
+    <updated>2026-07-15T03:46:21.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.</summary>
+    <content type="html">&lt;p&gt;AI-powered video editing automation for Premiere Pro — captions, audio processing, visual effects, all running locally.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/OpenCut/&quot;&gt;View OpenCut on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ScriptVault</title>
+    <link href="https://sysadmindoc.github.io/projects/ScriptVault/" />
+    <id>https://sysadmindoc.github.io/projects/ScriptVault/</id>
+    <updated>2026-07-15T02:10:56.000Z</updated>
+    <category term="Extensions" />
+    <summary type="text">Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs</summary>
+    <content type="html">&lt;p&gt;Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ScriptVault/&quot;&gt;View ScriptVault on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>VideoSubtitleRemover</title>
+    <link href="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/" />
+    <id>https://sysadmindoc.github.io/projects/VideoSubtitleRemover/</id>
+    <updated>2026-07-15T02:04:19.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">AI-powered removal of hard-coded subtitles and text watermarks from video.</summary>
+    <content type="html">&lt;p&gt;AI-powered removal of hard-coded subtitles and text watermarks from video.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/VideoSubtitleRemover/&quot;&gt;View VideoSubtitleRemover on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>LibreSpot</title>
+    <link href="https://sysadmindoc.github.io/projects/LibreSpot/" />
+    <id>https://sysadmindoc.github.io/projects/LibreSpot/</id>
+    <updated>2026-07-15T00:40:16.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</summary>
+    <content type="html">&lt;p&gt;Spotify customization — automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/LibreSpot/&quot;&gt;View LibreSpot on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>StormScope</title>
+    <link href="https://sysadmindoc.github.io/projects/StormScope/" />
+    <id>https://sysadmindoc.github.io/projects/StormScope/</id>
+    <updated>2026-07-15T00:37:02.000Z</updated>
+    <category term="Web Apps" />
+    <summary type="text">Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras</summary>
+    <content type="html">&lt;p&gt;Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/StormScope/&quot;&gt;View StormScope on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>win11-nvme-driver-patcher</title>
+    <link href="https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/" />
+    <id>https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/</id>
+    <updated>2026-07-14T23:31:54.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.</summary>
+    <content type="html">&lt;p&gt;GUI to enable Windows Server 2025 NVMe driver on Windows 11 — ~80% IOPS improvement on modern SSDs.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/&quot;&gt;View win11-nvme-driver-patcher on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Images</title>
+    <link href="https://sysadmindoc.github.io/projects/Images/" />
+    <id>https://sysadmindoc.github.io/projects/Images/</id>
+    <updated>2026-07-14T23:31:41.000Z</updated>
+    <category term="Desktop" />
+    <summary type="text">Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing</summary>
+    <content type="html">&lt;p&gt;Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Images/&quot;&gt;View Images on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Bookmark-Organizer-Pro</title>
+    <link href="https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/" />
+    <id>https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/</id>
+    <updated>2026-07-14T22:10:54.000Z</updated>
+    <category term="Python" />
+    <summary type="text">AI-powered bookmark manager and categorizer</summary>
+    <content type="html">&lt;p&gt;AI-powered bookmark manager and categorizer&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Bookmark-Organizer-Pro/&quot;&gt;View Bookmark-Organizer-Pro on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>SwiftShot</title>
+    <link href="https://sysadmindoc.github.io/projects/SwiftShot/" />
+    <id>https://sysadmindoc.github.io/projects/SwiftShot/</id>
+    <updated>2026-07-14T20:03:14.000Z</updated>
+    <category term="Python" />
+    <summary type="text">Debloated, Greenshot-inspired screenshot tool</summary>
+    <content type="html">&lt;p&gt;Debloated, Greenshot-inspired screenshot tool&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SwiftShot/&quot;&gt;View SwiftShot on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ApocalypseWatch (live)</title>
+    <link href="https://sysadmindoc.github.io/projects/ApocalypseWatch/" />
+    <id>https://sysadmindoc.github.io/projects/ApocalypseWatch/</id>
+    <updated>2026-07-11T08:13:02.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Realtime business-jet tracker vs. 24h baseline</summary>
+    <content type="html">&lt;p&gt;Realtime business-jet tracker vs. 24h baseline&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ApocalypseWatch/&quot;&gt;View ApocalypseWatch (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>AppList</title>
+    <link href="https://sysadmindoc.github.io/projects/AppList/" />
+    <id>https://sysadmindoc.github.io/projects/AppList/</id>
+    <updated>2026-07-10T20:55:20.000Z</updated>
+    <category term="Python" />
+    <summary type="text">Scan, catalog, and export all installed applications</summary>
+    <content type="html">&lt;p&gt;Scan, catalog, and export all installed applications&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AppList/&quot;&gt;View AppList on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ImgConverter</title>
+    <link href="https://sysadmindoc.github.io/projects/ImgConverter/" />
+    <id>https://sysadmindoc.github.io/projects/ImgConverter/</id>
+    <updated>2026-07-10T20:07:02.000Z</updated>
+    <category term="Python" />
+    <summary type="text">Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity</summary>
+    <content type="html">&lt;p&gt;Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ImgConverter/&quot;&gt;View ImgConverter on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>SwiftFloris</title>
@@ -163,15 +343,6 @@
     <category term="PowerShell" />
     <summary type="text">Discover, select, and bulk install software via Winget</summary>
     <content type="html">&lt;p&gt;Discover, select, and bulk install software via Winget&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Wingetter/&quot;&gt;View Wingetter on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>TsunamiSimulator</title>
-    <link href="https://sysadmindoc.github.io/projects/TsunamiSimulator/" />
-    <id>https://sysadmindoc.github.io/projects/TsunamiSimulator/</id>
-    <updated>2026-07-10T03:54:41.000Z</updated>
-    <category term="Desktop" />
-    <summary type="text">3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides</summary>
-    <content type="html">&lt;p&gt;3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/TsunamiSimulator/&quot;&gt;View TsunamiSimulator on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>HurricaneMap (live)</title>
@@ -201,51 +372,6 @@
     <content type="html">&lt;p&gt;67 automated checks across 8 security domains with MITRE ATT&amp;amp;CK mapping and multi-tier compliance reports.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Network_Security_Auditor/&quot;&gt;View Network_Security_Auditor on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>Images</title>
-    <link href="https://sysadmindoc.github.io/projects/Images/" />
-    <id>https://sysadmindoc.github.io/projects/Images/</id>
-    <updated>2026-07-09T23:27:27.000Z</updated>
-    <category term="Desktop" />
-    <summary type="text">Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing</summary>
-    <content type="html">&lt;p&gt;Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Images/&quot;&gt;View Images on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>HostsGuard</title>
-    <link href="https://sysadmindoc.github.io/projects/HostsGuard/" />
-    <id>https://sysadmindoc.github.io/projects/HostsGuard/</id>
-    <updated>2026-07-09T23:26:59.000Z</updated>
-    <category term="Desktop" />
-    <summary type="text">Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules</summary>
-    <content type="html">&lt;p&gt;Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/HostsGuard/&quot;&gt;View HostsGuard on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>CallShield</title>
-    <link href="https://sysadmindoc.github.io/projects/CallShield/" />
-    <id>https://sysadmindoc.github.io/projects/CallShield/</id>
-    <updated>2026-07-09T22:02:12.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions</summary>
-    <content type="html">&lt;p&gt;Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/CallShield/&quot;&gt;View CallShield on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>SwiftShot</title>
-    <link href="https://sysadmindoc.github.io/projects/SwiftShot/" />
-    <id>https://sysadmindoc.github.io/projects/SwiftShot/</id>
-    <updated>2026-07-08T03:28:22.000Z</updated>
-    <category term="Python" />
-    <summary type="text">Debloated, Greenshot-inspired screenshot tool</summary>
-    <content type="html">&lt;p&gt;Debloated, Greenshot-inspired screenshot tool&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SwiftShot/&quot;&gt;View SwiftShot on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>AlarmClockXtreme</title>
-    <link href="https://sysadmindoc.github.io/projects/AlarmClockXtreme/" />
-    <id>https://sysadmindoc.github.io/projects/AlarmClockXtreme/</id>
-    <updated>2026-07-06T01:12:01.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Feature-rich alarm clock with dismiss challenges</summary>
-    <content type="html">&lt;p&gt;Feature-rich alarm clock with dismiss challenges&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AlarmClockXtreme/&quot;&gt;View AlarmClockXtreme on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>Lawnchair-Lite</title>
     <link href="https://sysadmindoc.github.io/projects/Lawnchair-Lite/" />
     <id>https://sysadmindoc.github.io/projects/Lawnchair-Lite/</id>
@@ -253,15 +379,6 @@
     <category term="Android" />
     <summary type="text">Lightweight launcher with 5 built-in dark themes</summary>
     <content type="html">&lt;p&gt;Lightweight launcher with 5 built-in dark themes&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Lawnchair-Lite/&quot;&gt;View Lawnchair-Lite on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>ZeusWatch</title>
-    <link href="https://sysadmindoc.github.io/projects/ZeusWatch/" />
-    <id>https://sysadmindoc.github.io/projects/ZeusWatch/</id>
-    <updated>2026-07-06T00:58:55.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Premium dark weather app — no API keys required</summary>
-    <content type="html">&lt;p&gt;Premium dark weather app — no API keys required&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ZeusWatch/&quot;&gt;View ZeusWatch on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>one-ui-home-clone</title>
@@ -309,15 +426,6 @@
     <content type="html">&lt;p&gt;AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/HostShield/&quot;&gt;View HostShield on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>ApocalypseWatch (live)</title>
-    <link href="https://sysadmindoc.github.io/projects/ApocalypseWatch/" />
-    <id>https://sysadmindoc.github.io/projects/ApocalypseWatch/</id>
-    <updated>2026-07-04T08:13:28.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Realtime business-jet tracker vs. 24h baseline</summary>
-    <content type="html">&lt;p&gt;Realtime business-jet tracker vs. 24h baseline&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ApocalypseWatch/&quot;&gt;View ApocalypseWatch (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>Disable-AdobeTelemetry</title>
     <link href="https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/" />
     <id>https://sysadmindoc.github.io/projects/Disable-AdobeTelemetry/</id>
@@ -352,15 +460,6 @@
     <category term="Desktop" />
     <summary type="text">Install Android SDK, manage AVDs, root with Magisk, migrate apps</summary>
     <content type="html">&lt;p&gt;Install Android SDK, manage AVDs, root with Magisk, migrate apps&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AndroidEmulatorPlus/&quot;&gt;View AndroidEmulatorPlus on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>AppList</title>
-    <link href="https://sysadmindoc.github.io/projects/AppList/" />
-    <id>https://sysadmindoc.github.io/projects/AppList/</id>
-    <updated>2026-07-01T16:10:20.000Z</updated>
-    <category term="Python" />
-    <summary type="text">Scan, catalog, and export all installed applications</summary>
-    <content type="html">&lt;p&gt;Scan, catalog, and export all installed applications&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AppList/&quot;&gt;View AppList on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>UniFile</title>
@@ -525,24 +624,6 @@
     <content type="html">&lt;p&gt;Enterprise Windows 11 debloating with AppX removal, Office cleanup, telemetry blocking&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Debloat-Win11/&quot;&gt;View Debloat-Win11 on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>Droidsmith</title>
-    <link href="https://sysadmindoc.github.io/projects/Droidsmith/" />
-    <id>https://sysadmindoc.github.io/projects/Droidsmith/</id>
-    <updated>2026-07-01T04:10:20.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*</summary>
-    <content type="html">&lt;p&gt;Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Droidsmith/&quot;&gt;View Droidsmith on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>VideoSubtitleRemover</title>
-    <link href="https://sysadmindoc.github.io/projects/VideoSubtitleRemover/" />
-    <id>https://sysadmindoc.github.io/projects/VideoSubtitleRemover/</id>
-    <updated>2026-07-01T04:06:37.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">AI-powered removal of hard-coded subtitles and text watermarks from video.</summary>
-    <content type="html">&lt;p&gt;AI-powered removal of hard-coded subtitles and text watermarks from video.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/VideoSubtitleRemover/&quot;&gt;View VideoSubtitleRemover on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>FaceSlim</title>
     <link href="https://sysadmindoc.github.io/projects/FaceSlim/" />
     <id>https://sysadmindoc.github.io/projects/FaceSlim/</id>
@@ -649,33 +730,6 @@
     <category term="Live App" />
     <summary type="text">Image resizer converter</summary>
     <content type="html">&lt;p&gt;Image resizer &amp;amp; converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/IconForge/&quot;&gt;View IconForge (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>OpenCut</title>
-    <link href="https://sysadmindoc.github.io/projects/OpenCut/" />
-    <id>https://sysadmindoc.github.io/projects/OpenCut/</id>
-    <updated>2026-07-01T02:58:56.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.</summary>
-    <content type="html">&lt;p&gt;AI-powered video editing automation for Premiere Pro — captions, audio processing, visual effects, all running locally.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/OpenCut/&quot;&gt;View OpenCut on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>win11-nvme-driver-patcher</title>
-    <link href="https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/" />
-    <id>https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/</id>
-    <updated>2026-07-01T02:56:14.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.</summary>
-    <content type="html">&lt;p&gt;GUI to enable Windows Server 2025 NVMe driver on Windows 11 — ~80% IOPS improvement on modern SSDs.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/win11-nvme-driver-patcher/&quot;&gt;View win11-nvme-driver-patcher on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>OpenTasker</title>
-    <link href="https://sysadmindoc.github.io/projects/OpenTasker/" />
-    <id>https://sysadmindoc.github.io/projects/OpenTasker/</id>
-    <updated>2026-07-01T02:54:19.000Z</updated>
-    <category term="Android" />
-    <summary type="text">FOSS Tasker alternative for Android</summary>
-    <content type="html">&lt;p&gt;FOSS Tasker alternative for Android&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/OpenTasker/&quot;&gt;View OpenTasker on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>MonitorControl</title>
@@ -840,15 +894,6 @@
     <content type="html">&lt;p&gt;Per-adapter IP lockdown for Windows -- WPF GUI, CLI mode, policy export, and event-log auditing&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AdapterLock/&quot;&gt;View AdapterLock on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>Discrub</title>
-    <link href="https://sysadmindoc.github.io/projects/Discrub/" />
-    <id>https://sysadmindoc.github.io/projects/Discrub/</id>
-    <updated>2026-06-28T03:39:54.000Z</updated>
-    <category term="Extensions" />
-    <summary type="text">Discord message editor, deleter, and exporter</summary>
-    <content type="html">&lt;p&gt;Discord message editor, deleter, and exporter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Discrub/&quot;&gt;View Discrub on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>yt_livestream_downloader</title>
     <link href="https://sysadmindoc.github.io/projects/yt_livestream_downloader/" />
     <id>https://sysadmindoc.github.io/projects/yt_livestream_downloader/</id>
@@ -993,15 +1038,6 @@
     <content type="html">&lt;p&gt;Open source weather radar viewer&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/StormviewRadar/&quot;&gt;View StormviewRadar (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>StormScope</title>
-    <link href="https://sysadmindoc.github.io/projects/StormScope/" />
-    <id>https://sysadmindoc.github.io/projects/StormScope/</id>
-    <updated>2026-06-28T03:39:12.000Z</updated>
-    <category term="Web Apps" />
-    <summary type="text">Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras</summary>
-    <content type="html">&lt;p&gt;Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/StormScope/&quot;&gt;View StormScope on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>SPECTRE (live)</title>
     <link href="https://sysadmindoc.github.io/projects/SPECTRE/" />
     <id>https://sysadmindoc.github.io/projects/SPECTRE/</id>
@@ -1011,15 +1047,6 @@
     <content type="html">&lt;p&gt;Intelligence aggregator — OSINT data feeds&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SPECTRE/&quot;&gt;View SPECTRE (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>SoftwareScannerGUI</title>
-    <link href="https://sysadmindoc.github.io/projects/SoftwareScannerGUI/" />
-    <id>https://sysadmindoc.github.io/projects/SoftwareScannerGUI/</id>
-    <updated>2026-06-28T03:39:08.000Z</updated>
-    <category term="PowerShell" />
-    <summary type="text">WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries</summary>
-    <content type="html">&lt;p&gt;WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SoftwareScannerGUI/&quot;&gt;View SoftwareScannerGUI on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>Snapture</title>
     <link href="https://sysadmindoc.github.io/projects/Snapture/" />
     <id>https://sysadmindoc.github.io/projects/Snapture/</id>
@@ -1027,15 +1054,6 @@
     <category term="Desktop" />
     <summary type="text">All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry</summary>
     <content type="html">&lt;p&gt;All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/Snapture/&quot;&gt;View Snapture on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>SnapCrop</title>
-    <link href="https://sysadmindoc.github.io/projects/SnapCrop/" />
-    <id>https://sysadmindoc.github.io/projects/SnapCrop/</id>
-    <updated>2026-06-28T03:39:06.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup</summary>
-    <content type="html">&lt;p&gt;Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/SnapCrop/&quot;&gt;View SnapCrop on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>SkyTrack (live)</title>
@@ -1353,15 +1371,6 @@
     <content type="html">&lt;p&gt;Multi-engine reverse image search&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ImageXpert/&quot;&gt;View ImageXpert (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>ImageForge (live)</title>
-    <link href="https://sysadmindoc.github.io/projects/ImageForge/" />
-    <id>https://sysadmindoc.github.io/projects/ImageForge/</id>
-    <updated>2026-06-28T03:37:55.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Open source image converter</summary>
-    <content type="html">&lt;p&gt;Open source image converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/ImageForge/&quot;&gt;View ImageForge (live) on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>GuitarTuner</title>
     <link href="https://sysadmindoc.github.io/projects/GuitarTuner/" />
     <id>https://sysadmindoc.github.io/projects/GuitarTuner/</id>
@@ -1648,15 +1657,6 @@
     <category term="Extensions" />
     <summary type="text">Chrome extension — force background tabs + context menu search</summary>
     <content type="html">&lt;p&gt;Chrome extension — force background tabs + context menu search&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/BackgroundSearch/&quot;&gt;View BackgroundSearch on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>AsteroidSimulator</title>
-    <link href="https://sysadmindoc.github.io/projects/AsteroidSimulator/" />
-    <id>https://sysadmindoc.github.io/projects/AsteroidSimulator/</id>
-    <updated>2026-06-28T03:36:59.000Z</updated>
-    <category term="Web Apps" />
-    <summary type="text">Asteroid and comet impact simulator with interactive 3D visualization</summary>
-    <content type="html">&lt;p&gt;Asteroid and comet impact simulator with interactive 3D visualization&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://sysadmindoc.github.io/projects/AsteroidSimulator/&quot;&gt;View AsteroidSimulator on the portfolio&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>AI_Realism</title>

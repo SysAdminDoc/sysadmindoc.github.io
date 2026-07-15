@@ -1,10 +1,10 @@
 {
   "schema": "sysadmindoc.status.v1",
   "version": "0.22.0",
-  "generatedAt": "2026-07-10T05:38:53.604Z",
+  "generatedAt": "2026-07-15T15:03:09.445Z",
   "build": {
-    "commit": "208a776958941d34ba280fc745562acc8aab3353",
-    "commitShort": "208a77695894",
+    "commit": "bca75e0ffbbadfca416fac14bc710c9057ea183e",
+    "commitShort": "bca75e0ffbba",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
@@ -19,39 +19,39 @@
     "status": "fresh",
     "mode": "production-fresh",
     "maxAgeHours": 36,
-    "fetchedAt": "2026-07-10T04:55:16.879Z",
-    "ageHours": 0.7269,
+    "fetchedAt": "2026-07-15T15:01:18.356Z",
+    "ageHours": 0.0309,
     "stale": false,
-    "totalRepos": 186,
-    "totalStars": 403,
-    "readmeEntries": 186,
+    "totalRepos": 183,
+    "totalStars": 413,
+    "readmeEntries": 183,
     "profileFeed": {
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
       "projectCount": 186,
-      "cachedAt": "2026-07-10T05:37:54.027Z",
-      "cachedAgeHours": 0.0165,
+      "cachedAt": "2026-07-15T15:02:07.849Z",
+      "cachedAgeHours": 0.0171,
       "stale": false
     },
     "coverage": {
       "threshold": 0.8,
       "profileProjectCount": 186,
-      "stars": 1,
-      "metadata": 1,
-      "readmes": 1,
+      "stars": 0.9839,
+      "metadata": 0.9839,
+      "readmes": 0.9839,
       "releases": 0.3226,
-      "starEntries": 186,
-      "metadataEntries": 186,
-      "readmeEntries": 186,
+      "starEntries": 183,
+      "metadataEntries": 183,
+      "readmeEntries": 183,
       "releaseEntries": 60
     },
     "readmeRefresh": {
       "source": "github-api",
-      "generatedAt": "2026-07-10T04:55:34.589Z",
+      "generatedAt": "2026-07-15T15:01:38.900Z",
       "tokenPresent": true,
-      "targetRepos": 186,
-      "attempted": 186,
-      "cacheEntries": 186,
+      "targetRepos": 183,
+      "attempted": 183,
+      "cacheEntries": 183,
       "cacheCoverage": 1,
       "missRate": 0,
       "rateLimited": false,
@@ -59,12 +59,12 @@
     },
     "releaseProvenance": {
       "no-assets": 0,
-      "unsigned": 35,
-      "checksum": 25,
+      "unsigned": 39,
+      "checksum": 21,
       "attested": 0,
       "unknown": 0,
       "total": 60,
-      "trusted": 25
+      "trusted": 21
     },
     "warnings": []
   }
