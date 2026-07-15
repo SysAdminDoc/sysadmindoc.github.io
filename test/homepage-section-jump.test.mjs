@@ -5,12 +5,13 @@ import path from 'node:path';
 
 const root = process.cwd();
 
-test('homepage renders SectionJumpNav from command palette sections', async () => {
+test('homepage keeps command navigation without a redundant section jump band', async () => {
   const home = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
-  const component = await fs.readFile(path.join(root, 'src', 'components', 'SectionJumpNav.astro'), 'utf8');
 
-  assert.match(home, /import SectionJumpNav from '\.\.\/components\/SectionJumpNav\.astro'/);
-  assert.match(home, /label: 'Project Mix', href: '#volume'/);
-  assert.match(home, /<SectionJumpNav items=\{cmdkSections\} label="Portfolio Sections" \/>/);
-  assert.match(component, /const sectionItems = items\.filter\(\(item\) => item\.href\?\.startsWith\('#'\)\);/);
+  assert.doesNotMatch(home, /import SectionJumpNav/);
+  assert.doesNotMatch(home, /home-jump-shell/);
+  assert.doesNotMatch(home, /label: 'Project Mix', href: '#volume'/);
+  assert.match(home, /label: 'Catalog', href: '#catalog'/);
+  assert.match(home, /label: 'Live Apps', href: '#live'/);
+  assert.ok(home.indexOf('<section id="catalog"') < home.indexOf('<section id="live"'));
 });

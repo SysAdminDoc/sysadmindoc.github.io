@@ -12,7 +12,7 @@ const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
 const baseLayoutPath = path.join(repoRoot, 'src', 'layouts', 'Base.astro');
 const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 2;
-const astroExtractedStyleBlockCount = 13;
+const astroExtractedStyleBlockCount = 12;
 
 function sha256Csp(value) {
   return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;

@@ -138,11 +138,8 @@ const cmdkSections = [
     <div class="si page-shell" id="status-health">
       <div class="sh rv">
         <div class="sl">// Status</div>
-        <h1 class="st">Portfolio health</h1>
-        <p class="sd">
-          Build version, data freshness, and deployment signals.
-          Machine-readable data at <a href="/status.json" class="project-link">/status.json</a>.
-        </p>
+        <h1 class="st">Site status</h1>
+        <p class="sd">Build, data freshness, and release trust. JSON: <a href="/status.json" class="project-link">/status.json</a>.</p>
       </div>
 
       <div class="status-grid rv">
@@ -160,9 +157,7 @@ const cmdkSections = [
       <div class="status-provenance-panel rv" aria-label="Release provenance distribution">
         <div>
           <div class="status-warning-title">Release provenance</div>
-          <p class="status-provenance-copy">
-            Artifact trust tiers from the cached GitHub release feed. Checksum and attested releases are counted as trusted.
-          </p>
+          <p class="status-provenance-copy">Trust tiers from the cached GitHub release feed.</p>
         </div>
         <div class="status-provenance-grid">
           {releaseProvenanceRows.map((row) => (
@@ -183,10 +178,7 @@ const cmdkSections = [
         </div>
       )}
 
-      <p class="status-note rv">
-        This page is regenerated on every deploy. No runtime analytics, no uptime monitoring service.
-        The values above reflect the state at build time.
-      </p>
+      <p class="status-note rv">Generated at build time; no runtime analytics or uptime service.</p>
     </div>
   </main>
 </Base>
@@ -227,9 +219,6 @@ const cmdkSections = [
   }
   .status-provenance-pill span{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--t3)}
   .status-provenance-pill strong{font-family:var(--mono);font-size:20px;color:var(--t1)}
-  .status-provenance-pill-green{border-color:color-mix(in srgb,var(--grn) 30%,var(--border-soft));background:color-mix(in srgb,var(--grn) 8%,var(--surface-1))}
-  .status-provenance-pill-blue{border-color:color-mix(in srgb,var(--blue) 30%,var(--border-soft));background:color-mix(in srgb,var(--blue) 8%,var(--surface-1))}
-  .status-provenance-pill-amber{border-color:color-mix(in srgb,var(--yel) 36%,var(--border-soft));background:color-mix(in srgb,var(--yel) 8%,var(--surface-1))}
   .status-note{color:var(--t3);font-size:14px;margin-top:24px}
   @media(max-width:640px){
     .status-grid{grid-template-columns:1fr;gap:10px}

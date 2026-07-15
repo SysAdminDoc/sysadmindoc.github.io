@@ -7,9 +7,8 @@ const root = process.cwd();
 const globalCssPath = path.join(root, 'src', 'styles', 'global.css');
 
 const deferredSections = [
-  '#live',
-  '#volume',
   '#catalog',
+  '#live',
   '#skills',
   '#career',
   '#journey',

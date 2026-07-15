@@ -2,7 +2,7 @@
 (function(){
     'use strict';
 
-    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#live,#volume,#catalog,#skills,#career,#journey,#beyond,#connect';
+    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#catalog,#live,#skills,#career,#journey,#beyond,#connect';
     const HOMEPAGE_HASH_RESTORE_DELAYS=[0,250,750,1400,2400,3600];
     const HOMEPAGE_INITIAL_HASH=window.location.hash;
     let homepageHashRestoreToken=0;
@@ -69,7 +69,26 @@
     const secs=document.querySelectorAll('section[id]');
     const nla=document.querySelectorAll('.nk a');
     if('IntersectionObserver' in window&&secs.length&&nla.length){
-        const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){nla.forEach(a=>{a.classList.remove('active');a.removeAttribute('aria-current')});const a=document.querySelector('.nk a[href="#'+en.target.id+'"]');if(a){a.classList.add('active');a.setAttribute('aria-current','location')}if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){try{const url=new URL(location.href);const nextHash='#'+en.target.id;if(url.hash!==nextHash){url.hash=nextHash;history.replaceState(null,'',url.pathname+url.search+url.hash)}}catch(err){}}}})},{rootMargin:'-40% 0px -60% 0px'});
+        const so=new IntersectionObserver(entries=>{
+            entries.forEach(entry=>{
+                if(!entry.isIntersecting)return;
+                nla.forEach(link=>{link.classList.remove('active');link.removeAttribute('aria-current')});
+                const active=document.querySelector('.nk a[href="#'+entry.target.id+'"]');
+                if(!active)return;
+                active.classList.add('active');
+                active.setAttribute('aria-current','location');
+                if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){
+                    try{
+                        const url=new URL(location.href);
+                        const nextHash='#'+entry.target.id;
+                        if(url.hash!==nextHash){
+                            url.hash=nextHash;
+                            history.replaceState(null,'',url.pathname+url.search+url.hash);
+                        }
+                    }catch(err){}
+                }
+            });
+        },{rootMargin:'-40% 0px -60% 0px'});
         secs.forEach(s=>so.observe(s));
     }
 

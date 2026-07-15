@@ -5,8 +5,6 @@ import LiveCard from '../components/LiveCard.astro';
 import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
-import TagCloud from '../components/TagCloud.astro';
-import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { fallbackRepoCount } from '../data/derived';
 import {
@@ -358,7 +356,6 @@ const lastPushedProjectName = stats.lastPushedRepo ? projectNameMap.get(stats.la
 const cmdkSections = [
   { label: 'Highlights', href: '#greatest-hits', desc: 'Featured projects.', badge: 'START' },
   { label: 'Live Apps', href: '#live', desc: 'Browser-ready apps.', badge: 'LIVE' },
-  { label: 'Project Mix', href: '#volume', desc: 'Projects by category.', badge: 'SECTION' },
   { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
   { label: 'Career', href: '#career', desc: 'Work history.', badge: 'SECTION' },
@@ -423,7 +420,7 @@ const cmdkSections = [
           ))}
         </div>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator</p>
-        <p class="hero-summary">15+ years in enterprise IT, with recent focus on healthcare technology support: customer systems, hosted workflows, migrations, documentation, and escalation-heavy troubleshooting.</p>
+        <p class="hero-summary">15+ years across enterprise IT and healthcare support: customer systems, migrations, documentation, and high-stakes troubleshooting.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -451,8 +448,8 @@ const cmdkSections = [
           )}
         </div>
         <div class="ha">
-          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Featured projects</a>
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View the GitHub archive</a>
+          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Selected work</a>
+          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub archive</a>
         </div>
         <div class="hero-signals" aria-label="Portfolio differentiators">
           {heroSignals.map((signal) => (
@@ -467,11 +464,10 @@ const cmdkSections = [
       <aside class="hero-evidence" aria-label="Live project evidence">
         <div class="hero-evidence-head">
           <div>
-            <span class="hero-evidence-kicker"><span class="dot"></span> Live evidence</span>
-            <strong>Projects that open now</strong>
-            <p>{liveApps.length} browser apps plus source-backed outcomes, surfaced before the full catalog.</p>
+            <span class="hero-evidence-kicker"><span class="dot"></span> Live work</span>
+            <strong>Open the work</strong>
+            <p>{liveApps.length} browser apps, available without an install.</p>
           </div>
-          <span class="hero-live-badge"><span class="dot"></span> Live Apps</span>
         </div>
         {heroEvidencePrimary && (
           <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
@@ -487,12 +483,6 @@ const cmdkSections = [
               <small>{plainHeroText(heroEvidencePrimary.desc)}</small>
             </span>
             <span class="hero-showcase-shot">
-              <span class="hero-tool-strip" aria-hidden="true">
-                <span>Google Lens</span>
-                <span>Yandex</span>
-                <span>Bing</span>
-                <span>TinEye</span>
-              </span>
               <img
                 src={`/screenshots/thumbs/${heroEvidencePrimary.slug}.jpg`}
                 alt={`${heroEvidencePrimary.name} live app screenshot`}
@@ -507,63 +497,30 @@ const cmdkSections = [
         <div class="hero-app-grid" aria-label="Featured live app shortcuts">
           {heroEvidenceCards.map((app) => (
             <a href={app.url} target="_blank" rel="noopener" class="hero-app-card" aria-label={`Open ${app.name} live app in a new tab`}>
-              <span class="hero-app-card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="4" y="4" width="16" height="16" rx="4"></rect>
-                  <path d="M8 12h8M12 8v8"></path>
-                </svg>
-              </span>
               <span>
                 <strong>{app.name}</strong>
                 <small>{plainHeroText(app.desc)}</small>
               </span>
-              <em>Live</em>
             </a>
           ))}
           <a href="#live" class="hero-app-card hero-app-more">
-            <span class="hero-app-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="7" cy="7" r="2.5"></circle>
-                <circle cx="17" cy="7" r="2.5"></circle>
-                <circle cx="7" cy="17" r="2.5"></circle>
-                <circle cx="17" cy="17" r="2.5"></circle>
-              </svg>
-            </span>
             <span>
               <strong>More Live Apps</strong>
               <small>{heroEvidenceMoreCount} more apps in the catalog</small>
             </span>
-            <em>→</em>
           </a>
         </div>
       </aside>
     </div>
   </section>
 
-  <div class="home-jump-shell">
-    <div class="si">
-      <SectionJumpNav items={cmdkSections} label="Portfolio Sections" />
-    </div>
-  </div>
-
   <Divider />
 
   <GreatestHits />
   <Divider />
 
-  <section id="live" aria-label="Live apps"><div class="si">
-    <div class="sh rv"><div class="sl">// Live · {liveApps.length} apps</div><h2 class="st">Browser-Ready Apps</h2><p class="sd">{liveApps.length} apps you can open right now — no install, no sign-up required.</p></div>
-    <div class="lg">
-      {liveApps.map((a) => <LiveCard app={a} />)}
-    </div>
-  </div></section>
-  <Divider />
-
-  <TagCloud />
-  <Divider />
-
   <section id="catalog" aria-label="Project catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">All Projects</h2><p class="sd">Every public project, searchable and filterable by language and domain.</p></div>
+    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">Project catalog</h2><p class="sd">Search and filter {catalogTotal} public projects.</p></div>
     <search aria-label="Filter and search the project catalog">
     <div class="catalog-controls rv">
       <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
@@ -586,8 +543,8 @@ const cmdkSections = [
     <div class="cf catalog-views rv" id="viewBtns" role="group" aria-label="Catalog views">
       <button type="button" class="fb catalog-view act" data-view="all" data-label="All views" aria-pressed="true">All <span class="fc">{viewCounts.all}</span></button>
       <button type="button" class="fb catalog-view" data-view="new" data-label="New projects" aria-pressed="false">New <span class="fc">{viewCounts.new}</span></button>
-      <button type="button" class="fb catalog-view" data-view="recent" data-label="Recently updated" aria-pressed="false">Recently updated <span class="fc">{viewCounts.recent}</span></button>
-      <button type="button" class="fb catalog-view" data-view="download" data-label="Has download" aria-pressed="false">Has download <span class="fc">{viewCounts.download}</span></button>
+      <button type="button" class="fb catalog-view" data-view="recent" data-label="Recently updated" aria-pressed="false">Updated <span class="fc">{viewCounts.recent}</span></button>
+      <button type="button" class="fb catalog-view" data-view="download" data-label="Has download" aria-pressed="false">Downloads <span class="fc">{viewCounts.download}</span></button>
     </div>
     <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
       <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{catalogTotal}</span></button>
@@ -597,8 +554,8 @@ const cmdkSections = [
     </div>
     </search>
     <div class="catalog-feedback rv">
-      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">Showing the ranked archive: {catalogTotal} public projects.</div>
-      <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear search & filters</button>
+      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">{catalogTotal} projects · recommended order</div>
+      <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear filters</button>
     </div>
     <div class="cg" id="catalogGrid" data-sort="default">
       {rankedCatalog.map((entry, index) => {
@@ -624,15 +581,23 @@ const cmdkSections = [
     </div>
     <div class="no-results" id="noResults" hidden>
       <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-      <div class="no-results-title">No matches in this slice</div>
-      <p class="no-results-copy">Try a broader search, a different lane, or reset the archive to see every project.</p>
+      <div class="no-results-title">No matches</div>
+      <p class="no-results-copy">Try a broader search or clear the filters.</p>
       <button type="button" class="catalog-reset no-results-action" id="catalogResetEmpty">Reset filters</button>
     </div>
   </div></section>
   <Divider />
 
+  <section id="live" aria-label="Live apps"><div class="si">
+    <div class="sh rv"><div class="sl">// Live · {liveApps.length}</div><h2 class="st">Live apps</h2><p class="sd">Browser-ready work—no install or account.</p></div>
+    <div class="lg">
+      {liveApps.map((a) => <LiveCard app={a} />)}
+    </div>
+  </div></section>
+  <Divider />
+
   <section id="skills" aria-label="Stack and skills"><div class="si">
-    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Languages &amp; Tools</h2><p class="sd">Six languages, one bias: build the tool that should already exist.</p></div>
+    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Stack</h2><p class="sd">Languages and tools across the archive.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
         <div class="stack-kicker">Browse by language</div>
@@ -727,7 +692,7 @@ const cmdkSections = [
 
 
   <section id="career" aria-label="Career history"><div class="si">
-    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Fifteen years, three roles, one throughline</h2><p class="sd">Healthcare technology now, broadcast infrastructure before that, MSP work before that. The consistent work is practical support, reliable systems, clear documentation, and calm escalation when production environments need attention.</p></div>
+    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Career</h2><p class="sd">Healthcare support, broadcast infrastructure, and MSP operations.</p></div>
     <div class="career-signals rv" aria-label="Career signals">
       {careerSignals.map((signal) => (
         <div class="career-signal">
@@ -765,7 +730,7 @@ const cmdkSections = [
 
 
   <section id="journey" aria-label="Journey"><div class="si">
-    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">How the work expanded</h2><p class="sd">Each lane started with operational friction, then widened into a broader product surface.</p></div>
+    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">Practice, expanded</h2><p class="sd">Operational problems became tools, then products.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
         <div class="ji rv">
@@ -784,7 +749,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">When I'm Not Building</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
+    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
@@ -802,7 +767,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect" aria-label="Connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Get in Touch</h2><p class="sd">Reach out through any of these channels.</p></div>
+    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
     <div class="cng">
       {connectPaths.map((path) => (
         <a

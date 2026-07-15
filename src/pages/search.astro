@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
-import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
@@ -79,10 +78,8 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
     <div class="si page-shell" id="site-search">
       <div class="sh rv">
         <div class="sl">// Search</div>
-        <h1 class="st search-title">Search the public portfolio</h1>
-        <p class="sd">
-          Full-text static search across rendered project pages, README excerpts, language tracks, release history, timeline entries, archive decisions, and the current-focus page.
-        </p>
+        <h1 class="st search-title">Search</h1>
+        <p class="sd">Find projects, README text, releases, and portfolio pages.</p>
       </div>
 
       <search aria-label="Full-text site search">
@@ -90,12 +87,12 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
           <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload faceted></pagefind-config>
           <div class="search-input-row">
-            <pagefind-input placeholder="Search projects, README excerpts, releases, timeline entries..." autofocus></pagefind-input>
+            <pagefind-input placeholder="Search projects, READMEs, and pages..." autofocus></pagefind-input>
           </div>
           <div class="search-result-layout">
             <div class="search-filter-panel" aria-label="Search filters">
               <div class="search-filter-kicker">Filter</div>
-              <p class="search-filter-copy">Use Scope for result type and Category for project lanes.</p>
+              <p class="search-filter-copy">Narrow by page type or project lane.</p>
               <pagefind-filter-pane open="scope,category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
             </div>
             <div class="search-results-panel">
@@ -124,25 +121,6 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
       </div>
       </search>
 
-      <SectionJumpNav items={cmdkSections} />
-
-      <div class="search-overview page-stat-grid rv">
-        <div class="page-stat">
-          <div class="page-stat-value">Static</div>
-          <div class="page-stat-label">No Backend</div>
-          <div class="page-stat-copy">Pagefind indexes the built HTML after Astro and ships a static bundle with the site.</div>
-        </div>
-        <div class="page-stat">
-          <div class="page-stat-value">Scope + Category</div>
-          <div class="page-stat-label">Facets Indexed</div>
-          <div class="page-stat-copy">Route types and project lanes are indexed as static facets, so broad searches can be narrowed without leaving the page.</div>
-        </div>
-        <div class="page-stat">
-          <div class="page-stat-value">Command</div>
-          <div class="page-stat-label">Direct Open</div>
-          <div class="page-stat-copy">The header search button opens a focused destination menu for known project names and site sections.</div>
-        </div>
-      </div>
     </div>
 
     <section class="si search-fallbacks" id="search-fallbacks" aria-labelledby="search-fallbacks-title">
@@ -201,7 +179,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-recovery-actions a:hover{border-color:var(--grn);box-shadow:var(--control-shadow-soft)}
   .search-recovery-actions a:focus-visible{border-color:var(--grn);outline:2px solid var(--focus-outline);outline-offset:3px;box-shadow:var(--focus-ring)}
   .search-noscript{margin-top:18px}
-  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:var(--surface-1);--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:var(--surface-2);--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:15px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:13px;--pf-border-radius:8px;--pf-results-gap:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
+  .portfolio-pagefind{--pf-text:var(--t1);--pf-text-secondary:var(--t2);--pf-text-muted:var(--t3);--pf-background:transparent;--pf-skeleton:var(--surface-2);--pf-border:var(--border-soft);--pf-border-focus:var(--grn);--pf-hover:transparent;--pf-mark:var(--t1);--pf-outline-focus:var(--focus-ring);--pf-outline-width:3px;--pf-outline-offset:0;--pf-font:var(--sans);--pf-input-height:52px;--pf-input-font-size:16px;--pf-summary-font-size:13px;--pf-result-title-font-size:16px;--pf-result-excerpt-font-size:14px;--pf-filter-font-size:14px;--pf-border-radius:0;--pf-results-gap:0;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;max-width:100%}
   .portfolio-pagefind pagefind-input,.portfolio-pagefind pagefind-summary,.portfolio-pagefind pagefind-results,.portfolio-pagefind pagefind-filter-pane{display:block;min-width:0;max-width:100%}
   .portfolio-pagefind .pf-filter-group-title,.portfolio-pagefind .pf-filter-checkbox{min-height:44px!important}
   .search-input-row{min-width:0}
@@ -210,25 +188,25 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
   .search-filter-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
   .search-filter-copy{margin:0 0 4px;color:var(--t3);font-size:12px;line-height:1.5}
   .search-results-panel{display:grid;gap:10px;min-width:0}
-  .portfolio-pagefind .pf-filter-pane{box-shadow:none}
+  .portfolio-pagefind .pf-filter-pane{padding:12px 0!important;border:0!important;border-top:1px solid var(--border-soft)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
   .portfolio-pagefind input[type="checkbox"]{width:24px!important;height:24px!important;min-width:24px;min-height:24px}
   .portfolio-pagefind .pf-result-link{color:var(--t1);text-decoration:none}
   .portfolio-pagefind .pf-result-link:hover{color:var(--grn)}
-  .portfolio-pagefind .pf-result-card{box-shadow:none}
+  .portfolio-pagefind .pf-result-card{padding:16px 0!important;border:0!important;border-bottom:1px solid var(--border-soft)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
   .portfolio-pagefind .portfolio-result-card{align-items:flex-start;gap:14px}
   .portfolio-pagefind .portfolio-result-image{flex:0 0 92px;width:92px;height:58px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-2);object-fit:cover}
   .portfolio-pagefind .portfolio-result-content{min-width:0}
   .portfolio-pagefind .portfolio-result-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;min-height:18px}
-  .portfolio-pagefind .portfolio-result-meta span{display:inline-flex;align-items:center;min-height:18px;padding:3px 7px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.025);color:var(--t3);font-family:var(--mono);font-size:10px;line-height:1;letter-spacing:.08em;text-transform:uppercase}
+  .portfolio-pagefind .portfolio-result-meta span{display:inline-flex;align-items:center;min-height:18px;padding:0;border:0;border-radius:0;background:transparent;color:var(--t3);font-family:var(--mono);font-size:11px;line-height:1;letter-spacing:.06em;text-transform:uppercase}
   .portfolio-pagefind .portfolio-result-meta .pf-skeleton{width:62px;border:0}
   .portfolio-pagefind mark{background:var(--grnd);color:var(--t1);border-radius:3px;padding:0 .12em}
-  .search-fallbacks{margin-top:58px}
+  .search-fallbacks{margin-top:40px}
   .search-section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-soft)}
   .search-section-head h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--t1);margin:0}
   .search-section-head p{color:var(--t3);font-size:14px;line-height:1.6;max-width:52ch;margin:0}
-  .search-fallback-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .search-fallback-grid a{display:grid;gap:8px;min-height:124px;padding:18px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);color:var(--t1);text-decoration:none;box-shadow:var(--shadow-soft)}
-  .search-fallback-grid a:hover{border-color:var(--grn);box-shadow:var(--control-shadow-soft)}
+  .search-fallback-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 24px}
+  .search-fallback-grid a{display:grid;gap:8px;min-height:104px;padding:16px 0;border:0;border-top:1px solid var(--border-soft);border-radius:0;background:transparent;color:var(--t1);text-decoration:none;box-shadow:none}
+  .search-fallback-grid a:hover{border-color:var(--grn);box-shadow:none}
   .search-fallback-grid a:focus-visible{border-color:var(--grn);outline:2px solid var(--focus-outline);outline-offset:3px;box-shadow:var(--focus-ring)}
   .search-fallback-grid span{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.1em}
   .search-fallback-grid small{color:var(--t3);font-size:13px;line-height:1.55}

@@ -57,7 +57,6 @@ try {
       ) : (
         <img src={fallbackPreviewSrc} alt="" loading="lazy" decoding="async" width={hasScreenshotThumb ? 640 : 1280} height={hasScreenshotThumb ? 400 : 800} />
       )}
-      <span class="lc2-preview-label">Captured preview</span>
     </div>
   ) : (
     <div class="lc2-thumb thumb-fallback lc2-thumb-static" aria-hidden="true">
@@ -66,13 +65,9 @@ try {
   )}
   <div class="lct">
     <div class="lcn">{app.name}</div>
-    <span class="lb2">LIVE</span>
+    <span class="lb2">Live</span>
   </div>
   <div class="lcd" set:html={app.desc}></div>
-  <div class="lc2-meta-row" aria-hidden="true">
-    <span>No install</span>
-    <span>No sign-in</span>
-  </div>
   <div class="lc2-foot" aria-hidden="true">
     <span class="lc2-origin">{liveHost}</span>
     <span class="lc2-cta">Open in browser</span>
