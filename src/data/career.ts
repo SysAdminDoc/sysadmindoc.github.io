@@ -1,5 +1,4 @@
-// Single source of truth for career history, shared by the homepage Career
-// section, the /resume page, and the /resume.json (JSON Resume) export.
+// Single source of truth for the /resume page and /resume.json export.
 
 export interface CareerRole {
   role: string;

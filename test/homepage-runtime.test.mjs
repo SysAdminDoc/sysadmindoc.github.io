@@ -43,14 +43,15 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   assert.doesNotMatch(await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8'), /copy-toast|matrix-overlay|matrixFall|border-radius\s*:\s*(?:50%|999(?:9)?px)/);
   assert.doesNotMatch(`${index}\n${critical}`, /hero-carousel-(?:ui|arrow|dots)/);
   assert.match(nav, /function revealHomepageScrollSections\(\)/);
-  assert.match(nav, /#catalog,#live,#skills,#career,#journey,#beyond,#connect/);
+  assert.match(nav, /#catalog,#live,#skills,#journey,#beyond,#connect/);
   assert.match(nav, /el\.style\.contentVisibility='visible'/);
   assert.match(nav, /Date\.now\(\)>=\(window\.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL\|\|0\)/);
   assert.match(greatestHits, /id="greatest-hits"/);
   assert.match(index, /id="live"/);
   assert.match(index, /id="catalog"/);
   assert.match(index, /id="skills"/);
-  assert.match(index, /id="career"/);
+  assert.doesNotMatch(index, /id="career"/);
+  assert.doesNotMatch(index, /href="#career"/);
   assert.match(index, /id="journey"/);
   assert.match(index, /id="beyond"/);
   assert.match(index, /id="connect"/);

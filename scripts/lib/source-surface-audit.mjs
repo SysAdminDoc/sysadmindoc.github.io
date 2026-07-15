@@ -6,7 +6,6 @@ export const defaultSurfaceAllowlist = {
     /^archive-tone-/,
     'cmdk-dot',
     /^cmdk-dot-/,
-    /^career-(current|previous)$/,
     /^hm-/,
     /^lang-accent-/,
     /^lang-tone-/,
