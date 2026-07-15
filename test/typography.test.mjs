@@ -14,5 +14,5 @@ test('long-form prose opts into text-wrap pretty with a feature gate', async () 
   assert.match(css, /\.resume-summary,/);
   assert.match(css, /\.uses-section-head p,/);
   assert.match(css, /\.now-p,/);
-  assert.match(css, /\.career-card-summary,/);
+  assert.doesNotMatch(css, /\.career-card-summary/);
 });

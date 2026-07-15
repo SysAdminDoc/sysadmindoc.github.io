@@ -2,7 +2,7 @@
 (function(){
     'use strict';
 
-    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#catalog,#live,#skills,#career,#journey,#beyond,#connect';
+    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#catalog,#live,#skills,#journey,#beyond,#connect';
     const HOMEPAGE_HASH_RESTORE_DELAYS=[0,250,750,1400,2400,3600];
     const HOMEPAGE_INITIAL_HASH=window.location.hash;
     let homepageHashRestoreToken=0;

@@ -14,7 +14,6 @@ import {
   getReleaseDownloadTotals,
   rankCatalogEntries,
 } from '../data/project-ranking.mjs';
-import { careerRoles } from '../data/career';
 import {
   computeCatalogViewState,
   computeViewCounts,
@@ -290,11 +289,6 @@ const stackRoutes = [
   { href: '/lang/kotlin/', label: 'Kotlin', meta: 'Android apps' },
   { href: '/lang/security/', label: 'Security', meta: 'Audits & network hardening' },
 ] as const;
-const careerSignals = [
-  { label: 'Tenure', value: '15+ years' },
-  { label: 'Industries', value: 'Healthcare IT / Broadcast / MSP' },
-  { label: 'Work type', value: 'Support / systems / documentation' },
-] as const;
 const aerialClips = [
   {id:'waOMwX39NOg', title:'Venice Beach, Florida', desc:'Morning aerial flight — June 2023'},
   {id:'xnpOENxAx-k', title:'Manasota Beach, Florida', desc:'Coastal drone footage over Manasota Key'},
@@ -312,7 +306,6 @@ const cmdkSections = [
   { label: 'Live Apps', href: '#live', desc: 'Browser-ready apps.', badge: 'LIVE' },
   { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
-  { label: 'Career', href: '#career', desc: 'Work history.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative projects.', badge: 'SECTION' },
   { label: 'Connect', href: '#connect', desc: 'Contact and links.', badge: 'SECTION' },
@@ -331,7 +324,6 @@ const cmdkSections = [
         <a href="#live">Live Apps</a>
         <a href="#catalog">Catalog</a>
         <a href="#skills">Stack</a>
-        <a href="#career">Career</a>
         <a href="#journey">Journey</a>
         <a href="#beyond">Beyond Code</a>
         <a href="#connect">Connect</a>
@@ -607,44 +599,6 @@ const cmdkSections = [
     </div>
     <div class="skg">
       {skills.map((s) => <SkillCard skill={s} />)}
-    </div>
-  </div></section>
-  <Divider />
-
-
-  <section id="career" aria-label="Career history"><div class="si">
-    <div class="sh rv"><div class="sl">// Career</div><h2 class="st">Career</h2><p class="sd">Healthcare support, broadcast infrastructure, and MSP operations.</p></div>
-    <div class="career-signals rv" aria-label="Career signals">
-      {careerSignals.map((signal) => (
-        <div class="career-signal">
-          <span class="career-signal-label">{signal.label}</span>
-          <strong class="career-signal-value">{signal.value}</strong>
-        </div>
-      ))}
-    </div>
-    <div class="career-timeline">
-      {careerRoles.map((role) => (
-        <article class={`career-card card-enter career-${role.tone}`}>
-          <div class="career-card-head">
-            <span class="career-card-tag">{role.tag}</span>
-            <span class="career-card-period">{role.period}</span>
-          </div>
-          <h3 class="career-card-role">{role.role}</h3>
-          <div class="career-card-company">
-            <span class="career-card-company-name">{role.company}</span>
-            <span class="career-card-company-sep">·</span>
-            <span class="career-card-location">{role.location}</span>
-          </div>
-          {role.note && <p class="career-card-note">{role.note}</p>}
-          <p class="career-card-summary">{role.summary}</p>
-          <ul class="career-card-highlights">
-            {role.highlights.map((h) => <li>{h}</li>)}
-          </ul>
-          <div class="career-card-stack" aria-label="Stack">
-            {role.stack.map((s) => <span class="career-stack-chip">{s}</span>)}
-          </div>
-        </article>
-      ))}
     </div>
   </div></section>
   <Divider />
