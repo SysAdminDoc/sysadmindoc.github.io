@@ -2,11 +2,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { collectPortfolioRepos, exportedArray, sourceFile } from '../scripts/lib/ts-data-utils.mjs';
+import { exportedArray, sourceFile } from '../scripts/lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const interiorOgPagesPath = path.join(root, 'src', 'data', 'interior-og-pages.ts');
-const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
 const requiredSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases'];
 
@@ -33,18 +32,6 @@ test('interior OG metadata covers the key secondary routes', async () => {
   }
 });
 
-test('interior OG slugs are reserved away from project social cards', async () => {
-  const [pages, projectsText] = await Promise.all([
-    loadInteriorOgPages(),
-    fs.readFile(projectsPath, 'utf8'),
-  ]);
-  const portfolioRefs = collectPortfolioRepos(projectsPath, projectsText);
-
-  for (const page of pages) {
-    assert.equal(portfolioRefs.has(page.slug), false, `${page.slug} collides with a project social-card slug`);
-  }
-});
-
 test('interior pages pass generated OG metadata through Base', async () => {
   const pages = await loadInteriorOgPages();
 
@@ -58,14 +45,12 @@ test('interior pages pass generated OG metadata through Base', async () => {
   }
 });
 
-test('OG endpoint generates interior and project social-card routes', async () => {
+test('OG endpoint generates only reviewed interior social-card routes', async () => {
   const source = await fs.readFile(ogEndpointPath, 'utf8');
 
-  assert.match(source, /interiorOgPages\.forEach/, 'getStaticPaths should add interior page slugs');
+  assert.match(source, /interiorOgPages\.map/, 'getStaticPaths should map interior page slugs');
   assert.match(source, /getInteriorOgPage/, 'GET should resolve interior page card metadata');
-  assert.match(source, /featured\.forEach/, 'project featured slugs should still be generated');
-  assert.match(source, /liveApps\.forEach/, 'project live-app slugs should still be generated');
-  assert.match(source, /catalog\.forEach/, 'project catalog slugs should still be generated');
+  assert.doesNotMatch(source, /featured\.forEach|liveApps\.forEach|catalog\.forEach/);
 });
 
 test('OG endpoint returns exact cached font buffers to Satori', async () => {

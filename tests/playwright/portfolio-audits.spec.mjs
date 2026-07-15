@@ -15,7 +15,6 @@ const routes = [
   { name: 'now', path: '/now/', ready: '#now-overview' },
   { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },
   { name: 'lang-python', path: '/lang/python/', ready: '#lane-overview' },
-  { name: 'project-nomad', path: '/projects/project-nomad-desktop/', ready: '[data-project-slug="project-nomad-desktop"]' },
 ];
 const viewports = [
   { name: 'desktop', width: 1365, height: 900 },
@@ -28,7 +27,6 @@ const layoutRegressionRouteNames = new Set([
   'status',
   'releases',
   'screenshots',
-  'project-nomad',
 ]);
 const layoutRegressionRoutes = routes.filter((route) => layoutRegressionRouteNames.has(route.name));
 const layoutRegressionViewports = [

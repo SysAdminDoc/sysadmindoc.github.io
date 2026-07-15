@@ -7,6 +7,7 @@ import { categoryLabels } from '../data/categories';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import type { Lang } from '../data/types';
+import { githubRepoUrl } from '../data/github';
 
 const title = 'Screenshots - Matt Parker';
 const pageOg = interiorOgPageBySlug.screenshots;
@@ -33,7 +34,7 @@ const apps = liveApps.map((app) => {
     desc: app.desc,
     category,
     categoryLabel: categoryLabels[category] ?? category,
-    projectUrl: `/projects/${app.slug}/`,
+    repositoryUrl: githubRepoUrl(app.slug),
     screenshotUrl: `/screenshots/${app.slug}.jpg`,
     thumbUrl: `/screenshots/thumbs/${app.slug}.jpg`,
   };
@@ -64,7 +65,7 @@ const cmdkSections = [
         <h1 class="st">Visual evidence gallery</h1>
         <p class="sd">
           Product surfaces captured from {apps.length} live-app builds deployed to GitHub Pages.
-          Each screenshot links to the project page for full context.
+          Each screenshot links directly to its GitHub repository for source and documentation.
         </p>
       </div>
 
@@ -91,7 +92,7 @@ const cmdkSections = [
 
       <div class="screenshots-grid" id="screenshots-grid">
         {apps.map((app) => (
-          <a href={app.projectUrl} class="screenshots-card" data-category={app.category}>
+          <a href={app.repositoryUrl} target="_blank" rel="noopener" class="screenshots-card" data-category={app.category}>
             <img
               src={app.thumbUrl}
               alt={`${app.name} screenshot`}

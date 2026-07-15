@@ -1,4 +1,5 @@
 import { categoryLabels } from './categories';
+import { githubRepoUrl } from './github';
 import { buildSkillsWithMetrics } from './skill-metrics.mjs';
 import sanitizeHtml from 'sanitize-html';
 import {
@@ -53,8 +54,6 @@ type ProfileFeed = {
   projects?: ProfileProject[];
 };
 
-const owner = 'SysAdminDoc';
-
 let profileFeed: ProfileFeed | null = null;
 try {
   const mod = await import('./_profile-projects.json');
@@ -101,10 +100,10 @@ const visibleFeedProjects = (profileFeed?.projects ?? []).filter(
   const renamed = repoRenames[project.repo!];
   if (!renamed) return project;
   const repoUrl = project.repoUrl?.includes(`/${project.repo}`)
-    ? `https://github.com/${owner}/${renamed}`
+    ? githubRepoUrl(renamed)
     : project.repoUrl;
   const action = project.primaryAction?.url?.includes(`/${project.repo}`)
-    ? { ...project.primaryAction, url: `https://github.com/${owner}/${renamed}` }
+    ? { ...project.primaryAction, url: githubRepoUrl(renamed) }
     : project.primaryAction;
   return {
     ...project,
@@ -137,10 +136,6 @@ function cleanDescription(value?: string | null) {
   }).replace(/\s+/g, ' ').trim();
 }
 
-function githubUrl(repo: string) {
-  return `https://github.com/${owner}/${repo}`;
-}
-
 function primaryAction(project: ProfileProject) {
   if (!project.primaryAction?.kind || !project.primaryAction.label || !project.primaryAction.url) return null;
   return {
@@ -159,7 +154,7 @@ function projectToCatalog(project: ProfileProject): CatalogEntry | null {
   return {
     repo,
     name: project.title ?? local?.name ?? repo,
-    url: live ? String(project.liveUrl) : project.repoUrl ?? local?.url ?? githubUrl(repo),
+    url: live ? String(project.liveUrl) : project.repoUrl ?? local?.url ?? githubRepoUrl(repo),
     category,
     desc: cleanDescription(project.description) || local?.desc || repo,
     live,

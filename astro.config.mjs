@@ -11,9 +11,6 @@ export default defineConfig({
         if (item.url === 'https://sysadmindoc.github.io/') {
           item.priority = 1.0;
           item.changefreq = 'weekly';
-        } else if (item.url.includes('/projects/')) {
-          item.priority = 0.6;
-          item.changefreq = 'monthly';
         } else if (item.url.includes('/lang/')) {
           item.priority = 0.7;
           item.changefreq = 'monthly';
@@ -29,7 +26,6 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'never',
     assets: '_assets',
-    concurrency: 1, // marked.use() mutates global state in [slug].astro; parallel builds race
   },
   vite: {
     build: {

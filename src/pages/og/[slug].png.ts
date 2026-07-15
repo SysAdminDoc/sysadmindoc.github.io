@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { imageEndpointHeaders } from '../../data/endpoint-headers';
 import { getInteriorOgPage, interiorOgPages } from '../../data/interior-og-pages';
-import { featured, liveApps, catalog } from '../../data/portfolio';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FONT_CACHE = join(__dirname, '..', '..', '..', '.astro', 'fonts');
@@ -33,43 +32,8 @@ async function loadFont(weight: 400 | 700): Promise<ArrayBuffer> {
 
 const [regular, bold] = await Promise.all([loadFont(400), loadFont(700)]);
 
-// Category → accent color map (matches site palette)
-const accentByCat: Record<string, string> = {
-  ps: '#58a6ff', py: '#4ade80', web: '#facc15', ext: '#fb923c',
-  kt: '#2dd4bf', sec: '#f87171', media: '#fb923c', cs: '#c084fc',
-  cpp: '#f97316', guide: '#8b9cc0', fork: '#7080a0', other: '#7080a0',
-};
-const labelByCat: Record<string, string> = {
-  ps: 'PowerShell', py: 'Python', web: 'Web App', ext: 'Extension',
-  kt: 'Android', sec: 'Security', media: 'Media', cs: 'Desktop',
-  cpp: 'C++', guide: 'Guide', fork: 'Fork', other: 'Other',
-};
-
 export async function getStaticPaths() {
-  const seen = new Set<string>();
-  const paths: { params: { slug: string } }[] = [];
-  const add = (slug: string) => {
-    if (!slug || seen.has(slug)) return;
-    seen.add(slug);
-    paths.push({ params: { slug } });
-  };
-  interiorOgPages.forEach((page) => add(page.slug));
-  featured.forEach((p) => add(p.repo));
-  liveApps.forEach((a) => add(a.slug));
-  catalog.forEach((c) => add(c.repo));
-  return paths;
-}
-
-function decodeEntities(s: string) {
-  return s
-    .replace(/&mdash;/g, '—')
-    .replace(/&ndash;/g, '–')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#0?39;/g, "'")
-    .replace(/&amp;/g, '&')
-    .replace(/&[a-z]+;/gi, ' ');
+  return interiorOgPages.map((page) => ({ params: { slug: page.slug } }));
 }
 
 type CardBadge = {
@@ -90,48 +54,9 @@ type CardModel = {
   badges: CardBadge[];
 };
 
-function projectCard(slug: string): CardModel {
-  const f = featured.find((p) => p.repo === slug);
-  const l = liveApps.find((a) => a.slug === slug);
-  const c = catalog.find((x) => x.repo === slug);
-  const name = f?.name ?? l?.name ?? c?.name ?? slug;
-  const desc = decodeEntities(f?.desc ?? l?.desc ?? c?.desc ?? '');
-  const category = f?.lang ?? c?.category ?? 'web';
-  const accent = accentByCat[category] || '#58a6ff';
-  const catLabel = labelByCat[category] || category.toUpperCase();
-  const badges: CardBadge[] = [];
-  if (f) {
-    badges.push({
-      label: 'FEATURED',
-      color: '#facc15',
-      background: '#facc1522',
-      border: '#facc1555',
-    });
-  }
-  if (l) {
-    badges.push({
-      label: 'LIVE',
-      color: '#4ade80',
-      background: '#4ade8022',
-      border: '#4ade8055',
-    });
-  }
-
-  return {
-    slug,
-    name,
-    desc,
-    accent,
-    catLabel,
-    command: `cat ${slug.slice(0, 40)}`,
-    footer: 'Matt Parker  ·  github.com/SysAdminDoc',
-    badges,
-  };
-}
-
 function cardForSlug(slug: string): CardModel {
   const page = getInteriorOgPage(slug);
-  if (!page) return projectCard(slug);
+  if (!page) throw new Error(`Unknown interior OG slug: ${slug}`);
 
   return {
     slug: page.slug,

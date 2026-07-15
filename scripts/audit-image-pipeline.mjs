@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import sharp from 'sharp';
-import { collectLiveSlugs, collectPortfolioRepos, exportedArray, sourceFile } from './lib/ts-data-utils.mjs';
+import { collectLiveSlugs, exportedArray, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
@@ -45,8 +45,6 @@ async function inspectImage(filePath) {
 }
 
 const liveSlugs = await collectLiveSlugs(projectsPath, fail);
-const projectsSourceText = await fs.readFile(projectsPath, 'utf8');
-const portfolioRefs = collectPortfolioRepos(projectsPath, projectsSourceText);
 const liveSlugSet = new Set(liveSlugs);
 const fullFiles = await listJpegs(screenshotsDir);
 const thumbFiles = await listJpegs(thumbsDir);
@@ -126,7 +124,6 @@ for (const page of interiorOgPages) {
     continue;
   }
   if (page.ogImage !== `/og/${page.slug}.png`) fail(`Interior OG image path must match slug for ${page.slug}: ${page.ogImage}`);
-  if (portfolioRefs.has(page.slug)) fail(`Interior OG slug collides with a project OG slug: ${page.slug}`);
   const routePath = path.join(root, 'src', 'pages', `${String(page.route).replace(/^\/|\/$/g, '')}.astro`);
   const routeSource = await fs.readFile(routePath, 'utf8').catch(() => null);
   if (!routeSource) {

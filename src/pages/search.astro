@@ -17,7 +17,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
   schemaTypes: pageFreshness.schemaTypes,
 });
 const cmdkSections = [
-  { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search with Category filtering across rendered portfolio pages and README excerpts.', badge: 'PAGEFIND' },
+  { label: 'Search', href: '#site-search', desc: 'Full-text Pagefind search with route-type filtering across portfolio pages and language lanes.', badge: 'PAGEFIND' },
   { label: 'Fallbacks', href: '#search-fallbacks', desc: 'No-JS links into the catalog, timeline, release stream, and archive decisions.', badge: 'LINKS' },
 ];
 const pagefindResultTemplate = String.raw`<li class="pf-result portfolio-result">
@@ -79,7 +79,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
       <div class="sh rv">
         <div class="sl">// Search</div>
         <h1 class="st search-title">Search</h1>
-        <p class="sd">Find projects, README text, releases, and portfolio pages.</p>
+        <p class="sd">Find portfolio pages, language lanes, releases, and archive decisions.</p>
       </div>
 
       <search aria-label="Full-text site search">
@@ -87,13 +87,13 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         <div id="pagefindSearch" class="portfolio-pagefind" aria-label="Full-text site search">
           <pagefind-config bundle-path="/pagefind/" excerpt-length="24" preload faceted></pagefind-config>
           <div class="search-input-row">
-            <pagefind-input placeholder="Search projects, READMEs, and pages..." autofocus></pagefind-input>
+            <pagefind-input placeholder="Search pages, releases, and language lanes..." autofocus></pagefind-input>
           </div>
           <div class="search-result-layout">
             <div class="search-filter-panel" aria-label="Search filters">
               <div class="search-filter-kicker">Filter</div>
-              <p class="search-filter-copy">Narrow by page type or project lane.</p>
-              <pagefind-filter-pane open="scope,category" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
+              <p class="search-filter-copy">Narrow by page type.</p>
+              <pagefind-filter-pane open="scope" sort="alphabetical" auto-open-threshold="20"></pagefind-filter-pane>
             </div>
             <div class="search-results-panel">
               <pagefind-summary default-message="Type a term to search indexed public pages."></pagefind-summary>
@@ -153,7 +153,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
     <div class="fi page-footer-shell">
       <div class="footer-brand">
         <div class="ft"><a href="/" class="footer-backlink">Back to portfolio</a></div>
-        <p class="footer-summary">Use full-text search when you remember a feature, README phrase, language, or category. Use the header search button when you already know the destination.</p>
+        <p class="footer-summary">Use full-text search for site content, language lanes, releases, and archive decisions. Use the catalog or command search to jump straight to a GitHub repository.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation"><a href="/#catalog">Catalog</a><a href="/timeline/">Timeline</a></nav>
     </div>

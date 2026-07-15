@@ -1,6 +1,6 @@
 ---
 import { greatestHits } from '../data/curated';
-import { projectProof } from '../data/proof';
+import { githubRepoUrl } from '../data/github';
 import StarSvg from './StarSvg.astro';
 
 let stars: Record<string, number> = {};
@@ -18,9 +18,8 @@ try {
     </div>
     <div class="gh-grid">
       {greatestHits.map((hit, i) => {
-        const hasCaseStudy = !!projectProof[hit.repo]?.caseStudy;
         return (
-        <a href={`/projects/${hit.repo}/`} class={`gh-card card-enter${i === 0 ? ' gh-card-primary' : ''}`} data-repo={hit.repo}>
+        <a href={githubRepoUrl(hit.repo)} target="_blank" rel="noopener" class={`gh-card card-enter${i === 0 ? ' gh-card-primary' : ''}`} data-repo={hit.repo}>
           <div class="gh-head">
             <span class="gh-rank">★ {String(i + 1).padStart(2, '0')}</span>
             <span class="gh-tag">{hit.tag}</span>
@@ -31,7 +30,7 @@ try {
           <h3 class="gh-name">{hit.name}</h3>
           <p class="gh-why">{hit.why}</p>
           <div class="gh-foot">
-            <span class="gh-foot-cta">{hasCaseStudy ? 'Read the case study' : 'Open the build story'}</span>
+            <span class="gh-foot-cta">View repository</span>
           </div>
         </a>
         );

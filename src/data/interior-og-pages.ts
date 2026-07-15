@@ -37,7 +37,7 @@ export const interiorOgPages: InteriorOgPage[] = [
     slug: 'search',
     route: '/search/',
     title: 'Search',
-    description: 'Full-text static search across portfolio projects, rendered README excerpts, releases, timeline entries, and public pages.',
+    description: 'Full-text static search across portfolio routes, language lanes, releases, timeline entries, and archive decisions.',
     label: 'Pagefind',
     accent: '#4ade80',
     command: 'pagefind --site dist',

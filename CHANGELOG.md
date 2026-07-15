@@ -4,6 +4,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Retired every local project detail route and per-project social card; project cards, search, feeds, releases, screenshots, timeline entries, language lanes, and archive links now open the canonical GitHub repository directly.
+- Removed the obsolete README renderer, project share/viewer scripts, project-only proof data, styling, tests, and visual baselines; search and sitemap audits now enforce that no `/projects/*` routes return to the build.
+
 ## [v0.22.0] - 2026-07-10
 
 - Removed the hidden keyboard-sequence effect and its unused styling, along with the obsolete homepage copy-toast surface.

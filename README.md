@@ -15,17 +15,16 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Content collections**: featured (9), live apps (23), catalog (186 feed-backed / 190 local fallback), skills (8)
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Homepage evidence rail** — desktop hero pairs live-app screenshots with source-backed proof links while staying hidden on mobile
-- **Build-time GitHub API** — stars, repo metadata, release summaries, and cached READMEs
-- **README rendering** — GFM through `marked`, sanitized remote HTML, class-based Shiki highlighting, reading-time metadata, and heading outlines
+- **Build-time GitHub API** — stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline** — year-in-review page built from release and project-push evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
-- **Static full-text search** — Pagefind index over rendered project pages and README excerpts, with audited visible Category facets
+- **Static full-text search** — Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
 - **Shared section navigation** — homepage and interior jump links reuse command-palette section data through `SectionJumpNav`
 - **Interior freshness signals** — reviewed `/uses/`, `/resume/`, and `/healthcare-it/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance, PWA, update, and CSP hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
-- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated project/interior OG PNG validation
+- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated interior OG PNG validation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
@@ -69,7 +68,7 @@ npm run data:summary:deploy # strict generated-data gate plus token-backed READM
 npm run deploy:preflight # deploy gate: generated-data summary, catalog drift audit, tests, check, and build
 npm run publish:pages # run preflight, publish dist/ to gh-pages, and smoke the live Pages URL
 npm run search:index   # build Pagefind static search index under dist/pagefind
-npm run search:audit   # verify generated Pagefind Category filters and faceted project results
+npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
 npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.22.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
@@ -88,7 +87,7 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
-`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and a Chromium browser (`npx playwright install chromium`; Linux runs can use `npx playwright install --with-deps chromium`; local Windows runs can set `CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. The visual suite covers desktop, mobile, 1000px, 1280px, 1440px, and a short-height desktop viewport for the main public routes. `npm run audit:playwright` starts its own built-preview server on port `4324` by default; set `PLAYWRIGHT_AUDIT_PORT` to override it. `npm run audit:interactions` runs focused rendered smoke tests over command palette lazy loading, filtering, no-results recovery, degraded search fallback, Escape close behavior, keyboard activation inside the dialog, pointer activation, same-page section jumps, catalog search, project share fallback, console errors, and horizontal overflow without screenshot assertions. The interaction smoke starts its own built-preview server on port `4325` by default so it does not reuse a stale Astro dev server; set `PLAYWRIGHT_INTERACTIONS_PORT` to override it. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
+`npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and a Chromium browser (`npx playwright install chromium`; Linux runs can use `npx playwright install --with-deps chromium`; local Windows runs can set `CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. The visual suite covers desktop, mobile, 1000px, 1280px, 1440px, and a short-height desktop viewport for the main public routes. `npm run audit:playwright` starts its own built-preview server on port `4324` by default; set `PLAYWRIGHT_AUDIT_PORT` to override it. `npm run audit:interactions` runs focused rendered smoke tests over command palette lazy loading, filtering, no-results recovery, degraded search fallback, Escape close behavior, keyboard activation inside the dialog, pointer activation, same-page section jumps, catalog search, direct repository links, console errors, and horizontal overflow without screenshot assertions. The interaction smoke starts its own built-preview server on port `4325` by default so it does not reuse a stale Astro dev server; set `PLAYWRIGHT_INTERACTIONS_PORT` to override it. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.
 
@@ -110,11 +109,9 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Live Apps: for GitHub Pages demos
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: animated ring charts in the Stack section
-- Beyond Code: static creative overview cards, an internal SlunderStudio project route, and click-to-load drone videos with no Spotify embed
+- Beyond Code: static creative overview cards, a direct SlunderStudio repository link, and click-to-load drone videos with no Spotify embed
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, `npm run deploy:preflight` runs that gate plus `npm run catalog:audit` before tests, check, and build, and `npm run publish:pages` copies the verified build to the `gh-pages` branch with `.nojekyll` before smoking the live Pages URL. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can also be narrowed by Category; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body and Category filter contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
-
-Optional proof-oriented project detail sections live in **[src/data/proof.ts](src/data/proof.ts)**. Each proof record must point at an existing project route and include source URLs; `npm run data:validate` enforces the shape.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, `npm run deploy:preflight` runs that gate plus `npm run catalog:audit` before tests, check, and build, and `npm run publish:pages` copies the verified build to the `gh-pages` branch with `.nojekyll` before smoking the live Pages URL. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. Project cards and project entries in search, feeds, releases, screenshots, timeline, language lanes, and archive surfaces point directly to their GitHub repositories. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can be narrowed by Scope; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body, Scope filter, removed project-route boundary, and direct GitHub catalog-link contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
 
 Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists.
 
@@ -142,9 +139,7 @@ src/
 │   ├── page-freshness.ts # reviewed timestamps and WebPage schema helpers for interior routes
 │   ├── portfolio.ts # feed adapter + local fallback/overlays
 │   ├── project-ranking.mjs # build-time catalog and related-project scoring
-│   ├── readme-rendering.mjs # sanitized README HTML + Shiki code, reading-time, and outline metadata
 │   ├── projects.ts  # curated fallback, featured, live-app screenshots, skills
-│   ├── proof.ts
 │   ├── archive.ts
 │   ├── catalog-policy.json
 │   ├── generated.d.ts # type contracts for the _*.json caches
@@ -157,8 +152,7 @@ src/
 │   ├── search.astro · releases.astro · timeline.astro · archive.astro
 │   ├── rss.xml.ts · releases.xml.ts · llms.txt.ts
 │   ├── lang/[slug].astro · lang/_langs.ts
-│   ├── og/[slug].png.ts
-│   └── projects/[slug].astro
+│   └── og/[slug].png.ts
 └── styles/
     ├── critical.css # inline first-viewport nav/hero CSS
     └── global.css   # full stylesheet, preloaded and applied asynchronously

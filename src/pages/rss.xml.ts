@@ -4,6 +4,7 @@ import sanitizeHtml from 'sanitize-html';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { withEndpointCache } from '../data/endpoint-headers';
+import { githubRepoUrl } from '../data/github';
 
 let stats: { lastPushedAt?: string | null; fetchedAt?: string | null } = {};
 try {
@@ -45,11 +46,11 @@ export async function GET(context: APIContext) {
     .map((item) => ({ ...item, date: getItemDate(item.slug) }))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .map((item) => {
-      const link = `${site}/projects/${item.slug}/`;
+      const link = githubRepoUrl(item.slug);
       const description = cleanDesc(item.desc);
       // Full-content body for readers that render content:encoded.
       const contentHtml = sanitizeHtml(
-        `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on the portfolio →</a></p>`,
+        `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on GitHub →</a></p>`,
         { allowedTags: ['p', 'a', 'strong', 'em', 'code'], allowedAttributes: { a: ['href'] } },
       );
       return {

@@ -1,6 +1,6 @@
 const urls = [
   'http://localhost/',
-  'http://localhost/projects/project-nomad-desktop/',
+  'http://localhost/lang/python/',
 ];
 
 module.exports = {

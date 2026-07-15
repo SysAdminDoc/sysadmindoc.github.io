@@ -90,7 +90,7 @@ test('service worker enables navigation preload when supported', async ({ page }
   expect(['enabled', 'unsupported']).toContain(preloadState);
 });
 
-for (const route of ['/search/', '/status/', '/projects/win11-nvme-driver-patcher/']) {
+for (const route of ['/search/', '/status/', '/lang/powershell/']) {
   test(`service worker registers on direct ${route} landing`, async ({ page }) => {
     await page.goto(route, { waitUntil: 'networkidle' });
     await expect.poll(() => hasRegisteredServiceWorker(page)).toBe(true);

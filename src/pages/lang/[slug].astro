@@ -5,6 +5,7 @@ import InteriorNav from '../../components/InteriorNav.astro';
 import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
 import { catalog, featured } from '../../data/portfolio';
+import { githubRepoUrl } from '../../data/github';
 
 import { LANGS } from './_langs';
 
@@ -63,7 +64,7 @@ const laneHeroSignals = [
   {
     label: 'Strongest proof',
     value: laneHeroProjects[0]?.name ?? `${lang.label} archive`,
-    meta: laneHeroProjects[0]?.live ? 'Project page plus live demo' : 'Project page and source context',
+    meta: laneHeroProjects[0]?.live ? 'GitHub source plus live demo' : 'Repository and source context',
   },
   {
     label: 'Current rhythm',
@@ -96,7 +97,7 @@ const langJsonLd = JSON.stringify({
         itemListElement: repos.map((r, i) => ({
           '@type': 'ListItem',
           position: i + 1,
-          url: `${siteUrl}/projects/${r.repo}/`,
+          url: githubRepoUrl(r.repo),
           name: r.name,
         })),
       },
@@ -133,7 +134,7 @@ const langJsonLd = JSON.stringify({
               <div class="lang-hero-kicker">Representative builds</div>
               <div class="lang-hero-list">
                 {laneHeroProjects.map((repo, index) => (
-                  <a href={`/projects/${repo.repo}/`} class="lang-hero-item">
+                  <a href={githubRepoUrl(repo.repo)} target="_blank" rel="noopener" class="lang-hero-item">
                     <span class="lang-hero-item-index">{String(index + 1).padStart(2, '0')}</span>
                     <span class="lang-hero-item-copy">
                       <strong class="lang-hero-item-name">{repo.name}</strong>
@@ -166,7 +167,7 @@ const langJsonLd = JSON.stringify({
           <div class="lang-highlight">
             <span class="lang-highlight-label">Latest update</span>
             <span class="lang-highlight-value">
-              <a href={`/projects/${mostRecent.repo}/`} class="lang-highlight-link">{mostRecent.name}</a>
+              <a href={githubRepoUrl(mostRecent.repo)} target="_blank" rel="noopener" class="lang-highlight-link">{mostRecent.name}</a>
               <span class="lang-highlight-sep">·</span>
               <time datetime={mostRecent.pushedAt} data-rel={mostRecent.pushedAt}>{compactUtcDate.format(new Date(mostRecent.pushedAt))}</time>
             </span>
@@ -188,7 +189,7 @@ const langJsonLd = JSON.stringify({
       ) : (
         <div class="lang-grid">
           {repos.map((r) => (
-            <a href={`/projects/${r.repo}/`} class="lang-card card-enter">
+            <a href={githubRepoUrl(r.repo)} target="_blank" rel="noopener" class="lang-card card-enter">
               <div class="lang-card-head">
                 {r.featured && <span class="lang-card-featured">★</span>}
                 <h3 class="lang-card-name">{r.name}</h3>

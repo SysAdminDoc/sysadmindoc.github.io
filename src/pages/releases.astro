@@ -7,6 +7,7 @@ import type { GeneratedRelease } from '../data/generated';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { featured, liveApps, catalog } from '../data/portfolio';
+import { githubRepoUrl } from '../data/github';
 
 const title = 'Releases — Matt Parker';
 const pageOg = interiorOgPageBySlug.releases;
@@ -29,21 +30,14 @@ try {
 let stats: { fetchedAt?: string | null } = {};
 try { const m = await import('../data/_stats.json'); stats = m.default ?? m; } catch {}
 
-const detailRepos = new Set([
-  ...featured.map((project) => project.repo),
-  ...liveApps.map((app) => app.slug),
-  ...catalog.map((entry) => entry.repo),
-]);
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
 catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
 const releasesWithLinks = releases.map((release) => {
-  const hasDetailPage = detailRepos.has(release.repo);
   return {
     ...release,
-    detailUrl: hasDetailPage ? `/projects/${release.repo}/` : `https://github.com/SysAdminDoc/${release.repo}`,
-    hasDetailPage,
+    repositoryUrl: githubRepoUrl(release.repo),
     projectName: projectNameMap.get(release.repo) ?? release.repo,
   };
 });
@@ -167,7 +161,7 @@ const cmdkSections = [
                 {byMonth[key].map((r) => (
                   <li class="rel-item">
                     <div class="rel-head">
-                      <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="rel-repo">
+                      <a href={r.repositoryUrl} target="_blank" rel="noopener" class="rel-repo">
                         <span class="rel-project-name">{r.projectName}</span>
                         {r.projectName !== r.repo && <span class="rel-project-slug">{r.repo}</span>}
                       </a>

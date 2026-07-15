@@ -20,7 +20,7 @@ const tests = [
   { label: 'Home mobile', path: '/', width: 390, height: 900, mobile: true, waitMs: 3200, awayPath: '/archive/' },
   { label: 'Search mobile', path: '/search/?q=NukeMap', width: 390, height: 900, mobile: true, waitMs: 4800, awayPath: '/archive/' },
   { label: 'Archive mobile', path: '/archive/', width: 390, height: 900, mobile: true, waitMs: 3000, awayPath: '/timeline/' },
-  { label: 'Project mobile', path: '/projects/project-nomad-desktop/', width: 390, height: 900, mobile: true, waitMs: 3000, awayPath: '/archive/' },
+  { label: 'Language lane mobile', path: '/lang/python/', width: 390, height: 900, mobile: true, waitMs: 3000, awayPath: '/archive/' },
   { label: 'Home desktop', path: '/', width: 1365, height: 900, mobile: false, waitMs: 3200, awayPath: '/archive/' },
 ];
 
