@@ -164,17 +164,14 @@ if (isHome) {
     <div class="cmdk">
       <div class="cmdk-input-row">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects, pages, categories, or sections..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
+        <input class="cmdk-input" id="cmdkInput" type="search" name="command-search" placeholder="Search projects and pages..." autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects, pages, categories, and sections" aria-describedby="cmdkMeta" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="cmdkList" aria-expanded="false" />
         <button type="button" class="cmdk-close" id="cmdkClose" aria-label="Close command search" title="Close command search">
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
         </button>
       </div>
-      <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Start with the strongest work, a key route, or the full archive.</div>
+      <div class="cmdk-meta" id="cmdkMeta" role="status" aria-live="polite">Search by project, page, category, or section.</div>
       <div class="cmdk-list" id="cmdkList" role="listbox" aria-label="Command results"></div>
-      <div class="cmdk-footer" aria-hidden="true">
-        <span>Choose a result to open it.</span>
-        <span>Projects, pages, categories, and sections are indexed.</span>
-      </div>
+      <div class="cmdk-footer" aria-hidden="true"><span>Enter to open · Esc to close</span></div>
     </div>
   </dialog>
   {/* Page-specific command-palette sections are inert JSON; the large project +
