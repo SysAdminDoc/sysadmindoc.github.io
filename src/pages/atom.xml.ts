@@ -3,6 +3,7 @@ import sanitizeHtml from 'sanitize-html';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
+import { githubRepoUrl } from '../data/github';
 
 let stats: { lastPushedAt?: string | null; fetchedAt?: string | null } = {};
 try {
@@ -49,11 +50,11 @@ export async function GET(context: APIContext) {
 
   const entries = items
     .map((item) => {
-      const link = `${site}/projects/${item.slug}/`;
+      const link = githubRepoUrl(item.slug);
       const date = new Date(item.date).toISOString();
       const description = cleanDesc(item.desc);
       const contentHtml = sanitizeHtml(
-        `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on the portfolio</a></p>`,
+        `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on GitHub</a></p>`,
         { allowedTags: ['p', 'a', 'strong', 'em', 'code'], allowedAttributes: { a: ['href'] } },
       );
       return `  <entry>

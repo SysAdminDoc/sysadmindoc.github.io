@@ -1,7 +1,7 @@
-import type { APIContext } from 'astro';
 import { endpointHeaders } from '../data/endpoint-headers';
 import type { GeneratedRelease } from '../data/generated';
 import { catalog, featured, liveApps } from '../data/portfolio';
+import { GITHUB_OWNER, githubRepoUrl } from '../data/github';
 
 export const prerender = true;
 
@@ -22,12 +22,7 @@ try {
 } catch {}
 
 const schemaVersion = 1;
-const owner = 'SysAdminDoc';
-const detailRepos = new Set([
-  ...featured.map((project) => project.repo),
-  ...liveApps.map((app) => app.slug),
-  ...catalog.map((entry) => entry.repo),
-]);
+const owner = GITHUB_OWNER;
 const projectNameMap = new Map<string, string>();
 featured.forEach((project) => projectNameMap.set(project.repo, project.name));
 liveApps.forEach((app) => projectNameMap.set(app.slug, app.name));
@@ -39,8 +34,7 @@ function json(data: unknown) {
   });
 }
 
-export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+export async function GET() {
   const generatedAt = stats.fetchedAt || new Date().toISOString();
   const sorted = [...releases].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
@@ -66,8 +60,8 @@ export async function GET(context: APIContext) {
       summary: release.bodyFirst,
       urls: {
         release: release.url,
-        repository: `https://github.com/${owner}/${release.repo}`,
-        detail: detailRepos.has(release.repo) ? `${site}/projects/${release.repo}/` : null,
+        repository: githubRepoUrl(release.repo),
+        detail: githubRepoUrl(release.repo),
       },
     })),
   });

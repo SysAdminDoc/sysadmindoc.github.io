@@ -172,10 +172,10 @@ for (const route of requiredRoutes) {
   }
 }
 
-// At least some /projects/* routes
+// Local project detail routes were retired; repository links now point to GitHub.
 const projectRoutes = allPathnames.filter((p) => /^\/projects\/[^/]+\/$/.test(p));
-if (projectRoutes.length === 0) {
-  fail('Sitemap contains no /projects/* routes.');
+if (projectRoutes.length > 0) {
+  fail(`Sitemap still contains removed project routes: ${projectRoutes.join(', ')}.`);
 }
 
 // At least some /lang/* routes
@@ -196,6 +196,6 @@ console.log('Sitemap audit');
 console.log(`  sitemap index entries: ${indexLocs.length}`);
 console.log(`  total URLs: ${allPageUrls.length}`);
 console.log(`  required routes checked: ${requiredRoutes.length}`);
-console.log(`  /projects/* routes: ${projectRoutes.length}`);
+console.log(`  removed /projects/* routes: ${projectRoutes.length}`);
 console.log(`  /lang/* routes: ${langRoutes.length}`);
 console.log('Sitemap audit passed.');

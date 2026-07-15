@@ -120,6 +120,10 @@ function parseUrl(value, label, { siteOnly = false, allowNull = false } = {}) {
   }
 }
 
+function isGithubRepoUrl(url, slug) {
+  return url?.origin === 'https://github.com' && url.pathname.replace(/\/$/, '') === `/SysAdminDoc/${slug}`;
+}
+
 function compareCount(label, count, rows) {
   if (!Number.isSafeInteger(count) || count < 1) {
     fail(`${label} count must be a positive integer.`);
@@ -179,14 +183,13 @@ function auditProjectsIndex(projectsIndex) {
       if (seenSlugs.has(slug)) fail(`${label}.slug duplicates ${slug}.`);
       seenSlugs.add(slug);
     }
-    const detailUrl = parseUrl(project.urls?.detail, `${label}.urls.detail`, { siteOnly: true });
-    if (detailUrl && slug && detailUrl.pathname !== `/projects/${slug}/`) {
-      fail(`${label}.urls.detail must point at /projects/${slug}/.`);
+    const detailUrl = parseUrl(project.urls?.detail, `${label}.urls.detail`);
+    if (detailUrl && slug && !isGithubRepoUrl(detailUrl, slug)) {
+      fail(`${label}.urls.detail must point directly at the GitHub repository for ${slug}.`);
     }
     parseUrl(project.urls?.repository, `${label}.urls.repository`);
     parseUrl(project.urls?.source, `${label}.urls.source`);
     parseUrl(project.urls?.live, `${label}.urls.live`, { allowNull: true });
-    parseUrl(project.urls?.ogImage, `${label}.urls.ogImage`, { siteOnly: true });
     parseUrl(project.urls?.screenshot, `${label}.urls.screenshot`, { siteOnly: true, allowNull: true });
     parseUrl(project.urls?.thumbnail, `${label}.urls.thumbnail`, { siteOnly: true, allowNull: true });
     const stars = project.metrics?.stars;
@@ -236,9 +239,9 @@ function auditReleasesIndex(releasesIndex) {
     if (Number.isFinite(time)) previousTime = time;
     parseUrl(release.urls?.release, `${label}.urls.release`);
     parseUrl(release.urls?.repository, `${label}.urls.repository`);
-    const detailUrl = parseUrl(release.urls?.detail, `${label}.urls.detail`, { siteOnly: true, allowNull: true });
-    if (detailUrl && repo && detailUrl.pathname !== `/projects/${repo}/`) {
-      fail(`${label}.urls.detail must point at /projects/${repo}/ when present.`);
+    const detailUrl = parseUrl(release.urls?.detail, `${label}.urls.detail`);
+    if (detailUrl && repo && !isGithubRepoUrl(detailUrl, repo)) {
+      fail(`${label}.urls.detail must point directly at the GitHub repository for ${repo}.`);
     }
   }
 
@@ -400,7 +403,7 @@ function auditCmdkData(source) {
       if (seenSlugs.has(slug)) fail(`${label}.slug duplicates ${slug}.`);
       seenSlugs.add(slug);
     }
-    if (url && !/^\/projects\/[^/]+\/$/.test(url)) fail(`${label}.url must be a project detail route.`);
+    if (url && slug && url !== `https://github.com/SysAdminDoc/${slug}`) fail(`${label}.url must point directly at its GitHub repository.`);
   }
 
   for (const [index, link] of Array.isArray(payload.quickLinks) ? payload.quickLinks.entries() : []) {

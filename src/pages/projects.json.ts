@@ -2,6 +2,7 @@ import type { APIContext } from 'astro';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { catalog, featured, liveApps, profileFeedInfo } from '../data/portfolio';
+import { GITHUB_OWNER, githubRepoUrl } from '../data/github';
 
 export const prerender = true;
 
@@ -31,7 +32,7 @@ try {
 } catch {}
 
 const schemaVersion = 1;
-const owner = 'SysAdminDoc';
+const owner = GITHUB_OWNER;
 const featuredBySlug = new Map(featured.map((project) => [project.repo, project]));
 const liveBySlug = new Map(liveApps.map((app) => [app.slug, app]));
 const catalogBySlug = new Map(catalog.map((entry) => [entry.repo, entry]));
@@ -71,7 +72,7 @@ export async function GET(context: APIContext) {
     const category = catalogEntry?.category ?? featuredProject?.lang ?? 'other';
     const isLive = Boolean(liveApp || catalogEntry?.live);
     const description = plain(featuredProject?.desc ?? liveApp?.desc ?? catalogEntry?.desc);
-    const repoUrl = `https://github.com/${owner}/${slug}`;
+    const repoUrl = githubRepoUrl(slug);
 
     return {
       slug,
@@ -84,11 +85,10 @@ export async function GET(context: APIContext) {
       live: isLive,
       tags: featuredProject?.tags ?? [],
       urls: {
-        detail: `${site}/projects/${slug}/`,
+        detail: repoUrl,
         repository: repoUrl,
         source: catalogEntry?.url?.startsWith('https://github.com/') ? catalogEntry.url : repoUrl,
         live: liveApp?.url ?? (catalogEntry?.live ? catalogEntry.url : null),
-        ogImage: `${site}/og/${slug}.png`,
         screenshot: isLive ? `${site}/screenshots/${slug}.jpg` : null,
         thumbnail: isLive ? `${site}/screenshots/thumbs/${slug}.jpg` : null,
       },

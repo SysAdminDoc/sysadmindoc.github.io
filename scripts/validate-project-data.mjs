@@ -11,7 +11,6 @@ const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const typesPath = path.join(root, 'src', 'data', 'types.ts');
 const categoriesPath = path.join(root, 'src', 'data', 'categories.ts');
 const curatedPath = path.join(root, 'src', 'data', 'curated.ts');
-const proofPath = path.join(root, 'src', 'data', 'proof.ts');
 const archivePath = path.join(root, 'src', 'data', 'archive.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
 const profileFeedPath = path.join(root, 'src', 'data', '_profile-projects.json');
@@ -210,12 +209,11 @@ async function fileExists(filePath) {
   }
 }
 
-const [projectsText, typesText, categoriesText, curatedText, proofText, archiveText, policyText] = await Promise.all([
+const [projectsText, typesText, categoriesText, curatedText, archiveText, policyText] = await Promise.all([
   fs.readFile(projectsPath, 'utf8'),
   fs.readFile(typesPath, 'utf8'),
   fs.readFile(categoriesPath, 'utf8'),
   fs.readFile(curatedPath, 'utf8'),
-  fs.readFile(proofPath, 'utf8'),
   fs.readFile(archivePath, 'utf8'),
   fs.readFile(policyPath, 'utf8'),
 ]);
@@ -224,7 +222,6 @@ const projectsSource = sourceFile(projectsPath, projectsText);
 const typesSource = sourceFile(typesPath, typesText);
 const categoriesSource = sourceFile(categoriesPath, categoriesText);
 const curatedSource = sourceFile(curatedPath, curatedText);
-const proofSource = sourceFile(proofPath, proofText);
 const archiveSource = sourceFile(archivePath, archiveText);
 const policy = JSON.parse(policyText);
 
@@ -236,8 +233,6 @@ const catalog = exportedArray(projectsSource, 'catalog');
 const skills = exportedArray(projectsSource, 'skills');
 const greatestHits = exportedArray(curatedSource, 'greatestHits');
 const nowData = exportedObject(curatedSource, 'now');
-const proofRecords = exportedObject(proofSource, 'projectProof');
-const homepageProofHighlights = exportedArray(proofSource, 'homepageProofHighlights');
 const archiveEntries = exportedArray(archiveSource, 'archiveEntries');
 let profileFeedProjectCount = null;
 const profileCategoryMap = {
@@ -276,7 +271,6 @@ validateUnique('liveApps', liveApps, 'slug');
 validateUnique('catalog', catalog, 'repo');
 validateUnique('skills', skills, 'code');
 validateUnique('greatestHits', greatestHits, 'repo');
-validateUnique('homepageProofHighlights', homepageProofHighlights, 'repo');
 validateUnique('archiveEntries', archiveEntries, 'id');
 
 for (const lang of allowedLangs) {
@@ -390,126 +384,13 @@ for (const [index, entry] of (policy.privacyReviewRequired ?? []).entries()) {
   }
 }
 
-for (const [slug, proof] of Object.entries(proofRecords)) {
-  if (!portfolioRefs.has(slug)) fail(`projectProof.${slug} must refer to a project route in projects.ts.`);
-  requireString('projectProof', slug, proof, 'problem');
-  requireStringArray('projectProof', slug, proof, 'buildEvidence');
-  requireStringArray('projectProof', slug, proof, 'platforms');
-  requireString('projectProof', slug, proof, 'installPath');
-  requireString('projectProof', slug, proof, 'knownLimitations');
-  if (!Array.isArray(proof.sources) || proof.sources.length === 0) {
-    fail(`projectProof.${slug}.sources must be a non-empty array.`);
-  } else {
-    proof.sources.forEach((source, index) => {
-      requireString(`projectProof.${slug}.sources`, index, source, 'label');
-      validateHttpsUrl(`projectProof.${slug}.sources`, index, 'url', requireString(`projectProof.${slug}.sources`, index, source, 'url'));
-      if (hasOwn(source, 'note') && (typeof source.note !== 'string' || source.note.trim().length === 0)) {
-        fail(`projectProof.${slug}.sources[${index}].note must be a non-empty string when present.`);
-      }
-    });
-  }
-  if (hasOwn(proof, 'caseStudy')) {
-    if (!proof.caseStudy || typeof proof.caseStudy !== 'object' || Array.isArray(proof.caseStudy)) {
-      fail(`projectProof.${slug}.caseStudy must be an object when present.`);
-    } else {
-      requireString(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'context');
-      requireStringArray(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'decisions');
-      requireStringArray(`projectProof.${slug}.caseStudy`, 0, proof.caseStudy, 'outcomes');
-    }
-  }
-}
-
-let greatestHitCaseStudyCount = 0;
 greatestHits.forEach((hit, index) => {
   const repo = requireString('greatestHits', index, hit, 'repo');
   validateRepoName('greatestHits', index, 'repo', repo);
   requireString('greatestHits', index, hit, 'name');
   requireString('greatestHits', index, hit, 'why');
   requireString('greatestHits', index, hit, 'tag');
-  if (repo && !portfolioRefs.has(repo)) fail(`greatestHits[${index}].repo ${repo} must refer to a project route.`);
-  const proof = proofRecords[repo];
-  if (!proof) {
-    fail(`greatestHits[${index}].repo ${repo} must have a projectProof record.`);
-    return;
-  }
-  if (!proof.caseStudy) {
-    fail(`greatestHits[${index}].repo ${repo} must have projectProof.${repo}.caseStudy.`);
-    return;
-  }
-  greatestHitCaseStudyCount += 1;
-});
-
-function validateHomepageProofSource(index, proof, source) {
-  if (!source || typeof source !== 'object' || Array.isArray(source)) {
-    fail(`homepageProofHighlights[${index}].source must be an object selector.`);
-    return;
-  }
-
-  const kind = source.kind;
-  if (typeof kind !== 'string' || kind.trim().length === 0) {
-    fail(`homepageProofHighlights[${index}].source.kind must be a non-empty string.`);
-    return;
-  }
-
-  const keys = Object.keys(source);
-  const expectedKeys = kind === 'caseStudyContext' ? new Set(['kind']) : new Set(['kind', 'index']);
-  for (const key of keys) {
-    if (!expectedKeys.has(key)) {
-      fail(`homepageProofHighlights[${index}].source.${key} is not valid for ${kind}.`);
-    }
-  }
-
-  if (kind === 'caseStudyContext') {
-    if (typeof proof?.caseStudy?.context !== 'string' || proof.caseStudy.context.trim().length === 0) {
-      fail(`homepageProofHighlights[${index}].source references missing caseStudy.context.`);
-    }
-    return;
-  }
-
-  if (!Number.isInteger(source.index) || source.index < 0) {
-    fail(`homepageProofHighlights[${index}].source.index must be a non-negative integer for ${kind}.`);
-    return;
-  }
-
-  if (kind === 'buildEvidence') {
-    const value = proof?.buildEvidence?.[source.index];
-    if (typeof value !== 'string' || value.trim().length === 0) {
-      fail(`homepageProofHighlights[${index}].source references missing buildEvidence[${source.index}].`);
-    }
-    return;
-  }
-
-  if (kind === 'caseStudyOutcome') {
-    const value = proof?.caseStudy?.outcomes?.[source.index];
-    if (typeof value !== 'string' || value.trim().length === 0) {
-      fail(`homepageProofHighlights[${index}].source references missing caseStudy.outcomes[${source.index}].`);
-    }
-    return;
-  }
-
-  fail(`homepageProofHighlights[${index}].source.kind "${kind}" is not supported.`);
-}
-
-if (homepageProofHighlights.length === 0) {
-  fail('homepageProofHighlights must contain at least one proof highlight.');
-}
-if (homepageProofHighlights.length > 4) {
-  fail(`homepageProofHighlights must contain at most 4 highlights for the mobile hero strip, got ${homepageProofHighlights.length}.`);
-}
-homepageProofHighlights.forEach((highlight, index) => {
-  const repo = requireString('homepageProofHighlights', index, highlight, 'repo');
-  validateRepoName('homepageProofHighlights', index, 'repo', repo);
-  if (repo && !portfolioRefs.has(repo)) fail(`homepageProofHighlights[${index}].repo ${repo} must refer to a project route.`);
-  const proof = proofRecords[repo];
-  if (repo && !proof) fail(`homepageProofHighlights[${index}].repo ${repo} must have a projectProof record.`);
-
-  const label = requireString('homepageProofHighlights', index, highlight, 'label');
-  const value = requireString('homepageProofHighlights', index, highlight, 'value');
-  const copy = requireString('homepageProofHighlights', index, highlight, 'copy');
-  if (label.length > 32) fail(`homepageProofHighlights[${index}].label must be 32 characters or fewer for mobile layout.`);
-  if (value.length > 24) fail(`homepageProofHighlights[${index}].value must be 24 characters or fewer for mobile layout.`);
-  if (copy.length > 96) fail(`homepageProofHighlights[${index}].copy must be 96 characters or fewer for mobile layout.`);
-  validateHomepageProofSource(index, proof, highlight.source);
+  if (repo && !portfolioRefs.has(repo)) fail(`greatestHits[${index}].repo ${repo} must refer to a reviewed project.`);
 });
 
 const allowedArchiveStatuses = new Set(['moved', 'held', 'removed', 'superseded', 'archived']);
@@ -564,14 +445,14 @@ if (typeof nowUpdatedRaw !== 'string' || nowUpdatedRaw.trim().length === 0) {
   }
 }
 
-const routeSlugs = new Map();
+const repositorySlugs = new Map();
 for (const slug of portfolioRefs) {
   const normalized = slug.toLowerCase();
-  const existing = routeSlugs.get(normalized);
+  const existing = repositorySlugs.get(normalized);
   if (existing && existing !== slug) {
-    fail(`Project route slug collision: "${existing}" and "${slug}" differ only by case.`);
+    fail(`Repository slug collision: "${existing}" and "${slug}" differ only by case.`);
   }
-  routeSlugs.set(normalized, slug);
+  repositorySlugs.set(normalized, slug);
 }
 
 const commandPaletteProjects = new Map();
@@ -586,7 +467,7 @@ for (const entry of catalog) {
     name: entry.name,
     desc: entry.desc,
     type: 'catalog',
-    url: `/projects/${entry.repo}/`,
+    url: `https://github.com/SysAdminDoc/${entry.repo}`,
     category: entry.category,
     categoryLabel: categoryLabels[entry.category],
     searchTerms: [entry.category, categoryLabels[entry.category]],
@@ -598,7 +479,7 @@ for (const app of liveApps) {
     name: app.name,
     desc: app.desc,
     type: 'live',
-    url: `/projects/${app.slug}/`,
+    url: `https://github.com/SysAdminDoc/${app.slug}`,
     searchTerms: ['Live Apps', 'Live App', 'Browser'],
   });
 }
@@ -608,13 +489,13 @@ for (const project of featured) {
     name: project.name,
     desc: project.desc,
     type: 'featured',
-    url: `/projects/${project.repo}/`,
+    url: `https://github.com/SysAdminDoc/${project.repo}`,
     searchTerms: project.tags,
   });
 }
 
 if (commandPaletteProjects.size !== portfolioRefs.size) {
-  fail(`Command palette project count ${commandPaletteProjects.size} must match unique project route count ${portfolioRefs.size}.`);
+  fail(`Command palette project count ${commandPaletteProjects.size} must match unique reviewed project count ${portfolioRefs.size}.`);
 }
 for (const slug of portfolioRefs) {
   const item = commandPaletteProjects.get(slug);
@@ -622,7 +503,7 @@ for (const slug of portfolioRefs) {
     fail(`Command palette data is missing ${slug}.`);
     continue;
   }
-  if (item.url !== `/projects/${slug}/`) fail(`Command palette URL for ${slug} must be /projects/${slug}/.`);
+  if (item.url !== `https://github.com/SysAdminDoc/${slug}`) fail(`Command palette URL for ${slug} must point directly to its GitHub repository.`);
   if (typeof item.name !== 'string' || item.name.trim().length === 0) fail(`Command palette item ${slug} is missing a name.`);
   if (typeof item.desc !== 'string' || item.desc.trim().length === 0) fail(`Command palette item ${slug} is missing a description.`);
 }
@@ -631,74 +512,12 @@ console.log('Project data validation');
 console.log(`  featured: ${featured.length}`);
 console.log(`  live apps: ${liveApps.length}`);
 console.log(`  local fallback catalog: ${catalog.length}`);
-console.log(`  local fallback project routes: ${portfolioRefs.size}`);
+console.log(`  local fallback reviewed projects: ${portfolioRefs.size}`);
 console.log(`  local fallback command palette projects: ${commandPaletteProjects.size}`);
 if (profileFeedProjectCount !== null) console.log(`  rendered profile feed projects: ${profileFeedProjectCount}`);
 console.log(`  screenshots checked: ${liveApps.length}`);
-console.log(`  proof records: ${Object.keys(proofRecords).length}`);
-console.log(`  greatest hit case studies: ${greatestHitCaseStudyCount}/${greatestHits.length}`);
-console.log(`  homepage proof highlights: ${homepageProofHighlights.length}`);
 console.log(`  archive entries: ${archiveEntries.length}`);
 if (nowAgeDays !== null) console.log(`  /now page age: ${nowAgeDays} day${nowAgeDays === 1 ? '' : 's'} (warn >${NOW_WARN_DAYS}d, fail >${NOW_FAIL_DAYS}d)`);
-
-const proofKeys = new Set(Object.keys(proofRecords));
-const caseStudyKeys = new Set(Object.keys(proofRecords).filter((key) => proofRecords[key].caseStudy));
-const featuredRepos = new Set(featured.map((project) => project.repo));
-const greatestHitsRepos = new Set(greatestHits.map((hit) => hit.repo));
-const liveAppSlugs = new Set(liveApps.map((app) => app.slug));
-
-const proofBuckets = [
-  { label: 'Greatest Hits', repos: [...greatestHitsRepos], enforced: true },
-  { label: 'Featured', repos: [...featuredRepos].filter((repo) => !greatestHitsRepos.has(repo)), enforced: false },
-  { label: 'Live Apps', repos: [...liveAppSlugs], enforced: false },
-];
-
-const categoryBuckets = new Map();
-for (const entry of catalog) {
-  const cat = entry.category;
-  if (!categoryBuckets.has(cat)) categoryBuckets.set(cat, []);
-  categoryBuckets.get(cat).push(entry.repo);
-}
-
-console.log('');
-console.log('Proof coverage report');
-for (const bucket of proofBuckets) {
-  const withProof = bucket.repos.filter((repo) => proofKeys.has(repo));
-  const withCase = bucket.repos.filter((repo) => caseStudyKeys.has(repo));
-  const tag = bucket.enforced ? ' (enforced)' : '';
-  console.log(`  ${bucket.label}: ${withProof.length}/${bucket.repos.length} proof, ${withCase.length}/${bucket.repos.length} case study${tag}`);
-}
-
-console.log('  Language lanes:');
-const sortedCategories = [...categoryBuckets.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-for (const [cat, repos] of sortedCategories) {
-  const label = categoryLabels[cat] || cat;
-  const withProof = repos.filter((repo) => proofKeys.has(repo));
-  console.log(`    ${label} (${cat}): ${withProof.length}/${repos.length} proof`);
-}
-
-const missingProof = [];
-for (const bucket of proofBuckets) {
-  for (const repo of bucket.repos) {
-    if (!proofKeys.has(repo)) {
-      missingProof.push({ repo, tier: bucket.label });
-    }
-  }
-}
-const catalogOnlyMissing = catalog
-  .filter((entry) => !proofKeys.has(entry.repo) && !missingProof.some((item) => item.repo === entry.repo))
-  .map((entry) => ({ repo: entry.repo, tier: categoryLabels[entry.category] || entry.category }));
-
-if (missingProof.length > 0 || catalogOnlyMissing.length > 0) {
-  console.log('');
-  console.log('Missing proof (prioritized):');
-  for (const item of missingProof) {
-    console.log(`  - ${item.repo} [${item.tier}]`);
-  }
-  if (catalogOnlyMissing.length > 0) {
-    console.log(`  ... and ${catalogOnlyMissing.length} catalog-only projects without proof.`);
-  }
-}
 
 if (warnings.length > 0) {
   console.warn('');

@@ -225,7 +225,7 @@
       const badge = row.kind === 'project' ? (row.type || 'project').toUpperCase() : (row.badge || 'SECTION');
       const subtitle = row.desc
         || (row.kind === 'project'
-          ? ((row.categoryLabel || row.category) ? (row.categoryLabel || row.category) + ' project' : 'Open the project detail page.')
+          ? ((row.categoryLabel || row.category) ? (row.categoryLabel || row.category) + ' project' : 'Open the GitHub repository.')
           : 'Open this route.');
       const item = document.createElement('div');
       item.className = 'cmdk-item';

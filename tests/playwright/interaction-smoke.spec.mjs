@@ -196,7 +196,7 @@ test.describe('rendered interaction smoke', () => {
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
     await expect(page.locator('pagefind-filter-pane')).toContainText('Scope', { timeout: 20_000 });
-    await expect(page.locator('pagefind-filter-pane')).toContainText('Category');
+    await expect(page.locator('pagefind-filter-pane')).not.toContainText('Category');
 
     const archiveMeta = page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }).first();
     await expect(archiveMeta).toBeVisible({ timeout: 20_000 });
@@ -550,128 +550,18 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
-  test('language lane project navigation works without runtime errors or overflow', async ({ page }) => {
+  test('language lane project links point directly to GitHub without runtime errors or overflow', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 390, height: 900 });
     await preparePage(page, '/lang/python/', '#lane-projects');
 
     await expect(page.locator('main.lang-page')).toBeVisible();
-    await expect(page.locator('.lang-card[href="/projects/project-nomad-desktop/"]')).toBeVisible();
-    await expectNoHorizontalOverflow(page);
-
-    await page.locator('.lang-card[href="/projects/project-nomad-desktop/"]').click();
-    await expect(page.locator('[data-project-slug="project-nomad-desktop"]')).toBeVisible();
-    await expectNoHorizontalOverflow(page);
-    expect(runtimeErrors).toEqual([]);
-  });
-
-  test('project share fallback works without runtime errors or overflow', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await page.setViewportSize({ width: 390, height: 900 });
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: async () => { throw new Error('clipboard unavailable'); } },
-        configurable: true,
-      });
-      Document.prototype.execCommand = () => true;
-    });
-    await preparePage(page, '/projects/project-nomad-desktop/', '[data-project-slug="project-nomad-desktop"]');
+    const projectLink = page.locator('.lang-card[href="https://github.com/SysAdminDoc/project-nomad-desktop"]');
+    await expect(projectLink).toBeVisible();
+    await expect(projectLink).toHaveAttribute('target', '_blank');
+    await expect(projectLink).toHaveAttribute('rel', /noopener/);
 
     await expectNoHorizontalOverflow(page);
-    await page.locator('[data-project-share]').click();
-    await expect(page.locator('#project-share-status')).toContainText(/copied/i);
-    await expect(page.locator('[data-project-share]')).toHaveAttribute('aria-busy', 'false');
-    await expect(page.locator('[data-project-share]')).toBeFocused();
-    await expectNoHorizontalOverflow(page);
-    expect(runtimeErrors).toEqual([]);
-  });
-
-  test('screenshot viewer opens, zooms, and closes with keyboard', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await preparePage(page, '/projects/StormviewRadar/', '[data-project-slug="StormviewRadar"]');
-
-    const trigger = page.locator('[data-shot-viewer]');
-    if (!(await trigger.count())) {
-      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
-      return;
-    }
-
-    await trigger.click();
-    const dialog = page.locator('#shotViewer');
-    await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.sv-img')).toHaveAttribute('alt', /StormviewRadar/);
-    await expect(dialog.locator('.sv-caption')).toContainText('StormviewRadar');
-    await expect(dialog.locator('.sv-live')).toBeVisible();
-    await expect(dialog.locator('.sv-source')).toBeVisible();
-    await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
-
-    await dialog.locator('.sv-zoom').click();
-    await expect(dialog.locator('.sv-zoom')).toContainText('100%');
-    await expect(dialog.locator('.sv-img')).toHaveClass(/sv-img-zoom/);
-
-    await dialog.locator('.sv-zoom').click();
-    await expect(dialog.locator('.sv-zoom')).toContainText('Fit');
-
-    await page.keyboard.press('Escape');
-    await expect(dialog).not.toBeVisible();
-    await expect.poll(async () => page.evaluate(() => document.activeElement?.hasAttribute('data-shot-viewer') ?? false)).toBe(true);
-
-    await expectNoHorizontalOverflow(page);
-    expect(runtimeErrors).toEqual([]);
-  });
-
-  test('screenshot viewer reports failed share fallback without runtime errors', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: async () => { throw new Error('clipboard unavailable'); } },
-        configurable: true,
-      });
-      Document.prototype.execCommand = () => false;
-    });
-    await preparePage(page, '/projects/StormviewRadar/', '[data-project-slug="StormviewRadar"]');
-
-    const trigger = page.locator('[data-shot-viewer]');
-    if (!(await trigger.count())) {
-      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
-      return;
-    }
-
-    await trigger.click();
-    const dialog = page.locator('#shotViewer');
-    await expect(dialog).toBeVisible();
-    await dialog.locator('.sv-share').click();
-    await expect(dialog.locator('.sv-status')).toContainText("Couldn't copy. Copy the address from your browser.");
-    await page.keyboard.press('Escape');
-    await expect(dialog).not.toBeVisible();
-
-    await expectNoHorizontalOverflow(page);
-    expect(runtimeErrors).toEqual([]);
-  });
-
-  test('screenshot viewer opens via ?shot=1 deep link and updates URL state', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await preparePage(page, '/projects/StormviewRadar/?shot=1', '[data-project-slug="StormviewRadar"]');
-
-    const trigger = page.locator('[data-shot-viewer]');
-    if (!(await trigger.count())) {
-      test.skip(true, 'StormviewRadar has no screenshot trigger in this build');
-      return;
-    }
-
-    const dialog = page.locator('#shotViewer');
-    await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.sv-img')).toHaveAttribute('alt', /StormviewRadar/);
-
-    expect(page.url()).toContain('shot=1');
-    await expect(dialog.locator('.sv-share')).toBeVisible();
-
-    await page.keyboard.press('Escape');
-    await expect(dialog).not.toBeVisible();
-    expect(page.url()).not.toContain('shot=1');
-
     expect(runtimeErrors).toEqual([]);
   });
 });

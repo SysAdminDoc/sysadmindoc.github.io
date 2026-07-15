@@ -2,6 +2,7 @@ import type { APIContext } from 'astro';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
+import { githubRepoUrl } from '../data/github';
 
 // JSON Feed 1.1 (jsonfeed.org) mirror of the project feed for modern feed
 // clients/automation. RSS (/rss.xml) remains the primary advertised feed.
@@ -23,7 +24,8 @@ export async function GET(context: APIContext) {
     if (seen.has(repo)) return;
     seen.add(repo);
     const date = dateFor(repo);
-    items.push({ id: `${site}/projects/${repo}/`, url: `${site}/projects/${repo}/`, title: name, summary: clean(summary), date, tags: [tag] });
+    const repositoryUrl = githubRepoUrl(repo);
+    items.push({ id: repositoryUrl, url: repositoryUrl, title: name, summary: clean(summary), date, tags: [tag] });
   };
   for (const p of featured) add(p.repo, p.name, p.desc, 'Featured');
   for (const a of liveApps) add(a.slug, `${a.name} (live)`, a.desc, 'Live App');

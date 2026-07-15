@@ -3,6 +3,7 @@
 // served once and cached, instead of inlined on every page).
 import { catalog, featured, liveApps } from './portfolio';
 import { categoryLabels } from './categories';
+import { githubRepoUrl } from './github';
 
 type RepoMeta = Record<string, { language?: string | null }>;
 let repoMeta: RepoMeta = {};
@@ -57,7 +58,7 @@ function buildCmdkProjects(): CmdkProject[] {
       name: project.name,
       desc: normalizeCmdkDesc(project.desc),
       type: 'catalog',
-      url: `/projects/${project.repo}/`,
+      url: githubRepoUrl(project.repo),
       category: project.category,
       categoryLabel: categoryLabels[project.category] ?? project.category,
       language: repoMeta[project.repo]?.language ?? null,
@@ -70,7 +71,7 @@ function buildCmdkProjects(): CmdkProject[] {
       name: app.name,
       desc: normalizeCmdkDesc(app.desc),
       type: 'live',
-      url: `/projects/${app.slug}/`,
+      url: githubRepoUrl(app.slug),
       searchTerms: ['Live Apps', 'Live App', 'Browser'],
     });
   }
@@ -80,7 +81,7 @@ function buildCmdkProjects(): CmdkProject[] {
       name: project.name,
       desc: normalizeCmdkDesc(project.desc),
       type: 'featured',
-      url: `/projects/${project.repo}/`,
+      url: githubRepoUrl(project.repo),
       searchTerms: project.tags,
     });
   }
@@ -93,10 +94,10 @@ export const cmdkQuickLinks = [
   {
     label: 'Full-Text Search',
     url: '/search/',
-    desc: 'Search rendered project pages, README excerpts, language tracks, release history, and archive decisions.',
+    desc: 'Search portfolio pages, language tracks, release history, and archive decisions.',
     badge: 'PAGE',
     tone: 'green',
-    searchTerms: ['pagefind', 'full text', 'readme search', 'site search'],
+    searchTerms: ['pagefind', 'full text', 'site search'],
   },
   {
     label: 'Releases',

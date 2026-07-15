@@ -1,6 +1,7 @@
 ---
 import type { CatalogEntry } from '../data/types';
 import { categoryLabels } from '../data/categories';
+import { githubRepoUrl } from '../data/github';
 import StarSvg from './StarSvg.astro';
 
 export interface Props {
@@ -65,13 +66,16 @@ const rankDescriptionId = rankDisplayLabel
 const ariaParts = [
   entry.name,
   categoryLabel,
+  'opens the GitHub repository in a new tab',
   entry.live ? 'live build available' : null,
   pushedDateLabel ? `last updated ${pushedDateLabel}` : null,
   descText || null,
 ].filter(Boolean);
 ---
 <a
-  href={`/projects/${entry.repo}/`}
+  href={githubRepoUrl(entry.repo)}
+  target="_blank"
+  rel="noopener"
   class="ca"
   aria-label={ariaParts.join('. ')}
   aria-describedby={rankDescriptionId}

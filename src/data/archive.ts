@@ -10,10 +10,10 @@ export const archiveEntries: ArchiveEntry[] = [
     reason: 'The live grid now prioritizes current screenshots and launch-ready apps; older demos belong in project context instead of competing with active highlights.',
     source: 'Current src/data/projects.ts catalog entries and live-app screenshot policy.',
     links: [
-      { label: 'NukeMap', href: '/projects/NukeMap/', note: 'Public catalog entry' },
-      { label: 'CronScope', href: '/projects/CronScope/', note: 'Public catalog entry' },
-      { label: 'MHTMLens', href: '/projects/MHTMLens/', note: 'Public catalog entry' },
-      { label: 'LogLens', href: '/projects/LogLens/', note: 'Public catalog entry' },
+      { label: 'NukeMap', href: 'https://github.com/SysAdminDoc/NukeMap', note: 'GitHub repository' },
+      { label: 'CronScope', href: 'https://github.com/SysAdminDoc/CronScope', note: 'GitHub repository' },
+      { label: 'MHTMLens', href: 'https://github.com/SysAdminDoc/MHTMLens', note: 'GitHub repository' },
+      { label: 'LogLens', href: 'https://github.com/SysAdminDoc/LogLens', note: 'GitHub repository' },
     ],
   },
   {
@@ -35,7 +35,7 @@ export const archiveEntries: ArchiveEntry[] = [
     status: 'archived',
     statusLabel: 'Archived reference',
     summary: 'DuplicateFF remains visible as a reference architecture rather than a current flagship utility, but it is outside the feed-backed active catalog.',
-    reason: 'The profile projects feed omits it from the current portfolio set; the archive keeps a direct public GitHub link without generating a project detail page.',
+    reason: 'The profile projects feed omits it from the current portfolio set; the archive keeps a direct public GitHub link without restoring it to the active catalog.',
     source: 'SysAdminDoc projects.json feed and current archive policy.',
     links: [
       { label: 'GitHub repository', href: 'https://github.com/SysAdminDoc/DuplicateFF', note: 'Public archived reference outside the active feed-backed catalog' },
@@ -72,7 +72,7 @@ export const archiveEntries: ArchiveEntry[] = [
     reason: 'The archive should point visitors toward the maintained public surface when an older tool line has a clearer successor.',
     source: 'Current src/data/projects.ts catalog entry for the public successor.',
     links: [
-      { label: 'Start-Menu-Organizer', href: '/projects/Start-Menu-Organizer/', note: 'Current public successor' },
+      { label: 'Start-Menu-Organizer', href: 'https://github.com/SysAdminDoc/Start-Menu-Organizer', note: 'Current public successor on GitHub' },
     ],
   },
 ];

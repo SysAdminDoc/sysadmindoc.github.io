@@ -5,6 +5,7 @@ import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
+import { githubRepoUrl } from '../data/github';
 import type { Lang } from '../data/types';
 
 type ReleaseRecord = {
@@ -130,8 +131,8 @@ const projectEvents: TimelineEvent[] = catalog
       typeLabel: 'Project Update',
       title: project.name,
       desc: cleanText(project.desc),
-      href: `/projects/${project.repo}/`,
-      external: false,
+      href: githubRepoUrl(project.repo),
+      external: true,
       date,
       year: date.slice(0, 4),
       sortTime,
@@ -376,7 +377,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
     <div class="fi page-footer-shell">
       <div class="footer-brand">
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">The timeline is the wide-angle view. Project pages and releases carry the source-level detail.</p>
+        <p class="footer-summary">The timeline is the wide-angle view. GitHub repositories and releases carry the source-level detail.</p>
       </div>
       <nav class="fl" aria-label="Footer navigation"><a href="/releases/">Releases</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
     </div>

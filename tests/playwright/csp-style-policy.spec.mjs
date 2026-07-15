@@ -16,7 +16,6 @@ const routes = [
   { name: 'search', path: '/search/?q=python', ready: '#site-search' },
   { name: 'archive', path: '/archive/', ready: '#archive-entries' },
   { name: 'language', path: '/lang/powershell/', ready: '.lang-card' },
-  { name: 'project', path: '/projects/project-nomad-desktop/', ready: '[data-project-slug="project-nomad-desktop"]' },
 ];
 
 async function installCandidateStyleAttrPolicy(page) {
@@ -150,20 +149,4 @@ test.describe('candidate style CSP browser audit', () => {
     await expectNoCspViolations(page);
   });
 
-  test('project share fallback runs with style-src-attr none', async ({ page }) => {
-    await prepareCandidatePage(page, routes[4]);
-
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true });
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: async () => undefined },
-        configurable: true,
-      });
-    });
-    await page.reload({ waitUntil: 'load' });
-    await page.locator(routes[4].ready).waitFor({ state: 'visible' });
-    await page.locator('[data-project-share]').click();
-    await expect(page.locator('#project-share-status')).toContainText(/copied|shared/i);
-    await expectNoCspViolations(page);
-  });
 });

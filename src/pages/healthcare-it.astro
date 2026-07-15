@@ -8,6 +8,7 @@ import { healthcareIT } from '../data/curated';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { catalog, featured, liveApps } from '../data/portfolio';
+import { githubRepoUrl } from '../data/github';
 
 const title = 'Healthcare IT — Matt Parker';
 const pageOg = interiorOgPageBySlug['healthcare-it'];
@@ -29,7 +30,6 @@ const repos = healthcareIT.repos.map((slug) => {
   const f = featured.find((p) => p.repo === slug);
   const c = catalog.find((x) => x.repo === slug);
   const l = liveApps.find((a) => a.slug === slug);
-  const hasDetailPage = !!(f || c || l);
   return {
     slug,
     name: f?.name ?? c?.name ?? l?.name ?? slug,
@@ -37,8 +37,7 @@ const repos = healthcareIT.repos.map((slug) => {
     stars: stars[slug] ?? 0,
     lane: 'Healthcare IT',
     liveUrl: l?.url,
-    detailUrl: hasDetailPage ? `/projects/${slug}/` : `https://github.com/SysAdminDoc/${slug}`,
-    hasDetailPage,
+    repositoryUrl: githubRepoUrl(slug),
   };
 });
 const hasRepos = repos.length > 0;
@@ -124,10 +123,10 @@ const cmdkSections = hasRepos
                   <span class="hcit-card-tag">{r.lane}</span>
                   {r.stars > 0 && <span class="hcit-card-stars"><StarSvg /> {r.stars}</span>}
                 </div>
-                <h3 class="hcit-card-name"><a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-link">{r.name}</a></h3>
+                <h3 class="hcit-card-name"><a href={r.repositoryUrl} target="_blank" rel="noopener" class="hcit-card-link">{r.name}</a></h3>
                 <p class="hcit-card-desc" set:html={r.desc}></p>
                 <div class="hcit-card-actions">
-                  <a href={r.detailUrl} target={r.hasDetailPage ? undefined : '_blank'} rel={r.hasDetailPage ? undefined : 'noopener'} class="hcit-card-cta">{r.hasDetailPage ? 'Open project →' : 'Open external →'}</a>
+                  <a href={r.repositoryUrl} target="_blank" rel="noopener" class="hcit-card-cta">Open repository →</a>
                   {r.liveUrl && <a href={r.liveUrl} target="_blank" rel="noopener" class="hcit-card-live">Open live demo →</a>}
                 </div>
               </article>
