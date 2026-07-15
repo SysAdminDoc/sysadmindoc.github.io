@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Removed the generated-data refresh age from the homepage footer.
 - Removed the Career timeline from the homepage, including its navigation and command-search entries.
 - Removed the `NEW` and `DOWNLOAD` status pills from catalog cards while keeping the corresponding catalog filters available.
 - Retired every local project detail route and per-project social card; project cards, search, feeds, releases, screenshots, timeline entries, language lanes, and archive links now open the canonical GitHub repository directly.

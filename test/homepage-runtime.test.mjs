@@ -52,6 +52,7 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   assert.match(index, /id="skills"/);
   assert.doesNotMatch(index, /id="career"/);
   assert.doesNotMatch(index, /href="#career"/);
+  assert.doesNotMatch(index, /footer-freshness|Stats refreshed/);
   assert.match(index, /id="journey"/);
   assert.match(index, /id="beyond"/);
   assert.match(index, /id="connect"/);
