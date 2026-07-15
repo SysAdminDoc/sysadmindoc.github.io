@@ -381,22 +381,7 @@ html[data-theme="light"] .nav-actions{
   box-shadow:0 0 20px rgba(88,166,255,.12);
 }
 .hero-avatar.loaded{display:block}
-.htag{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:20px;
-  padding:8px 16px;
-  border:1px solid rgba(74,222,128,.22);
-  border-radius:10px;
-  background:rgba(74,222,128,.08);
-  color:var(--grn);
-  font-family:var(--mono);
-  font-size:13px;
-  text-decoration:none;
-  box-shadow:0 0 0 3px rgba(74,222,128,.06),0 12px 28px rgba(74,222,128,.12);
-}
-.htag .dot,.pulse-dot{
+.pulse-dot{
   width:7px;
   height:7px;
   border-radius:4px;
@@ -613,15 +598,6 @@ html[data-theme="light"] .nav-actions{
   background:linear-gradient(135deg, rgba(88,166,255,.08), rgba(255,255,255,.025));
   box-shadow:0 18px 36px rgba(0,0,0,.14);
 }
-.hero-evidence-kicker{
-  display:block;
-  margin-bottom:6px;
-  color:var(--t3);
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}
 .hero-evidence-head strong{
   display:block;
   color:var(--t1);
@@ -752,10 +728,6 @@ section{position:relative;z-index:1}
   width:48px;
   height:48px;
   margin-bottom:12px;
-}
-.htag{
-  margin-bottom:14px;
-  padding:7px 12px;
 }
 .hn{
   margin-bottom:12px;
@@ -888,11 +860,6 @@ section{position:relative;z-index:1}
     .hero-avatar{
     width:52px;
     height:52px;
-  }
-  .htag{
-    width:100%;
-    justify-content:center;
-    margin-bottom:16px;
   }
   .hn{
     font-size:clamp(42px,14vw,58px);
@@ -1088,7 +1055,6 @@ html[data-theme="light"] #nav{
   box-shadow:0 0 22px rgba(88,229,214,.22);
 }
 .hero-avatar{order:2;margin-bottom:18px}
-.htag{order:3}
 .hn{order:4}
 .hr{order:5}
 .hero-summary{order:6}
@@ -1102,14 +1068,6 @@ html[data-theme="light"] #nav{
   height:66px;
   border-color:rgba(88,229,214,.46);
   box-shadow:0 0 0 5px rgba(88,229,214,.08),0 20px 42px rgba(0,0,0,.22);
-}
-.htag{
-  align-self:flex-start;
-  padding:0;
-  border:0;
-  background:transparent;
-  box-shadow:none;
-  color:var(--grn);
 }
 .hn{
   margin-bottom:18px;
@@ -1189,7 +1147,6 @@ html[data-theme="light"] .hero-evidence{
   background:transparent;
   box-shadow:none;
 }
-.hero-evidence-kicker{color:var(--grn)}
 .hero-evidence-head strong{
   font-family:var(--sans);
   font-size:clamp(24px,2.5vw,34px);
@@ -1294,7 +1251,6 @@ html[data-theme="light"] .hero-evidence{
 .hero-avatar{flex:0 0 auto;width:64px;height:64px;margin:0;border-width:1px;box-shadow:none}
 .hn{margin:0;font-size:clamp(58px,5.5vw,84px);line-height:.94;letter-spacing:-.045em}
 .hn .a{display:inline;background:none;color:var(--blue);-webkit-text-fill-color:currentColor}
-.htag{order:2;margin:0 0 18px;font-size:13px}
 .hr{order:3;max-width:31ch;margin:0 0 16px;font-size:clamp(21px,1.8vw,27px);line-height:1.22}
 .hero-summary{order:5;max-width:55ch;margin:0 0 16px;color:var(--t2);font-size:16px;line-height:1.55}
 .hs{order:6;max-width:640px;margin:0;padding:14px 0;border:1px solid var(--border-soft);border-inline:0;border-radius:0;background:transparent;box-shadow:none}
@@ -1302,8 +1258,6 @@ html[data-theme="light"] .hero-evidence{
 .hero-proof-strip,.hero-pulse,.hero-signals{display:none}
 .hero-evidence{max-width:720px;padding:0;gap:16px;justify-self:stretch;border:0;border-radius:0;background:transparent;box-shadow:none}
 .hero-evidence-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
-.hero-evidence-kicker{display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;letter-spacing:.08em}
-.hero-evidence-kicker .dot{width:7px;height:7px;border-radius:4px;background:var(--grn);box-shadow:0 0 12px var(--grn-glow)}
 .hero-evidence-head strong{font-size:clamp(24px,2vw,32px)}
 .hero-evidence-head p{max-width:60ch}
 .hero-showcase{min-width:0;display:grid;grid-template-columns:minmax(140px,.34fr) minmax(0,.66fr);min-height:220px;overflow:hidden;border:1px solid rgba(150,178,218,.2);border-radius:6px;background:rgba(4,10,18,.78);color:inherit;text-decoration:none;box-shadow:none}
@@ -1342,7 +1296,6 @@ html[data-theme="light"] .hero-app-card{background:transparent}
   .hero-identity{display:flex;gap:12px;margin-bottom:14px}
   .hero-avatar{width:62px;height:62px}
   .hn{font-size:clamp(42px,12.5vw,58px)}
-  .htag{justify-content:flex-start;width:auto}
   .hr{max-width:none;min-height:0;margin:0 0 12px;font-size:21px}
   .hero-summary{display:block;margin:0 0 16px;font-size:16px;line-height:1.55}
   .hs{margin:0;border-inline:0;border-radius:0;background:transparent}
