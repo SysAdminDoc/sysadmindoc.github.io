@@ -12,7 +12,7 @@ const globalLayerAnchors = [
   ['secondary', /\/\* ===== v0\.9\.1 secondary section polish ===== \*\/\s*@layer site\.secondary \{/],
   ['polish', /\/\* ===== v1\.0 premium polish pass ===== \*\/\s*@layer site\.polish \{/],
   ['refinement', /\/\* ===== v1\.0\.1 premium refinement pass ===== \*\/\s*@layer site\.refinement \{/],
-  ['additions', /\/\* ===== R33: Contribution heatmap ===== \*\/\s*@layer site\.additions \{/],
+  ['additions', /\/\* ===== R38: Light theme completion ===== \*\/\s*@layer site\.additions \{/],
 ];
 
 test('critical and global stylesheets use a stable cascade layer contract', async () => {
