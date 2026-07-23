@@ -10,7 +10,6 @@ export const archiveEntries: ArchiveEntry[] = [
     reason: 'The live grid now prioritizes current screenshots and launch-ready apps; older demos belong in project context instead of competing with active highlights.',
     source: 'Current src/data/projects.ts catalog entries and live-app screenshot policy.',
     links: [
-      { label: 'NukeMap', href: 'https://github.com/SysAdminDoc/NukeMap', note: 'GitHub repository' },
       { label: 'CronScope', href: 'https://github.com/SysAdminDoc/CronScope', note: 'GitHub repository' },
       { label: 'MHTMLens', href: 'https://github.com/SysAdminDoc/MHTMLens', note: 'GitHub repository' },
       { label: 'LogLens', href: 'https://github.com/SysAdminDoc/LogLens', note: 'GitHub repository' },
@@ -62,6 +61,18 @@ export const archiveEntries: ArchiveEntry[] = [
     source: 'src/data/catalog-policy.json privacyReviewRequired and current security-boundary review.',
     links: [],
     sensitive: true,
+  },
+  {
+    id: 'catalog-drift-2026-07',
+    name: 'July 2026 catalog reconciliation',
+    status: 'removed',
+    statusLabel: 'Removed from catalog',
+    summary: 'The hazard simulators (AsteroidSimulator, TsunamiSimulator, NukeMap) were consolidated into the current Cataclysm project; Discrub, ImageForge, and SoftwareScannerGUI were retired from GitHub; the pfSense tooling moved private.',
+    reason: 'Catalog entries should only point at active public repositories; superseded or private work is represented by its successor or removed outright.',
+    source: 'Live GitHub repository audit against src/data/projects.ts, July 2026.',
+    links: [
+      { label: 'Cataclysm', href: 'https://github.com/SysAdminDoc/Cataclysm', note: 'Current public successor to the hazard simulators' },
+    ],
   },
   {
     id: 'start-menu-successor',
