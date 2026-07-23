@@ -15,6 +15,7 @@ const requiredRoutes = [
   '/uses/',
   '/resume/',
   '/healthcare-it/',
+  '/ai/',
   '/timeline/',
   '/archive/',
 ];

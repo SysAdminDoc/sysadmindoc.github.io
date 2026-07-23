@@ -26,7 +26,7 @@ const budgets = {
   jsTotalBytes: 153_600,      // 150 KB total JS
   cssFileLimitBytes: 122_880, // 120 KB per route/component CSS file
   cssGlobalFileLimitBytes: 163_840, // 160 KB for the shared shell, tokens, and cross-route UI primitives
-  cssTotalBytes: 206_848,     // 202 KB total CSS
+  cssTotalBytes: 211_968,     // 207 KB total CSS (raised 202 → 207 when the /ai/ track route added its ~2.2 KB chunk)
 };
 
 const distDir = path.resolve(root, options.distDir);

@@ -209,6 +209,14 @@ const journeyMilestones = [
     cta: 'Open the full catalog',
     meta: 'The complete archive, filters included.',
   },
+  {
+    title: 'AI-Augmented Building',
+    eyebrow: 'Current chapter',
+    desc: 'A year spent all-in on AI-assisted development produced this entire archive — one person directing AI tooling through research, build, test, and release. Now offered to businesses as a service: tool rollout, workflow automation, employee training, and standing problem-solving on a monthly retainer.',
+    href: '/ai/',
+    cta: 'Open the AI services track',
+    meta: 'Fractional AI implementation for businesses.',
+  },
 ] as const;
 const connectPaths = [
   {
@@ -262,6 +270,16 @@ const connectPaths = [
     icon: 'pulse',
   },
   {
+    title: 'AI Services',
+    handle: '/ai',
+    href: '/ai/',
+    external: false,
+    desc: 'Fractional AI implementation for businesses — tool rollout, automation, training, and problem-solving on a monthly retainer.',
+    meta: 'Contractor engagements open.',
+    cta: 'See AI services',
+    icon: 'pulse',
+  },
+  {
     title: 'Email',
     handle: 'matt_parker@outlook.com',
     href: 'mailto:matt_parker@outlook.com',
@@ -308,6 +326,7 @@ const cmdkSections = [
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
   { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative projects.', badge: 'SECTION' },
+  { label: 'AI Services', href: '/ai/', desc: 'Fractional AI implementation for businesses on a monthly retainer.', badge: 'TRACK' },
   { label: 'Connect', href: '#connect', desc: 'Contact and links.', badge: 'SECTION' },
   { label: 'Full-Text Search', href: '/search/', desc: 'Search projects and documentation.', badge: 'PAGE' },
   { label: 'Archive', href: '/archive/', desc: 'Retired and superseded projects.', badge: 'PAGE' },
@@ -331,6 +350,7 @@ const cmdkSections = [
         <a href="#catalog">Catalog</a>
         <a href="#skills">Practice</a>
         <a href="#journey">Journey</a>
+        <a href="/ai/">AI</a>
         <a href="#connect">Contact</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
@@ -357,7 +377,7 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <p class="hero-eyebrow">Technical leadership · Healthcare systems · Practical software</p>
+        <p class="hero-eyebrow">Technical leadership · Healthcare systems · AI-augmented software</p>
         <div class="hero-identity">
           <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
           <h1 class="hn">Matt <span class="a">Parker</span></h1>
@@ -705,6 +725,7 @@ const cmdkSections = [
         <a href="/now/">Now</a>
         <a href="/uses/">Uses</a>
         <a href="/resume/">Resume</a>
+        <a href="/ai/">AI Services</a>
         <a href="/rss.xml">RSS</a>
         <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
       </nav>

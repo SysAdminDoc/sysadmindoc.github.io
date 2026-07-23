@@ -172,6 +172,14 @@ export const cmdkQuickLinks = [
     searchTerms: ['healthcare', 'support', 'customer systems'],
   },
   {
+    label: 'AI Services Track',
+    url: '/ai/',
+    desc: 'Fractional AI implementation for businesses: tool rollout, workflow automation, training, and a monthly problem-solving retainer.',
+    badge: 'TRACK',
+    tone: 'amber',
+    searchTerms: ['ai', 'artificial intelligence', 'consulting', 'automation', 'retainer', 'contractor', 'hire'],
+  },
+  {
     label: 'GitHub Workspace',
     url: 'https://github.com/SysAdminDoc',
     desc: 'Browse the source, issues, and project history directly in GitHub.',

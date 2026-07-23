@@ -7,6 +7,7 @@ const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const pagefindDir = path.join(distDir, 'pagefind');
 const requiredScopeLabels = [
+  'AI Services',
   'Archive',
   'Healthcare IT',
   'Home',
