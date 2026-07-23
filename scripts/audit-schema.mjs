@@ -46,6 +46,10 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'AboutPage', 'WebPage'],
     checks: checkReviewedInteriorRoute,
   }],
+  ['/ai/', {
+    types: ['WebSite', 'Person', 'AboutPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
   ['/releases/', {
     types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
     checks: checkReviewedInteriorRoute,

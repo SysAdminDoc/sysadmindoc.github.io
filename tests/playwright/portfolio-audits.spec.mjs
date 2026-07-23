@@ -14,6 +14,7 @@ const routes = [
   { name: 'uses', path: '/uses/', ready: '#uses-overview' },
   { name: 'now', path: '/now/', ready: '#now-overview' },
   { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },
+  { name: 'ai', path: '/ai/', ready: '#track-overview' },
   { name: 'lang-python', path: '/lang/python/', ready: '#lane-overview' },
 ];
 const viewports = [

@@ -78,6 +78,17 @@ export const interiorOgPages: InteriorOgPage[] = [
     ogImageAlt: 'Now page social preview card',
   },
   {
+    slug: 'ai',
+    route: '/ai/',
+    title: 'AI Services',
+    description: 'Fractional AI implementation for businesses: tool selection and rollout, workflow automation, employee training, and custom software on a monthly retainer.',
+    label: 'AI Track',
+    accent: '#c084fc',
+    command: 'cat ai-services.md',
+    ogImage: '/og/ai.png',
+    ogImageAlt: 'AI services page social preview card',
+  },
+  {
     slug: 'healthcare-it',
     route: '/healthcare-it/',
     title: 'Healthcare IT',

@@ -14,7 +14,7 @@ const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
 const baseLayoutPath = path.join(root, 'src', 'layouts', 'Base.astro');
 const maxFullBytes = 350_000;
 const maxThumbBytes = 80_000;
-const requiredInteriorOgSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases'];
+const requiredInteriorOgSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'ai', 'releases'];
 const errors = [];
 
 function fail(message) {

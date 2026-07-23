@@ -1,5 +1,5 @@
 ---
-type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now' | 'uses' | 'resume' | 'healthcare' | 'screenshots' | 'status';
+type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now' | 'uses' | 'resume' | 'healthcare' | 'screenshots' | 'status' | 'ai';
 type ContextTone = 'blue' | 'green' | 'amber' | 'slate' | 'purple';
 
 export interface Props {
@@ -39,6 +39,7 @@ const contextClass = `nav-context nav-context-${contextTone}`;
       <a href="/now/" class={isActive('now') ? 'active' : undefined} aria-current={isActive('now') ? 'page' : undefined}>Now</a>
       <a href="/uses/" class={isActive('uses') ? 'active' : undefined} aria-current={isActive('uses') ? 'page' : undefined}>Uses</a>
       <a href="/resume/" class={isActive('resume') ? 'active' : undefined} aria-current={isActive('resume') ? 'page' : undefined}>Resume</a>
+      <a href="/ai/" class={isActive('ai') ? 'active' : undefined} aria-current={isActive('ai') ? 'page' : undefined}>AI</a>
     </div>
     <div class="nav-actions">
       {contextLabel && (

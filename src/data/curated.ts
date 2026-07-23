@@ -90,10 +90,11 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-06-25',
+  updated: '2026-07-23',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site v0.21 - ${fallbackRepoCount}+ repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
+    `Portfolio site v0.23 - ${fallbackRepoCount}+ repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
+    'AI services track: fractional AI implementation, automation, and training engagements for businesses on a monthly retainer',
     'Healthcare support workflows: migration coordination, customer cutover validation, and documentation cleanup',
     'Customer support operations: hosted account transitions, workstation support, and vendor handoffs',
     'Customer-facing documentation and tutorial updates for support workflows',

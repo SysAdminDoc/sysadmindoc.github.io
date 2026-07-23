@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import SectionJumpNav from '../components/SectionJumpNav.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import { catalog, liveApps } from '../data/portfolio';
+
+const title = 'AI Services — Matt Parker';
+const pageOg = interiorOgPageBySlug['ai'];
+const pageFreshness = pageFreshnessBySlug['ai'];
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+const projectCount = catalog.length;
+const liveAppCount = liveApps.length;
+
+const services = [
+  {
+    tag: 'Adoption',
+    name: 'AI rollout & tooling',
+    desc: 'Evaluate your workflows, pick the right tools for the job — Claude, ChatGPT, Copilot, or local models when data must stay in-house — and get them configured, secured, and actually used instead of just licensed.',
+  },
+  {
+    tag: 'Automation',
+    name: 'Custom software & automation',
+    desc: 'Purpose-built tools for the gaps between your systems: report generation, document processing, data entry, monitoring, integrations. Delivered in days or weeks, not quarters.',
+  },
+  {
+    tag: 'Training',
+    name: 'Employee enablement',
+    desc: 'Hands-on training built around your team’s real daily tasks — prompt patterns that hold up in practice, clear guardrails for what not to automate, and playbooks people keep using after I leave the room.',
+  },
+  {
+    tag: 'Retainer',
+    name: 'Standing problem-solving',
+    desc: 'An open line for whatever comes up: a slow process, a manual report, two systems that will not talk to each other. You describe the friction; it comes back solved, documented, and maintained.',
+  },
+] as const;
+
+const engagementSteps = [
+  {
+    step: '01',
+    name: 'Discovery',
+    desc: 'A free conversation about where your business loses time. I will tell you plainly what AI can fix, what it cannot, and what it would take.',
+  },
+  {
+    step: '02',
+    name: 'Pilot',
+    desc: 'One measurable problem, fixed scope, fast turnaround. You see a working result before committing to anything ongoing.',
+  },
+  {
+    step: '03',
+    name: 'Retainer',
+    desc: 'A flat monthly rate covers implementation, training, and new problems as they surface. No long contract, and you keep everything I build.',
+  },
+] as const;
+
+const cmdkSections = [
+  { label: 'Overview', href: '#track-overview', desc: 'What the AI services engagement is and who it serves.', badge: 'TRACK' },
+  { label: 'What I Deliver', href: '#services', desc: 'Rollout, automation, training, and retainer problem-solving.', badge: 'SERVICES' },
+  { label: 'How It Works', href: '#engagement', desc: 'Discovery, pilot, then a flat monthly retainer.', badge: 'PROCESS' },
+  { label: 'The Proof', href: '#proof', desc: 'Why this portfolio itself is the evidence.', badge: 'CONTEXT' },
+  { label: 'Contact', href: '#ai-contact', desc: 'Start a conversation about your business.', badge: 'CONTACT' },
+] as const;
+---
+<Base
+  title={title}
+  description={pageOg.description}
+  ogImage={pageOg.ogImage}
+  ogImageAlt={pageOg.ogImageAlt}
+  cmdkSections={cmdkSections}
+>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="ai" contextLabel="AI services track" contextTone="purple" />
+
+  <main id="main" class="aisvc-page" data-pagefind-body data-pagefind-filter="Scope:AI Services">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:AI Services"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:AI Services"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="si page-shell" id="track-overview">
+      <div class="sh rv">
+        <div class="sl">// Track</div>
+        <h1 class="st aisvc-title">AI, put to work</h1>
+        <p class="sd aisvc-intro">I help businesses use artificial intelligence to get real work done — as a contractor, on a monthly retainer. I select and roll out the right AI tools, build custom automation around your workflows, train your people to use it well, and stay on call for the problems that surface after everyone else goes home.</p>
+        <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
+      </div>
+
+      <div class="aisvc-stats page-stat-grid rv">
+        <div class="aisvc-stat page-stat">
+          <div class="aisvc-stat-num page-stat-value">{projectCount}+</div>
+          <div class="aisvc-stat-label page-stat-label">Projects shipped AI-first</div>
+          <div class="page-stat-copy">Every public project in this portfolio — and this site — was designed, built, tested, and released by one person directing AI tooling.</div>
+        </div>
+        <div class="aisvc-stat page-stat">
+          <div class="aisvc-stat-num page-stat-value">{liveAppCount}</div>
+          <div class="aisvc-stat-label page-stat-label">Live apps you can open now</div>
+          <div class="page-stat-copy">Deployed, working software — not slideware. Open any of them and judge the output yourself.</div>
+        </div>
+        <div class="aisvc-stat page-stat">
+          <div class="aisvc-stat-num page-stat-value">15+ yrs</div>
+          <div class="aisvc-stat-label page-stat-label">Enterprise IT &amp; operations</div>
+          <div class="page-stat-copy">Systems administration and healthcare support background — I build for how businesses actually run, not for demos.</div>
+        </div>
+      </div>
+      <div class="aisvc-actions page-actions rv">
+        <a href="mailto:matt_parker@outlook.com?subject=AI%20services" class="btn bp">Start a conversation</a>
+        <a href="/resume/" class="btn bg2">Open resume</a>
+      </div>
+      <SectionJumpNav items={cmdkSections} />
+    </div>
+    <Divider />
+
+    <div class="si" id="services">
+      <h2 class="aisvc-h2">What I deliver</h2>
+      <div class="aisvc-grid">
+        {services.map((s) => (
+          <article class="aisvc-card card-enter">
+            <div class="aisvc-card-head">
+              <span class="aisvc-card-tag">{s.tag}</span>
+            </div>
+            <h3 class="aisvc-card-name">{s.name}</h3>
+            <p class="aisvc-card-desc">{s.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="engagement">
+      <h2 class="aisvc-h2">How the engagement works</h2>
+      <div class="aisvc-steps">
+        {engagementSteps.map((s) => (
+          <article class="aisvc-step card-enter">
+            <div class="aisvc-step-num">{s.step}</div>
+            <h3 class="aisvc-step-name">{s.name}</h3>
+            <p class="aisvc-step-desc">{s.desc}</p>
+          </article>
+        ))}
+      </div>
+      <div class="aisvc-why rv">
+        <p>The economics are the point: AI-augmented work compresses the hours, and the savings pass to you. One retainer costs <strong>a fraction of an agency engagement or a full-time hire</strong>, and it covers implementation, training, and an open problem queue — not a slide deck and an invoice.</p>
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="proof">
+      <h2 class="aisvc-h2">The proof is this site</h2>
+      <div class="aisvc-why rv">
+        <p>For the past year I have gone all-in on AI-assisted building — treating it as a discipline, not a novelty. The result is what you are looking at: <strong>{projectCount}+ public projects</strong> spanning Windows tools, desktop apps, Android apps, browser extensions, and {liveAppCount} live web apps, all researched, built, tested, documented, and released by one person using AI as a force multiplier.</p>
+        <p>That is the working model I install in your business. Not a chatbot bolted onto your website — <strong>a faster way to get real work done</strong>, fitted to the workflows you already have and the people who already run them.</p>
+        <p>Before AI, I spent 15+ years in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operational constraints that make or break a rollout. I have lived the side of the business that most AI consultants have only read about.</p>
+        <p>This is a fit for <strong>small and mid-size businesses without a software team</strong> — owners who keep hearing "you should be using AI" and want one accountable person to make it true.</p>
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="ai-contact">
+      <h2 class="aisvc-h2">Start here</h2>
+      <div class="aisvc-why rv">
+        <p>Send a short note about your business and the friction you want gone — no preparation needed. The discovery conversation is free, and honest: if AI is the wrong tool for your problem, I will say so.</p>
+        <p><a href="mailto:matt_parker@outlook.com?subject=AI%20services" class="page-inline-link">matt_parker@outlook.com</a> · <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener" class="page-inline-link">LinkedIn</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">The services here sit on top of a public portfolio of shipped software — browse the catalog, open the live apps, and judge the working model by its output.</p>
+      </div>
+      <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .aisvc-page{min-height:calc(100vh - 200px)}
+  .aisvc-title{font-size:clamp(44px,6vw,72px)!important;background:linear-gradient(120deg,var(--t1),var(--pur));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .aisvc-intro{font-size:18px!important;max-width:720px}
+  .aisvc-stats{margin-top:32px;max-width:1080px}
+  .aisvc-stat{min-height:100%}
+  .aisvc-stat-num{color:var(--pur)}
+  .aisvc-actions{margin-top:22px}
+  .aisvc-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
+  .aisvc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
+  .aisvc-card{display:flex;flex-direction:column;gap:10px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);color:var(--t1);box-shadow:var(--shadow-soft);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
+  .aisvc-card:hover{border-color:rgba(192,132,252,.32);transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.22)}
+  .aisvc-card-head{display:flex;align-items:center;justify-content:space-between}
+  .aisvc-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--pur);padding:3px 8px;border:1px solid rgba(192,132,252,.4);border-radius:4px}
+  .aisvc-card-name{font-family:var(--mono);font-size:18px;font-weight:600;margin:0;color:var(--t1)}
+  .aisvc-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0;flex:1}
+  .aisvc-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1100px;margin:0 auto 28px}
+  .aisvc-step{display:flex;flex-direction:column;gap:8px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .aisvc-step-num{font-family:var(--mono);font-size:12px;letter-spacing:.15em;color:var(--pur)}
+  .aisvc-step-name{font-family:var(--mono);font-size:17px;font-weight:600;margin:0;color:var(--t1)}
+  .aisvc-step-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
+  .aisvc-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
+  .aisvc-why p{margin-bottom:18px}
+  .aisvc-why strong{color:var(--t1);font-weight:600}
+</style>

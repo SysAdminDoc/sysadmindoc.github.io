@@ -1638,6 +1638,13 @@ html[data-theme="light"] #nav{
 .nav-context-amber .nav-context-value{
   color:var(--yel);
 }
+.nav-context-purple{
+  border-color:rgba(192,132,252,.18);
+  background:rgba(192,132,252,.08);
+}
+.nav-context-purple .nav-context-value{
+  color:var(--pur);
+}
 .nav-context-slate{
   border-color:rgba(255,255,255,.08);
   background:rgba(255,255,255,.03);

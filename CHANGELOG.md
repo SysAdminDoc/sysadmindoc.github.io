@@ -4,6 +4,11 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.23.0] - 2026-07-23
+
+- Added the `/ai/` AI services track: a business-facing pitch for fractional AI implementation — tool selection and rollout, custom automation, employee training, and standing problem-solving on a monthly retainer — with a discovery → pilot → retainer engagement model and portfolio-as-proof framing.
+- Wired the AI track into the interior navigation, homepage navigation, journey milestones, contact cards, footer, command-palette quick links and default sections, and the `Person` schema `knowsAbout` list.
+- Registered `/ai/` across the sitemap, rendered JSON-LD, public-endpoint, search-index, image-pipeline, and page-freshness gates, plus Playwright axe/visual coverage, and added the missing purple nav-context tone styling.
 - Reimagined the portfolio as a light-first editorial system called Operational Clarity, with a professional identity mark, calmer typography, clearer hierarchy, and an evidence-led hero inspired by the generated design study.
 - Rebuilt homepage navigation, responsive mobile disclosure, selected-work case studies, live-app evidence, catalog surfaces, and dark-theme counterparts around a shared porcelain, ink, cobalt, teal, and orange visual system.
 - Refreshed the first-viewport critical CSS, theme bootstrap colors, browser interaction contracts, accessibility coverage, and visual baselines for the new presentation.
