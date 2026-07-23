@@ -22,6 +22,6 @@ test('live app audit requires committed screenshot manifest provenance', async (
   assert.match(capture, /manifest\.sort/);
   assert.match(capture, /schema: 'sysadmindoc\.screenshot-manifest\.v1'/);
   assert.equal(manifest.schema, 'sysadmindoc.screenshot-manifest.v1');
-  assert.equal(manifest.captures.length, 23);
-  assert.equal(manifest.captures.filter((captureEntry) => captureEntry.result === 'ok').length, 23);
+  assert.equal(manifest.captures.length, 22);
+  assert.equal(manifest.captures.filter((captureEntry) => captureEntry.result === 'ok').length, 22);
 });

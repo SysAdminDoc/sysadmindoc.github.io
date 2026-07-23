@@ -12,7 +12,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Astro 7** — static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (23), catalog (186 feed-backed / 190 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (186 feed-backed / 186 local fallback), skills (8)
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Operational Clarity design system** — a light-first editorial portfolio with a professional identity mark, evidence-led hero, responsive case-study cards, and a complete dark-theme counterpart
 - **Homepage evidence rail** — desktop hero pairs live-app screenshots with source-backed proof links while the mobile composition keeps the same proof hierarchy without visual clutter
@@ -21,7 +21,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
 - **Shared section navigation** — homepage and interior jump links reuse command-palette section data through `SectionJumpNav`
-- **Interior freshness signals** — reviewed `/uses/`, `/resume/`, and `/healthcare-it/` timestamps with audited `WebPage.dateModified` schema
+- **Interior freshness signals** — reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance, PWA, update, and CSP hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts

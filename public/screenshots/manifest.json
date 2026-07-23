@@ -308,29 +308,6 @@
       "result": "ok"
     },
     {
-      "slug": "ImageForge",
-      "url": "https://sysadmindoc.github.io/ImageForge/",
-      "capturedAt": "2026-07-07T21:00:50.195Z",
-      "viewport": {
-        "width": 1280,
-        "height": 800
-      },
-      "deviceScaleFactor": 1.25,
-      "colorScheme": "dark",
-      "dimensions": {
-        "width": 1600,
-        "height": 1000
-      },
-      "thumbDimensions": {
-        "width": 640,
-        "height": 400
-      },
-      "bytes": 82215,
-      "thumbBytes": 12948,
-      "sha256": "bfb71f1da446c1ca8c7a7d7c84ea3e184a7ddeee75076397b1e3437031dfacf3",
-      "result": "ok"
-    },
-    {
       "slug": "Openshop",
       "url": "https://sysadmindoc.github.io/Openshop/",
       "capturedAt": "2026-07-07T21:00:53.702Z",
