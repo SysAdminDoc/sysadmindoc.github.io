@@ -1,6 +1,7 @@
 ---
 import crypto from 'node:crypto';
 import globalCssUrl from '../styles/global.css?url';
+import interiorQuietCssUrl from '../styles/interior-quiet.css?url';
 import criticalCss from '../styles/critical.css?raw';
 import type { CmdkSection } from '../data/cmdk';
 
@@ -90,14 +91,14 @@ if (isHome) {
 }
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="color-scheme" content="dark light" />
-  <meta name="theme-color" content="#050913" />
+  <meta name="theme-color" content="#f7f5ef" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="SysAdminDoc" />
@@ -129,6 +130,7 @@ if (isHome) {
   <style is:inline set:html={criticalCss}></style>
   <link rel="preload" href={globalCssUrl} as="style" />
   <link rel="stylesheet" href={globalCssUrl} media="print" data-async-style />
+  {!isHome && <link rel="stylesheet" href={interiorQuietCssUrl} />}
   <script src="/scripts/head-init.js" is:inline></script>
   <script src="/scripts/theme-toggle.js" is:inline></script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

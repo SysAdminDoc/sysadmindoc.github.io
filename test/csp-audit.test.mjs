@@ -43,10 +43,10 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, new RegExp(`inline style blocks: ${inlineStyleSurfaceCount}`));
   assert.match(output, new RegExp(`Astro extracted style blocks: ${astroExtractedStyleBlockCount}`));
   assert.match(output, /inline style attributes: 0/);
-  assert.match(output, /stylesheet\/preload links: 4/);
+  assert.match(output, /stylesheet\/preload links: 5/);
   assert.match(output, /runtime style\.cssText writes: 0/);
   assert.match(output, /runtime setAttribute\("style"\) writes: 0/);
-  assert.match(output, /runtime direct style property references: 8/);
+  assert.match(output, /runtime direct style property references: 7/);
   assert.match(output, /runtime HTML sink writes: 0/);
   assert.match(output, /script-src unsafe-inline required today: no/);
   assert.match(output, /style-src unsafe-inline required today: no/);

@@ -90,11 +90,8 @@ const cmdkSections = [
     <div class="si page-shell" id="now-overview">
       <div class="sh rv">
         <div class="sl">// Now</div>
-        <h1 class="st now-title">Current focus</h1>
-        <p class="sd">
-          A working snapshot inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener" class="now-inline-link page-inline-link">Derek Sivers' /now page</a>.
-          Updated <time datetime={now.updated}>{utcDate.format(new Date(`${now.updated}T00:00:00Z`))}</time> so the signals stay current.
-        </p>
+        <h1 class="st now-title">Now</h1>
+        <p class="sd">What I’m focused on, building, and shipping. Updated <time datetime={now.updated}>{utcDate.format(new Date(`${now.updated}T00:00:00Z`))}</time>.</p>
       </div>
 
       {/* Live activity snapshot */}

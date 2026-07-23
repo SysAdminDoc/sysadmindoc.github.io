@@ -414,8 +414,13 @@ test('homepage hero evidence showcase fills desktop and stays off mobile', async
       };
     });
     expect(desktopMetrics.scrollWidth).toBeLessThanOrEqual(desktopMetrics.clientWidth + 1);
-    expect(desktopMetrics.railTop).toBeLessThan(160);
-    expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.47);
+    if (width > 1080) {
+      expect(desktopMetrics.railTop).toBeLessThan(160);
+      expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.47);
+    } else {
+      expect(desktopMetrics.railTop).toBeGreaterThan(400);
+      expect(desktopMetrics.railLeft).toBeLessThan(desktopMetrics.clientWidth * 0.1);
+    }
     expect(desktopMetrics.railRight).toBeLessThanOrEqual(desktopMetrics.clientWidth);
     expect(desktopMetrics.railHeight).toBeGreaterThan(420);
   };

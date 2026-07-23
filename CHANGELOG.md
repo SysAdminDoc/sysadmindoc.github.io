@@ -4,6 +4,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Reimagined the portfolio as a light-first editorial system called Operational Clarity, with a professional identity mark, calmer typography, clearer hierarchy, and an evidence-led hero inspired by the generated design study.
+- Rebuilt homepage navigation, responsive mobile disclosure, selected-work case studies, live-app evidence, catalog surfaces, and dark-theme counterparts around a shared porcelain, ink, cobalt, teal, and orange visual system.
+- Refreshed the first-viewport critical CSS, theme bootstrap colors, browser interaction contracts, accessibility coverage, and visual baselines for the new presentation.
 - Reworked the primary Selected Work card into a compact two-column row so long repository names no longer stack into narrow fragments and metadata/actions no longer float across a large empty area.
 - Removed the generated-data refresh age from the homepage footer.
 - Removed the Career timeline from the homepage, including its navigation and command-search entries.
