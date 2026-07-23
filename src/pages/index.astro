@@ -318,18 +318,24 @@ const cmdkSections = [
 
   <nav id="nav" aria-label="Main navigation">
     <div class="ni">
-      <a href="#hero" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+      <a href="#hero" class="nl" aria-label="SysAdminDoc home">
+        <span class="brand-mark" aria-hidden="true">MP</span>
+        <span class="brand-copy">
+          <strong>SysAdminDoc</strong>
+          <small>Systems · Support · Software</small>
+        </span>
+      </a>
       <div class="nk" id="navLinks">
-        <a href="#greatest-hits">Highlights</a>
+        <a href="#greatest-hits">Work</a>
         <a href="#live">Live Apps</a>
         <a href="#catalog">Catalog</a>
-        <a href="#skills">Stack</a>
+        <a href="#skills">Practice</a>
         <a href="#journey">Journey</a>
-        <a href="#beyond">Beyond Code</a>
-        <a href="#connect">Connect</a>
+        <a href="#connect">Contact</a>
         <div class="nav-indicator" id="navIndicator"></div>
       </div>
       <div class="nav-actions">
+        <a href="#greatest-hits" class="nav-work">Open the work <span aria-hidden="true">↗</span></a>
         <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
         <button type="button" class="nav-search" id="cmdkToggle" aria-label="Open command search" aria-controls="cmdk" aria-expanded="false" aria-haspopup="dialog" title="Open command search">
           <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -351,6 +357,7 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
+        <p class="hero-eyebrow">Technical leadership · Healthcare systems · Practical software</p>
         <div class="hero-identity">
           <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
           <h1 class="hn">Matt <span class="a">Parker</span></h1>
@@ -365,7 +372,7 @@ const cmdkSections = [
           ))}
         </div>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator</p>
-        <p class="hero-summary">15+ years across enterprise IT and healthcare support: customer systems, migrations, documentation, and high-stakes troubleshooting.</p>
+        <p class="hero-summary"><strong>15+ years across enterprise IT and healthcare support</strong> — leading technical operations, simplifying complex systems, and building practical software.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -393,8 +400,8 @@ const cmdkSections = [
           )}
         </div>
         <div class="ha">
-          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Selected work</a>
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub archive</a>
+          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Explore selected work</a>
+          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View GitHub archive</a>
         </div>
         <div class="hero-signals" aria-label="Portfolio differentiators">
           {heroSignals.map((signal) => (
@@ -416,6 +423,7 @@ const cmdkSections = [
         {heroEvidencePrimary && (
           <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
             <span class="hero-showcase-brand">
+              <span class="hero-showcase-kicker">Featured live app</span>
               <span class="hero-app-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="7"></circle>
@@ -463,8 +471,16 @@ const cmdkSections = [
   <GreatestHits />
   <Divider />
 
+  <section id="live" aria-label="Live apps"><div class="si">
+    <div class="sh rv"><div class="sl">02 / Live apps · {liveApps.length}</div><h2 class="st">Live apps</h2><p class="sd">Browser-ready work—no install or account.</p></div>
+    <div class="lg">
+      {liveApps.map((a) => <LiveCard app={a} />)}
+    </div>
+  </div></section>
+  <Divider />
+
   <section id="catalog" aria-label="Project catalog"><div class="si">
-    <div class="sh rv"><div class="sl">// Catalog</div><h2 class="st">Project catalog</h2><p class="sd">Search and filter {catalogTotal} public projects.</p></div>
+    <div class="sh rv"><div class="sl">03 / Catalog</div><h2 class="st">Project catalog</h2><p class="sd">Search and filter {catalogTotal} public projects.</p></div>
     <search aria-label="Filter and search the project catalog">
     <div class="catalog-controls rv">
       <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
@@ -532,16 +548,8 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="live" aria-label="Live apps"><div class="si">
-    <div class="sh rv"><div class="sl">// Live · {liveApps.length}</div><h2 class="st">Live apps</h2><p class="sd">Browser-ready work—no install or account.</p></div>
-    <div class="lg">
-      {liveApps.map((a) => <LiveCard app={a} />)}
-    </div>
-  </div></section>
-  <Divider />
-
   <section id="skills" aria-label="Stack and skills"><div class="si">
-    <div class="sh rv"><div class="sl">// Stack</div><h2 class="st">Stack</h2><p class="sd">Languages and tools across the archive.</p></div>
+    <div class="sh rv"><div class="sl">04 / Capabilities</div><h2 class="st">Stack</h2><p class="sd">Languages and tools across the archive.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
         <div class="stack-kicker">Browse by language</div>
@@ -605,7 +613,7 @@ const cmdkSections = [
 
 
   <section id="journey" aria-label="Journey"><div class="si">
-    <div class="sh rv"><div class="sl">// Journey</div><h2 class="st">Practice, expanded</h2><p class="sd">Operational problems became tools, then products.</p></div>
+    <div class="sh rv"><div class="sl">05 / Practice</div><h2 class="st">Practice, expanded</h2><p class="sd">Operational problems became tools, then products.</p></div>
     <div class="jw">
       {journeyMilestones.map((step) => (
         <div class="ji rv">
@@ -624,7 +632,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">// Beyond Code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
+    <div class="sh rv"><div class="sl">06 / Beyond code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
@@ -642,7 +650,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect" aria-label="Connect"><div class="si">
-    <div class="sh rv"><div class="sl">// Connect</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
+    <div class="sh rv"><div class="sl">07 / Contact</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
     <div class="cng">
       {connectPaths.map((path) => (
         <a

@@ -47,7 +47,7 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   assert.match(nav, /el\.style\.contentVisibility='visible'/);
   assert.match(nav, /Date\.now\(\)>=\(window\.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL\|\|0\)/);
   assert.match(greatestHits, /id="greatest-hits"/);
-  assert.match(greatestHits, /grid-template-areas:[\s\S]*'head foot'[\s\S]*'name why'/);
+  assert.match(greatestHits, /grid-template-areas:[\s\S]*'head why foot'[\s\S]*'name why foot'/);
   assert.doesNotMatch(greatestHits, /word-break:break-word|max-width:12ch/);
   assert.match(index, /id="live"/);
   assert.match(index, /id="catalog"/);

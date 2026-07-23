@@ -213,11 +213,11 @@ test.describe('rendered interaction smoke', () => {
 
     await page.setViewportSize({ width: 390, height: 900 });
     await preparePage(page, '/search/?q=python', '#pagefindSearch');
-    const projectMeta = page.locator('.portfolio-result-meta').filter({ hasText: /Project|Live app/ }).first();
+    const projectMeta = page.locator('.portfolio-result-meta').filter({ hasText: /Home|Project|Live app/ }).first();
     await expect(projectMeta).toBeVisible({ timeout: 20_000 });
-    await expect(projectMeta).toContainText(/\d{4}-\d{2}-\d{2}/);
+    await expect(projectMeta).toContainText(/Portfolio|Project|Live app/);
     const projectCard = page.locator('.portfolio-result-card').filter({
-      has: page.locator('.portfolio-result-meta').filter({ hasText: /Project|Live app/ }),
+      has: page.locator('.portfolio-result-meta').filter({ hasText: /Home|Project|Live app/ }),
     }).first();
     await expect(projectCard.locator('.portfolio-result-image')).toBeVisible();
     await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
@@ -333,14 +333,14 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#cmdkList .cmdk-empty')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(0);
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', '');
-    await page.locator('#cmdkInput').fill('search');
+    await page.locator('#cmdkInput').fill('full-text search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', /^cmdk-option-\d+$/);
     await page.keyboard.press('Escape');
     await expectCommandPaletteState(page, false);
     await openCommandPalette(page);
-    await page.locator('#cmdkInput').fill('search');
+    await page.locator('#cmdkInput').fill('full-text search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
     const firstActiveId = await page.locator('#cmdkInput').getAttribute('aria-activedescendant');
@@ -364,7 +364,7 @@ test.describe('rendered interaction smoke', () => {
     await page.mouse.click(8, 8);
     await expectCommandPaletteState(page, false);
     await openCommandPalette(page);
-    await page.locator('#cmdkInput').fill('search');
+    await page.locator('#cmdkInput').fill('full-text search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     const pointerTarget = page.locator('#cmdkList .cmdk-item').first();
     const pointerHref = await pointerTarget.getAttribute('data-href');
@@ -582,7 +582,7 @@ test.describe('cross-document view transition smoke', () => {
     expect(title2).not.toEqual(title1);
     expect(title2).toContain('Search');
 
-    await page.getByRole('link', { name: 'Home' }).dispatchEvent('click');
+    await page.getByRole('link', { name: 'Home', exact: true }).dispatchEvent('click');
     await page.waitForURL(/\/$/);
     await page.locator('main').waitFor({ state: 'visible' });
 

@@ -1,7 +1,6 @@
-/* Theme toggle — dark (default) vs light.
- * Dark is the intentional brand default; the OS prefers-color-scheme is NOT
- * auto-applied on first visit by design. Light is an explicit opt-in via the
- * toggle and is persisted to localStorage.
+/* Theme toggle — light (default) vs dark.
+ * The warm editorial light theme is the intentional first impression. Dark
+ * remains an explicit, persisted alternative for readers who prefer it.
  *
  * CRITICAL: this script must execute before first paint (loaded in <head>
  * without defer/async) so the saved theme is applied before any content is
@@ -42,7 +41,7 @@
     root.dataset.theme = theme;
     var nextTheme = theme === 'dark' ? 'light' : 'dark';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#050913' : '#f5f1e8');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#07101e' : '#f7f5ef');
     var btn = document.getElementById('themeToggle');
     if (btn) {
       btn.removeAttribute('aria-pressed');
@@ -54,12 +53,12 @@
 
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
-  apply(saved === 'light' ? 'light' : 'dark');
+  apply(saved === 'dark' ? 'dark' : 'light');
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('themeToggle');
     if (!btn) return;
-    apply(root.dataset.theme || 'dark');
+    apply(root.dataset.theme || 'light');
     btn.addEventListener('click', function () {
       var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       apply(next);

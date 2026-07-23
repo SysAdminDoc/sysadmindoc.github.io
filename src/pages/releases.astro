@@ -105,11 +105,10 @@ const cmdkSections = [
     <div class="si page-shell" id="release-overview">
       <div class="sh rv">
         <div class="sl">// Releases</div>
-        <h1 class="st rel-title">Shipping history across the portfolio</h1>
+        <h1 class="st rel-title">Releases</h1>
         <p class="sd">
-          Release notes pulled from GitHub across the most active projects in the public archive.
-          {releases.length > 0 && <> <strong>{releases.length}</strong> releases indexed.</>}
-          {stats.fetchedAt && <> Last refresh <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{compactUtcDate.format(new Date(stats.fetchedAt))}</time>.</>}
+          Shipping history across {trackedRepos} public projects.
+          {stats.fetchedAt && <> Updated <time datetime={stats.fetchedAt} data-rel={stats.fetchedAt}>{compactUtcDate.format(new Date(stats.fetchedAt))}</time>.</>}
         </p>
       </div>
 
@@ -151,7 +150,7 @@ const cmdkSections = [
         )}
 
         {monthKeys.map((key) => (
-          <section class="rel-month rv">
+          <section class="rel-month">
             <div class="rel-month-shell">
               <div class="rel-month-head">
                 <h2 class="rel-month-label">{monthLabel(key)}</h2>

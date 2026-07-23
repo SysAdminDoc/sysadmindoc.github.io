@@ -138,7 +138,6 @@
     const indicator=document.getElementById('navIndicator');
     const navLinksContainer=document.getElementById('navLinks');
     if(!indicator||!navLinksContainer)return;
-    navLinksContainer.style.position='relative';
     function moveIndicator(link){
         if(!link||window.innerWidth<=640){indicator.classList.remove('vis');return}
         const containerRect=navLinksContainer.getBoundingClientRect();

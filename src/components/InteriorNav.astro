@@ -21,7 +21,13 @@ const contextClass = `nav-context nav-context-${contextTone}`;
 ---
 <nav id="nav" aria-label="Main navigation">
   <div class="ni">
-    <a href="/" class="nl">matt<span>@</span>sysadmin<span>:~$</span></a>
+    <a href="/" class="nl" aria-label="SysAdminDoc home">
+      <span class="brand-mark" aria-hidden="true">MP</span>
+      <span class="brand-copy">
+        <strong>SysAdminDoc</strong>
+        <small>Systems · Support · Software</small>
+      </span>
+    </a>
     <div class="nk" id="navLinks">
       <a href="/#greatest-hits">Hits</a>
       <a href="/#live">Live</a>
