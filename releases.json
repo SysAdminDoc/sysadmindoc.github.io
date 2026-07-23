@@ -1,16 +1,422 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-15T15:01:18.356Z",
+  "generatedAt": "2026-07-23T14:03:15.662Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-15T15:01:18.356Z"
+    "githubMetadataFetchedAt": "2026-07-23T14:03:15.662Z"
   },
   "counts": {
     "releases": 60,
     "repositories": 21
   },
   "releases": [
+    {
+      "repo": "Aura",
+      "projectName": "Aura",
+      "tag": "v6.38.0",
+      "name": "Aura v6.38.0",
+      "publishedAt": "2026-07-23T04:56:24Z",
+      "provenance": "checksum",
+      "summary": "Signed universal release APK for Aura v6.38.0 (versionCode 138). First GitHub release since v6.31.2, so it also carries the v6.32.0–v6.37.0 work; see `CHANGELOG.md` for the full history. · **v6.38.0** · - **Settings sear",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Aura/releases/tag/v6.38.0",
+        "repository": "https://github.com/SysAdminDoc/Aura",
+        "detail": "https://github.com/SysAdminDoc/Aura"
+      }
+    },
+    {
+      "repo": "SwiftShot",
+      "projectName": "SwiftShot",
+      "tag": "v2.10.1",
+      "name": "v2.10.1",
+      "publishedAt": "2026-07-23T04:24:08Z",
+      "provenance": "checksum",
+      "summary": "SwiftShot v2.10.1 — deep-audit pass over the v2.10.0 feature drain. ~20 verified fixes. · - **OCR**: selecting a Tesseract language no longer breaks auto-redact / Copy as Table (the `tesseract:` tag leaked into the WinRT",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.1",
+        "repository": "https://github.com/SysAdminDoc/SwiftShot",
+        "detail": "https://github.com/SysAdminDoc/SwiftShot"
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.91.0",
+      "name": "v6.91.0",
+      "publishedAt": "2026-07-23T04:18:04Z",
+      "provenance": "unsigned",
+      "summary": "- **Delete-original on save now actually removes the original screenshot from the gallery.** The previous path used a direct MediaStore update to move the source into a visible `Pictures/trashed/` album — but MANAGE_MEDI",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.91.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
+      }
+    },
+    {
+      "repo": "SwiftShot",
+      "projectName": "SwiftShot",
+      "tag": "v2.10.0",
+      "name": "v2.10.0",
+      "publishedAt": "2026-07-23T03:48:07Z",
+      "provenance": "checksum",
+      "summary": "SwiftShot v2.10.0 — research-backlog drain (R-22..R-32). · - **Keyboard-complete region capture** (R-22): type exact W×H (`D`), cycle an aspect lock (`A`), resize with arrows (Shift = coarse), and move the whole region w",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.0",
+        "repository": "https://github.com/SysAdminDoc/SwiftShot",
+        "detail": "https://github.com/SysAdminDoc/SwiftShot"
+      }
+    },
+    {
+      "repo": "ClearCut",
+      "projectName": "ClearCut",
+      "tag": "v3.75.0",
+      "name": "v3.75.0 — Track-verified audio-only & stem exports",
+      "publishedAt": "2026-07-23T03:02:26Z",
+      "provenance": "unsigned",
+      "summary": "- **Audio-only export** now produces a real standalone `.m4a` (`audio/mp4`) with no video track, mixing every audible timeline source (dedicated audio tracks plus video-embedded audio) into one AAC file. Previously an au",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.75.0",
+        "repository": "https://github.com/SysAdminDoc/ClearCut",
+        "detail": "https://github.com/SysAdminDoc/ClearCut"
+      }
+    },
+    {
+      "repo": "SnapCrop",
+      "projectName": "SnapCrop",
+      "tag": "v6.90.0",
+      "name": "v6.90.0",
+      "publishedAt": "2026-07-23T03:02:03Z",
+      "provenance": "unsigned",
+      "summary": "- Moved on-device ML model inventory queries off the main thread. `OcrModelManager` and `TranslationModelManager` now construct ML Kit recognizer clients and initiate Play services module IPC on `Dispatchers.IO`, so a co",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.90.0",
+        "repository": "https://github.com/SysAdminDoc/SnapCrop",
+        "detail": "https://github.com/SysAdminDoc/SnapCrop"
+      }
+    },
+    {
+      "repo": "StreamKeep",
+      "projectName": "StreamKeep",
+      "tag": "v4.41.0",
+      "name": "v4.41.0",
+      "publishedAt": "2026-07-20T03:50:13Z",
+      "provenance": "unsigned",
+      "summary": "Roadmap drain: rules engine, retention, REST spec, and test coverage. · - **Ordered rules engine (V15, Packagizer-class):** match on site/uploader/title-regex/duration/type and set output folder, filename/argv template, ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.41.0",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "detail": "https://github.com/SysAdminDoc/StreamKeep"
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.13.0",
+      "name": "v0.13.0",
+      "publishedAt": "2026-07-19T23:07:20Z",
+      "provenance": "unsigned",
+      "summary": "- **Radiation/open-boundary mode** — characteristic absorbing BC damps η at domain edges using local phase speed; selectable from Advanced solver controls alongside the existing sponge · - **Extended max-field products**",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.13.0",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
+      }
+    },
+    {
+      "repo": "AIUsageTracker",
+      "projectName": "AIUsageTracker",
+      "tag": "v0.2.0",
+      "name": "v0.2.0 — brand logos, premium polish, alarm sounds",
+      "publishedAt": "2026-07-18T01:34:46Z",
+      "provenance": "unsigned",
+      "summary": "- **Brand logos** — Claude (clay sunburst) and Codex (OpenAI hexafoil) tiles now identify each provider, plus a new app/tray mark. All rendered crisply at runtime. · - **Selectable alarm sounds** — choose from six built-",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.2.0",
+        "repository": "https://github.com/SysAdminDoc/AIUsageTracker",
+        "detail": "https://github.com/SysAdminDoc/AIUsageTracker"
+      }
+    },
+    {
+      "repo": "AIUsageTracker",
+      "projectName": "AIUsageTracker",
+      "tag": "v0.1.0",
+      "name": "v0.1.0",
+      "publishedAt": "2026-07-18T01:02:59Z",
+      "provenance": "unsigned",
+      "summary": "First release of AIUsageTracker — a Windows dashboard that monitors your Claude and Codex usage windows and **alarms the instant a usage window resets**. · - Live usage bars for every Claude & Codex limit window (5-hour ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.1.0",
+        "repository": "https://github.com/SysAdminDoc/AIUsageTracker",
+        "detail": "https://github.com/SysAdminDoc/AIUsageTracker"
+      }
+    },
+    {
+      "repo": "Droidsmith",
+      "projectName": "Droidsmith",
+      "tag": "v0.5.3",
+      "name": "v0.5.3",
+      "publishedAt": "2026-07-17T23:53:28Z",
+      "provenance": "unsigned",
+      "summary": "- **Package enumeration no longer fails on some devices.** `pm list packages` was always run with `-U` (package UID, Android 9+) and `-i` (installer) flags; a device whose `pm` rejects an unknown flag exited non-zero and",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.5.3",
+        "repository": "https://github.com/SysAdminDoc/Droidsmith",
+        "detail": "https://github.com/SysAdminDoc/Droidsmith"
+      }
+    },
+    {
+      "repo": "StreamKeep",
+      "projectName": "StreamKeep",
+      "tag": "v4.36.4",
+      "name": "StreamKeep v4.36.4",
+      "publishedAt": "2026-07-17T22:15:53Z",
+      "provenance": "unsigned",
+      "summary": "StreamKeep v4.36.4 completes the production-mockup parity pass and introduces a unified application identity across every shipped surface. · - Rebuilt the Download workspace around a compact header and intake row, a dens",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.4",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "detail": "https://github.com/SysAdminDoc/StreamKeep"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.22.0",
+      "name": "Video Subtitle Remover Pro v3.22.0",
+      "publishedAt": "2026-07-17T21:55:33Z",
+      "provenance": "checksum",
+      "summary": "- Brings the native workbench closer to the approved premium mockup with a larger 16:9 preview, 17:8 preview/inspector split, static Preview heading, and four flat inspector disclosure rows. · - Moves preview utilities i",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.22.0",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://github.com/SysAdminDoc/VideoSubtitleRemover"
+      }
+    },
+    {
+      "repo": "UniversalConverterX",
+      "projectName": "UniversalConverterX",
+      "tag": "v2.31.3",
+      "name": "UniversalConverter X v2.31.4",
+      "publishedAt": "2026-07-17T21:49:04Z",
+      "provenance": "unsigned",
+      "summary": "The download assets on this release have been rebuilt from **v2.31.4**, which fixes crashes and layout problems in v2.31.3. Version strings inside the app now read 2.31.4. · - **Crash opening tool pages.** Nine Toolbox/A",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.3",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "detail": "https://github.com/SysAdminDoc/UniversalConverterX"
+      }
+    },
+    {
+      "repo": "UniversalConverterX",
+      "projectName": "UniversalConverterX",
+      "tag": "v2.31.2",
+      "name": "UniversalConverter X v2.31.2",
+      "publishedAt": "2026-07-17T21:23:49Z",
+      "provenance": "unsigned",
+      "summary": "- Opens directly on Converter with core workflows ordered first. · - Replaces separate Add Files/Add Folder actions with one split intake control. · - Flattens the conversion queue into a compact, divider-led table.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.2",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "detail": "https://github.com/SysAdminDoc/UniversalConverterX"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.21.0",
+      "name": "Video Subtitle Remover Pro v3.21.0",
+      "publishedAt": "2026-07-17T21:21:21Z",
+      "provenance": "checksum",
+      "summary": "Video Subtitle Remover Pro 3.21.0 delivers a calmer, command-first desktop workbench. Primary setup stays in one compact toolbar, typography is larger and more readable, the inspector uses separator-led disclosure instea",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.21.0",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://github.com/SysAdminDoc/VideoSubtitleRemover"
+      }
+    },
+    {
+      "repo": "UniversalConverterX",
+      "projectName": "UniversalConverterX",
+      "tag": "v2.31.1",
+      "name": "UniversalConverter X v2.31.1",
+      "publishedAt": "2026-07-17T21:02:34Z",
+      "provenance": "unsigned",
+      "summary": "- Reduced oversized empty queues across 38 workflow surfaces and compacted 46 placeholder illustrations. · - Moved Converter Format and Save controls to the top of the inspector and grouped them into one output surface. ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.1",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "detail": "https://github.com/SysAdminDoc/UniversalConverterX"
+      }
+    },
+    {
+      "repo": "UniversalConverterX",
+      "projectName": "UniversalConverterX",
+      "tag": "v2.31.0",
+      "name": "UniversalConverter X v2.31.0",
+      "publishedAt": "2026-07-17T20:22:05Z",
+      "provenance": "unsigned",
+      "summary": "- Rebuilt the desktop visual system around readable typography, tonal surfaces, compact headers, tighter spacing, and clearer control grouping across all 53 pages. · - Moved primary actions higher in Converter, Home, AI ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.0",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "detail": "https://github.com/SysAdminDoc/UniversalConverterX"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.20.0",
+      "name": "Video Subtitle Remover Pro v3.20.0",
+      "publishedAt": "2026-07-17T20:14:29Z",
+      "provenance": "checksum",
+      "summary": "Video Subtitle Remover Pro 3.20.0 completes the premium workbench refresh with a compact command bar that keeps media import, cleanup profile, subtitle region, output, and Start cleanup above the preview. The preview and",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.20.0",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://github.com/SysAdminDoc/VideoSubtitleRemover"
+      }
+    },
+    {
+      "repo": "UniversalConverterX",
+      "projectName": "UniversalConverterX",
+      "tag": "v2.30.0",
+      "name": "UniversalConverter X 2.30.0",
+      "publishedAt": "2026-07-17T16:38:24Z",
+      "provenance": "unsigned",
+      "summary": "UniversalConverter X 2.30.0 completes the actionable roadmap and refreshes the product identity. · Highlights: · - New UniversalConverter X logo across the executable, README, MSIX tiles, Store assets, and file-type icon",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.30.0",
+        "repository": "https://github.com/SysAdminDoc/UniversalConverterX",
+        "detail": "https://github.com/SysAdminDoc/UniversalConverterX"
+      }
+    },
+    {
+      "repo": "StreamKeep",
+      "projectName": "StreamKeep",
+      "tag": "v4.36.3",
+      "name": "StreamKeep v4.36.3",
+      "publishedAt": "2026-07-17T16:12:29Z",
+      "provenance": "unsigned",
+      "summary": "Premium six-page visual-system refinement derived from a fresh image-generated production mockup. This release raises default readability, replaces outlined card chrome with quiet tonal work surfaces, separates primary a",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.3",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "detail": "https://github.com/SysAdminDoc/StreamKeep"
+      }
+    },
+    {
+      "repo": "StreamKeep",
+      "projectName": "StreamKeep",
+      "tag": "v4.36.2",
+      "name": "StreamKeep v4.36.2",
+      "publishedAt": "2026-07-17T15:34:43Z",
+      "provenance": "unsigned",
+      "summary": "- Prevents duplicate desktop launches from racing over the shared SQLite library during startup. · - A second click now exits cleanly before persistent state opens instead of showing a misleading `database is locked` cra",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.2",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "detail": "https://github.com/SysAdminDoc/StreamKeep"
+      }
+    },
+    {
+      "repo": "AlarmClockXtreme",
+      "projectName": "AlarmClockXtreme",
+      "tag": "v1.15.29",
+      "name": "v1.15.29 — Deep audit pass",
+      "publishedAt": "2026-07-17T15:26:21Z",
+      "provenance": "checksum",
+      "summary": "Reliability and quality audit of the never-audited work since v1.15.27 (timer restart, fixed-zone alarms, Fossify import, jet-lag planner, the localization sweep) plus the core alarm and firing paths. · **Highlights** · ",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.29",
+        "repository": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+        "detail": "https://github.com/SysAdminDoc/AlarmClockXtreme"
+      }
+    },
+    {
+      "repo": "StreamKeep",
+      "projectName": "StreamKeep",
+      "tag": "v4.36.1",
+      "name": "StreamKeep v4.36.1",
+      "publishedAt": "2026-07-17T14:53:18Z",
+      "provenance": "unsigned",
+      "summary": "- Reworked all six desktop pages around a premium, restrained visual system with readable typography, tighter spacing, open tables, hairline structure, and text-led status. · - Consolidated Download into one compact URL/",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.1",
+        "repository": "https://github.com/SysAdminDoc/StreamKeep",
+        "detail": "https://github.com/SysAdminDoc/StreamKeep"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.19.1",
+      "name": "Video Subtitle Remover Pro v3.19.1",
+      "publishedAt": "2026-07-17T11:42:19Z",
+      "provenance": "checksum",
+      "summary": "Video Subtitle Remover Pro 3.19.1 delivers the redesigned premium desktop workbench: a compact command strip, clearer type hierarchy, calmer surfaces, denser control grouping, and a focused job monitor with less explanat",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.19.1",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://github.com/SysAdminDoc/VideoSubtitleRemover"
+      }
+    },
+    {
+      "repo": "VideoSubtitleRemover",
+      "projectName": "VideoSubtitleRemover",
+      "tag": "v3.19.0",
+      "name": "Video Subtitle Remover Pro v3.19.0",
+      "publishedAt": "2026-07-17T10:36:12Z",
+      "provenance": "checksum",
+      "summary": "Video Subtitle Remover Pro 3.19.0 · Highlights: · - Selectable OCR engines, opt-in subtitle-language mask filtering, and live OCR feedback during region drawing.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.19.0",
+        "repository": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+        "detail": "https://github.com/SysAdminDoc/VideoSubtitleRemover"
+      }
+    },
+    {
+      "repo": "Cataclysm",
+      "projectName": "Cataclysm",
+      "tag": "v0.10.5",
+      "name": "Cataclysm v0.10.5",
+      "publishedAt": "2026-07-17T04:44:27Z",
+      "provenance": "no-assets",
+      "summary": "Professional workspace, multi-hazard validation, and release hardening. · - **Desktop visual system** finalized across the mission-control workspace (transport, DART, layers, log viewer, glossary, trust, settings, SWE su",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.5",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "detail": "https://github.com/SysAdminDoc/Cataclysm"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.22.0",
+      "name": "v3.22.0 — Persistent UserCSS install and management",
+      "publishedAt": "2026-07-16T22:52:49Z",
+      "provenance": "unsigned",
+      "summary": "- **Install `.user.css` styles** — navigate to a `.user.css` URL for a review-and-install prompt, or open a UserCSS draft in the editor and choose **Install Style**. Installed styles inject early on matching pages with n",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.22.0",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://github.com/SysAdminDoc/ScriptVault"
+      }
+    },
+    {
+      "repo": "ScriptVault",
+      "projectName": "ScriptVault",
+      "tag": "v3.21.0",
+      "name": "v3.21.0 — Security, disclosure, and reliability hardening",
+      "publishedAt": "2026-07-16T21:55:29Z",
+      "provenance": "unsigned",
+      "summary": "- **Safer script updates** — every queued update is re-scanned by the AST risk analyzer and diffed against the installed version; updates that introduce new high-risk behavior are flagged and routed to manual review inst",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.21.0",
+        "repository": "https://github.com/SysAdminDoc/ScriptVault",
+        "detail": "https://github.com/SysAdminDoc/ScriptVault"
+      }
+    },
     {
       "repo": "Images",
       "projectName": "Images",
@@ -264,20 +670,6 @@
       }
     },
     {
-      "repo": "SnapCrop",
-      "projectName": "SnapCrop",
-      "tag": "v6.67.0",
-      "name": "SnapCrop v6.67.0",
-      "publishedAt": "2026-07-12T21:24:03Z",
-      "provenance": "unsigned",
-      "summary": "Premium interface release: status-led Home, focused Edit action, structured quick tools and Recent states, complete light/dark design tokens, accessible full-row Settings toggles, recoverable Gallery empty states, a simp",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.67.0",
-        "repository": "https://github.com/SysAdminDoc/SnapCrop",
-        "detail": "https://github.com/SysAdminDoc/SnapCrop"
-      }
-    },
-    {
       "repo": "Cataclysm",
       "projectName": "Cataclysm",
       "tag": "v0.10.0",
@@ -287,34 +679,6 @@
       "summary": "Cataclysm now opens in a progressively disclosed simulator workspace. Simple keeps the scenario, live globe, Run & Watch journey, timeline, and outcomes dominant. Customize reveals a small understandable control set. Adv",
       "urls": {
         "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.0",
-        "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": "https://github.com/SysAdminDoc/Cataclysm"
-      }
-    },
-    {
-      "repo": "Cataclysm",
-      "projectName": "Cataclysm",
-      "tag": "v0.9.1",
-      "name": "Cataclysm v0.9.1",
-      "publishedAt": "2026-07-12T09:20:01Z",
-      "provenance": "unsigned",
-      "summary": "Run & Watch is now a guided Prepare, Calculate, Watch, and Understand journey. Outcomes open automatically, cached results replay immediately, manual controls remain available, solver failures provide local retry, and th",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.1",
-        "repository": "https://github.com/SysAdminDoc/Cataclysm",
-        "detail": "https://github.com/SysAdminDoc/Cataclysm"
-      }
-    },
-    {
-      "repo": "Cataclysm",
-      "projectName": "Cataclysm",
-      "tag": "v0.9.0",
-      "name": "Cataclysm v0.9.0",
-      "publishedAt": "2026-07-12T07:47:49Z",
-      "provenance": "unsigned",
-      "summary": "Universal scenario library and Quick Start milestone. One persistent rail now spans tsunami reference events and complete direct asteroid/nuclear what-if scenarios, with preview-only camera framing, one explicit Run & Wa",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.9.0",
         "repository": "https://github.com/SysAdminDoc/Cataclysm",
         "detail": "https://github.com/SysAdminDoc/Cataclysm"
       }
@@ -371,20 +735,6 @@
       "summary": "Preview-space and edit-playback release. The preview now consumes flexible phone height while the bounded timeline and tool dock remain anchored together. Split uses the live frame position, timeline rebuilds resume atom",
       "urls": {
         "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.114",
-        "repository": "https://github.com/SysAdminDoc/ClearCut",
-        "detail": "https://github.com/SysAdminDoc/ClearCut"
-      }
-    },
-    {
-      "repo": "ClearCut",
-      "projectName": "ClearCut",
-      "tag": "v3.74.113",
-      "name": "v3.74.113",
-      "publishedAt": "2026-07-11T20:58:26Z",
-      "provenance": "checksum",
-      "summary": "Timeline and preview reliability release. Linked trims and splits are atomic across A/V pairs; Beat Sync and Cut Assistant reject unsafe cuts and preserve marker alignment. Retimed clips now seek and play against the cor",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.113",
         "repository": "https://github.com/SysAdminDoc/ClearCut",
         "detail": "https://github.com/SysAdminDoc/ClearCut"
       }
@@ -499,356 +849,6 @@
         "release": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro/releases/tag/v6.10.0",
         "repository": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro",
         "detail": "https://github.com/SysAdminDoc/Bookmark-Organizer-Pro"
-      }
-    },
-    {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.19.1",
-      "name": "ScriptVault v3.19.1",
-      "publishedAt": "2026-07-10T04:15:54Z",
-      "provenance": "checksum",
-      "summary": "Premium workbench parity release: canonical navigation, deeper dashboard destinations, reliable settings autosave, recoverable editor fallback, polished compact surfaces, four-theme rendered evidence, and verified Chrome",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.1",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://github.com/SysAdminDoc/ScriptVault"
-      }
-    },
-    {
-      "repo": "Wingetter",
-      "projectName": "Wingetter",
-      "tag": "v6.2.0",
-      "name": "Wingetter v6.2.0",
-      "publishedAt": "2026-07-10T04:02:09Z",
-      "provenance": "unsigned",
-      "summary": "Premium GUI and UX release with a redesigned discovery workspace, responsive catalog, persistent reviewed-selection panel, corrected dark/light theming, keyboard and screen-reader improvements, polished dialogs, determin",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Wingetter/releases/tag/v6.2.0",
-        "repository": "https://github.com/SysAdminDoc/Wingetter",
-        "detail": "https://github.com/SysAdminDoc/Wingetter"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.19.0",
-      "name": "BetterTTS v0.19.0",
-      "publishedAt": "2026-07-10T03:48:19Z",
-      "provenance": "checksum",
-      "summary": "Premium product-quality release for the web and Windows editions.\\n\\nHighlights:\\n- Recoverable Queue and Library deletion with Undo\\n- Complete mobile workspace rail and editor-level Generate action\\n- Keyboard tab navi",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.19.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.25",
-      "name": "Images v0.2.25",
-      "publishedAt": "2026-07-09T22:11:34Z",
-      "provenance": "checksum",
-      "summary": "Premium image-first viewer redesign with a compact 52px rail, dominant canvas, focused Details inspector, streamlined gallery and settings hierarchy, and reduced permanent chrome. Includes WPF dispatcher reliability and ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.25",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://github.com/SysAdminDoc/Images"
-      }
-    },
-    {
-      "repo": "ScriptVault",
-      "projectName": "ScriptVault",
-      "tag": "v3.19.0",
-      "name": "ScriptVault v3.19.0",
-      "publishedAt": "2026-07-09T21:56:49Z",
-      "provenance": "checksum",
-      "summary": "Professional workbench redesign with a premium graphite-and-emerald dashboard, live vault metrics, contextual script inspection, unified popup/side-panel/install/DevTools surfaces, and browser-rendered visual regression ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.0",
-        "repository": "https://github.com/SysAdminDoc/ScriptVault",
-        "detail": "https://github.com/SysAdminDoc/ScriptVault"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.65",
-      "name": "HostsGuard v0.12.65",
-      "publishedAt": "2026-07-09T21:55:13Z",
-      "provenance": "unsigned",
-      "summary": "Premium WPF workbench redesign with a vector product identity, continuous primary and secondary navigation, refined dark/light surface hierarchy, semantic alert and focus states, unified themed dialogs, localized About s",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.65",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://github.com/SysAdminDoc/HostsGuard"
-      }
-    },
-    {
-      "repo": "Network_Security_Auditor",
-      "projectName": "Network_Security_Auditor",
-      "tag": "v5.3.1",
-      "name": "v5.3.1",
-      "publishedAt": "2026-07-09T21:49:50Z",
-      "provenance": "checksum",
-      "summary": "Adds live assessment save-status feedback and protects Save state and Load state while scans or report exports mutate audit data. All persisted check fields, scan results, profile changes, and theme changes now mark the ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.1",
-        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.17.0",
-      "name": "BetterTTS v0.17.0",
-      "publishedAt": "2026-07-09T21:46:13Z",
-      "provenance": "checksum",
-      "summary": "Premium production-workspace redesign for the web and Windows desktop app. Adds persistent workspace navigation, real Output/Queue/Library tabs, integrated output transport, compact properties controls, neutral dark/ligh",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.17.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "Network_Security_Auditor",
-      "projectName": "Network_Security_Auditor",
-      "tag": "v5.3.0",
-      "name": "v5.3.0",
-      "publishedAt": "2026-07-09T21:12:15Z",
-      "provenance": "checksum",
-      "summary": "Premium C# security posture workstation redesign with a resizable checks and evidence inspector, truthful readiness and unscanned states, stronger accessibility, recoverable scan failures, deterministic GUI capture, and ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.3.0",
-        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
-      }
-    },
-    {
-      "repo": "RES-Slim",
-      "projectName": "RES-Slim",
-      "tag": "v0.15.1",
-      "name": "RES-Slim v0.15.1",
-      "publishedAt": "2026-07-09T14:42:57Z",
-      "provenance": "unsigned",
-      "summary": "Old.reddit-focused fork of Reddit Enhancement Suite. Chrome MV3 + Firefox MV2. 494 contract tests. Bundles everything since v0.14.1 (v0.14.2, v0.15.0, v0.15.1). · - New `pageTheme` module (disabled by default) — an opt-i",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.15.1",
-        "repository": "https://github.com/SysAdminDoc/RES-Slim",
-        "detail": "https://github.com/SysAdminDoc/RES-Slim"
-      }
-    },
-    {
-      "repo": "Network_Security_Auditor",
-      "projectName": "Network_Security_Auditor",
-      "tag": "v5.2.9",
-      "name": "v5.2.9",
-      "publishedAt": "2026-07-09T14:19:51Z",
-      "provenance": "checksum",
-      "summary": "Reliability fix release. C# GUI scans now generate and open the HTML report automatically after successful completion, and CF02 egress checks no longer abandon timed-out socket connect tasks that can surface as unobserve",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.9",
-        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.15.0",
-      "name": "v0.15.0",
-      "publishedAt": "2026-07-09T14:04:09Z",
-      "provenance": "unsigned",
-      "summary": "Changed: Reworked the studio shell into a professional workstation layout with a six-tile command summary, side-by-side script/output workbench, tabbed waveform-style output deck, denser queue/library treatment, refreshe",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.15.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "Astra-Deck",
-      "projectName": "Astra-Deck",
-      "tag": "v4.46.34",
-      "name": "v4.46.34",
-      "publishedAt": "2026-07-09T13:53:48Z",
-      "provenance": "checksum",
-      "summary": "Polishes the extension settings overlay into an executive command deck: red hairline shell, top command search, compact navigation rail, denser setting rows, right-side status/profile/health inspector, and persistent bot",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.46.34",
-        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
-        "detail": "https://github.com/SysAdminDoc/Astra-Deck"
-      }
-    },
-    {
-      "repo": "Network_Security_Auditor",
-      "projectName": "Network_Security_Auditor",
-      "tag": "v5.2.8",
-      "name": "v5.2.8",
-      "publishedAt": "2026-07-09T13:45:12Z",
-      "provenance": "checksum",
-      "summary": "C# rewrite v5.2.8 and PowerShell v4.11.2 audit hardening release. · - Hardened generated HTML links, branding contact email handling, and local import file-size limits. · - Improved CF01 SYSVOL scanning bounds, saved-sta",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.8",
-        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.62",
-      "name": "v0.12.62",
-      "publishedAt": "2026-07-09T13:42:16Z",
-      "provenance": "unsigned",
-      "summary": "Security and reliability audit release. Hardened CSV exports against spreadsheet formula injection; fixed repeated support-bundle export collisions and empty-log diagnostics; clarified app/service version-mismatch errors",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.62",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://github.com/SysAdminDoc/HostsGuard"
-      }
-    },
-    {
-      "repo": "HostsGuard",
-      "projectName": "HostsGuard",
-      "tag": "v0.12.61",
-      "name": "v0.12.61",
-      "publishedAt": "2026-07-09T12:58:30Z",
-      "provenance": "unsigned",
-      "summary": "Added redacted metadata-only traffic profile exports for support bundles, FW Activity, and HostsGuard.Cli traffic-profile, with time/app/action/protocol filters, JSON/CSV output, Wireshark display-filter hints, and an ex",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/HostsGuard/releases/tag/v0.12.61",
-        "repository": "https://github.com/SysAdminDoc/HostsGuard",
-        "detail": "https://github.com/SysAdminDoc/HostsGuard"
-      }
-    },
-    {
-      "repo": "SwiftFloris",
-      "projectName": "SwiftFloris",
-      "tag": "v1.9.56",
-      "name": "v1.9.56",
-      "publishedAt": "2026-07-09T11:44:19Z",
-      "provenance": "unsigned",
-      "summary": "Roadmap hardening: Han DB access serialization, typed-text log redaction, SQLCipher refresh and freshness gate, bounded sync and translation addon bridges with typed failure/timeout/cancel copy, runtime addon capability ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SwiftFloris/releases/tag/v1.9.56",
-        "repository": "https://github.com/SysAdminDoc/SwiftFloris",
-        "detail": "https://github.com/SysAdminDoc/SwiftFloris"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.14.0",
-      "name": "v0.14.0",
-      "publishedAt": "2026-07-09T10:18:27Z",
-      "provenance": "unsigned",
-      "summary": "Deep audit hardening release. Includes import/library/queue recovery guardrails, UI accessibility and contrast fixes, diagnostics privacy hardening, bounded article imports, safer service-worker cache keys, exact Kokoro ",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.13.0",
-      "name": "v0.13.0",
-      "publishedAt": "2026-07-09T09:30:20Z",
-      "provenance": "unsigned",
-      "summary": "Roadmap drain release: adds experimental Piper-plus engine wiring, offline/runtime diagnostics hardening, document import and playback reliability improvements, queue editing, local smoke coverage, and v0.13.0 version sy",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.13.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "Network_Security_Auditor",
-      "projectName": "Network_Security_Auditor",
-      "tag": "v5.2.7",
-      "name": "v5.2.7",
-      "publishedAt": "2026-07-09T07:14:34Z",
-      "provenance": "checksum",
-      "summary": "Network Security Auditor v5.2.7 / PowerShell v4.11.1 · - Aligns C# scoring metadata, framework profile counts, rounding, and waiver expiry semantics. · - Hardens C# CLI/check parsing, scan lifecycle, invariant export dat",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Network_Security_Auditor/releases/tag/v5.2.7",
-        "repository": "https://github.com/SysAdminDoc/Network_Security_Auditor",
-        "detail": "https://github.com/SysAdminDoc/Network_Security_Auditor"
-      }
-    },
-    {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.22",
-      "name": "v0.2.22",
-      "publishedAt": "2026-07-09T06:41:23Z",
-      "provenance": "checksum",
-      "summary": "Images v0.2.22 · Changed: · - Tightened the command palette so common viewer commands rank first, advanced utilities are grouped under Advanced tools, and task synonyms improve search.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.22",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://github.com/SysAdminDoc/Images"
-      }
-    },
-    {
-      "repo": "Images",
-      "projectName": "Images",
-      "tag": "v0.2.20",
-      "name": "v0.2.20",
-      "publishedAt": "2026-07-09T00:23:50Z",
-      "provenance": "unsigned",
-      "summary": "Removed the main viewer Review workflow, rating/pick/reject side panel, assisted culling, Review workflow mode, Review hotkeys, and command-palette rating import to keep Images leaner.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/Images/releases/tag/v0.2.20",
-        "repository": "https://github.com/SysAdminDoc/Images",
-        "detail": "https://github.com/SysAdminDoc/Images"
-      }
-    },
-    {
-      "repo": "RES-Slim",
-      "projectName": "RES-Slim",
-      "tag": "v0.14.1",
-      "name": "RES-Slim v0.14.1",
-      "publishedAt": "2026-07-08T21:35:04Z",
-      "provenance": "unsigned",
-      "summary": "Old.reddit-focused fork of Reddit Enhancement Suite. Chrome MV3 + Firefox MV2. 482→487 contract tests. This is the first tagged release since v0.12.7 and bundles the v0.13.0, v0.14.0, and v0.14.1 work. · - `commentHighli",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/RES-Slim/releases/tag/v0.14.1",
-        "repository": "https://github.com/SysAdminDoc/RES-Slim",
-        "detail": "https://github.com/SysAdminDoc/RES-Slim"
-      }
-    },
-    {
-      "repo": "SysAdminDoc",
-      "projectName": "SysAdminDoc",
-      "tag": "v4.9.153",
-      "name": "v4.9.153",
-      "publishedAt": "2026-07-07T19:56:24Z",
-      "provenance": "unsigned",
-      "summary": "Profile mock-parity refresh: centered line-art header, icon category nav, signal-based Start Here routing, generated Tool Catalog, footer action strip, and refreshed local validation evidence.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.153",
-        "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
-        "detail": "https://github.com/SysAdminDoc/SysAdminDoc"
-      }
-    },
-    {
-      "repo": "SysAdminDoc",
-      "projectName": "SysAdminDoc",
-      "tag": "v4.9.152",
-      "name": "v4.9.152",
-      "publishedAt": "2026-07-07T17:58:47Z",
-      "provenance": "unsigned",
-      "summary": "Modernized the SysAdminDoc profile README into a local, theme-aware public tools command center with refreshed routing, setup, validation, and live rendered-smoke evidence.",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/SysAdminDoc/releases/tag/v4.9.152",
-        "repository": "https://github.com/SysAdminDoc/SysAdminDoc",
-        "detail": "https://github.com/SysAdminDoc/SysAdminDoc"
       }
     }
   ]

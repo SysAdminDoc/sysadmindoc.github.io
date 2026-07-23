@@ -28,7 +28,6 @@
 - [Base64Converter](https://github.com/SysAdminDoc/Base64Converter): Base64 encoder decoder
 - [CoolSites](https://github.com/SysAdminDoc/CoolSites): 470+ curated free tools open source projects
 - [BookmarkVault](https://github.com/SysAdminDoc/BookmarkVault): Bookmark management web app
-- [ImageForge](https://github.com/SysAdminDoc/ImageForge): Open source image converter
 - [Openshop](https://github.com/SysAdminDoc/Openshop): Browser-based image editor with layers filters
 - [DeGoogler](https://github.com/SysAdminDoc/DeGoogler): Migration toolkit for leaving Google services
 - [UserScriptHunt](https://github.com/SysAdminDoc/UserScriptHunt): Unified userscript search engine
@@ -40,18 +39,19 @@
 - [BetterTTS](https://github.com/SysAdminDoc/BetterTTS): Private, in-browser text-to-speech studio
 
 ## Pages
-- [Portfolio home](https://sysadmindoc.github.io/): 186 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
+- [Portfolio home](https://sysadmindoc.github.io/): 178 public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.
 - [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
 - [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, systems administration, healthcare technology support, and customer-facing escalation work.
 - [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio routes, language lanes, releases, timeline entries, and archive decisions.
 - [Timeline](https://sysadmindoc.github.io/timeline/): Year-in-review timeline generated from GitHub releases and project metadata.
 - [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
 - [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
+- [AI Services](https://sysadmindoc.github.io/ai/): Fractional AI implementation for businesses: tool selection and rollout, workflow automation, employee training, and custom software on a monthly retainer.
 - [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Healthcare IT context for customer support, hosted workflows, migrations, vendor coordination, and support documentation.
 - [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.
 - [Screenshots](https://sysadmindoc.github.io/screenshots/): Visual evidence gallery of live-app product surfaces captured from deployed builds.
 - [Releases](https://sysadmindoc.github.io/releases/): Chronological release stream across the active public portfolio archive.
-- [Full catalog](https://sysadmindoc.github.io/#catalog): All 186 public projects with search and filters.
+- [Full catalog](https://sysadmindoc.github.io/#catalog): All 178 public projects with search and filters.
 
 ## Language lanes
 - [PowerShell](https://sysadmindoc.github.io/lang/powershell/): Where the real sysadmin work lives.

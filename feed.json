@@ -5,7 +5,7 @@
   "feed_url": "https://sysadmindoc.github.io/feed.json",
   "icon": "https://sysadmindoc.github.io/icon-512.png",
   "favicon": "https://sysadmindoc.github.io/favicon.svg",
-  "description": "Public projects, live web apps, and the full catalog - 186+ projects.",
+  "description": "Public projects, live web apps, and the full catalog - 178+ projects.",
   "language": "en-US",
   "authors": [
     {
@@ -15,43 +15,13 @@
   ],
   "items": [
     {
-      "id": "https://github.com/SysAdminDoc/ImageForge",
-      "url": "https://github.com/SysAdminDoc/ImageForge",
-      "title": "ImageForge (live)",
-      "content_text": "Open source image converter",
-      "date_modified": "2026-07-15T14:55:28.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/Vigil",
       "url": "https://github.com/SysAdminDoc/Vigil",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Desktop"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/TsunamiSimulator",
-      "url": "https://github.com/SysAdminDoc/TsunamiSimulator",
-      "title": "TsunamiSimulator",
-      "content_text": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
-      "date_modified": "2026-07-15T14:55:28.000Z",
-      "tags": [
-        "Desktop"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Discrub",
-      "url": "https://github.com/SysAdminDoc/Discrub",
-      "title": "Discrub",
-      "content_text": "Discord message editor, deleter, and exporter",
-      "date_modified": "2026-07-15T14:55:28.000Z",
-      "tags": [
-        "Extensions"
       ]
     },
     {
@@ -59,7 +29,7 @@
       "url": "https://github.com/SysAdminDoc/android-debloat-list",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Guides"
       ]
@@ -69,7 +39,7 @@
       "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
       "title": "sysadmindoc.github.io",
       "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Guides"
       ]
@@ -79,7 +49,7 @@
       "url": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Other"
       ]
@@ -89,7 +59,7 @@
       "url": "https://github.com/SysAdminDoc/RcloneBrowser",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Other"
       ]
@@ -99,7 +69,7 @@
       "url": "https://github.com/SysAdminDoc/TabExplorer",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Other"
       ]
@@ -109,57 +79,27 @@
       "url": "https://github.com/SysAdminDoc/TagStudio",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "date_modified": "2026-07-23T13:58:00.000Z",
       "tags": [
         "Other"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
-      "url": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
-      "title": "SoftwareScannerGUI",
-      "content_text": "WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries",
-      "date_modified": "2026-07-15T14:55:28.000Z",
+      "id": "https://github.com/SysAdminDoc/CallShield",
+      "url": "https://github.com/SysAdminDoc/CallShield",
+      "title": "CallShield",
+      "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
+      "date_modified": "2026-07-23T09:42:44.000Z",
       "tags": [
-        "PowerShell"
+        "Android"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/NukeMap",
-      "url": "https://github.com/SysAdminDoc/NukeMap",
-      "title": "NukeMap",
-      "content_text": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
-      "date_modified": "2026-07-15T14:55:28.000Z",
-      "tags": [
-        "Web Apps"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/AsteroidSimulator",
-      "url": "https://github.com/SysAdminDoc/AsteroidSimulator",
-      "title": "AsteroidSimulator",
-      "content_text": "Asteroid and comet impact simulator with interactive 3D visualization",
-      "date_modified": "2026-07-15T14:55:28.000Z",
-      "tags": [
-        "Web Apps"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Astra-Deck",
-      "url": "https://github.com/SysAdminDoc/Astra-Deck",
-      "title": "Astra-Deck",
-      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
-      "date_modified": "2026-07-15T14:55:02.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Droidsmith",
-      "url": "https://github.com/SysAdminDoc/Droidsmith",
-      "title": "Droidsmith",
-      "content_text": "Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*",
-      "date_modified": "2026-07-15T14:50:10.000Z",
+      "id": "https://github.com/SysAdminDoc/Aura",
+      "url": "https://github.com/SysAdminDoc/Aura",
+      "title": "Aura",
+      "content_text": "Open-source Zedge alternative — wallpapers, video wallpapers, ringtones, YouTube integration",
+      "date_modified": "2026-07-23T04:56:24.000Z",
       "tags": [
         "Android"
       ]
@@ -169,87 +109,17 @@
       "url": "https://github.com/SysAdminDoc/OpenTasker",
       "title": "OpenTasker",
       "content_text": "FOSS Tasker alternative for Android",
-      "date_modified": "2026-07-15T14:02:51.000Z",
+      "date_modified": "2026-07-23T04:56:21.000Z",
       "tags": [
         "Android"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-      "url": "https://github.com/SysAdminDoc/AlarmClockXtreme",
-      "title": "AlarmClockXtreme",
-      "content_text": "Feature-rich alarm clock with dismiss challenges",
-      "date_modified": "2026-07-15T11:50:27.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/SnapCrop",
-      "url": "https://github.com/SysAdminDoc/SnapCrop",
-      "title": "SnapCrop",
-      "content_text": "Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup",
-      "date_modified": "2026-07-15T11:19:43.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/AppManagerNG",
-      "url": "https://github.com/SysAdminDoc/AppManagerNG",
-      "title": "AppManagerNG",
-      "content_text": "Power-user package manager — continuation of MuntashirAkon/AppManager",
-      "date_modified": "2026-07-15T09:46:41.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/HostsGuard",
-      "url": "https://github.com/SysAdminDoc/HostsGuard",
-      "title": "HostsGuard",
-      "content_text": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
-      "date_modified": "2026-07-15T08:06:33.000Z",
-      "tags": [
-        "Desktop"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ZeusWatch",
-      "url": "https://github.com/SysAdminDoc/ZeusWatch",
-      "title": "ZeusWatch",
-      "content_text": "Premium dark weather app — no API keys required",
-      "date_modified": "2026-07-15T07:22:47.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ClearCut",
-      "url": "https://github.com/SysAdminDoc/ClearCut",
-      "title": "ClearCut",
-      "content_text": "Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
-      "date_modified": "2026-07-15T06:34:40.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/CallShield",
-      "url": "https://github.com/SysAdminDoc/CallShield",
-      "title": "CallShield",
-      "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
-      "date_modified": "2026-07-15T03:52:15.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/OpenCut",
-      "url": "https://github.com/SysAdminDoc/OpenCut",
-      "title": "OpenCut",
-      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
-      "date_modified": "2026-07-15T03:46:21.000Z",
+      "id": "https://github.com/SysAdminDoc/LibreSpot",
+      "url": "https://github.com/SysAdminDoc/LibreSpot",
+      "title": "LibreSpot",
+      "content_text": "Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
+      "date_modified": "2026-07-23T04:31:46.000Z",
       "tags": [
         "Featured"
       ]
@@ -259,39 +129,39 @@
       "url": "https://github.com/SysAdminDoc/ScriptVault",
       "title": "ScriptVault",
       "content_text": "Open-source Chrome MV3 userscript manager — Monaco editor, 35+ GM APIs",
-      "date_modified": "2026-07-15T02:10:56.000Z",
+      "date_modified": "2026-07-23T04:29:15.000Z",
       "tags": [
         "Extensions"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
-      "url": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
-      "title": "VideoSubtitleRemover",
-      "content_text": "AI-powered removal of hard-coded subtitles and text watermarks from video.",
-      "date_modified": "2026-07-15T02:04:19.000Z",
+      "id": "https://github.com/SysAdminDoc/SwiftShot",
+      "url": "https://github.com/SysAdminDoc/SwiftShot",
+      "title": "SwiftShot",
+      "content_text": "Debloated, Greenshot-inspired screenshot tool",
+      "date_modified": "2026-07-23T04:24:09.000Z",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ClearCut",
+      "url": "https://github.com/SysAdminDoc/ClearCut",
+      "title": "ClearCut",
+      "content_text": "Full-featured Android video editor 40+ effects, 37 transitions, 29 engines. Open alternative to PowerDirector.",
+      "date_modified": "2026-07-23T04:21:50.000Z",
       "tags": [
         "Featured"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/LibreSpot",
-      "url": "https://github.com/SysAdminDoc/LibreSpot",
-      "title": "LibreSpot",
-      "content_text": "Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.",
-      "date_modified": "2026-07-15T00:40:16.000Z",
+      "id": "https://github.com/SysAdminDoc/SnapCrop",
+      "url": "https://github.com/SysAdminDoc/SnapCrop",
+      "title": "SnapCrop",
+      "content_text": "Screenshot editor — ML Kit autocrop, 14 draw tools, collage, device mockup",
+      "date_modified": "2026-07-23T04:17:43.000Z",
       "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/StormScope",
-      "url": "https://github.com/SysAdminDoc/StormScope",
-      "title": "StormScope",
-      "content_text": "Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras",
-      "date_modified": "2026-07-15T00:37:02.000Z",
-      "tags": [
-        "Web Apps"
+        "Android"
       ]
     },
     {
@@ -299,9 +169,79 @@
       "url": "https://github.com/SysAdminDoc/win11-nvme-driver-patcher",
       "title": "win11-nvme-driver-patcher",
       "content_text": "GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.",
-      "date_modified": "2026-07-14T23:31:54.000Z",
+      "date_modified": "2026-07-23T04:01:31.000Z",
       "tags": [
         "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ZeusWatch",
+      "url": "https://github.com/SysAdminDoc/ZeusWatch",
+      "title": "ZeusWatch",
+      "content_text": "Premium dark weather app — no API keys required",
+      "date_modified": "2026-07-23T03:49:06.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+      "url": "https://github.com/SysAdminDoc/AlarmClockXtreme",
+      "title": "AlarmClockXtreme",
+      "content_text": "Feature-rich alarm clock with dismiss challenges",
+      "date_modified": "2026-07-23T03:45:55.000Z",
+      "tags": [
+        "Android"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/AppManagerNG",
+      "url": "https://github.com/SysAdminDoc/AppManagerNG",
+      "title": "AppManagerNG",
+      "content_text": "Power-user package manager — continuation of MuntashirAkon/AppManager",
+      "date_modified": "2026-07-23T02:59:24.000Z",
+      "tags": [
+        "Android"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/OpenCut",
+      "url": "https://github.com/SysAdminDoc/OpenCut",
+      "title": "OpenCut",
+      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
+      "date_modified": "2026-07-22T21:20:58.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/HostShield",
+      "url": "https://github.com/SysAdminDoc/HostShield",
+      "title": "HostShield",
+      "content_text": "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.",
+      "date_modified": "2026-07-22T20:02:43.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Droidsmith",
+      "url": "https://github.com/SysAdminDoc/Droidsmith",
+      "title": "Droidsmith",
+      "content_text": "Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*",
+      "date_modified": "2026-07-22T13:05:17.000Z",
+      "tags": [
+        "Android"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/StreamKeep",
+      "url": "https://github.com/SysAdminDoc/StreamKeep",
+      "title": "StreamKeep",
+      "content_text": "Multi-platform stream/VOD downloader with built-in media converter",
+      "date_modified": "2026-07-21T14:23:07.000Z",
+      "tags": [
+        "Media"
       ]
     },
     {
@@ -309,7 +249,137 @@
       "url": "https://github.com/SysAdminDoc/Images",
       "title": "Images",
       "content_text": "Dark-mode Windows 7 Classic Photo Viewer with live inline rename-while-viewing",
-      "date_modified": "2026-07-14T23:31:41.000Z",
+      "date_modified": "2026-07-21T14:22:04.000Z",
+      "tags": [
+        "Desktop"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/UniversalConverterX",
+      "url": "https://github.com/SysAdminDoc/UniversalConverterX",
+      "title": "UniversalConverterX",
+      "content_text": "Native Windows file converter with context menu integration — 1000+ formats",
+      "date_modified": "2026-07-21T14:17:10.000Z",
+      "tags": [
+        "Desktop"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Astra-Deck",
+      "url": "https://github.com/SysAdminDoc/Astra-Deck",
+      "title": "Astra-Deck",
+      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
+      "date_modified": "2026-07-21T14:15:54.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+      "url": "https://github.com/SysAdminDoc/VideoSubtitleRemover",
+      "title": "VideoSubtitleRemover",
+      "content_text": "AI-powered removal of hard-coded subtitles and text watermarks from video.",
+      "date_modified": "2026-07-21T01:54:18.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Snapture",
+      "url": "https://github.com/SysAdminDoc/Snapture",
+      "title": "Snapture",
+      "content_text": "All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry",
+      "date_modified": "2026-07-21T00:14:02.000Z",
+      "tags": [
+        "Desktop"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/REDplusplus",
+      "url": "https://github.com/SysAdminDoc/REDplusplus",
+      "title": "REDplusplus",
+      "content_text": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
+      "date_modified": "2026-07-19T03:13:48.000Z",
+      "tags": [
+        "Desktop"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ApocalypseWatch",
+      "url": "https://github.com/SysAdminDoc/ApocalypseWatch",
+      "title": "ApocalypseWatch (live)",
+      "content_text": "Realtime business-jet tracker vs. 24h baseline",
+      "date_modified": "2026-07-18T08:13:17.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
+      "url": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
+      "title": "Start-Menu-Organizer",
+      "content_text": "Clean junk, detect broken shortcuts, reorganize Start Menu",
+      "date_modified": "2026-07-17T06:40:30.000Z",
+      "tags": [
+        "PowerShell"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
+      "url": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
+      "title": "Restore-WindowsDefaults",
+      "content_text": "Reverse debloat changes and restore Windows to factory defaults",
+      "date_modified": "2026-07-17T06:39:54.000Z",
+      "tags": [
+        "PowerShell"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
+      "url": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
+      "title": "Disable-AdobeTelemetry",
+      "content_text": "Comprehensive Adobe telemetry and GrowthSDK suppression for Windows",
+      "date_modified": "2026-07-17T06:38:13.000Z",
+      "tags": [
+        "PowerShell"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/HurricaneMap",
+      "url": "https://github.com/SysAdminDoc/HurricaneMap",
+      "title": "HurricaneMap (live)",
+      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
+      "date_modified": "2026-07-16T14:45:53.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ImgConverter",
+      "url": "https://github.com/SysAdminDoc/ImgConverter",
+      "title": "ImgConverter",
+      "content_text": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
+      "date_modified": "2026-07-16T05:03:12.000Z",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/StormScope",
+      "url": "https://github.com/SysAdminDoc/StormScope",
+      "title": "StormScope",
+      "content_text": "Live US weather radar with webcam overlays -- NEXRAD radar plus 7,000+ traffic cameras",
+      "date_modified": "2026-07-16T02:31:10.000Z",
+      "tags": [
+        "Web Apps"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/HostsGuard",
+      "url": "https://github.com/SysAdminDoc/HostsGuard",
+      "title": "HostsGuard",
+      "content_text": "Real-time network privacy manager — DNS monitoring, hosts file management, firewall rules",
+      "date_modified": "2026-07-15T08:06:33.000Z",
       "tags": [
         "Desktop"
       ]
@@ -325,41 +395,11 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/SwiftShot",
-      "url": "https://github.com/SysAdminDoc/SwiftShot",
-      "title": "SwiftShot",
-      "content_text": "Debloated, Greenshot-inspired screenshot tool",
-      "date_modified": "2026-07-14T20:03:14.000Z",
-      "tags": [
-        "Python"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ApocalypseWatch",
-      "url": "https://github.com/SysAdminDoc/ApocalypseWatch",
-      "title": "ApocalypseWatch (live)",
-      "content_text": "Realtime business-jet tracker vs. 24h baseline",
-      "date_modified": "2026-07-11T08:13:02.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/AppList",
       "url": "https://github.com/SysAdminDoc/AppList",
       "title": "AppList",
       "content_text": "Scan, catalog, and export all installed applications",
       "date_modified": "2026-07-10T20:55:20.000Z",
-      "tags": [
-        "Python"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ImgConverter",
-      "url": "https://github.com/SysAdminDoc/ImgConverter",
-      "title": "ImgConverter",
-      "content_text": "Universal image batch converter (PyQt6 GUI + CLI) with metadata, ICC, and HDR fidelity",
-      "date_modified": "2026-07-10T20:07:02.000Z",
       "tags": [
         "Python"
       ]
@@ -382,16 +422,6 @@
       "date_modified": "2026-07-10T04:02:09.000Z",
       "tags": [
         "PowerShell"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/HurricaneMap",
-      "url": "https://github.com/SysAdminDoc/HurricaneMap",
-      "title": "HurricaneMap (live)",
-      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
-      "date_modified": "2026-07-10T03:52:43.000Z",
-      "tags": [
-        "Live App"
       ]
     },
     {
@@ -435,16 +465,6 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/Aura",
-      "url": "https://github.com/SysAdminDoc/Aura",
-      "title": "Aura",
-      "content_text": "Open-source Zedge alternative — wallpapers, video wallpapers, ringtones, YouTube integration",
-      "date_modified": "2026-07-05T21:23:14.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/iOSIconPack",
       "url": "https://github.com/SysAdminDoc/iOSIconPack",
       "title": "iOSIconPack",
@@ -462,26 +482,6 @@
       "date_modified": "2026-07-05T19:31:34.000Z",
       "tags": [
         "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/HostShield",
-      "url": "https://github.com/SysAdminDoc/HostShield",
-      "title": "HostShield",
-      "content_text": "AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.",
-      "date_modified": "2026-07-05T19:20:28.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-      "url": "https://github.com/SysAdminDoc/Disable-AdobeTelemetry",
-      "title": "Disable-AdobeTelemetry",
-      "content_text": "Comprehensive Adobe telemetry and GrowthSDK suppression for Windows",
-      "date_modified": "2026-07-02T05:05:08.000Z",
-      "tags": [
-        "PowerShell"
       ]
     },
     {
@@ -522,16 +522,6 @@
       "date_modified": "2026-07-01T16:03:07.000Z",
       "tags": [
         "Python"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-      "url": "https://github.com/SysAdminDoc/Start-Menu-Organizer",
-      "title": "Start-Menu-Organizer",
-      "content_text": "Clean junk, detect broken shortcuts, reorganize Start Menu",
-      "date_modified": "2026-07-01T16:01:35.000Z",
-      "tags": [
-        "PowerShell"
       ]
     },
     {
@@ -635,16 +625,6 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/StreamKeep",
-      "url": "https://github.com/SysAdminDoc/StreamKeep",
-      "title": "StreamKeep",
-      "content_text": "Multi-platform stream/VOD downloader with built-in media converter",
-      "date_modified": "2026-07-01T05:39:02.000Z",
-      "tags": [
-        "Media"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
       "url": "https://github.com/SysAdminDoc/qBittorrent-Vanced",
       "title": "qBittorrent-Vanced",
@@ -662,16 +642,6 @@
       "date_modified": "2026-07-01T05:21:21.000Z",
       "tags": [
         "Extensions"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/UniversalConverterX",
-      "url": "https://github.com/SysAdminDoc/UniversalConverterX",
-      "title": "UniversalConverterX",
-      "content_text": "Native Windows file converter with context menu integration — 1000+ formats",
-      "date_modified": "2026-07-01T05:17:48.000Z",
-      "tags": [
-        "Desktop"
       ]
     },
     {
@@ -905,16 +875,6 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/pfSenseSuite",
-      "url": "https://github.com/SysAdminDoc/pfSenseSuite",
-      "title": "pfSenseSuite",
-      "content_text": "pfSense scripts and customizations toolkit",
-      "date_modified": "2026-06-28T14:10:21.000Z",
-      "tags": [
-        "Security"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/OpenSwift",
       "url": "https://github.com/SysAdminDoc/OpenSwift",
       "title": "OpenSwift",
@@ -952,16 +912,6 @@
       "date_modified": "2026-06-28T03:53:44.000Z",
       "tags": [
         "Python"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/REDplusplus",
-      "url": "https://github.com/SysAdminDoc/REDplusplus",
-      "title": "REDplusplus",
-      "content_text": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
-      "date_modified": "2026-06-28T03:46:43.000Z",
-      "tags": [
-        "Desktop"
       ]
     },
     {
@@ -1165,16 +1115,6 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/Snapture",
-      "url": "https://github.com/SysAdminDoc/Snapture",
-      "title": "Snapture",
-      "content_text": "All-in-one screenshot utility — region/window/fullscreen, pinned overlays, no telemetry",
-      "date_modified": "2026-06-28T03:39:07.000Z",
-      "tags": [
-        "Desktop"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/SkyTrack",
       "url": "https://github.com/SysAdminDoc/SkyTrack",
       "title": "SkyTrack (live)",
@@ -1212,16 +1152,6 @@
       "date_modified": "2026-06-28T03:38:58.000Z",
       "tags": [
         "Extensions"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
-      "url": "https://github.com/SysAdminDoc/Restore-WindowsDefaults",
-      "title": "Restore-WindowsDefaults",
-      "content_text": "Reverse debloat changes and restore Windows to factory defaults",
-      "date_modified": "2026-06-28T03:38:57.000Z",
-      "tags": [
-        "PowerShell"
       ]
     },
     {
@@ -1292,16 +1222,6 @@
       "date_modified": "2026-06-28T03:38:43.000Z",
       "tags": [
         "Desktop"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/PfblockerngManager",
-      "url": "https://github.com/SysAdminDoc/PfblockerngManager",
-      "title": "PfblockerngManager",
-      "content_text": "GUI for managing pfBlockerNG on pfSense firewalls",
-      "date_modified": "2026-06-28T03:38:41.000Z",
-      "tags": [
-        "PowerShell"
       ]
     },
     {

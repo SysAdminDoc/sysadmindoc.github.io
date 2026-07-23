@@ -1,70 +1,70 @@
 {
   "schema": "sysadmindoc.status.v1",
-  "version": "0.22.0",
-  "generatedAt": "2026-07-15T16:50:36.883Z",
+  "version": "0.23.0",
+  "generatedAt": "2026-07-23T14:15:09.709Z",
   "build": {
-    "commit": "78bc457b1e70fc1341c1b108f40dd32fc341be8c",
-    "commitShort": "78bc457b1e70",
+    "commit": "cabf5ae36826f88313789b9856c73cdef9c58794",
+    "commitShort": "cabf5ae36826",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
-    "count": 186,
-    "liveApps": 23
+    "count": 178,
+    "liveApps": 22
   },
   "profileFeed": {
     "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
-    "projectCount": 186
+    "projectCount": 178
   },
   "generatedData": {
     "status": "fresh",
     "mode": "production-fresh",
     "maxAgeHours": 36,
-    "fetchedAt": "2026-07-15T15:01:18.356Z",
-    "ageHours": 1.8218,
+    "fetchedAt": "2026-07-23T14:03:15.662Z",
+    "ageHours": 0.1983,
     "stale": false,
-    "totalRepos": 183,
-    "totalStars": 413,
-    "readmeEntries": 183,
+    "totalRepos": 182,
+    "totalStars": 493,
+    "readmeEntries": 182,
     "profileFeed": {
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
-      "projectCount": 186,
-      "cachedAt": "2026-07-15T16:50:16.986Z",
-      "cachedAgeHours": 0.0055,
+      "projectCount": 178,
+      "cachedAt": "2026-07-23T14:15:03.931Z",
+      "cachedAgeHours": 0.0016,
       "stale": false
     },
     "coverage": {
       "threshold": 0.8,
-      "profileProjectCount": 186,
-      "stars": 0.9839,
-      "metadata": 0.9839,
-      "readmes": 0.9839,
-      "releases": 0.3226,
-      "starEntries": 183,
-      "metadataEntries": 183,
-      "readmeEntries": 183,
+      "profileProjectCount": 178,
+      "stars": 1.0225,
+      "metadata": 1.0225,
+      "readmes": 1.0225,
+      "releases": 0.3371,
+      "starEntries": 182,
+      "metadataEntries": 182,
+      "readmeEntries": 182,
       "releaseEntries": 60
     },
     "readmeRefresh": {
       "source": "github-api",
-      "generatedAt": "2026-07-15T15:01:38.900Z",
+      "generatedAt": "2026-07-23T14:03:35.554Z",
       "tokenPresent": true,
-      "targetRepos": 183,
-      "attempted": 183,
-      "cacheEntries": 183,
+      "targetRepos": 182,
+      "attempted": 182,
+      "cacheEntries": 182,
       "cacheCoverage": 1,
       "missRate": 0,
       "rateLimited": false,
       "skippedReason": null
     },
     "releaseProvenance": {
-      "no-assets": 0,
-      "unsigned": 39,
-      "checksum": 21,
+      "no-assets": 1,
+      "unsigned": 42,
+      "checksum": 17,
       "attested": 0,
       "unknown": 0,
       "total": 60,
-      "trusted": 21
+      "trusted": 17
     },
     "warnings": []
   }

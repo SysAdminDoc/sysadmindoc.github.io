@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-15T15:01:18.356Z",
+  "generatedAt": "2026-07-23T14:03:15.662Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "SysAdminDoc/SysAdminDoc projects.json",
     "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
     "profileFeedGeneratedAt": "2026-06-01T16:18:55.0998940-04:00",
-    "profileFeedCachedAt": "2026-07-15T16:50:16.986Z",
-    "githubMetadataFetchedAt": "2026-07-15T15:01:18.356Z",
-    "githubLastPushedAt": "2026-07-15T14:55:28Z"
+    "profileFeedCachedAt": "2026-07-23T14:15:03.931Z",
+    "githubMetadataFetchedAt": "2026-07-23T14:03:15.662Z",
+    "githubLastPushedAt": "2026-07-23T13:58:00Z"
   },
   "counts": {
-    "projects": 186,
+    "projects": 178,
     "featured": 10,
-    "liveApps": 23,
-    "catalog": 186
+    "liveApps": 22,
+    "catalog": 178
   },
   "projects": [
     {
@@ -40,11 +40,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 51
+        "stars": 52
       },
       "freshness": {
-        "pushedAt": "2026-07-14T23:31:54Z",
-        "updatedAt": "2026-07-14T23:31:59Z"
+        "pushedAt": "2026-07-23T04:01:31Z",
+        "updatedAt": "2026-07-23T04:01:59Z"
       }
     },
     {
@@ -70,11 +70,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 28
+        "stars": 30
       },
       "freshness": {
-        "pushedAt": "2026-07-15T03:46:21Z",
-        "updatedAt": "2026-07-15T03:46:19Z"
+        "pushedAt": "2026-07-22T21:20:58Z",
+        "updatedAt": "2026-07-22T21:21:11Z"
       }
     },
     {
@@ -133,8 +133,8 @@
         "stars": 12
       },
       "freshness": {
-        "pushedAt": "2026-07-15T00:40:16Z",
-        "updatedAt": "2026-07-15T00:40:21Z"
+        "pushedAt": "2026-07-23T04:31:46Z",
+        "updatedAt": "2026-07-23T04:32:13Z"
       }
     },
     {
@@ -160,11 +160,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 34
+        "stars": 41
       },
       "freshness": {
-        "pushedAt": "2026-07-15T02:04:19Z",
-        "updatedAt": "2026-07-15T02:04:23Z"
+        "pushedAt": "2026-07-21T01:54:18Z",
+        "updatedAt": "2026-07-22T09:11:55Z"
       }
     },
     {
@@ -190,11 +190,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 8
+        "stars": 10
       },
       "freshness": {
-        "pushedAt": "2026-07-15T14:55:02Z",
-        "updatedAt": "2026-07-15T14:56:50Z"
+        "pushedAt": "2026-07-21T14:15:54Z",
+        "updatedAt": "2026-07-22T19:09:23Z"
       }
     },
     {
@@ -253,8 +253,8 @@
         "stars": 7
       },
       "freshness": {
-        "pushedAt": "2026-07-15T07:22:47Z",
-        "updatedAt": "2026-07-15T07:22:59Z"
+        "pushedAt": "2026-07-23T03:49:06Z",
+        "updatedAt": "2026-07-23T03:49:11Z"
       }
     },
     {
@@ -280,11 +280,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 19
+        "stars": 23
       },
       "freshness": {
-        "pushedAt": "2026-07-15T06:34:40Z",
-        "updatedAt": "2026-07-15T06:34:48Z"
+        "pushedAt": "2026-07-23T04:21:50Z",
+        "updatedAt": "2026-07-23T05:50:42Z"
       }
     },
     {
@@ -310,11 +310,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 12
+        "stars": 13
       },
       "freshness": {
-        "pushedAt": "2026-07-05T19:20:28Z",
-        "updatedAt": "2026-07-05T19:20:32Z"
+        "pushedAt": "2026-07-22T20:02:43Z",
+        "updatedAt": "2026-07-22T20:05:06Z"
       }
     },
     {
@@ -362,11 +362,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SPECTRE.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:09Z",
-        "updatedAt": "2026-06-28T03:39:12Z"
+        "updatedAt": "2026-07-19T15:57:25Z"
       }
     },
     {
@@ -388,11 +388,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageXpert.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:57Z",
-        "updatedAt": "2026-06-28T03:38:00Z"
+        "updatedAt": "2026-07-20T03:33:12Z"
       }
     },
     {
@@ -414,11 +414,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ConvertFlow.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:15Z",
-        "updatedAt": "2026-06-28T03:37:18Z"
+        "updatedAt": "2026-07-19T09:10:52Z"
       }
     },
     {
@@ -440,11 +440,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ClipForge.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:14Z",
-        "updatedAt": "2026-06-28T03:37:17Z"
+        "updatedAt": "2026-07-19T09:09:27Z"
       }
     },
     {
@@ -492,11 +492,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Multistreamer.jpg"
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:02:04Z",
-        "updatedAt": "2026-07-01T04:02:09Z"
+        "updatedAt": "2026-07-19T09:30:59Z"
       }
     },
     {
@@ -544,11 +544,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SkyTrack.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:04Z",
-        "updatedAt": "2026-06-28T03:39:07Z"
+        "updatedAt": "2026-07-19T09:27:45Z"
       }
     },
     {
@@ -622,11 +622,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CoolSites.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:16Z",
-        "updatedAt": "2026-06-28T03:37:19Z"
+        "updatedAt": "2026-07-20T03:37:29Z"
       }
     },
     {
@@ -656,32 +656,6 @@
       }
     },
     {
-      "slug": "ImageForge",
-      "name": "ImageForge",
-      "description": "Open source image converter",
-      "category": "web",
-      "categoryLabel": "Web Apps",
-      "language": null,
-      "featured": false,
-      "live": true,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/ImageForge",
-        "repository": "https://github.com/SysAdminDoc/ImageForge",
-        "source": "https://github.com/SysAdminDoc/ImageForge",
-        "live": "https://sysadmindoc.github.io/ImageForge/",
-        "screenshot": "https://sysadmindoc.github.io/screenshots/ImageForge.jpg",
-        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/ImageForge.jpg"
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
-      }
-    },
-    {
       "slug": "Openshop",
       "name": "Openshop",
       "description": "Browser-based image editor with layers & filters",
@@ -700,11 +674,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/Openshop.jpg"
       },
       "metrics": {
-        "stars": 3
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-01T13:59:26Z",
-        "updatedAt": "2026-07-04T12:10:28Z"
+        "updatedAt": "2026-07-19T15:51:16Z"
       }
     },
     {
@@ -752,11 +726,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/UserScriptHunt.jpg"
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-07-01T06:38:41Z",
-        "updatedAt": "2026-07-01T06:38:45Z"
+        "updatedAt": "2026-07-19T09:35:21Z"
       }
     },
     {
@@ -778,11 +752,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/SearchHub.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:03Z",
-        "updatedAt": "2026-06-28T03:39:06Z"
+        "updatedAt": "2026-07-20T03:40:25Z"
       }
     },
     {
@@ -859,8 +833,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-10T03:52:43Z",
-        "updatedAt": "2026-07-10T03:52:47Z"
+        "pushedAt": "2026-07-16T14:45:53Z",
+        "updatedAt": "2026-07-16T14:47:22Z"
       }
     },
     {
@@ -885,7 +859,7 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-11T08:13:02Z",
+        "pushedAt": "2026-07-18T08:13:17Z",
         "updatedAt": "2026-06-28T03:36:59Z"
       }
     },
@@ -934,11 +908,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 11
+        "stars": 14
       },
       "freshness": {
-        "pushedAt": "2026-07-05T21:23:14Z",
-        "updatedAt": "2026-07-15T06:43:01Z"
+        "pushedAt": "2026-07-23T04:56:24Z",
+        "updatedAt": "2026-07-23T04:45:46Z"
       }
     },
     {
@@ -960,11 +934,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-05T20:27:23Z",
-        "updatedAt": "2026-07-05T20:27:26Z"
+        "updatedAt": "2026-07-21T13:28:25Z"
       }
     },
     {
@@ -1012,11 +986,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 7
+        "stars": 8
       },
       "freshness": {
-        "pushedAt": "2026-07-15T11:50:27Z",
-        "updatedAt": "2026-07-15T11:51:09Z"
+        "pushedAt": "2026-07-23T03:45:55Z",
+        "updatedAt": "2026-07-23T03:46:07Z"
       }
     },
     {
@@ -1038,11 +1012,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 34
+        "stars": 35
       },
       "freshness": {
-        "pushedAt": "2026-07-15T09:46:41Z",
-        "updatedAt": "2026-07-15T09:46:51Z"
+        "pushedAt": "2026-07-23T02:59:24Z",
+        "updatedAt": "2026-07-23T02:59:27Z"
       }
     },
     {
@@ -1064,11 +1038,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-07-15T03:52:15Z",
-        "updatedAt": "2026-07-15T03:52:19Z"
+        "pushedAt": "2026-07-23T09:42:44Z",
+        "updatedAt": "2026-07-23T09:42:47Z"
       }
     },
     {
@@ -1090,11 +1064,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:25:08Z",
-        "updatedAt": "2026-07-01T21:20:17Z"
+        "updatedAt": "2026-07-19T09:58:10Z"
       }
     },
     {
@@ -1116,11 +1090,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:10Z",
-        "updatedAt": "2026-07-08T14:29:58Z"
+        "updatedAt": "2026-07-20T03:33:26Z"
       }
     },
     {
@@ -1171,8 +1145,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-15T11:19:43Z",
-        "updatedAt": "2026-07-15T11:19:47Z"
+        "pushedAt": "2026-07-23T04:17:43Z",
+        "updatedAt": "2026-07-23T04:16:43Z"
       }
     },
     {
@@ -1220,11 +1194,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-06-28T13:58:41Z",
-        "updatedAt": "2026-06-30T08:07:39Z"
+        "updatedAt": "2026-07-19T09:28:15Z"
       }
     },
     {
@@ -1246,11 +1220,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 13
+        "stars": 14
       },
       "freshness": {
         "pushedAt": "2026-07-10T04:08:35Z",
-        "updatedAt": "2026-07-10T04:08:40Z"
+        "updatedAt": "2026-07-19T09:36:26Z"
       }
     },
     {
@@ -1272,11 +1246,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 19
+        "stars": 22
       },
       "freshness": {
-        "pushedAt": "2026-07-15T14:02:51Z",
-        "updatedAt": "2026-07-15T14:04:06Z"
+        "pushedAt": "2026-07-23T04:56:21Z",
+        "updatedAt": "2026-07-23T04:56:32Z"
       }
     },
     {
@@ -1324,11 +1298,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 7
       },
       "freshness": {
-        "pushedAt": "2026-07-15T14:50:10Z",
-        "updatedAt": "2026-07-15T14:52:09Z"
+        "pushedAt": "2026-07-22T13:05:17Z",
+        "updatedAt": "2026-07-22T19:09:09Z"
       }
     },
     {
@@ -1457,8 +1431,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-14T23:31:41Z",
-        "updatedAt": "2026-07-14T23:31:36Z"
+        "pushedAt": "2026-07-21T14:22:04Z",
+        "updatedAt": "2026-07-21T14:26:38Z"
       }
     },
     {
@@ -1558,11 +1532,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
-        "pushedAt": "2026-07-01T05:17:48Z",
-        "updatedAt": "2026-07-01T05:17:52Z"
+        "pushedAt": "2026-07-21T14:17:10Z",
+        "updatedAt": "2026-07-22T19:09:21Z"
       }
     },
     {
@@ -1613,7 +1587,7 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:39:07Z",
+        "pushedAt": "2026-07-21T00:14:02Z",
         "updatedAt": "2026-06-28T03:39:10Z"
       }
     },
@@ -1714,11 +1688,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-07-01T05:32:31Z",
-        "updatedAt": "2026-07-01T05:32:34Z"
+        "updatedAt": "2026-07-17T09:36:39Z"
       }
     },
     {
@@ -1852,32 +1826,6 @@
       }
     },
     {
-      "slug": "TsunamiSimulator",
-      "name": "TsunamiSimulator",
-      "description": "3D-globe tsunami simulator -- asteroid impacts, nuclear bursts, earthquakes, landslides",
-      "category": "cs",
-      "categoryLabel": "Desktop",
-      "language": null,
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/TsunamiSimulator",
-        "repository": "https://github.com/SysAdminDoc/TsunamiSimulator",
-        "source": "https://github.com/SysAdminDoc/TsunamiSimulator",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
-      }
-    },
-    {
       "slug": "REDplusplus",
       "name": "REDplusplus",
       "description": "RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.",
@@ -1899,7 +1847,7 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:46:43Z",
+        "pushedAt": "2026-07-19T03:13:48Z",
         "updatedAt": "2026-06-28T03:46:46Z"
       }
     },
@@ -1922,11 +1870,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:54Z",
-        "updatedAt": "2026-06-28T03:38:58Z"
+        "updatedAt": "2026-07-20T14:29:31Z"
       }
     },
     {
@@ -2000,11 +1948,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 4
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-07-15T02:10:56Z",
-        "updatedAt": "2026-07-15T02:11:00Z"
+        "pushedAt": "2026-07-23T04:29:15Z",
+        "updatedAt": "2026-07-23T04:29:19Z"
       }
     },
     {
@@ -2104,11 +2052,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 6
+        "stars": 7
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:01:46Z",
-        "updatedAt": "2026-07-09T14:06:01Z"
+        "updatedAt": "2026-07-19T09:29:27Z"
       }
     },
     {
@@ -2156,11 +2104,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:13Z",
-        "updatedAt": "2026-06-28T03:37:16Z"
+        "updatedAt": "2026-07-19T09:08:26Z"
       }
     },
     {
@@ -2312,11 +2260,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 5
       },
       "freshness": {
         "pushedAt": "2026-07-01T05:21:21Z",
-        "updatedAt": "2026-07-01T05:21:27Z"
+        "updatedAt": "2026-07-19T09:34:49Z"
       }
     },
     {
@@ -2442,11 +2390,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:43Z",
-        "updatedAt": "2026-06-28T03:37:47Z"
+        "updatedAt": "2026-07-19T09:13:14Z"
       }
     },
     {
@@ -2468,37 +2416,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:58Z",
-        "updatedAt": "2026-06-28T03:39:02Z"
-      }
-    },
-    {
-      "slug": "Discrub",
-      "name": "Discrub",
-      "description": "Discord message editor, deleter, and exporter",
-      "category": "ext",
-      "categoryLabel": "Extensions",
-      "language": null,
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/Discrub",
-        "repository": "https://github.com/SysAdminDoc/Discrub",
-        "source": "https://github.com/SysAdminDoc/Discrub",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "updatedAt": "2026-07-19T09:20:13Z"
       }
     },
     {
@@ -2572,11 +2494,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:36:51Z",
-        "updatedAt": "2026-06-28T03:36:54Z"
+        "updatedAt": "2026-07-19T07:48:15Z"
       }
     },
     {
@@ -2650,11 +2572,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/sysadmindoc.github.io.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-15T14:55:28Z",
-        "updatedAt": "2026-07-15T14:56:35Z"
+        "pushedAt": "2026-07-23T13:58:00Z",
+        "updatedAt": "2026-07-23T13:59:11Z"
       }
     },
     {
@@ -2780,11 +2702,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-07-01T05:39:02Z",
-        "updatedAt": "2026-07-08T13:45:30Z"
+        "pushedAt": "2026-07-21T14:23:07Z",
+        "updatedAt": "2026-07-22T19:09:15Z"
       }
     },
     {
@@ -3017,8 +2939,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:38:57Z",
-        "updatedAt": "2026-06-28T03:39:00Z"
+        "pushedAt": "2026-07-17T06:39:54Z",
+        "updatedAt": "2026-07-17T06:40:10Z"
       }
     },
     {
@@ -3196,11 +3118,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:22Z",
-        "updatedAt": "2026-06-28T03:39:25Z"
+        "updatedAt": "2026-07-17T14:50:29Z"
       }
     },
     {
@@ -3227,32 +3149,6 @@
       "freshness": {
         "pushedAt": "2026-07-01T13:51:48Z",
         "updatedAt": "2026-07-11T22:19:05Z"
-      }
-    },
-    {
-      "slug": "SoftwareScannerGUI",
-      "name": "SoftwareScannerGUI",
-      "description": "WPF audit tool for installed software — AppX, Win32, services, tasks, startup entries",
-      "category": "ps",
-      "categoryLabel": "PowerShell",
-      "language": null,
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
-        "repository": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
-        "source": "https://github.com/SysAdminDoc/SoftwareScannerGUI",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
       }
     },
     {
@@ -3303,8 +3199,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-02T05:05:08Z",
-        "updatedAt": "2026-07-02T05:05:12Z"
+        "pushedAt": "2026-07-17T06:38:13Z",
+        "updatedAt": "2026-07-17T06:38:24Z"
       }
     },
     {
@@ -3355,8 +3251,8 @@
         "stars": 2
       },
       "freshness": {
-        "pushedAt": "2026-07-01T16:01:35Z",
-        "updatedAt": "2026-07-03T00:56:28Z"
+        "pushedAt": "2026-07-17T06:40:30Z",
+        "updatedAt": "2026-07-17T06:41:01Z"
       }
     },
     {
@@ -3404,11 +3300,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-01T02:50:03Z",
-        "updatedAt": "2026-07-03T20:36:01Z"
+        "updatedAt": "2026-07-20T19:38:48Z"
       }
     },
     {
@@ -3456,37 +3352,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:41Z",
-        "updatedAt": "2026-06-28T03:39:44Z"
-      }
-    },
-    {
-      "slug": "PfblockerngManager",
-      "name": "PfblockerngManager",
-      "description": "GUI for managing pfBlockerNG on pfSense firewalls",
-      "category": "ps",
-      "categoryLabel": "PowerShell",
-      "language": "PowerShell",
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/PfblockerngManager",
-        "repository": "https://github.com/SysAdminDoc/PfblockerngManager",
-        "source": "https://github.com/SysAdminDoc/PfblockerngManager",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": 0
-      },
-      "freshness": {
-        "pushedAt": "2026-06-28T03:38:41Z",
-        "updatedAt": "2026-06-28T03:38:45Z"
+        "updatedAt": "2026-07-22T03:10:29Z"
       }
     },
     {
@@ -3638,11 +3508,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:07Z",
-        "updatedAt": "2026-06-28T03:37:11Z"
+        "updatedAt": "2026-07-22T20:21:46Z"
       }
     },
     {
@@ -3690,11 +3560,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 0
       },
       "freshness": {
         "pushedAt": "2026-06-28T04:02:15Z",
-        "updatedAt": "2026-06-28T04:02:19Z"
+        "updatedAt": "2026-07-15T15:06:59Z"
       }
     },
     {
@@ -3742,11 +3612,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 6
+        "stars": 8
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:01:48Z",
-        "updatedAt": "2026-07-10T03:24:32Z"
+        "updatedAt": "2026-07-22T10:22:56Z"
       }
     },
     {
@@ -3823,8 +3693,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-14T20:03:14Z",
-        "updatedAt": "2026-07-14T20:02:47Z"
+        "pushedAt": "2026-07-23T04:24:09Z",
+        "updatedAt": "2026-07-23T04:24:33Z"
       }
     },
     {
@@ -3979,8 +3849,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-10T20:07:02Z",
-        "updatedAt": "2026-07-10T20:07:06Z"
+        "pushedAt": "2026-07-16T05:03:12Z",
+        "updatedAt": "2026-07-16T05:03:16Z"
       }
     },
     {
@@ -4054,11 +3924,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:06:16Z",
-        "updatedAt": "2026-07-04T03:54:03Z"
+        "updatedAt": "2026-07-19T09:31:34Z"
       }
     },
     {
@@ -4080,11 +3950,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:08Z",
-        "updatedAt": "2026-06-28T03:38:11Z"
+        "updatedAt": "2026-07-16T16:05:32Z"
       }
     },
     {
@@ -4106,11 +3976,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:09Z",
-        "updatedAt": "2026-06-28T03:38:13Z"
+        "updatedAt": "2026-07-19T09:14:50Z"
       }
     },
     {
@@ -4132,11 +4002,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-01T05:04:25Z",
-        "updatedAt": "2026-07-01T05:04:29Z"
+        "updatedAt": "2026-07-19T09:32:23Z"
       }
     },
     {
@@ -4236,11 +4106,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-06-29T14:00:42Z",
-        "updatedAt": "2026-06-29T14:00:59Z"
+        "updatedAt": "2026-07-22T08:26:26Z"
       }
     },
     {
@@ -4262,11 +4132,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:53Z",
-        "updatedAt": "2026-06-28T03:38:56Z"
+        "updatedAt": "2026-07-19T09:14:13Z"
       }
     },
     {
@@ -4548,11 +4418,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:36:49Z",
-        "updatedAt": "2026-06-28T03:36:52Z"
+        "updatedAt": "2026-07-19T07:48:59Z"
       }
     },
     {
@@ -4634,32 +4504,6 @@
       }
     },
     {
-      "slug": "pfSenseSuite",
-      "name": "pfSenseSuite",
-      "description": "pfSense scripts and customizations toolkit",
-      "category": "sec",
-      "categoryLabel": "Security",
-      "language": "JavaScript",
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/pfSenseSuite",
-        "repository": "https://github.com/SysAdminDoc/pfSenseSuite",
-        "source": "https://github.com/SysAdminDoc/pfSenseSuite",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": 1
-      },
-      "freshness": {
-        "pushedAt": "2026-06-28T14:10:21Z",
-        "updatedAt": "2026-06-28T14:10:25Z"
-      }
-    },
-    {
       "slug": "BetterNext",
       "name": "BetterNext",
       "description": "Enhanced NextDNS Control Panel",
@@ -4678,11 +4522,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:03Z",
-        "updatedAt": "2026-06-28T03:37:07Z"
+        "updatedAt": "2026-07-19T09:06:37Z"
       }
     },
     {
@@ -4709,32 +4553,6 @@
       "freshness": {
         "pushedAt": "2026-06-28T03:37:32Z",
         "updatedAt": "2026-06-28T03:37:36Z"
-      }
-    },
-    {
-      "slug": "NukeMap",
-      "name": "NukeMap",
-      "description": "Nuclear weapon effects simulator — blast waves, WW3 simulation, 418 targets",
-      "category": "web",
-      "categoryLabel": "Web Apps",
-      "language": null,
-      "featured": false,
-      "live": true,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/NukeMap",
-        "repository": "https://github.com/SysAdminDoc/NukeMap",
-        "source": "https://github.com/SysAdminDoc/NukeMap",
-        "live": "https://sysadmindoc.github.io/NukeMap/",
-        "screenshot": "https://sysadmindoc.github.io/screenshots/NukeMap.jpg",
-        "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/NukeMap.jpg"
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
       }
     },
     {
@@ -4782,11 +4600,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/MHTMLens.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:17Z",
-        "updatedAt": "2026-06-28T03:38:20Z"
+        "updatedAt": "2026-07-19T09:16:47Z"
       }
     },
     {
@@ -4863,34 +4681,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-15T00:37:02Z",
-        "updatedAt": "2026-07-15T00:37:06Z"
-      }
-    },
-    {
-      "slug": "AsteroidSimulator",
-      "name": "AsteroidSimulator",
-      "description": "Asteroid and comet impact simulator with interactive 3D visualization",
-      "category": "web",
-      "categoryLabel": "Web Apps",
-      "language": null,
-      "featured": false,
-      "live": false,
-      "tags": [],
-      "urls": {
-        "detail": "https://github.com/SysAdminDoc/AsteroidSimulator",
-        "repository": "https://github.com/SysAdminDoc/AsteroidSimulator",
-        "source": "https://github.com/SysAdminDoc/AsteroidSimulator",
-        "live": null,
-        "screenshot": null,
-        "thumbnail": null
-      },
-      "metrics": {
-        "stars": null
-      },
-      "freshness": {
-        "pushedAt": null,
-        "updatedAt": null
+        "pushedAt": "2026-07-16T02:31:10Z",
+        "updatedAt": "2026-07-16T02:31:14Z"
       }
     }
   ]
