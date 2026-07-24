@@ -6,6 +6,7 @@ import CatalogEntry from '../components/CatalogEntry.astro';
 import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
+import { experienceLabel } from '../data/identity';
 import { fallbackRepoCount } from '../data/derived';
 import {
   computeProjectRankings,
@@ -392,7 +393,7 @@ const cmdkSections = [
           ))}
         </div>
         <p class="hr">Senior Technical Support Manager &amp; systems administrator</p>
-        <p class="hero-summary"><strong>15+ years across enterprise IT and healthcare support</strong> — leading technical operations, simplifying complex systems, and building practical software.</p>
+        <p class="hero-summary"><strong>{experienceLabel} across enterprise IT and healthcare support</strong> — leading technical operations, simplifying complex systems, and building practical software.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>

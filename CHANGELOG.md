@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Single-sourced the years-of-experience figure through `src/data/identity.ts` so the hero, AI track, resume JSON export, `llms.txt` profile, and page metadata all derive the same tenure instead of hardcoding it in six places. A consistency test fails if any public surface reintroduces a hardcoded tenure literal.
 - Made the dark accessibility/visual audit lane actually exercise the dark theme: the audit harness now seeds the persisted theme preference to match each project's emulated color scheme before navigation and asserts the resolved theme, so the dark lane can no longer silently render light. Regenerated the dark visual baselines accordingly; axe passes on the real dark theme across all audited routes.
 - Pre-authorized native install scripts for npm v12 (now GA), which disables install scripts by default: added the `allowScripts` allowlist to `package.json` (covering `esbuild`, the only dependency with an install script) so a fresh `npm install` under npm 12 builds without manual approval. A toolchain test guards the allowlist.
 - Made update and live-status recovery truthful: the "Not now" service-worker update dismissal is now remembered per build for the session (a newer waiting build re-prompts via a version handshake), and offline live-app status reads "unavailable offline" with a distinct marker instead of hanging on "checking", then retries and resolves when connectivity returns.

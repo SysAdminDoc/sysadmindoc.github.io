@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { careerRoles, careerSkills } from '../data/career';
 import { endpointHeaders } from '../data/endpoint-headers';
+import { experienceLabel } from '../data/identity';
 
 // JSON Resume (jsonresume.org/schema) export for ATS/parser ingestion.
 // Generated from the same shared career + skills data the /resume page renders.
@@ -12,7 +13,7 @@ export async function GET(_context: APIContext) {
       label: 'Senior Technical Support Manager',
       email: 'matt_parker@outlook.com',
       url: 'https://sysadmindoc.github.io',
-      summary: '15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting.',
+      summary: `${experienceLabel} in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting.`,
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
       profiles: [
         { network: 'GitHub', username: 'SysAdminDoc', url: 'https://github.com/SysAdminDoc' },
