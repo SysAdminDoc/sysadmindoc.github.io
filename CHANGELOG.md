@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Added an honest AI-transparency statement to the `/ai/` proof section: AI drafts the fast part (scaffolding, boilerplate, tests, research) while architecture, security review, testing, and shipping judgment stay human-owned — reinforcing the fractional-implementation pitch with the maturity signal 2026 buyers look for.
 - Enabled Trusted Types (`require-trusted-types-for 'script'`) in production for defense-in-depth against DOM XSS. A minimal same-origin default policy (`/scripts/trusted-types.js`, loaded first) backstops the service-worker registration, the command-palette loader, and Pagefind's own result HTML while blocking any injected cross-origin script URL; first-party code stays sink-free (enforced by `csp:audit`). Verified zero Trusted Types violations across pages plus command-palette, video, and search interactions, with service-worker registration and offline intact.
 - Added a versioned Pagefind relevance corpus (`tests/playwright/search-corpus.spec.mjs`): ten representative queries across platform, role, project, domain, and AI-services dimensions assert their expected top result, a non-empty route-type-tagged excerpt, direct internal links, distinct excerpts, and the Scope facet — a frozen gate so future search-ranking changes are judged against known-good expectations.
 

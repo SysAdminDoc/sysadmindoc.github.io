@@ -41,13 +41,6 @@ Last normalized: 2026-06-29
 
 ### P3
 
-- [ ] P3 — Add an honest "how I work with AI" transparency statement
-  Why: 2026 hiring/consulting signal consistently rates explicit AI-usage transparency (what was scaffolded vs. what judgment was applied) as a maturity marker, not a weakness — and it directly reinforces the new `/ai/` fractional-implementation pitch.
-  Evidence: https://developia.substack.com/p/the-ai-hiring-revolution-why-resumes ; https://dev.to/devraj_singh7/the-portfolio-projects-that-actually-get-you-hired-in-2026-1l0e ; `src/pages/ai.astro`, `src/data/curated.ts` (manifesto/philosophy surfaces).
-  Touches: `src/pages/ai.astro` or `src/data/curated.ts` (short prose block), page-freshness registration, Pagefind/OG if a new section.
-  Acceptance: A concise, specific statement of how AI is used in the maintainer's build process (and the human review/judgment applied) appears on `/ai/` or the philosophy surface, single-sourced with other prose facts, and passes the a11y/link/freshness gates.
-  Complexity: S
-
 ## Audit Findings — 2026-07-24
 
 Deep audit-only pass (baseline: `npm test` = 144 pass / 0 fail; build gates not re-run this pass). This repo is heavily hardened — the JS runtime (escapeHTML/SafeDOM, guarded localStorage/JSON.parse, aborted fetches, self-disconnecting observers), the data/feed layer (escapeXml/sanitize-html on every feed and `set:html` sink, atomic tmp+rename cache writes, path-traversal containment), and a11y (icon-button aria-labels, live regions, heading order, landmarks, skip links) were all traced and confirmed clean. Findings below are the residual low-severity items; several suspected issues were investigated and rejected as false positives (sitemap endpoint leak — @astrojs/sitemap emits HTML pages only; provenance-pill white background — shadowed by a route-interior override; card-hover border tints — 1px sub-quarter-alpha, not a real defect).
