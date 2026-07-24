@@ -53,7 +53,7 @@ const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"
   : ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
 const styleAttrSrc = isDev ? "'unsafe-inline'" : "'none'";
-const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://img.youtube.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'`;
+const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'`;
 
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas
@@ -145,7 +145,6 @@ if (isHome) {
   <link rel="alternate" type="application/json" title="Matt Parker — release index" href="/releases.json" />
   <link rel="preconnect" href="https://api.github.com" crossorigin />
   <link rel="dns-prefetch" href="https://api.github.com" />
-  <link rel="dns-prefetch" href="https://img.youtube.com" />
   <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
   <link rel="manifest" href="/manifest.json" />
   {/* Fonts self-hosted in public/fonts/ and declared in critical.css + global.css */}

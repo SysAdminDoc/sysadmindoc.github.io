@@ -27,13 +27,6 @@ Last normalized: 2026-06-29
   Acceptance: Public role/version/theme copy is derived or validated from one contract; catalog/profile counts are named by denominator; tests fail on v0.21 copy, dark-first copy, hardcoded stale counts, undocumented count semantics, or tenure strings that disagree across files.
   Complexity: M
 
-- [ ] P1 — Remove pre-click third-party video requests
-  Why: Privacy-enhanced iframes are click-to-load, but YouTube thumbnail images and DNS prefetch still contact Google before the visitor chooses playback.
-  Evidence: `src/pages/index.astro:642`, `src/layouts/Base.astro:54,145`, `public/scripts/home-media.js`; web.dev third-party privacy guidance.
-  Touches: locally authored poster assets or placeholder UI, homepage media markup, CSP, preload hints, media interaction tests.
-  Acceptance: Loading or scrolling the homepage produces no YouTube/Google request; a clearly labeled user action creates only the `youtube-nocookie.com` iframe; CSP removes `img.youtube.com` and the DNS prefetch.
-  Complexity: S
-
 - [ ] P1 — Make resume exports schema-valid and reading-order tested
   Why: The JSON claims JSON Resume compatibility but omits structured work dates, while the generated PDF has no machine-readable order check.
   Evidence: `src/pages/resume.json.ts`, `src/data/career.ts`, `scripts/generate-resume-pdf.mjs`; JSON Resume schema; WCAG PDF3.
