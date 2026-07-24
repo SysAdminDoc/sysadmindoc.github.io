@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Pinned the local release toolchain: `.nvmrc` now selects Node 24 to match the declared `engines.node` floor, `packageManager` pins the validated npm 11 line, and a new toolchain test fails on future drift. Added a `verify:signatures` publish-preflight gate that verifies every dependency's npm registry signature/attestation and prints an actionable message distinguishing a network outage from a real signature failure.
 - Aligned the installed-PWA splash/status colors and offline page with the light-first Operational Clarity shell (`#f7f5ef`) and removed the stale "availability" reference from the mobile install-screenshot label.
 - Restored usable primary navigation when JavaScript is unavailable: the real navigation links now stay visible at the mobile/interior collapse breakpoints (instead of hiding behind an inert hamburger), and the script-only mobile toggle, command-palette, and theme controls are hidden. Gated on the `.js` marker that `head-init.js` sets before first paint, so JavaScript visitors keep the existing disclosure behavior.
 - Bound every service-worker background cache write to the fetch-event lifetime with `FetchEvent.waitUntil()` (navigation stale-while-revalidate, cross-origin API/CDN, and same-origin asset revalidation), so a cache refresh can no longer be terminated after an immediate cached response returns; offline freshness is now deterministic.
