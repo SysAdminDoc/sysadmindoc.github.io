@@ -19,13 +19,6 @@ Last normalized: 2026-06-29
   Acceptance: The dark project seeds `theme-pref=dark` before navigation and asserts the resolved theme; the light project asserts light; both run axe/layout/visual checks and a guard fails if either project resolves the wrong theme.
   Complexity: S
 
-- [ ] P1 — Pin and verify the local release toolchain
-  Why: `.nvmrc` selects Node 22 while the declared engine requires Node 24+, and npm behavior is unpinned in a local-only publishing workflow.
-  Evidence: `.nvmrc`, `package.json:6-8`; npm registry-signature documentation; `npm audit signatures` verified 319 packages on 2026-07-21.
-  Touches: `.nvmrc`, `package.json`, `scripts/ensure-project-cwd.mjs` or a focused toolchain audit, unit tests, deploy preflight.
-  Acceptance: `.nvmrc` and `engines.node` agree on Node 24+, `packageManager` pins the validated npm 11 line, a test rejects future mismatch, and publish preflight verifies dependency registry signatures/attestations with an actionable network-failure message.
-  Complexity: S
-
 - [ ] P1 — Create one source of truth for public facts and design identity
   Why: Role, version, project counts, live-app counts, and light/dark positioning currently contradict each other across public pages and maintainer documentation.
   Evidence: `src/pages/index.astro:119-152`, `src/data/curated.ts:93`, `src/data/uses.ts:67-71`, `src/data/page-freshness.ts`, `README.md`, `CLAUDE.md`, `IMAGE_PIPELINE.md`.

@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=24.0.0"
   },
+  "packageManager": "npm@11.13.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -26,7 +27,8 @@
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "data:summary:strict": "node scripts/summarize-generated-data.mjs --fail-on-stale",
     "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes",
-    "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm test && npm run check && npm run build",
+    "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm test && npm run check && npm run build",
+    "verify:signatures": "node scripts/verify-signatures.mjs",
     "publish:pages": "node scripts/publish-pages.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
