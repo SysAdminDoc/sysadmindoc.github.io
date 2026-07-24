@@ -69,46 +69,6 @@ Deep audit-only pass (baseline: `npm test` = 144 pass / 0 fail; build gates not 
 
 ### P3
 
-- [ ] P3 — Provenance trust-tier pills render with no tone differentiation
-  Category: visual
-  Where: `src/pages/status.astro:164` (applies `status-provenance-pill-${row.tone}`), tone computed at `src/pages/status.astro:92-98` (green/blue/amber); no CSS rule for `status-provenance-pill-green|blue|amber` exists anywhere.
-  Problem: The `/status/` release-provenance panel intends to color-code trust tiers (Attested/Checksum/Unsigned/No assets/Unknown), but the per-tone class it emits is never styled, so all pills render visually identical and the at-a-glance trust signal is lost. Separately, the base rule carries a dead `background:rgba(255,255,255,.03)` literal (`status.astro:218`) that is fully shadowed by the route-interior override `body.route-interior .status-provenance-pill{background:transparent}` (`src/styles/global.css:4573`).
-  Evidence: Grep for `status-provenance-pill-` returns only the template usage at `status.astro:164`, no CSS. Confirmed the base pill is route-interior-overridden to transparent (global.css:4573), so the rgba literal never renders.
-  Fix: Add tone rules mirroring the release-provenance treatment at `src/pages/releases.astro:219-221` (use `--grn`/`--blue`/`--yel` derived accents on the pill's border-bottom or a small dot, keeping the quiet-layer transparent background), and remove the dead `rgba(255,255,255,.03)` literal at `status.astro:218`. A11y is already fine (each pill has a text label), so pair color with the existing label, not color alone.
-  Acceptance: On `/status/`, the five provenance pills show distinct tone accents; `git grep "rgba(255,255,255,.03)"` no longer matches `status.astro`.
-  Confidence: Verified
-  Effort: S
-
-- [ ] P3 — Footer backlink copy is inconsistent across interior pages
-  Category: ux
-  Where: With arrow "← Back to portfolio": `src/pages/404.astro:30`, `ai.astro:179`, `healthcare-it.astro:153`, `lang/[slug].astro:220`, `now.astro:157`, `releases.astro:187`, `timeline.astro:376`. Without arrow "Back to portfolio": `archive.astro:180`, `resume.astro:104`, `search.astro:155`, `uses.astro:92`.
-  Problem: The same `a.footer-backlink` element pointing at `/` uses two different labels across 11 pages (7 with a leading `←`, 4 without), an avoidable inconsistency on a portfolio whose whole value proposition is craftsmanship.
-  Evidence: `grep -rn "Back to portfolio" src/pages/` — 7 arrow / 4 no-arrow split confirmed above. (`resume.astro:47` is a separate top `.btn` and is out of scope.)
-  Fix: Standardize on the majority form "← Back to portfolio" in the four outliers (`archive.astro:180`, `resume.astro:104`, `search.astro:155`, `uses.astro:92`). Consider extracting the backlink into a shared snippet/component so it cannot drift again.
-  Acceptance: All 11 `.footer-backlink` instances render identical text; a grep asserts a single label form.
-  Confidence: Verified
-  Effort: S
-
-- [ ] P3 — Dead "Recently Viewed" command-palette group (removed-feature residue)
-  Category: maintainability
-  Where: `public/scripts/cmdk.js:158-169` (`getRecentlyViewed` reads `localStorage['recently_viewed']`), consumed by `getDefaultResults` at `cmdk.js:171-173`.
-  Problem: `recently_viewed` is read but written nowhere in the repo, so the "Recently Viewed" cmdk group can never populate. The writer lived on the local project-detail pages that were deleted in commit `1aa68e1` ("Remove local project pages"); the reader is now orphaned dead code. It is correctly guarded (`cmdk.js:161` returns `[]` on empty/invalid), so there is no visible bug — only stale, misleading code.
-  Evidence: Repo-wide grep for `recently_viewed` returns exactly one hit — the read at `cmdk.js:160`. No `setItem('recently_viewed', ...)` exists. Git history shows local project pages (the plausible writer) were removed.
-  Fix: Decide the feature's fate. Either (a) remove `getRecentlyViewed` and its call in `getDefaultResults`, or (b) if desired, add a writer — a small `document_start`/click hook that pushes the current project slug into `recently_viewed` (capped, deduped) from catalog card clicks — and cover it with a cmdk unit test.
-  Acceptance: Either `getRecentlyViewed` is gone and `getDefaultResults` no longer references it, or a writer populates `recently_viewed` and a test asserts the group appears; no orphaned reader remains.
-  Confidence: Verified
-  Effort: S
-
-- [ ] P3 — Live-app thumbnail hydration will throw on a future thumbless non-anchor card
-  Category: reliability
-  Where: `public/scripts/home-media.js:88-90` (the `else` branch when `existingThumb` is falsy): `const url=card.href; const repo=safeRepo((url.split('sysadmindoc.github.io/')[1]||'')...)`.
-  Problem: This branch reads `card.href` and calls `.split` on it without guarding that `card` is an anchor. Today every `#live .lc2` is rendered as an `<a>` with an `.lc2-thumb` (`src/components/LiveCard.astro`), so the branch is unreachable and there is no live bug. But it is a latent footgun: any future live card rendered without a static thumb, or as a non-anchor element, makes `card.href` `undefined`, `undefined.split(...)` throws, and the uncaught error aborts thumbnail hydration for every subsequent card in the loop.
-  Evidence: Traced `LiveCard.astro` — all `.lc2` are same-origin anchors with `.lc2-thumb`, confirming current unreachability; the throw path is real if that invariant changes.
-  Fix: Guard the branch: `if (!(card instanceof HTMLAnchorElement) || !card.href) return;` before the `.split`, and/or wrap the per-card body so one failure cannot abort the loop.
-  Acceptance: With a synthetic thumbless non-anchor `.lc2` in the DOM, thumbnail hydration continues for the remaining cards without a console error.
-  Confidence: Needs-repro
-  Effort: S
-
 - [ ] P3 — Unaudited: live-browser interaction of secondary flows
   Category: testing
   Where: dev server + Playwright interaction of `/search/` (Pagefind runtime empty/error/no-result states), `/screenshots/` filtering, cmdk open/keyboard/empty-query, service-worker offline navigation, and update-toast flow.

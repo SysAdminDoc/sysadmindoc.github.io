@@ -86,6 +86,7 @@
             if(thumbObs)thumbObs.observe(existingThumb);else hydrateThumb(existingThumb);
             return;
         }
+        if(!(card instanceof HTMLAnchorElement)||!card.href)return;
         const url=card.href;
         const repo=safeRepo((url.split('sysadmindoc.github.io/')[1]||'').replace(/\/.*$/,''));
         if(!repo)return;

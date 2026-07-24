@@ -215,8 +215,13 @@ const cmdkSections = [
   .status-provenance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
   .status-provenance-pill{
     min-height:64px;display:flex;flex-direction:column;justify-content:center;gap:4px;
-    padding:12px;border-radius:8px;border:1px solid var(--border-soft);background:rgba(255,255,255,.03);
+    padding:12px;border-radius:8px;border:1px solid var(--border-soft);background:var(--surface-2);
   }
+  /* Trust-tier accent so the provenance distribution reads at a glance; the label
+     text carries the meaning too, so color is never the sole indicator. */
+  body.route-interior .status-provenance-pill-green{border-bottom-color:var(--grn)}
+  body.route-interior .status-provenance-pill-blue{border-bottom-color:var(--blue)}
+  body.route-interior .status-provenance-pill-amber{border-bottom-color:var(--yel)}
   .status-provenance-pill span{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--t3)}
   .status-provenance-pill strong{font-family:var(--mono);font-size:20px;color:var(--t1)}
   .status-note{color:var(--t3);font-size:14px;margin-top:24px}
