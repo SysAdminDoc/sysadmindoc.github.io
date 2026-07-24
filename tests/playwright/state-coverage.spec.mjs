@@ -138,3 +138,144 @@ test.describe('empty catalog state coverage', () => {
     await expectNoHorizontalOverflow(page);
   });
 });
+
+test.describe('empty timeline filter state coverage', () => {
+  // Every single timeline filter OPTION is data-derived, so each individual value
+  // matches >=1 event; the empty state only appears for an INTERSECTION of two
+  // orthogonal filters. Rather than hardcode a year/language pair (brittle to data
+  // changes), read the live options and search filter pairs at runtime until the
+  // `#timelineEmpty` panel shows, then audit it.
+  for (const viewport of viewports) {
+    test(`the filtered "no events" state is accessible and does not overflow at ${viewport.name}`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await prepare(page, '/timeline/', '#timeline-events');
+      await page.locator('#timelineList [data-timeline-event]').first().waitFor({ state: 'attached' });
+
+      // Deterministically drive the client filter into an empty intersection by
+      // trying pairs of orthogonal select values until #timelineEmpty is shown.
+      const combo = await page.evaluate(() => {
+        const ids = {
+          year: 'timelineYear',
+          platform: 'timelinePlatform',
+          category: 'timelineCategory',
+          language: 'timelineLanguage',
+        };
+        const keys = Object.keys(ids);
+        const selects = {};
+        const optionsByKey = {};
+        for (const key of keys) {
+          const el = document.getElementById(ids[key]);
+          selects[key] = el;
+          optionsByKey[key] = Array.from(el.options)
+            .map((o) => o.value)
+            .filter((v) => v && v !== 'all');
+        }
+        const empty = document.getElementById('timelineEmpty');
+        const form = document.getElementById('timelineFilters');
+        const reset = () => {
+          for (const key of keys) {
+            selects[key].value = 'all';
+          }
+        };
+        const setPair = (a, va, b, vb) => {
+          reset();
+          selects[a].value = va;
+          selects[b].value = vb;
+          // A single bubbling change event drives timeline.js apply().
+          form.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+        // Search every distinct pair of dimensions for an empty intersection.
+        for (let i = 0; i < keys.length; i += 1) {
+          for (let j = i + 1; j < keys.length; j += 1) {
+            const a = keys[i];
+            const b = keys[j];
+            for (const va of optionsByKey[a]) {
+              for (const vb of optionsByKey[b]) {
+                setPair(a, va, b, vb);
+                if (!empty.hidden) {
+                  return { a, va, b, vb };
+                }
+              }
+            }
+          }
+        }
+        return null;
+      });
+
+      expect(combo, 'an empty filter intersection should exist among the timeline options').not.toBeNull();
+
+      const empty = page.locator('#timelineEmpty');
+      await expect(empty).toBeVisible();
+      await expect(empty).toContainText('No timeline events match these filters.');
+      // The recovery affordance is present, enabled, and reachable.
+      const reset = page.locator('#timelineReset');
+      await expect(reset).toBeVisible();
+      await expect(reset).toBeEnabled();
+      await expect(page.locator('#timelineList [data-timeline-event]:visible')).toHaveCount(0);
+
+      await expectAxeClean(page, '#timeline-events');
+      await expectNoHorizontalOverflow(page);
+    });
+  }
+});
+
+test.describe('service-worker update toast coverage', () => {
+  // The update toast only renders when a WAITING worker exists. Register the real
+  // /sw.js, then serve a byte-different variant on each fetch so registration.update()
+  // installs a second worker that parks in `waiting` (the active one keeps control),
+  // which fires the production showServiceWorkerUpdateToast() path.
+  test.use({ serviceWorkers: 'allow' });
+
+  test('the update toast is accessible, has valid touch targets, and dismisses cleanly', async ({ page, context }) => {
+    await page.setViewportSize({ width: 1365, height: 900 });
+
+    let variant = 0;
+    await context.route('**/sw.js', async (route) => {
+      const response = await route.fetch();
+      const body = `${await response.text()}\n// state-coverage variant ${(variant += 1)}\n`;
+      await route.fulfill({ response, body });
+    });
+    await page.route('https://api.github.com/**', (route) =>
+      route.fulfill({ contentType: 'application/json; charset=utf-8', body: '[]' }),
+    );
+
+    await page.goto('/', { waitUntil: 'load' });
+    // Wait until the first worker has activated and taken control of the page.
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller), null, {
+      timeout: 20_000,
+    });
+    // Force an update; the byte-different script installs and parks as `waiting`.
+    await page.evaluate(async () => {
+      const reg = await navigator.serviceWorker.getRegistration('/');
+      await reg?.update();
+    });
+
+    const toast = page.locator('.sw-update-toast');
+    await expect(toast).toBeVisible({ timeout: 20_000 });
+    await expect(toast).toHaveAttribute('role', 'region');
+    await expect(toast).toHaveAttribute('aria-label', 'Portfolio update');
+    await expect(toast.locator('.sw-update-message')).toBeVisible();
+
+    const refresh = toast.getByRole('button', { name: 'Refresh now' });
+    const dismiss = toast.getByRole('button', { name: 'Not now' });
+    await expect(refresh).toBeVisible();
+    await expect(dismiss).toBeVisible();
+    for (const button of [refresh, dismiss]) {
+      const box = await button.boundingBox();
+      expect(box, 'toast button should render a hit box').not.toBeNull();
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+
+    await expectAxeClean(page, '.sw-update-toast');
+    await expectNoHorizontalOverflow(page);
+
+    // "Not now" hides the toast and it stays dismissed for this build version.
+    await dismiss.click();
+    await expect(toast).toHaveCount(0);
+    await page.evaluate(async () => {
+      const reg = await navigator.serviceWorker.getRegistration('/');
+      await reg?.update();
+    });
+    await expect(toast).toHaveCount(0);
+  });
+});

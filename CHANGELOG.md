@@ -4,6 +4,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.25.2] - 2026-07-24
+
+- Completed the high-risk-state audit matrix: `tests/playwright/state-coverage.spec.mjs` now also drives, from deterministic fixtures, the timeline "no events match these filters" empty state (found by searching live filter-pair intersections at runtime rather than hardcoding a combo) and the service-worker update toast (forced via a byte-different `/sw.js` variant so `registration.update()` parks a waiting worker) — each verified for axe cleanliness, no horizontal overflow, and ≥44px toast touch targets in both the dark and light audit projects. Fixed a sub-44px regression the coverage exposed: the shared control-height pass had folded the update-toast buttons into the 40px group (restored to 44px only under `max-width:640px`), leaving them below the touch-target minimum on desktop; they now honor their dedicated 44px rule at all widths.
+
 ## [v0.25.1] - 2026-07-24
 
 - Added axe + horizontal-overflow coverage (`tests/playwright/state-coverage.spec.mjs`) for the error/recovery and interaction states the first-viewport route audits never reached: the 404 page, the offline shell, print media (home + resume), the open mobile navigation, and the empty catalog result set — verified clean in both the dark and light audit projects.

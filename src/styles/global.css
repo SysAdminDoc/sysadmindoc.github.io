@@ -3160,8 +3160,7 @@ html[data-theme="light"] mark{
 .fb,
 .catalog-reset,
 .page-jump-link,
-.page-action-link,
-.sw-update-actions button{
+.page-action-link{
   min-height:40px;
 }
 
