@@ -24,14 +24,6 @@ Last normalized: 2026-06-29
   Acceptance: With JavaScript disabled at 390px and 1080px, every primary route remains reachable, inert theme/search/menu controls are hidden or replaced with functional links, initial labels match the light markup, and keyboard/axe/overflow checks pass.
   Complexity: M
 
-- [ ] P0 — Bind service-worker cache writes to fetch-event lifetime
-  Why: Stale-while-revalidate and network-first cache updates can be terminated after a cached response returns, making offline freshness nondeterministic.
-  Evidence: `public/sw.js:81-102`, `public/sw.js:137-160`; Service Workers `ExtendableEvent.waitUntil()` specification and MDN guidance.
-  Touches: `public/sw.js`, `test/offline-fallback.test.mjs`, `tests/playwright/sw-lifecycle.spec.mjs`.
-  Note (2026-07-24): The navigation and cross-origin paths now `await` their writes; the one remaining offender is the same-origin non-navigation branch at `public/sw.js:155` (`caches.open().then(c => c.put(...))` un-awaited, killable when `sw.js:160` returns the cached response first). Scope the fix here.
-  Acceptance: Every background cache mutation is awaited by the response path or passed to `FetchEvent.waitUntil()`; delayed-write tests prove completion after an immediate cached response; navigation preload, TTL fallback, and offline behavior remain green.
-  Complexity: M
-
 ### P1
 
 - [ ] P1 — Make the dark audit lane exercise dark theme
