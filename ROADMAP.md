@@ -12,13 +12,6 @@ Last normalized: 2026-06-29
 
 ### P1
 
-- [ ] P1 — Make the dark audit lane exercise dark theme
-  Why: The current dark project renders light, so its screenshots, axe assertions, and theme regressions are falsely reported as covered.
-  Evidence: `playwright.audits.config.mjs:31-60`, `public/scripts/theme-toggle.js:54-61`, `tests/playwright/portfolio-audits.spec.mjs:280-308`; 26/48 light/dark baseline pairs are byte-identical.
-  Touches: Playwright audit configuration/specs, theme bootstrap tests, dark/light baseline images.
-  Acceptance: The dark project seeds `theme-pref=dark` before navigation and asserts the resolved theme; the light project asserts light; both run axe/layout/visual checks and a guard fails if either project resolves the wrong theme.
-  Complexity: S
-
 - [ ] P1 — Create one source of truth for public facts and design identity
   Why: Role, version, project counts, live-app counts, and light/dark positioning currently contradict each other across public pages and maintainer documentation.
   Evidence: `src/pages/index.astro:119-152`, `src/data/curated.ts:93`, `src/data/uses.ts:67-71`, `src/data/page-freshness.ts`, `README.md`, `CLAUDE.md`, `IMAGE_PIPELINE.md`.

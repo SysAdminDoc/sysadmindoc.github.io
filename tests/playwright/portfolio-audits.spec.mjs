@@ -86,11 +86,25 @@ async function preparePage(page, path, readySelector = 'main') {
     Object.setPrototypeOf(FixedDate, RealDate);
     window.Date = FixedDate;
   }, stableNow);
+  // Seed the persisted theme preference to match the project's emulated
+  // color scheme BEFORE navigation, so the dark lane actually bootstraps the
+  // dark theme (the site keys on theme-pref, not prefers-color-scheme).
+  await page.addInitScript(() => {
+    try {
+      const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      localStorage.setItem('theme-pref', dark ? 'dark' : 'light');
+    } catch (error) { /* storage unavailable */ }
+  });
   await page.goto(path, { waitUntil: 'load' });
   await page.addStyleTag({ url: '/__playwright-stability.css' });
   await expect(page.locator('vite-error-overlay')).toHaveCount(0, { timeout: 1_000 });
   await page.locator('main').waitFor({ state: 'visible' });
   await page.locator(readySelector).waitFor({ state: 'visible' });
+  // Guard: the resolved theme must match the emulated color scheme, so neither
+  // lane can silently render the wrong theme (and quietly stop covering it).
+  const expectedTheme = await page.evaluate(() =>
+    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', expectedTheme);
   await page.evaluate(async () => {
     window.scrollTo(0, 0);
     await document.fonts?.ready;
