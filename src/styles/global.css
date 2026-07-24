@@ -6033,3 +6033,17 @@ body.route-home #connect .si{padding:40px;border-radius:8px;box-shadow:none}
   .hs-item{padding-inline:9px}
   body.route-home .lg .lc2{grid-template-columns:92px minmax(0,1fr);gap-inline:12px}
 }
+
+/* No-JS navigation fallback. head-init.js adds `.js` to <html> before first
+   paint, so JavaScript visitors never match these rules. Without scripting the
+   mobile menu toggle and the command-palette/theme buttons are inert, so hide
+   them and keep the real navigation links visible instead of collapsing them
+   behind a dead hamburger. Unlayered `!important` so it overrides the
+   `.nk{display:none}` collapse set in critical.css for both the 900px home and
+   1080px interior breakpoints. */
+html:not(.js) .mt{display:none!important}
+html:not(.js) .theme-toggle,
+html:not(.js) .nav-search{display:none!important}
+@media(max-width:1080px){
+  html:not(.js) .nk{display:flex!important;flex-wrap:wrap;gap:2px;min-width:0}
+}

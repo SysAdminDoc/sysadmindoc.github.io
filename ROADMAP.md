@@ -17,13 +17,6 @@ Last normalized: 2026-06-29
   Acceptance: Every asset uses the MP/Operational Clarity system and current reviewed facts; wide/narrow install screenshots come from the current build; light-first splash colors match shell tokens; generated-card fixtures cover `constructor` and `toString`; audits fail on retired phrases, stale counts, or asset dates.
   Complexity: M
 
-- [ ] P0 — Restore usable mobile navigation without JavaScript
-  Why: At <=1080px the real links are hidden behind an inert script-only button, blocking the entire site for no-JS visitors and contradicting the catalog's advertised progressive enhancement.
-  Evidence: `src/layouts/Base.astro:149-152`, `src/styles/critical.css:1394`, `src/styles/global.css:5634`, `src/components/InteriorNav.astro`, WCAG 2.2 Consistent Navigation and Keyboard criteria.
-  Touches: `src/layouts/Base.astro`, `src/pages/index.astro`, `src/components/InteriorNav.astro`, `src/styles/critical.css`, `src/styles/global.css`, Playwright no-JS tests.
-  Acceptance: With JavaScript disabled at 390px and 1080px, every primary route remains reachable, inert theme/search/menu controls are hidden or replaced with functional links, initial labels match the light markup, and keyboard/axe/overflow checks pass.
-  Complexity: M
-
 ### P1
 
 - [ ] P1 — Make the dark audit lane exercise dark theme
