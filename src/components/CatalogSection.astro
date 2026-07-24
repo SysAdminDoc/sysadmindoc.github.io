@@ -1,0 +1,135 @@
+---
+import type { CatalogEntry as CatalogEntryType } from '../data/types';
+import CatalogEntry from '../components/CatalogEntry.astro';
+import {
+  catalogMeta,
+  catalogStars,
+  catalogViewState,
+  filterButtons,
+  formatProjectRankingDisplayLabel,
+  formatProjectRankingLabel,
+  projectRankings,
+} from '../data/catalog-render';
+import { computeCategoryCounts } from '../data/catalog-views.mjs';
+
+export interface Props {
+  /** Ranked entries to render (a top-N slice on the homepage, the full list on /catalog/). */
+  entries: CatalogEntryType[];
+  /** `preview` renders the homepage teaser with a browse-all handoff; `full` renders the complete archive. */
+  variant?: 'preview' | 'full';
+  /** Total project count in the full catalog (for accurate "top N of TOTAL" copy). */
+  total: number;
+  /** Where the browse-all / no-results handoff points (the full catalog route). */
+  browseAllHref?: string;
+}
+
+const {
+  entries,
+  variant = 'full',
+  total,
+  browseAllHref = '/catalog/',
+} = Astro.props;
+
+const isPreview = variant === 'preview';
+const shown = entries.length;
+
+// Counts reflect exactly what is rendered so the filter/view chips never claim
+// more than this surface contains. home-catalog.js re-derives these on hydrate.
+const catCounts = computeCategoryCounts(entries);
+const shownViewStates = entries.map((entry) => catalogViewState.get(entry.repo)).filter(Boolean) as {
+  isNew: boolean;
+  isRecent: boolean;
+  hasDownload: boolean;
+}[];
+const viewCounts = {
+  all: shown,
+  new: shownViewStates.filter((state) => state.isNew).length,
+  recent: shownViewStates.filter((state) => state.isRecent).length,
+  download: shownViewStates.filter((state) => state.hasDownload).length,
+};
+
+const statusLead = isPreview
+  ? `Top ${shown} of ${total} projects · recommended order`
+  : `${shown} projects · recommended order`;
+---
+<section id="catalog" aria-label="Project catalog"><div class="si">
+  <div class="sh rv">
+    <div class="sl">03 / Catalog</div>
+    <h2 class="st">Project catalog</h2>
+    {isPreview ? (
+      <p class="sd">A recommended slice of the archive. Browse, search, and filter all {total} public projects in the <a href={browseAllHref} class="page-inline-link">full catalog</a>.</p>
+    ) : (
+      <p class="sd">Search and filter all {total} public projects. Every entry links straight to its GitHub repository.</p>
+    )}
+  </div>
+  {isPreview && (
+    <div class="catalog-browse rv">
+      <a href={browseAllHref} class="btn bg2 catalog-browse-all">Browse all {total} projects</a>
+    </div>
+  )}
+  <search aria-label="Filter and search the project catalog">
+  <div class="catalog-controls rv">
+    <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
+    <div class="search-wrap">
+      <label class="sr-only" for="searchInput">Search projects</label>
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" class="search-input" id="searchInput" name="q" placeholder="Search projects…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects">
+    </div>
+    <noscript><button type="submit" class="catalog-submit">Search</button></noscript>
+    </form>
+    <label class="sr-only" for="sortSelect">Sort projects</label>
+    <select class="sort-select" id="sortSelect" aria-label="Sort projects">
+      <option value="default">Recommended</option>
+      <option value="stars">Most stars</option>
+      <option value="name">A-Z</option>
+      <option value="name-desc">Z-A</option>
+      <option value="recent">Recently updated</option>
+    </select>
+  </div>
+  <div class="cf catalog-views rv" id="viewBtns" role="group" aria-label="Catalog views">
+    <button type="button" class="fb catalog-view act" data-view="all" data-label="All views" aria-pressed="true">All <span class="fc">{viewCounts.all}</span></button>
+    <button type="button" class="fb catalog-view" data-view="new" data-label="New projects" aria-pressed="false">New <span class="fc">{viewCounts.new}</span></button>
+    <button type="button" class="fb catalog-view" data-view="recent" data-label="Recently updated" aria-pressed="false">Updated <span class="fc">{viewCounts.recent}</span></button>
+    <button type="button" class="fb catalog-view" data-view="download" data-label="Has download" aria-pressed="false">Downloads <span class="fc">{viewCounts.download}</span></button>
+  </div>
+  <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
+    <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{shown}</span></button>
+    {filterButtons.map((f) => (
+      <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
+    ))}
+  </div>
+  </search>
+  <div class="catalog-feedback rv">
+    <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">{statusLead}</div>
+    <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear filters</button>
+  </div>
+  <div class="cg" id="catalogGrid" data-sort="default">
+    {entries.map((entry, index) => {
+      const viewState = catalogViewState.get(entry.repo);
+      const ranking = projectRankings.get(entry.repo);
+      return (
+        <CatalogEntry
+          entry={entry}
+          index={index}
+          rank={ranking?.rank}
+          rankScore={ranking?.score}
+          rankLabel={formatProjectRankingLabel(ranking)}
+          rankDisplayLabel={formatProjectRankingDisplayLabel(ranking)}
+          stars={catalogStars[entry.repo]}
+          pushedAt={catalogMeta[entry.repo]?.pushedAt}
+          updatedAt={catalogMeta[entry.repo]?.updatedAt ?? catalogMeta[entry.repo]?.pushedAt}
+          isNew={viewState?.isNew}
+          isRecent={viewState?.isRecent}
+          hasDownload={viewState?.hasDownload}
+        />
+      );
+    })}
+  </div>
+  <div class="no-results" id="noResults" hidden>
+    <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    <div class="no-results-title">No matches</div>
+    <p class="no-results-copy">Try a broader search or clear the filters.{isPreview ? ' You can also browse the full archive.' : ''}</p>
+    <button type="button" class="catalog-reset no-results-action" id="catalogResetEmpty">Reset filters</button>
+    {isPreview && <a href={browseAllHref} class="no-results-link">Browse all {total} projects</a>}
+  </div>
+</div></section>

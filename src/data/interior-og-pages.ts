@@ -89,6 +89,17 @@ export const interiorOgPages: InteriorOgPage[] = [
     ogImageAlt: 'AI services page social preview card',
   },
   {
+    slug: 'catalog',
+    route: '/catalog/',
+    title: 'Project Catalog',
+    description: 'The complete public project archive: every repository in one searchable, sortable, filterable list with direct GitHub links.',
+    label: 'Archive',
+    accent: '#58a6ff',
+    command: 'ls -la catalog/',
+    ogImage: '/og/catalog.png',
+    ogImageAlt: 'Project catalog page social preview card',
+  },
+  {
     slug: 'healthcare-it',
     route: '/healthcare-it/',
     title: 'Healthcare IT',

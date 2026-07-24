@@ -17,7 +17,7 @@ export interface Props {
 const defaultCmdkSections: CmdkSection[] = [
   { label: 'Home', href: '/', desc: 'Return to the portfolio overview and first-run poster view.', badge: 'HOME' },
   { label: 'Highlights', href: '/#greatest-hits', desc: 'Start with the shortest path through the strongest work.', badge: 'START' },
-  { label: 'Catalog', href: '/#catalog', desc: 'Browse every public project with filters, search, and freshness signals.', badge: 'ARCHIVE' },
+  { label: 'Catalog', href: '/catalog/', desc: 'Browse every public project with filters, search, sort, and freshness signals.', badge: 'ARCHIVE' },
   { label: 'Full-Text Search', href: '/search/', desc: 'Search portfolio routes, language lanes, releases, and archive decisions.', badge: 'PAGE' },
   { label: 'Live Apps', href: '/#live', desc: 'Jump straight into browser-ready builds with no setup wall.', badge: 'LIVE' },
   { label: 'Releases', href: '/releases/', desc: 'See what is shipping across the most active projects.', badge: 'PAGE' },
@@ -40,6 +40,10 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const isHome = Astro.url.pathname === '/';
+// The /catalog/ route reuses the homepage catalog controller (filter/sort/view/
+// search + URL state) over the full project list. home-catalog.js is a
+// standalone IIFE with no main.js dependency, so it loads on its own here.
+const isCatalog = Astro.url.pathname === '/catalog/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
 
@@ -204,5 +208,6 @@ if (isHome) {
   {isHome && <script src="/scripts/home-github.js" is:inline></script>}
   {isHome && <script src="/scripts/home-media.js" is:inline></script>}
   {isHome && <script src="/scripts/home-effects.js" is:inline></script>}
+  {isCatalog && <script src="/scripts/home-catalog.js" is:inline></script>}
 </body>
 </html>

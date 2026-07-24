@@ -50,7 +50,8 @@ test('homepage runtime has no removed command shell hooks and preserves section 
   assert.match(greatestHits, /grid-template-areas:[\s\S]*'head why foot'[\s\S]*'name why foot'/);
   assert.doesNotMatch(greatestHits, /word-break:break-word|max-width:12ch/);
   assert.match(index, /id="live"/);
-  assert.match(index, /id="catalog"/);
+  // The catalog is rendered by <CatalogSection>, which emits <section id="catalog">.
+  assert.match(index, /<CatalogSection\b/);
   assert.match(index, /id="skills"/);
   assert.doesNotMatch(index, /id="career"/);
   assert.doesNotMatch(index, /href="#career"/);

@@ -29,14 +29,17 @@ const timelineBudget = {
   domElements: 15_000,
 };
 
-// Budgets tuned for the ~177-card catalog (2026-06) with ~10-15% headroom.
-// Raise these as the catalog grows; catalog-card count and max-card budgets
-// still have room and are left unchanged.
+// The homepage now renders a ranked PREVIEW slice of the catalog (see
+// HOMEPAGE_CATALOG_LIMIT in src/data/catalog-render.ts); the complete list lives
+// at the static /catalog/ route. These budgets gate the small homepage preview
+// section — the aspirational <=1,400-node homepage catalog budget from the
+// roadmap. The /catalog/ page carries the full list and is gated separately for
+// complete no-JS reachability below.
 const budgets = {
   homepageHtmlBytes: 512_000,
-  catalogSectionBytes: 327_680,
-  catalogDomNodes: 2_750,
-  catalogCards: 220,
+  catalogSectionBytes: 200_000,
+  catalogDomNodes: 1_400,
+  catalogCards: 96,
   averageCardNodes: 15,
   maxCardNodes: 18,
   averageCardBytes: 1_843,
@@ -46,6 +49,13 @@ const smallCatalogBudgets = {
   maxCatalogCards: 50,
   averageCardNodes: 16,
   averageCardBytes: 1_900,
+};
+// The full static catalog section (/catalog/) renders every project; its node
+// count is naturally larger. It is gated for completeness (every project
+// present) plus a generous structural ceiling.
+const catalogPageBudget = {
+  route: '/catalog/',
+  domNodes: 3_200,
 };
 
 const distDir = path.resolve(root, options.distDir);
@@ -130,8 +140,21 @@ const averageCardNodes = catalogCards > 0 ? totalCardNodes / catalogCards : 0;
 const averageCardBytes = catalogCards > 0 ? totalCardBytes / catalogCards : 0;
 const activeBudgets = budgetsForCatalog(catalogCards);
 
-if (catalogCards !== projects.length) {
-  fail(`Homepage catalog renders ${catalogCards} cards; dist/projects.json exposes ${projects.length} projects.`);
+// The homepage preview renders min(HOMEPAGE_CATALOG_LIMIT, total) ranked cards.
+// Read the limit from the shared source so this audit tracks the rendered slice
+// without a hardcoded drift risk. This guards against a broken/empty preview
+// (too few) or a regression that re-renders the whole catalog (too many).
+const catalogRenderSrc = await fs
+  .readFile(path.join(root, 'src', 'data', 'catalog-render.ts'), 'utf8')
+  .catch(() => '');
+const limitMatch = /HOMEPAGE_CATALOG_LIMIT\s*=\s*(\d+)/.exec(catalogRenderSrc);
+const homepageCardLimit = limitMatch ? Number(limitMatch[1]) : 84;
+const expectedHomepageCards = Math.min(homepageCardLimit, projects.length);
+if (catalogCards !== expectedHomepageCards) {
+  fail(
+    `Homepage renders ${catalogCards} catalog preview cards; expected ${expectedHomepageCards} `
+    + `(min of the ${homepageCardLimit}-card preview limit and ${projects.length} projects).`,
+  );
 }
 checkBudget('Homepage HTML size', homepageHtmlBytes, activeBudgets.homepageHtmlBytes, formatBytes);
 checkBudget('Catalog section size', catalogSectionBytes, activeBudgets.catalogSectionBytes, formatBytes);
@@ -141,6 +164,33 @@ checkBudget('Average card DOM nodes', averageCardNodes, activeBudgets.averageCar
 checkBudget('Max card DOM nodes', maxCardNodes, activeBudgets.maxCardNodes);
 checkBudget('Average card bytes', averageCardBytes, activeBudgets.averageCardBytes, formatBytes);
 checkBudget('Max card bytes', maxCardBytes, activeBudgets.maxCardBytes, formatBytes);
+
+// --- Full static catalog page audit (/catalog/) ---
+// The homepage only previews a slice, so the full static list at /catalog/ is
+// what guarantees every reviewed project stays reachable with JavaScript
+// disabled and indexable by crawlers/Pagefind. It must be complete.
+const catalogPagePath = path.join(distDir, 'catalog', 'index.html');
+const catalogPageHtml = await fs.readFile(catalogPagePath, 'utf8').catch(() => null);
+let catalogPageCards = null;
+let catalogPageDomNodes = null;
+if (catalogPageHtml) {
+  const catalogPageSection = extractCatalogSection(catalogPageHtml);
+  if (!catalogPageSection) {
+    fail(`${catalogPageBudget.route} is missing the #catalog section.`);
+  } else {
+    catalogPageDomNodes = countTags(catalogPageSection);
+    catalogPageCards = Array.from(catalogPageSection.matchAll(cardPattern), (match) => match[0]).length;
+    if (catalogPageCards !== projects.length) {
+      fail(
+        `${catalogPageBudget.route} renders ${catalogPageCards} project links; dist/projects.json exposes `
+        + `${projects.length} projects. The full catalog must stay complete for no-JS reachability and indexing.`,
+      );
+    }
+    checkBudget(`Catalog page DOM nodes (${catalogPageBudget.route})`, catalogPageDomNodes, catalogPageBudget.domNodes);
+  }
+} else {
+  fail(`${catalogPageBudget.route} (dist/catalog/index.html) is missing; the full static catalog route must exist for no-JS reachability.`);
+}
 
 // --- Timeline page audit ---
 const timelinePath = path.join(distDir, 'timeline', 'index.html');
@@ -158,8 +208,12 @@ console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
 console.log(`  budget mode: ${activeBudgets.mode}`);
 console.log(`  homepage HTML: ${formatBytes(homepageHtmlBytes)} / ${formatBytes(activeBudgets.homepageHtmlBytes)}`);
 console.log(`  catalog section: ${formatBytes(catalogSectionBytes)} / ${formatBytes(activeBudgets.catalogSectionBytes)}`);
-console.log(`  catalog cards: ${catalogCards} / ${activeBudgets.catalogCards}`);
-console.log(`  catalog DOM nodes: ${catalogDomNodes} / ${activeBudgets.catalogDomNodes}`);
+console.log(`  homepage preview cards: ${catalogCards} / ${activeBudgets.catalogCards} (expected ${expectedHomepageCards})`);
+console.log(`  homepage catalog DOM nodes: ${catalogDomNodes} / ${activeBudgets.catalogDomNodes}`);
+if (catalogPageCards !== null) {
+  console.log(`  /catalog/ project links: ${catalogPageCards} / ${projects.length} (full coverage)`);
+  console.log(`  /catalog/ DOM nodes: ${catalogPageDomNodes} / ${catalogPageBudget.domNodes}`);
+}
 console.log(`  average card DOM nodes: ${averageCardNodes.toFixed(2)} / ${activeBudgets.averageCardNodes}`);
 console.log(`  max card DOM nodes: ${maxCardNodes} / ${activeBudgets.maxCardNodes}`);
 console.log(`  average card bytes: ${formatBytes(averageCardBytes)} / ${formatBytes(activeBudgets.averageCardBytes)}`);

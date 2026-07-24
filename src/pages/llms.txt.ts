@@ -78,7 +78,7 @@ export async function GET(context: APIContext) {
   for (const page of pages) {
     lines.push(`- [${page.title}](${site}${page.route}): ${clean(page.description)}`);
   }
-  lines.push(`- [Full catalog](${site}/#catalog): All ${catalog.length} public projects with search and filters.`);
+  lines.push(`- [Full catalog](${site}/catalog/): All ${catalog.length} public projects with search, sort, and filters.`);
   lines.push('');
 
   lines.push('## Language lanes');

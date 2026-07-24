@@ -76,7 +76,11 @@ export function inspectHtml(html) {
     hasEarlyHtmlClose: /<\/html>/i.test(head),
     missingFinalHtmlClose: !/<\/html>\s*$/i.test(html),
     mainBeforeShared: mainIdx >= 0 && (sharedIdx < 0 || mainIdx < sharedIdx),
-    featureBeforeMain: featureIndexes.some((index) => mainIdx < 0 || index < mainIdx),
+    // Feature scripts (home-*.js) must not load before their homepage core
+    // (main.js) when the page uses it. Routes like /catalog/ load a standalone
+    // home-catalog.js with no main.js dependency, so the order guard only
+    // applies when main.js is actually present on the page.
+    featureBeforeMain: mainIdx >= 0 && featureIndexes.some((index) => index < mainIdx),
   };
 }
 

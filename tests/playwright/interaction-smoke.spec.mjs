@@ -178,13 +178,14 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('main.timeline-page')).toBeVisible();
     await expectNoCspViolations(page);
 
-    const catalogLink = page.locator('#nav a[href="/#catalog"]').first();
+    // The interior nav "Catalog" now points at the full static /catalog/ route.
+    const catalogLink = page.locator('#nav a[href="/catalog/"]').first();
     await expect(catalogLink).toBeVisible();
     await catalogLink.focus();
     await page.waitForTimeout(500);
     await expectNoCspViolations(page);
     await catalogLink.dispatchEvent('click');
-    await expect(page).toHaveURL(/\/#catalog$/);
+    await expect(page).toHaveURL(/\/catalog\/$/);
     await expect(page.locator('#catalog')).toBeVisible();
 
     await expectNoCspViolations(page);
@@ -620,6 +621,69 @@ test.describe('catalog URL-state persistence', () => {
     await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
 
     expect(runtimeErrors).toEqual([]);
+  });
+});
+
+test.describe('full catalog page URL-state persistence', () => {
+  test('category filter updates the URL and survives reload on /catalog/', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/catalog/', '#catalog');
+
+    const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
+    if (!(await filterBtn.count())) {
+      test.skip(true, 'No category filter buttons in this build');
+      return;
+    }
+    const category = await filterBtn.getAttribute('data-filter');
+    await filterBtn.click();
+    await expect.poll(() => page.url()).toContain(`cat=${category}`);
+
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#catalog').waitFor({ state: 'visible' });
+    expect(page.url()).toContain(`cat=${category}`);
+    const activeFilter = page.locator(`.fb[data-filter="${category}"].act`);
+    await expect(activeFilter).toBeVisible();
+    await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('search and sort URL state combine and persist on /catalog/', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/catalog/', '#catalog');
+
+    await page.locator('#searchInput').fill('python');
+    await page.locator('#sortSelect').selectOption('name');
+    await expect.poll(() => page.url()).toContain('q=python');
+    await expect.poll(() => page.url()).toContain('sort=name');
+    await expect(page.locator('#catalogGrid .ca:visible')).not.toHaveCount(0);
+
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('#catalog').waitFor({ state: 'visible' });
+    await expect(page.locator('#searchInput')).toHaveValue('python');
+    await expect(page.locator('#sortSelect')).toHaveValue('name');
+    await expect(page.locator('#catalogStatus')).toContainText(/python/i);
+    expect(runtimeErrors).toEqual([]);
+  });
+});
+
+test.describe('full catalog no-JS reachability', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('every project is reachable as a direct GitHub link with JavaScript disabled', async ({ page }) => {
+    await page.goto('/catalog/', { waitUntil: 'domcontentloaded' });
+
+    const cards = page.locator('#catalogGrid a.ca[data-repo]');
+    const count = await cards.count();
+    // The full static catalog renders the complete archive, not a preview slice.
+    expect(count).toBeGreaterThanOrEqual(150);
+
+    const hrefs = await cards.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
+    expect(hrefs.length).toBe(count);
+    expect(hrefs.every((href) => typeof href === 'string' && href.startsWith('https://github.com/SysAdminDoc/'))).toBe(true);
+    // No card is filtered out client-side (there is no client script to hide any).
+    expect(await page.locator('#catalogGrid a.ca.hid').count()).toBe(0);
+    // No removed local /projects/* routes leak into the static markup.
+    expect(hrefs.some((href) => /\/projects\//.test(href ?? ''))).toBe(false);
   });
 });
 
