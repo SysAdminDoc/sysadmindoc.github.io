@@ -28,13 +28,6 @@ Last normalized: 2026-06-29
   Acceptance: The homepage stays below a measured <=1,400-node budget; all reviewed projects remain reachable with JavaScript disabled and indexable through static pagination or an equivalent static boundary; direct GitHub links and filter/search URL semantics remain intact.
   Complexity: L
 
-- [ ] P2 — Add a deterministic Pagefind relevance corpus
-  Why: Broad language queries currently produce repetitive keyword-heavy excerpts, but tuning without expected results would trade one opaque ranking for another.
-  Evidence: `src/pages/search.astro:37-149`, current Python visual baseline; Pagefind filtering and sub-result documentation.
-  Touches: searchable-page metadata/body boundaries, Pagefind configuration, search audit fixtures, search UI.
-  Acceptance: A versioned corpus of representative role, platform, project, release, and healthcare queries asserts expected first-page results, unique useful excerpts, facets, direct links, and offline parity before any weighting/sub-result changes are accepted.
-  Complexity: M
-
 ## Research-Driven Additions (2026-07-24 pass)
 
 ### P2
