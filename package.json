@@ -99,5 +99,8 @@
     "svgo": "^4.0.2",
     "postcss": "^8.5.18",
     "fast-uri": "^3.1.4"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }

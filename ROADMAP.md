@@ -73,15 +73,6 @@ Last normalized: 2026-06-29
 
 ## Research-Driven Additions (2026-07-24 pass)
 
-### P1
-
-- [ ] P1 — Pre-authorize native build scripts for npm v12
-  Why: npm v12 (shipping July 2026) disables install scripts by default; `sharp` and other native deps will fail the next local build/publish unless explicitly allowlisted. Mechanism is now confirmed and version-controlled, so this is actionable rather than blocked.
-  Evidence: https://github.blog/changelog/2026-06-09-upcoming-breaking-changes-for-npm-v12/ ; https://jfrog.com/blog/npm-v12-from-implicit-to-explicit-trust/ ; installed native deps `sharp`, `esbuild`, `lightningcss`, `@playwright/test`; installed npm 11.13.0. Supersedes the "Prepare for npm v12 install-script changes" item in `Roadmap_Blocked.md`.
-  Touches: `package.json` (committed `approve-scripts`/trusted-dependencies allowlist), `.nvmrc`/`packageManager` if bumping npm, deploy preflight/toolchain audit.
-  Acceptance: After upgrading to npm >=11.16.0, `npm approve-scripts` allowlists the native deps and the allowlist is committed to `package.json`; `npm install` under the new default (scripts off) followed by `npm run deploy:preflight` completes without manual approval; a test asserts the allowlist covers every dependency with a build script.
-  Complexity: S
-
 ### P2
 
 - [ ] P2 — Enable Trusted Types via meta CSP
