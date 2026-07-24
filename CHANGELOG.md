@@ -4,7 +4,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
-## [v0.26.1] - 2026-07-24
+## [v0.26.2] - 2026-07-24
+
+- Hero polish + design-tell cleanup: removed the animated multi-color gradient text and the perpetually spinning conic avatar ring from the hero source, making the restrained "Operational Clarity" hero (solid wordmark and metrics, static 1px avatar border) the single source of truth. Cleaned three dead gradient-text overrides (base, light-theme wordmark/metrics, and the large-screen wordmark) that the design detector flagged as AI tells but that were already overridden at runtime, so the source now matches what renders.
+- Added consistent, keyboard-accessible hover/focus feedback to both homepage indexes ("Selected work" and "Live apps"), which previously either fell flat or inherited a mismatched lift-and-glow: hovering or focusing a row now shifts its name (and rank) to the accent color and strengthens the divider, matching the filter-tab interaction language already used in the catalog. No default-state visual baselines changed (hover-only), and the 104-shot dark+light visual audit still passes.
 
 - Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads "AI-augmented software · Practical tools · Healthcare technology", the tagline leads with "I build practical software and put AI to work solving real problems", the summary opens on directing AI tooling end to end with the project/live-app counts as proof, and the hero proof strip leads with a "Builds — AI-augmented software" highlight. The factual "Technical Support Manager at Maven Imaging" role stays as supporting credibility in the hero signals, page schema, résumé, and healthcare track (no over-claim of an independent practice beyond what `/ai/` already publishes).
 
