@@ -4,6 +4,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.26.1] - 2026-07-24
+
+- Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads "AI-augmented software · Practical tools · Healthcare technology", the tagline leads with "I build practical software and put AI to work solving real problems", the summary opens on directing AI tooling end to end with the project/live-app counts as proof, and the hero proof strip leads with a "Builds — AI-augmented software" highlight. The factual "Technical Support Manager at Maven Imaging" role stays as supporting credibility in the hero signals, page schema, résumé, and healthcare track (no over-claim of an independent practice beyond what `/ai/` already publishes).
+
 ## [v0.26.0] - 2026-07-24
 
 - Split the homepage catalog into a curated preview plus a complete static archive, cutting the homepage `#catalog` section from ~2,254 DOM nodes to ~1,259 (under the aspirational ≤1,400-node budget) while keeping every project reachable. The homepage now renders a ranked top-84 slice (`HOMEPAGE_CATALOG_LIMIT`) via a shared `CatalogSection` component, with a "Browse all N projects" handoff to a new static `/catalog/` route that lists the full archive with the same filter/sort/view + `cat=`/`q=`/`sort=`/`view=` URL-state controls. The catalog rendering pipeline (ranking, freshness, view-state) is now single-sourced in `src/data/catalog-render.ts` so the preview and full list never drift.
