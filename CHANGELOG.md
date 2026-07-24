@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Added a versioned Pagefind relevance corpus (`tests/playwright/search-corpus.spec.mjs`): ten representative queries across platform, role, project, domain, and AI-services dimensions assert their expected top result, a non-empty route-type-tagged excerpt, direct internal links, distinct excerpts, and the Scope facet — a frozen gate so future search-ranking changes are judged against known-good expectations.
+
 ## [v0.24.0] - 2026-07-24
 
 - Polished several audit findings: standardized the footer "← Back to portfolio" link across all interior pages, gave the /status release-provenance pills distinct trust-tier accent colors (with the text label still carrying the meaning), removed the dead "Recently Viewed" command-palette group left over from the retired project pages, and hardened live-app thumbnail hydration against a future non-anchor card.
