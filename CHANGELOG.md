@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.25.1] - 2026-07-24
+
 - Added axe + horizontal-overflow coverage (`tests/playwright/state-coverage.spec.mjs`) for the error/recovery and interaction states the first-viewport route audits never reached: the 404 page, the offline shell, print media (home + resume), the open mobile navigation, and the empty catalog result set — verified clean in both the dark and light audit projects.
 
 ## [v0.25.0] - 2026-07-24
