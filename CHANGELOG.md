@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.24.0] - 2026-07-24
+
 - Polished several audit findings: standardized the footer "← Back to portfolio" link across all interior pages, gave the /status release-provenance pills distinct trust-tier accent colors (with the text label still carrying the meaning), removed the dead "Recently Viewed" command-palette group left over from the retired project pages, and hardened live-app thumbnail hydration against a future non-anchor card.
 - Removed the redundant screenshots category facet: with only one reviewed category, the "All" and single-category controls were identical and the empty state was unreachable, so the gallery now shows every screenshot without a meaningless filter. The facet reappears automatically once two or more distinct categories exist.
 - Made the JSON Resume export schema-valid and reading-order tested: each career role now carries ISO `startDate`/`endDate` (omitted for the current role), the resume JSON emits structured dates instead of stuffing the period into the summary, and a test suite validates the ISO dates, the exactly-one-current-role invariant, the reverse-chronological ordering, the shared HTML/JSON/PDF career source, and the experience-heading-before-roles reading order.
