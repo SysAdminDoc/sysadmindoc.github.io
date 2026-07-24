@@ -6,6 +6,7 @@ import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { catalog, liveApps } from '../data/portfolio';
+import { experienceLabel, experienceShort } from '../data/identity';
 
 const title = 'AI Services — Matt Parker';
 const pageOg = interiorOgPageBySlug['ai'];
@@ -107,7 +108,7 @@ const cmdkSections = [
           <div class="page-stat-copy">Deployed, working software — not slideware. Open any of them and judge the output yourself.</div>
         </div>
         <div class="aisvc-stat page-stat">
-          <div class="aisvc-stat-num page-stat-value">15+ yrs</div>
+          <div class="aisvc-stat-num page-stat-value">{experienceShort}</div>
           <div class="aisvc-stat-label page-stat-label">Enterprise IT &amp; operations</div>
           <div class="page-stat-copy">Systems administration and healthcare support background — I build for how businesses actually run, not for demos.</div>
         </div>
@@ -158,7 +159,7 @@ const cmdkSections = [
       <div class="aisvc-why rv">
         <p>For the past year I have gone all-in on AI-assisted building — treating it as a discipline, not a novelty. The result is what you are looking at: <strong>{projectCount}+ public projects</strong> spanning Windows tools, desktop apps, Android apps, browser extensions, and {liveAppCount} live web apps, all researched, built, tested, documented, and released by one person using AI as a force multiplier.</p>
         <p>That is the working model I install in your business. Not a chatbot bolted onto your website — <strong>a faster way to get real work done</strong>, fitted to the workflows you already have and the people who already run them.</p>
-        <p>Before AI, I spent 15+ years in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operational constraints that make or break a rollout. I have lived the side of the business that most AI consultants have only read about.</p>
+        <p>Before AI, I spent {experienceLabel} in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operational constraints that make or break a rollout. I have lived the side of the business that most AI consultants have only read about.</p>
         <p>This is a fit for <strong>small and mid-size businesses without a software team</strong> — owners who keep hearing "you should be using AI" and want one accountable person to make it true.</p>
       </div>
     </div>

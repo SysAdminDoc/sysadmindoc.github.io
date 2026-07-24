@@ -4,6 +4,7 @@ import globalCssUrl from '../styles/global.css?url';
 import interiorQuietCssUrl from '../styles/interior-quiet.css?url';
 import criticalCss from '../styles/critical.css?raw';
 import type { CmdkSection } from '../data/cmdk';
+import { experienceLabel } from '../data/identity';
 
 export interface Props {
   title?: string;
@@ -30,7 +31,7 @@ const defaultCmdkSections: CmdkSection[] = [
 ];
 const {
   title = 'Matt Parker - Senior Technical Support Manager',
-  description = 'Career portfolio for Matt Parker - 15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, and escalation-heavy troubleshooting.',
+  description = `Career portfolio for Matt Parker - ${experienceLabel} in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, and escalation-heavy troubleshooting.`,
   ogImage = '/og.png',
   ogImageAlt = description,
   cmdkSections = defaultCmdkSections,

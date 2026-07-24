@@ -12,14 +12,6 @@ Last normalized: 2026-06-29
 
 ### P1
 
-- [ ] P1 — Create one source of truth for public facts and design identity
-  Why: Role, version, project counts, live-app counts, and light/dark positioning currently contradict each other across public pages and maintainer documentation.
-  Evidence: `src/pages/index.astro:119-152`, `src/data/curated.ts:93`, `src/data/uses.ts:67-71`, `src/data/page-freshness.ts`, `README.md`, `CLAUDE.md`, `IMAGE_PIPELINE.md`.
-  Touches: shared site metadata/tokens, homepage, `/now/`, `/uses/`, page freshness, docs, schema/OG/manifest generation, consistency tests.
-  Note (2026-07-24): Counts are already single-sourced from `catalog.length`/`liveApps.length` — the remaining drift vector is PROSE facts. Tenure `15+ years` is hardcoded in six files (`Base.astro:33`, `ai.astro:110,161`, `index.astro:395`, `resume.json.ts:15`, `llms.txt.ts:60`) and the new `/ai/` page adds time-relative claims ("For the past year") with no freshness binding. Include tenure/role prose in the single contract.
-  Acceptance: Public role/version/theme copy is derived or validated from one contract; catalog/profile counts are named by denominator; tests fail on v0.21 copy, dark-first copy, hardcoded stale counts, undocumented count semantics, or tenure strings that disagree across files.
-  Complexity: M
-
 - [ ] P1 — Make resume exports schema-valid and reading-order tested
   Why: The JSON claims JSON Resume compatibility but omits structured work dates, while the generated PDF has no machine-readable order check.
   Evidence: `src/pages/resume.json.ts`, `src/data/career.ts`, `scripts/generate-resume-pdf.mjs`; JSON Resume schema; WCAG PDF3.
