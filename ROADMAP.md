@@ -19,13 +19,6 @@ Last normalized: 2026-06-29
   Acceptance: Work and education records expose ISO `startDate`/`endDate`; the JSON validates against the documented JSON Resume version; HTML/JSON/PDF share the same career source; extracted PDF text contains headings and roles in logical order.
   Complexity: M
 
-- [ ] P1 — Guarantee first-install offline access to the public route set
-  Why: Only home, search, releases, and now are deterministic shell routes; other key pages work offline only after a prior online visit.
-  Evidence: `scripts/stamp-sw.mjs:64-81`, `tests/playwright/sw-lifecycle.spec.mjs`; web.dev service-worker lifecycle/offline guidance.
-  Touches: route inventory, `scripts/stamp-sw.mjs`, `public/sw.js`, service-worker unit and Playwright tests, cache-size audit.
-  Acceptance: A fresh service-worker install can open resume, status, timeline, screenshots, healthcare, archive, 404/offline, and one representative language lane while offline; the route list is generated from reviewed public routes and stays within an explicit cache budget.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — Cover complete routes and high-risk interaction states visually

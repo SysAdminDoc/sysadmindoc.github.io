@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
-import { buildPrecacheList, stampServiceWorker } from '../scripts/stamp-sw.mjs';
+import { buildPrecacheList, collectHtmlRoutes, stampServiceWorker } from '../scripts/stamp-sw.mjs';
 
 const root = process.cwd();
 const noopLogger = { log: () => {}, warn: () => {} };
@@ -75,6 +75,48 @@ test('service-worker stamping precaches the generated Pagefind runtime and index
     assert.ok(result.precacheList.includes(urlPath), `${urlPath} should be in the generated precache list`);
     assert.ok(sw.includes(`"${urlPath}"`), `${urlPath} should be written into dist/sw.js`);
   }
+});
+
+test('html route collection maps rendered pages to offline-cacheable URLs', async () => {
+  const rootDir = await createFixtureRoot();
+  const dist = path.join(rootDir, 'dist');
+  await writeFixtureFile(path.join(dist, 'index.html'), '<html></html>');
+  for (const route of ['resume', 'status', 'timeline', 'screenshots', 'healthcare-it', 'archive', 'lang/python']) {
+    await writeFixtureFile(path.join(dist, route, 'index.html'), '<html></html>');
+  }
+  await writeFixtureFile(path.join(dist, '404.html'), '<html></html>');
+
+  const routes = collectHtmlRoutes(dist);
+  for (const expected of ['/', '/resume/', '/status/', '/timeline/', '/screenshots/', '/healthcare-it/', '/archive/', '/lang/python/', '/404.html']) {
+    assert.ok(routes.includes(expected), `${expected} should be a collected offline route`);
+  }
+});
+
+test('first-install precache covers the full reviewed public route set', async () => {
+  const rootDir = await createFixtureRoot();
+  const dist = path.join(rootDir, 'dist');
+  await writeFixtureFile(path.join(dist, 'pagefind', 'pagefind-entry.json'), '{}');
+  for (const route of ['resume', 'status', 'timeline', 'screenshots', 'healthcare-it', 'archive', 'lang/python']) {
+    await writeFixtureFile(path.join(dist, route, 'index.html'), '<html></html>');
+  }
+  await writeFixtureFile(path.join(dist, '404.html'), '<html></html>');
+
+  const list = buildPrecacheList(dist);
+  for (const expected of ['/resume/', '/status/', '/timeline/', '/screenshots/', '/healthcare-it/', '/archive/', '/lang/python/', '/404.html']) {
+    assert.ok(list.includes(expected), `${expected} should be precached for first-install offline access`);
+  }
+});
+
+test('service-worker precache enforces an explicit byte budget', async () => {
+  const rootDir = await createFixtureRoot();
+  const dist = path.join(rootDir, 'dist');
+  await writeFixtureFile(path.join(dist, 'pagefind', 'pagefind-entry.json'), '{}');
+  await writeFixtureFile(path.join(dist, 'resume', 'index.html'), 'x'.repeat(4096));
+
+  assert.throws(
+    () => buildPrecacheList(dist, 512),
+    /precache is .* over the .* budget/,
+  );
 });
 
 test('service-worker stamping fails when the search page references Pagefind before indexing', async () => {
