@@ -155,22 +155,7 @@
     return qi === q.length ? score : 0;
   }
 
-  function getRecentlyViewed() {
-    let slugs = [];
-    try { slugs = JSON.parse(localStorage.getItem('recently_viewed') || '[]'); } catch (e) { /* unavailable */ }
-    if (!Array.isArray(slugs) || !slugs.length) return [];
-    const bySlug = new Map((Array.isArray(data.allProjects) ? data.allProjects : []).map(p => [p.slug, p]));
-    const out = [];
-    slugs.forEach((slug, i) => {
-      const project = bySlug.get(slug);
-      if (project) out.push({ kind: 'project', score: 400 - i, groupLabel: 'Recently Viewed', ...project });
-    });
-    return out.slice(0, 4);
-  }
-
   function getDefaultResults() {
-    const recent = getRecentlyViewed();
-    const recentSlugs = new Set(recent.map(r => r.slug));
     const quickLinks = Array.isArray(data.quickLinks) ? data.quickLinks.slice(0, 4) : [];
     const routes = quickLinks.map((link, index) => ({
       kind: 'route',
@@ -188,7 +173,7 @@
       : [];
     const projects = defaultProjectTypes.flatMap((type, typeIndex) =>
       (Array.isArray(data.allProjects) ? data.allProjects : [])
-        .filter(project => project.type === type && !recentSlugs.has(project.slug))
+        .filter(project => project.type === type)
         .slice(0, type === 'featured' ? 4 : 2)
         .map((project, projectIndex) => ({
           kind: 'project',
@@ -197,7 +182,7 @@
           ...project,
         })),
     );
-    return [...recent, ...routes, ...sections, ...projects];
+    return [...routes, ...sections, ...projects];
   }
 
   function renderRows(rows, query) {
