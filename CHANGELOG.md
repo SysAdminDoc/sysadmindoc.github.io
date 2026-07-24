@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Made update and live-status recovery truthful: the "Not now" service-worker update dismissal is now remembered per build for the session (a newer waiting build re-prompts via a version handshake), and offline live-app status reads "unavailable offline" with a distinct marker instead of hanging on "checking", then retries and resolves when connectivity returns.
 - Removed all pre-click third-party requests from the homepage aerial-footage section: the YouTube thumbnail images are replaced with locally rendered posters, and the `img.youtube.com` DNS-prefetch and `img-src` CSP allowance are gone. Loading or scrolling the page now contacts no Google/YouTube origin; only an explicit play click loads the privacy-enhanced `youtube-nocookie.com` iframe.
 - Pinned the local release toolchain: `.nvmrc` now selects Node 24 to match the declared `engines.node` floor, `packageManager` pins the validated npm 11 line, and a new toolchain test fails on future drift. Added a `verify:signatures` publish-preflight gate that verifies every dependency's npm registry signature/attestation and prints an actionable message distinguishing a network outage from a real signature failure.
 - Aligned the installed-PWA splash/status colors and offline page with the light-first Operational Clarity shell (`#f7f5ef`) and removed the stale "availability" reference from the mobile install-screenshot label.

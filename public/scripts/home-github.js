@@ -323,10 +323,16 @@
             try{
                 const target=new URL(url,location.href);
                 if(target.origin!==location.origin)return;
-                queue.push({url:target.toString(),dot,setStatus});
+                queue.push({url:target.toString(),dot,setStatus,srText});
             }catch(e){}
         });
-        if(!queue.length||navigator.onLine===false)return;
+        if(!queue.length)return;
+        function markOffline(){
+            queue.forEach(item=>{
+                item.dot.classList.add('unknown');
+                item.srText.textContent='Status: unavailable offline';
+            });
+        }
         function runNext(){
             const item=queue.shift();
             if(!item)return;
@@ -345,6 +351,21 @@
                 setTimeout(runNext,150);
             });
         }
-        scheduleIdle(runNext,1800);
+        function startChecks(){
+            queue.forEach(item=>{
+                item.dot.classList.remove('unknown');
+                item.srText.textContent='Status: checking';
+            });
+            scheduleIdle(runNext,1800);
+        }
+        if(navigator.onLine===false){
+            markOffline();
+            window.addEventListener('online',function retry(){
+                window.removeEventListener('online',retry);
+                if(navigator.onLine!==false)startChecks();
+            });
+            return;
+        }
+        startChecks();
     })();
 })();
