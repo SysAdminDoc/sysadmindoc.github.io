@@ -658,8 +658,8 @@ const cmdkSections = [
     <div class="video-grid">
       {aerialClips.map((v) => (
         <div class="video-card card-enter">
-          <button type="button" class="video-thumb" data-yt={v.id} aria-label={`Play ${v.title} video`}>
-            <img src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`} alt={v.title} loading="lazy" decoding="async" width="1280" height="720">
+          <button type="button" class="video-thumb" data-yt={v.id} data-title={v.title} aria-label={`Play ${v.title} video`}>
+            <span class="video-poster" aria-hidden="true"><span class="video-poster-label">{v.title}</span></span>
             <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
           </button>
           <div class="video-info"><div class="video-title">{v.title}</div><div class="video-desc">{v.desc}</div></div>
