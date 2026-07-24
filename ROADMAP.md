@@ -28,13 +28,6 @@ Last normalized: 2026-06-29
   Acceptance: The homepage stays below a measured <=1,400-node budget; all reviewed projects remain reachable with JavaScript disabled and indexable through static pagination or an equivalent static boundary; direct GitHub links and filter/search URL semantics remain intact.
   Complexity: L
 
-- [ ] P2 — Remove the redundant screenshots filter
-  Why: The gallery currently offers “All” and “Web” with the same 23 items, so it adds controls without a meaningful choice and its empty state is unreachable.
-  Evidence: `src/pages/screenshots.astro:27-90`, current screenshot manifest.
-  Touches: `src/pages/screenshots.astro`, screenshot metadata, filter script/styles, interaction tests.
-  Acceptance: The page exposes no facet until at least two non-identical reviewed categories exist, or uses documented product dimensions with distinct counts; empty/reset behavior is reachable and tested.
-  Complexity: S
-
 - [ ] P2 — Add a deterministic Pagefind relevance corpus
   Why: Broad language queries currently produce repetitive keyword-heavy excerpts, but tuning without expected results would trade one opaque ranking for another.
   Evidence: `src/pages/search.astro:37-149`, current Python visual baseline; Pagefind filtering and sub-result documentation.
