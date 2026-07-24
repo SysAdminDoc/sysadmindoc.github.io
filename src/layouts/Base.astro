@@ -54,7 +54,13 @@ const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"
   : ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
 const styleAttrSrc = isDev ? "'unsafe-inline'" : "'none'";
-const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'`;
+// Trusted Types (cross-browser Baseline since Feb 2026): require TrustedHTML/
+// TrustedScriptURL at script sinks. A same-origin default policy (loaded first
+// via /scripts/trusted-types.js) backstops the service-worker registration, the
+// command-palette loader, and Pagefind's own result HTML. Skipped in dev because
+// Vite HMR uses string sinks.
+const trustedTypes = isDev ? '' : "; require-trusted-types-for 'script'";
+const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'${trustedTypes}`;
 
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas
@@ -133,6 +139,7 @@ if (isHome) {
   <link rel="preload" href={globalCssUrl} as="style" />
   <link rel="stylesheet" href={globalCssUrl} media="print" data-async-style />
   {!isHome && <link rel="stylesheet" href={interiorQuietCssUrl} />}
+  <script src="/scripts/trusted-types.js" is:inline></script>
   <script src="/scripts/head-init.js" is:inline></script>
   <script src="/scripts/theme-toggle.js" is:inline></script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
