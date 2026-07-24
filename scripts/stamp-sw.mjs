@@ -3,9 +3,15 @@
 //   __BUILD_VERSION__ becomes the package.json version, so the cache name changes each release.
 //   __PRECACHE_PLACEHOLDER__ becomes a JSON array of root-relative URLs generated from dist/.
 // Runs after Astro build, minification, and Pagefind indexing as part of `npm run build:ci`.
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Explicit first-install precache budget. The service worker downloads every
+// precache entry on install, so cap the total so route/asset growth cannot
+// silently bloat the offline install. Raise deliberately if a build legitimately
+// needs more, so the change is reviewed.
+export const PRECACHE_BUDGET_BYTES = 12 * 1024 * 1024;
 
 const scriptPath = fileURLToPath(import.meta.url);
 const defaultRoot = join(dirname(scriptPath), '..');
@@ -32,6 +38,44 @@ export function collectFiles(dir, distRoot) {
   return results;
 }
 
+/**
+ * Collect every rendered HTML route from dist/ so a fresh service-worker
+ * install can open the full reviewed public route set offline, not just the
+ * homepage. `<dir>/index.html` maps to `/<dir>/` and standalone pages (404)
+ * map to their own URL.
+ * @param {string} distRoot Absolute path to dist/.
+ * @returns {string[]}
+ */
+export function collectHtmlRoutes(distRoot) {
+  const routes = new Set();
+  for (const file of collectFiles(distRoot, distRoot)) {
+    if (!/\.html$/.test(file)) continue;
+    if (file.endsWith('/index.html')) {
+      const route = file.slice(0, -'index.html'.length);
+      routes.add(route === '' ? '/' : route);
+    } else {
+      routes.add(file);
+    }
+  }
+  return [...routes].sort();
+}
+
+function precacheBytes(distRoot, urls) {
+  let total = 0;
+  for (const url of urls) {
+    // Route URLs ("/", "/resume/") are served by their index.html; asset URLs
+    // map to the file directly. Resolve to the concrete file so a directory stat
+    // does not undercount the HTML routes.
+    const relPath = url.endsWith('/') ? `${url.slice(1)}index.html` : url.slice(1);
+    const abs = join(distRoot, relPath.split('/').join(sep));
+    try {
+      const stats = statSync(abs);
+      if (stats.isFile()) total += stats.size;
+    } catch { /* missing file: skip, resilientPrecache tolerates it */ }
+  }
+  return total;
+}
+
 function searchPageRequiresPagefind(distRoot) {
   const searchHtmlPath = join(distRoot, 'search', 'index.html');
   if (!existsSync(searchHtmlPath)) return false;
@@ -39,7 +83,7 @@ function searchPageRequiresPagefind(distRoot) {
   return /\/pagefind\/pagefind-component-ui\.(?:css|js)\b/.test(searchHtml);
 }
 
-export function buildPrecacheList(distRoot) {
+export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES) {
   // Hashed Astro bundles (CSS + JS under _assets/).
   const assetFiles = collectFiles(join(distRoot, '_assets'), distRoot)
     .filter((p) => /\.(?:css|js)$/.test(p));
@@ -61,14 +105,14 @@ export function buildPrecacheList(distRoot) {
     throw new Error('dist/search/index.html references Pagefind, but dist/pagefind is empty. Run search:index before sw:stamp.');
   }
 
-  // Key shell URLs.
+  // Key shell URLs plus every rendered HTML route, so the whole reviewed public
+  // route set (resume, status, timeline, screenshots, healthcare, archive, 404,
+  // language lanes, ...) is available on first-install offline, not just home.
   const shellUrls = [
     '/',
     '/offline.html',
     '/styles/offline.css',
-    '/search/',
-    '/releases/',
-    '/now/',
+    ...collectHtmlRoutes(distRoot),
   ];
 
   // Static manifest / icons.
@@ -98,11 +142,20 @@ export function buildPrecacheList(distRoot) {
   ];
 
   const seen = new Set();
-  return allEntries.filter((url) => {
+  const list = allEntries.filter((url) => {
     if (seen.has(url)) return false;
     seen.add(url);
     return true;
   });
+
+  const totalBytes = precacheBytes(distRoot, list);
+  if (totalBytes > budgetBytes) {
+    throw new Error(
+      `Service-worker precache is ${(totalBytes / 1024 / 1024).toFixed(2)} MB, over the ${(budgetBytes / 1024 / 1024).toFixed(2)} MB budget. Trim precached routes/assets or raise PRECACHE_BUDGET_BYTES deliberately.`,
+    );
+  }
+
+  return list;
 }
 
 export function stampServiceWorker({ rootDir = defaultRoot, logger = console } = {}) {
