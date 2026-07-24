@@ -39,13 +39,12 @@ Last normalized: 2026-06-29
   Acceptance: Built pages ship `require-trusted-types-for 'script'` with a minimal, documented default policy; a Chromium run of `/`, `/search/`, `/status/`, plus cmdk-open and video-play reports zero Trusted Types violations; service-worker registration and offline still work; a test fails if a first-party raw HTML sink is reintroduced.
   Complexity: L
 
-- [ ] P2 — Adopt Pagefind 1.5 metadata weighting for skill/tag-aware ranking
-  Why: Broad language/skill queries currently return repetitive keyword excerpts; Pagefind 1.5 searches metadata by default with configurable per-field weights, exposes `matchedMetaFields` for faceted result badges, and adds `plain_excerpt` for clean unhighlighted snippets — directly improving result relevance and card quality.
-  Evidence: https://github.com/CloudCannon/pagefind/releases (v1.5.0, 2026-04-06); `src/pages/search.astro`, existing "deterministic Pagefind relevance corpus" item (its corpus is the prerequisite gate for accepting any weighting change).
-  Touches: searchable-page `data-pagefind-meta`/weight annotations, Pagefind config, `src/pages/search.astro` result rendering, `scripts/audit-search-index.mjs`, search fixtures.
-  Acceptance: Skill/tag/role metadata is weighted above body text and verified against the frozen relevance corpus; `matchedMetaFields` drives at least one result-badge facet; excerpts use `plain_excerpt` where highlight markup is undesirable; offline search parity and direct GitHub links remain intact.
-  Complexity: M
-  Depends on: the existing P2 "Add a deterministic Pagefind relevance corpus" item.
+- [ ] P3 — Custom Pagefind result UI for matched-field badges / plain excerpts (only if UX demands it)
+  Why: Nice-to-have result-quality polish — a "matched: title/tag" badge and unhighlighted snippets in contexts where `<mark>` is noisy.
+  Correction (2026-07-24): The relevance concern this item was raised for is ALREADY resolved — the shipped `tests/playwright/search-corpus.spec.mjs` verifies every representative query returns the correct top result with distinct, useful excerpts, and Pagefind 1.5 already auto-weights headings/metadata above body text (the corpus confirms metadata-aware ranking). The remaining `matchedMetaFields` and `plain_excerpt` features are NOT exposed by the Pagefind component-ui template bundle (`dist/pagefind/pagefind-component-ui.js` interpolates `sub_results` but not `matchedMetaFields`/`plain_excerpt`), so they require abandoning the accessible, offline-capable component-ui for a full custom `pagefind.search()` UI rewrite. Not justified against a working, corpus-gated search; downgraded to P3.
+  Touches: a from-scratch search UI on the low-level Pagefind JS API (input, filtering, summary, results, sub-results, a11y, offline) replacing `<pagefind-*>` in `src/pages/search.astro`.
+  Acceptance: If pursued, a custom result renderer shows a matched-metadata badge and uses `plain_excerpt` where marks are undesirable, WITHOUT regressing the relevance corpus, the a11y/axe checks, or offline search parity.
+  Complexity: L
 
 ### P3
 
