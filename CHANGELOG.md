@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Added axe + horizontal-overflow coverage (`tests/playwright/state-coverage.spec.mjs`) for the error/recovery and interaction states the first-viewport route audits never reached: the 404 page, the offline shell, print media (home + resume), the open mobile navigation, and the empty catalog result set — verified clean in both the dark and light audit projects.
+
 ## [v0.25.0] - 2026-07-24
 
 - Added an honest AI-transparency statement to the `/ai/` proof section: AI drafts the fast part (scaffolding, boilerplate, tests, research) while architecture, security review, testing, and shipping judgment stay human-owned — reinforcing the fractional-implementation pitch with the maturity signal 2026 buyers look for.
