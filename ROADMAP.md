@@ -14,12 +14,12 @@ Last normalized: 2026-06-29
 
 ### P2
 
-- [ ] P2 — Cover complete routes and high-risk interaction states visually
-  Why: First-viewport snapshots miss most long-page content and no baseline combines visual and axe checks for 404/offline, open navigation, empty/error, update, recovery, or print states.
-  Evidence: `tests/playwright/portfolio-audits.spec.mjs:5-96,442-462`, `tests/playwright/interaction-smoke.spec.mjs`; competitor responsive/ARIA issue queues.
-  Touches: Playwright route/state matrix, deterministic mocks, visual baselines, audit documentation.
-  Acceptance: Both themes cover full pages or named section slices for every public route family at desktop/mobile; state fixtures include open navigation, catalog no-results/sort/view, command empty/error, timeline empty, SW update, offline recovery, 404, and print; each applicable state runs axe and overflow checks.
-  Complexity: L
+- [ ] P3 — Add axe coverage for the two remaining hard-to-trigger states
+  Why: Finish the high-risk-state audit matrix. Most states now have axe + overflow coverage; two remain because they need fixtures to reach deterministically.
+  Progress (2026-07-24): `tests/playwright/state-coverage.spec.mjs` now covers the 404 page, offline shell, print media, open mobile navigation, and empty catalog result set (axe + overflow, both themes). Command empty/error and catalog sort/view are already covered by `portfolio-audits.spec.mjs` (hydrated cmdk axe) and `interaction-smoke.spec.mjs` (URL-state); offline recovery is covered by `sw-lifecycle.spec.mjs` plus the new offline-shell axe. The full-page-visual clause was intentionally NOT pursued: full-page baselines on these long, data-driven pages are brittle (any content/data change diffs), so first-viewport visual + axe + overflow + named interaction states is the deliberate lower-brittleness approach.
+  Touches: `tests/playwright/state-coverage.spec.mjs`; a deterministic timeline-filter fixture (`#timelineEmpty`) and a service-worker-update fixture (a waiting worker to render the update toast).
+  Acceptance: The timeline "no events match these filters" empty state and the service-worker update toast each run axe + overflow from a deterministic fixture.
+  Complexity: M
 
 - [ ] P2 — Reduce homepage catalog DOM cost without losing static access
   Why: The built homepage carries about 400 KB and 2,254 catalog nodes, increasing parse, style, memory, and interaction cost as the portfolio grows.
