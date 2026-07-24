@@ -99,14 +99,13 @@
         .hi{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
         .ht{max-width:560px}
         @keyframes pulse{0%,100%{opacity:.4;box-shadow:0 0 4px var(--grn-glow)}50%{opacity:1;box-shadow:0 0 16px var(--grn-glow)}}
-        .hn{font-size:clamp(42px,6vw,68px);font-weight:800;line-height:1.08;letter-spacing:-.04em;margin-bottom:8px}
-        .hn .a{background:linear-gradient(135deg,var(--blue),var(--pur),var(--teal),var(--blue));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 6s ease-in-out infinite}
-        @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .hn{font-size:clamp(40px,5.4vw,62px);font-weight:770;line-height:1.08;letter-spacing:-.04em;margin-bottom:8px}
+        .hn .a{color:var(--blue)}
         .hr{font-family:var(--mono);font-size:clamp(14px,2vw,17px);color:var(--t2);margin-bottom:24px}
         .hero-summary{font-size:17px;color:var(--t2);line-height:1.7;margin-bottom:36px;max-width:480px}
         .hs{display:flex;gap:36px;margin-bottom:36px}
         .hs-item{position:relative}
-        .hsn{font-family:var(--mono);font-size:32px;font-weight:700;background:linear-gradient(135deg,var(--t1),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hsn{font-family:var(--mono);font-size:32px;font-weight:700;color:var(--t1)}
         .hsn[data-live]{transition:opacity .2s}
         .stat-updating{opacity:0}
         .hsl{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:var(--ls-caps);margin-top:2px}
@@ -357,7 +356,7 @@
         .lc2:hover{border-color:transparent}
 
         /* Animated Avatar Gradient Ring */
-        .hero-avatar.loaded{border:2px solid transparent;background-origin:border-box;background-clip:padding-box,border-box;background-image:linear-gradient(var(--bg),var(--bg)),conic-gradient(from var(--border-angle),var(--blue),var(--pur),var(--teal),var(--grn),var(--blue));animation:borderSpin 4s linear infinite}
+        .hero-avatar.loaded{border:2px solid transparent;background-origin:border-box;background-clip:padding-box,border-box;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,var(--blue),var(--teal))}
 
         /* Color-Tinted Section Backgrounds */
         #live::before{background:radial-gradient(ellipse at 70% 30%,rgba(74,222,128,.04) 0%,transparent 60%)!important}
@@ -3548,19 +3547,14 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{
   background-clip:padding-box;
 }
 
-/* ---------- AA. Light theme — gradient text readability ---------- */
+/* ---------- AA. Light theme — hero wordmark + metrics ---------- */
 html[data-theme="light"] .hn .a{
-  background:linear-gradient(135deg,#2563eb,#7c3aed,#0e9768,#2563eb);
-  background-size:300% 300%;
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
+  color:var(--t1);
+  -webkit-text-fill-color:currentColor;
 }
 html[data-theme="light"] .hsn{
-  background:linear-gradient(135deg,var(--t1),#2563eb);
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
+  color:var(--t1);
+  -webkit-text-fill-color:currentColor;
 }
 
 /* ---------- BB. Light theme — connect section glow ---------- */
@@ -4915,9 +4909,8 @@ html[data-theme="light"] #nav{
   letter-spacing:-.065em;
 }
 .hn .a{
-  background:linear-gradient(135deg,#62e6d8 0%,#79c4ff 44%,#a98bff 100%);
-  -webkit-background-clip:text;
-  background-clip:text;
+  color:var(--t1);
+  -webkit-text-fill-color:currentColor;
 }
 .hr{
   max-width:30ch;
@@ -5853,12 +5846,17 @@ body.route-home .gh-grid .gh-card{
   box-shadow:none;
 }
 body.route-home .gh-grid .gh-card::before{display:none}
-body.route-home .gh-grid .gh-card:hover{
+body.route-home .gh-grid .gh-card:hover,
+body.route-home .gh-grid .gh-card:focus-visible{
   transform:none;
-  border-color:var(--border-soft);
+  border-bottom-color:var(--border-strong);
   background:transparent;
   box-shadow:none;
 }
+body.route-home .gh-grid .gh-card:hover .gh-name,
+body.route-home .gh-grid .gh-card:focus-visible .gh-name{color:var(--blue)}
+body.route-home .gh-grid .gh-card:hover .gh-rank,
+body.route-home .gh-grid .gh-card:focus-visible .gh-rank{color:var(--blue)}
 body.route-home .gh-grid .gh-head{grid-area:head;display:block}
 body.route-home .gh-grid .gh-tag,
 body.route-home .gh-grid .gh-stars{display:none}
@@ -5937,6 +5935,16 @@ body.route-home .lg .lb2{
 body.route-home .lg .lb2::before{content:'';width:7px;height:7px;border-radius:7px;background:currentColor}
 body.route-home .lg .lcd{grid-area:desc;align-self:start;font-size:15px;line-height:1.5}
 body.route-home .lg .lc2-foot{display:none}
+body.route-home .lg .lc2::before{display:none}
+body.route-home .lg .lc2:hover,
+body.route-home .lg .lc2:focus-visible{
+  transform:none;
+  border-bottom-color:var(--border-strong);
+  background:transparent;
+  box-shadow:none;
+}
+body.route-home .lg .lc2:hover .lcn,
+body.route-home .lg .lc2:focus-visible .lcn{color:var(--blue)}
 
 /* Catalog and controls become a single product surface. */
 body.route-home .catalog-controls{
