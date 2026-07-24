@@ -39,12 +39,12 @@ Last normalized: 2026-06-29
 
 ### P2
 
-- [ ] P2 — Enable Trusted Types via meta CSP
-  Why: Trusted Types reached cross-browser Baseline (Firefox Feb 2026), the runtime already reports zero HTML sinks (`SafeDOM`, `csp:audit`: `runtime HTML sink writes: 0`), and `require-trusted-types-for 'script'` is deliverable through `<meta http-equiv>` on GitHub Pages — so the original blocker (17 innerHTML rewrites, header-only) no longer applies.
-  Evidence: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for ; https://www.uriports.com/blog/csp-trusted-types/ ; CLAUDE.md "Trusted Types Readiness"; Astro 7.1.0 `script-src-elem`/`style-src-attr` directives. Supersedes the stale "Add Trusted Types CSP directive" item in `Roadmap_Blocked.md`.
-  Touches: `src/layouts/Base.astro` (CSP meta), `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `tests/playwright/portfolio-audits.spec.mjs`.
-  Acceptance: Built pages ship `require-trusted-types-for 'script'` (plus a named default policy only if any sink reappears); the browser audit confirms zero Trusted Types violations across public routes; `csp:audit:dist` stays green; a test fails if a raw HTML sink is reintroduced.
-  Complexity: M
+- [ ] P2 — Enable Trusted Types via meta CSP (requires a default policy)
+  Why: Trusted Types reached cross-browser Baseline (Feb 2026) and adds defense-in-depth against DOM XSS.
+  Correction (2026-07-24): The "zero sinks, no policy needed" premise is WRONG — verified by building with `require-trusted-types-for 'script'` and driving the site in Chromium. `csp:audit`'s "runtime HTML sink writes: 0" only covers first-party HTML sinks; two real Trusted Types sinks still fire and block: (1) `navigator.serviceWorker.register('/sw.js')` in `public/scripts/service-worker.js:73` needs a `TrustedScriptURL` (naive enablement BREAKS service-worker registration and the PWA), and (2) the third-party Pagefind component UI (`/pagefind/pagefind-component-ui.js`) assigns `innerHTML` (`TrustedHTML`) on `/search/`. Both require a Trusted Types **default policy**; the Pagefind sink is inside vendored third-party code that cannot be rewritten to SafeDOM.
+  Touches: `src/layouts/Base.astro` (CSP meta + an early inline `trustedTypes.createPolicy('default', ...)` that returns the SW URL and Pagefind HTML), `public/scripts/service-worker.js`, `scripts/audit-csp.mjs` (teach it the SW-register + Pagefind sinks), `test/csp-audit.test.mjs`, `tests/playwright` (assert zero TT violations across `/`, `/search/`, and cmdk/video interaction).
+  Acceptance: Built pages ship `require-trusted-types-for 'script'` with a minimal, documented default policy; a Chromium run of `/`, `/search/`, `/status/`, plus cmdk-open and video-play reports zero Trusted Types violations; service-worker registration and offline still work; a test fails if a first-party raw HTML sink is reintroduced.
+  Complexity: L
 
 - [ ] P2 — Adopt Pagefind 1.5 metadata weighting for skill/tag-aware ranking
   Why: Broad language/skill queries currently return repetitive keyword excerpts; Pagefind 1.5 searches metadata by default with configurable per-field weights, exposes `matchedMetaFields` for faceted result badges, and adds `plain_excerpt` for clean unhighlighted snippets — directly improving result relevance and card quality.
