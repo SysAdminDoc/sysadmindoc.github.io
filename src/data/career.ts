@@ -5,6 +5,10 @@ export interface CareerRole {
   company: string;
   location: string;
   period: string;
+  /** ISO 8601 (YYYY-MM-DD) start date for JSON Resume / machine consumers. */
+  startDate: string;
+  /** ISO 8601 (YYYY-MM-DD) end date; omitted for the current role. */
+  endDate?: string;
   tag: string;
   tone: 'current' | 'previous';
   summary: string;
@@ -29,6 +33,7 @@ export const careerRoles: readonly CareerRole[] = [
     company: 'Maven Imaging',
     location: 'Sarasota, FL',
     period: 'Feb 2021 — Present',
+    startDate: '2021-02-01',
     tag: 'Current',
     tone: 'current',
     summary: 'Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.',
@@ -46,6 +51,8 @@ export const careerRoles: readonly CareerRole[] = [
     company: 'ThinkTV (PBS Affiliate)',
     location: 'Dayton, OH',
     period: 'Apr 2014 — Feb 2025',
+    startDate: '2014-04-01',
+    endDate: '2025-02-01',
     tag: '~11 years',
     tone: 'previous',
     note: 'Concurrent with the start of the Maven Imaging role.',
@@ -63,6 +70,8 @@ export const careerRoles: readonly CareerRole[] = [
     company: 'Dayton Technology Group (MSP)',
     location: 'Dayton, OH',
     period: 'Jun 2010 — Apr 2014',
+    startDate: '2010-06-01',
+    endDate: '2014-04-01',
     tag: '~4 years',
     tone: 'previous',
     summary: 'Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.',
