@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Aligned the installed-PWA splash/status colors and offline page with the light-first Operational Clarity shell (`#f7f5ef`) and removed the stale "availability" reference from the mobile install-screenshot label.
 - Restored usable primary navigation when JavaScript is unavailable: the real navigation links now stay visible at the mobile/interior collapse breakpoints (instead of hiding behind an inert hamburger), and the script-only mobile toggle, command-palette, and theme controls are hidden. Gated on the `.js` marker that `head-init.js` sets before first paint, so JavaScript visitors keep the existing disclosure behavior.
 - Bound every service-worker background cache write to the fetch-event lifetime with `FetchEvent.waitUntil()` (navigation stale-while-revalidate, cross-origin API/CDN, and same-origin asset revalidation), so a cache refresh can no longer be terminated after an immediate cached response returns; offline freshness is now deterministic.
 - Added the live-app availability audit (`liveapps:audit`) to the `deploy:preflight` gate so publish readiness fails on any unhealthy advertised live app, missing/stale screenshot, or broken manifest provenance.

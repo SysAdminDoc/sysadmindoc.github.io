@@ -10,13 +10,6 @@ Last normalized: 2026-06-29
 
 ### P0
 
-- [ ] P0 — Complete the Operational Clarity migration across public assets
-  Why: Search previews, installed-PWA chrome, icons, install screenshots, and offline recovery still show the retired terminal identity, stale counts, and removed claims.
-  Evidence: `public/og.png`, `public/favicon.svg`, `public/icon-*.png`, `public/manifest.json`, `public/screenshots/install/*`, `public/offline.html`, `public/styles/offline.css`; W3C Web App Manifest screenshots guidance.
-  Touches: `src/layouts/Base.astro`, `src/pages/og/[slug].png.ts`, `public/og.png`, favicon/app-icon assets, `public/manifest.json`, install screenshots, offline HTML/CSS, asset/PWA/OG tests.
-  Acceptance: Every asset uses the MP/Operational Clarity system and current reviewed facts; wide/narrow install screenshots come from the current build; light-first splash colors match shell tokens; generated-card fixtures cover `constructor` and `toString`; audits fail on retired phrases, stale counts, or asset dates.
-  Complexity: M
-
 ### P1
 
 - [ ] P1 — Make the dark audit lane exercise dark theme
