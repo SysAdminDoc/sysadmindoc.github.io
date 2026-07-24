@@ -92,6 +92,14 @@ export const cmdkProjects: CmdkProject[] = buildCmdkProjects();
 
 export const cmdkQuickLinks = [
   {
+    label: 'Project Catalog',
+    url: '/catalog/',
+    desc: 'Browse every public project in one place with filters, search, sort, and freshness signals.',
+    badge: 'PAGE',
+    tone: 'blue',
+    searchTerms: ['catalog', 'all projects', 'archive', 'browse', 'full catalog'],
+  },
+  {
     label: 'Full-Text Search',
     url: '/search/',
     desc: 'Search portfolio pages, language tracks, release history, and archive decisions.',

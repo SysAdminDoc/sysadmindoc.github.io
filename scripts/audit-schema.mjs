@@ -54,6 +54,10 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
     checks: checkReviewedInteriorRoute,
   }],
+  ['/catalog/', {
+    types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
 ]);
 
 function fail(message) {

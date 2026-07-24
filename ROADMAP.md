@@ -3,8 +3,8 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.21.24
-Last normalized: 2026-06-29
+Current version: v0.26.0
+Last normalized: 2026-07-24
 
 ## Research-Driven Additions
 
@@ -13,14 +13,6 @@ Last normalized: 2026-06-29
 ### P1
 
 ### P2
-
-- [ ] P2 — Reduce homepage catalog DOM cost without losing static access
-  Why: The built homepage carries about 400 KB and 2,254 catalog nodes, increasing parse, style, memory, and interaction cost as the portfolio grows.
-  Evidence: built `dist/index.html`, `scripts/audit-dom-size.mjs`, Chrome/web.dev excessive-DOM guidance.
-  Touches: homepage/catalog route architecture, `CatalogEntry.astro`, catalog URL state, Pagefind indexing, sitemap/feed links, DOM/bundle/interaction tests.
-  Acceptance: The homepage stays below a measured <=1,400-node budget; all reviewed projects remain reachable with JavaScript disabled and indexable through static pagination or an equivalent static boundary; direct GitHub links and filter/search URL semantics remain intact.
-  Note (2026-07-24): The homepage already PASSES every current DOM budget (`npm run dom:audit`: 2254/2750 nodes, 178/220 cards, 401/500 KB). The proposed 1,400-node target is aspirational, not a current failure, and is only reachable by restructuring the catalog into static pagination (or an equivalent boundary) — a large architectural change that touches no-JS access, filter/sort/view URL state, Pagefind indexing, and SEO on a working, gated homepage. High risk for marginal gain; keep as a deliberate future bet, not a routine drain item.
-  Complexity: L
 
 ## Research-Driven Additions (2026-07-24 pass)
 

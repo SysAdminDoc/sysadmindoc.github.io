@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import CatalogSection from '../components/CatalogSection.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import { rankedCatalog, catalogTotal } from '../data/catalog-render';
+import { liveApps } from '../data/portfolio';
+
+const title = 'Project Catalog — Matt Parker';
+const pageOg = interiorOgPageBySlug['catalog'];
+const pageFreshness = pageFreshnessBySlug['catalog'];
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+const liveAppCount = liveApps.length;
+
+const cmdkSections = [
+  { label: 'Overview', href: '#catalog-overview', desc: 'What the full project catalog contains.', badge: 'CATALOG' },
+  { label: 'All projects', href: '#catalog', desc: `Search, sort, and filter all ${catalogTotal} public projects.`, badge: `${catalogTotal}` },
+] as const;
+---
+<Base
+  title={title}
+  description={pageOg.description}
+  ogImage={pageOg.ogImage}
+  ogImageAlt={pageOg.ogImageAlt}
+  cmdkSections={cmdkSections}
+>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="catalog" contextLabel="Full project catalog" contextTone="blue" />
+
+  <main id="main" class="catalog-page" data-pagefind-body data-pagefind-filter="Scope:Catalog">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Catalog"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Catalog"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="si page-shell" id="catalog-overview">
+      <div class="sh rv">
+        <div class="sl">// Catalog</div>
+        <h1 class="st catalog-page-title">Project catalog</h1>
+        <p class="sd">Every public project in one place — {catalogTotal} repositories plus {liveAppCount} live apps. Search, sort, and filter the whole archive; every card opens its GitHub repository directly.</p>
+      </div>
+      <div class="catalog-page-actions page-actions rv">
+        <a href="/#greatest-hits" class="btn bg2">See the highlights</a>
+        <a href="/search/" class="btn bg2">Full-text search</a>
+        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="page-action-link">Open GitHub workspace</a>
+      </div>
+    </div>
+    <Divider />
+
+    <CatalogSection entries={rankedCatalog} variant="full" total={catalogTotal} />
+  </main>
+
+  <footer>
+    <div class="fi page-footer-shell">
+      <div class="footer-brand">
+        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
+        <p class="footer-summary">The catalog is the complete public archive. The homepage highlights the strongest work; the timeline shows momentum over time.</p>
+      </div>
+      <nav class="fl" aria-label="Footer navigation"><a href="/#greatest-hits">Highlights</a><a href="/timeline/">Timeline</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  .catalog-page{min-height:calc(100vh - 200px)}
+  .catalog-page-title{font-size:clamp(40px,5vw,64px)!important}
+  .catalog-page-actions{margin-top:22px}
+</style>

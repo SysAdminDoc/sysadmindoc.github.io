@@ -96,6 +96,14 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     schemaTypes: ['CollectionPage', 'WebPage'],
     visibleFreshness: false,
   },
+  {
+    slug: 'catalog',
+    route: '/catalog/',
+    label: 'Project Catalog',
+    lastReviewed: '2026-07-24',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: false,
+  },
 ];
 
 export const pageFreshnessBySlug = Object.fromEntries(

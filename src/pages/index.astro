@@ -2,32 +2,22 @@
 import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import LiveCard from '../components/LiveCard.astro';
-import CatalogEntry from '../components/CatalogEntry.astro';
+import CatalogSection from '../components/CatalogSection.astro';
 import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { experienceLabel } from '../data/identity';
 import { fallbackRepoCount } from '../data/derived';
-import {
-  computeProjectRankings,
-  formatProjectRankingDisplayLabel,
-  formatProjectRankingLabel,
-  getReleaseDownloadTotals,
-  rankCatalogEntries,
-} from '../data/project-ranking.mjs';
-import {
-  computeCatalogViewState,
-  computeViewCounts,
-  computeCategoryCounts,
-} from '../data/catalog-views.mjs';
+import { computeCategoryCounts } from '../data/catalog-views.mjs';
+import { rankedCatalog, HOMEPAGE_CATALOG_LIMIT } from '../data/catalog-render';
 import {
   DONUT_R,
   buildDonutLangCount,
   computeDonutArcs,
 } from '../data/svg-arc.mjs';
 
-// Build-time: load cached star counts + aggregate stats + per-repo metadata (fetch-stars.mjs).
-let stars: Record<string, number> = {};
+// Build-time: load cached aggregate stats + per-repo metadata (fetch-stars.mjs).
+// Per-repo star counts feed the catalog cards via ../data/catalog-render.
 let meta: Record<string, { stars: number; pushedAt: string; updatedAt: string; language: string | null }> = {};
 let stats = {
   totalRepos: fallbackRepoCount,
@@ -40,10 +30,6 @@ let stats = {
   pushDays: [] as string[],
   fetchedAt: null as string | null,
 };
-try {
-  const mod = await import('../data/_stars.json');
-  stars = (mod.default ?? mod) as Record<string, number>;
-} catch {}
 try {
   const mod = await import('../data/_stats.json');
   stats = { ...stats, ...(mod.default ?? mod) };
@@ -59,26 +45,10 @@ try {
   releases = (mod.default ?? mod) as typeof releases;
 } catch {}
 const latestRelease = releases[0];
-const releaseDownloadTotals = getReleaseDownloadTotals(releases);
-const releaseDownloadRepos = new Set(
-  [...releaseDownloadTotals.entries()]
-    .filter(([, downloads]) => downloads > 0)
-    .map(([repo]) => repo),
-);
-const freshnessReference = new Date(stats.fetchedAt ?? stats.lastPushedAt ?? Date.now()).getTime();
-const projectRankings = computeProjectRankings(catalog, {
-  stars,
-  meta,
-  releaseDownloadTotals,
-  referenceDate: stats.fetchedAt ?? stats.lastPushedAt ?? Date.now(),
-});
-const rankedCatalog = rankCatalogEntries(catalog, projectRankings);
-const catalogViewState = computeCatalogViewState(catalog, {
-  meta,
-  releaseDownloadRepos,
-  referenceMs: freshnessReference,
-});
-const viewCounts = computeViewCounts(catalogViewState);
+// The homepage renders a ranked preview slice; the full filterable list lives at
+// /catalog/ (static, no-JS reachable, Pagefind-indexed). Both derive from the
+// same shared ranked catalog so ordering and freshness never drift.
+const previewCatalog = rankedCatalog.slice(0, HOMEPAGE_CATALOG_LIMIT);
 
 // Derive category counts from catalog data (fixes hardcoded-count gotcha)
 const catCounts = computeCategoryCounts(catalog);
@@ -500,73 +470,7 @@ const cmdkSections = [
   </div></section>
   <Divider />
 
-  <section id="catalog" aria-label="Project catalog"><div class="si">
-    <div class="sh rv"><div class="sl">03 / Catalog</div><h2 class="st">Project catalog</h2><p class="sd">Search and filter {catalogTotal} public projects.</p></div>
-    <search aria-label="Filter and search the project catalog">
-    <div class="catalog-controls rv">
-      <form class="catalog-search-form" id="catalogSearchForm" action="/search/" method="get" role="search" aria-label="Search projects">
-      <div class="search-wrap">
-        <label class="sr-only" for="searchInput">Search projects</label>
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" class="search-input" id="searchInput" name="q" placeholder="Search projects…" autocomplete="off" spellcheck="false" inputmode="search" enterkeyhint="search" aria-label="Search projects">
-      </div>
-      <noscript><button type="submit" class="catalog-submit">Search</button></noscript>
-      </form>
-      <label class="sr-only" for="sortSelect">Sort projects</label>
-      <select class="sort-select" id="sortSelect" aria-label="Sort projects">
-        <option value="default">Recommended</option>
-        <option value="stars">Most stars</option>
-        <option value="name">A-Z</option>
-        <option value="name-desc">Z-A</option>
-        <option value="recent">Recently updated</option>
-      </select>
-    </div>
-    <div class="cf catalog-views rv" id="viewBtns" role="group" aria-label="Catalog views">
-      <button type="button" class="fb catalog-view act" data-view="all" data-label="All views" aria-pressed="true">All <span class="fc">{viewCounts.all}</span></button>
-      <button type="button" class="fb catalog-view" data-view="new" data-label="New projects" aria-pressed="false">New <span class="fc">{viewCounts.new}</span></button>
-      <button type="button" class="fb catalog-view" data-view="recent" data-label="Recently updated" aria-pressed="false">Updated <span class="fc">{viewCounts.recent}</span></button>
-      <button type="button" class="fb catalog-view" data-view="download" data-label="Has download" aria-pressed="false">Downloads <span class="fc">{viewCounts.download}</span></button>
-    </div>
-    <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
-      <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{catalogTotal}</span></button>
-      {filterButtons.map((f) => (
-        <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
-      ))}
-    </div>
-    </search>
-    <div class="catalog-feedback rv">
-      <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">{catalogTotal} projects · recommended order</div>
-      <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear filters</button>
-    </div>
-    <div class="cg" id="catalogGrid" data-sort="default">
-      {rankedCatalog.map((entry, index) => {
-        const viewState = catalogViewState.get(entry.repo);
-        const ranking = projectRankings.get(entry.repo);
-        return (
-          <CatalogEntry
-            entry={entry}
-            index={index}
-            rank={ranking?.rank}
-            rankScore={ranking?.score}
-            rankLabel={formatProjectRankingLabel(ranking)}
-            rankDisplayLabel={formatProjectRankingDisplayLabel(ranking)}
-            stars={stars[entry.repo]}
-            pushedAt={meta[entry.repo]?.pushedAt}
-            updatedAt={meta[entry.repo]?.updatedAt ?? meta[entry.repo]?.pushedAt}
-            isNew={viewState?.isNew}
-            isRecent={viewState?.isRecent}
-            hasDownload={viewState?.hasDownload}
-          />
-        );
-      })}
-    </div>
-    <div class="no-results" id="noResults" hidden>
-      <svg class="no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-      <div class="no-results-title">No matches</div>
-      <p class="no-results-copy">Try a broader search or clear the filters.</p>
-      <button type="button" class="catalog-reset no-results-action" id="catalogResetEmpty">Reset filters</button>
-    </div>
-  </div></section>
+  <CatalogSection entries={previewCatalog} variant="preview" total={catalogTotal} browseAllHref="/catalog/" />
   <Divider />
 
   <section id="skills" aria-label="Stack and skills"><div class="si">
