@@ -10,13 +10,6 @@ Last normalized: 2026-06-29
 
 ### P0
 
-- [ ] P0 — Make publish readiness enforce current portfolio truth
-  Why: The current deploy data is stale, four active repositories are unreviewed, eight catalog references are inactive, one advertised live app returns 404, and four featured downloads lack required provenance.
-  Evidence: `package.json:27-30`, `scripts/summarize-generated-data.mjs`, `scripts/audit-catalog.mjs`, `scripts/audit-live-apps.mjs`, `src/data/projects.ts`; verified command failures on 2026-07-21.
-  Touches: `package.json`, `src/data/projects.ts`, `src/data/catalog-policy.json`, generated `src/data/_*.json`, `scripts/summarize-generated-data.mjs`, `scripts/audit-live-apps.mjs`, preflight tests.
-  Acceptance: Generated data is <=36 hours old; catalog policy resolves AIUsageTracker, Cataclysm, ForceBGTab, SurfaceMedic and the eight inactive references; ImageForge is removed/repaired; `data:summary:deploy` enables `--fail-on-unsigned-featured-releases`; `deploy:preflight` runs live-app health and fails on any recurrence.
-  Complexity: M
-
 - [ ] P0 — Complete the Operational Clarity migration across public assets
   Why: Search previews, installed-PWA chrome, icons, install screenshots, and offline recovery still show the retired terminal identity, stale counts, and removed claims.
   Evidence: `public/og.png`, `public/favicon.svg`, `public/icon-*.png`, `public/manifest.json`, `public/screenshots/install/*`, `public/offline.html`, `public/styles/offline.css`; W3C Web App Manifest screenshots guidance.

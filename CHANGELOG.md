@@ -4,6 +4,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+- Added the live-app availability audit (`liveapps:audit`) to the `deploy:preflight` gate so publish readiness fails on any unhealthy advertised live app, missing/stale screenshot, or broken manifest provenance.
 - Updated Astro to 7.1.3 and pinned patched `svgo` (>=4.0.2), `postcss` (>=8.5.18), and `fast-uri` (>=3.1.4) via overrides, clearing the moderate View Transition reflected-XSS advisory and three high advisories; `npm audit` now reports zero vulnerabilities and `npm run deps:audit` passes.
 
 ## [v0.23.0] - 2026-07-23
