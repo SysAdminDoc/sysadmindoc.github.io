@@ -2,6 +2,26 @@
 (function(){
     if(!('serviceWorker' in navigator))return;
     let serviceWorkerRefreshRequested=false;
+    const DISMISS_KEY='sw-update-dismissed';
+    function dismissedVersion(){
+        try{return sessionStorage.getItem(DISMISS_KEY);}catch(e){return null;}
+    }
+    function rememberDismissed(version){
+        try{if(version)sessionStorage.setItem(DISMISS_KEY,version);}catch(e){/* storage unavailable */}
+    }
+    function workerVersion(worker){
+        return new Promise(resolve=>{
+            if(!worker||typeof MessageChannel==='undefined'){resolve(null);return;}
+            let settled=false;
+            const finish=value=>{if(settled)return;settled=true;clearTimeout(timer);resolve(value);};
+            const timer=setTimeout(()=>finish(null),1500);
+            try{
+                const channel=new MessageChannel();
+                channel.port1.onmessage=event=>finish(event&&event.data&&event.data.version||null);
+                worker.postMessage({type:'GET_VERSION'},[channel.port2]);
+            }catch(e){finish(null);}
+        });
+    }
     function setMessage(container,title,body){
         container.textContent='';
         const strong=document.createElement('strong');
@@ -10,8 +30,13 @@
         span.textContent=body;
         container.append(strong,span);
     }
-    function showServiceWorkerUpdateToast(worker){
+    async function showServiceWorkerUpdateToast(worker){
         if(!worker||document.querySelector('.sw-update-toast'))return;
+        const version=await workerVersion(worker);
+        // Suppress only if THIS exact build was dismissed this session; a newer
+        // waiting worker has a different version and prompts again.
+        if(version&&version===dismissedVersion())return;
+        if(document.querySelector('.sw-update-toast'))return;
         const toast=document.createElement('div');
         toast.className='sw-update-toast';
         toast.setAttribute('role','region');
@@ -38,6 +63,7 @@
             worker.postMessage({type:'SKIP_WAITING'});
         });
         dismiss.addEventListener('click',()=>{
+            rememberDismissed(version);
             toast.classList.remove('show');
             setTimeout(()=>toast.remove(),250);
         });

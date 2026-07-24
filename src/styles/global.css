@@ -137,6 +137,7 @@
         .lb2 .status-dot{display:inline-block;width:6px;height:6px;border-radius:4px;margin-right:4px;vertical-align:middle;background:var(--t3);opacity:.5}
         .lb2 .status-dot.up{background:var(--grn);box-shadow:0 0 6px var(--grn-glow);opacity:1;animation:pulse 2s ease-in-out infinite}
         .lb2 .status-dot.down{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,.25);opacity:1}
+        .lb2 .status-dot.unknown{background:var(--yel);opacity:.85;animation:none}
 
         /* Live Apps */
         .lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}

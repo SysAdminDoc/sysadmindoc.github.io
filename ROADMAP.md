@@ -41,13 +41,6 @@ Last normalized: 2026-06-29
   Acceptance: A fresh service-worker install can open resume, status, timeline, screenshots, healthcare, archive, 404/offline, and one representative language lane while offline; the route list is generated from reviewed public routes and stays within an explicit cache budget.
   Complexity: M
 
-- [ ] P1 — Make update and live-status recovery states truthful
-  Why: “Not now” immediately returns on the next page for the same waiting worker, and offline live-app status can remain stuck at “checking.”
-  Evidence: `public/scripts/service-worker.js:40-48`, `public/scripts/home-github.js:302-329`.
-  Touches: service-worker registration UI, homepage GitHub status logic, interaction and SW lifecycle tests.
-  Acceptance: Dismissal is remembered per waiting worker for the session, a newer worker can prompt again, offline state reads “unavailable offline,” and the status retries and resolves on the `online` event.
-  Complexity: S
-
 ### P2
 
 - [ ] P2 — Cover complete routes and high-risk interaction states visually

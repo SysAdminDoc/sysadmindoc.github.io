@@ -125,6 +125,11 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+    if (e.data && e.data.type === 'GET_VERSION' && e.ports && e.ports[0]) {
+        // Lets the page key its "Not now" dismissal on this exact build, so a
+        // newer waiting worker (different CACHE version) re-prompts.
+        e.ports[0].postMessage({ version: CACHE });
+    }
 });
 
 self.addEventListener('fetch', (e) => {
