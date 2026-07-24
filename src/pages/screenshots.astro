@@ -41,6 +41,10 @@ const apps = liveApps.map((app) => {
 });
 
 const categories = [...new Set(apps.map((a) => a.category))].sort();
+// Only expose a category facet once there are at least two distinct categories.
+// With a single category, "All" and that category are identical, so the control
+// adds friction without a meaningful choice (and its empty state is unreachable).
+const showFilters = categories.length >= 2;
 
 const cmdkSections = [
   { label: 'Gallery', href: '#screenshots-gallery', desc: 'Visual grid of all live-app product surfaces.', badge: `${apps.length}` },
@@ -68,24 +72,28 @@ const cmdkSections = [
 
       <SectionJumpNav items={cmdkSections} />
 
-      <div class="screenshots-filters rv" role="group" aria-label="Filter by category">
-        <button type="button" class="screenshots-filter-btn active" data-filter="all" data-label="all live-app screenshots" aria-pressed="true">All ({apps.length})</button>
-        {categories.map((cat) => {
-          const count = apps.filter((a) => a.category === cat).length;
-          return (
-            <button type="button" class="screenshots-filter-btn" data-filter={cat} data-label={categoryLabels[cat] ?? cat} aria-pressed="false">
-              {categoryLabels[cat] ?? cat} ({count})
-            </button>
-          );
-        })}
-      </div>
-      <p class="screenshots-status" id="screenshotsStatus" role="status" aria-live="polite">
-        Showing all {apps.length} live-app screenshots.
-      </p>
-      <div class="page-empty screenshots-empty" id="screenshotsEmpty" hidden>
-        <strong>No screenshots match this filter.</strong>
-        <span>Reset the gallery to review every captured live-app surface.</span>
-      </div>
+      {showFilters && (
+        <Fragment>
+          <div class="screenshots-filters rv" role="group" aria-label="Filter by category">
+            <button type="button" class="screenshots-filter-btn active" data-filter="all" data-label="all live-app screenshots" aria-pressed="true">All ({apps.length})</button>
+            {categories.map((cat) => {
+              const count = apps.filter((a) => a.category === cat).length;
+              return (
+                <button type="button" class="screenshots-filter-btn" data-filter={cat} data-label={categoryLabels[cat] ?? cat} aria-pressed="false">
+                  {categoryLabels[cat] ?? cat} ({count})
+                </button>
+              );
+            })}
+          </div>
+          <p class="screenshots-status" id="screenshotsStatus" role="status" aria-live="polite">
+            Showing all {apps.length} live-app screenshots.
+          </p>
+          <div class="page-empty screenshots-empty" id="screenshotsEmpty" hidden>
+            <strong>No screenshots match this filter.</strong>
+            <span>Reset the gallery to review every captured live-app surface.</span>
+          </div>
+        </Fragment>
+      )}
 
       <div class="screenshots-grid" id="screenshots-grid">
         {apps.map((app) => (
