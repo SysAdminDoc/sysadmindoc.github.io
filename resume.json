@@ -29,7 +29,8 @@
       "name": "Maven Imaging",
       "position": "Senior Technical Support Manager",
       "location": "Sarasota, FL",
-      "summary": "Feb 2021 — Present — Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
+      "startDate": "2021-02-01",
+      "summary": "Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
       "highlights": [
         "Coordinate customer migrations, legacy archive transfers, cutovers, and validation follow-up",
         "Support customer workstations, network connectivity, account access, and vendor application issues",
@@ -52,7 +53,9 @@
       "name": "ThinkTV (PBS Affiliate)",
       "position": "Systems Administrator",
       "location": "Dayton, OH",
-      "summary": "Apr 2014 — Feb 2025 — Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.",
+      "startDate": "2014-04-01",
+      "endDate": "2025-02-01",
+      "summary": "Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.",
       "highlights": [
         "Supported Hyper-V virtualization and server consolidation for Windows Server workloads",
         "Administered endpoint management for Windows workstation fleets using SCCM-era tooling",
@@ -73,7 +76,9 @@
       "name": "Dayton Technology Group (MSP)",
       "position": "IT Support Technician",
       "location": "Dayton, OH",
-      "summary": "Jun 2010 — Apr 2014 — Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.",
+      "startDate": "2010-06-01",
+      "endDate": "2014-04-01",
+      "summary": "Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.",
       "highlights": [
         "Assisted with server refreshes and legacy Windows Server decommissioning",
         "Documented client networks, topology notes, runbooks, and recurring support procedures",

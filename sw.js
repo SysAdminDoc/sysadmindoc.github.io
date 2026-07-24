@@ -1,12 +1,29 @@
-const CACHE = 'portfolio-v0.23.0';
+const CACHE = 'portfolio-v0.26.1';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE = [
   "/",
   "/offline.html",
   "/styles/offline.css",
-  "/search/",
-  "/releases/",
+  "/404.html",
+  "/ai/",
+  "/archive/",
+  "/catalog/",
+  "/healthcare-it/",
+  "/lang/cs/",
+  "/lang/javascript/",
+  "/lang/kotlin/",
+  "/lang/powershell/",
+  "/lang/python/",
+  "/lang/security/",
+  "/lang/web/",
   "/now/",
+  "/releases/",
+  "/resume/",
+  "/screenshots/",
+  "/search/",
+  "/status/",
+  "/timeline/",
+  "/uses/",
   "/manifest.json",
   "/favicon.svg",
   "/apple-touch-icon.png",
@@ -16,17 +33,18 @@ const PRECACHE = [
   "/atom.xml",
   "/_assets/_slug_.DZTTMy9Y.css",
   "/_assets/ai.DakrrUoc.css",
-  "/_assets/global.BiZML56x.css",
+  "/_assets/catalog.CA--t_VP.css",
+  "/_assets/global.C0rt_FJ3.css",
   "/_assets/healthcare-it.03D11SDD.css",
   "/_assets/index.BgPzmJHS.css",
   "/_assets/interior-quiet.xrEerpNK.css",
   "/_assets/now.CawLgQCg.css",
-  "/_assets/page.ChryR_Se.js",
+  "/_assets/page.BcFG7dWc.js",
   "/_assets/releases.BPY79pXl.css",
   "/_assets/resume.G_zNejAj.css",
   "/_assets/screenshots.CSiN0x1c.css",
   "/_assets/search.NwDIztzZ.css",
-  "/_assets/status.CY99lP4s.css",
+  "/_assets/status.BPMEZC6S.css",
   "/_assets/uses.D1QuwVMe.css",
   "/scripts/cmdk-loader.js",
   "/scripts/cmdk.js",
@@ -48,33 +66,35 @@ const PRECACHE = [
   "/scripts/shared.js",
   "/scripts/theme-toggle.js",
   "/scripts/timeline.js",
+  "/scripts/trusted-types.js",
   "/fonts/jetbrains-mono-latin-ext.woff2",
   "/fonts/jetbrains-mono-latin.woff2",
   "/fonts/outfit-latin-ext.woff2",
   "/fonts/outfit-latin.woff2",
-  "/pagefind/filter/en_feb170f.pf_filter",
+  "/pagefind/filter/en_7599c5f.pf_filter",
   "/pagefind/fragment/en_1528e86.pf_fragment",
   "/pagefind/fragment/en_25d55dc.pf_fragment",
   "/pagefind/fragment/en_31a3861.pf_fragment",
-  "/pagefind/fragment/en_38a8a7d.pf_fragment",
   "/pagefind/fragment/en_50ff48b.pf_fragment",
   "/pagefind/fragment/en_57d2b17.pf_fragment",
   "/pagefind/fragment/en_6362be6.pf_fragment",
-  "/pagefind/fragment/en_6e604e8.pf_fragment",
   "/pagefind/fragment/en_755ac3c.pf_fragment",
+  "/pagefind/fragment/en_764d36b.pf_fragment",
+  "/pagefind/fragment/en_7883674.pf_fragment",
   "/pagefind/fragment/en_84672a6.pf_fragment",
   "/pagefind/fragment/en_89d7176.pf_fragment",
+  "/pagefind/fragment/en_9017d27.pf_fragment",
   "/pagefind/fragment/en_9767679.pf_fragment",
   "/pagefind/fragment/en_99db1a2.pf_fragment",
   "/pagefind/fragment/en_9d46343.pf_fragment",
-  "/pagefind/fragment/en_bc6c37a.pf_fragment",
+  "/pagefind/fragment/en_af17576.pf_fragment",
   "/pagefind/fragment/en_c13d12d.pf_fragment",
   "/pagefind/fragment/en_c3445e3.pf_fragment",
-  "/pagefind/fragment/en_e538517.pf_fragment",
   "/pagefind/fragment/en_e5bd303.pf_fragment",
-  "/pagefind/index/en_2ead89b.pf_index",
-  "/pagefind/index/en_3b8d9a6.pf_index",
-  "/pagefind/index/en_4725f70.pf_index",
+  "/pagefind/fragment/en_f89c78e.pf_fragment",
+  "/pagefind/index/en_4121aa3.pf_index",
+  "/pagefind/index/en_515ee7a.pf_index",
+  "/pagefind/index/en_c71a13e.pf_index",
   "/pagefind/pagefind-component-ui.css",
   "/pagefind/pagefind-component-ui.js",
   "/pagefind/pagefind-entry.json",
@@ -84,7 +104,7 @@ const PRECACHE = [
   "/pagefind/pagefind-ui.css",
   "/pagefind/pagefind-ui.js",
   "/pagefind/pagefind-worker.js",
-  "/pagefind/pagefind.en_ddfda42ce9.pf_meta",
+  "/pagefind/pagefind.en_a95433cb1b.pf_meta",
   "/pagefind/pagefind.js",
   "/pagefind/wasm.en.pagefind",
   "/pagefind/wasm.unknown.pagefind"
@@ -169,7 +189,10 @@ async function enableNavigationPreload() {
 async function cacheNavigationResponse(request, response) {
     if (!response.ok) return;
     const clone = response.clone();
-    caches.open(CACHE).then((c) => c.put(request, clone)).catch(() => {});
+    try {
+        const cache = await caches.open(CACHE);
+        await cache.put(request, clone);
+    } catch (e) { /* ignore cache write failures */ }
 }
 
 async function navigationNetworkResponse(request, preloadResponsePromise, cached) {
@@ -183,10 +206,16 @@ async function navigationNetworkResponse(request, preloadResponsePromise, cached
     }
 }
 
-async function handleNavigation(request, preloadResponsePromise) {
+async function handleNavigation(request, preloadResponsePromise, event) {
     const cached = await caches.match(request);
     const network = navigationNetworkResponse(request, preloadResponsePromise, cached);
-    return cached || network;
+    if (cached) {
+        // Serve the cached shell immediately but keep the background refresh (and
+        // its awaited cache write) alive past the response via the event lifetime.
+        if (event && typeof event.waitUntil === 'function') event.waitUntil(network.catch(() => {}));
+        return cached;
+    }
+    return network;
 }
 
 self.addEventListener('install', (e) => {
@@ -204,6 +233,11 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+    if (e.data && e.data.type === 'GET_VERSION' && e.ports && e.ports[0]) {
+        // Lets the page key its "Not now" dismissal on this exact build, so a
+        // newer waiting worker (different CACHE version) re-prompts.
+        e.ports[0].postMessage({ version: CACHE });
+    }
 });
 
 self.addEventListener('fetch', (e) => {
@@ -216,7 +250,7 @@ self.addEventListener('fetch', (e) => {
         // Stale-while-revalidate: paint the cached shell instantly for repeat
         // visits, refresh the cache in the background. A new deploy still surfaces
         // via the SW update toast (controllerchange reload in main.js).
-        e.respondWith(handleNavigation(e.request, e.preloadResponse));
+        e.respondWith(handleNavigation(e.request, e.preloadResponse, e));
         return;
     }
 
@@ -226,7 +260,9 @@ self.addEventListener('fetch', (e) => {
         e.respondWith(
             timedFetch(e.request)
                 .then((response) => {
-                    if (response.ok) putTimestamped(e.request, response.clone());
+                    // Extend the event lifetime so the timestamped cache write is not
+                    // terminated after the response is returned to the page.
+                    if (response.ok) e.waitUntil(putTimestamped(e.request, response.clone()));
                     return response;
                 })
                 .catch(() => freshCachedOrOffline(e.request))
@@ -237,15 +273,24 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((cached) => {
             const fetchPromise = timedFetch(e.request)
-                .then((response) => {
+                .then(async (response) => {
                     if (response.ok && sameOrigin) {
                         const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
+                        try {
+                            const c = await caches.open(CACHE);
+                            await c.put(e.request, clone);
+                        } catch (err) { /* ignore cache write failures */ }
                     }
                     return response;
                 })
                 .catch(() => cached || offlineResponse());
-            return cached || fetchPromise;
+            if (cached) {
+                // Stale-while-revalidate: return cache now, but keep the awaited
+                // background write alive via the fetch event's lifetime.
+                e.waitUntil(fetchPromise.catch(() => {}));
+                return cached;
+            }
+            return fetchPromise;
         })
     );
 });

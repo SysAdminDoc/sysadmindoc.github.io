@@ -47,11 +47,12 @@
 - [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
 - [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
 - [AI Services](https://sysadmindoc.github.io/ai/): Fractional AI implementation for businesses: tool selection and rollout, workflow automation, employee training, and custom software on a monthly retainer.
+- [Project Catalog](https://sysadmindoc.github.io/catalog/): The complete public project archive: every repository in one searchable, sortable, filterable list with direct GitHub links.
 - [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Healthcare IT context for customer support, hosted workflows, migrations, vendor coordination, and support documentation.
 - [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.
 - [Screenshots](https://sysadmindoc.github.io/screenshots/): Visual evidence gallery of live-app product surfaces captured from deployed builds.
 - [Releases](https://sysadmindoc.github.io/releases/): Chronological release stream across the active public portfolio archive.
-- [Full catalog](https://sysadmindoc.github.io/#catalog): All 178 public projects with search and filters.
+- [Full catalog](https://sysadmindoc.github.io/catalog/): All 178 public projects with search, sort, and filters.
 
 ## Language lanes
 - [PowerShell](https://sysadmindoc.github.io/lang/powershell/): Where the real sysadmin work lives.
