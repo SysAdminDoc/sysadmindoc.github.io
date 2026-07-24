@@ -81,7 +81,10 @@ async function enableNavigationPreload() {
 async function cacheNavigationResponse(request, response) {
     if (!response.ok) return;
     const clone = response.clone();
-    caches.open(CACHE).then((c) => c.put(request, clone)).catch(() => {});
+    try {
+        const cache = await caches.open(CACHE);
+        await cache.put(request, clone);
+    } catch (e) { /* ignore cache write failures */ }
 }
 
 async function navigationNetworkResponse(request, preloadResponsePromise, cached) {
@@ -95,10 +98,16 @@ async function navigationNetworkResponse(request, preloadResponsePromise, cached
     }
 }
 
-async function handleNavigation(request, preloadResponsePromise) {
+async function handleNavigation(request, preloadResponsePromise, event) {
     const cached = await caches.match(request);
     const network = navigationNetworkResponse(request, preloadResponsePromise, cached);
-    return cached || network;
+    if (cached) {
+        // Serve the cached shell immediately but keep the background refresh (and
+        // its awaited cache write) alive past the response via the event lifetime.
+        if (event && typeof event.waitUntil === 'function') event.waitUntil(network.catch(() => {}));
+        return cached;
+    }
+    return network;
 }
 
 self.addEventListener('install', (e) => {
@@ -128,7 +137,7 @@ self.addEventListener('fetch', (e) => {
         // Stale-while-revalidate: paint the cached shell instantly for repeat
         // visits, refresh the cache in the background. A new deploy still surfaces
         // via the SW update toast (controllerchange reload in main.js).
-        e.respondWith(handleNavigation(e.request, e.preloadResponse));
+        e.respondWith(handleNavigation(e.request, e.preloadResponse, e));
         return;
     }
 
@@ -138,7 +147,9 @@ self.addEventListener('fetch', (e) => {
         e.respondWith(
             timedFetch(e.request)
                 .then((response) => {
-                    if (response.ok) putTimestamped(e.request, response.clone());
+                    // Extend the event lifetime so the timestamped cache write is not
+                    // terminated after the response is returned to the page.
+                    if (response.ok) e.waitUntil(putTimestamped(e.request, response.clone()));
                     return response;
                 })
                 .catch(() => freshCachedOrOffline(e.request))
@@ -149,15 +160,24 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((cached) => {
             const fetchPromise = timedFetch(e.request)
-                .then((response) => {
+                .then(async (response) => {
                     if (response.ok && sameOrigin) {
                         const clone = response.clone();
-                        caches.open(CACHE).then((c) => c.put(e.request, clone)).catch(() => {});
+                        try {
+                            const c = await caches.open(CACHE);
+                            await c.put(e.request, clone);
+                        } catch (err) { /* ignore cache write failures */ }
                     }
                     return response;
                 })
                 .catch(() => cached || offlineResponse());
-            return cached || fetchPromise;
+            if (cached) {
+                // Stale-while-revalidate: return cache now, but keep the awaited
+                // background write alive via the fetch event's lifetime.
+                e.waitUntil(fetchPromise.catch(() => {}));
+                return cached;
+            }
+            return fetchPromise;
         })
     );
 });

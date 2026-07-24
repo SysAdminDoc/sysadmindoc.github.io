@@ -28,7 +28,9 @@ test('service worker exposes a local offline navigation fallback', async () => {
   assert.doesNotMatch(sw, /cachedOrOffline\(e\.request, '\/'\)/);
   assert.match(sw, /enableNavigationPreload\(\)/);
   assert.match(sw, /navigationPreload\.enable\(\)/);
-  assert.match(sw, /handleNavigation\(e\.request, e\.preloadResponse\)/);
+  assert.match(sw, /handleNavigation\(e\.request, e\.preloadResponse, e\)/);
+  assert.match(sw, /e\.waitUntil\(putTimestamped\(e\.request, response\.clone\(\)\)\)/);
+  assert.match(sw, /e\.waitUntil\(fetchPromise\.catch\(\(\) => \{\}\)\)/);
   assert.match(sw, /headers\.set\('sw-cached-at', String\(Date\.now\(\)\)\)/);
   assert.match(sw, /Number\.isFinite\(at\) && at > 0 && Date\.now\(\) - at < CROSS_ORIGIN_TTL/);
   assert.doesNotMatch(sw, /if \(!at \|\| Date\.now\(\) - at < CROSS_ORIGIN_TTL\) return cached/);
@@ -282,6 +284,85 @@ test('service worker navigation handler prefers preload response before fetch', 
   assert.equal(fetchCalls, 0);
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.deepEqual(putBodies, [{ url: 'https://sysadmindoc.example/preloaded/', body: 'preloaded shell' }]);
+});
+
+test('service worker keeps a same-origin revalidation write alive past the cached response', async () => {
+  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
+  const listeners = new Map();
+  const puts = [];
+  let resolveFetch;
+  const fetchGate = new Promise((resolve) => {
+    resolveFetch = resolve;
+  });
+  const script = sw.replace(
+    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
+    "const PRECACHE = ['/offline.html'];",
+  );
+  const sandbox = {
+    console: { warn: () => {} },
+    caches: {
+      open: async () => ({
+        add: async () => {},
+        put: async (request, response) => {
+          puts.push({ url: request.url, body: await response.text() });
+        },
+      }),
+      keys: async () => [],
+      delete: async () => true,
+      match: async (request) => {
+        const url = typeof request === 'string' ? request : request.url;
+        if (url.includes('/scripts/app.js')) return new Response('cached-body', { status: 200 });
+        return null;
+      },
+    },
+    self: {
+      location: { origin: 'https://sysadmindoc.example' },
+      registration: {},
+      clients: { claim: async () => {} },
+      skipWaiting: () => {},
+      addEventListener: (type, handler) => listeners.set(type, handler),
+    },
+    setTimeout,
+    clearTimeout,
+    AbortController,
+    Date,
+    Error,
+    Headers,
+    Promise,
+    Request,
+    Response,
+    URL,
+    fetch: async () => {
+      await fetchGate;
+      return new Response('fresh-body', { status: 200 });
+    },
+  };
+
+  vm.runInNewContext(script, sandbox);
+  let responsePromise;
+  const waited = [];
+  const request = new Request('https://sysadmindoc.example/scripts/app.js');
+  listeners.get('fetch')({
+    request,
+    preloadResponse: Promise.resolve(undefined),
+    respondWith: (promise) => {
+      responsePromise = promise;
+    },
+    waitUntil: (promise) => {
+      waited.push(promise);
+    },
+  });
+
+  const response = await responsePromise;
+  assert.equal(await response.text(), 'cached-body');
+  // The network is still gated, so the background write has not happened yet,
+  // but it must be registered on the event lifetime rather than left detached.
+  assert.equal(puts.length, 0);
+  assert.equal(waited.length, 1);
+
+  resolveFetch();
+  await Promise.all(waited);
+  assert.deepEqual(puts, [{ url: 'https://sysadmindoc.example/scripts/app.js', body: 'fresh-body' }]);
 });
 
 test('service worker navigation handler falls back offline when preload and fetch miss', async () => {
