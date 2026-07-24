@@ -42,3 +42,20 @@ test('publish preflight verifies dependency registry signatures', async () => {
   assert.equal(pkg.scripts['verify:signatures'], 'node scripts/verify-signatures.mjs');
   assert.match(pkg.scripts['deploy:preflight'], /npm run verify:signatures/);
 });
+
+test('npm v12 install-script allowlist covers the build-script dependency', async () => {
+  const pkg = await readPackage();
+  assert.ok(
+    pkg.allowScripts && typeof pkg.allowScripts === 'object' && !Array.isArray(pkg.allowScripts),
+    'package.json must declare an allowScripts allowlist so npm v12 (install scripts off by default) can build native deps',
+  );
+  const entries = Object.entries(pkg.allowScripts);
+  assert.ok(
+    entries.some(([key]) => /^esbuild@/.test(key)),
+    'esbuild (the only dependency with an install script) must be allowlisted',
+  );
+  assert.ok(
+    entries.every(([, value]) => value === true),
+    'every allowScripts entry must be explicitly approved (true)',
+  );
+});
