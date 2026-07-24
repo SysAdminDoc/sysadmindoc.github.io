@@ -12,13 +12,6 @@ Last normalized: 2026-06-29
 
 ### P1
 
-- [ ] P1 — Make resume exports schema-valid and reading-order tested
-  Why: The JSON claims JSON Resume compatibility but omits structured work dates, while the generated PDF has no machine-readable order check.
-  Evidence: `src/pages/resume.json.ts`, `src/data/career.ts`, `scripts/generate-resume-pdf.mjs`; JSON Resume schema; WCAG PDF3.
-  Touches: `src/data/career.ts`, resume HTML/JSON/PDF generators, schema validation and PDF text-extraction tests.
-  Acceptance: Work and education records expose ISO `startDate`/`endDate`; the JSON validates against the documented JSON Resume version; HTML/JSON/PDF share the same career source; extracted PDF text contains headings and roles in logical order.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — Cover complete routes and high-risk interaction states visually
