@@ -26,6 +26,7 @@ Last normalized: 2026-06-29
   Evidence: built `dist/index.html`, `scripts/audit-dom-size.mjs`, Chrome/web.dev excessive-DOM guidance.
   Touches: homepage/catalog route architecture, `CatalogEntry.astro`, catalog URL state, Pagefind indexing, sitemap/feed links, DOM/bundle/interaction tests.
   Acceptance: The homepage stays below a measured <=1,400-node budget; all reviewed projects remain reachable with JavaScript disabled and indexable through static pagination or an equivalent static boundary; direct GitHub links and filter/search URL semantics remain intact.
+  Note (2026-07-24): The homepage already PASSES every current DOM budget (`npm run dom:audit`: 2254/2750 nodes, 178/220 cards, 401/500 KB). The proposed 1,400-node target is aspirational, not a current failure, and is only reachable by restructuring the catalog into static pagination (or an equivalent boundary) — a large architectural change that touches no-JS access, filter/sort/view URL state, Pagefind indexing, and SEO on a working, gated homepage. High risk for marginal gain; keep as a deliberate future bet, not a routine drain item.
   Complexity: L
 
 ## Research-Driven Additions (2026-07-24 pass)
@@ -39,20 +40,3 @@ Last normalized: 2026-06-29
   Acceptance: If pursued, a custom result renderer shows a matched-metadata badge and uses `plain_excerpt` where marks are undesirable, WITHOUT regressing the relevance corpus, the a11y/axe checks, or offline search parity.
   Complexity: L
 
-### P3
-
-## Audit Findings — 2026-07-24
-
-Deep audit-only pass (baseline: `npm test` = 144 pass / 0 fail; build gates not re-run this pass). This repo is heavily hardened — the JS runtime (escapeHTML/SafeDOM, guarded localStorage/JSON.parse, aborted fetches, self-disconnecting observers), the data/feed layer (escapeXml/sanitize-html on every feed and `set:html` sink, atomic tmp+rename cache writes, path-traversal containment), and a11y (icon-button aria-labels, live regions, heading order, landmarks, skip links) were all traced and confirmed clean. Findings below are the residual low-severity items; several suspected issues were investigated and rejected as false positives (sitemap endpoint leak — @astrojs/sitemap emits HTML pages only; provenance-pill white background — shadowed by a route-interior override; card-hover border tints — 1px sub-quarter-alpha, not a real defect).
-
-### P3
-
-- [ ] P3 — Unaudited: live-browser interaction of secondary flows
-  Category: testing
-  Where: dev server + Playwright interaction of `/search/` (Pagefind runtime empty/error/no-result states), `/screenshots/` filtering, cmdk open/keyboard/empty-query, service-worker offline navigation, and update-toast flow.
-  Problem: This audit pass traced these paths in source and relied on the existing test suite (144 green) but did not drive them in a running browser, so runtime-only regressions (Pagefind load failure UI, focus return after cmdk close, offline navigation fallback) are not confirmed clean this pass.
-  Evidence: N/A — scope declaration for the next pass, not a defect.
-  Fix: Run `npm run dev` (or serve `dist/`) and exercise each flow with Playwright, asserting empty/error/offline states and focus management; fold any real regressions into new findings.
-  Acceptance: Each secondary flow has an observed pass (or a filed finding); no un-exercised runtime state remains.
-  Confidence: Needs-repro
-  Effort: M
