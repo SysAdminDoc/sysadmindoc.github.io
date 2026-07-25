@@ -139,56 +139,6 @@ function plainHeroText(value: string) {
 }
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const heroReleaseDate = compactUtcDate;
-const journeyMilestones = [
-  {
-    title: 'Healthcare IT & Systems Administration',
-    eyebrow: 'Origin point',
-    desc: 'Started in general systems administration - Windows fleets, Cisco networks, MSP work, and PBS broadcast infrastructure. Moved into healthcare technology support: customer systems, hosted workflows, migrations, and support operations. The practical pattern is steady troubleshooting, documentation, and repeatable fixes.',
-    href: '/healthcare-it/',
-    cta: 'Open the healthcare track',
-    meta: 'Customer systems, uptime, and support workflows.',
-  },
-  {
-    title: 'PowerShell & Windows Automation',
-    eyebrow: 'Workflow cleanup',
-    desc: 'Built Windows tools to solve real operational friction — NVMe driver patchers, network security auditors, Start Menu organizers, bulk installers. WPF interfaces that feel like finished software instead of internal scripts.',
-    href: '/lang/powershell/',
-    cta: 'See the PowerShell stack',
-    meta: 'Provisioning, repair, compliance, and system management.',
-  },
-  {
-    title: 'Python & Desktop Applications',
-    eyebrow: 'Desktop expansion',
-    desc: 'Moved into PyQt6 desktop apps for screenshot tooling, firewall management, image editing, PDF work, and more. The same rule held: bootstrap the dependencies, remove setup friction, and ship something people can actually launch right away.',
-    href: '/lang/python/',
-    cta: 'Browse the Python builds',
-    meta: 'Local-first utilities, offline tools, and desktop workflows.',
-  },
-  {
-    title: 'Web Apps & Live Deployments',
-    eyebrow: 'Instant access',
-    desc: `Launched ${liveApps.length}+ browser-ready apps on GitHub Pages — weather radar, flight tracking, OSINT aggregation, search engines, and utility tools. No backend required, no signup needed, just fast links that open and work.`,
-    href: '#live',
-    cta: 'Launch the live apps',
-    meta: 'Browser tools that start without install, sign-in, or setup.',
-  },
-  {
-    title: 'Full Stack & Beyond',
-    eyebrow: 'Portfolio depth',
-    desc: `${publicProjectCount}+ public projects across six languages — Android apps in Kotlin, Chrome extensions, Tampermonkey userscripts, browser themes, desktop software, and a broad archive that still stays grounded in practical use cases.`,
-    href: '#catalog',
-    cta: 'Open the full catalog',
-    meta: 'The complete archive, filters included.',
-  },
-  {
-    title: 'AI-Augmented Building',
-    eyebrow: 'Current chapter',
-    desc: 'A year spent all-in on AI-assisted development produced this entire archive — one person directing AI tooling through research, build, test, and release. Now offered to businesses as a service: tool rollout, workflow automation, employee training, and standing problem-solving on a monthly retainer.',
-    href: '/ai/',
-    cta: 'Open the AI services track',
-    meta: 'Fractional AI implementation for businesses.',
-  },
-] as const;
 const connectPaths = [
   {
     title: 'Full-text search',
@@ -295,7 +245,6 @@ const cmdkSections = [
   { label: 'Live Apps', href: '#live', desc: 'Browser-ready apps.', badge: 'LIVE' },
   { label: 'Catalog', href: '#catalog', desc: 'All public projects.', badge: 'ARCHIVE' },
   { label: 'Stack', href: '#skills', desc: 'Languages and tools.', badge: 'SECTION' },
-  { label: 'Journey', href: '#journey', desc: 'How the work expanded.', badge: 'SECTION' },
   { label: 'Beyond Code', href: '#beyond', desc: 'Aerial footage and creative projects.', badge: 'SECTION' },
   { label: 'AI Services', href: '/ai/', desc: 'Fractional AI implementation for businesses on a monthly retainer.', badge: 'TRACK' },
   { label: 'Connect', href: '#connect', desc: 'Contact and links.', badge: 'SECTION' },
@@ -320,7 +269,6 @@ const cmdkSections = [
         <a href="#live">Live Apps</a>
         <a href="#catalog">Catalog</a>
         <a href="#skills">Practice</a>
-        <a href="#journey">Journey</a>
         <a href="/ai/">AI</a>
         <a href="#connect">Contact</a>
         <div class="nav-indicator" id="navIndicator"></div>
@@ -537,27 +485,8 @@ const cmdkSections = [
   <Divider />
 
 
-  <section id="journey" aria-label="Journey"><div class="si">
-    <div class="sh rv"><div class="sl">05 / Practice</div><h2 class="st">Practice, expanded</h2><p class="sd">Operational problems became tools, then products.</p></div>
-    <div class="jw">
-      {journeyMilestones.map((step) => (
-        <div class="ji rv">
-          <div class="jd"></div>
-          <div class="jeyebrow">{step.eyebrow}</div>
-          <h3 class="jt"><a href={step.href} class="ji-link">{step.title}</a></h3>
-          <p class="jdesc">{step.desc}</p>
-          <div class="jfoot">
-            <span class="jmeta">{step.meta}</span>
-            <span class="jlink" aria-hidden="true">{step.cta}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div></section>
-  <Divider />
-
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">06 / Beyond code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
+    <div class="sh rv"><div class="sl">05 / Beyond code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
@@ -575,7 +504,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect" aria-label="Connect"><div class="si">
-    <div class="sh rv"><div class="sl">07 / Contact</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
+    <div class="sh rv"><div class="sl">06 / Contact</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
     <div class="cng">
       {connectPaths.map((path) => (
         <a

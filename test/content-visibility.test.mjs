@@ -10,7 +10,6 @@ const deferredSections = [
   '#catalog',
   '#live',
   '#skills',
-  '#journey',
   '#beyond',
   '#connect',
 ];
