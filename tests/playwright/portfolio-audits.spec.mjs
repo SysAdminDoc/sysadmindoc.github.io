@@ -293,6 +293,41 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow).toBeLessThanOrEqual(1);
 }
 
+async function collectDescendantBoundsViolations(page, containerSelector) {
+  return page.locator(containerSelector).evaluateAll((containers) =>
+    containers.flatMap((container, containerIndex) => {
+      const bounds = container.getBoundingClientRect();
+      return Array.from(container.querySelectorAll('*'))
+        .filter((element) => {
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && rect.width > 0
+            && rect.height > 0;
+        })
+        .flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          const edges = {
+            left: bounds.left - rect.left,
+            top: bounds.top - rect.top,
+            right: rect.right - bounds.right,
+            bottom: rect.bottom - bounds.bottom,
+          };
+          const overflowEdges = Object.entries(edges)
+            .filter(([, overflow]) => overflow > 1)
+            .map(([edge, overflow]) => `${edge}:${overflow.toFixed(2)}px`);
+          if (overflowEdges.length === 0) return [];
+          return [{
+            container: `${container.tagName.toLowerCase()}.${container.className}#${containerIndex + 1}`,
+            descendant: `${element.tagName.toLowerCase()}.${element.className}`,
+            overflow: overflowEdges,
+          }];
+        });
+    }),
+  );
+}
+
 test.describe('Rendered public route health', () => {
   for (const viewport of viewports) {
     for (const route of routes) {
@@ -312,6 +347,37 @@ test.describe('Rendered public route health', () => {
         expect(runtimeErrors).toEqual([]);
       });
     }
+  }
+});
+
+test.describe('Homepage live-card containment', () => {
+  for (const width of [320, 360, 390]) {
+    test(`live-card descendants stay inside their cards at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await preparePage(page, '/', '#live');
+
+      const cards = page.locator('#live .lc2');
+      await expect(cards.first()).toBeVisible();
+      expect(await cards.count()).toBeGreaterThan(1);
+      await cards.first().scrollIntoViewIfNeeded();
+      await expectNoHorizontalOverflow(page);
+      expect(await collectDescendantBoundsViolations(page, '#live .lc2')).toEqual([]);
+
+      const featureWidths = await cards.first().evaluate((card) => {
+        const thumb = card.querySelector('.lc2-thumb');
+        const picture = card.querySelector('.lc2-picture');
+        const image = card.querySelector('.lc2-thumb img');
+        return {
+          card: card.getBoundingClientRect().width,
+          thumb: thumb?.getBoundingClientRect().width ?? 0,
+          picture: picture?.getBoundingClientRect().width ?? 0,
+          image: image?.getBoundingClientRect().width ?? 0,
+        };
+      });
+      expect(featureWidths.thumb).toBeGreaterThan(featureWidths.card - 2);
+      expect(featureWidths.picture).toBeCloseTo(featureWidths.thumb, 0);
+      expect(featureWidths.image).toBeCloseTo(featureWidths.thumb, 0);
+    });
   }
 });
 

@@ -5519,7 +5519,7 @@ html[data-theme="light"] .ca,html[data-theme="light"] .ca:hover{background:var(-
 .stack-action{border-color:var(--border-soft);border-radius:6px;background:var(--surface-2)}
 .video-card{overflow:hidden}
 .video-thumb{border-radius:0}
-body.route-home #connect .si{--t1:#f7f9fc;--t2:#c7d0df;--t3:#8f9db1;--blue:#8eb0ff;--org:#ff9a68;--surface-1:#12223a;--surface-strong:#162a47;--border-soft:rgba(200,215,236,.17);--border-strong:rgba(115,160,255,.42);position:relative;overflow:hidden;padding:48px;border:1px solid rgba(115,160,255,.28);border-radius:14px;background:#0a1830;color:var(--t1);box-shadow:var(--shadow-md)}
+body.route-home #connect .si{position:relative;overflow:visible;padding:48px;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:none}
 #connect .si::before{background:radial-gradient(circle,rgba(31,95,204,.28),transparent 68%)}
 .cnc{padding:26px}
 footer{border-top:0;background:transparent}
@@ -5730,6 +5730,7 @@ body.route-home .lg{
 body.route-home .lg .lc2{
   grid-column:auto;
   min-height:0;
+  min-width:0;
   display:grid;
   grid-template-columns:136px minmax(0,1fr);
   grid-template-areas:'shot title' 'shot desc';
@@ -5750,15 +5751,27 @@ body.route-home .lg .lc2:first-child{
 }
 body.route-home .lg .lc2-thumb{
   grid-area:shot;
+  width:100%;
+  min-width:0;
+  max-width:100%;
   height:86px;
   margin:0;
   overflow:hidden;
   border:0;
   border-radius:4px;
 }
+body.route-home .lg .lc2-thumb picture,
+body.route-home .lg .lc2-thumb picture img{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
 body.route-home .lg .lc2:first-child .lc2-thumb{height:300px}
 body.route-home .lg .lct{grid-area:title;margin:0;align-self:end}
-body.route-home .lg .lcn{font-size:18px}
+body.route-home .lg .lct,
+body.route-home .lg .lcd{min-width:0}
+body.route-home .lg .lcn{font-size:18px;overflow-wrap:anywhere}
 body.route-home .lg .lc2:first-child .lcn{font-size:30px}
 body.route-home .lg .lb2{
   display:inline-flex;
@@ -5842,7 +5855,17 @@ body.route-home #connect .si{padding:40px;border-radius:8px;box-shadow:none}
     gap:6px 18px;
   }
   body.route-home .lg{grid-template-columns:1fr}
-  body.route-home .lg .lc2:first-child{grid-column:auto;grid-template-columns:1fr;grid-template-areas:'shot' 'title' 'desc';gap:12px;padding-bottom:24px}
+  body.route-home .lg .lc2:first-child{
+    grid-column:auto;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:'shot' 'title' 'desc';
+    gap:12px;
+    padding-bottom:24px;
+  }
+  body.route-home .lg .lc2:first-child .lc2-thumb{
+    height:auto;
+    aspect-ratio:16/10;
+  }
   body.route-home .skg{grid-template-columns:1fr}
 }
 
@@ -5882,6 +5905,122 @@ body.route-home #connect .si{padding:40px;border-radius:8px;box-shadow:none}
   .brand-copy small{display:none}
   .hs-item{padding-inline:9px}
   body.route-home .lg .lc2{grid-template-columns:92px minmax(0,1fr);gap-inline:12px}
+}
+
+/* ===== Homepage visual audit repair =====
+   The homepage is strongest when it reads like an edited field notebook:
+   evidence gets a surface, while navigation, capabilities, and contact stay
+   in the same ruled editorial system as Selected work and the catalog. */
+body.route-home .scroll-progress{
+  background:var(--blue);
+  box-shadow:none;
+}
+
+body.route-home .hero-app-icon{
+  width:48px;
+  height:48px;
+  border:1px solid var(--border-soft);
+  border-radius:8px;
+  color:var(--bg);
+  background:var(--t1);
+  box-shadow:none;
+}
+body.route-home .hero-app-icon svg{width:24px;height:24px}
+body.route-home .hero-showcase-brand strong{
+  color:var(--t1);
+  letter-spacing:.1em;
+}
+body.route-home .hero-showcase{box-shadow:none}
+
+/* Capabilities: keep the data visual, lose the dashboard-card stack. */
+body.route-home .stack-shell{
+  gap:0;
+  margin-bottom:42px;
+  border-block:1px solid var(--border-soft);
+}
+body.route-home .stack-overview,
+body.route-home .lang-donut-panel{
+  padding:26px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+body.route-home .stack-overview{
+  padding-right:clamp(24px,4vw,56px);
+  border-right:1px solid var(--border-soft);
+}
+body.route-home .lang-donut-panel{
+  padding-left:clamp(24px,4vw,56px);
+}
+body.route-home .stack-action{
+  padding:14px 0;
+  border:0;
+  border-bottom:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  transform:none;
+}
+body.route-home .stack-action:hover,
+body.route-home .stack-action:focus-visible{
+  border-color:var(--border-soft);
+  background:color-mix(in srgb,var(--blue) 5%,transparent);
+  box-shadow:none;
+  transform:none;
+}
+body.route-home .stack-action:last-child{border-bottom:0}
+
+/* Contact: one consistent light-first surface instead of a dark promo panel. */
+body.route-home #connect .si{
+  position:relative;
+  overflow:visible;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:inherit;
+  box-shadow:none;
+}
+body.route-home #connect .si::before{display:none}
+body.route-home #connect .cng{
+  gap:0 28px;
+  border-top:1px solid var(--border-soft);
+}
+body.route-home #connect .cnc{
+  min-height:0;
+  padding:22px 0;
+  border:0;
+  border-bottom:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+  color:inherit;
+  box-shadow:none;
+  transform:none;
+}
+body.route-home #connect .cnc:hover,
+body.route-home #connect .cnc:focus-visible{
+  border-color:var(--border-soft);
+  background:color-mix(in srgb,var(--blue) 4%,transparent);
+  box-shadow:none;
+  transform:none;
+}
+body.route-home #connect .cnc:hover .cnc-name,
+body.route-home #connect .cnc:focus-visible .cnc-name{color:var(--blue)}
+
+@media(max-width:1100px){
+  body.route-home .stack-overview{
+    padding-right:0;
+    border-right:0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  body.route-home .lang-donut-panel{padding-left:0}
+}
+@media(max-width:720px){
+  body.route-home .stack-shell{margin-bottom:28px}
+  body.route-home .stack-overview,
+  body.route-home .lang-donut-panel{padding-block:22px}
+  body.route-home #connect .cnc{padding-block:20px}
 }
 
 /* No-JS navigation fallback. head-init.js adds `.js` to <html> before first
