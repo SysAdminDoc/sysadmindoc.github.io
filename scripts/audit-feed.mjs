@@ -1,13 +1,21 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const feedPath = path.join(distDir, 'feed.json');
 const atomPath = path.join(distDir, 'atom.xml');
+const rssPath = path.join(distDir, 'rss.xml');
+const releasesPath = path.join(distDir, 'releases.xml');
 const expectedVersion = 'https://jsonfeed.org/version/1.1';
 const errors = [];
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  parseTagValue: false,
+  trimValues: true,
+});
 
 function fail(message) {
   errors.push(message);
@@ -63,6 +71,73 @@ function readXmlTag(source, tagName, label) {
   const value = decodeXml(match?.[1] ?? '').trim();
   if (!value) fail(`${label} must include a non-empty <${tagName}>.`);
   return value;
+}
+
+function parseXmlDocument(source, label) {
+  if (!source.trimStart().startsWith('<?xml')) {
+    fail(`${label} must start with an XML declaration.`);
+    return null;
+  }
+  const validation = XMLValidator.validate(source);
+  if (validation !== true) {
+    const location = validation.err
+      ? ` at line ${validation.err.line}, column ${validation.err.col}: ${validation.err.msg}`
+      : '';
+    fail(`${label} is not well-formed XML${location}.`);
+    return null;
+  }
+  try {
+    return xmlParser.parse(source);
+  } catch (error) {
+    fail(`${label} could not be parsed as XML: ${error.message}`);
+    return null;
+  }
+}
+
+function requireXmlString(record, key, label) {
+  const value = record?.[key];
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    fail(`${label}.<${key}> must be a non-empty string.`);
+    return '';
+  }
+  return value;
+}
+
+function auditRssDocument(source, label, { expectedChannelPath, expectedItemCount = null } = {}) {
+  const document = parseXmlDocument(source, label);
+  const channel = document?.rss?.channel;
+  if (!isObject(channel)) {
+    fail(`${label} must contain an <rss><channel> document.`);
+    return 0;
+  }
+
+  requireXmlString(channel, 'title', `${label} channel`);
+  requireXmlString(channel, 'description', `${label} channel`);
+  const channelLink = parseAbsoluteUrl(requireXmlString(channel, 'link', `${label} channel`), `${label} channel.link`);
+  if (channelLink && expectedChannelPath && channelLink.pathname !== expectedChannelPath) {
+    fail(`${label} channel.link must point at ${expectedChannelPath}, got ${channelLink.pathname}.`);
+  }
+
+  const items = Array.isArray(channel.item) ? channel.item : channel.item ? [channel.item] : [];
+  if (items.length === 0) fail(`${label} channel must contain at least one <item>.`);
+  if (expectedItemCount !== null && items.length !== expectedItemCount) {
+    fail(`${label} item count ${items.length} must match feed.json item count ${expectedItemCount}.`);
+  }
+  for (const [index, item] of items.entries()) {
+    const itemLabel = `${label} item[${index}]`;
+    if (!isObject(item)) {
+      fail(`${itemLabel} must be an object.`);
+      continue;
+    }
+    requireXmlString(item, 'title', itemLabel);
+    parseAbsoluteUrl(requireXmlString(item, 'link', itemLabel), `${itemLabel}.link`);
+    requireXmlString(item, 'description', itemLabel);
+    const pubDate = requireXmlString(item, 'pubDate', itemLabel);
+    if (pubDate && Number.isNaN(new Date(pubDate).getTime())) {
+      fail(`${itemLabel}.pubDate is not parseable as a date.`);
+    }
+  }
+  return items.length;
 }
 
 async function requireDistAsset(url, label) {
@@ -204,17 +279,41 @@ if (atom) {
   }
 }
 
+let rss = '';
+try {
+  rss = await fs.readFile(rssPath, 'utf8');
+} catch (error) {
+  fail(`dist/rss.xml is missing or unreadable: ${error.message}`);
+}
+
+let releases = '';
+try {
+  releases = await fs.readFile(releasesPath, 'utf8');
+} catch (error) {
+  fail(`dist/releases.xml is missing or unreadable: ${error.message}`);
+}
+
+const jsonItemCount = Array.isArray(feed.items) ? feed.items.length : 0;
+const rssItemCount = rss
+  ? auditRssDocument(rss, 'rss.xml', { expectedChannelPath: '/', expectedItemCount: jsonItemCount || null })
+  : 0;
+const releaseItemCount = releases
+  ? auditRssDocument(releases, 'releases.xml', { expectedChannelPath: '/releases/' })
+  : 0;
+
 if (errors.length > 0) {
-  console.error('JSON/Atom Feed audit failed:');
+  console.error('Built feed audit failed:');
   for (const error of errors) console.error(`  - ${error}`);
   process.exit(1);
 }
 
-console.log('JSON/Atom Feed audit');
+console.log('Built feed audit');
 console.log(`  items checked: ${feed.items.length}`);
 console.log(`  content_text items: ${contentTextCount}`);
 console.log(`  content_html items: ${contentHtmlCount}`);
 console.log(`  icon: ${feed.icon}`);
 console.log(`  favicon: ${feed.favicon}`);
 console.log(`  atom entries: ${atomEntryCount}`);
-console.log('JSON/Atom Feed audit passed.');
+console.log(`  RSS items: ${rssItemCount}`);
+console.log(`  release RSS items: ${releaseItemCount}`);
+console.log('Built feed audit passed.');

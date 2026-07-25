@@ -15,6 +15,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Endpoint audits now distinguish source-level `Response` header intent from
   the GitHub Pages headers actually served in production; live smoke checks are
   the sole deployed-header contract instead of conflicting with static source.
+- Build gates now parse both generated RSS documents, require populated channel
+  and item fields, and validate the built JSON Resume export. Truncated XML or
+  JSON fixtures prove each malformed artifact blocks the build.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.

@@ -4,6 +4,7 @@ import process from 'node:process';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
+const resumeOnly = process.argv.includes('--resume-only');
 const siteUrl = 'https://sysadmindoc.github.io';
 const errors = [];
 const releaseProvenanceLevels = new Set(['no-assets', 'unsigned', 'checksum', 'attested', 'unknown']);
@@ -368,6 +369,101 @@ function auditStatusEndpoint(statusIndex, { projectCount }) {
   return { buildCommit: String(statusIndex.build?.commit ?? 'unknown'), dataMode };
 }
 
+function requireStringArray(value, label) {
+  if (!Array.isArray(value) || value.length === 0) {
+    fail(`${label} must be a non-empty array.`);
+    return [];
+  }
+  for (const [index, entry] of value.entries()) {
+    if (typeof entry !== 'string' || entry.trim().length === 0) {
+      fail(`${label}[${index}] must be a non-empty string.`);
+    }
+  }
+  return value;
+}
+
+function requireIsoDate(value, label) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(new Date(`${value}T00:00:00Z`).getTime())) {
+    fail(`${label} must be an ISO YYYY-MM-DD date.`);
+    return '';
+  }
+  return value;
+}
+
+function auditResumeEndpoint(resume) {
+  if (!isObject(resume)) {
+    fail('resume.json root must be an object.');
+    return { roles: 0, skills: 0 };
+  }
+  if (resume.$schema !== 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json') {
+    fail('resume.json $schema must identify JSON Resume v1.0.0.');
+  }
+
+  const basics = resume.basics;
+  if (!isObject(basics)) {
+    fail('resume.json basics must be an object.');
+  } else {
+    for (const key of ['name', 'label', 'email', 'summary']) requireString(basics, key, 'resume.json basics');
+    const canonicalUrl = parseUrl(requireString(basics, 'url', 'resume.json basics'), 'resume.json basics.url', { siteOnly: true });
+    if (canonicalUrl && canonicalUrl.pathname !== '/') fail('resume.json basics.url must point at the site root.');
+    if (!isObject(basics.location)) {
+      fail('resume.json basics.location must be an object.');
+    } else {
+      for (const key of ['city', 'region', 'countryCode']) requireString(basics.location, key, 'resume.json basics.location');
+    }
+    if (!Array.isArray(basics.profiles) || basics.profiles.length === 0) {
+      fail('resume.json basics.profiles must be a non-empty array.');
+    } else {
+      for (const [index, profile] of basics.profiles.entries()) {
+        const label = `resume.json basics.profiles[${index}]`;
+        requireString(profile, 'network', label);
+        requireString(profile, 'username', label);
+        parseUrl(requireString(profile, 'url', label), `${label}.url`);
+      }
+    }
+  }
+
+  const work = Array.isArray(resume.work) ? resume.work : [];
+  if (work.length === 0) fail('resume.json work must be a non-empty array.');
+  let openRoles = 0;
+  for (const [index, role] of work.entries()) {
+    const label = `resume.json work[${index}]`;
+    if (!isObject(role)) {
+      fail(`${label} must be an object.`);
+      continue;
+    }
+    for (const key of ['name', 'position', 'location', 'summary']) requireString(role, key, label);
+    const startDate = requireIsoDate(role.startDate, `${label}.startDate`);
+    if (role.endDate === undefined) {
+      openRoles += 1;
+    } else {
+      const endDate = requireIsoDate(role.endDate, `${label}.endDate`);
+      if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
+        fail(`${label}.endDate must be later than startDate.`);
+      }
+    }
+    requireStringArray(role.highlights, `${label}.highlights`);
+    requireStringArray(role.keywords, `${label}.keywords`);
+  }
+  if (work.length > 0 && openRoles !== 1) {
+    fail(`resume.json work must contain exactly one current role without endDate; found ${openRoles}.`);
+  }
+
+  const skills = Array.isArray(resume.skills) ? resume.skills : [];
+  if (skills.length === 0) fail('resume.json skills must be a non-empty array.');
+  for (const [index, skill] of skills.entries()) {
+    const label = `resume.json skills[${index}]`;
+    if (!isObject(skill)) {
+      fail(`${label} must be an object.`);
+      continue;
+    }
+    requireString(skill, 'name', label);
+    requireStringArray(skill.keywords, `${label}.keywords`);
+  }
+
+  return { roles: work.length, skills: skills.length };
+}
+
 function parseCmdkPayload(source) {
   const match = /^window\.__PORTFOLIO_DATA=Object\.assign\(window\.__PORTFOLIO_DATA\|\|\{},([\s\S]+)\);\s*$/.exec(source.trim());
   if (!match) {
@@ -645,6 +741,22 @@ async function auditSourceHeaderIntents() {
   return { sourceHeaderIntents: checked };
 }
 
+const resumeIndex = await readJson('resume.json');
+const resumeSummary = auditResumeEndpoint(resumeIndex);
+
+if (resumeOnly) {
+  if (errors.length > 0) {
+    console.error('Resume endpoint audit failed:');
+    for (const error of errors) console.error(`  - ${error}`);
+    process.exit(1);
+  }
+  console.log('Resume endpoint audit');
+  console.log(`  roles: ${resumeSummary.roles}`);
+  console.log(`  skills: ${resumeSummary.skills}`);
+  console.log('Resume endpoint audit passed.');
+  process.exit(0);
+}
+
 const projectsIndex = await readJson('projects.json');
 const releasesIndex = await readJson('releases.json');
 const statusIndex = await readJson('status.json');
@@ -680,6 +792,8 @@ console.log(`  releases.json releases: ${releasesSummary.releaseCount}`);
 console.log(`  releases.json repositories: ${releasesSummary.releaseRepoCount}`);
 console.log(`  status.json build commit: ${statusSummary.buildCommit}`);
 console.log(`  status.json generated data mode: ${statusSummary.dataMode}`);
+console.log(`  resume.json roles: ${resumeSummary.roles}`);
+console.log(`  resume.json skills: ${resumeSummary.skills}`);
 console.log(`  cmdk-data.js projects: ${cmdkSummary.cmdkProjects}`);
 console.log(`  cmdk-data.js quick links: ${cmdkSummary.quickLinks}`);
 console.log(`  llms.txt links: ${llmsSummary.llmsLinks} / ${llmsSummary.minimumUsefulLinks} minimum`);
