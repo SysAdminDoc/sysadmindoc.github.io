@@ -40,7 +40,11 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
     pkg.scripts['audit:interactions'],
     'playwright test --config=playwright.interactions.config.mjs tests/playwright/interaction-smoke.spec.mjs',
   );
-  assert.match(config, /snapshotPathTemplate: '\{testDir\}\/__screenshots__\/\{projectName\}\/\{arg\}\{ext\}'/);
+  assert.match(config, /snapshotPathTemplate: '\{testDir\}\/__screenshots__\/\{platform\}\/\{projectName\}\/\{arg\}\{ext\}'/);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'linux', 'chromium')), true);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'linux', 'chromium-light')), true);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium')), false);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium-light')), false);
   assert.match(config, /PLAYWRIGHT_AUDIT_PORT \?\? process\.env\.PLAYWRIGHT_PORT \?\? '4324'/);
   assert.match(config, /reuseExistingServer: false/);
   assert.match(interactionsConfig, /playwright\.audits\.config\.mjs/);

@@ -10,7 +10,7 @@ const launchOptions = process.env.CHROME_PATH
 export default defineConfig({
   testDir: './tests/playwright',
   outputDir: '.tmp/playwright-results',
-  snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{projectName}/{arg}{ext}',
   timeout: 90_000,
   expect: {
     timeout: 10_000,
