@@ -29,24 +29,29 @@ test('categoryLabels covers every Lang key defined in types.ts', async () => {
   );
 });
 
-test('index.astro filterButtons does not define labels that contradict categoryLabels', async () => {
-  const indexSource = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
+async function readCategoryLabelMap() {
   const categoriesSource = await fs.readFile(path.join(root, 'src', 'data', 'categories.ts'), 'utf8');
-
-  // Extract categoryLabels entries
   const objMatch = categoriesSource.match(/export const categoryLabels[^=]*=\s*\{([^}]+)\}/s);
   assert.ok(objMatch, 'categoryLabels object not found in categories.ts');
-  const labelMap = Object.fromEntries(
+  return Object.fromEntries(
     [...objMatch[1].matchAll(/^\s*(\w+):\s*'([^']+)'/gm)].map(([, key, val]) => [key, val]),
   );
+}
 
-  // Extract filterButtons array entries: { key: '...', label: '...' }
-  const filterMatch = indexSource.match(/const filterButtons\s*=\s*\[([^\]]+)\]/s);
-  assert.ok(filterMatch, 'filterButtons array not found in index.astro');
+async function readFilterButtons() {
+  const source = await fs.readFile(path.join(root, 'src', 'data', 'catalog-render.ts'), 'utf8');
+  const filterMatch = source.match(/export const filterButtons\s*=\s*\[([^\]]+)\]/s);
+  assert.ok(filterMatch, 'filterButtons array not found in catalog-render.ts');
   const buttons = [...filterMatch[1].matchAll(/\{\s*key:\s*'([^']+)',\s*label:\s*'([^']+)'\s*\}/g)].map(
     ([, key, label]) => ({ key, label }),
   );
-  assert.ok(buttons.length > 0, 'No filter buttons parsed from index.astro');
+  assert.ok(buttons.length > 0, 'No filter buttons parsed from catalog-render.ts');
+  return buttons;
+}
+
+test('filterButtons labels agree with categoryLabels', async () => {
+  const labelMap = await readCategoryLabelMap();
+  const buttons = await readFilterButtons();
 
   const mismatches = buttons
     .filter(({ key }) => key in labelMap)
@@ -56,5 +61,18 @@ test('index.astro filterButtons does not define labels that contradict categoryL
     mismatches,
     [],
     `filterButtons labels differ from categoryLabels: ${JSON.stringify(mismatches)}`,
+  );
+});
+
+test('filterButtons offers a facet for every category, so no project is unfilterable', async () => {
+  const labelMap = await readCategoryLabelMap();
+  const buttons = await readFilterButtons();
+  const buttonKeys = buttons.map(({ key }) => key);
+
+  const missing = Object.keys(labelMap).filter((key) => !buttonKeys.includes(key));
+  assert.deepEqual(
+    missing,
+    [],
+    `Categories with no filter chip — projects in them cannot be filtered to: ${missing.join(', ')}`,
   );
 });
