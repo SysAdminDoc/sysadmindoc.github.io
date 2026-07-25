@@ -34,7 +34,7 @@
     "data:summary:strict": "node scripts/summarize-generated-data.mjs --fail-on-stale",
     "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes",
     "deploy:status": "node scripts/smoke-live-site.mjs --status-only --retries 1",
-    "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm test && npm run check && npm run build",
+    "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run deps:audit -- --strict && npm test && npm run check && npm run build",
     "verify:signatures": "node scripts/verify-signatures.mjs",
     "publish:pages": "node scripts/publish-pages.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
@@ -100,7 +100,7 @@
   },
   "overrides": {
     "esbuild": "$esbuild",
-    "vite": "8.1.3",
+    "vite": "8.1.5",
     "yaml-language-server": {
       "yaml": "2.9.0"
     },

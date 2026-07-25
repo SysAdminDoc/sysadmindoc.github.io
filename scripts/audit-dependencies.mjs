@@ -8,7 +8,16 @@ import { pathToFileURL } from 'node:url';
 const root = process.cwd();
 const severityOrder = ['info', 'low', 'moderate', 'high', 'critical'];
 
-export const knownMajorBlocks = {};
+export const knownMajorBlocks = {
+  typescript: {
+    major: 7,
+    reason: 'TypeScript 7 changes the package exports used by scripts/lib/ts-data-utils.mjs; keep v6 until that loader and @astrojs/check are compatible.',
+  },
+  'fast-uri': {
+    major: 4,
+    reason: 'The installed AJV line declares fast-uri ^3.0.1; keep the patched v3 line until AJV supports v4.',
+  },
+};
 
 function hasFlag(name) {
   return process.argv.includes(name);
@@ -138,6 +147,29 @@ function classifyPackage(row) {
   return row.wanted && row.wanted !== row.current ? 'range-update' : 'latest-update';
 }
 
+function isExactVersionSpec(value) {
+  return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(String(value ?? ''));
+}
+
+export function summarizeOverrideFreshness(packages) {
+  const pinned = packages.filter((row) => row.type === 'override' && isExactVersionSpec(row.requested));
+  const failures = pinned
+    .filter((row) => row.current !== row.requested || ['missing', 'range-update', 'latest-update'].includes(row.status))
+    .map((row) => ({
+      name: row.name,
+      requested: row.requested,
+      current: row.current,
+      latest: row.latest,
+      status: row.status,
+    }));
+  return {
+    pinnedCount: pinned.length,
+    failureCount: failures.length,
+    failures,
+    ok: failures.length === 0,
+  };
+}
+
 function severityAtOrAbove(severity, threshold) {
   if (threshold === 'none') return false;
   return severityOrder.indexOf(severity) >= severityOrder.indexOf(threshold);
@@ -185,11 +217,15 @@ export function buildDependencyReport({ manifest, lock, outdated, audit, thresho
     return row;
   });
 
-  return {
+  const report = {
     generatedAt: new Date().toISOString(),
     packageCount: packages.length,
     packages,
     security: summarizeAudit(audit, threshold),
+  };
+  return {
+    ...report,
+    overrideFreshness: summarizeOverrideFreshness(packages),
   };
 }
 
@@ -198,12 +234,14 @@ function pad(value, width) {
   return text.length >= width ? text : `${text}${' '.repeat(width - text.length)}`;
 }
 
-export function formatDependencyReport(report) {
+export function formatDependencyReport(report, { strict = false } = {}) {
+  const overallOk = report.security.ok && (!strict || report.overrideFreshness.ok);
   const lines = [
     'Dependency freshness report',
     `  packages tracked: ${report.packageCount}`,
     `  audit threshold: ${report.security.threshold}`,
     `  security: ${report.security.ok ? 'PASS' : 'FAIL'} (${report.security.counts.high} high, ${report.security.counts.critical} critical)`,
+    `  exact override freshness: ${report.overrideFreshness.ok ? 'PASS' : strict ? 'FAIL' : 'ADVISORY'} (${report.overrideFreshness.pinnedCount} pinned, ${report.overrideFreshness.failureCount} stale)`,
     '',
     'Packages',
     `${pad('name', 28)} ${pad('type', 11)} ${pad('current', 12)} ${pad('wanted', 12)} ${pad('latest', 12)} status`,
@@ -222,6 +260,13 @@ export function formatDependencyReport(report) {
     }
   }
 
+  if (report.overrideFreshness.failures.length > 0) {
+    lines.push('', strict ? 'Blocking stale exact overrides' : 'Stale exact overrides (advisory)');
+    for (const row of report.overrideFreshness.failures) {
+      lines.push(`  - ${row.name} ${row.current} -> ${row.latest} (pinned ${row.requested})`);
+    }
+  }
+
   if (report.security.advisories.length > 0) {
     lines.push('', 'Blocking security advisories');
     for (const advisory of report.security.advisories) {
@@ -230,8 +275,12 @@ export function formatDependencyReport(report) {
     }
   }
 
-  lines.push('', report.security.ok ? 'Dependency freshness report passed.' : 'Dependency freshness report failed.');
+  lines.push('', overallOk ? 'Dependency freshness report passed.' : 'Dependency freshness report failed.');
   return `${lines.join('\n')}\n`;
+}
+
+export function dependencyAuditExitCode(report, { strict = false } = {}) {
+  return report.security.ok && (!strict || report.overrideFreshness.ok) ? 0 : 1;
 }
 
 async function readJson(filePath) {
@@ -239,6 +288,7 @@ async function readJson(filePath) {
 }
 
 async function main() {
+  const strict = hasFlag('--strict');
   const threshold = parseSeverity(option('--audit-level', process.env.DEPENDENCY_AUDIT_LEVEL ?? 'high'));
   const manifest = await readJson(path.join(root, 'package.json'));
   const lock = await readJson(path.join(root, 'package-lock.json'));
@@ -249,10 +299,11 @@ async function main() {
   if (hasFlag('--json')) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    process.stdout.write(formatDependencyReport(report));
+    process.stdout.write(formatDependencyReport(report, { strict }));
   }
 
-  if (!report.security.ok) process.exit(1);
+  const exitCode = dependencyAuditExitCode(report, { strict });
+  if (exitCode !== 0) process.exit(exitCode);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

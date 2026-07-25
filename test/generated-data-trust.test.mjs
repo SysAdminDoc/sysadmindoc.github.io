@@ -251,7 +251,7 @@ test('deploy preflight script runs strict generated-data gate before tests and b
   );
   assert.match(
     pkg.scripts['deploy:preflight'],
-    /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm test && npm run check && npm run build$/,
+    /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run deps:audit -- --strict && npm test && npm run check && npm run build$/,
   );
   assert.equal(pkg.scripts['publish:pages'], 'node scripts/publish-pages.mjs');
 });
