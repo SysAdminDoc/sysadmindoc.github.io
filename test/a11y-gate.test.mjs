@@ -34,6 +34,11 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
   const config = await fs.readFile(path.join(root, 'playwright.audits.config.mjs'), 'utf8');
   const interactionsConfig = await fs.readFile(path.join(root, 'playwright.interactions.config.mjs'), 'utf8');
   const spec = await fs.readFile(path.join(root, 'tests', 'playwright', 'portfolio-audits.spec.mjs'), 'utf8');
+  const stateSpec = await fs.readFile(path.join(root, 'tests', 'playwright', 'state-coverage.spec.mjs'), 'utf8');
+  const targetSizeHelper = await fs.readFile(
+    path.join(root, 'tests', 'playwright', 'helpers', 'target-size.mjs'),
+    'utf8',
+  );
 
   assert.equal(pkg.scripts['audit:playwright'], 'playwright test --config=playwright.audits.config.mjs');
   assert.equal(
@@ -51,5 +56,8 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
   assert.match(interactionsConfig, /outputDir: '\.tmp\/playwright-interactions-results'/);
   assert.match(interactionsConfig, /outputFolder: '\.tmp\/playwright-interactions-report'/);
   assert.match(spec, /@axe-core\/playwright/);
+  assert.match(spec, /collectTargetSizeViolations/);
+  assert.match(stateSpec, /expectTargetSizeClean/);
+  assert.match(targetSizeHelper, /export async function collectTargetSizeViolations/);
   assert.match(spec, /toHaveScreenshot/);
 });

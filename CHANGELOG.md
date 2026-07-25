@@ -25,6 +25,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   lanes, so refreshing one operating system cannot overwrite the other.
   Fixture browser checks also derive catalog and timeline expectations from the
   rendered dataset instead of assuming production-sized generated data.
+- WCAG 2.2 target-size checks now cover 404, offline, empty-result, open
+  navigation, update-toast, and command-palette states in both themes and at
+  desktop/mobile sizes. The gate exposed and fixed a 20px command-search input;
+  its hit box is now 44px without changing the palette's outer layout.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
