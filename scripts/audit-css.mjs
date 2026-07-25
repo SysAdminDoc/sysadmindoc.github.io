@@ -7,6 +7,7 @@ import {
   extractCssSelectorRecords,
   readSourceSurfaceTexts,
 } from './lib/source-surface-audit.mjs';
+import { loadCssEntry } from './lib/css-entry.mjs';
 
 const root = process.cwd();
 const criticalPath = path.join(root, 'src', 'styles', 'critical.css');
@@ -152,10 +153,11 @@ function report(result, deadSelectorResult, label = 'CSS first-viewport parity a
   }
 }
 
-const [criticalCss, globalCss] = await Promise.all([
+const [criticalCss, globalEntry] = await Promise.all([
   fs.readFile(criticalPath, 'utf8'),
-  fs.readFile(globalPath, 'utf8'),
+  loadCssEntry(globalPath, { root }),
 ]);
+const { css: globalCss, sources: globalSources } = globalEntry;
 const surfaceTexts = await readSourceSurfaceTexts(root);
 const surface = collectSourceSurface(surfaceTexts);
 
@@ -193,7 +195,7 @@ const result = auditCss({ criticalCss, globalCss });
 const deadSelectorResult = auditDeadCssSelectors(
   new Map([
     ['src/styles/critical.css', criticalCss],
-    ['src/styles/global.css', globalCss],
+    ...globalSources,
   ]),
   surface,
 );

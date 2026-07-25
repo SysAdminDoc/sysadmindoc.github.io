@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 const globalCssPath = path.join(root, 'src', 'styles', 'global.css');
@@ -15,7 +15,7 @@ const deferredSections = [
 ];
 
 async function loadGlobalCss() {
-  return fs.readFile(globalCssPath, 'utf8');
+  return readCssEntry(globalCssPath, { root });
 }
 
 test('homepage below-fold sections opt into content-visibility with stable intrinsic sizes', async () => {

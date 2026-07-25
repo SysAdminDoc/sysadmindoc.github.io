@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
@@ -10,7 +11,7 @@ test('homepage catalog search has a no-JS form fallback', async () => {
   // rendered by both the homepage preview and the full /catalog/ route.
   const section = await fs.readFile(path.join(root, 'src', 'components', 'CatalogSection.astro'), 'utf8');
   const catalog = await fs.readFile(path.join(root, 'public', 'scripts', 'home-catalog.js'), 'utf8');
-  const css = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
+  const css = await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root });
 
   assert.match(section, /<form class="catalog-search-form" id="catalogSearchForm" action="\/search\/" method="get" role="search" aria-label="Search projects">/);
   assert.match(section, /<input type="search" class="search-input" id="searchInput" name="q"/);
@@ -23,7 +24,7 @@ test('homepage catalog search has a no-JS form fallback', async () => {
 
 test('primary navigation stays reachable without JavaScript', async () => {
   const headInit = await fs.readFile(path.join(root, 'public', 'scripts', 'head-init.js'), 'utf8');
-  const css = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
+  const css = await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root });
 
   // head-init.js flips the JS marker before first paint so the no-JS rules only
   // apply when scripting is genuinely unavailable.

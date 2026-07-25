@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
@@ -23,7 +24,7 @@ async function readSourceTree(dir) {
 
 test('prefers-contrast layer exists and SearchAction stays out of schema', async () => {
   const critical = await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8');
-  const global = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
+  const global = await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root });
   const source = await readSourceTree(path.join(root, 'src'));
 
   assert.match(critical, /@media\(prefers-contrast:more\)/);
