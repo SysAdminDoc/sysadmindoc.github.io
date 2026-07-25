@@ -1,11 +1,15 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { reviewedInteriorPages } from '../src/data/page-freshness.ts';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const siteUrl = 'https://sysadmindoc.github.io';
 const errors = [];
+const reviewedDateByRoute = new Map(
+  reviewedInteriorPages.map((page) => [page.route, page.lastReviewed]),
+);
 
 const requiredRoutes = [
   '/',
@@ -39,6 +43,16 @@ function extractLocValues(xml) {
     locs.push(match[1].trim());
   }
   return locs;
+}
+
+function extractUrlEntries(xml) {
+  return [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => {
+    const body = match[1];
+    return {
+      loc: body.match(/<loc>\s*([^<]+?)\s*<\/loc>/)?.[1]?.trim() ?? null,
+      lastmod: body.match(/<lastmod>\s*([^<]+?)\s*<\/lastmod>/)?.[1]?.trim() ?? null,
+    };
+  });
 }
 
 function isWellFormedXml(xml, label) {
@@ -99,6 +113,7 @@ if (indexLocs.length === 0) {
 // ── Process each child sitemap ────────────────────────────────────────────────
 
 const allPageUrls = [];
+let reviewedLastmodCount = 0;
 
 for (const loc of indexLocs) {
   let sitemapPathname;
@@ -126,13 +141,18 @@ for (const loc of indexLocs) {
     continue;
   }
 
-  const pageLocs = extractLocValues(childXml);
-  if (pageLocs.length === 0) {
+  const pageEntries = extractUrlEntries(childXml);
+  if (pageEntries.length === 0) {
     fail(`${distRelative} contains no <url><loc> entries.`);
     continue;
   }
 
-  for (const pageUrl of pageLocs) {
+  for (const entry of pageEntries) {
+    const pageUrl = entry.loc;
+    if (!pageUrl) {
+      fail(`${distRelative} contains a <url> entry without <loc>.`);
+      continue;
+    }
     // Verify correct site origin
     let parsed;
     try {
@@ -144,6 +164,19 @@ for (const loc of indexLocs) {
     if (parsed.origin !== siteUrl) {
       fail(`${distRelative}: "${pageUrl}" uses wrong origin (expected ${siteUrl}).`);
       continue;
+    }
+
+    const reviewedDate = reviewedDateByRoute.get(parsed.pathname);
+    if (reviewedDate) {
+      if (!entry.lastmod) {
+        fail(`${distRelative}: reviewed route "${parsed.pathname}" is missing <lastmod>.`);
+      } else if (entry.lastmod.slice(0, 10) !== reviewedDate) {
+        fail(
+          `${distRelative}: reviewed route "${parsed.pathname}" has lastmod "${entry.lastmod}"; expected "${reviewedDate}".`,
+        );
+      } else {
+        reviewedLastmodCount += 1;
+      }
     }
 
     // Verify the path resolves to a file in dist/
@@ -199,4 +232,5 @@ console.log(`  total URLs: ${allPageUrls.length}`);
 console.log(`  required routes checked: ${requiredRoutes.length}`);
 console.log(`  removed /projects/* routes: ${projectRoutes.length}`);
 console.log(`  /lang/* routes: ${langRoutes.length}`);
+console.log(`  reviewed lastmod routes: ${reviewedLastmodCount}/${reviewedInteriorPages.length}`);
 console.log('Sitemap audit passed.');

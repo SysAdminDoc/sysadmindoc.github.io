@@ -66,6 +66,17 @@ test('T98 interior pages emit page-level JSON-LD from shared schema data', async
   }
 });
 
+test('reviewed page dates drive sitemap lastmod values and their build audit', async () => {
+  const astroConfig = await fs.readFile(path.join(root, 'astro.config.mjs'), 'utf8');
+  const sitemapAudit = await fs.readFile(path.join(root, 'scripts', 'audit-sitemap.mjs'), 'utf8');
+
+  assert.match(astroConfig, /import \{ reviewedInteriorPages \} from '\.\/src\/data\/page-freshness\.ts'/);
+  assert.match(astroConfig, /item\.lastmod = new Date\(`\$\{reviewedDate\}T00:00:00Z`\)/);
+  assert.match(sitemapAudit, /import \{ reviewedInteriorPages \} from '\.\.\/src\/data\/page-freshness\.ts'/);
+  assert.match(sitemapAudit, /reviewed route .* is missing <lastmod>/);
+  assert.match(sitemapAudit, /entry\.lastmod\.slice\(0, 10\) !== reviewedDate/);
+});
+
 test('reviewed interior pages are not stale (warn >180 days, fail >365 days)', async () => {
   const pages = await loadReviewedPages();
   const now = Date.now();
