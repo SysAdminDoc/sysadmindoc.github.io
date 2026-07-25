@@ -110,6 +110,23 @@ test.describe('print media coverage', () => {
       await expectNoHorizontalOverflow(page);
     });
   }
+
+  test('/resume/ print styles override the interior screen layout', async ({ page }) => {
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await prepare(page, '/resume/', '#resume-header');
+    await page.emulateMedia({ media: 'print' });
+
+    await expect(page.locator('.resume-page')).toHaveCSS('padding-top', '0px');
+    await expect(page.locator('.resume-name-block h1')).toHaveCSS('font-size', '32px');
+    await expect(page.locator('.resume-section h2').first()).toHaveCSS('color', 'rgb(17, 17, 17)');
+    await expect(page.locator('.resume-shell')).toHaveCSS('grid-template-columns', /^\d+(?:\.\d+)?px$/);
+    await expect(page.locator('.resume-visible-url').first()).toHaveCSS('color', 'rgb(17, 17, 17)');
+
+    const visibleUrlSuffix = await page.locator('.resume-visible-url').first().evaluate((link) =>
+      getComputedStyle(link, '::after').content,
+    );
+    expect(['none', 'normal', '""']).toContain(visibleUrlSuffix);
+  });
 });
 
 test.describe('open navigation state coverage', () => {
