@@ -26,22 +26,26 @@ const services = [
   {
     tag: 'Adoption',
     name: 'AI rollout & tooling',
-    desc: 'Evaluate your workflows, pick the right tools for the job — Claude, ChatGPT, Copilot, or local models when data must stay in-house — and get them configured, secured, and actually used instead of just licensed.',
+    question: 'How do we choose and roll out the right AI tools?',
+    desc: 'I evaluate your workflows, select the right fit — Claude, ChatGPT, Copilot, or local models when data must stay in-house — then configure, secure, and drive adoption of it. You get a working rollout, not another shelfware license.',
   },
   {
     tag: 'Automation',
     name: 'Custom software & automation',
-    desc: 'Purpose-built tools for the gaps between your systems: report generation, document processing, data entry, monitoring, integrations. Delivered in days or weeks, not quarters.',
+    question: 'What can AI automate in our existing workflow?',
+    desc: 'I build purpose-built tools for the gaps between your systems: report generation, document processing, data entry, monitoring, and integrations. Useful scope ships in days or weeks, not quarters.',
   },
   {
     tag: 'Training',
     name: 'Employee enablement',
-    desc: 'Hands-on training built around your team’s real daily tasks — prompt patterns that hold up in practice, clear guardrails for what not to automate, and playbooks people keep using after I leave the room.',
+    question: 'How do we train employees to use AI safely?',
+    desc: 'I train your team on its real daily work, with prompt patterns that hold up in practice and clear guardrails for what not to automate. People leave with playbooks they will keep using.',
   },
   {
     tag: 'Retainer',
     name: 'Standing problem-solving',
-    desc: 'An open line for whatever comes up: a slow process, a manual report, two systems that will not talk to each other. You describe the friction; it comes back solved, documented, and maintained.',
+    question: 'Who handles new automation problems after launch?',
+    desc: 'I stay on call for whatever comes up: a slow process, a manual report, or two systems that will not talk to each other. You describe the friction; it comes back solved, documented, and maintained.',
   },
 ] as const;
 
@@ -66,26 +70,29 @@ const engagementSteps = [
   {
     step: '01',
     name: 'Discovery',
-    desc: 'A free conversation about where your business loses time. I will tell you plainly what AI can fix, what it cannot, and what it would take.',
+    question: 'Where is your business losing time?',
+    desc: 'We start with a free conversation about the work that drags. I will tell you plainly what AI can fix, what it cannot, and what a useful first step would take.',
   },
   {
     step: '02',
     name: 'Pilot',
-    desc: 'One measurable problem, fixed scope, fast turnaround. You see a working result before committing to anything ongoing.',
+    question: 'Can we prove value before a larger commitment?',
+    desc: 'Yes — the pilot solves one measurable problem with fixed scope and a fast turnaround. You see a working result before committing to anything ongoing.',
   },
   {
     step: '03',
     name: 'Retainer',
-    desc: 'A flat monthly rate covers implementation, training, and new problems as they surface. No long contract, and you keep everything I build.',
+    question: 'What happens after the pilot works?',
+    desc: 'A flat monthly retainer covers implementation, training, and new problems as they surface. There is no long contract, and you keep everything I build.',
   },
 ] as const;
 
 const cmdkSections = [
-  { label: 'Overview', href: '#track-overview', desc: 'What the AI services engagement is and who it serves.', badge: 'TRACK' },
-  { label: 'What I Deliver', href: '#services', desc: 'Rollout, automation, training, and retainer problem-solving.', badge: 'SERVICES' },
-  { label: 'How It Works', href: '#engagement', desc: 'Discovery, pilot, then a flat monthly retainer.', badge: 'PROCESS' },
-  { label: 'The Proof', href: '#proof', desc: 'Why this portfolio itself is the evidence.', badge: 'CONTEXT' },
-  { label: 'Contact', href: '#ai-contact', desc: 'Start a conversation about your business.', badge: 'CONTACT' },
+  { label: 'Where AI Helps', href: '#track-overview', desc: 'How AI can remove real work from a small or mid-size business.', badge: 'TRACK' },
+  { label: 'Services', href: '#services', desc: 'Answers about rollout, automation, training, and ongoing support.', badge: 'SERVICES' },
+  { label: 'Engagement', href: '#engagement', desc: 'Answers about discovery, a pilot, and ongoing delivery.', badge: 'PROCESS' },
+  { label: 'Evidence', href: '#proof', desc: 'What this public portfolio proves about the working model.', badge: 'CONTEXT' },
+  { label: 'Start', href: '#ai-contact', desc: 'What to send to begin a useful conversation.', badge: 'CONTACT' },
 ] as const;
 ---
 <Base
@@ -106,8 +113,8 @@ const cmdkSections = [
     <div class="si page-shell" id="track-overview">
       <div class="sh rv">
         <div class="sl">// Track</div>
-        <h1 class="st aisvc-title">AI, put to work</h1>
-        <p class="sd aisvc-intro">I help businesses use artificial intelligence to get real work done — as a contractor, on a monthly retainer. I select and roll out the right AI tools, build custom automation around your workflows, train your people to use it well, and stay on call for the problems that surface after everyone else goes home.</p>
+        <h1 class="st aisvc-title">How can AI help your business get real work done?</h1>
+        <p class="sd aisvc-intro">I turn AI into working tools, safer rollouts, and trained teams for small and mid-size businesses. As a contractor on a monthly retainer, I select and secure the right tools, build automation around your workflows, and stay accountable after launch.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
 
@@ -137,14 +144,15 @@ const cmdkSections = [
     <Divider />
 
     <div class="si" id="services">
-      <h2 class="aisvc-h2">What I deliver</h2>
+      <h2 class="aisvc-h2">What AI work can I deliver for your business?</h2>
       <div class="aisvc-grid">
         {services.map((s) => (
           <article class="aisvc-card card-enter">
             <div class="aisvc-card-head">
               <span class="aisvc-card-tag">{s.tag}</span>
+              <span class="aisvc-card-line">{s.name}</span>
             </div>
-            <h3 class="aisvc-card-name">{s.name}</h3>
+            <h3 class="aisvc-card-name">{s.question}</h3>
             <p class="aisvc-card-desc">{s.desc}</p>
           </article>
         ))}
@@ -153,12 +161,12 @@ const cmdkSections = [
     <Divider />
 
     <div class="si" id="engagement">
-      <h2 class="aisvc-h2">How the engagement works</h2>
+      <h2 class="aisvc-h2">How does an AI services engagement start?</h2>
       <div class="aisvc-steps">
         {engagementSteps.map((s) => (
           <article class="aisvc-step card-enter">
-            <div class="aisvc-step-num">{s.step}</div>
-            <h3 class="aisvc-step-name">{s.name}</h3>
+            <div class="aisvc-step-num">{s.step} · {s.name}</div>
+            <h3 class="aisvc-step-name">{s.question}</h3>
             <p class="aisvc-step-desc">{s.desc}</p>
           </article>
         ))}
@@ -170,9 +178,9 @@ const cmdkSections = [
     <Divider />
 
     <div class="si" id="proof">
-      <h2 class="aisvc-h2">The proof is this site</h2>
+      <h2 class="aisvc-h2">What proves this AI-assisted model works?</h2>
       <div class="aisvc-why rv">
-        <p>For the past year I have gone all-in on AI-assisted building — treating it as a discipline, not a novelty. The result is what you are looking at: <strong>{projectCount}+ public projects</strong> spanning Windows tools, desktop apps, Android apps, browser extensions, and {liveAppCount} live web apps, all researched, built, tested, documented, and released by one person using AI as a force multiplier.</p>
+        <p>This public portfolio is the proof. For the past year I have treated AI-assisted building as a discipline, not a novelty: <strong>{projectCount}+ public projects</strong> spanning Windows tools, desktop apps, Android apps, browser extensions, and {liveAppCount} live web apps, all researched, built, tested, documented, and released by one person using AI as a force multiplier.</p>
         <p>That is the working model I install in your business. Not a chatbot bolted onto your website — <strong>a faster way to get real work done</strong>, fitted to the workflows you already have and the people who already run them.</p>
         <p><strong>How that works is the honest part:</strong> AI writes the fast draft — scaffolding, boilerplate, test cases, and research sweeps — and I own every decision that ships. The architecture, the security review, the tests, and the judgment about what is good enough are mine. You get working software I stand behind, never raw model output.</p>
         <p>Before AI, I spent {experienceLabel} in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operational constraints that make or break a rollout. I have lived the side of the business that most AI consultants have only read about.</p>
@@ -182,7 +190,7 @@ const cmdkSections = [
     <Divider />
 
     <div class="si" id="ai-contact">
-      <h2 class="aisvc-h2">Start here</h2>
+      <h2 class="aisvc-h2">What should you send to get started?</h2>
       <div class="aisvc-why rv">
         <p>Send a short note about your business and the friction you want gone — no preparation needed. The discovery conversation is free, and honest: if AI is the wrong tool for your problem, I will say so.</p>
         <p><a href={contactMailto('AI services')} class="page-inline-link">{contactEmail}</a> · <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener" class="page-inline-link">LinkedIn</a></p>
@@ -201,24 +209,26 @@ const cmdkSections = [
 
 <style is:global>
   .aisvc-page{min-height:calc(100vh - 200px)}
+  .aisvc-page>.si:not(.page-shell){padding-inline:clamp(20px,5vw,72px)}
   .aisvc-title{font-size:clamp(44px,6vw,72px)!important;background:linear-gradient(120deg,var(--t1),var(--pur));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .aisvc-intro{font-size:18px!important;max-width:720px}
   .aisvc-stats{margin-top:32px;max-width:1080px}
   .aisvc-stat{min-height:100%}
   .aisvc-stat-num{color:var(--pur)}
   .aisvc-actions{margin-top:22px}
-  .aisvc-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
+  .aisvc-h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.035em;color:var(--t1);margin:0 auto 28px;max-width:900px}
   .aisvc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
   .aisvc-card{display:flex;flex-direction:column;gap:10px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);color:var(--t1);box-shadow:var(--shadow-soft);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
   .aisvc-card:hover{border-color:var(--border-strong);background:var(--surface-strong);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
   .aisvc-card-head{display:flex;align-items:center;justify-content:space-between}
   .aisvc-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--pur);padding:3px 8px;border:1px solid color-mix(in srgb, var(--pur) 38%, transparent);border-radius:4px}
-  .aisvc-card-name{font-family:var(--mono);font-size:18px;font-weight:600;margin:0;color:var(--t1)}
+  .aisvc-card-line{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:right}
+  .aisvc-card-name{font-size:19px;line-height:1.35;font-weight:650;letter-spacing:-.015em;margin:2px 0 0;color:var(--t1)}
   .aisvc-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0;flex:1}
   .aisvc-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1100px;margin:0 auto 28px}
   .aisvc-step{display:flex;flex-direction:column;gap:8px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .aisvc-step-num{font-family:var(--mono);font-size:12px;letter-spacing:.15em;color:var(--pur)}
-  .aisvc-step-name{font-family:var(--mono);font-size:17px;font-weight:600;margin:0;color:var(--t1)}
+  .aisvc-step-name{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.015em;margin:0;color:var(--t1)}
   .aisvc-step-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
   .aisvc-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
   .aisvc-why p{margin-bottom:18px}

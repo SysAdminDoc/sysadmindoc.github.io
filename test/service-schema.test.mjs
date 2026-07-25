@@ -27,6 +27,16 @@ test('the /ai/ services track publishes its offer list as structured data', asyn
   );
 });
 
+test('the /ai/ service and engagement cards lead with prospect questions', async () => {
+  const source = await fs.readFile(aiPagePath, 'utf8');
+  const questions = [...source.matchAll(/\bquestion:\s*'([^']+)'/g)].map((match) => match[1]);
+
+  assert.equal(questions.length, 7, 'expected four service questions and three engagement questions');
+  assert.ok(questions.every((question) => question.endsWith('?')), 'every card question should be explicit');
+  assert.match(source, /services\.map[\s\S]*?<h3[^>]*>\{s\.question\}<\/h3>/);
+  assert.match(source, /engagementSteps\.map[\s\S]*?<h3[^>]*>\{s\.question\}<\/h3>/);
+});
+
 test('the schema audit pins the services-track types and provider references', async () => {
   const audit = await fs.readFile(path.join(root, 'scripts', 'audit-schema.mjs'), 'utf8');
 
