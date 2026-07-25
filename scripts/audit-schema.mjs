@@ -146,6 +146,17 @@ function requireBaseGraph(nodes, route) {
   if (website['@id'] !== websiteId) fail(`${route} WebSite @id drifted from ${websiteId}`);
   if (website.publisher?.['@id'] !== personId) fail(`${route} WebSite publisher must reference ${personId}`);
   if (person['@id'] !== personId) fail(`${route} Person @id drifted from ${personId}`);
+  if (person.url !== `${siteUrl}/`) fail(`${route} Person url must resolve to the site canonical`);
+  if (new URL(person.url).origin !== new URL(person['@id']).origin) {
+    fail(`${route} Person url and @id must share the site origin`);
+  }
+  const sameAs = Array.isArray(person.sameAs) ? person.sameAs : [];
+  for (const identityUrl of [
+    'https://github.com/SysAdminDoc',
+    'https://www.linkedin.com/in/matthewryanparker',
+  ]) {
+    if (!sameAs.includes(identityUrl)) fail(`${route} Person sameAs is missing ${identityUrl}`);
+  }
 }
 
 function requireContiguousListItems(items, route, label) {
