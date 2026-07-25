@@ -15,6 +15,7 @@ import { mkdirSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getUtcDayKey, computeStreak } from './lib/streak.mjs';
+import { summarizeReleaseBody } from '../src/data/release-summary.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -357,14 +358,7 @@ async function main() {
           publishedAt: release.published_at,
           url: release.html_url,
           downloads,
-          bodyFirst: (release.body || '')
-            .replace(/\r/g, '')
-            .split('\n')
-            .map((line) => line.trim())
-            .filter((line) => line && !line.startsWith('#') && !/^[*-]\s*$/.test(line))
-            .slice(0, 3)
-            .join(' · ')
-            .slice(0, 220),
+          bodyFirst: summarizeReleaseBody(release.body),
           provenance: computeProvenance(assets, release.body || ''),
         });
       }

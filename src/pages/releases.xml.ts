@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { featured, liveApps, catalog } from '../data/portfolio';
+import { summarizeReleaseBody } from '../data/release-summary.mjs';
 
 // Dedicated feed of release EVENTS (distinct from rss.xml, which is a project
 // feed). Sourced from the cached _releases.json so followers can subscribe to
@@ -40,7 +41,7 @@ ${items
   .map((r) => {
     const project = nameMap.get(r.repo) ?? r.repo;
     const title = `${project} ${r.tag}`;
-    const desc = r.bodyFirst || r.name || `Release ${r.tag}`;
+    const desc = summarizeReleaseBody(r.bodyFirst) || r.name || `Release ${r.tag}`;
     return `    <item>
       <title>${escapeXml(title)}</title>
       <link>${escapeXml(r.url)}</link>

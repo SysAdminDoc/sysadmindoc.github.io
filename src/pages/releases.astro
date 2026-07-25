@@ -8,6 +8,7 @@ import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { githubRepoUrl } from '../data/github';
+import { summarizeReleaseBody } from '../data/release-summary.mjs';
 
 const title = 'Releases — Matt Parker';
 const pageOg = interiorOgPageBySlug.releases;
@@ -37,6 +38,9 @@ catalog.forEach((entry) => projectNameMap.set(entry.repo, entry.name));
 const releasesWithLinks = releases.map((release) => {
   return {
     ...release,
+    // Normalize here too, not just in the generator: the cached _releases.json
+    // may predate the summarizer, and re-running it is a no-op once clean.
+    summary: summarizeReleaseBody(release.bodyFirst),
     repositoryUrl: githubRepoUrl(release.repo),
     projectName: projectNameMap.get(release.repo) ?? release.repo,
   };
@@ -170,7 +174,7 @@ const cmdkSections = [
                       </span>
                       <time class="rel-date" datetime={r.publishedAt}>{releaseDayFormatter.format(new Date(r.publishedAt))}</time>
                     </div>
-                    {r.bodyFirst && <p class="rel-body">{r.bodyFirst}</p>}
+                    {r.summary && <p class="rel-body">{r.summary}</p>}
                   </li>
                 ))}
               </ul>

@@ -6,6 +6,7 @@ import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshne
 import { catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { githubRepoUrl } from '../data/github';
+import { summarizeReleaseBody } from '../data/release-summary.mjs';
 import type { Lang } from '../data/types';
 
 type ReleaseRecord = {
@@ -99,7 +100,7 @@ const releaseEvents: TimelineEvent[] = releases
       type: 'release' as const,
       typeLabel: 'Release',
       title: `${project?.name ?? release.repo} ${release.tag}`,
-      desc: cleanText(release.bodyFirst || release.name || 'GitHub release published for this project.'),
+      desc: cleanText(summarizeReleaseBody(release.bodyFirst) || release.name || 'GitHub release published for this project.'),
       href: release.url,
       external: true,
       date,
