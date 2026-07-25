@@ -20,7 +20,51 @@
     let currentSearch='';
     let currentSort='default';
     const catalogStatus=document.getElementById('catalogStatus');
+    const catalogMore=document.getElementById('catalogMore');
     const catalogReset=document.getElementById('catalogReset');
+    // Every page ships the full project list for the command palette, so the
+    // preview can count archive matches exactly without extra payload.
+    const archiveProjects=(window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects))
+        ?window.__PORTFOLIO_DATA.allProjects:[];
+
+    function archiveCountForCategory(category){
+        if(!archiveProjects.length)return null;
+        if(category==='all')return archiveProjects.length;
+        return archiveProjects.filter(project=>project&&project.category===category).length;
+    }
+
+    function catalogHref(){
+        const params=new URLSearchParams();
+        if(currentFilter!=='all')params.set('cat',currentFilter);
+        if(currentView!=='all')params.set('view',currentView);
+        if(currentSearch.trim())params.set('q',currentSearch.trim());
+        if(currentSort!=='default')params.set('sort',currentSort);
+        const query=params.toString();
+        return '/catalog/'+(query?'?'+query:'');
+    }
+
+    // The `view` filters and the search index differ between the rendered cards
+    // and the palette dataset, so only promise a count for a plain category
+    // narrow — everything else gets an unquantified handoff rather than a number
+    // that /catalog/ might not reproduce.
+    function updateCatalogHandoff(visible){
+        if(!catalogMore)return;
+        const q=currentSearch.trim();
+        const narrowed=currentFilter!=='all'||currentView!=='all'||!!q;
+        if(!narrowed){catalogMore.hidden=true;return}
+
+        catalogMore.href=catalogHref();
+        if(currentFilter!=='all'&&currentView==='all'&&!q){
+            const total=archiveCountForCategory(currentFilter);
+            if(total===null||total<=visible){catalogMore.hidden=true;return}
+            const label=filterLabels[currentFilter]||'this category';
+            catalogMore.textContent='See all '+total+' '+label+' projects →';
+            catalogMore.hidden=false;
+            return;
+        }
+        catalogMore.textContent='Search all '+catalogTotal+' projects →';
+        catalogMore.hidden=false;
+    }
     const catalogResetEmpty=document.getElementById('catalogResetEmpty');
     const filterLabels={};
     document.querySelectorAll('.fb[data-filter]').forEach(button=>{
@@ -61,6 +105,7 @@
         const hasCustomState=currentFilter!=='all'||currentView!=='all'||!!q||currentSort!=='default';
         if(catalogReset)catalogReset.hidden=!hasCustomState;
         if(catalogResetEmpty)catalogResetEmpty.hidden=!hasCustomState;
+        updateCatalogHandoff(visible);
     }
 
     function syncViewButtons(){

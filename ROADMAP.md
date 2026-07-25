@@ -21,20 +21,6 @@ Last normalized: 2026-07-24
 
 ## Deep audit follow-ups (2026-07-25 pass)
 
-### P2
-
-- [ ] P2 — Give the homepage catalog preview a filter handoff to `/catalog/`
-  Why: The preview renders the top 84 of 178 projects, so a category filter there
-  silently searches a subset. Zero-count chips are no longer rendered (v0.27.0),
-  but a category with 3 preview matches and 27 archive matches still shows 3 with
-  no signal that more exist. The no-results state offers "Browse all 178 projects";
-  a filtered-but-partial state offers nothing equivalent.
-  Where: `src/components/CatalogSection.astro`, `public/scripts/home-catalog.js`,
-  `src/data/catalog-render.ts`.
-  Acceptance: When a filter/search on the preview surface matches fewer entries
-  than the full archive holds for that filter, the status line links to
-  `/catalog/?cat=…` carrying the active filter/search/sort state.
-
 ### P3
 
 - [ ] P3 — Refresh `_releases.json` to clear inherited mid-word truncations
