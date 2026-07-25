@@ -29,6 +29,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   navigation, update-toast, and command-palette states in both themes and at
   desktop/mobile sizes. The gate exposed and fixed a 20px command-search input;
   its hit box is now 44px without changing the palette's outer layout.
+- README architecture notes now scope shared jump navigation to the interior
+  routes that use it and enumerate every current page and generated endpoint,
+  replacing removed tag-cloud language and an incomplete route tree.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
