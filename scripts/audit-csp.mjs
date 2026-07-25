@@ -203,13 +203,6 @@ function scriptIsExecutable(kind) {
   return kind === 'classic' || kind === 'module' || kind === 'text/javascript' || kind === 'application/javascript';
 }
 
-function sourceKindForScript(attrs) {
-  if (attrs.src) {
-    return sourceKindForUrl(String(attrs.src)).kind;
-  }
-  return 'inline';
-}
-
 function sourceKindForUrl(value) {
   const urlValue = String(value ?? '');
   if (urlValue.startsWith('/') || urlValue.startsWith('./') || urlValue.startsWith('../')) {
@@ -250,6 +243,14 @@ function styleLinkAllowedByCandidate(record, tokens) {
   if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && tokens.includes("'self'")) return true;
   if (record.sourceKind === 'third-party' && record.protocol && tokens.includes(record.protocol)) return true;
   if (record.sourceKind === 'third-party' && record.origin && tokens.includes(record.origin)) return true;
+  return false;
+}
+
+function scriptLinkAllowedByCandidate(record, tokens) {
+  if (tokens.includes('*')) return true;
+  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && tokens.includes("'self'")) return true;
+  if (record.protocol && tokens.includes(record.protocol)) return true;
+  if (record.origin && tokens.includes(record.origin)) return true;
   return false;
 }
 
@@ -335,15 +336,17 @@ async function auditSourceFile(filePath, text) {
     const [full, attrText] = selfClosingScriptMatch;
     const attrs = parseAttrs(attrText);
     const kind = scriptType(attrs);
-    const sourceKind = sourceKindForScript(attrs);
-    const executable = sourceKind === 'inline' && scriptIsExecutable(kind);
+    const source = attrs.src ? sourceKindForUrl(String(attrs.src)) : { kind: 'inline' };
+    const executable = source.kind === 'inline' && scriptIsExecutable(kind);
     const dynamic = Boolean(attrs['define:vars'] || attrs['set:html']);
     scripts.push({
       file: rel,
       line: lineFor(text, selfClosingScriptMatch.index),
       attrs,
       type: kind,
-      sourceKind,
+      sourceKind: source.kind,
+      origin: source.origin,
+      protocol: source.protocol,
       executable,
       dynamic,
       content: '',
@@ -358,15 +361,17 @@ async function auditSourceFile(filePath, text) {
     const [full, attrText, content] = scriptMatch;
     const attrs = parseAttrs(attrText);
     const kind = scriptType(attrs);
-    const sourceKind = sourceKindForScript(attrs);
-    const executable = sourceKind === 'inline' && scriptIsExecutable(kind);
+    const source = attrs.src ? sourceKindForUrl(String(attrs.src)) : { kind: 'inline' };
+    const executable = source.kind === 'inline' && scriptIsExecutable(kind);
     const dynamic = Boolean(attrs['define:vars'] || attrs['set:html']);
     scripts.push({
       file: rel,
       line: lineFor(text, scriptMatch.index),
       attrs,
       type: kind,
-      sourceKind,
+      sourceKind: source.kind,
+      origin: source.origin,
+      protocol: source.protocol,
       executable,
       dynamic,
       content,
@@ -532,6 +537,7 @@ const jsonDataScripts = scripts.filter((script) => script.type === 'json-ld' || 
 const externalScripts = scripts.filter((script) => script.attrs.src);
 const selfHostedScripts = externalScripts.filter((script) => script.sourceKind === 'self-hosted');
 const thirdPartyScripts = externalScripts.filter((script) => script.sourceKind === 'third-party');
+const activeExternalScriptBlockers = externalScripts.filter((script) => !scriptLinkAllowedByCandidate(script, scriptSrc));
 
 for (const script of executableInline) script.allowlist = findExecutableAllowlist(script);
 for (const handler of eventHandlers) handler.allowlist = findEventAllowlist(handler);
@@ -661,6 +667,9 @@ console.log(`  JSON-LD/data script blocks: ${jsonDataScripts.length}`);
 console.log(`  self-hosted external scripts: ${selfHostedScripts.length}`);
 console.log(`  third-party external scripts: ${thirdPartyScripts.length}`);
 for (const script of executableInline) printScript(script);
+for (const script of activeExternalScriptBlockers) {
+  console.log(`  - external-script: ${formatLocation(script)} ${script.attrs.src} blocked by active script-src`);
+}
 console.log('');
 console.log('Inline handler and style inventory');
 console.log(`  inline event handlers: ${eventHandlers.length}`);
@@ -770,6 +779,16 @@ if (options.strict && htmlSinkWrites.length > 0) {
 }
 if (options.strict && directiveAllowsUnsafeInline(scriptSrc)) {
   failures.push("script-src still allows 'unsafe-inline'.");
+}
+if (options.strict && activeExternalScriptBlockers.length > 0) {
+  failures.push(
+    `${activeExternalScriptBlockers.length} external script source(s) are blocked by the active script-src: ${summarizePaths(activeExternalScriptBlockers, (script) => `${script.file}:${script.line} (${script.attrs.src})`)}.`,
+  );
+}
+if (options.strict && activeStyleAttrUnsafeInlineRequired) {
+  failures.push(
+    `${styleAttributes.length + cssTextWrites.length + setAttributeStyleWrites.length} style attribute/write surface(s) are blocked by the active ${styleAttrDirective.source ?? 'style-src-attr'} policy.`,
+  );
 }
 if (options.strict && candidate && candidateBlockers.length > 0) {
   failures.push(`candidate script-src ${candidate.join(' ')} would block ${candidateBlockers.length} current inline surface(s).`);
