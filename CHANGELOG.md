@@ -48,6 +48,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- `npm run scaffold:route -- <slug>` for new interior routes. Adding one touches
+  about a dozen files that must agree, and the list existed only as prose, so a
+  partial registration failed late as an audit error in an unrelated file. The
+  script writes the page stub and patches the OG page list, page freshness, the
+  schema-audit route table, the `InteriorNav` union and link, and the Base
+  command-palette section; it exits non-zero naming any anchor it could not find,
+  and `--dry-run` reports without writing. It deliberately leaves the frozen
+  expectation sets in `test/` alone — widening those is a review decision — and
+  prints exactly which to update.
 - A full-catalog handoff on the homepage catalog preview. Filtering the preview
   searches a ranked slice of 84, so a category with 14 preview matches and 28 in
   the archive showed 14 with no signal that more existed. While narrowed, the

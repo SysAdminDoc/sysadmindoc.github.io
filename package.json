@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:agent": "astro dev --background",
+    "scaffold:route": "node scripts/scaffold-route.mjs",
     "dev:status": "astro dev status",
     "dev:logs": "astro dev logs",
     "dev:stop": "astro dev stop",
