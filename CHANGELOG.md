@@ -4,7 +4,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
-## [v0.26.2] - 2026-07-24
+## [v0.26.3] - 2026-07-24
+
+- Removed the "Practice, expanded" homepage section (`#journey`) in full: the section markup and its `journeyMilestones` data, the top-nav "Journey" link and the command-palette "Journey" entry, the `#journey` scroll/content-visibility registrations in `home-nav.js` and `global.css`, and every journey-only style (`.jw/.ji/.jd/.jt/.jeyebrow/.jdesc/.jfoot/.jmeta/.jlink` across base, redesign, light-theme, and route-home layers) so the dead-selector audit stays green. The remaining sections renumber cleanly (Beyond code → `05`, Contact → `06`). Updated the homepage-runtime and content-visibility tests to match (and to guard against `#journey` returning). Net −250 lines; no first-viewport visual baselines change.
 
 - Hero polish + design-tell cleanup: removed the animated multi-color gradient text and the perpetually spinning conic avatar ring from the hero source, making the restrained "Operational Clarity" hero (solid wordmark and metrics, static 1px avatar border) the single source of truth. Cleaned three dead gradient-text overrides (base, light-theme wordmark/metrics, and the large-screen wordmark) that the design detector flagged as AI tells but that were already overridden at runtime, so the source now matches what renders.
 - Added consistent, keyboard-accessible hover/focus feedback to both homepage indexes ("Selected work" and "Live apps"), which previously either fell flat or inherited a mismatched lift-and-glow: hovering or focusing a row now shifts its name (and rank) to the accent color and strengthens the divider, matching the filter-tab interaction language already used in the catalog. No default-state visual baselines changed (hover-only), and the 104-shot dark+light visual audit still passes.
