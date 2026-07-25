@@ -43,6 +43,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   work at the live curated/component/cache boundaries and marks the removed
   project-detail architecture as historical. The generated-cache type comment
   no longer names a deleted route as a consumer.
+- Local development, detached development, start, and preview commands now bind
+  explicitly to `127.0.0.1`; a repository policy test prevents an accidental
+  return to LAN-reachable defaults.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
