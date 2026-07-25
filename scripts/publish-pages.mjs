@@ -206,12 +206,17 @@ async function ensurePagesWorktree(worktreeDir, pagesBranch) {
     await fs.rm(worktreeDir, { recursive: true, force: true });
   }
 
+  // A deleted linked-worktree directory remains registered in git metadata.
+  // Prune that stale registration before attempting to recreate the path.
+  run('git', ['worktree', 'prune']);
+
   const hasLocalBranch = spawnSync('git', ['show-ref', '--verify', '--quiet', `refs/heads/${pagesBranch}`], { cwd: root }).status === 0;
   if (hasLocalBranch) {
     run('git', ['worktree', 'add', worktreeDir, pagesBranch]);
   } else {
     run('git', ['worktree', 'add', '-b', pagesBranch, worktreeDir, `origin/${pagesBranch}`]);
   }
+  run('git', ['-C', worktreeDir, 'pull', '--ff-only', 'origin', pagesBranch]);
 }
 
 async function copyDistToWorktree(distDir, worktreeDir) {
