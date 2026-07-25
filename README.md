@@ -86,10 +86,14 @@ npm run audit:interactions # focused rendered interaction smoke against built di
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run typecheck:scripts # check scripts/ and test/ JavaScript contracts with TypeScript
 npm run check         # project data + Astro source + Node script/test validation
-npm run dev           # http://localhost:4321
+npm run dev           # http://127.0.0.1:4321
 npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
+
+The `dev`, `dev:agent`, `start`, and `preview` scripts bind to IPv4 loopback
+(`127.0.0.1`) by default. They are intentionally unavailable to other devices
+on the LAN.
 
 Astro 7 can run the dev server detached, which suits automated/agent-driven work
 better than a foreground process: the server survives between commands, and
@@ -98,7 +102,7 @@ output, so no log scraping is needed.
 
 ```bash
 npm run dev:agent     # start the dev server as a background process
-npm run dev:status    # {"message":"Dev server running at http://localhost:4321 ...","level":"info"}
+npm run dev:status    # {"message":"Dev server running at http://127.0.0.1:4321 ...","level":"info"}
 npm run dev:logs      # replay the background server's JSON log lines (add -- --follow to tail)
 npm run dev:stop      # stop it
 ```
