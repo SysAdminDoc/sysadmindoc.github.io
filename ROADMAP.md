@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-- [ ] P2 — Take the pending dependency minor/patch updates
-  Why: Four direct dependencies are behind, including satori v0.28's OIDC publish-integrity fix; none are blocked by the TypeScript 7 issue tracked separately in `Roadmap_Blocked.md`.
-  Evidence: `npm outdated` on 2026-07-25 — satori 0.26.0→0.29.0 (adds webp), @playwright/test 1.61.1→1.62.0, lightningcss 1.32.0→1.33.0, sanitize-html 2.17.5→2.17.6. `npm audit --omit=dev` currently reports 0 vulnerabilities.
-  Touches: `package.json`, `package-lock.json`, `test/toolchain.test.mjs` if it pins versions.
-  Acceptance: All four updated, `npm test`, `npm run check`, `npm run build`, `npm run audit:playwright`, and `npm run audit:interactions` pass, and interior OG images render unchanged after the satori bump.
-  Complexity: S
-
 - [ ] P2 — Adopt Astro 7's agent-oriented dev tooling
   Why: This repo is driven almost entirely by coding agents, and Astro 7 shipped a background dev-server mode with automatic agent detection, structured JSON logging, and a `/_astro/status` health endpoint — none of which are used, so agents currently poll a foreground server and parse human-formatted logs.
   Evidence: Astro 7.0 release notes (see RESEARCH.md); `package.json` `dev` script is a bare `astro dev`; installed Astro is 7.1.3.
