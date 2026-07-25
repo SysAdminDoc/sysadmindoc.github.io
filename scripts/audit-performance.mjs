@@ -199,7 +199,8 @@ class CdpClient {
         'error',
         (event) => {
           clearTimeout(timer);
-          reject(event.error || new Error('CDP socket error.'));
+          const socketError = /** @type {{ error?: unknown }} */ (event).error;
+          reject(socketError instanceof Error ? socketError : new Error('CDP socket error.'));
         },
         { once: true },
       );
@@ -257,7 +258,7 @@ class CdpClient {
     this.handlers.set(method, handlers);
   }
 
-  waitFor(method, predicate = () => true, timeoutMs = 45000) {
+  waitFor(method, predicate = (_params) => true, timeoutMs = 45000) {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         const handlers = this.handlers.get(method) || [];

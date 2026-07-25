@@ -84,7 +84,8 @@ npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --st
 npm run audit:playwright # browser axe + visual baselines against fixture-built dist/
 npm run audit:interactions # focused rendered interaction smoke against built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
-npm run check         # project data + Astro + TypeScript validation
+npm run typecheck:scripts # check scripts/ and test/ JavaScript contracts with TypeScript
+npm run check         # project data + Astro source + Node script/test validation
 npm run dev           # http://localhost:4321
 npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/

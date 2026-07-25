@@ -82,11 +82,12 @@ function extractCatalogSection(html) {
   return nextMatch ? rest.slice(0, nextMatch.index + 1) : rest;
 }
 
+/** @param {number} bytes */
 function formatBytes(bytes) {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-function checkBudget(label, actual, max, formatter = String) {
+function checkBudget(label, actual, max, formatter = (value) => String(value)) {
   if (actual > max) fail(`${label} is ${formatter(actual)}; budget is ${formatter(max)}.`);
 }
 

@@ -158,6 +158,15 @@ export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES)
   return list;
 }
 
+/**
+ * @param {{
+ *   rootDir?: string,
+ *   logger?: {
+ *     log?: (...args: unknown[]) => void,
+ *     warn?: (...args: unknown[]) => void
+ *   }
+ * }} [options]
+ */
 export function stampServiceWorker({ rootDir = defaultRoot, logger = console } = {}) {
   const swPath = join(rootDir, 'dist', 'sw.js');
   const packagePath = join(rootDir, 'package.json');

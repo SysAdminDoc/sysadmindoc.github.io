@@ -57,6 +57,7 @@ test('serviceCatalogNodes emits one Service per offer with resolvable ids', asyn
   const services = nodes.filter((node) => node['@type'] === 'Service');
   assert.ok(catalog, 'expected an OfferCatalog node');
   assert.equal(services.length, 2);
+  assert.ok(Array.isArray(catalog.itemListElement));
   assert.equal(catalog.itemListElement.length, 2);
 
   const serviceIds = new Set(services.map((service) => service['@id']));
@@ -66,7 +67,8 @@ test('serviceCatalogNodes emits one Service per offer with resolvable ids', asyn
   }
   assert.equal(services[0]['@id'], 'https://example.test/ai/#service-adoption');
   for (const service of services) {
-    assert.equal(service.provider['@id'], 'https://example.test/#matt-parker');
+    const provider = /** @type {Record<string, unknown>} */ (service.provider);
+    assert.equal(provider['@id'], 'https://example.test/#matt-parker');
     assert.ok(service.description);
     assert.ok(service.areaServed);
   }

@@ -59,7 +59,7 @@ async function collectFiles(dir, ext) {
   return results;
 }
 
-function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes, fileLimitFor = () => fileLimitBytes) {
+function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes, fileLimitFor = (_file) => fileLimitBytes) {
   const colWidths = { name: 40, size: 12, budget: 12, status: 6 };
   const pad = (str, width) => String(str).padEnd(width);
   const header = [

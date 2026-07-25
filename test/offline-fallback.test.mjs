@@ -267,6 +267,7 @@ test('service worker navigation handler prefers preload response before fetch', 
   };
 
   vm.runInNewContext(script, sandbox);
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   const request = new Request('https://sysadmindoc.example/preloaded/', {
     headers: { accept: 'text/html' },
@@ -280,6 +281,7 @@ test('service worker navigation handler prefers preload response before fetch', 
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(await response.text(), 'preloaded shell');
   assert.equal(fetchCalls, 0);
   await new Promise((resolve) => setTimeout(resolve, 0));
@@ -290,7 +292,9 @@ test('service worker keeps a same-origin revalidation write alive past the cache
   const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
   const listeners = new Map();
   const puts = [];
+  /** @type {(() => void) | undefined} */
   let resolveFetch;
+  /** @type {Promise<void>} */
   const fetchGate = new Promise((resolve) => {
     resolveFetch = resolve;
   });
@@ -339,6 +343,7 @@ test('service worker keeps a same-origin revalidation write alive past the cache
   };
 
   vm.runInNewContext(script, sandbox);
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   const waited = [];
   const request = new Request('https://sysadmindoc.example/scripts/app.js');
@@ -354,12 +359,14 @@ test('service worker keeps a same-origin revalidation write alive past the cache
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(await response.text(), 'cached-body');
   // The network is still gated, so the background write has not happened yet,
   // but it must be registered on the event lifetime rather than left detached.
   assert.equal(puts.length, 0);
   assert.equal(waited.length, 1);
 
+  assert.ok(resolveFetch);
   resolveFetch();
   await Promise.all(waited);
   assert.deepEqual(puts, [{ url: 'https://sysadmindoc.example/scripts/app.js', body: 'fresh-body' }]);
@@ -407,6 +414,7 @@ test('service worker navigation handler falls back offline when preload and fetc
   };
 
   vm.runInNewContext(script, sandbox);
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   const request = new Request('https://sysadmindoc.example/offline-test/', {
     headers: { accept: 'text/html' },
@@ -420,5 +428,6 @@ test('service worker navigation handler falls back offline when preload and fetc
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(await response.text(), 'offline shell');
 });

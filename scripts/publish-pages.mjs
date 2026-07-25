@@ -33,6 +33,15 @@ function commandInvocation(command, args) {
   return { command, args };
 }
 
+/**
+ * @param {string} command
+ * @param {string[]} args
+ * @param {{
+ *   cwd?: string,
+ *   env?: NodeJS.ProcessEnv,
+ *   stdio?: import('node:child_process').StdioOptions
+ * }} [options]
+ */
 function run(command, args, { cwd = root, env = {}, stdio = 'inherit' } = {}) {
   const invocation = commandInvocation(command, args);
   const result = spawnSync(invocation.command, invocation.args, {

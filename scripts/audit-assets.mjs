@@ -28,7 +28,7 @@ function fail(message) {
   errors.push(message);
 }
 
-async function listFiles(dir, predicate = () => true) {
+async function listFiles(dir, predicate = (_filePath) => true) {
   const entries = await fs.readdir(dir, { withFileTypes: true }).catch((error) => {
     if (error.code === 'ENOENT') return [];
     throw error;

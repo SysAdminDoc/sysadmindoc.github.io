@@ -141,9 +141,10 @@ test('deploy status compares the live version and commit with local HEAD', async
       }),
     );
   });
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve()));
   t.after(() => server.close());
   const address = server.address();
+  assert.ok(address && typeof address !== 'string');
   const baseUrl = `http://127.0.0.1:${address.port}/`;
 
   const matching = await runSmoke(['--status-only', '--base-url', baseUrl, '--retries', '1']);

@@ -103,7 +103,7 @@ function requireXmlString(record, key, label) {
   return value;
 }
 
-function auditRssDocument(source, label, { expectedChannelPath, expectedItemCount = null } = {}) {
+function auditRssDocument(source, label, { expectedChannelPath = null, expectedItemCount = null } = {}) {
   const document = parseXmlDocument(source, label);
   const channel = document?.rss?.channel;
   if (!isObject(channel)) {
