@@ -4,6 +4,7 @@ import Divider from '../../components/Divider.astro';
 import InteriorNav from '../../components/InteriorNav.astro';
 import SectionJumpNav from '../../components/SectionJumpNav.astro';
 import StarSvg from '../../components/StarSvg.astro';
+import Footer from '../../components/Footer.astro';
 import { catalog, featured } from '../../data/portfolio';
 import { githubRepoUrl } from '../../data/github';
 
@@ -214,20 +215,16 @@ const langJsonLd = JSON.stringify({
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">{lang.label} is one lane inside a broader archive of automation, desktop software, browser products, and systems-focused tooling.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation">
-        {Object.entries(LANGS).filter(([s]) => s !== slug).slice(0, 3).map(([s, l]) => (
-          <a href={`/lang/${s}/`}>{l.label}</a>
-        ))}
-        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
-      </nav>
-    </div>
-  </footer>
+  <Footer
+    summary={`${lang.label} is one lane inside a broader archive of automation, desktop software, browser products, and systems-focused tooling.`}
+    links={[
+      ...Object.entries(LANGS)
+        .filter(([s]) => s !== slug)
+        .slice(0, 3)
+        .map(([s, l]) => ({ href: `/lang/${s}/`, label: l.label })),
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style is:global>

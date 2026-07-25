@@ -8,15 +8,6 @@ Last normalized: 2026-07-24
 
 ## Research-Driven Additions
 
-### P1
-
-- [ ] P1 — Extract a shared `Footer.astro` and give every route a consistent contact affordance
-  Why: Twelve routes hand-roll `<footer>` markup with twelve different link sets, and a contact link appears on only 3 of 8 sampled routes — a visitor arriving at `/catalog/` or `/releases/` from search has no path to contact. Fixing the duplication is the root-cause fix; the contact gap is the symptom.
-  Evidence: `grep -c '<footer>' src/pages/*.astro` returns 12 files with no `Footer.astro` in `src/components/`; `mailto:` present in `dist/{index,ai,resume}` only, absent from `dist/{catalog,search,releases,now,status}`. WCAG 2.2 SC 3.2.6 Consistent Help (see RESEARCH.md).
-  Touches: new `src/components/Footer.astro`, all `src/pages/*.astro` + `src/pages/lang/[slug].astro`, `scripts/audit-a11y.mjs` or a new test.
-  Acceptance: Every public route renders the shared footer with the contact affordance in the same relative position; per-route link variation is expressed as props, not duplicated markup; a test asserts the contact affordance exists on every route in the sitemap.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — Add `rel="me"` identity links and a homepage h-card

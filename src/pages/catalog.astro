@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import CatalogSection from '../components/CatalogSection.astro';
+import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { rankedCatalog, catalogTotal } from '../data/catalog-render';
@@ -59,15 +60,14 @@ const cmdkSections = [
     <CatalogSection entries={rankedCatalog} variant="full" total={catalogTotal} />
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">The catalog is the complete public archive. The homepage highlights the strongest work; the timeline shows momentum over time.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/#greatest-hits">Highlights</a><a href="/timeline/">Timeline</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="The catalog is the complete public archive. The homepage highlights the strongest work; the timeline shows momentum over time."
+    links={[
+      { href: '/#greatest-hits', label: 'Highlights' },
+      { href: '/timeline/', label: 'Timeline' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style is:global>

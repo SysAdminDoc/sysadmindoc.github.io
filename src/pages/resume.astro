@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import { contactEmail, contactMailto } from '../data/identity';
+import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { careerRoles, careerSkills } from '../data/career';
@@ -89,7 +91,7 @@ const cmdkSections = [
       <section class="resume-section" aria-labelledby="resume-links-title">
         <h2 id="resume-links-title">Links</h2>
         <div class="resume-link-list">
-          <a href="mailto:matt_parker@outlook.com">matt_parker@outlook.com</a>
+          <a href={contactMailto()}>{contactEmail}</a>
           <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener">linkedin.com/in/matthewryanparker</a>
           <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">github.com/SysAdminDoc</a>
           <a href="https://sysadmindoc.github.io" target="_blank" rel="noopener">sysadmindoc.github.io</a>
@@ -98,15 +100,14 @@ const cmdkSections = [
     </div>
   </main>
 
-  <footer class="no-print">
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">Use the print button to save a clean PDF copy of this page.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/catalog/">Catalog</a><a href="/now/">Now</a></nav>
-    </div>
-  </footer>
+  <Footer
+    class="no-print"
+    summary="Use the print button to save a clean PDF copy of this page."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/now/', label: 'Now' },
+    ]}
+  />
 
   <script src="/scripts/resume.js" is:inline></script>
 </Base>

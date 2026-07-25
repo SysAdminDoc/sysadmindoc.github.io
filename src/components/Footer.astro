@@ -1,0 +1,50 @@
+---
+import { contactMailto } from '../data/identity';
+
+export interface FooterLink {
+  href: string;
+  label: string;
+  external?: boolean;
+}
+
+export interface Props {
+  /** `home` keeps the copyright line; `interior` shows the back-to-portfolio link. */
+  variant?: 'home' | 'interior';
+  /** One sentence framing what this route is for. */
+  summary: string;
+  /** Route-specific links. The contact affordance is prepended automatically. */
+  links?: FooterLink[];
+  /** Extra classes on the `<footer>` element (e.g. `no-print` on the resume). */
+  class?: string;
+}
+
+const { variant = 'interior', summary, links = [], class: className } = Astro.props;
+const isHome = variant === 'home';
+
+// WCAG 2.2 SC 3.2.6 (Consistent Help): the contact mechanism must sit in the
+// same relative position on every page that offers it. Pinning it to index 0
+// keeps that true no matter how many route-specific links follow.
+const contactLink: FooterLink = { href: contactMailto(), label: 'Contact' };
+const navLinks: FooterLink[] = [contactLink, ...links];
+---
+<footer class={className}>
+  <div class:list={['fi', !isHome && 'page-footer-shell']}>
+    <div class="footer-brand">
+      <div class="ft">
+        {isHome ? (
+          <span class="footer-year">© <span id="footerYear">{new Date().getFullYear()}</span> Matt Parker — SysAdminDoc</span>
+        ) : (
+          <a href="/" class="footer-backlink">← Back to portfolio</a>
+        )}
+      </div>
+      <p class="footer-summary">{summary}</p>
+    </div>
+    <nav class="fl" aria-label="Footer navigation">
+      {navLinks.map((link) => (
+        link.external
+          ? <a href={link.href} target="_blank" rel="noopener">{link.label}</a>
+          : <a href={link.href}>{link.label}</a>
+      ))}
+    </nav>
+  </div>
+</footer>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import Footer from '../components/Footer.astro';
 ---
 <Base title="404 — Page Not Found" description="The page you're looking for doesn't exist or was moved.">
   <a href="#main" class="skip-link">Skip to content</a>
@@ -24,18 +25,13 @@ import InteriorNav from '../components/InteriorNav.astro';
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">A wrong turn, not a dead end — every section of the portfolio is one click away from here.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation">
-        <a href="/catalog/">Catalog</a>
-        <a href="/search/">Search</a>
-        <a href="/now/">Now</a>
-        <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a>
-      </nav>
-    </div>
-  </footer>
+  <Footer
+    summary="A wrong turn, not a dead end — every section of the portfolio is one click away from here."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/search/', label: 'Search' },
+      { href: '/now/', label: 'Now' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
