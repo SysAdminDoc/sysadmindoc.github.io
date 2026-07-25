@@ -15,6 +15,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - `publish:pages` now prunes a stale linked-worktree registration after its
   scratch directory is deleted and fast-forwards a recreated `gh-pages`
   worktree before committing, preventing both recovery and push failures.
+- Removed Astro's unused prefetch/client-prerender configuration, which loaded
+  a client runtime on interior routes without any opted-in links. Bundle
+  accounting now includes generated `_assets/*.js` so this class of hidden
+  runtime cost remains visible.
 
 ## [v0.28.0] - 2026-07-25
 

@@ -100,10 +100,15 @@ function printTable(label, files, totalBytes, fileLimitBytes, totalLimitBytes, f
 const jsDir = path.join(distDir, 'scripts');
 const cssDir = path.join(distDir, '_assets');
 
-const [jsFiles, cssFiles] = await Promise.all([
+const [publicJsFiles, assetJsFiles, cssFiles] = await Promise.all([
   collectFiles(jsDir, '.js'),
+  collectFiles(cssDir, '.js'),
   collectFiles(cssDir, '.css'),
 ]);
+const jsFiles = [
+  ...publicJsFiles.map((file) => ({ ...file, name: `scripts/${file.name}` })),
+  ...assetJsFiles.map((file) => ({ ...file, name: `_assets/${file.name}` })),
+];
 
 // Validate JS files
 let jsTotalBytes = 0;
@@ -148,10 +153,10 @@ console.log('Bundle size audit');
 console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
 
 if (jsFiles.length === 0) {
-  console.log('\nJS (dist/scripts/*.js): no files found');
+  console.log('\nJS (dist/scripts/*.js + dist/_assets/*.js): no files found');
 } else {
   printTable(
-    'JS (dist/scripts/*.js)',
+    'JS (dist/scripts/*.js + dist/_assets/*.js)',
     jsFiles,
     jsTotalBytes,
     budgets.jsFileLimitBytes,

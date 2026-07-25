@@ -15,3 +15,13 @@ test('deferred command search exposes a retry state and malformed jump hashes st
   assert.match(loader, /data-load-state', 'error'/);
   assert.match(jumpNav, /try \{\s*initialId = decodeURIComponent\(initialId\)/);
 });
+
+test('Astro does not ship an unreferenced prefetch or speculation-rules runtime', async () => {
+  const astroConfig = await fs.readFile(path.join(root, 'astro.config.mjs'), 'utf8');
+  const bundleAudit = await fs.readFile(path.join(root, 'scripts', 'audit-bundle-size.mjs'), 'utf8');
+
+  assert.doesNotMatch(astroConfig, /\bprefetch\s*:/);
+  assert.doesNotMatch(astroConfig, /\bclientPrerender\s*:/);
+  assert.match(bundleAudit, /collectFiles\(cssDir, '\.js'\)/);
+  assert.match(bundleAudit, /dist\/_assets\/\*\.js/);
+});
