@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
@@ -45,7 +46,7 @@ for (const { file, selector } of HIDDEN_TOGGLED_SELECTORS) {
 }
 
 test('timeline events keep their hidden-attribute rule', async () => {
-  const css = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
+  const css = await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root });
   assert.ok(
     /\.timeline-event\s*\{[^{}]*&\[hidden\]\s*\{[^{}]*display\s*:\s*none/.test(css)
       || /\.timeline-event\[hidden\]\s*\{[^}]*display\s*:\s*none/.test(css),

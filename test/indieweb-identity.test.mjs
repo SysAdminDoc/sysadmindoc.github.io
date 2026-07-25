@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
@@ -23,11 +24,11 @@ test('the homepage exposes a representative h-card', async () => {
 test('h-card classes stay presentation-free', async () => {
   // The microformats vocabulary must never pick up styling, or a future CSS
   // change would silently alter the profile markup instead of the design.
-  const styles = await Promise.all(
-    ['global.css', 'critical.css', 'interior-quiet.css'].map((file) =>
-      fs.readFile(path.join(root, 'src', 'styles', file), 'utf8'),
-    ),
-  );
+  const styles = await Promise.all([
+    readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root }),
+    fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8'),
+    fs.readFile(path.join(root, 'src', 'styles', 'interior-quiet.css'), 'utf8'),
+  ]);
   for (const css of styles) {
     for (const token of ['.h-card', '.p-name', '.u-photo', '.u-url']) {
       assert.ok(

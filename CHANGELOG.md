@@ -67,6 +67,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   accounting now includes generated `_assets/*.js` so this class of hidden
   runtime cost remains visible.
 
+### Changed
+
+- `global.css` is now an import-only cascade entry point. Seven named layer
+  files and one explicitly unlayered override file preserve the byte-identical
+  compiled stylesheet while CSS audits recurse through every source module.
+
 ### Added
 
 - Sitemap entries for all reviewed interior routes now carry `lastmod` values

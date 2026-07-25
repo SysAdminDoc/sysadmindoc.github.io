@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
@@ -40,7 +41,7 @@ test('homepage runtime has no removed command shell hooks and preserves section 
     assert.equal(scripts.includes(token), false);
   }
   assert.doesNotMatch(scripts, /matrix-overlay|matrix-column|triggerEasterEgg|showCopyToast|className='ripple'/);
-  assert.doesNotMatch(await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8'), /copy-toast|matrix-overlay|matrixFall|border-radius\s*:\s*(?:50%|999(?:9)?px)/);
+  assert.doesNotMatch(await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root }), /copy-toast|matrix-overlay|matrixFall|border-radius\s*:\s*(?:50%|999(?:9)?px)/);
   assert.doesNotMatch(`${index}\n${critical}`, /hero-carousel-(?:ui|arrow|dots)/);
   assert.match(nav, /function revealHomepageScrollSections\(\)/);
   assert.match(nav, /#catalog,#live,#skills,#beyond,#connect/);

@@ -194,7 +194,8 @@ src/
 │   └── og/[slug].png.ts
 └── styles/
     ├── critical.css # inline first-viewport nav/hero CSS
-    └── global.css   # full stylesheet, preloaded and applied asynchronously
+    ├── global.css   # ordered import entry, preloaded and applied asynchronously
+    └── layers/      # named cascade layers plus intentional unlayered overrides
 public/
 ├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
 ├── .well-known/security.txt
