@@ -1,5 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import {
+  collectTargetSizeViolations,
+  targetSizeMinimumForWidth,
+} from './helpers/target-size.mjs';
 
 // Axe + overflow coverage for the error/recovery pages and high-risk interaction
 // states that the first-viewport route audits do not reach: 404, the offline
@@ -71,6 +75,15 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow).toBeLessThanOrEqual(1);
 }
 
+async function expectTargetSizeClean(page) {
+  const viewport = page.viewportSize();
+  const minimum = targetSizeMinimumForWidth(viewport?.width ?? 1365);
+  expect(
+    await collectTargetSizeViolations(page, minimum),
+    `interactive targets should meet the ${minimum}px target or a documented WCAG 2.5.8 exception`,
+  ).toEqual([]);
+}
+
 const viewports = [
   { name: 'desktop', width: 1365, height: 900 },
   { name: 'mobile', width: 390, height: 900 },
@@ -84,6 +97,7 @@ test.describe('error and recovery page coverage', () => {
       await expect(page.locator('h1')).toContainText('Page not found');
       await expect(page.locator('.error-recovery a')).not.toHaveCount(0);
       await expectAxeClean(page, 'main');
+      await expectTargetSizeClean(page);
       await expectNoHorizontalOverflow(page);
     });
 
@@ -93,6 +107,7 @@ test.describe('error and recovery page coverage', () => {
       await expect(page.locator('#offline-title')).toBeVisible();
       await expect(page.locator('.offline-actions a')).not.toHaveCount(0);
       await expectAxeClean(page, 'main');
+      await expectTargetSizeClean(page);
       await expectNoHorizontalOverflow(page);
     });
   }
@@ -138,6 +153,7 @@ test.describe('open navigation state coverage', () => {
     await toggle.click();
     await expect(page.locator('#navLinks.open')).toBeVisible();
     await expectAxeClean(page, 'nav');
+    await expectTargetSizeClean(page);
     await expectNoHorizontalOverflow(page);
   });
 });
@@ -152,6 +168,7 @@ test.describe('empty catalog state coverage', () => {
     // A reachable recovery affordance (reset/clear) must be present.
     await expect(page.locator('.no-results, .catalog-feedback, [data-empty]').first()).toBeVisible();
     await expectAxeClean(page, '#catalog');
+    await expectTargetSizeClean(page);
     await expectNoHorizontalOverflow(page);
   });
 });
@@ -231,6 +248,7 @@ test.describe('empty timeline filter state coverage', () => {
       await expect(page.locator('#timelineList [data-timeline-event]:visible')).toHaveCount(0);
 
       await expectAxeClean(page, '#timeline-events');
+      await expectTargetSizeClean(page);
       await expectNoHorizontalOverflow(page);
     });
   }
@@ -284,6 +302,7 @@ test.describe('service-worker update toast coverage', () => {
     }
 
     await expectAxeClean(page, '.sw-update-toast');
+    await expectTargetSizeClean(page);
     await expectNoHorizontalOverflow(page);
 
     // "Not now" hides the toast and it stays dismissed for this build version.

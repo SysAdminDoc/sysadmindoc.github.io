@@ -417,7 +417,7 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 .cmdk-input-row{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--glass-border);transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
 .cmdk-input-row:focus-within{border-color:var(--focus-outline);box-shadow:inset 0 -2px var(--focus-outline),var(--focus-ring)}
 .cmdk-input-row svg{width:18px;height:18px;color:var(--t3);fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0}
-.cmdk-input{flex:1;background:transparent;border:0;outline:0;color:var(--t1);font-family:var(--sans);font-size:16px}
+.cmdk-input{flex:1;min-height:44px;background:transparent;border:0;outline:0;color:var(--t1);font-family:var(--sans);font-size:16px}
 .cmdk-input::placeholder{color:var(--t2);opacity:.72}
 .cmdk-close{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,.025);color:var(--t2);cursor:pointer;transition:background .12s ease,color .12s ease,border-color .12s ease,transform .12s ease}
 .cmdk-close:hover{background:var(--glass-hover);border-color:rgba(124,184,255,.28);color:var(--t1)}
