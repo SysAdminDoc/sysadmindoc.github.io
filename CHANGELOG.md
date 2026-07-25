@@ -6,6 +6,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- The profile-feed adapter now retains every explicitly reviewed local catalog
+  entry when it is absent from the current feed, restoring the public proof
+  count to 186 without exposing unreviewed feed rows.
 - The homepage now uses one restrained editorial system across live evidence,
   capabilities, and contact instead of mixing stacked dashboard cards with a
   dark promotional panel. Navigation and evidence labels are also more direct.

@@ -74,7 +74,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.28.0 --expected-commit <commit-sha> --expected-projects 178 --expected-releases 60 --expected-feed-items 178
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.28.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
 npm run smoke:release -- --tag v0.28.0 --asset sysadmindoc-portfolio-v0.28.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
