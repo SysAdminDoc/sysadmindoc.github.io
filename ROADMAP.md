@@ -3,7 +3,7 @@
 Open work only. Completed work is recorded in git history and CHANGELOG.md.
 Blocked items are tracked in Roadmap_Blocked.md.
 
-Current version: v0.26.0
+Current version: v0.27.0
 Last normalized: 2026-07-24
 
 ## Research-Driven Additions
@@ -13,6 +13,47 @@ Last normalized: 2026-07-24
 ### P1
 
 ### P2
+
+## Deep audit follow-ups (2026-07-25 pass)
+
+### P2
+
+- [ ] P2 — Give the homepage catalog preview a filter handoff to `/catalog/`
+  Why: The preview renders the top 84 of 178 projects, so a category filter there
+  silently searches a subset. Zero-count chips are no longer rendered (v0.27.0),
+  but a category with 3 preview matches and 27 archive matches still shows 3 with
+  no signal that more exist. The no-results state offers "Browse all 178 projects";
+  a filtered-but-partial state offers nothing equivalent.
+  Where: `src/components/CatalogSection.astro`, `public/scripts/home-catalog.js`,
+  `src/data/catalog-render.ts`.
+  Acceptance: When a filter/search on the preview surface matches fewer entries
+  than the full archive holds for that filter, the status line links to
+  `/catalog/?cat=…` carrying the active filter/search/sort state.
+
+### P3
+
+- [ ] P3 — Refresh `_releases.json` to clear inherited mid-word truncations
+  Why: `bodyFirst` values cached before v0.27.0 were hard-cut at 220 characters,
+  so a handful of `/releases/` summaries still end on a partial word ("…Settings
+  sear"). Markdown is now stripped at render time, but the lost characters cannot
+  be recovered from the cache. The generator produces word-boundary summaries with
+  an ellipsis, so this clears on the next token-backed data refresh.
+  Where: `src/data/_releases.json` (generated, gitignored), `npm run fetch-stars`.
+  Acceptance: After a refresh, no `/releases/` summary ends mid-word.
+
+### Not audited in the 2026-07-25 pass
+
+These areas were not exercised and may still hold defects:
+
+- Playwright visual-regression baselines — they are Linux-generated and cannot be
+  compared on this Windows worktree (see the P2 entries in `Roadmap_Blocked.md`).
+- `scripts/audit-csp.mjs` (~34 KB) and `scripts/audit-public-endpoints.mjs`
+  (~30 KB) internals — both were run and pass, but their logic was not reviewed.
+- `src/pages/og/[slug].png.ts` satori/resvg rendering — output was not visually
+  inspected (a redesign of it is already tracked as P0 in `Roadmap_Blocked.md`).
+- `scripts/publish-pages.mjs` and the live deploy path — not executed.
+- The `/resume/` print stylesheet — not verified in a print preview.
+- Pagefind result relevance — already covered by the shipped search corpus spec.
 
 ## Research-Driven Additions (2026-07-24 pass)
 

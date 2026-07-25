@@ -121,7 +121,11 @@ function finiteNumberOrNull(value: unknown) {
 }
 
 function coverage(entries: number, total: number | null) {
-  return total && total > 0 ? roundMetric(entries / total) : null;
+  // Clamp at 1: the generated caches can hold more repos than the rendered
+  // catalog (private/archived repos still get fetched), and "102.3% coverage"
+  // on /status/ and /status.json reads as a broken metric rather than as
+  // complete data. The raw entry count is surfaced alongside the percentage.
+  return total && total > 0 ? roundMetric(Math.min(entries / total, 1)) : null;
 }
 
 function coverageBelowThreshold(value: number | null) {

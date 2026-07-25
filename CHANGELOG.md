@@ -4,6 +4,95 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.27.0] - 2026-07-25
+
+Deep audit pass. Most findings trace back to the v0.26.0 catalog split, which
+turned the homepage `#catalog` into a ranked preview slice without updating the
+surfaces that still pointed at it or counted from it.
+
+### Fixed — catalog split fallout
+
+- **Catalog CTAs pointed at a preview slice.** 13 in-content links across ten
+  interior routes still targeted `/#catalog`, which now renders 84 of 178
+  projects. Three were labelled "Open full archive". The `/search/` "No-JS
+  Fallbacks" entry pointed at the JavaScript-driven homepage section instead of
+  `/catalog/`, the static route that exists to be the no-JS surface. All
+  retargeted at `/catalog/`.
+- **Five projects were unreachable by any filter.** `filterButtons` omitted the
+  `other` and `fork` categories, so `/catalog/` — which promises "search and
+  filter all 178 public projects" — had chips summing to 173. Added both
+  categories, plus a test asserting every `categoryLabels` key has a facet.
+- **Dead-end filter chips.** The homepage rendered chips for categories with no
+  matches in the preview slice (Security 0, Guides 0, C++ 0). Security and
+  Guides do have projects, just outside the top 84. Chips now render only where
+  the surface can return something, which also retires the permanently-empty
+  C++ facet.
+- **Hydration destroyed the preview framing.** `home-catalog.js` used the
+  rendered card count as the archive total, replacing the server-rendered
+  "Top 84 of 178 projects" with "Showing 84 of 84 projects". The grid now
+  carries the total and surface variant.
+- **Skill-card handoffs.** The three skill cards without a dedicated lane linked
+  to `/?cat=X#catalog`; pfSense → `?cat=sec` resolved to zero matches despite
+  two in the archive. Now `/catalog/?cat=X`.
+
+### Fixed — rendering and content
+
+- **Release notes rendered as raw Markdown.** `bodyFirst` joined the first three
+  raw lines of a GitHub release body and hard-cut at 220 characters, so
+  `/releases/`, `/timeline/`, `/releases.xml`, and `/releases.json` printed
+  literal `**bold**`, backticked code, and `- ` bullets as prose. Added
+  `src/data/release-summary.mjs` (emphasis/code/link/image unwrapping, list and
+  fenced-code stripping, word-boundary truncation, snake_case preserved), used
+  by the generator and re-applied idempotently at every render surface so the
+  existing cache renders cleanly. 60 summaries on `/releases/` and 232 on
+  `/timeline/` verified free of Markdown.
+- **Screenshot filter could not hide anything.** `.screenshots-card{display:block}`
+  outranks the UA `[hidden]{display:none}` sheet, so setting `.hidden` was a
+  no-op. Latent today (a single live-app category gates the facet off), and the
+  Playwright cover skips in that case — pinned with a unit test instead.
+- **`/status/` reported impossible coverage.** Generated caches can hold more
+  repos than the rendered catalog, so three rows read "102.3%". Coverage is now
+  clamped at 100%; the raw entry count is still shown.
+- **`/now/` copy was three releases stale** ("Portfolio site v0.23", "178+
+  repos"). Now derived from the manifest version and the exact repo count.
+- **`llms.txt` listed `/catalog/` twice** and described the homepage as holding
+  all 178 projects. The RSS channel claimed 12 categories by counting labels
+  rather than categories actually in use (10).
+
+### Fixed — theming and accessibility
+
+- Retired three Operational Clarity survivors: the screenshots gallery used
+  `rgba(255,255,255,.06)` hover and terminal-green selected states (invisible or
+  off-palette on the light default theme), and the `/ai/` and `/healthcare-it/`
+  card hovers used a hardcoded 22–30% black drop shadow on a system whose shadow
+  tokens are `none` in both themes. All now use the canonical card-hover recipe.
+- Screenshot cards gained an accessible name conveying that they open GitHub in
+  a new tab, matching `LiveCard`.
+- `/status/` signal dots were the only encoding of health; each card now carries
+  a screen-reader label (WCAG 1.4.1).
+- `<meta name="color-scheme">` listed dark first while the served markup defaults
+  to `data-theme="light"`.
+
+### Fixed — reliability and tooling
+
+- The service-worker update toast could hang on "Refreshing" forever if the
+  waiting worker never activated or `postMessage` threw. Added a bounded
+  fallback reload.
+- The public-source hygiene guard missed local-only markdown references that
+  ended a sentence, because its trailing lookahead excluded `.`. That hid one
+  live violation.
+- Removed a duplicated `filterButtons` copy in `index.astro` and unused
+  `PortfolioHome`/`getClosestTarget` bindings in `home-effects.js`.
+- Synced version strings: the README badge had drifted to 0.26.0 while the
+  manifest read 0.26.3.
+
+### Tests
+
+- 183 node tests pass (from 165): new covers for release summarization,
+  hidden-attribute rules, and category-facet completeness.
+- Playwright interaction suite 44 passed; service-worker lifecycle 16 passed;
+  `astro check` clean.
+
 ## [v0.26.3] - 2026-07-24
 
 - Removed the "Practice, expanded" homepage section (`#journey`) in full: the section markup and its `journeyMilestones` data, the top-nav "Journey" link and the command-palette "Journey" entry, the `#journey` scroll/content-visibility registrations in `home-nav.js` and `global.css`, and every journey-only style (`.jw/.ji/.jd/.jt/.jeyebrow/.jdesc/.jfoot/.jmeta/.jlink` across base, redesign, light-theme, and route-home layers) so the dead-selector audit stays green. The remaining sections renumber cleanly (Beyond code → `05`, Contact → `06`). Updated the homepage-runtime and content-visibility tests to match (and to guard against `#journey` returning). Net −250 lines; no first-viewport visual baselines change.

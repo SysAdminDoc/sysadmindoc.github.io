@@ -40,8 +40,25 @@ test('README public command examples match generated portfolio counts', async (t
   const localFallbackCount = catalogBlock.match(/\{ repo: /g)?.length ?? 0;
 
   assert.ok(localFallbackCount > 0);
+  // These two describe the SOURCE corpora, which is what the README sentence claims.
   assert.match(readme, new RegExp(`catalog \\(${profile.projectCount} feed-backed / ${localFallbackCount} local fallback\\)`));
-  assert.match(readme, new RegExp(`--expected-projects ${profile.projectCount}`));
   assert.match(readme, new RegExp(`--expected-releases ${releases.length}`));
-  assert.match(readme, new RegExp(`--expected-feed-items ${profile.projectCount}`));
+
+  // `--expected-projects` / `--expected-feed-items` are different numbers:
+  // smoke-live-site.mjs compares them against the RENDERED /status.json,
+  // /projects.json, /feed.json, and /atom.xml counts, and portfolio.ts narrows
+  // the feed to repos that also appear in the reviewed local catalog. Pinning
+  // them to the raw feed total documented a command that fails on the live site.
+  // Assert against the built artifacts so the contract is checked, not restated.
+  const projectsJsonPath = path.join(root, 'dist', 'projects.json');
+  const builtExists = await fs.access(projectsJsonPath).then(() => true, () => false);
+  if (!builtExists) {
+    t.skip('dist/projects.json not built — run npm run build to verify rendered counts');
+    return;
+  }
+  const builtProjects = JSON.parse(await fs.readFile(projectsJsonPath, 'utf8'));
+  const renderedCount = Array.isArray(builtProjects.projects) ? builtProjects.projects.length : 0;
+  assert.ok(renderedCount > 0, 'dist/projects.json should list projects');
+  assert.match(readme, new RegExp(`--expected-projects ${renderedCount}\\b`));
+  assert.match(readme, new RegExp(`--expected-feed-items ${renderedCount}\\b`));
 });
