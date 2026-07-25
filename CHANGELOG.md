@@ -4,6 +4,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- The printable resume now overrides the wide interior-page grid with a compact
+  Letter layout, keeps roles intact without pushing the entire experience
+  section to a new page, and avoids repeating URLs already visible as link text.
+
 ## [v0.28.0] - 2026-07-25
 
 Roadmap drain. The active roadmap is now empty; the one remaining item moved to
