@@ -1,158 +1,190 @@
 # Research — sysadmindoc.github.io
 Date: 2026-07-25 — replaces all prior research.
-Site version at time of research: v0.27.0.
+Repo version at time of research: v0.28.0. **Live site at time of research: v0.26.3.**
 
 ## Executive Summary
 
-A static Astro 7 portfolio and public project archive for Matt Parker (SysAdminDoc), deployed to GitHub Pages from local builds. Its strongest current shape is **verification infrastructure**: 20 audit scripts under `scripts/audit-*.mjs`, wired into 34 npm audit entries, gate the build (CSP, DOM size, bundle budgets, dead CSS selectors, links, sitemap, schema, feeds, endpoints, image pipeline, live-app health, catalog drift, forced-colors, a11y), backed by 183 node tests plus Playwright interaction, visual, service-worker, and search-corpus suites. Zero runtime JS frameworks, `script-src 'self'` with Trusted Types, and a light-first "Operational Clarity" design system. `npm audit --omit=dev` reports 0 vulnerabilities; there are no TODO/FIXME/HACK markers anywhere in source.
+A static Astro 7.1.3 portfolio and public project archive for Matt Parker (SysAdminDoc), built locally and published to GitHub Pages via a `gh-pages` branch. Its engineering posture is unusually strong for a personal site: 20 `scripts/audit-*.mjs` gates, 196 passing node tests, Playwright interaction/visual/service-worker/search-corpus suites, `script-src 'self'` with Trusted Types, zero runtime frameworks, and `npm audit` clean on both prod and dev trees. Every direct dependency is on its latest published version except TypeScript (blocked on TS7) — there is no dependency-drift work to do this pass.
 
-The site is now doing two jobs: career portfolio *and* a commercial pitch for fractional AI implementation on retainer (`/ai/`, added v0.23.0). The engineering quality of the first job is far ahead of the conversion instrumentation of the second. **The highest-value direction is closing that gap — making the services track machine-legible and reachable — not adding more audit surface.**
+The previous research pass (2026-07-25, v0.27.0) read code. **This pass probed production, and that is where everything important came from.** The site's problem is no longer what is built — it is that what is built is not live. `https://sysadmindoc.github.io/status.json` reports `version: "0.26.3"`, commit `501cf88`, generated `2026-07-25T00:05:16Z`. Two complete release cycles — the v0.27.0 audit and the v0.28.0 roadmap drain — exist only on `main`. The live `/ai/` page has no `Service` schema. The live `/screenshots/` page has no footer, so it has no contact affordance. The live service worker is `portfolio-v0.26.3`. Eighteen commits across 64 files (+2,762 / −1,161) are invisible to actual visitors, and nothing in the repo surfaces that gap.
 
 Top opportunities, priority order:
 
-1. `/ai/` pitches four productized service lines but publishes no `Service`/`Offer` structured data — it is typed identically to `/healthcare-it/` (`AboutPage` + `WebPage`). (Verified)
-2. Contact exists on only 3 of 8 sampled routes; a visitor landing on `/catalog/` or `/releases/` from search has no path to contact. Also a WCAG 2.2 SC 3.2.6 gap. (Verified)
-3. Twelve hand-rolled `<footer>` blocks with twelve different link sets and no shared component — the root cause of #2, not a separate problem. (Verified)
-4. No `rel="me"` and no microformats2 anywhere — blocks Mastodon link verification and IndieWeb/fediverse discovery. (Verified)
-5. Astro 7 shipped agent-oriented dev tooling (`astro dev --background`, structured JSON logs, `/_astro/status`) that this agent-driven repo does not use. (Verified)
-6. The four 2026 Astro CVEs do not apply to this architecture — worth documenting so it is not re-litigated each pass. (Verified)
-7. Routine dependency drift: satori 0.26→0.29, Playwright 1.61→1.62, lightningcss 1.32→1.33, sanitize-html 2.17.5→2.17.6. (Verified)
+1. **The live site is two releases stale and nothing detects it.** Verified by probing `/status.json`, `/sw.js`, `/ai/`, and `/screenshots/`. (Verified)
+2. **Verification only runs inside the publish path.** `scripts/publish-pages.mjs:248` runs `smoke-live-site.mjs` after pushing, with a correct auto-derived version contract — but there is no way to ask "is live current?" without publishing. (Verified)
+3. **The published `resume.pdf` renders with screen styles.** The `/resume/` print block loses on specificity to `interior-quiet.css`, so the site's primary hiring artifact ships a desktop two-column grid squeezed onto Letter. (Verified by print-media probe)
+4. **The CSP build gate prints two violation classes and exits 0 on both** — blocked style attributes and disallowed external script origins. Nothing violates either rule today; the gate simply cannot fail on them. (Verified by reproduction)
+5. **`experimental.clientPrerender` is dead configuration that still costs bundle weight.** `astro.config.mjs:36-44` sets `prefetchAll: false` with `defaultStrategy: 'hover'`, and zero `data-astro-prefetch` attributes exist in `src/` or `dist/` — so no link ever prefetches. The 2,807-byte prefetch runtime (`dist/_assets/page.BcFG7dWc.js`) still loads on 13 routes, and the inline `<script type="speculationrules">` it injects would be blocked by `script-src 'self'` regardless. (Verified)
+6. **The sitemap publishes no `lastmod`** while 12 built pages already carry `dateModified` sourced from `src/data/page-freshness.ts`. (Verified)
+7. **Playwright baselines are platform-blind**, which is the root cause of the two "requires Linux-generated baselines" blockers in `Roadmap_Blocked.md` rather than a separate problem. (Verified)
+8. **Releases v0.26.1 through v0.28.0 have no git tags and no GitHub Releases**; remote tags stop at `v0.26.0`. (Verified)
+9. **The `wcag22aa` axe tag contributes zero rules**, so the error/recovery states covered only by axe have no WCAG 2.2 coverage. (Verified)
+10. **README.md documents an architecture the code no longer has** — and it is the only doc tracked in git. (Verified)
 
 ## Product Map
 
 **Core workflows**
-- Scan credibility fast: hero proof strip → Greatest Hits (8 curated repos with story-driven "why") → live-app evidence rail.
+- Scan credibility fast: hero proof strip → Greatest Hits (curated repos with story-driven "why") → live-app evidence rail.
 - Browse the archive: homepage preview slice (84 ranked) → `/catalog/` (all 178, client-side search/sort/filter, `cat=`/`q=`/`sort=`/`view=` URL state, no-JS reachable).
 - Evaluate momentum: `/releases/` (60 cached releases with provenance tiers), `/timeline/` (232 filterable events), `/now/`.
-- Hire or engage: `/resume/` (HTML + PDF + JSON Resume), `/healthcare-it/`, `/ai/` (retainer pitch).
+- Hire or engage: `/resume/` (HTML + PDF + JSON Resume), `/healthcare-it/`, `/ai/` (retainer pitch, four productized service lines).
 - Verify the site itself: `/status/` + `/status.json` (build identity, data freshness, coverage, release provenance).
 
 **Personas**
-1. Hiring manager / recruiter — scans for judgment and evidence, not repo counts.
+1. Hiring manager / recruiter — scans for judgment and evidence over repo counts. 2026 hiring-signal sources converge on shipped-and-used projects and case-study depth as the differentiators.
 2. Prospective retainer client (SMB owner or ops lead) — arrives at `/ai/`, needs credibility then a low-friction next step.
 3. Peer developer — arrives from GitHub, uses `/catalog/`, `/search/`, feeds.
-4. Machine consumers — AI crawlers, IDE agents, feed readers. Served by `/llms.txt`, 4 feeds, 3 JSON endpoints, JSON-LD.
+4. Machine consumers — AI answer engines, IDE agents, feed readers. Served by `/llms.txt`, 4 feeds, 3 JSON endpoints, JSON-LD.
 
 **Platforms and distribution**
-Static output → `gh-pages` branch via `npm run publish:pages`, gated by `deploy:preflight`. Node 24 / npm 11. PWA with offline shell and full-route precache. No GitHub Actions by project policy — all builds, tests, and audits are local.
+Static output → `gh-pages` branch via `npm run publish:pages`, gated by `deploy:preflight` and followed by an automatic live smoke check. Node 24 / npm 11. PWA with offline shell and full-route precache. No GitHub Actions by project policy — every build, test, and audit is local. GitHub Pages soft limits: 1 GB site, 100 GB/month bandwidth, 10 builds/hour.
 
 **Key integrations and data flows**
-GitHub REST API (build-time via `scripts/fetch-stars.mjs` → gitignored `_*.json` caches; client-side refresh for live star counts) → `src/data/portfolio.ts` (narrows the 186-row profile feed to the 178-project reviewed catalog) → `src/data/catalog-render.ts` (shared ranking/freshness) → homepage preview + `/catalog/`. Pagefind indexes the built HTML post-build.
+GitHub REST API (build-time via `scripts/fetch-stars.mjs` → gitignored `_*.json` caches; client-side refresh for live star counts) → `src/data/portfolio.ts` (narrows the 186-row profile feed to the 178-project reviewed catalog) → `src/data/catalog-render.ts` (shared ranking/freshness) → homepage preview + `/catalog/`. `src/data/page-freshness.ts` is the single source of per-page review dates. Pagefind indexes built HTML post-build.
 
 ## Competitive Landscape
 
-**Astrofy / AstroPaper / astro-resume (OSS Astro portfolio templates)**
-Do well: fast setup, blog + CV + projects in one, JSON Resume support, command palette with hotkeys.
-Learn: `astro-resume` ships a hotkey-driven command palette. This site's `cmdk` is click-only by explicit project rule — a deliberate choice, not an oversight — so palette discoverability has to come from the visible nav affordance instead.
-Avoid: Tailwind-based, framework-hydrated templates. The zero-runtime-framework posture (69 KB of minified first-party JS across `dist/scripts/`, no hydration) is this site's clearest technical differentiator.
+**Astrofy / Simple Portfolio / astro-portfolio (OSS Astro portfolio templates)**
+Do well: fast setup, blog + CV + projects in one, i18n and theme toggles out of the box.
+Learn: nothing structural. This repo is several categories of maturity beyond the template tier.
+Avoid: Tailwind plus hydrated islands. The zero-runtime-framework posture (~69 KB of minified first-party JS, no hydration) is the site's clearest technical differentiator — and, per the 2026 Astro CVE analysis below, its strongest security property.
 
-**Plausible CE / Matomo (self-hosted analytics)**
-Do well: cookieless daily-salt hashing; no consent banner needed under legitimate interest.
-Learn: nothing to adopt directly (see Rejected). The transferable lesson is that "we measure nothing" is defensible only while the site is not also a sales asset — and it now is.
-Avoid: adding any third-party origin to `connect-src`, currently `'self' https://api.github.com`.
+**fractional.ai and the fractional-AI consultancy tier (commercial)**
+Do well: every service line is backed by a named, outcome-shaped case study rather than a capability list; engagement model and phases are stated before contact.
+Learn: `/ai/` already states the engagement model (Discovery → Pilot → Retainer), which is ahead of most solo consultants. What it lacks is per-service proof. This is the same content the blocked "Expand project proof records" item would produce — the two needs are one need.
+Avoid: opaque "contact us for pricing" with no anchor at all. 2026 market data puts fractional AI retainers at roughly $5k–$30k/month and SMB implementations at $10k–$15k, so a range is publishable without committing to a number.
 
-**Web3Forms / StaticForms / Formspree (static-site form backends)**
-Do well: zero-backend form handling with Turnstile/Altcha spam control.
-Learn: Altcha is the only option that is self-hostable, cookieless, and GDPR-clean — relevant only if the existing Contabo VPS + Caddy stack documented on `/uses/` is ever used as a first-party endpoint.
-Avoid: third-party form endpoints. They require relaxing `form-action 'self'` and add a vendor that can disappear; the `mailto:` CTA already works.
+**Google Search / AI answer engines (the actual distribution channel)**
+Do well: reward explicit entity markup, question-shaped headings, and direct answers placed near the top.
+Learn: the arXiv GEO analysis (2603.09296) finds *retrieval* failures dominate *ranking* failures — being findable and unambiguous beats being ranked. The site's `Organization` + `Person` + `Service`/`OfferCatalog` graph is exactly the right shape; the gap is prose structure on `/ai/`, whose headings are all statements ("What I deliver", "How the engagement works").
+Avoid: `FAQPage` schema. Google stopped showing FAQ rich results on 2026-05-07 and ends Search Console support in 2026; adding it now buys nothing.
 
-**Pagefind 1.5 (incumbent dependency)**
-Do well: BM25 ranking, metadata-only matches, web-component UI, per-language indexes with zero config.
-Learn: metadata-aware ranking is already live and corpus-verified here.
-Avoid: replacing the accessible, offline-capable component UI with a bespoke renderer for cosmetic gains — already correctly downgraded to P3 in ROADMAP.md.
+**Cloudflare (as a proxy, not a host)**
+Do well: `_headers`-style edge injection of Permissions-Policy, COOP, and COEP.
+Learn: the proxy variant in front of the existing GitHub Pages origin remains the only realistic unblock for the standing Permissions-Policy P0, and it preserves `publish:pages` and the `gh-pages` contract entirely.
+Avoid: a full migration, and the assumption that HSTS is part of the prize — see below, it is already served.
 
-**Cloudflare Pages (hosting alternative)**
-Do well: a `_headers` file activates HSTS, CSP, Permissions-Policy, COOP/COEP at the edge.
-Learn: the *proxy* variant — Cloudflare in front of GitHub Pages via a custom domain — is the only realistic unblock for the Permissions-Policy P0 in `Roadmap_Blocked.md`, and it preserves the entire existing build and deploy pipeline.
-Avoid: a full migration. `publish:pages`, the `gh-pages` branch contract, and the live smoke check are all built around GitHub Pages.
-
-**IndieWeb / Bridgy Fed**
-Do well: `rel="me"` identity verification, h-card portable profile, feed-to-fediverse bridging.
-Learn: `rel="me"` and h-card are near-zero-cost additions already justified by the site's four feeds.
-Avoid: Webmention receiving or ActivityPub actor hosting — both need a persistent server.
+**Pagefind 1.5.2 (incumbent)**
+Do well: BM25 ranking, metadata-aware ranking, accessible web-component UI, offline-capable.
+Learn: 1.5.2 is the current release; there is no 1.6. No action.
+Avoid: replacing the component UI with a bespoke renderer for cosmetic gains — correctly parked in `Roadmap_Blocked.md`.
 
 ## Security, Privacy, and Reliability
 
-**Verified: the 2026 Astro CVE class does not apply.** All four — CVE-2026-41067 (`define:vars` XSS), CVE-2026-25545 (`@astrojs/node` SSRF), CVE-2026-45028 (server-island parameter replay), CVE-2026-50146 (`client:*` slot-name XSS) — require SSR, adapters, server islands, or client directives. This repo is `output: 'static'` on Astro 7.1.3 with zero `define:vars`, zero `client:*`, and zero islands (verified by grep across `src/`). The zero-framework architecture is doing real security work, not just performance work.
+**Correction to a standing blocked item: HSTS is already served.** `curl -I https://sysadmindoc.github.io/` returns `Strict-Transport-Security: max-age=31556952`. GitHub Pages sets it on `*.github.io`. The Permissions-Policy P0 in `Roadmap_Blocked.md` lists HSTS among the headers it would unblock; that part of its rationale is wrong and should be narrowed to Permissions-Policy, COOP, and COEP only.
 
-**Platform ceiling (unchanged).** GitHub Pages serves no custom response headers, so Permissions-Policy, HSTS, COOP, and COEP are unreachable. Tracked as P0 in `Roadmap_Blocked.md`. The Cloudflare-proxy path is the unblock; it requires a custom domain, which is a purchasing decision rather than an engineering one.
+**The 2026 Astro CVE class still does not apply, and the reason is architectural.** CVE-2026-41067 (`define:vars` XSS), CVE-2026-25545 (`@astrojs/node` SSRF), CVE-2026-45028 (server-island parameter replay), and CVE-2026-50146 (`client:*` slot-name XSS) all require SSR, adapters, server islands, or client directives. This repo is `output: 'static'` with none of those. Re-verified this pass; recorded so it is not re-litigated.
 
-**Missing guardrail: no client-side error signal.** `public/scripts/service-worker.js` and `public/scripts/cmdk-loader.js` degrade visibly, but an uncaught error in `public/scripts/home-catalog.js` or `home-github.js` on a real visitor's browser is invisible to the maintainer. The Playwright suites assert `runtimeErrors` is empty, which catches regressions but not field conditions (older Safari, extensions, blocked requests). Genuine observability gap; see Rejected for why third-party error services are still the wrong answer here.
+**The sharp libvips advisory is already satisfied.** GHSA-f88m-g3jw-g9cj (CVE-2026-33327/33328/35590/35591, two rated High) affects sharp before 0.35.0. Installed: 0.35.3, which the advisory names as the fixed version. `npm audit` and `npm audit --omit=dev` both report 0 vulnerabilities.
 
-**Recovery and rollback.** `publish:pages` pushes to a `gh-pages` branch, so rollback is `git revert` plus republish. Generated `_*.json` caches are gitignored, so a bad fetch is recoverable by re-running `fetch-stars`. Service-worker rollback is handled by the versioned cache key (`portfolio-v0.27.0`) plus the update toast, which gained a bounded fallback reload in v0.27.0.
+**A CSP that silently defeats a shipped optimization.** `experimental.clientPrerender: true` is enabled and Astro's prefetch runtime creates its speculation rules as an inline `<script type="speculationrules">` (`dist/_assets/page.BcFG7dWc.js`). The built CSP is `script-src 'self'` with no `'inline-speculation-rules'`, so Chromium would refuse it. This is not currently exploitable or even reachable — no link opts in — but it means the config and the policy disagree, and enabling one without the other produces a console violation on every hover.
 
-**Supply chain.** `npm run verify:signatures` runs inside `deploy:preflight`, `allowScripts` pins the esbuild install-script allowlist for npm v12, and `overrides` pin transitive `vite`/`yaml`/`svgo`/`postcss`/`fast-uri`. Stronger than typical for a personal site. satori v0.28 shipped an OIDC publish-integrity fix worth taking with the version bump.
+**Platform ceiling (narrowed).** GitHub Pages serves no custom response headers, so Permissions-Policy, COOP, and COEP remain unreachable — and so does the Reporting API, because `Reporting-Endpoints` is header-only and reporting directives are ignored in `<meta>`-delivered CSP. That settles the standing client-side observability gap: an uncaught error in `public/scripts/home-catalog.js` on a real visitor's browser is still invisible to the maintainer, and on this host there is no first-party way to change that. See Rejected Ideas.
+
+**The CSP gate detects two violation classes and then exits 0 on both.** `csp:audit:dist:style:elem` runs inside `build:ci`. `scripts/audit-csp.mjs:595-603` computes whether a style attribute needs `unsafe-inline` under the active `style-src-attr` — production ships `'none'` — but the result reaches only `console.log` at `:684`; the sole style-attr failure at `:791` is gated on a flag `build:ci` never passes. Separately, `:532-534` collect third-party external scripts and `:662` prints the count, but there is no script-source equivalent of the `styleLinkAllowedByCandidate()` helper at `:248`, so no external script origin is ever checked against `script-src 'self'`. Both were reproduced against a synthetic dist: the audit printed the violation and exited 0. Nothing is violating either rule today, so this is gate integrity rather than an active exposure — but it is precisely the failure mode the tool exists to prevent.
+
+**Related, lower severity:** the runtime HTML-sink scan that decides Trusted Types readiness reads only `public/scripts` (`:496`, hardcoded) and is skipped in `--dist` mode, so `public/sw.js` and Astro-bundled component scripts are never scanned; three regex-parsing defects (an unguarded `style` branch that mirrors the `on*` bare-word bug fixed in v0.28.0, `>` inside quoted attribute values truncating a tag, and HTML comments not being stripped) each cause a missed violation; and source mode fabricates the policy rather than reading `Base.astro`. All are latent on the current tree — verified across 26 `.astro` and 22 built HTML files with zero hits.
+
+**Missing guardrail: nothing knows the live site is stale.** The version contract is enforced correctly, but only as a post-publish step inside `publish:pages`. Between publishes there is no signal. Two releases of hardening work have now sat undeployed with every local gate green.
+
+**Deploy path recovery has one unhandled state.** `scripts/publish-pages.mjs:193-215` handles an existing worktree and a non-worktree directory, but not a registered-but-missing one. `.tmp/` is gitignored scratch; deleting it leaves `gh-pages` registered to a path that no longer exists, and `git worktree add` then fails permanently with no `prune` or `--force` anywhere in the script. Reproduced in a scratch repo. Everything else in that script held up under audit: no force-push, worktree path confined under `.tmp`, dirty-tree and Pages-API guards, no token reachable from the published branch, and the stale-dist hole closed by `src/data/build-identity.ts:44-58` falling back to `git rev-parse HEAD`.
+
+**Recovery and rollback.** Unchanged and sound: `gh-pages` rollback is `git revert` plus republish; generated `_*.json` caches are gitignored and re-fetchable; service-worker rollback rides the versioned cache key plus the update toast.
 
 ## Architecture Assessment
 
-**Boundary improvement: no shared footer.** Twelve routes each hand-roll `<footer>` markup (`src/pages/*.astro`, `src/pages/lang/[slug].astro`), producing twelve different link sets. `src/components/InteriorNav.astro` already establishes the pattern for shared chrome; there is no `Footer.astro` counterpart. Fixing this is the correct root-cause fix for the inconsistent-contact finding.
+**Root cause of two blocked P2s: `snapshotPathTemplate` has no `{platform}` segment.** `playwright.audits.config.mjs` stores baselines at `{testDir}/__screenshots__/{projectName}/`, so a Linux-generated PNG and a Windows-generated PNG collide on the same path. That is why both CSS refactors in `Roadmap_Blocked.md` are blocked on "Linux-generated baselines" — the blocker is a path template, not a machine. Adding `{platform}` lets both sets coexist and converts both items from blocked to doable.
 
-**Refactor candidate: `src/styles/global.css`.** ~5,800 lines. Already tracked as two P2 items in `Roadmap_Blocked.md` (layer split, CSS nesting), both blocked on Linux-generated Playwright visual baselines. The blocker is real; no new recommendation.
+**`scripts/` is the largest untyped surface in the repo.** `tsconfig.json` includes only `src/**/*` and `.astro/types.d.ts`. `scripts/` is 40 files and ~10,500 lines, gates the entire build, and is never seen by `astro check`. `test/` (51 files, ~3,900 lines) is likewise excluded.
 
-**Data layer is healthy.** `src/data/catalog-render.ts` is the single source for ranking/freshness (test-enforced since v0.27.0), `src/data/github.ts` the canonical URL helper, `src/data/release-summary.mjs` an idempotent normalizer shared by the generator and four render surfaces. The `.mjs`-in-`src/data/` pattern for logic shared between build scripts and Astro pages is sound and should be the default for future shared helpers.
+**Dependency freshness is measured but not gated.** `scripts/audit-dependencies.mjs` correctly flattens `overrides` and reports `vite 8.1.3 → 8.1.5 (latest-update)` and `fast-uri 3.1.4 → 4.1.1 (major-available)`, but it exits 0 on both and `deps:audit` is not part of `deploy:preflight`. Exact-pinned overrides are invisible to `npm outdated`, so this script is the only thing that can see them. (Vite 8.1.4/8.1.5 contain no security fixes — dev/SSR fixes only — so this is hygiene, not urgency.)
 
-**Test and documentation gaps.**
-- `tests/playwright/interaction-smoke.spec.mjs` `test.skip`s the screenshots-gallery facet whenever live-app data has a single category, which is the current state. The path is covered by a unit test added in v0.27.0, but the skip is easy to miss in summary output.
-- `AGENTS.md` states README.md is "the ONLY .md tracked in git". Actually tracked: `CHANGELOG.md`, `README.md`, `RESEARCH.md`, `ROADMAP.md`, `archive/screenshots/README.md`. The doc is wrong and has already misled at least one session into treating these deliverables as gitignored.
-- Adding an interior route requires ~12 coordinated edits (enumerated in CLAUDE.md). No scaffold script exists; this is the most likely source of a future partial-registration bug.
+**Documentation drift, verified line by line.** `README.md:23` claims homepage and interior jump links share `SectionJumpNav`; `src/pages/index.astro` does not import it (eight interior routes do). `README.md:163` lists a "tag cloud" component that does not exist. The `src/pages/` tree in README omits six shipped routes, including the flagship `/ai/` and `/catalog/`. `CLAUDE.md` is worse — it lists `FeaturedCard`, `TagCloud`, and `scripts/generate-data.mjs`, none of which exist; points `legacy.html` at the repo root instead of `docs/archive/`; and still documents four homepage sections (About, Philosophy, Journey, Volume) that were deleted. README is the only one of these tracked in git.
+
+**Test coverage gap with a misleading label.** In axe-core 4.12.1, `wcag22aa` maps to exactly one rule, `target-size`, and that rule is `enabled: false` by default — `withTags()` selects rules, it does not enable disabled ones. `tests/playwright/portfolio-audits.spec.mjs` compensates with its own `collectTargetSizeViolations` across 14 routes × 2 viewports, so the public routes are genuinely covered. `tests/playwright/state-coverage.spec.mjs:50-57` uses the same tag list with no hand-rolled equivalent, so the 404 page, offline shell, and open command palette have no SC 2.5.8 coverage while appearing to.
+
+**The published resume PDF renders with screen styles.** `src/pages/resume.astro:157-179` writes its `@media print` rules with bare class selectors (`.resume-role`, specificity 0,1,0) while `src/styles/interior-quiet.css:86-102` styles the same elements as `body.route-interior .resume-role` (0,2,1). Specificity decides, so nearly the whole print block loses; only the `!important` declarations and one heading rule survive. Confirmed with a Chromium print-media probe against built `dist/resume/index.html`: page padding stays `104px 32px 56px` against a requested `0`, `h1` stays 48px against 24pt, section headings stay `rgb(31,95,204)` against `#111`. Because `scripts/generate-resume-pdf.mjs` uses `page.pdf()`, which applies print media, this reaches the tracked `dist/resume.pdf` — the site's primary hiring artifact. A second print defect compounds it: `src/styles/global.css:3357` expands `a[href^="http"]::after` with the href, so the Links section prints each URL twice.
+
+**Two endpoint contracts contradict each other.** `scripts/audit-public-endpoints.mjs:9,26` asserts `application/feed+json; charset=UTF-8` and `public, max-age=300` for `/feed.json`. Astro's static build discards endpoint `Response` headers, and GitHub Pages serves `application/json; charset=utf-8` with `max-age=600` — which `scripts/smoke-live-site.mjs:190-231` already encodes correctly. Eleven pinned expectations describe headers that cannot exist. The same script also never parses `dist/rss.xml`, `dist/releases.xml`, or `dist/resume.json`; for those routes it only checks that the source file imports the header helper, so an empty body would ship green.
+
+**Data layer remains healthy.** `catalog-render.ts` (ranking/freshness), `github.ts` (URL construction), `release-summary.mjs` (idempotent normalization), `page-freshness.ts` (review dates), and the new `Footer.astro` / `identity.ts` consolidation are all single-source. The `.mjs`-in-`src/data/` pattern for logic shared between build scripts and Astro pages is sound and should stay the default.
+
+**Entity modelling nit.** `Person.url` is `https://github.com/SysAdminDoc` while the node's `@id` is `https://sysadmindoc.github.io/#matt-parker` and GitHub already appears in `sameAs`. A knowledge-graph consumer resolves the entity's canonical page off-site.
 
 ## Rejected Ideas
 
-- **Self-hosted analytics (Plausible CE / Matomo).** Contradicts the shipped promise on `/status/` — "Generated at build time; no runtime analytics or uptime service" — and commit `6c07f7c`, which removed pre-click YouTube/Google requests specifically for privacy. Would also require widening `connect-src`. If conversion measurement becomes necessary, change the stated promise deliberately first. *Source: repo philosophy + self-hosted-analytics research.*
-- **Third-party form backend (Web3Forms / Formspree / StaticForms).** Requires relaxing `form-action 'self'`, adds a vendor to the trust boundary, and `/ai/` already ships a working `mailto:` CTA. *Source: static-form-service research.*
-- **Client-side error monitoring SaaS (Sentry / TrackJS / Bugsnag).** Same CSP and third-party objections as analytics; every such tool ships a beacon indistinguishable from tracking to a privacy-minded visitor. *Source: error-monitoring research.*
-- **`/til/` or `/notes/` feed.** Explicitly parked in `NOTES_FEED_POLICY.md` (decision date 2026-05-17) with seven activation criteria, none currently met. *Source: NOTES_FEED_POLICY.md.*
-- **Adopting an Astro portfolio template (Astrofy et al.).** Tailwind plus hydrated islands would forfeit the zero-framework, 69 KB-JS posture. *Source: Astro template landscape research.*
-- **Full migration to Cloudflare Pages / Netlify / Vercel.** Discards `publish:pages`, the `gh-pages` contract, and the live smoke check to gain headers obtainable via a proxy instead. *Source: static-hosting comparison research.*
-- **Blocking AI training crawlers in `robots.txt`.** Each blocked bot costs an estimated 18–34% of potential AI citations on that engine; for a discovery-oriented site, blanket `Allow: /` is correct. *Source: AI-crawler robots.txt research.*
-- **`llms.txt` expansion work.** Adoption sits near 10% of top sites and AI *search* crawlers overwhelmingly skip the file and parse HTML directly; IDE agents are the real consumer, and the existing file already serves them. Structured data is the higher-leverage investment. *Source: llms.txt adoption research.*
-- **i18n / l10n.** Single-author English portfolio targeting a US market (Sarasota, FL; healthcare IT; US retainer clients). No evidence of non-English demand. Consciously excluded.
-- **Multi-user, plugin ecosystem, migration tooling.** Not applicable to a single-author static portfolio. Consciously excluded.
-- **Webmention receiving / ActivityPub actor.** Both require a persistent server; static-only constraint. *Source: IndieWeb research.*
+- **Self-hosted analytics (Plausible CE / Matomo).** Contradicts the shipped `/status/` promise ("no runtime analytics") and would widen `connect-src`. If conversion measurement becomes necessary, change the promise deliberately first. *Source: repo philosophy; self-hosted-analytics research.*
+- **Third-party form backend (Web3Forms / Formspree).** Requires relaxing `form-action 'self'` and adds a vendor to the trust boundary; the `mailto:` CTA works. *Source: static-form-service research.*
+- **Client-side error monitoring SaaS (Sentry / TrackJS).** Same CSP and third-party objections as analytics. *Source: error-monitoring research.*
+- **Reporting API / `ReportingObserver` for first-party error observability.** Reached Baseline in March 2026 and would be the privacy-clean answer, but `Reporting-Endpoints` is an HTTP response header and reporting directives are ignored in `<meta>`-delivered CSP — both unavailable on GitHub Pages. A `ReportingObserver` with no endpoint can only log to console. Blocked by the same ceiling as Permissions-Policy; do not re-investigate separately. *Source: MDN Reporting API.*
+- **`FAQPage` structured data.** Google stopped serving FAQ rich results on 2026-05-07 and is retiring Search Console and Rich Results Test support through 2026. The vocabulary is not deprecated and harms nothing, but adding it now returns nothing. *Source: Google Search Central updates.*
+- **`ProfessionalService` schema type.** Deprecated as a general local-business type due to confusion with `Service`; the current `Person` + `Service` + `OfferCatalog` shape with `provider` `@id` references is the recommended modern pattern. *Source: schema.org; 2026 B2B schema guidance.*
+- **Cross-document view transitions work.** Already shipped — `@view-transition { navigation: auto; }` at `src/styles/global.css:10` with a `prefers-reduced-motion` guard. Firefox still ignores the at-rule; nothing to do. *Source: web.dev / CSS-Tricks cross-document VT.*
+- **Upgrading Astro or Pagefind.** 7.1.3 and 1.5.2 are the current releases. No newer version exists. *Source: withastro/astro and Pagefind/pagefind releases.*
+- **Full migration to Cloudflare Pages / Netlify / Vercel.** Discards `publish:pages`, the `gh-pages` contract, and the live smoke check to gain headers obtainable via a proxy. *Source: static-hosting comparison research.*
+- **Blocking AI training crawlers in `robots.txt`.** For a discovery-oriented site whose second job is selling services, blanket `Allow: /` is correct. *Source: AI-crawler robots.txt research.*
+- **`llms.txt` expansion.** Adoption is near 10% of top sites and AI search crawlers overwhelmingly parse HTML directly. The existing file already covers `/ai/`. Structured data and page structure are the higher-leverage investments. *Source: llms.txt adoption research.*
+- **Hardening `publish-pages.mjs` against force-push, secret leakage, or stale-dist publishing.** All three were investigated and disproved: there is no `--force` anywhere, `ensureManagedWorktreePath` confines the worktree under `.tmp`, only `dist/` is copied, `GITHUB_TOKEN` is read solely for a read-only Pages API call, and `src/data/build-identity.ts:44-58` falls back to `git rev-parse HEAD` so `--skip-build` on an old dist trips the commit-equality check. The one real defect is the missing-worktree recovery path, which is on the roadmap. *Source: code audit, 2026-07-25.*
+- **Print-chrome leakage on `/resume/`.** Probed under print media: `#nav`, `footer`, `.skip-link`, `.resume-actions`, `#cmdk`, and the nav backdrop are all `display:none`, `body` is `#fff`/`#000`, and `page-break-inside:avoid` survives on `.resume-role`. Those rules carry `!important`, which is why they alone won. The problem is the rest of the block, not the hiding. *Source: Chromium print-media probe.*
+- **OG slug injection, unbounded text, or missing font glyphs.** `getStaticPaths` enumerates a static array, `cardForSlug` throws on unknown slugs, the longest description is 155 chars against a ~192-char clamp, and `interior-og-pages.ts` is pure ASCII so the single-family fallback never misses. Only the font-cache write is worth fixing. *Source: code audit.*
+- **Inline scripts or event handlers escaping the strict CSP gate.** They do not — `executableAllowlist` and `eventHandlerAllowlist` are empty arrays, so any occurrence is "unknown" and fails. The gate's gaps are elsewhere. *Source: code audit.*
+- **Deleting `Divider.astro`, `SectionJumpNav.astro`, or `StarSvg.astro` as dead code.** All three are imported by live routes (7, 8, and 4 files respectively). Flagged as stale by commit-age analysis; disproved by usage check. *Source: repo grep.*
+- **Pinning more Playwright skips.** All seven `test.skip(true, …)` calls in `interaction-smoke.spec.mjs` sit behind runtime `if` guards, and the one that actually fires is already in `EXPECTED_SKIPS`. The reporter is correct. *Source: repo read.*
+- **i18n / l10n; multi-user; plugin ecosystem; migration tooling.** Single-author English portfolio targeting a US market. Consciously excluded.
+- **Mobile-specific and offline-specific work.** Both are already first-class: every route is audited at a 390px viewport with a 44px target-size floor, and the PWA ships an offline shell, full-route precache, and a dedicated `sw-lifecycle` Playwright suite. Nothing surfaced this pass. Consciously excluded rather than overlooked.
+- **Webmention receiving / ActivityPub actor.** Both require a persistent server. *Source: IndieWeb research.*
 
 ## Sources
 
-Framework and dependencies
+Framework, dependencies, and advisories
+- https://github.com/withastro/astro/releases
 - https://astro.build/blog/astro-7/
-- https://github.com/advisories/GHSA-j687-52p2-xcff
+- https://docs.astro.build/en/guides/integrations-guide/sitemap/
+- https://github.com/Pagefind/pagefind/releases
+- https://github.com/advisories/GHSA-f88m-g3jw-g9cj
+- https://github.com/lovell/sharp/security/advisories/GHSA-f88m-g3jw-g9cj
+- https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md
 - https://advisories.gitlab.com/npm/astro/CVE-2026-50146/
 - https://advisories.gitlab.com/npm/astro/CVE-2026-45028/
-- https://github.com/vercel/satori/releases
-- https://github.com/Pagefind/pagefind/releases/tag/v1.5.0
-- https://pagefind.app/docs/search-ui/
 
-Standards, platform, and discovery
-- https://schema.org/ProfessionalService
-- https://www.schemaapp.com/schema-markup/services-schema-markup-schema-org-services/
+Standards, platform, and performance
 - https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API
 - https://developer.chrome.com/docs/web-platform/prerender-pages
-- https://webkit.org/blog/17818/announcing-interop-2026/
-- https://indieweb.org/discovery
-- https://fed.brid.gy/docs
-- https://www.rankability.com/data/llms-txt-adoption/
-- https://presenc.ai/research/state-of-llms-txt-2026
+- https://developer.chrome.com/docs/web-platform/implementing-speculation-rules
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src
+- https://content-security-policy.com/script-src/
+- https://developer.mozilla.org/en-US/docs/Web/API/Reporting_API
+- https://web.dev/baseline/2026
+- https://web.dev/blog/baseline-digest-may-2026
+- https://css-tricks.com/cross-document-view-transitions-part-1/
+- https://www.corewebvitals.io/core-web-vitals
+- https://www.corewebvitals.io/pagespeed/speculation-rules
+- https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits
+- https://github.com/orgs/community/discussions/54257
 
-Accessibility and performance
-- https://www.onetrust.com/blog/understanding-the-european-accessibility-act-and-wcag-22/
+Discovery, schema, and AI answer engines
+- https://arxiv.org/pdf/2603.09296
+- https://developers.google.com/search/updates
+- https://www.getpassionfruit.com/blog/what-changed-with-google-drops-faq-rich-results-and-what-to-do-now
+- https://schema.org/ProfessionalService
+- https://solvspot.com/blog/schema-org-b2b-agencies-2026
+- https://www.frase.io/blog/what-is-generative-engine-optimization-geo
+- https://nightwatch.io/blog/sitemap-best-practices/
+
+Accessibility
+- https://www.deque.com/axe/core-documentation/api-documentation/
 - https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/
-- https://webhelpagency.com/blog/core-web-vitals-2026/amp/
-
-Hosting, forms, analytics, monitoring
-- https://github.com/orgs/community/discussions/142836
-- https://zeriflow.com/blog/cloudflare-pages-security-guide
-- https://litlyx.com/blog/best-self-hosted-web-analytics-gdpr-compliant-2026
-- https://web3forms.com/
-- https://openalternative.co/alternatives/cloudflare-turnstile
-- https://www.inspectlet.com/guides/best-javascript-error-tracking-tools
+- https://www.onetrust.com/blog/understanding-the-european-accessibility-act-and-wcag-22/
 
 Competitive and positioning
+- https://www.fractional.ai/case-studies
+- https://www.gofractional.com/insights/rates/lead-ai-engineer
+- https://boomdevs.com/blog/ai-consulting-cost/
 - https://github.com/manuelernestog/astrofy
 - https://github.com/topics/astro-portfolio
-- https://www.anagram.ai/blog/ai-crawlers-explained-gptbot-claudebot-perplexitybot-and-how-to-let-them-in-2026
-- https://www.jobscan.co/blog/20-ats-friendly-resume-templates/
 
 ## Open Questions
 
-1. **Is acquiring a custom domain acceptable?** It is the only path to Permissions-Policy/HSTS (Cloudflare proxy in front of GitHub Pages) and would unblock a standing P0 in `Roadmap_Blocked.md`. Pure cost/preference decision; cannot be resolved by inspection or further research.
-2. **Should `/ai/` publish price anchors?** `Service`/`Offer` schema is materially more useful to AI answer engines when it carries an `OfferCatalog` with at least a price range. Whether to publish retainer pricing publicly is a business decision.
-3. **Is "no runtime analytics" a hard commitment or a current default?** It is stated as fact on `/status/`. If the services track needs conversion data, that promise must change first — deliberately, not incidentally.
+1. **Is acquiring a custom domain acceptable?** Still the only path to Permissions-Policy, COOP, and COEP (Cloudflare proxy in front of GitHub Pages), and now also the only path to the Reporting API. HSTS is no longer part of the argument — GitHub Pages already serves it. Pure cost/preference decision.
+2. **Should `/ai/` publish a price anchor?** `OfferCatalog` is materially more useful to answer engines with at least a range, and 2026 market data supports publishing one. Business decision.
+3. **Is publishing meant to be manual?** The current cadence — build locally, publish on demand — is deliberate and consistent with the no-CI policy. What is not clear is whether "live lags main by two versions" is acceptable drift or an oversight. This changes whether the fix is a one-off deploy or a standing gate.
