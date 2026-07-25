@@ -119,8 +119,8 @@ const localCatalogByRepo = new Map(localCatalog.map((entry) => [entry.repo, entr
 const localFeaturedByRepo = new Map(localFeatured.map((entry) => [entry.repo, entry]));
 const reviewedFeedProjects = visibleFeedProjects.filter((project) => localCatalogByRepo.has(project.repo!));
 const reviewedFeedRepos = new Set(reviewedFeedProjects.map((project) => project.repo));
-const localLiveFeedFallbacks = localCatalog.filter(
-  (entry) => entry.live && !reviewedFeedRepos.has(entry.repo),
+const localReviewedFeedFallbacks = localCatalog.filter(
+  (entry) => !reviewedFeedRepos.has(entry.repo),
 );
 
 function mapCategory(value?: string): Lang {
@@ -202,14 +202,14 @@ function buildLiveApps(): LiveApp[] {
       .filter((project) => project.hasLiveDemo && project.liveUrl)
       .map((project) => project.repo),
   );
-  const fallbackSlugs = new Set(localLiveFeedFallbacks.map((entry) => entry.repo));
+  const fallbackSlugs = new Set(localReviewedFeedFallbacks.map((entry) => entry.repo));
   return localLiveApps.filter((app) => liveFeedSlugs.has(app.slug) || fallbackSlugs.has(app.slug));
 }
 
 function buildCatalog(): CatalogEntry[] {
   if (!feedBacked) return localCatalog;
   const mapped = reviewedFeedProjects.map(projectToCatalog).filter(Boolean) as CatalogEntry[];
-  return [...mapped, ...localLiveFeedFallbacks];
+  return [...mapped, ...localReviewedFeedFallbacks];
 }
 
 export const profileFeedInfo = {
@@ -219,7 +219,7 @@ export const profileFeedInfo = {
   feedSourceUrl: profileFeed?.feedSourceUrl ?? null,
   source: profileFeed?.source ?? null,
   publicRepoCount: profileFeed?.publicRepoCount ?? null,
-  projectCount: feedBacked ? reviewedFeedProjects.length + localLiveFeedFallbacks.length : localCatalog.length,
+  projectCount: feedBacked ? reviewedFeedProjects.length + localReviewedFeedFallbacks.length : localCatalog.length,
   suppressedCount: profileFeed?.suppressedCount ?? null,
 };
 

@@ -73,6 +73,9 @@ test('portfolio adapter keeps the local reviewed catalog as the feed visibility 
 
   assert.match(source, /const reviewedFeedProjects = visibleFeedProjects\.filter/);
   assert.match(source, /localCatalogByRepo\.has\(project\.repo!\)/);
-  assert.match(source, /const localLiveFeedFallbacks = localCatalog\.filter/);
-  assert.match(source, /return \[\.\.\.mapped, \.\.\.localLiveFeedFallbacks\]/);
+  assert.match(
+    source,
+    /const localReviewedFeedFallbacks = localCatalog\.filter\(\s*\(entry\) => !reviewedFeedRepos\.has\(entry\.repo\),\s*\)/,
+  );
+  assert.match(source, /return \[\.\.\.mapped, \.\.\.localReviewedFeedFallbacks\]/);
 });
