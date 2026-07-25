@@ -4,6 +4,27 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Every route now renders a shared `Footer.astro` with a contact link pinned to
+  the first position in the footer nav. Twelve routes previously hand-rolled the
+  same footer markup with twelve different link sets, and `/screenshots/` and
+  `/status/` had no footer at all — so contact was reachable from 3 of 15 routes
+  and a visitor arriving at `/catalog/` or `/releases/` from search had no path
+  to it. Pinning the link to index 0 satisfies WCAG 2.2 SC 3.2.6 (Consistent
+  Help) regardless of how many route-specific links follow.
+- The public contact address now lives in `src/data/identity.ts` alongside the
+  tenure figure, replacing six hardcoded copies across the AI track, homepage,
+  resume page, and resume JSON export. A test fails the build if any route
+  reintroduces the literal.
+
+### Fixed
+
+- `scripts/audit-csp.mjs` reported a phantom inline event handler for any bare
+  word beginning with "on" that appeared inside an Astro expression within a tag
+  (`... is one lane ...` parsed as an `one` attribute). Handler detection now
+  requires an actual value, which is what a real `onclick="…"` always carries.
+
 ### Added
 
 - `/ai/` now publishes its offer list as structured data. The four service lines

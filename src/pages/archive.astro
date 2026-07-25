@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import Footer from '../components/Footer.astro';
 import { archiveEntries } from '../data/archive';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
@@ -174,13 +175,11 @@ const cmdkSections = [
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">The archive is the boundary layer. The active catalog and timeline show what remains public, current, and safe to promote.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/catalog/">Catalog</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="The archive is the boundary layer. The active catalog and timeline show what remains public, current, and safe to promote."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>

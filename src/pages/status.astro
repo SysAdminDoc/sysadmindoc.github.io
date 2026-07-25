@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
+import Footer from '../components/Footer.astro';
 import { buildGeneratedDataTrust } from '../data/generated-trust';
 import type { GeneratedReadmeRefresh, GeneratedRelease, GeneratedStats } from '../data/generated';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
@@ -190,6 +191,15 @@ const cmdkSections = [
       <p class="status-note rv">Generated at build time; no runtime analytics or uptime service.</p>
     </div>
   </main>
+
+  <Footer
+    summary="Every figure here is computed during the build from cached GitHub metadata. Nothing on this page is measured at runtime."
+    links={[
+      { href: '/status.json', label: 'status.json' },
+      { href: '/releases/', label: 'Releases' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style>

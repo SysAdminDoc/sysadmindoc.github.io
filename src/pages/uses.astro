@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { uses } from '../data/uses';
@@ -86,15 +87,13 @@ const cmdkSections = [
     </section>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">This page is a snapshot of the current working environment. Tools change as the portfolio evolves.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/catalog/">Catalog</a><a href="/now/">Now</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="This page is a snapshot of the current working environment. Tools change as the portfolio evolves."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/now/', label: 'Now' },
+    ]}
+  />
 </Base>
 
 <style is:global>

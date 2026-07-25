@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import Footer from '../components/Footer.astro';
 import { liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
@@ -123,6 +124,15 @@ const cmdkSections = [
       </div>
     </div>
   </main>
+
+  <Footer
+    summary="Every capture comes from a deployed build. Open a card to read the source, or browse the live apps from the homepage."
+    links={[
+      { href: '/#live', label: 'Live apps' },
+      { href: '/catalog/', label: 'Catalog' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 
   <script src="/scripts/screenshots-page.js" is:inline></script>
 </Base>

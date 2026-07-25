@@ -4,6 +4,7 @@ import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import StarSvg from '../components/StarSvg.astro';
+import Footer from '../components/Footer.astro';
 import { healthcareIT } from '../data/curated';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
@@ -147,15 +148,13 @@ const cmdkSections = hasRepos
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">These tools sit inside a wider portfolio of operational software, browser products, and systems-first utility work shaped by real environments.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="These tools sit inside a wider portfolio of operational software, browser products, and systems-first utility work shaped by real environments."
+    links={[
+      { href: '/rss.xml', label: 'RSS' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style is:global>

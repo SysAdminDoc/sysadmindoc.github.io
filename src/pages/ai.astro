@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import {
   formatReviewedDate,
@@ -11,7 +12,7 @@ import {
   serviceCatalogNodes,
 } from '../data/page-freshness';
 import { catalog, liveApps } from '../data/portfolio';
-import { experienceLabel, experienceShort } from '../data/identity';
+import { contactEmail, contactMailto, experienceLabel, experienceShort } from '../data/identity';
 
 const title = 'AI Services — Matt Parker';
 const pageOg = interiorOgPageBySlug['ai'];
@@ -128,7 +129,7 @@ const cmdkSections = [
         </div>
       </div>
       <div class="aisvc-actions page-actions rv">
-        <a href="mailto:matt_parker@outlook.com?subject=AI%20services" class="btn bp">Start a conversation</a>
+        <a href={contactMailto('AI services')} class="btn bp">Start a conversation</a>
         <a href="/resume/" class="btn bg2">Open resume</a>
       </div>
       <SectionJumpNav items={cmdkSections} />
@@ -184,20 +185,18 @@ const cmdkSections = [
       <h2 class="aisvc-h2">Start here</h2>
       <div class="aisvc-why rv">
         <p>Send a short note about your business and the friction you want gone — no preparation needed. The discovery conversation is free, and honest: if AI is the wrong tool for your problem, I will say so.</p>
-        <p><a href="mailto:matt_parker@outlook.com?subject=AI%20services" class="page-inline-link">matt_parker@outlook.com</a> · <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener" class="page-inline-link">LinkedIn</a></p>
+        <p><a href={contactMailto('AI services')} class="page-inline-link">{contactEmail}</a> · <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener" class="page-inline-link">LinkedIn</a></p>
       </div>
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">The services here sit on top of a public portfolio of shipped software — browse the catalog, open the live apps, and judge the working model by its output.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="The services here sit on top of a public portfolio of shipped software — browse the catalog, open the live apps, and judge the working model by its output."
+    links={[
+      { href: '/rss.xml', label: 'RSS' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style is:global>

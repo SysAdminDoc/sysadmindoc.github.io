@@ -7,3 +7,16 @@
 export const experienceYears = 15;
 export const experienceLabel = `${experienceYears}+ years`;
 export const experienceShort = `${experienceYears}+ yrs`;
+
+// The public contact address. It appears in the shared footer, the AI track
+// CTAs, the homepage connect section, the resume page, and the resume JSON
+// export; deriving them all from here keeps a future address change from
+// leaving a dead mailto behind on some surface.
+export const contactEmail = 'matt_parker@outlook.com';
+
+/** `mailto:` href for the public address, with an optional prefilled subject. */
+export function contactMailto(subject?: string) {
+  return subject
+    ? `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}`
+    : `mailto:${contactEmail}`;
+}

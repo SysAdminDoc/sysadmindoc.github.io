@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
+import Footer from '../components/Footer.astro';
 import { now } from '../data/curated';
 import { fallbackRepoCount } from '../data/derived';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
@@ -151,15 +152,13 @@ const cmdkSections = [
     </div>
   </main>
 
-  <footer>
-    <div class="fi page-footer-shell">
-      <div class="footer-brand">
-        <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
-        <p class="footer-summary">The /now page is the short-range signal. The release stream and full archive show what is already shipped, maintained, and still earning attention.</p>
-      </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/rss.xml">RSS</a><a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">GitHub</a></nav>
-    </div>
-  </footer>
+  <Footer
+    summary="The /now page is the short-range signal. The release stream and full archive show what is already shipped, maintained, and still earning attention."
+    links={[
+      { href: '/rss.xml', label: 'RSS' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
 </Base>
 
 <style is:global>

@@ -304,7 +304,11 @@ async function auditSourceFile(filePath, text) {
     }
 
     for (const [name, value] of Object.entries(attrs)) {
-      if (/^on[a-z]+$/.test(name)) {
+      // A valueless bare word is never an event handler — `parseAttrs` records
+      // any token inside the tag, so prose in an Astro expression ("... is one
+      // lane ...") would otherwise register as an `one` handler. Real handlers
+      // always carry a value: `onclick="..."`.
+      if (/^on[a-z]+$/.test(name) && typeof value === 'string') {
         eventHandlers.push({
           file: rel,
           line,
