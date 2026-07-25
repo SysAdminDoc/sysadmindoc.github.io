@@ -27,12 +27,12 @@ body.route-interior .rel-month-shell{display:grid;grid-template-columns:180px mi
 body.route-interior .rel-month-head{display:block;margin:0;padding:0;border:0}
 body.route-interior .rel-month-label{font-family:var(--sans);font-size:22px;font-weight:700;letter-spacing:-.025em;text-transform:none;color:var(--t1)}
 body.route-interior .rel-month-count{display:block;margin-top:8px;padding:0;border:0;background:transparent;color:var(--t3)}
-body.route-interior .rel-list{gap:0}
+body.route-interior .rel-list{min-width:0;gap:0}
 body.route-interior .rel-item{padding:15px 0;border:0;border-bottom:1px solid var(--border-soft);border-radius:0}
 body.route-interior .rel-item:first-child{padding-top:0}
 body.route-interior .rel-item:hover{background:transparent;box-shadow:none;transform:none}
 body.route-interior .rel-tag,body.route-interior .rel-prov{padding:0;border:0;border-radius:0;background:transparent}
-body.route-interior .rel-body{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3;font-size:15px;line-height:1.55}
+body.route-interior .rel-body{min-width:0;display:-webkit-box;overflow:hidden;overflow-wrap:anywhere;-webkit-box-orient:vertical;-webkit-line-clamp:3;font-size:15px;line-height:1.55}
 
 body.route-interior .timeline-years,body.route-interior .timeline-events-wrap{margin-top:42px;padding:0}
 body.route-interior .timeline-section-head{margin-bottom:18px;padding-bottom:10px}

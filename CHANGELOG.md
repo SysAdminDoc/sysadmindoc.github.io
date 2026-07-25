@@ -46,6 +46,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Local development, detached development, start, and preview commands now bind
   explicitly to `127.0.0.1`; a repository policy test prevents an accidental
   return to LAN-reachable defaults.
+- Repetitive command-palette, archive, timeline, hero, and interior-page
+  selectors now use native CSS nesting. The shared source-surface parser and
+  CSS audit understand nested rules, and the compiled stylesheet is 503 bytes
+  smaller without changing the visual baselines.
+- Release summaries now wrap unbroken URLs inside their mobile grid track; a
+  Playwright regression keeps production-length release copy within the
+  viewport.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.

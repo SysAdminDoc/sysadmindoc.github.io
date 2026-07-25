@@ -254,6 +254,20 @@ test.describe('Homepage live-card containment', () => {
   }
 });
 
+test('release summaries with unbroken URLs stay inside the mobile viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await preparePage(page, '/releases/', '.rel-month:first-of-type .rel-item:first-child .rel-body');
+
+  const summary = page.locator('.rel-body').first();
+  await summary.evaluate((element) => {
+    element.textContent = `https://example.test/${'unbroken-release-path-'.repeat(12)}`;
+  });
+
+  await expectNoHorizontalOverflow(page);
+  const summaryOverflow = await summary.evaluate((element) => element.scrollWidth - element.clientWidth);
+  expect(summaryOverflow).toBeLessThanOrEqual(1);
+});
+
 test.describe('Playwright axe accessibility audit', () => {
   for (const route of routes) {
     test(`${route.name} route has no axe violations`, async ({ page }, testInfo) => {
