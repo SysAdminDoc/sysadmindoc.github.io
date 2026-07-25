@@ -1,4 +1,4 @@
-const CACHE = 'portfolio-v0.26.2';
+const CACHE = 'portfolio-v0.26.3';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE = [
   "/",
@@ -34,7 +34,7 @@ const PRECACHE = [
   "/_assets/_slug_.DZTTMy9Y.css",
   "/_assets/ai.DakrrUoc.css",
   "/_assets/catalog.CA--t_VP.css",
-  "/_assets/global.CFq-RYk-.css",
+  "/_assets/global.3yLfQJMS.css",
   "/_assets/healthcare-it.03D11SDD.css",
   "/_assets/index.BgPzmJHS.css",
   "/_assets/interior-quiet.xrEerpNK.css",
@@ -71,11 +71,12 @@ const PRECACHE = [
   "/fonts/jetbrains-mono-latin.woff2",
   "/fonts/outfit-latin-ext.woff2",
   "/fonts/outfit-latin.woff2",
-  "/pagefind/filter/en_4488951.pf_filter",
+  "/pagefind/filter/en_a85b892.pf_filter",
   "/pagefind/fragment/en_1528e86.pf_fragment",
   "/pagefind/fragment/en_25d55dc.pf_fragment",
   "/pagefind/fragment/en_31a3861.pf_fragment",
-  "/pagefind/fragment/en_46bb76b.pf_fragment",
+  "/pagefind/fragment/en_3a27745.pf_fragment",
+  "/pagefind/fragment/en_3b6c153.pf_fragment",
   "/pagefind/fragment/en_50ff48b.pf_fragment",
   "/pagefind/fragment/en_57d2b17.pf_fragment",
   "/pagefind/fragment/en_6362be6.pf_fragment",
@@ -91,10 +92,9 @@ const PRECACHE = [
   "/pagefind/fragment/en_c13d12d.pf_fragment",
   "/pagefind/fragment/en_c3445e3.pf_fragment",
   "/pagefind/fragment/en_e5bd303.pf_fragment",
-  "/pagefind/fragment/en_f148274.pf_fragment",
-  "/pagefind/index/en_395957b.pf_index",
-  "/pagefind/index/en_47cf356.pf_index",
-  "/pagefind/index/en_4a86be3.pf_index",
+  "/pagefind/index/en_3aeace5.pf_index",
+  "/pagefind/index/en_92aa4ec.pf_index",
+  "/pagefind/index/en_a0e63bd.pf_index",
   "/pagefind/pagefind-component-ui.css",
   "/pagefind/pagefind-component-ui.js",
   "/pagefind/pagefind-entry.json",
@@ -104,7 +104,7 @@ const PRECACHE = [
   "/pagefind/pagefind-ui.css",
   "/pagefind/pagefind-ui.js",
   "/pagefind/pagefind-worker.js",
-  "/pagefind/pagefind.en_92eaca7955.pf_meta",
+  "/pagefind/pagefind.en_fd94424eb1.pf_meta",
   "/pagefind/pagefind.js",
   "/pagefind/wasm.en.pagefind",
   "/pagefind/wasm.unknown.pagefind"
