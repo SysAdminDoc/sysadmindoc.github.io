@@ -60,6 +60,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   quoted greater-than signs and Astro expressions while ignoring HTML comments.
   Source mode evaluates the production constants in `Base.astro` instead of
   substituting a hardcoded policy.
+- Generated social-card fonts now reject truncated or non-font cache/download
+  payloads, discard poisoned cache entries, and publish validated replacements
+  with a flushed temporary-file rename.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
