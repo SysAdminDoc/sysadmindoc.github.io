@@ -622,6 +622,42 @@ test.describe('catalog URL-state persistence', () => {
 
     expect(runtimeErrors).toEqual([]);
   });
+
+  test('the preview offers a full-catalog handoff only while narrowed', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await preparePage(page, '/#catalog', '#catalog');
+
+    const handoff = page.locator('#catalogMore');
+    // The homepage renders a ranked slice, so an unnarrowed view needs no handoff.
+    await expect(handoff).toBeHidden();
+
+    const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
+    if (!(await filterBtn.count())) {
+      test.skip(true, 'No category filter buttons in this build');
+      return;
+    }
+    const category = await filterBtn.getAttribute('data-filter');
+    await filterBtn.click();
+
+    await expect(handoff).toBeVisible();
+    await expect(handoff).toHaveAttribute('href', `/catalog/?cat=${category}`);
+    // The count must come from the archive, not the rendered slice.
+    const label = (await handoff.textContent()) ?? '';
+    const promised = Number(label.match(/See all (\d+)/)?.[1]);
+    const shown = await page.locator('#catalogGrid .ca:not(.hid)').count();
+    expect(Number.isFinite(promised)).toBe(true);
+    expect(promised).toBeGreaterThan(shown);
+
+    // Following it must land on a catalog filtered to the same category.
+    await handoff.click();
+    await page.locator('#catalog').waitFor({ state: 'visible' });
+    expect(page.url()).toContain(`cat=${category}`);
+    await expect(page.locator(`.fb[data-filter="${category}"].act`)).toBeVisible();
+    const fullCount = await page.locator('#catalogGrid .ca:not(.hid)').count();
+    expect(fullCount).toBe(promised);
+
+    expect(runtimeErrors).toEqual([]);
+  });
 });
 
 test.describe('full catalog page URL-state persistence', () => {

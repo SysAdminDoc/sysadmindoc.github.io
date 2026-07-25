@@ -35,6 +35,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- A full-catalog handoff on the homepage catalog preview. Filtering the preview
+  searches a ranked slice of 84, so a category with 14 preview matches and 28 in
+  the archive showed 14 with no signal that more existed. While narrowed, the
+  status row now links to `/catalog/` carrying the active category, view, search,
+  and sort. A plain category narrow promises an exact count ("See all 28
+  PowerShell projects"); a search or view narrow links without a number, because
+  those predicates differ between the rendered cards and the palette dataset and
+  a promised count could fail to reproduce. Counts come from the project list
+  already shipped for the command palette, so this adds no payload.
 - A Playwright skip reporter on both browser suites. Six specs skip themselves
   when the generated data cannot produce the state under test, and a summary
   reading "44 passed, 2 skipped" hid which path had gone dormant — the v0.27.0

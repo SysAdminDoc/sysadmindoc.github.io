@@ -105,6 +105,10 @@ const statusLead = isPreview
   </search>
   <div class="catalog-feedback rv">
     <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">{statusLead}</div>
+    {/* Preview-only handoff: a filter here searches a ranked slice, so when the
+        full archive holds more for the same filter, say so and carry the state
+        across. home-catalog.js fills in the label and href. */}
+    {isPreview && <a class="catalog-more" id="catalogMore" href={browseAllHref} hidden></a>}
     <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear filters</button>
   </div>
   {/* home-catalog.js needs the full-archive total and the surface variant to
