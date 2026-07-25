@@ -85,7 +85,11 @@ export function auditPublicSourceHygiene(sourceTexts, forbiddenNames) {
   const findings = [];
   const patterns = forbiddenNames.map((name) => ({
     name,
-    regex: new RegExp(`(?<![A-Za-z0-9._/-])${escapeRegex(name)}(?![A-Za-z0-9._/-])`, 'gi'),
+    // The trailing lookahead must not exclude `.`, or a reference that simply
+    // ends a sentence ("... see CLAUDE.md.") slips past the guard. A real longer
+    // filename still fails to match, because the character after the extension
+    // is then a letter/digit rather than punctuation.
+    regex: new RegExp(`(?<![A-Za-z0-9._/-])${escapeRegex(name)}(?![A-Za-z0-9_/-])`, 'gi'),
   }));
 
   for (const [relativePath, text] of sourceTexts.entries()) {
@@ -107,10 +111,19 @@ function runSelfTest() {
     new Map([
       ['src/pages/example.astro', "const path = 'CHANGELOG.md';"],
       ['src/pages/allowed.astro', "const path = 'README.md';"],
+      // A reference that ends a sentence must still be caught.
+      ['src/pages/prose.astro', '// Keep this in sync with ROADMAP.md.'],
+      // A longer filename that merely starts with a forbidden name must not be.
+      ['src/pages/longer.astro', "const path = 'CHANGELOG.mdx';"],
     ]),
     ['CHANGELOG.md', 'ROADMAP.md'],
   );
-  if (findings.length !== 1 || findings[0].file !== 'src/pages/example.astro' || findings[0].line !== 1) {
+  const findingFiles = findings.map((finding) => finding.file).sort();
+  if (
+    findings.length !== 2
+    || findingFiles[0] !== 'src/pages/example.astro'
+    || findingFiles[1] !== 'src/pages/prose.astro'
+  ) {
     console.error('Public source hygiene self-test failed.');
     process.exit(1);
   }

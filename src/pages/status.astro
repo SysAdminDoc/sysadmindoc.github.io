@@ -118,6 +118,14 @@ const signals = [
   { label: 'Total stars', value: generatedData.totalStars != null ? `${generatedData.totalStars}` : 'N/A', tone: 'blue' },
 ];
 
+// The dot tone is the only visual encoding of a signal's health, so pair it with
+// text for screen readers and for anyone who cannot separate the hues (WCAG 1.4.1).
+const toneLabels: Record<string, string> = {
+  green: 'Healthy',
+  amber: 'Needs attention',
+  blue: 'Informational',
+};
+
 const cmdkSections = [
   { label: 'Health', href: '#status-health', desc: 'Build version, data freshness, and deployment signals.', badge: 'STATUS' },
 ] as const;
@@ -145,10 +153,11 @@ const cmdkSections = [
       <div class="status-grid rv">
         {signals.map((s) => (
           <div class="status-card">
-            <div class={`status-dot status-dot-${s.tone}`}></div>
+            <div class={`status-dot status-dot-${s.tone}`} aria-hidden="true"></div>
             <div class="status-card-body">
               <div class="status-label">{s.label}</div>
               <div class="status-value">{s.value}</div>
+              <span class="sr-only">{toneLabels[s.tone] ?? 'Informational'}</span>
             </div>
           </div>
         ))}

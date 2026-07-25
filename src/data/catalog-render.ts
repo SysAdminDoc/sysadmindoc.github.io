@@ -64,8 +64,11 @@ export const catalogTotal = catalog.length;
 
 export { formatProjectRankingDisplayLabel, formatProjectRankingLabel };
 
-// Category filter buttons shared by the catalog surfaces and the homepage hero
-// signal strip. Keep in sync with the `data-f` categories in CLAUDE.md.
+// Category filter buttons shared by the catalog surfaces. This must cover every
+// key in `categoryLabels`, or projects in an omitted category become unreachable
+// by facet — `other` and `fork` were missing, orphaning every entry that landed
+// there. CatalogSection drops any chip whose count is 0 on the surface being
+// rendered, so listing a category here is always safe.
 export const filterButtons = [
   { key: 'ps', label: 'PowerShell' },
   { key: 'py', label: 'Python' },
@@ -77,6 +80,8 @@ export const filterButtons = [
   { key: 'cs', label: 'Desktop' },
   { key: 'cpp', label: 'C++' },
   { key: 'guide', label: 'Guides' },
+  { key: 'fork', label: 'Forks' },
+  { key: 'other', label: 'Other' },
 ] as const;
 
 export const filterLabelByKey: Record<string, string> = Object.fromEntries(

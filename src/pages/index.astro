@@ -9,6 +9,8 @@ import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { experienceLabel } from '../data/identity';
 import { fallbackRepoCount } from '../data/derived';
 import { computeCategoryCounts } from '../data/catalog-views.mjs';
+import { categoryLabels } from '../data/categories';
+import type { Lang } from '../data/types';
 import { rankedCatalog, HOMEPAGE_CATALOG_LIMIT } from '../data/catalog-render';
 import {
   DONUT_R,
@@ -64,25 +66,15 @@ const donutLead = donutArcs[0];
 const donutLeadLang = donutLead ? donutLead.lang : 'Mixed';
 const donutLeadPct = donutLead ? donutLead.pct : 0;
 
-const filterButtons = [
-  { key: 'ps', label: 'PowerShell' },
-  { key: 'py', label: 'Python' },
-  { key: 'web', label: 'Web Apps' },
-  { key: 'ext', label: 'Extensions' },
-  { key: 'kt', label: 'Android' },
-  { key: 'sec', label: 'Security' },
-  { key: 'media', label: 'Media' },
-  { key: 'cs', label: 'Desktop' },
-  { key: 'cpp', label: 'C++' },
-  { key: 'guide', label: 'Guides' },
-];
-const filterLabelByKey = Object.fromEntries(filterButtons.map((button) => [button.key, button.label]));
+// Label from the canonical map, which covers every Lang key — the old local
+// copy of the filter-button list omitted `fork`/`other`, so a top-3 category in
+// either would have surfaced a raw code ("other") in the hero.
 const heroTopCategories = Object.entries(catCounts)
   .sort(([, a], [, b]) => b - a)
   .slice(0, 3)
   .map(([key, count]) => ({
     key,
-    label: filterLabelByKey[key] ?? key,
+    label: categoryLabels[key as Lang] ?? key,
     count,
   }));
 const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${count}`).join(' / ');

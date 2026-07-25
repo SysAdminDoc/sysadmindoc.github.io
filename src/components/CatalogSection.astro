@@ -94,8 +94,12 @@ const statusLead = isPreview
   </div>
   <div class="cf rv" id="filterBtns" role="group" aria-label="Filter by category">
     <button type="button" class="fb act" data-filter="all" data-label="All projects" aria-pressed="true">All <span class="fc" id="countAll">{shown}</span></button>
-    {filterButtons.map((f) => (
-      <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key] ?? 0}</span></button>
+    {/* Only offer a facet that can return something on THIS surface. The
+        homepage preview is a slice, so a category with matches in the full
+        archive can still be empty here — a chip reading "0" is a control whose
+        only outcome is the no-results state. */}
+    {filterButtons.filter((f) => (catCounts[f.key] ?? 0) > 0).map((f) => (
+      <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key]}</span></button>
     ))}
   </div>
   </search>
@@ -103,7 +107,10 @@ const statusLead = isPreview
     <div class="catalog-status" id="catalogStatus" role="status" aria-live="polite">{statusLead}</div>
     <button type="button" class="catalog-reset" id="catalogReset" hidden>Clear filters</button>
   </div>
-  <div class="cg" id="catalogGrid" data-sort="default">
+  {/* home-catalog.js needs the full-archive total and the surface variant to
+      describe a preview slice honestly ("top N of TOTAL"), since the rendered
+      card count is only the slice. */}
+  <div class="cg" id="catalogGrid" data-sort="default" data-total={total} data-variant={isPreview ? 'preview' : 'full'}>
     {entries.map((entry, index) => {
       const viewState = catalogViewState.get(entry.repo);
       const ranking = projectRankings.get(entry.repo);
