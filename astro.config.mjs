@@ -33,13 +33,4 @@ export default defineConfig({
     },
   },
   compressHTML: true,
-  prefetch: {
-    prefetchAll: false,
-    defaultStrategy: 'hover',
-  },
-  // Upgrade hover-prefetch into Chromium Speculation-Rules prerendering for
-  // near-instant navigation (progressive enhancement; ignored in other engines).
-  experimental: {
-    clientPrerender: true,
-  },
 });
