@@ -66,6 +66,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The AI services track now leads with the questions prospects actually ask,
   gives a direct answer at the start of every service and engagement card, and
   preserves the matching `Service`/`OfferCatalog` graph.
+- Deploy preflight now blocks stale patch/minor releases behind exact dependency
+  overrides, reports documented TypeScript 7 and `fast-uri` 4 compatibility
+  holds without blocking, and updates the Vite override to 8.1.5.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
