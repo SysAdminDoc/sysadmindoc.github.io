@@ -6,6 +6,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- The homepage now uses one restrained editorial system across live evidence,
+  capabilities, and contact instead of mixing stacked dashboard cards with a
+  dark promotional panel. Navigation and evidence labels are also more direct.
+- Mobile live-app cards now constrain intrinsic image and title widths to their
+  grid tracks, so thumbnails and long names no longer clip at 320–390px.
+  Playwright now checks every visible card descendant against all four edges.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
