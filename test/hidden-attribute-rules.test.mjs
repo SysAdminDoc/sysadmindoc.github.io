@@ -47,7 +47,8 @@ for (const { file, selector } of HIDDEN_TOGGLED_SELECTORS) {
 test('timeline events keep their hidden-attribute rule', async () => {
   const css = await fs.readFile(path.join(root, 'src', 'styles', 'global.css'), 'utf8');
   assert.ok(
-    /\.timeline-event\[hidden\]\s*\{[^}]*display\s*:\s*none/.test(css),
+    /\.timeline-event\s*\{[^{}]*&\[hidden\]\s*\{[^{}]*display\s*:\s*none/.test(css)
+      || /\.timeline-event\[hidden\]\s*\{[^}]*display\s*:\s*none/.test(css),
     '.timeline-event sets display:grid, so it needs .timeline-event[hidden]{display:none} for timeline.js filtering.',
   );
 });

@@ -76,10 +76,37 @@ function normalizeSelector(selector) {
 export function extractCssSelectorRecords(css, file = 'inline.css') {
   const records = [];
   const cleaned = stripCssComments(css);
-  const rulePattern = /([^{}]+)\{/g;
-  let match;
-  while ((match = rulePattern.exec(cleaned)) !== null) {
-    const raw = match[1].trim();
+  let segmentStart = 0;
+  let quote = '';
+  let parenDepth = 0;
+  let bracketDepth = 0;
+
+  for (let index = 0; index < cleaned.length; index += 1) {
+    const char = cleaned[index];
+    const previous = cleaned[index - 1];
+    if (quote) {
+      if (char === quote && previous !== '\\') quote = '';
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (char === '(') parenDepth += 1;
+    if (char === ')' && parenDepth > 0) parenDepth -= 1;
+    if (char === '[') bracketDepth += 1;
+    if (char === ']' && bracketDepth > 0) bracketDepth -= 1;
+    if (parenDepth > 0 || bracketDepth > 0) continue;
+    if (char === ';' || char === '}') {
+      segmentStart = index + 1;
+      continue;
+    }
+    if (char !== '{') continue;
+
+    const prelude = cleaned.slice(segmentStart, index);
+    const leadingWhitespace = prelude.match(/^\s*/)?.[0].length ?? 0;
+    const raw = prelude.trim();
+    segmentStart = index + 1;
     if (!raw || raw.startsWith('@')) continue;
     if (/^(from|to|\d+(?:\.\d+)?%)$/.test(raw)) continue;
     for (const selector of splitSelectorList(raw)) {
@@ -87,7 +114,7 @@ export function extractCssSelectorRecords(css, file = 'inline.css') {
       if (normalized) {
         records.push({
           file,
-          line: lineFor(cleaned, match.index),
+          line: lineFor(cleaned, index - prelude.length + leadingWhitespace),
           selector: normalized,
         });
       }

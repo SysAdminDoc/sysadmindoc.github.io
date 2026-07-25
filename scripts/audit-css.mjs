@@ -4,6 +4,7 @@ import process from 'node:process';
 import {
   auditDeadCssSelectors,
   collectSourceSurface,
+  extractCssSelectorRecords,
   readSourceSurfaceTexts,
 } from './lib/source-surface-audit.mjs';
 
@@ -45,49 +46,8 @@ const sharedMobileSelectors = [
   '.hero-pulse .pulse-item',
 ];
 
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, '');
-}
-
-function splitSelectorList(value) {
-  const selectors = [];
-  let start = 0;
-  let depth = 0;
-  for (let index = 0; index < value.length; index += 1) {
-    const char = value[index];
-    if (char === '(' || char === '[') depth += 1;
-    if ((char === ')' || char === ']') && depth > 0) depth -= 1;
-    if (char === ',' && depth === 0) {
-      selectors.push(value.slice(start, index));
-      start = index + 1;
-    }
-  }
-  selectors.push(value.slice(start));
-  return selectors;
-}
-
-function normalizeSelector(selector) {
-  return selector
-    .trim()
-    .replace(/\s+/g, ' ')
-    .replace(/\s*([>+~])\s*/g, '$1');
-}
-
 function extractSelectors(css) {
-  const selectors = new Set();
-  const cleaned = stripComments(css);
-  const rulePattern = /([^{}]+)\{/g;
-  let match;
-  while ((match = rulePattern.exec(cleaned)) !== null) {
-    const raw = match[1].trim();
-    if (!raw || raw.startsWith('@')) continue;
-    if (/^(from|to|\d+(?:\.\d+)?%)$/.test(raw)) continue;
-    for (const selector of splitSelectorList(raw)) {
-      const normalized = normalizeSelector(selector);
-      if (normalized) selectors.add(normalized);
-    }
-  }
-  return selectors;
+  return new Set(extractCssSelectorRecords(css).map(({ selector }) => selector));
 }
 
 function extractMediaBlocks(css, conditionPattern) {

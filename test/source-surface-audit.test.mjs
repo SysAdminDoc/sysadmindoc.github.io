@@ -4,6 +4,7 @@ import {
   auditDeadCssSelectors,
   auditRuntimeDomTargets,
   collectSourceSurface,
+  extractCssSelectorRecords,
 } from '../scripts/lib/source-surface-audit.mjs';
 
 test('source surface audit catches dead CSS selector atoms', () => {
@@ -20,6 +21,22 @@ test('source surface audit catches dead CSS selector atoms', () => {
   assert.equal(names.has('ghost-panel'), true);
   assert.equal(names.has('ghostChild'), true);
   assert.equal(names.has('data-ghost-ready'), true);
+});
+
+test('CSS selector extraction handles native nesting without parsing declarations as selectors', () => {
+  const records = extractCssSelectorRecords(`
+    .real-panel {
+      color: red;
+      &:hover { color: blue; }
+      & .real-child,
+      & > .other-child { display: block; }
+    }
+  `);
+
+  assert.deepEqual(
+    records.map(({ selector }) => selector),
+    ['.real-panel', '&:hover', '& .real-child', '&>.other-child'],
+  );
 });
 
 test('source surface audit catches stale runtime DOM targets but allows generated surfaces', () => {
