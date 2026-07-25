@@ -290,9 +290,14 @@ const cmdkSections = [
     <div class="hi">
       <div class="ht">
         <p class="hero-eyebrow">AI-augmented software · Practical tools · Healthcare technology</p>
-        <div class="hero-identity">
-          <img class="hero-avatar loaded" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
-          <h1 class="hn">Matt <span class="a">Parker</span></h1>
+        {/* Representative h-card. Microformats2 is what Bridgy Fed and other
+            IndieWeb consumers read to build a profile; the classes are additive
+            and carry no styling. The u-url anchor is hidden — mf2 parses the
+            DOM, so it needs no visual presence, focus stop, or a11y-tree entry. */}
+        <div class="hero-identity h-card">
+          <img class="hero-avatar loaded u-photo" id="heroAvatar" src={stats.avatarUrl || 'https://avatars.githubusercontent.com/u/55504284'} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
+          <h1 class="hn p-name">Matt <span class="a">Parker</span></h1>
+          <a class="u-url" href="/" hidden>Matt Parker</a>
         </div>
         <div class="hero-proof-strip" aria-label="Experience focus areas">
           {heroExperienceHighlights.map((item) => (

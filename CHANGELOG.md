@@ -27,6 +27,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- IndieWeb identity markup. Every route declares `rel="me"` links for GitHub,
+  LinkedIn, and the contact address — the signal Mastodon uses to verify a
+  profile link — and the homepage hero exposes a representative h-card
+  (`h-card`, `p-name`, `u-photo`, `u-url`). The site published four feeds and a
+  schema.org `Person` graph but no microformats, so mf2 consumers such as Bridgy
+  Fed could not build a profile from it. The classes are additive with no
+  styling attached, and a test keeps them out of the stylesheets.
 - `/ai/` now publishes its offer list as structured data. The four service lines
   (rollout, automation, training, retainer) emit an `OfferCatalog` plus one
   `Service` node each, every one provided by the existing `#matt-parker` Person
