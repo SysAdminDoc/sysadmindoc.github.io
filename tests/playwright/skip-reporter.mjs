@@ -42,19 +42,22 @@ function skipReason(test, result) {
 export default class SkipReporter {
   constructor() {
     this.skips = new Map();
+    // A pin can only be judged against specs this invocation actually selected.
+    // `audit:sw` and any -g filter run a subset, and an unrelated pin is out of
+    // scope there rather than stale.
+    this.seen = new Set();
   }
 
   onTestEnd(test, result) {
-    if (result.status !== 'skipped') return;
     const title = testTitle(test);
+    this.seen.add(title);
+    if (result.status !== 'skipped') return;
     if (!this.skips.has(title)) this.skips.set(title, skipReason(test, result));
   }
 
   onEnd(result) {
-    if (this.skips.size === 0) {
-      if (EXPECTED_SKIPS.size === 0) return undefined;
-      console.log('\nSkip audit: no specs skipped (expected some — pinned list may be stale).');
-    }
+    const inScope = [...EXPECTED_SKIPS.keys()].filter((title) => this.seen.has(title));
+    if (this.skips.size === 0 && inScope.length === 0) return undefined;
 
     console.log('\nSkip audit');
     for (const [title, reason] of this.skips) {
@@ -64,8 +67,9 @@ export default class SkipReporter {
 
     const unexpected = [...this.skips.keys()].filter((title) => !EXPECTED_SKIPS.has(title));
     // A pinned skip that starts running again is good news, but the pin is now
-    // stale and would hide the next real regression.
-    const resolved = [...EXPECTED_SKIPS.keys()].filter((title) => !this.skips.has(title));
+    // stale and would hide the next real regression. Only judge pins whose spec
+    // was selected by this run.
+    const resolved = inScope.filter((title) => !this.skips.has(title));
 
     for (const title of resolved) {
       console.log(`  [resolved] ${title}\n      This spec runs again — remove it from EXPECTED_SKIPS.`);
