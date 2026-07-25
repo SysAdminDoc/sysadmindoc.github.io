@@ -351,7 +351,12 @@ const pageJsonLd = reviewedWebPageJsonLd({
                 <h3>
                   <a href={event.href} target={event.external ? '_blank' : undefined} rel={event.external ? 'noopener' : undefined}>{event.title}</a>
                 </h3>
-                <p>{event.desc}</p>
+                {/* Generated per-event prose. It is legitimately searchable, but
+                    232 machine-written summaries otherwise outweigh a topical
+                    page on raw term frequency — a refresh that added AI-named
+                    projects pushed /timeline/ above /ai/ for "AI services". The
+                    event title and page heading keep their full weight. */}
+                <p data-pagefind-weight="0.3">{event.desc}</p>
                 <div class="timeline-chip-row">
                   <span>{event.platformLabel}</span>
                   <span>{event.categoryLabel}</span>

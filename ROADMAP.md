@@ -21,17 +21,6 @@ Last normalized: 2026-07-24
 
 ## Deep audit follow-ups (2026-07-25 pass)
 
-### P3
-
-- [ ] P3 — Refresh `_releases.json` to clear inherited mid-word truncations
-  Why: `bodyFirst` values cached before v0.27.0 were hard-cut at 220 characters,
-  so a handful of `/releases/` summaries still end on a partial word ("…Settings
-  sear"). Markdown is now stripped at render time, but the lost characters cannot
-  be recovered from the cache. The generator produces word-boundary summaries with
-  an ellipsis, so this clears on the next token-backed data refresh.
-  Where: `src/data/_releases.json` (generated, gitignored), `npm run fetch-stars`.
-  Acceptance: After a refresh, no `/releases/` summary ends mid-word.
-
 ### Not audited in the 2026-07-25 pass
 
 These areas were not exercised and may still hold defects:

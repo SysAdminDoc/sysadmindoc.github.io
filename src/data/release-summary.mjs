@@ -72,6 +72,37 @@ export function truncateOnWord(value, maxLength = DEFAULT_MAX_LENGTH) {
 }
 
 /**
+ * Drop a trailing word that a hard character cut may have severed, and mark it.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function dropTrailingPartialWord(text) {
+  const trimmed = text.trimEnd();
+  const lastSpace = trimmed.lastIndexOf(' ');
+  if (lastSpace <= 0) return trimmed;
+  return `${trimmed.slice(0, lastSpace).replace(/[\s,;:.·-]+$/, '')}${ELLIPSIS}`;
+}
+
+/**
+ * Detect a summary produced by the pre-word-boundary generator.
+ *
+ * Those values were `.slice(0, 220)` of already-joined text: a single line, at
+ * the length cap, with no ellipsis. A freshly generated summary at the same
+ * length always ends in an ellipsis, and a raw Markdown body contains newlines,
+ * so neither is mistaken for one. `fetch-stars` reuses cached release rows whose
+ * repo has published nothing new, so these persist indefinitely rather than
+ * clearing on the next refresh.
+ *
+ * @param {string} raw
+ * @param {number} maxLength
+ * @returns {boolean}
+ */
+function isHardCutSummary(raw, maxLength) {
+  return !raw.includes('\n') && raw.length >= maxLength && !raw.trimEnd().endsWith(ELLIPSIS);
+}
+
+/**
  * Build the short prose summary shown for a release.
  *
  * @param {string | null | undefined} body Raw Markdown release body.
@@ -80,7 +111,9 @@ export function truncateOnWord(value, maxLength = DEFAULT_MAX_LENGTH) {
  */
 export function summarizeReleaseBody(body, options = {}) {
   const { maxLength = DEFAULT_MAX_LENGTH, maxLines = 3 } = options;
-  const lines = String(body ?? '')
+  const raw = String(body ?? '');
+  const hardCut = isHardCutSummary(raw, maxLength);
+  const lines = raw
     .replace(/\r/g, '')
     // Drop fenced code blocks wholesale — they are never useful as a one-line summary.
     .replace(/```[\s\S]*?```/g, ' ')
@@ -88,5 +121,8 @@ export function summarizeReleaseBody(body, options = {}) {
     .map((line) => markdownLineToText(line))
     .filter(Boolean)
     .slice(0, maxLines);
-  return truncateOnWord(lines.join(' · '), maxLength);
+  const summary = truncateOnWord(lines.join(' · '), maxLength);
+  // Stripping Markdown shortens a legacy value below the cap, so truncateOnWord
+  // no longer trims it — the severed word has to be dropped explicitly.
+  return hardCut && !summary.endsWith(ELLIPSIS) ? dropTrailingPartialWord(summary) : summary;
 }
