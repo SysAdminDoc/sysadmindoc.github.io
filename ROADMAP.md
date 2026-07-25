@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-- [ ] P2 — Make skipped Playwright specs visible in the preflight summary
-  Why: `tests/playwright/interaction-smoke.spec.mjs` silently `test.skip`s the screenshots-gallery facet whenever live-app data has a single category — the current state — so a suite reporting "44 passed, 2 skipped" can hide a permanently dormant path.
-  Evidence: `tests/playwright/interaction-smoke.spec.mjs:798-801`; the v0.27.0 audit found a real `[hidden]` defect on exactly that skipped path, caught only by a unit test.
-  Touches: `playwright.interactions.config.mjs` (reporter), or a preflight step that fails when the skip count exceeds a pinned expected set.
-  Acceptance: `npm run audit:interactions` surfaces which specs skipped and why; an unexpected new skip fails the run rather than passing quietly.
-  Complexity: S
-
 - [ ] P2 — Correct the tracked-markdown claim in `AGENTS.md`
   Why: `AGENTS.md` states README.md is "the ONLY .md tracked in git", which is false and has already caused a session to treat RESEARCH.md and ROADMAP.md as gitignored deliverables.
   Evidence: `git ls-files | grep '\.md$'` returns CHANGELOG.md, README.md, RESEARCH.md, ROADMAP.md, archive/screenshots/README.md. `CLAUDE.md` and `AGENTS.md` are the gitignored pair.
