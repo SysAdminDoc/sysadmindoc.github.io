@@ -23,7 +23,7 @@ export async function GET(context: APIContext) {
     {
       title: 'Portfolio home',
       route: '/',
-      description: `${catalog.length} public projects, featured proof, live app previews, stack signals, and the filterable homepage catalog.`,
+      description: `Featured proof, live app previews, stack signals, and a ranked preview of the ${catalog.length}-project archive. The complete filterable list lives at /catalog/.`,
     },
     ...interiorOgPages.map((page) => ({
       title: page.title,
@@ -78,7 +78,7 @@ export async function GET(context: APIContext) {
   for (const page of pages) {
     lines.push(`- [${page.title}](${site}${page.route}): ${clean(page.description)}`);
   }
-  lines.push(`- [Full catalog](${site}/catalog/): All ${catalog.length} public projects with search, sort, and filters.`);
+  // /catalog/ is a registered interior page, so the loop above already lists it.
   lines.push('');
 
   lines.push('## Language lanes');

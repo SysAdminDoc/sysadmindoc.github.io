@@ -2,6 +2,7 @@ import { endpointHeaders } from '../data/endpoint-headers';
 import type { GeneratedRelease } from '../data/generated';
 import { catalog, featured, liveApps } from '../data/portfolio';
 import { GITHUB_OWNER, githubRepoUrl } from '../data/github';
+import { summarizeReleaseBody } from '../data/release-summary.mjs';
 
 export const prerender = true;
 
@@ -57,7 +58,7 @@ export async function GET() {
       name: release.name,
       publishedAt: release.publishedAt,
       provenance: release.provenance ?? 'unknown',
-      summary: release.bodyFirst,
+      summary: summarizeReleaseBody(release.bodyFirst),
       urls: {
         release: release.url,
         repository: githubRepoUrl(release.repo),
