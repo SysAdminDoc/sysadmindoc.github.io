@@ -20,6 +20,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   accounting now includes generated `_assets/*.js` so this class of hidden
   runtime cost remains visible.
 
+### Added
+
+- Sitemap entries for all reviewed interior routes now carry `lastmod` values
+  from the same `page-freshness.ts` records used by visible dates and JSON-LD;
+  the sitemap audit fails when a value is missing or drifts.
+
 ## [v0.28.0] - 2026-07-25
 
 Roadmap drain. The active roadmap is now empty; the one remaining item moved to
