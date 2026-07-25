@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-23T14:03:15.662Z",
+  "generatedAt": "2026-07-25T21:21:42.134Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "SysAdminDoc/SysAdminDoc projects.json",
     "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
     "profileFeedGeneratedAt": "2026-06-01T16:18:55.0998940-04:00",
-    "profileFeedCachedAt": "2026-07-25T00:05:09.841Z",
-    "githubMetadataFetchedAt": "2026-07-23T14:03:15.662Z",
-    "githubLastPushedAt": "2026-07-23T13:58:00Z"
+    "profileFeedCachedAt": "2026-07-25T21:22:29.092Z",
+    "githubMetadataFetchedAt": "2026-07-25T21:21:42.134Z",
+    "githubLastPushedAt": "2026-07-25T21:20:30Z"
   },
   "counts": {
     "projects": 178,
@@ -70,11 +70,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 30
+        "stars": 31
       },
       "freshness": {
-        "pushedAt": "2026-07-22T21:20:58Z",
-        "updatedAt": "2026-07-22T21:21:11Z"
+        "pushedAt": "2026-07-25T21:08:07Z",
+        "updatedAt": "2026-07-25T21:08:10Z"
       }
     },
     {
@@ -133,8 +133,8 @@
         "stars": 12
       },
       "freshness": {
-        "pushedAt": "2026-07-23T04:31:46Z",
-        "updatedAt": "2026-07-23T04:32:13Z"
+        "pushedAt": "2026-07-24T22:23:10Z",
+        "updatedAt": "2026-07-24T22:23:15Z"
       }
     },
     {
@@ -164,7 +164,7 @@
       },
       "freshness": {
         "pushedAt": "2026-07-21T01:54:18Z",
-        "updatedAt": "2026-07-22T09:11:55Z"
+        "updatedAt": "2026-07-25T01:33:10Z"
       }
     },
     {
@@ -193,8 +193,8 @@
         "stars": 10
       },
       "freshness": {
-        "pushedAt": "2026-07-21T14:15:54Z",
-        "updatedAt": "2026-07-22T19:09:23Z"
+        "pushedAt": "2026-07-23T17:11:47Z",
+        "updatedAt": "2026-07-23T17:11:51Z"
       }
     },
     {
@@ -310,11 +310,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 13
+        "stars": 14
       },
       "freshness": {
         "pushedAt": "2026-07-22T20:02:43Z",
-        "updatedAt": "2026-07-22T20:05:06Z"
+        "updatedAt": "2026-07-25T01:44:47Z"
       }
     },
     {
@@ -339,8 +339,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-01T03:11:10Z",
-        "updatedAt": "2026-07-01T03:11:14Z"
+        "pushedAt": "2026-07-25T21:20:30Z",
+        "updatedAt": "2026-07-25T21:20:34Z"
       }
     },
     {
@@ -391,8 +391,8 @@
         "stars": 2
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:37:57Z",
-        "updatedAt": "2026-07-20T03:33:12Z"
+        "pushedAt": "2026-07-25T20:53:24Z",
+        "updatedAt": "2026-07-25T20:53:28Z"
       }
     },
     {
@@ -443,8 +443,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:37:14Z",
-        "updatedAt": "2026-07-19T09:09:27Z"
+        "pushedAt": "2026-07-25T21:04:39Z",
+        "updatedAt": "2026-07-25T21:04:42Z"
       }
     },
     {
@@ -521,8 +521,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:39:13Z",
-        "updatedAt": "2026-06-28T03:39:16Z"
+        "pushedAt": "2026-07-25T21:11:03Z",
+        "updatedAt": "2026-07-25T21:11:08Z"
       }
     },
     {
@@ -573,8 +573,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-06-28T03:37:45Z",
-        "updatedAt": "2026-06-28T03:37:49Z"
+        "pushedAt": "2026-07-25T21:12:45Z",
+        "updatedAt": "2026-07-25T21:12:49Z"
       }
     },
     {
@@ -622,11 +622,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/CoolSites.jpg"
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:16Z",
-        "updatedAt": "2026-07-20T03:37:29Z"
+        "updatedAt": "2026-07-25T03:05:02Z"
       }
     },
     {
@@ -729,8 +729,8 @@
         "stars": 4
       },
       "freshness": {
-        "pushedAt": "2026-07-01T06:38:41Z",
-        "updatedAt": "2026-07-19T09:35:21Z"
+        "pushedAt": "2026-07-25T21:20:18Z",
+        "updatedAt": "2026-07-25T21:20:22Z"
       }
     },
     {
@@ -833,8 +833,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-16T14:45:53Z",
-        "updatedAt": "2026-07-16T14:47:22Z"
+        "pushedAt": "2026-07-25T21:07:42Z",
+        "updatedAt": "2026-07-25T21:07:46Z"
       }
     },
     {
@@ -859,7 +859,7 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-18T08:13:17Z",
+        "pushedAt": "2026-07-25T08:13:46Z",
         "updatedAt": "2026-06-28T03:36:59Z"
       }
     },
@@ -885,8 +885,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-10T03:46:49Z",
-        "updatedAt": "2026-07-10T03:44:51Z"
+        "pushedAt": "2026-07-25T21:18:37Z",
+        "updatedAt": "2026-07-25T21:18:41Z"
       }
     },
     {
@@ -908,11 +908,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 14
+        "stars": 15
       },
       "freshness": {
         "pushedAt": "2026-07-23T04:56:24Z",
-        "updatedAt": "2026-07-23T04:45:46Z"
+        "updatedAt": "2026-07-23T22:20:59Z"
       }
     },
     {
@@ -986,11 +986,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 8
+        "stars": 9
       },
       "freshness": {
         "pushedAt": "2026-07-23T03:45:55Z",
-        "updatedAt": "2026-07-23T03:46:07Z"
+        "updatedAt": "2026-07-25T01:44:03Z"
       }
     },
     {
@@ -1012,11 +1012,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 35
+        "stars": 36
       },
       "freshness": {
         "pushedAt": "2026-07-23T02:59:24Z",
-        "updatedAt": "2026-07-23T02:59:27Z"
+        "updatedAt": "2026-07-25T15:16:45Z"
       }
     },
     {
@@ -1041,8 +1041,8 @@
         "stars": 5
       },
       "freshness": {
-        "pushedAt": "2026-07-23T09:42:44Z",
-        "updatedAt": "2026-07-23T09:42:47Z"
+        "pushedAt": "2026-07-25T15:36:15Z",
+        "updatedAt": "2026-07-25T15:36:25Z"
       }
     },
     {
@@ -1064,11 +1064,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 5
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:25:08Z",
-        "updatedAt": "2026-07-19T09:58:10Z"
+        "updatedAt": "2026-07-25T01:57:52Z"
       }
     },
     {
@@ -1090,11 +1090,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:10Z",
-        "updatedAt": "2026-07-20T03:33:26Z"
+        "updatedAt": "2026-07-25T02:59:13Z"
       }
     },
     {
@@ -1220,11 +1220,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 14
+        "stars": 17
       },
       "freshness": {
         "pushedAt": "2026-07-10T04:08:35Z",
-        "updatedAt": "2026-07-19T09:36:26Z"
+        "updatedAt": "2026-07-24T22:12:12Z"
       }
     },
     {
@@ -1298,11 +1298,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 7
+        "stars": 8
       },
       "freshness": {
-        "pushedAt": "2026-07-22T13:05:17Z",
-        "updatedAt": "2026-07-22T19:09:09Z"
+        "pushedAt": "2026-07-24T21:21:11Z",
+        "updatedAt": "2026-07-25T01:42:50Z"
       }
     },
     {
@@ -1402,11 +1402,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:12Z",
-        "updatedAt": "2026-06-28T03:38:15Z"
+        "updatedAt": "2026-07-25T02:57:43Z"
       }
     },
     {
@@ -1454,11 +1454,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:11:51Z",
-        "updatedAt": "2026-07-01T03:11:54Z"
+        "updatedAt": "2026-07-25T01:58:11Z"
       }
     },
     {
@@ -1506,11 +1506,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-07-15T08:06:33Z",
-        "updatedAt": "2026-07-15T08:06:55Z"
+        "updatedAt": "2026-07-25T01:49:11Z"
       }
     },
     {
@@ -1532,11 +1532,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 4
+        "stars": 5
       },
       "freshness": {
         "pushedAt": "2026-07-21T14:17:10Z",
-        "updatedAt": "2026-07-22T19:09:21Z"
+        "updatedAt": "2026-07-25T01:46:50Z"
       }
     },
     {
@@ -1558,11 +1558,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:25Z",
-        "updatedAt": "2026-06-28T03:37:29Z"
+        "updatedAt": "2026-07-25T03:03:25Z"
       }
     },
     {
@@ -1662,11 +1662,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:46Z",
-        "updatedAt": "2026-06-28T03:39:49Z"
+        "updatedAt": "2026-07-25T02:45:28Z"
       }
     },
     {
@@ -1688,11 +1688,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T05:32:31Z",
-        "updatedAt": "2026-07-17T09:36:39Z"
+        "updatedAt": "2026-07-25T01:53:01Z"
       }
     },
     {
@@ -1766,11 +1766,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:23Z",
-        "updatedAt": "2026-06-28T03:39:26Z"
+        "updatedAt": "2026-07-25T02:48:20Z"
       }
     },
     {
@@ -1896,11 +1896,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:39:16Z",
-        "updatedAt": "2026-07-01T03:39:20Z"
+        "updatedAt": "2026-07-25T01:56:35Z"
       }
     },
     {
@@ -1922,11 +1922,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:34Z",
-        "updatedAt": "2026-06-28T03:38:37Z"
+        "updatedAt": "2026-07-25T02:52:13Z"
       }
     },
     {
@@ -2156,11 +2156,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:15Z",
-        "updatedAt": "2026-06-28T03:38:19Z"
+        "updatedAt": "2026-07-25T02:55:15Z"
       }
     },
     {
@@ -2182,11 +2182,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:30Z",
-        "updatedAt": "2026-06-28T03:39:39Z"
+        "updatedAt": "2026-07-25T02:47:22Z"
       }
     },
     {
@@ -2575,8 +2575,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-23T13:58:00Z",
-        "updatedAt": "2026-07-23T13:59:11Z"
+        "pushedAt": "2026-07-25T05:20:09Z",
+        "updatedAt": "2026-07-25T05:20:19Z"
       }
     },
     {
@@ -2676,11 +2676,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:16Z",
-        "updatedAt": "2026-06-28T03:38:19Z"
+        "updatedAt": "2026-07-25T02:54:24Z"
       }
     },
     {
@@ -2702,11 +2702,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-07-21T14:23:07Z",
-        "updatedAt": "2026-07-22T19:09:15Z"
+        "updatedAt": "2026-07-25T01:45:46Z"
       }
     },
     {
@@ -2884,11 +2884,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:44Z",
-        "updatedAt": "2026-06-28T03:39:47Z"
+        "updatedAt": "2026-07-25T02:45:41Z"
       }
     },
     {
@@ -2910,11 +2910,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T04:28:24Z",
-        "updatedAt": "2026-07-01T04:28:28Z"
+        "updatedAt": "2026-07-25T01:54:24Z"
       }
     },
     {
@@ -2962,11 +2962,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 5
+        "stars": 6
       },
       "freshness": {
         "pushedAt": "2026-06-28T04:05:23Z",
-        "updatedAt": "2026-06-28T04:05:27Z"
+        "updatedAt": "2026-07-25T02:01:11Z"
       }
     },
     {
@@ -2988,11 +2988,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 9
+        "stars": 10
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:33:14Z",
-        "updatedAt": "2026-07-07T23:07:46Z"
+        "updatedAt": "2026-07-25T01:56:52Z"
       }
     },
     {
@@ -3014,11 +3014,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:23Z",
-        "updatedAt": "2026-06-28T03:37:26Z"
+        "updatedAt": "2026-07-25T03:03:48Z"
       }
     },
     {
@@ -3066,11 +3066,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:39Z",
-        "updatedAt": "2026-06-28T03:37:43Z"
+        "updatedAt": "2026-07-25T03:01:11Z"
       }
     },
     {
@@ -3118,11 +3118,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:22Z",
-        "updatedAt": "2026-07-17T14:50:29Z"
+        "updatedAt": "2026-07-25T02:49:05Z"
       }
     },
     {
@@ -3144,11 +3144,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-01T13:51:48Z",
-        "updatedAt": "2026-07-11T22:19:05Z"
+        "updatedAt": "2026-07-25T01:52:05Z"
       }
     },
     {
@@ -3222,11 +3222,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-10T04:02:09Z",
-        "updatedAt": "2026-07-10T04:01:19Z"
+        "updatedAt": "2026-07-25T01:50:33Z"
       }
     },
     {
@@ -3248,11 +3248,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 2
+        "stars": 3
       },
       "freshness": {
         "pushedAt": "2026-07-17T06:40:30Z",
-        "updatedAt": "2026-07-17T06:41:01Z"
+        "updatedAt": "2026-07-25T01:47:44Z"
       }
     },
     {
@@ -3300,11 +3300,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 3
+        "stars": 4
       },
       "freshness": {
         "pushedAt": "2026-07-01T02:50:03Z",
-        "updatedAt": "2026-07-20T19:38:48Z"
+        "updatedAt": "2026-07-25T01:59:21Z"
       }
     },
     {
@@ -3456,11 +3456,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:34Z",
-        "updatedAt": "2026-06-28T03:37:38Z"
+        "updatedAt": "2026-07-25T03:02:15Z"
       }
     },
     {
@@ -3716,11 +3716,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:40Z",
-        "updatedAt": "2026-06-28T03:37:43Z"
+        "updatedAt": "2026-07-25T03:01:04Z"
       }
     },
     {
@@ -3794,11 +3794,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-02T04:12:13Z",
-        "updatedAt": "2026-07-02T04:12:16Z"
+        "updatedAt": "2026-07-25T01:51:11Z"
       }
     },
     {
@@ -3898,11 +3898,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T03:48:47Z",
-        "updatedAt": "2026-07-01T03:48:51Z"
+        "updatedAt": "2026-07-25T01:55:22Z"
       }
     },
     {
@@ -4054,11 +4054,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:39:32Z",
-        "updatedAt": "2026-06-28T03:39:35Z"
+        "updatedAt": "2026-07-25T02:47:11Z"
       }
     },
     {
@@ -4106,11 +4106,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 4
+        "stars": 5
       },
       "freshness": {
         "pushedAt": "2026-06-29T14:00:42Z",
-        "updatedAt": "2026-07-22T08:26:26Z"
+        "updatedAt": "2026-07-25T02:00:18Z"
       }
     },
     {
@@ -4236,11 +4236,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:53:44Z",
-        "updatedAt": "2026-06-28T03:53:48Z"
+        "updatedAt": "2026-07-25T02:44:41Z"
       }
     },
     {
@@ -4288,11 +4288,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:50Z",
-        "updatedAt": "2026-06-28T03:38:54Z"
+        "updatedAt": "2026-07-25T02:50:27Z"
       }
     },
     {
@@ -4340,11 +4340,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 1
+        "stars": 2
       },
       "freshness": {
         "pushedAt": "2026-07-01T02:46:57Z",
-        "updatedAt": "2026-07-01T02:47:00Z"
+        "updatedAt": "2026-07-25T02:00:02Z"
       }
     },
     {
@@ -4366,11 +4366,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:41Z",
-        "updatedAt": "2026-06-28T03:38:44Z"
+        "updatedAt": "2026-07-25T02:51:43Z"
       }
     },
     {
@@ -4392,11 +4392,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:18Z",
-        "updatedAt": "2026-06-28T03:37:21Z"
+        "updatedAt": "2026-07-25T03:04:52Z"
       }
     },
     {
@@ -4496,11 +4496,11 @@
         "thumbnail": null
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:37:41Z",
-        "updatedAt": "2026-06-28T03:37:45Z"
+        "updatedAt": "2026-07-25T03:00:22Z"
       }
     },
     {
@@ -4626,11 +4626,11 @@
         "thumbnail": "https://sysadmindoc.github.io/screenshots/thumbs/LogLens.jpg"
       },
       "metrics": {
-        "stars": 0
+        "stars": 1
       },
       "freshness": {
         "pushedAt": "2026-06-28T03:38:13Z",
-        "updatedAt": "2026-06-28T03:38:16Z"
+        "updatedAt": "2026-07-25T02:58:15Z"
       }
     },
     {

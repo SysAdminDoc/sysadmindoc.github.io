@@ -1,10 +1,10 @@
 {
   "schema": "sysadmindoc.status.v1",
-  "version": "0.26.3",
-  "generatedAt": "2026-07-25T00:05:16.411Z",
+  "version": "0.28.0",
+  "generatedAt": "2026-07-25T21:22:36.610Z",
   "build": {
-    "commit": "501cf88908c2ce5c6f384eaf1b7d0e27559b54af",
-    "commitShort": "501cf88908c2",
+    "commit": "15700acdb9ac23d48513812193452713d209c8cc",
+    "commitShort": "15700acdb9ac",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
@@ -19,26 +19,26 @@
     "status": "fresh",
     "mode": "production-fresh",
     "maxAgeHours": 36,
-    "fetchedAt": "2026-07-23T14:03:15.662Z",
-    "ageHours": 34.0335,
+    "fetchedAt": "2026-07-25T21:21:42.134Z",
+    "ageHours": 0.0151,
     "stale": false,
     "totalRepos": 182,
-    "totalStars": 493,
+    "totalStars": 544,
     "readmeEntries": 182,
     "profileFeed": {
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
       "projectCount": 178,
-      "cachedAt": "2026-07-25T00:05:09.841Z",
-      "cachedAgeHours": 0.0018,
+      "cachedAt": "2026-07-25T21:22:29.092Z",
+      "cachedAgeHours": 0.0021,
       "stale": false
     },
     "coverage": {
       "threshold": 0.8,
       "profileProjectCount": 178,
-      "stars": 1.0225,
-      "metadata": 1.0225,
-      "readmes": 1.0225,
+      "stars": 1,
+      "metadata": 1,
+      "readmes": 1,
       "releases": 0.3371,
       "starEntries": 182,
       "metadataEntries": 182,
@@ -47,7 +47,7 @@
     },
     "readmeRefresh": {
       "source": "github-api",
-      "generatedAt": "2026-07-23T14:03:35.554Z",
+      "generatedAt": "2026-07-25T21:21:58.485Z",
       "tokenPresent": true,
       "targetRepos": 182,
       "attempted": 182,
@@ -59,12 +59,12 @@
     },
     "releaseProvenance": {
       "no-assets": 1,
-      "unsigned": 42,
-      "checksum": 17,
+      "unsigned": 37,
+      "checksum": 22,
       "attested": 0,
       "unknown": 0,
       "total": 60,
-      "trusted": 17
+      "trusted": 22
     },
     "warnings": []
   }

@@ -5,17 +5,26 @@
   <link href="https://sysadmindoc.github.io/" />
   <link href="https://sysadmindoc.github.io/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://sysadmindoc.github.io/</id>
-  <updated>2026-07-23T13:58:00.000Z</updated>
+  <updated>2026-07-25T21:20:30.000Z</updated>
   <author>
     <name>Matt Parker</name>
     <uri>https://github.com/SysAdminDoc</uri>
   </author>
   <logo>https://sysadmindoc.github.io/icon-512.png</logo>
   <entry>
+    <title>IconForge (live)</title>
+    <link href="https://github.com/SysAdminDoc/IconForge" />
+    <id>https://github.com/SysAdminDoc/IconForge</id>
+    <updated>2026-07-25T21:20:30.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Image resizer converter</summary>
+    <content type="html">&lt;p&gt;Image resizer &amp;amp; converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/IconForge&quot;&gt;View IconForge (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>Vigil</title>
     <link href="https://github.com/SysAdminDoc/Vigil" />
     <id>https://github.com/SysAdminDoc/Vigil</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Desktop" />
     <summary type="text">Windows packaging for ungoogled-chromium</summary>
     <content type="html">&lt;p&gt;Windows packaging for ungoogled-chromium&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Vigil&quot;&gt;View Vigil on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -24,25 +33,16 @@
     <title>android-debloat-list</title>
     <link href="https://github.com/SysAdminDoc/android-debloat-list" />
     <id>https://github.com/SysAdminDoc/android-debloat-list</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Guides" />
     <summary type="text">Curated Android debloat list with vulnerability notes — companion to AppManagerNG</summary>
     <content type="html">&lt;p&gt;Curated Android debloat list with vulnerability notes — companion to AppManagerNG&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/android-debloat-list&quot;&gt;View android-debloat-list on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>sysadmindoc.github.io</title>
-    <link href="https://github.com/SysAdminDoc/sysadmindoc.github.io" />
-    <id>https://github.com/SysAdminDoc/sysadmindoc.github.io</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
-    <category term="Guides" />
-    <summary type="text">Personal portfolio and project showcase site hosted on GitHub Pages</summary>
-    <content type="html">&lt;p&gt;Personal portfolio and project showcase site hosted on GitHub Pages&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/sysadmindoc.github.io&quot;&gt;View sysadmindoc.github.io on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>LTSC-MicrosoftStore</title>
     <link href="https://github.com/SysAdminDoc/LTSC-MicrosoftStore" />
     <id>https://github.com/SysAdminDoc/LTSC-MicrosoftStore</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Other" />
     <summary type="text">Add Windows Store to Win11 24H2 LTSC</summary>
     <content type="html">&lt;p&gt;Add Windows Store to Win11 24H2 LTSC&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/LTSC-MicrosoftStore&quot;&gt;View LTSC-MicrosoftStore on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -51,7 +51,7 @@
     <title>RcloneBrowser</title>
     <link href="https://github.com/SysAdminDoc/RcloneBrowser" />
     <id>https://github.com/SysAdminDoc/RcloneBrowser</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Other" />
     <summary type="text">Cross-platform GUI for rclone</summary>
     <content type="html">&lt;p&gt;Cross-platform GUI for rclone&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/RcloneBrowser&quot;&gt;View RcloneBrowser on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -60,7 +60,7 @@
     <title>TabExplorer</title>
     <link href="https://github.com/SysAdminDoc/TabExplorer" />
     <id>https://github.com/SysAdminDoc/TabExplorer</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Other" />
     <summary type="text">Tabbed file manager for Windows</summary>
     <content type="html">&lt;p&gt;Tabbed file manager for Windows&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/TabExplorer&quot;&gt;View TabExplorer on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -69,19 +69,136 @@
     <title>TagStudio</title>
     <link href="https://github.com/SysAdminDoc/TagStudio" />
     <id>https://github.com/SysAdminDoc/TagStudio</id>
-    <updated>2026-07-23T13:58:00.000Z</updated>
+    <updated>2026-07-25T21:20:30.000Z</updated>
     <category term="Other" />
     <summary type="text">User-focused photo file management system</summary>
     <content type="html">&lt;p&gt;User-focused photo &amp;amp; file management system&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/TagStudio&quot;&gt;View TagStudio on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title>UserScriptHunt (live)</title>
+    <link href="https://github.com/SysAdminDoc/UserScriptHunt" />
+    <id>https://github.com/SysAdminDoc/UserScriptHunt</id>
+    <updated>2026-07-25T21:20:18.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Unified userscript search engine</summary>
+    <content type="html">&lt;p&gt;Unified userscript search engine&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/UserScriptHunt&quot;&gt;View UserScriptHunt (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>BetterTTS (live)</title>
+    <link href="https://github.com/SysAdminDoc/BetterTTS" />
+    <id>https://github.com/SysAdminDoc/BetterTTS</id>
+    <updated>2026-07-25T21:18:37.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Private, in-browser text-to-speech studio</summary>
+    <content type="html">&lt;p&gt;Private, in-browser text-to-speech studio&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/BetterTTS&quot;&gt;View BetterTTS (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>GifStudio (live)</title>
+    <link href="https://github.com/SysAdminDoc/GifStudio" />
+    <id>https://github.com/SysAdminDoc/GifStudio</id>
+    <updated>2026-07-25T21:12:45.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Browser-based GIF studio</summary>
+    <content type="html">&lt;p&gt;Browser-based GIF studio&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/GifStudio&quot;&gt;View GifStudio (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>StormviewRadar (live)</title>
+    <link href="https://github.com/SysAdminDoc/StormviewRadar" />
+    <id>https://github.com/SysAdminDoc/StormviewRadar</id>
+    <updated>2026-07-25T21:11:03.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Open source weather radar viewer</summary>
+    <content type="html">&lt;p&gt;Open source weather radar viewer&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/StormviewRadar&quot;&gt;View StormviewRadar (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>OpenCut</title>
+    <link href="https://github.com/SysAdminDoc/OpenCut" />
+    <id>https://github.com/SysAdminDoc/OpenCut</id>
+    <updated>2026-07-25T21:08:07.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.</summary>
+    <content type="html">&lt;p&gt;AI-powered video editing automation for Premiere Pro — captions, audio processing, visual effects, all running locally.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/OpenCut&quot;&gt;View OpenCut on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>HurricaneMap (live)</title>
+    <link href="https://github.com/SysAdminDoc/HurricaneMap" />
+    <id>https://github.com/SysAdminDoc/HurricaneMap</id>
+    <updated>2026-07-25T21:07:42.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2</summary>
+    <content type="html">&lt;p&gt;Every U.S. hurricane landfall (1851–present) from NOAA HURDAT2&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/HurricaneMap&quot;&gt;View HurricaneMap (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ClipForge (live)</title>
+    <link href="https://github.com/SysAdminDoc/ClipForge" />
+    <id>https://github.com/SysAdminDoc/ClipForge</id>
+    <updated>2026-07-25T21:04:39.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Browser-based video editor</summary>
+    <content type="html">&lt;p&gt;Browser-based video editor&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ClipForge&quot;&gt;View ClipForge (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ImageXpert (live)</title>
+    <link href="https://github.com/SysAdminDoc/ImageXpert" />
+    <id>https://github.com/SysAdminDoc/ImageXpert</id>
+    <updated>2026-07-25T20:53:24.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Multi-engine reverse image search</summary>
+    <content type="html">&lt;p&gt;Multi-engine reverse image search&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ImageXpert&quot;&gt;View ImageXpert (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>CallShield</title>
     <link href="https://github.com/SysAdminDoc/CallShield" />
     <id>https://github.com/SysAdminDoc/CallShield</id>
-    <updated>2026-07-23T09:42:44.000Z</updated>
+    <updated>2026-07-25T15:36:15.000Z</updated>
     <category term="Android" />
     <summary type="text">Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions</summary>
     <content type="html">&lt;p&gt;Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/CallShield&quot;&gt;View CallShield on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>ApocalypseWatch (live)</title>
+    <link href="https://github.com/SysAdminDoc/ApocalypseWatch" />
+    <id>https://github.com/SysAdminDoc/ApocalypseWatch</id>
+    <updated>2026-07-25T08:13:46.000Z</updated>
+    <category term="Live App" />
+    <summary type="text">Realtime business-jet tracker vs. 24h baseline</summary>
+    <content type="html">&lt;p&gt;Realtime business-jet tracker vs. 24h baseline&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ApocalypseWatch&quot;&gt;View ApocalypseWatch (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>sysadmindoc.github.io</title>
+    <link href="https://github.com/SysAdminDoc/sysadmindoc.github.io" />
+    <id>https://github.com/SysAdminDoc/sysadmindoc.github.io</id>
+    <updated>2026-07-25T05:20:09.000Z</updated>
+    <category term="Guides" />
+    <summary type="text">Personal portfolio and project showcase site hosted on GitHub Pages</summary>
+    <content type="html">&lt;p&gt;Personal portfolio and project showcase site hosted on GitHub Pages&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/sysadmindoc.github.io&quot;&gt;View sysadmindoc.github.io on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>LibreSpot</title>
+    <link href="https://github.com/SysAdminDoc/LibreSpot" />
+    <id>https://github.com/SysAdminDoc/LibreSpot</id>
+    <updated>2026-07-24T22:23:10.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</summary>
+    <content type="html">&lt;p&gt;Spotify customization — automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/LibreSpot&quot;&gt;View LibreSpot on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Droidsmith</title>
+    <link href="https://github.com/SysAdminDoc/Droidsmith" />
+    <id>https://github.com/SysAdminDoc/Droidsmith</id>
+    <updated>2026-07-24T21:21:11.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*</summary>
+    <content type="html">&lt;p&gt;Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Droidsmith&quot;&gt;View Droidsmith on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Astra-Deck</title>
+    <link href="https://github.com/SysAdminDoc/Astra-Deck" />
+    <id>https://github.com/SysAdminDoc/Astra-Deck</id>
+    <updated>2026-07-23T17:11:47.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Premium YouTube enhancement extension 150+ features for Chrome Firefox.</summary>
+    <content type="html">&lt;p&gt;Premium YouTube enhancement extension — 150+ features for Chrome &amp;amp; Firefox.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Astra-Deck&quot;&gt;View Astra-Deck on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>Aura</title>
@@ -100,15 +217,6 @@
     <category term="Android" />
     <summary type="text">FOSS Tasker alternative for Android</summary>
     <content type="html">&lt;p&gt;FOSS Tasker alternative for Android&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/OpenTasker&quot;&gt;View OpenTasker on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>LibreSpot</title>
-    <link href="https://github.com/SysAdminDoc/LibreSpot" />
-    <id>https://github.com/SysAdminDoc/LibreSpot</id>
-    <updated>2026-07-23T04:31:46.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Spotify customization automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.</summary>
-    <content type="html">&lt;p&gt;Spotify customization — automates SpotX, Spicetify, Marketplace, and Comfy theme. One command setup.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/LibreSpot&quot;&gt;View LibreSpot on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>ScriptVault</title>
@@ -183,15 +291,6 @@
     <content type="html">&lt;p&gt;Power-user package manager — continuation of MuntashirAkon/AppManager&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/AppManagerNG&quot;&gt;View AppManagerNG on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>OpenCut</title>
-    <link href="https://github.com/SysAdminDoc/OpenCut" />
-    <id>https://github.com/SysAdminDoc/OpenCut</id>
-    <updated>2026-07-22T21:20:58.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.</summary>
-    <content type="html">&lt;p&gt;AI-powered video editing automation for Premiere Pro — captions, audio processing, visual effects, all running locally.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/OpenCut&quot;&gt;View OpenCut on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>HostShield</title>
     <link href="https://github.com/SysAdminDoc/HostShield" />
     <id>https://github.com/SysAdminDoc/HostShield</id>
@@ -199,15 +298,6 @@
     <category term="Featured" />
     <summary type="text">AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.</summary>
     <content type="html">&lt;p&gt;AMOLED-dark hosts-based ad blocker for Android. Modern Material You design.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/HostShield&quot;&gt;View HostShield on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Droidsmith</title>
-    <link href="https://github.com/SysAdminDoc/Droidsmith" />
-    <id>https://github.com/SysAdminDoc/Droidsmith</id>
-    <updated>2026-07-22T13:05:17.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*</summary>
-    <content type="html">&lt;p&gt;Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Droidsmith&quot;&gt;View Droidsmith on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>StreamKeep</title>
@@ -237,15 +327,6 @@
     <content type="html">&lt;p&gt;Native Windows file converter with context menu integration — 1000+ formats&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/UniversalConverterX&quot;&gt;View UniversalConverterX on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>Astra-Deck</title>
-    <link href="https://github.com/SysAdminDoc/Astra-Deck" />
-    <id>https://github.com/SysAdminDoc/Astra-Deck</id>
-    <updated>2026-07-21T14:15:54.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Premium YouTube enhancement extension 150+ features for Chrome Firefox.</summary>
-    <content type="html">&lt;p&gt;Premium YouTube enhancement extension — 150+ features for Chrome &amp;amp; Firefox.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Astra-Deck&quot;&gt;View Astra-Deck on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>VideoSubtitleRemover</title>
     <link href="https://github.com/SysAdminDoc/VideoSubtitleRemover" />
     <id>https://github.com/SysAdminDoc/VideoSubtitleRemover</id>
@@ -273,15 +354,6 @@
     <content type="html">&lt;p&gt;RED++ -- Remove Empty Directories. Find, display, and delete empty directories recursively with custom filter rules.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/REDplusplus&quot;&gt;View REDplusplus on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>ApocalypseWatch (live)</title>
-    <link href="https://github.com/SysAdminDoc/ApocalypseWatch" />
-    <id>https://github.com/SysAdminDoc/ApocalypseWatch</id>
-    <updated>2026-07-18T08:13:17.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Realtime business-jet tracker vs. 24h baseline</summary>
-    <content type="html">&lt;p&gt;Realtime business-jet tracker vs. 24h baseline&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ApocalypseWatch&quot;&gt;View ApocalypseWatch (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>Start-Menu-Organizer</title>
     <link href="https://github.com/SysAdminDoc/Start-Menu-Organizer" />
     <id>https://github.com/SysAdminDoc/Start-Menu-Organizer</id>
@@ -307,15 +379,6 @@
     <category term="PowerShell" />
     <summary type="text">Comprehensive Adobe telemetry and GrowthSDK suppression for Windows</summary>
     <content type="html">&lt;p&gt;Comprehensive Adobe telemetry and GrowthSDK suppression for Windows&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Disable-AdobeTelemetry&quot;&gt;View Disable-AdobeTelemetry on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>HurricaneMap (live)</title>
-    <link href="https://github.com/SysAdminDoc/HurricaneMap" />
-    <id>https://github.com/SysAdminDoc/HurricaneMap</id>
-    <updated>2026-07-16T14:45:53.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2</summary>
-    <content type="html">&lt;p&gt;Every U.S. hurricane landfall (1851–present) from NOAA HURDAT2&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/HurricaneMap&quot;&gt;View HurricaneMap (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>ImgConverter</title>
@@ -379,15 +442,6 @@
     <category term="PowerShell" />
     <summary type="text">Discover, select, and bulk install software via Winget</summary>
     <content type="html">&lt;p&gt;Discover, select, and bulk install software via Winget&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Wingetter&quot;&gt;View Wingetter on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>BetterTTS (live)</title>
-    <link href="https://github.com/SysAdminDoc/BetterTTS" />
-    <id>https://github.com/SysAdminDoc/BetterTTS</id>
-    <updated>2026-07-10T03:46:49.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Private, in-browser text-to-speech studio</summary>
-    <content type="html">&lt;p&gt;Private, in-browser text-to-speech studio&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/BetterTTS&quot;&gt;View BetterTTS (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>Network_Security_Auditor</title>
@@ -505,15 +559,6 @@
     <category term="PowerShell" />
     <summary type="text">WPF network adapter manager — static/DHCP, DNS presets, profile management</summary>
     <content type="html">&lt;p&gt;WPF network adapter manager — static/DHCP, DNS presets, profile management&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/NetForge&quot;&gt;View NetForge on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>UserScriptHunt (live)</title>
-    <link href="https://github.com/SysAdminDoc/UserScriptHunt" />
-    <id>https://github.com/SysAdminDoc/UserScriptHunt</id>
-    <updated>2026-07-01T06:38:41.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Unified userscript search engine</summary>
-    <content type="html">&lt;p&gt;Unified userscript search engine&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/UserScriptHunt&quot;&gt;View UserScriptHunt (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>GifText</title>
@@ -694,15 +739,6 @@
     <category term="Desktop" />
     <summary type="text">Thorough Windows uninstaller — removes programs completely, hunts down every leftover</summary>
     <content type="html">&lt;p&gt;Thorough Windows uninstaller — removes programs completely, hunts down every leftover&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/DeepPurge&quot;&gt;View DeepPurge on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>IconForge (live)</title>
-    <link href="https://github.com/SysAdminDoc/IconForge" />
-    <id>https://github.com/SysAdminDoc/IconForge</id>
-    <updated>2026-07-01T03:11:10.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Image resizer converter</summary>
-    <content type="html">&lt;p&gt;Image resizer &amp;amp; converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/IconForge&quot;&gt;View IconForge (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>MonitorControl</title>
@@ -982,15 +1018,6 @@
     <category term="PowerShell" />
     <summary type="text">Enterprise Windows update automation — OEM drivers, Windows Update, winget</summary>
     <content type="html">&lt;p&gt;Enterprise Windows update automation — OEM drivers, Windows Update, winget&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/SystemUpdatePro&quot;&gt;View SystemUpdatePro on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>StormviewRadar (live)</title>
-    <link href="https://github.com/SysAdminDoc/StormviewRadar" />
-    <id>https://github.com/SysAdminDoc/StormviewRadar</id>
-    <updated>2026-06-28T03:39:13.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Open source weather radar viewer</summary>
-    <content type="html">&lt;p&gt;Open source weather radar viewer&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/StormviewRadar&quot;&gt;View StormviewRadar (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>SPECTRE (live)</title>
@@ -1290,15 +1317,6 @@
     <content type="html">&lt;p&gt;IMDb enhancement userscript&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/IMDb_Enhanced&quot;&gt;View IMDb_Enhanced on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>ImageXpert (live)</title>
-    <link href="https://github.com/SysAdminDoc/ImageXpert" />
-    <id>https://github.com/SysAdminDoc/ImageXpert</id>
-    <updated>2026-06-28T03:37:57.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Multi-engine reverse image search</summary>
-    <content type="html">&lt;p&gt;Multi-engine reverse image search&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ImageXpert&quot;&gt;View ImageXpert (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>GuitarTuner</title>
     <link href="https://github.com/SysAdminDoc/GuitarTuner" />
     <id>https://github.com/SysAdminDoc/GuitarTuner</id>
@@ -1324,15 +1342,6 @@
     <category term="Python" />
     <summary type="text">Full GitHub repo manager — clone, sync, diff, manage</summary>
     <content type="html">&lt;p&gt;Full GitHub repo manager — clone, sync, diff, manage&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/GitForge&quot;&gt;View GitForge on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>GifStudio (live)</title>
-    <link href="https://github.com/SysAdminDoc/GifStudio" />
-    <id>https://github.com/SysAdminDoc/GifStudio</id>
-    <updated>2026-06-28T03:37:45.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Browser-based GIF studio</summary>
-    <content type="html">&lt;p&gt;Browser-based GIF studio&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/GifStudio&quot;&gt;View GifStudio (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>GIFM</title>
@@ -1495,15 +1504,6 @@
     <category term="Live App" />
     <summary type="text">Browser media converter</summary>
     <content type="html">&lt;p&gt;Browser media converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ConvertFlow&quot;&gt;View ConvertFlow (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>ClipForge (live)</title>
-    <link href="https://github.com/SysAdminDoc/ClipForge" />
-    <id>https://github.com/SysAdminDoc/ClipForge</id>
-    <updated>2026-06-28T03:37:14.000Z</updated>
-    <category term="Live App" />
-    <summary type="text">Browser-based video editor</summary>
-    <content type="html">&lt;p&gt;Browser-based video editor&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/ClipForge&quot;&gt;View ClipForge (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>ClearGem</title>
