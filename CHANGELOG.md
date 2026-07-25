@@ -18,6 +18,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Build gates now parse both generated RSS documents, require populated channel
   and item fields, and validate the built JSON Resume export. Truncated XML or
   JSON fixtures prove each malformed artifact blocks the build.
+- CSP runtime-sink audits now scan every public JavaScript file in source mode
+  and every emitted JavaScript bundle in built mode. A nested bundle fixture
+  proves raw HTML writes block the strict production audit.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.

@@ -498,7 +498,9 @@ const sourceAudits = [];
 for (const filePath of files) {
   sourceAudits.push(await auditSourceFile(filePath, await fs.readFile(filePath, 'utf8')));
 }
-const runtimeStyleRoots = [path.resolve(root, 'public', 'scripts')];
+const runtimeStyleRoots = options.distDir
+  ? [path.resolve(root, options.distDir)]
+  : [path.resolve(root, 'public')];
 const runtimeStyleFiles = (await Promise.all(runtimeStyleRoots.map((dir) => collectRuntimeStyleFiles(dir)))).flat();
 const runtimeStyleAudits = [];
 for (const filePath of runtimeStyleFiles) {
@@ -678,6 +680,7 @@ console.log(`  inline style blocks: ${styleBlocks.length}`);
 console.log(`  Astro extracted style blocks: ${astroExtractedStyleBlocks.length}`);
 console.log(`  inline style attributes: ${styleAttributes.length}`);
 console.log(`  stylesheet/preload links: ${styleLinks.length}`);
+console.log(`  runtime JavaScript files scanned: ${runtimeStyleFiles.length}`);
 console.log(`  runtime style.cssText writes: ${cssTextWrites.length}`);
 console.log(`  runtime setAttribute("style") writes: ${setAttributeStyleWrites.length}`);
 console.log(`  runtime direct style property references: ${directStylePropertyReferences.length}`);

@@ -14,6 +14,14 @@ const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 2;
 const astroExtractedStyleBlockCount = 13;
 
+function countJavaScriptFiles(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).reduce((count, entry) => {
+    const entryPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) return count + countJavaScriptFiles(entryPath);
+    return count + Number(entry.isFile() && entry.name.endsWith('.js'));
+  }, 0);
+}
+
 function sha256Csp(value) {
   return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
 }
@@ -44,6 +52,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, new RegExp(`Astro extracted style blocks: ${astroExtractedStyleBlockCount}`));
   assert.match(output, /inline style attributes: 0/);
   assert.match(output, /stylesheet\/preload links: 5/);
+  assert.match(output, new RegExp(`runtime JavaScript files scanned: ${countJavaScriptFiles(path.join(repoRoot, 'public'))}`));
   assert.match(output, /runtime style\.cssText writes: 0/);
   assert.match(output, /runtime setAttribute\("style"\) writes: 0/);
   assert.match(output, /runtime direct style property references: 7/);
@@ -313,6 +322,41 @@ test('csp audit strict dist mode fails when script-src blocks an external origin
     assert.match(result.stdout, /third-party external scripts: 1/);
     assert.match(result.stdout, /external-script: .*https:\/\/cdn\.example\.com\/app\.js blocked by active script-src/);
     assert.match(result.stderr, /1 external script source\(s\) are blocked by the active script-src/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('csp audit strict dist mode scans bundled JavaScript for runtime HTML sinks', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-runtime-sink-'));
+  const assetsDir = path.join(tmp, '_assets');
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "style-src-elem 'self'",
+    "style-src-attr 'none'",
+    "form-action 'self'",
+  ].join('; ');
+
+  try {
+    fs.mkdirSync(assetsDir);
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body></body></html>`,
+    );
+    fs.writeFileSync(path.join(assetsDir, 'page.js'), "document.body.innerHTML = '<main>unsafe</main>';\n");
+
+    const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--strict'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /runtime JavaScript files scanned: 1/);
+    assert.match(result.stdout, /runtime HTML sink writes: 1/);
+    assert.match(result.stdout, /_assets\/page\.js:1 innerHTML assignment/);
+    assert.match(result.stderr, /1 runtime HTML sink write\(s\) block Trusted Types trial readiness: .*_assets\/page\.js/);
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
