@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-- [ ] P2 — Add `rel="me"` identity links and a homepage h-card
-  Why: The site publishes four feeds and a `sameAs` Person graph but has zero `rel="me"` links and zero microformats2, so Mastodon cannot verify the profile link and IndieWeb/fediverse tooling cannot build a profile from it.
-  Evidence: `dist/index.html` contains 0 occurrences of `rel="me"`, `h-card`, `u-url`, and `p-name` (the 9 apparent `h-card` hits are substrings of the `gh-card` class). IndieWeb discovery and Bridgy Fed docs in RESEARCH.md.
-  Touches: `src/layouts/Base.astro` (head `rel="me"`), `src/pages/index.astro` (h-card classes on the existing hero identity block), `src/components/InteriorNav.astro` if the brand mark carries the profile link.
-  Acceptance: GitHub and LinkedIn profile links carry `rel="me"`; the homepage exposes a valid representative h-card with `p-name`, `u-url`, and `u-photo` reusing existing markup with no visual change; `npm run schema:audit` and the visual baselines stay green.
-  Complexity: S
-
 - [ ] P2 — Take the pending dependency minor/patch updates
   Why: Four direct dependencies are behind, including satori v0.28's OIDC publish-integrity fix; none are blocked by the TypeScript 7 issue tracked separately in `Roadmap_Blocked.md`.
   Evidence: `npm outdated` on 2026-07-25 — satori 0.26.0→0.29.0 (adds webp), @playwright/test 1.61.1→1.62.0, lightningcss 1.32.0→1.33.0, sanitize-html 2.17.5→2.17.6. `npm audit --omit=dev` currently reports 0 vulnerabilities.

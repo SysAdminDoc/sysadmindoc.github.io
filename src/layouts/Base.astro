@@ -4,7 +4,7 @@ import globalCssUrl from '../styles/global.css?url';
 import interiorQuietCssUrl from '../styles/interior-quiet.css?url';
 import criticalCss from '../styles/critical.css?raw';
 import type { CmdkSection } from '../data/cmdk';
-import { experienceLabel } from '../data/identity';
+import { contactMailto, experienceLabel } from '../data/identity';
 
 export interface Props {
   title?: string;
@@ -140,6 +140,12 @@ if (isHome) {
   <meta name="twitter:description" content={description} />
 
   <link rel="canonical" href={canonical} />
+  {/* IndieWeb identity consolidation: `rel="me"` is how Mastodon verifies a
+      profile link back to its owner, and how mf2 consumers tie these accounts to
+      the homepage h-card. Declared in <head> so every route carries them. */}
+  <link rel="me" href="https://github.com/SysAdminDoc" />
+  <link rel="me" href="https://www.linkedin.com/in/matthewryanparker" />
+  <link rel="me" href={contactMailto()} />
   <link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
   <style is:inline set:html={criticalCss}></style>
