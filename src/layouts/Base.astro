@@ -109,7 +109,10 @@ if (isHome) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="color-scheme" content="dark light" />
+  {/* Light first, matching the served `data-theme="light"` default. Listing dark
+      first made a dark-mode OS paint a dark UA canvas for the sliver before the
+      inline critical CSS applies `color-scheme:light`. */}
+  <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#f7f5ef" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />

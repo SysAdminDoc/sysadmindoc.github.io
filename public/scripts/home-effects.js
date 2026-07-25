@@ -1,9 +1,6 @@
-/* Homepage visual effects: pointer feedback and skill-ring progress. */
+/* Homepage visual effects: skill-ring progress. */
 (function(){
     'use strict';
-
-    const home=window.PortfolioHome||{};
-    const getClosestTarget=home.getClosestTarget||function(target,selector){return target instanceof Element?target.closest(selector):null};
 
     (function(){
         const rings=document.querySelectorAll('.sk-ring');

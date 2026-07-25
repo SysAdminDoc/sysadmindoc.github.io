@@ -60,7 +60,19 @@
             serviceWorkerRefreshRequested=true;
             refresh.disabled=true;
             setMessage(message,'Refreshing','Loading the newest build now.');
-            worker.postMessage({type:'SKIP_WAITING'});
+            // The reload normally rides `controllerchange`. If the waiting worker
+            // never activates — or postMessage throws because it already went
+            // redundant — reload anyway rather than leaving a disabled button
+            // under a "Refreshing" label forever. Reloading is what was asked
+            // for, so doing it twice is harmless.
+            const fallbackReload=setTimeout(()=>window.location.reload(),4000);
+            window.addEventListener('pagehide',()=>clearTimeout(fallbackReload),{once:true});
+            try{
+                worker.postMessage({type:'SKIP_WAITING'});
+            }catch(e){
+                clearTimeout(fallbackReload);
+                window.location.reload();
+            }
         });
         dismiss.addEventListener('click',()=>{
             rememberDismissed(version);
