@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-- [ ] P2 — Correct the tracked-markdown claim in `AGENTS.md`
-  Why: `AGENTS.md` states README.md is "the ONLY .md tracked in git", which is false and has already caused a session to treat RESEARCH.md and ROADMAP.md as gitignored deliverables.
-  Evidence: `git ls-files | grep '\.md$'` returns CHANGELOG.md, README.md, RESEARCH.md, ROADMAP.md, archive/screenshots/README.md. `CLAUDE.md` and `AGENTS.md` are the gitignored pair.
-  Touches: `AGENTS.md`.
-  Acceptance: The allowed-root-level-.md section names exactly which files are tracked and which are gitignored, matching `git ls-files`.
-  Complexity: S
-
 ### P3
 
 - [ ] P3 — Scaffold script for new interior routes
