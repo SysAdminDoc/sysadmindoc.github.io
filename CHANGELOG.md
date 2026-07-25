@@ -6,6 +6,11 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Changed
 
+- Dependency refresh: satori 0.26.0 → 0.29.0, @playwright/test 1.61.1 → 1.62.0,
+  lightningcss 1.32.0 → 1.33.0, sanitize-html 2.17.5 → 2.17.6. satori v0.28
+  carried an OIDC publish-integrity fix. All 12 generated interior OG images are
+  byte-identical across the satori major bump, and `npm audit --omit=dev` still
+  reports 0 vulnerabilities.
 - Every route now renders a shared `Footer.astro` with a contact link pinned to
   the first position in the footer nav. Twelve routes previously hand-rolled the
   same footer markup with twelve different link sets, and `/screenshots/` and
@@ -20,6 +25,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- Refreshed the stale `search-desktop` visual baseline. It was last captured 20
+  commits back and predated both the `/catalog/` route (which adds a Pagefind
+  result to the page) and the v0.27.0 rewording of the No-JS fallback copy.
 - `scripts/audit-csp.mjs` reported a phantom inline event handler for any bare
   word beginning with "on" that appeared inside an Astro expression within a tag
   (`... is one lane ...` parsed as an `one` attribute). Handler detection now
