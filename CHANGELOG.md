@@ -4,6 +4,19 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `/ai/` now publishes its offer list as structured data. The four service lines
+  (rollout, automation, training, retainer) emit an `OfferCatalog` plus one
+  `Service` node each, every one provided by the existing `#matt-parker` Person
+  `@id` — previously the page carried only `AboutPage` + `WebPage`, identical to
+  `/healthcare-it/`, so nothing machine-readable described what was being sold.
+  The nodes are derived from the same `services` array that renders the cards, so
+  the published offers cannot drift from the visible copy, and they ride the
+  page's existing JSON-LD `@graph` rather than adding a second script block.
+  `npm run schema:audit` now asserts the types, offer→Service resolution, and
+  provider/`areaServed` on every service.
+
 ## [v0.27.0] - 2026-07-25
 
 Deep audit pass. Most findings trace back to the v0.26.0 catalog split, which

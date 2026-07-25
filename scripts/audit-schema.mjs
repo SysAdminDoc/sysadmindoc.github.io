@@ -47,8 +47,8 @@ const representativeRoutes = new Map([
     checks: checkReviewedInteriorRoute,
   }],
   ['/ai/', {
-    types: ['WebSite', 'Person', 'AboutPage', 'WebPage'],
-    checks: checkReviewedInteriorRoute,
+    types: ['WebSite', 'Person', 'AboutPage', 'WebPage', 'OfferCatalog', 'Service'],
+    checks: checkServicesTrackRoute,
   }],
   ['/releases/', {
     types: ['WebSite', 'Person', 'CollectionPage', 'WebPage'],
@@ -181,6 +181,38 @@ function checkLanguageRoute(nodes, route) {
     fail(`${route} CollectionPage items must link directly to SysAdminDoc GitHub repositories`);
   }
   requireContiguousListItems(breadcrumb.itemListElement, route, 'BreadcrumbList');
+}
+
+// A productized services track must publish an offer list that an answer engine
+// can read, with every offer resolving to a Service provided by the site owner.
+function checkServicesTrackRoute(nodes, route) {
+  checkReviewedInteriorRoute(nodes, route);
+  const catalog = requireType(nodes, 'OfferCatalog', route);
+  if (catalog['@id'] !== `${siteUrl}${route}#services`) fail(`${route} OfferCatalog @id drifted`);
+  if (catalog.provider?.['@id'] !== personId) fail(`${route} OfferCatalog provider must reference ${personId}`);
+
+  const offers = Array.isArray(catalog.itemListElement) ? catalog.itemListElement : [];
+  if (offers.length === 0) fail(`${route} OfferCatalog lists no offers`);
+
+  const serviceNodes = nodes.filter((node) => nodeTypes(node).includes('Service'));
+  if (serviceNodes.length !== offers.length) {
+    fail(`${route} has ${offers.length} offers but ${serviceNodes.length} Service nodes`);
+  }
+  const serviceIds = new Set(serviceNodes.map((node) => node['@id']));
+  for (const offer of offers) {
+    const offeredId = offer?.itemOffered?.['@id'];
+    if (!offeredId || !serviceIds.has(offeredId)) {
+      fail(`${route} Offer itemOffered "${offeredId}" does not resolve to a Service node`);
+    }
+  }
+  for (const service of serviceNodes) {
+    if (!service.name) fail(`${route} Service ${service['@id']} is missing a name`);
+    if (!service.description) fail(`${route} Service ${service['@id']} is missing a description`);
+    if (service.provider?.['@id'] !== personId) {
+      fail(`${route} Service ${service['@id']} provider must reference ${personId}`);
+    }
+    if (!service.areaServed) fail(`${route} Service ${service['@id']} is missing areaServed`);
+  }
 }
 
 function checkReviewedInteriorRoute(nodes, route) {
