@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
+import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -11,6 +12,27 @@ const smokeScript = path.join(repoRoot, 'scripts', 'smoke-live-site.mjs');
 
 function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function runSmoke(args) {
+  return new Promise((resolve) => {
+    const child = spawn(process.execPath, [smokeScript, ...args], {
+      cwd: repoRoot,
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on('data', (chunk) => {
+      stderr += chunk;
+    });
+    child.on('close', (code) => resolve({ code, stderr, stdout }));
+  });
 }
 
 test('status endpoint and live smoke expose build commit identity', () => {
@@ -95,4 +117,42 @@ test('live smoke contract emits build commit from status.json', () => {
   } finally {
     fs.rmSync(dist, { recursive: true, force: true });
   }
+});
+
+test('deploy status compares the live version and commit with local HEAD', async (t) => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
+  const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).trim();
+  let liveVersion = pkg.version;
+  const server = http.createServer((request, response) => {
+    if (!request.url?.startsWith('/status.json')) {
+      response.writeHead(404).end();
+      return;
+    }
+    response.writeHead(200, {
+      'cache-control': 'max-age=600',
+      'content-type': 'application/json; charset=utf-8',
+    });
+    response.end(
+      JSON.stringify({
+        schema: 'sysadmindoc.status.v1',
+        version: liveVersion,
+        generatedAt: '2026-07-25T00:00:00.000Z',
+        build: { commit: head },
+      }),
+    );
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => server.close());
+  const address = server.address();
+  const baseUrl = `http://127.0.0.1:${address.port}/`;
+
+  const matching = await runSmoke(['--status-only', '--base-url', baseUrl, '--retries', '1']);
+  assert.equal(matching.code, 0, matching.stderr);
+  assert.match(matching.stdout, new RegExp(`live:\\s+v${pkg.version}`));
+  assert.match(matching.stdout, /Live deployment matches local HEAD/);
+
+  liveVersion = '0.0.0';
+  const drifted = await runSmoke(['--status-only', '--base-url', baseUrl, '--retries', '1']);
+  assert.equal(drifted.code, 1);
+  assert.match(drifted.stderr, new RegExp(`live v0\\.0\\.0 .* local v${pkg.version.replaceAll('.', '\\.')}`));
 });
