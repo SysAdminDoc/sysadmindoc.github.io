@@ -12,6 +12,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Strict rendered CSP audits now fail when the active policy blocks an inline
   style attribute or an external script origin; both findings were previously
   reported as advisory inventory while the build still exited successfully.
+- `publish:pages` now prunes a stale linked-worktree registration after its
+  scratch directory is deleted and fast-forwards a recreated `gh-pages`
+  worktree before committing, preventing both recovery and push failures.
 
 ## [v0.28.0] - 2026-07-25
 
