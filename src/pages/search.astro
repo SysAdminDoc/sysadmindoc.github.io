@@ -110,7 +110,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
           <span>The static search bundle did not finish loading. Use the fallback links below or open the catalog to keep browsing.</span>
           <div class="search-recovery-actions" aria-label="Fallback search actions">
             <a href="#search-fallbacks">View fallback links</a>
-            <a href="/#catalog">Open catalog</a>
+            <a href="/catalog/">Open catalog</a>
           </div>
         </div>
         <noscript>
@@ -129,9 +129,9 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         <p>These routes stay plain links so the site remains navigable even when the full-text bundle is unavailable.</p>
       </div>
       <div class="search-fallback-grid">
-        <a href="/#catalog">
+        <a href="/catalog/">
           <span>Catalog</span>
-          <small>Filter every public project by category and built-in project search.</small>
+          <small>Every public project as a plain server-rendered list, with category filters when scripts load.</small>
         </a>
         <a href="/timeline/">
           <span>Timeline</span>
@@ -155,7 +155,7 @@ const pagefindPlaceholderTemplate = String.raw`<li class="pf-result portfolio-re
         <div class="ft"><a href="/" class="footer-backlink">← Back to portfolio</a></div>
         <p class="footer-summary">Use full-text search for site content, language lanes, releases, and archive decisions. Use the catalog or command search to jump straight to a GitHub repository.</p>
       </div>
-      <nav class="fl" aria-label="Footer navigation"><a href="/#catalog">Catalog</a><a href="/timeline/">Timeline</a></nav>
+      <nav class="fl" aria-label="Footer navigation"><a href="/catalog/">Catalog</a><a href="/timeline/">Timeline</a></nav>
     </div>
   </footer>
 
