@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.29.0] - 2026-07-25
+
+Roadmap drain focused on visual coherence, verifiable browser behavior, static
+delivery hardening, and release reliability. The active roadmap is empty; work
+that still requires product, provenance, or operator judgment remains isolated
+in `Roadmap_Blocked.md`.
+
 ### Fixed
 
 - The profile-feed adapter now retains every explicitly reviewed local catalog
