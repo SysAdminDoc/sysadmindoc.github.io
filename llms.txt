@@ -39,7 +39,7 @@
 - [BetterTTS](https://github.com/SysAdminDoc/BetterTTS): Private, in-browser text-to-speech studio
 
 ## Pages
-- [Portfolio home](https://sysadmindoc.github.io/): Featured proof, live app previews, stack signals, and a ranked preview of the 178-project archive. The complete filterable list lives at /catalog/.
+- [Portfolio home](https://sysadmindoc.github.io/): Featured proof, live app previews, stack signals, and a ranked preview of the 186-project archive. The complete filterable list lives at /catalog/.
 - [Uses](https://sysadmindoc.github.io/uses/): Development environment, tools, languages, frameworks, and design preferences behind the portfolio.
 - [Resume](https://sysadmindoc.github.io/resume/): Printable resume for Matt Parker, spanning enterprise IT, systems administration, healthcare technology support, and customer-facing escalation work.
 - [Search](https://sysadmindoc.github.io/search/): Full-text static search across portfolio routes, language lanes, releases, timeline entries, and archive decisions.

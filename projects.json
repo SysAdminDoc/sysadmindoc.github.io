@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-25T21:21:42.134Z",
+  "generatedAt": "2026-07-25T23:32:42.276Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "SysAdminDoc/SysAdminDoc projects.json",
     "profileFeedUrl": "https://raw.githubusercontent.com/SysAdminDoc/SysAdminDoc/main/projects.json",
     "profileFeedGeneratedAt": "2026-06-01T16:18:55.0998940-04:00",
-    "profileFeedCachedAt": "2026-07-25T21:22:29.092Z",
-    "githubMetadataFetchedAt": "2026-07-25T21:21:42.134Z",
-    "githubLastPushedAt": "2026-07-25T21:20:30Z"
+    "profileFeedCachedAt": "2026-07-25T23:33:26.094Z",
+    "githubMetadataFetchedAt": "2026-07-25T23:32:42.276Z",
+    "githubLastPushedAt": "2026-07-25T23:32:10Z"
   },
   "counts": {
-    "projects": 178,
+    "projects": 186,
     "featured": 10,
     "liveApps": 22,
-    "catalog": 178
+    "catalog": 186
   },
   "projects": [
     {
@@ -73,8 +73,8 @@
         "stars": 31
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:08:07Z",
-        "updatedAt": "2026-07-25T21:08:10Z"
+        "pushedAt": "2026-07-25T23:30:25Z",
+        "updatedAt": "2026-07-25T23:30:29Z"
       }
     },
     {
@@ -339,8 +339,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:20:30Z",
-        "updatedAt": "2026-07-25T21:20:34Z"
+        "pushedAt": "2026-07-25T23:24:02Z",
+        "updatedAt": "2026-07-25T23:24:06Z"
       }
     },
     {
@@ -391,8 +391,8 @@
         "stars": 2
       },
       "freshness": {
-        "pushedAt": "2026-07-25T20:53:24Z",
-        "updatedAt": "2026-07-25T20:53:28Z"
+        "pushedAt": "2026-07-25T22:12:20Z",
+        "updatedAt": "2026-07-25T22:12:24Z"
       }
     },
     {
@@ -443,8 +443,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:04:39Z",
-        "updatedAt": "2026-07-25T21:04:42Z"
+        "pushedAt": "2026-07-25T23:27:20Z",
+        "updatedAt": "2026-07-25T23:27:24Z"
       }
     },
     {
@@ -521,8 +521,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:11:03Z",
-        "updatedAt": "2026-07-25T21:11:08Z"
+        "pushedAt": "2026-07-25T23:20:18Z",
+        "updatedAt": "2026-07-25T23:20:22Z"
       }
     },
     {
@@ -573,8 +573,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:12:45Z",
-        "updatedAt": "2026-07-25T21:12:49Z"
+        "pushedAt": "2026-07-25T22:09:34Z",
+        "updatedAt": "2026-07-25T22:09:38Z"
       }
     },
     {
@@ -729,8 +729,8 @@
         "stars": 4
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:20:18Z",
-        "updatedAt": "2026-07-25T21:20:22Z"
+        "pushedAt": "2026-07-25T21:21:51Z",
+        "updatedAt": "2026-07-25T21:21:55Z"
       }
     },
     {
@@ -833,8 +833,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:07:42Z",
-        "updatedAt": "2026-07-25T21:07:46Z"
+        "pushedAt": "2026-07-25T23:23:18Z",
+        "updatedAt": "2026-07-25T23:23:22Z"
       }
     },
     {
@@ -885,8 +885,8 @@
         "stars": 0
       },
       "freshness": {
-        "pushedAt": "2026-07-25T21:18:37Z",
-        "updatedAt": "2026-07-25T21:18:41Z"
+        "pushedAt": "2026-07-25T22:20:42Z",
+        "updatedAt": "2026-07-25T22:20:46Z"
       }
     },
     {
@@ -2575,8 +2575,8 @@
         "stars": 1
       },
       "freshness": {
-        "pushedAt": "2026-07-25T05:20:09Z",
-        "updatedAt": "2026-07-25T05:20:19Z"
+        "pushedAt": "2026-07-25T23:32:10Z",
+        "updatedAt": "2026-07-25T23:32:13Z"
       }
     },
     {
@@ -4683,6 +4683,214 @@
       "freshness": {
         "pushedAt": "2026-07-16T02:31:10Z",
         "updatedAt": "2026-07-16T02:31:14Z"
+      }
+    },
+    {
+      "slug": "SurfaceMedic",
+      "name": "SurfaceMedic",
+      "description": "Surface tune-up & thermal toolkit - WPF GUI, thermal event scanner",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": "C#",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/SurfaceMedic",
+        "repository": "https://github.com/SysAdminDoc/SurfaceMedic",
+        "source": "https://github.com/SysAdminDoc/SurfaceMedic",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-07-10T18:47:30Z",
+        "updatedAt": "2026-07-10T18:45:34Z"
+      }
+    },
+    {
+      "slug": "DuplicateFF",
+      "name": "DuplicateFF",
+      "description": "Archived reference architecture for a duplicate-file finder",
+      "category": "ps",
+      "categoryLabel": "PowerShell",
+      "language": "PowerShell",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/DuplicateFF",
+        "repository": "https://github.com/SysAdminDoc/DuplicateFF",
+        "source": "https://github.com/SysAdminDoc/DuplicateFF",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:37:31Z",
+        "updatedAt": "2026-06-28T03:37:34Z"
+      }
+    },
+    {
+      "slug": "AIUsageTracker",
+      "name": "AIUsageTracker",
+      "description": "Windows dashboard tracking Claude & Codex usage windows with reset alarms",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": "Python",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/AIUsageTracker",
+        "repository": "https://github.com/SysAdminDoc/AIUsageTracker",
+        "source": "https://github.com/SysAdminDoc/AIUsageTracker",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-07-18T16:16:37Z",
+        "updatedAt": "2026-07-18T16:16:42Z"
+      }
+    },
+    {
+      "slug": "mnamer",
+      "name": "mnamer",
+      "description": "Media file renaming & organizing tool",
+      "category": "py",
+      "categoryLabel": "Python",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/mnamer",
+        "repository": "https://github.com/SysAdminDoc/mnamer",
+        "source": "https://github.com/SysAdminDoc/mnamer",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
+      }
+    },
+    {
+      "slug": "Cataclysm",
+      "name": "Cataclysm",
+      "description": "3D-globe multi-hazard simulator - tsunamis, asteroid impacts, nuclear bursts, earthquakes with real physics",
+      "category": "web",
+      "categoryLabel": "Web Apps",
+      "language": "TypeScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/Cataclysm",
+        "repository": "https://github.com/SysAdminDoc/Cataclysm",
+        "source": "https://github.com/SysAdminDoc/Cataclysm",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 1
+      },
+      "freshness": {
+        "pushedAt": "2026-07-22T12:24:41Z",
+        "updatedAt": "2026-07-22T12:25:36Z"
+      }
+    },
+    {
+      "slug": "ForceBGTab",
+      "name": "ForceBGTab",
+      "description": "Force link-opened tabs to the background - MV3, no page access",
+      "category": "ext",
+      "categoryLabel": "Extensions",
+      "language": "JavaScript",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/ForceBGTab",
+        "repository": "https://github.com/SysAdminDoc/ForceBGTab",
+        "source": "https://github.com/SysAdminDoc/ForceBGTab",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-07-13T20:05:43Z",
+        "updatedAt": "2026-07-13T20:05:52Z"
+      }
+    },
+    {
+      "slug": "improve-repo",
+      "name": "improve-repo",
+      "description": "Automated repo improvement pipeline - research, implement, polish, review, PR",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": "Shell",
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/improve-repo",
+        "repository": "https://github.com/SysAdminDoc/improve-repo",
+        "source": "https://github.com/SysAdminDoc/improve-repo",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": 0
+      },
+      "freshness": {
+        "pushedAt": "2026-06-28T03:38:00Z",
+        "updatedAt": "2026-06-28T03:38:03Z"
+      }
+    },
+    {
+      "slug": "project-nomad",
+      "name": "project-nomad",
+      "description": "Project N.O.M.A.D - the original offline survival computer concept & spec",
+      "category": "other",
+      "categoryLabel": "Other",
+      "language": null,
+      "featured": false,
+      "live": false,
+      "tags": [],
+      "urls": {
+        "detail": "https://github.com/SysAdminDoc/project-nomad",
+        "repository": "https://github.com/SysAdminDoc/project-nomad",
+        "source": "https://github.com/SysAdminDoc/project-nomad",
+        "live": null,
+        "screenshot": null,
+        "thumbnail": null
+      },
+      "metrics": {
+        "stars": null
+      },
+      "freshness": {
+        "pushedAt": null,
+        "updatedAt": null
       }
     }
   ]

@@ -1,26 +1,26 @@
 {
   "schema": "sysadmindoc.status.v1",
   "version": "0.28.0",
-  "generatedAt": "2026-07-25T21:22:36.610Z",
+  "generatedAt": "2026-07-25T23:33:33.910Z",
   "build": {
-    "commit": "15700acdb9ac23d48513812193452713d209c8cc",
-    "commitShort": "15700acdb9ac",
+    "commit": "677060e4adf13f1553334d940228e6f25e77fe42",
+    "commitShort": "677060e4adf1",
     "source": "SYSADMINDOC_BUILD_COMMIT"
   },
   "catalog": {
-    "count": 178,
+    "count": 186,
     "liveApps": 22
   },
   "profileFeed": {
     "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
-    "projectCount": 178
+    "projectCount": 186
   },
   "generatedData": {
     "status": "fresh",
     "mode": "production-fresh",
     "maxAgeHours": 36,
-    "fetchedAt": "2026-07-25T21:21:42.134Z",
-    "ageHours": 0.0151,
+    "fetchedAt": "2026-07-25T23:32:42.276Z",
+    "ageHours": 0.0143,
     "stale": false,
     "totalRepos": 182,
     "totalStars": 544,
@@ -28,18 +28,18 @@
     "profileFeed": {
       "active": true,
       "source": "SysAdminDoc/SysAdminDoc data/profile-catalog.json",
-      "projectCount": 178,
-      "cachedAt": "2026-07-25T21:22:29.092Z",
-      "cachedAgeHours": 0.0021,
+      "projectCount": 186,
+      "cachedAt": "2026-07-25T23:33:26.094Z",
+      "cachedAgeHours": 0.0022,
       "stale": false
     },
     "coverage": {
       "threshold": 0.8,
-      "profileProjectCount": 178,
-      "stars": 1,
-      "metadata": 1,
-      "readmes": 1,
-      "releases": 0.3371,
+      "profileProjectCount": 186,
+      "stars": 0.9785,
+      "metadata": 0.9785,
+      "readmes": 0.9785,
+      "releases": 0.3226,
       "starEntries": 182,
       "metadataEntries": 182,
       "readmeEntries": 182,
@@ -47,7 +47,7 @@
     },
     "readmeRefresh": {
       "source": "github-api",
-      "generatedAt": "2026-07-25T21:21:58.485Z",
+      "generatedAt": "2026-07-25T23:32:57.269Z",
       "tokenPresent": true,
       "targetRepos": 182,
       "attempted": 182,
@@ -58,8 +58,8 @@
       "skippedReason": null
     },
     "releaseProvenance": {
-      "no-assets": 1,
-      "unsigned": 37,
+      "no-assets": 6,
+      "unsigned": 32,
       "checksum": 22,
       "attested": 0,
       "unknown": 0,

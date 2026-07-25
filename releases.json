@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-25T21:21:42.134Z",
+  "generatedAt": "2026-07-25T23:32:42.276Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-25T21:21:42.134Z"
+    "githubMetadataFetchedAt": "2026-07-25T23:32:42.276Z"
   },
   "counts": {
     "releases": 60,
@@ -12,15 +12,29 @@
   },
   "releases": [
     {
+      "repo": "BetterTTS",
+      "projectName": "BetterTTS",
+      "tag": "v0.20.0",
+      "name": "BetterTTS v0.20.0",
+      "publishedAt": "2026-07-25T21:45:14Z",
+      "provenance": "unsigned",
+      "summary": "Unsigned Windows update artifacts for BetterTTS 0.20.0.",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.20.0",
+        "repository": "https://github.com/SysAdminDoc/BetterTTS",
+        "detail": "https://github.com/SysAdminDoc/BetterTTS"
+      }
+    },
+    {
       "repo": "sysadmindoc.github.io",
       "projectName": "sysadmindoc.github.io",
-      "tag": "v0.26.0",
-      "name": "v0.26.0",
-      "publishedAt": "2026-07-24T22:26:31Z",
-      "provenance": "unsigned",
-      "summary": "Split the homepage catalog into a curated preview plus a complete static archive. · Homepage catalog is now a ranked preview slice (top 84 projects), cutting the homepage #catalog section from ~2,254 to ~1,259 DOM…",
+      "tag": "v0.28.0",
+      "name": "v0.28.0",
+      "publishedAt": "2026-07-25T21:41:27Z",
+      "provenance": "no-assets",
+      "summary": "Roadmap drain. The active roadmap is now empty; the one remaining item moved to · Roadmap_Blocked.md because it is gated on a product judgement rather than work. · Changed",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.0",
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.28.0",
         "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
         "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
       }
@@ -28,13 +42,13 @@
     {
       "repo": "sysadmindoc.github.io",
       "projectName": "sysadmindoc.github.io",
-      "tag": "v0.25.0",
-      "name": "v0.25.0",
-      "publishedAt": "2026-07-24T20:48:56Z",
-      "provenance": "unsigned",
-      "summary": "Search, security, and positioning: a versioned Pagefind relevance corpus that freezes known-good search ranking as a regression gate; Trusted Types (require-trusted-types-for 'script') enforced in production with a…",
+      "tag": "v0.27.0",
+      "name": "v0.27.0",
+      "publishedAt": "2026-07-25T21:41:26Z",
+      "provenance": "no-assets",
+      "summary": "Deep audit pass. Most findings trace back to the v0.26.0 catalog split, which · turned the homepage #catalog into a ranked preview slice without updating the · surfaces that still pointed at it or counted from it.",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.25.0",
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.27.0",
         "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
         "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
       }
@@ -42,13 +56,13 @@
     {
       "repo": "sysadmindoc.github.io",
       "projectName": "sysadmindoc.github.io",
-      "tag": "v0.24.0",
-      "name": "v0.24.0",
-      "publishedAt": "2026-07-24T20:24:42Z",
-      "provenance": "unsigned",
-      "summary": "Roadmap drain: dependency advisories patched (Astro 7.1.3, svgo/postcss/fast-uri), live-app-health deploy gate, service-worker cache-write lifetime binding, no-JS navigation restored, light-first PWA/offline colors…",
+      "tag": "v0.26.3",
+      "name": "v0.26.3",
+      "publishedAt": "2026-07-25T21:41:25Z",
+      "provenance": "no-assets",
+      "summary": "Removed the \"Practice, expanded\" homepage section (#journey) in full: the section markup and its journeyMilestones data, the top-nav \"Journey\" link and the command-palette \"Journey\" entry, the #journey…",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.24.0",
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.3",
         "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
         "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
       }
@@ -56,13 +70,27 @@
     {
       "repo": "sysadmindoc.github.io",
       "projectName": "sysadmindoc.github.io",
-      "tag": "v0.23.0",
-      "name": "v0.23.0",
-      "publishedAt": "2026-07-23T14:17:36Z",
-      "provenance": "unsigned",
-      "summary": "v0.23.0 — AI Services track · Added the /ai/ AI services track: fractional AI implementation for businesses — tool selection and rollout, custom automation, employee training, and standing problem-solving on a monthly…",
+      "tag": "v0.26.2",
+      "name": "v0.26.2",
+      "publishedAt": "2026-07-25T21:41:24Z",
+      "provenance": "no-assets",
+      "summary": "Hero polish + design-tell cleanup: removed the animated multi-color gradient text and the perpetually spinning conic avatar ring from the hero source, making the restrained \"Operational Clarity\" hero (solid wordmark…",
       "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.23.0",
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.2",
+        "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+        "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
+      }
+    },
+    {
+      "repo": "sysadmindoc.github.io",
+      "projectName": "sysadmindoc.github.io",
+      "tag": "v0.26.1",
+      "name": "v0.26.1",
+      "publishedAt": "2026-07-25T21:41:24Z",
+      "provenance": "no-assets",
+      "summary": "Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads…",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.1",
         "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
         "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
       }
@@ -684,20 +712,6 @@
       }
     },
     {
-      "repo": "sysadmindoc.github.io",
-      "projectName": "sysadmindoc.github.io",
-      "tag": "v0.22.0",
-      "name": "v0.22.0",
-      "publishedAt": "2026-07-10T05:05:01Z",
-      "provenance": "unsigned",
-      "summary": "Premium product-quality pass across the full portfolio: stronger navigation and responsive hierarchy, accessible dark/light contrast and focus states, resilient search and sharing recovery, clearer…",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.22.0",
-        "repository": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-        "detail": "https://github.com/SysAdminDoc/sysadmindoc.github.io"
-      }
-    },
-    {
       "repo": "ImgConverter",
       "projectName": "ImgConverter",
       "tag": "v3.5.0",
@@ -819,20 +833,6 @@
       "summary": "Deep audit hardening release. Includes import/library/queue recovery guardrails, UI accessibility and contrast fixes, diagnostics privacy hardening, bounded article imports, safer service-worker cache keys, exact…",
       "urls": {
         "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0",
-        "repository": "https://github.com/SysAdminDoc/BetterTTS",
-        "detail": "https://github.com/SysAdminDoc/BetterTTS"
-      }
-    },
-    {
-      "repo": "BetterTTS",
-      "projectName": "BetterTTS",
-      "tag": "v0.13.0",
-      "name": "v0.13.0",
-      "publishedAt": "2026-07-09T09:30:20Z",
-      "provenance": "unsigned",
-      "summary": "Roadmap drain release: adds experimental Piper-plus engine wiring, offline/runtime diagnostics hardening, document import and playback reliability improvements, queue editing, local smoke coverage, and v0.13.0 version…",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.13.0",
         "repository": "https://github.com/SysAdminDoc/BetterTTS",
         "detail": "https://github.com/SysAdminDoc/BetterTTS"
       }

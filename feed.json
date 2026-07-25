@@ -5,7 +5,7 @@
   "feed_url": "https://sysadmindoc.github.io/feed.json",
   "icon": "https://sysadmindoc.github.io/icon-512.png",
   "favicon": "https://sysadmindoc.github.io/favicon.svg",
-  "description": "Public projects, live web apps, and the full catalog - 178+ projects.",
+  "description": "Public projects, live web apps, and the full catalog - 186+ projects.",
   "language": "en-US",
   "authors": [
     {
@@ -15,21 +15,11 @@
   ],
   "items": [
     {
-      "id": "https://github.com/SysAdminDoc/IconForge",
-      "url": "https://github.com/SysAdminDoc/IconForge",
-      "title": "IconForge (live)",
-      "content_text": "Image resizer converter",
-      "date_modified": "2026-07-25T21:20:30.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/Vigil",
       "url": "https://github.com/SysAdminDoc/Vigil",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Desktop"
       ]
@@ -39,7 +29,17 @@
       "url": "https://github.com/SysAdminDoc/android-debloat-list",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
+      "tags": [
+        "Guides"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "title": "sysadmindoc.github.io",
+      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Guides"
       ]
@@ -49,7 +49,7 @@
       "url": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Other"
       ]
@@ -59,7 +59,7 @@
       "url": "https://github.com/SysAdminDoc/RcloneBrowser",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Other"
       ]
@@ -69,7 +69,7 @@
       "url": "https://github.com/SysAdminDoc/TabExplorer",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Other"
       ]
@@ -79,37 +79,67 @@
       "url": "https://github.com/SysAdminDoc/TagStudio",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
-      "date_modified": "2026-07-25T21:20:30.000Z",
+      "date_modified": "2026-07-25T23:32:10.000Z",
       "tags": [
         "Other"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/UserScriptHunt",
-      "url": "https://github.com/SysAdminDoc/UserScriptHunt",
-      "title": "UserScriptHunt (live)",
-      "content_text": "Unified userscript search engine",
-      "date_modified": "2026-07-25T21:20:18.000Z",
+      "id": "https://github.com/SysAdminDoc/mnamer",
+      "url": "https://github.com/SysAdminDoc/mnamer",
+      "title": "mnamer",
+      "content_text": "Media file renaming organizing tool",
+      "date_modified": "2026-07-25T23:32:10.000Z",
+      "tags": [
+        "Python"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/project-nomad",
+      "url": "https://github.com/SysAdminDoc/project-nomad",
+      "title": "project-nomad",
+      "content_text": "Project N.O.M.A.D the original offline survival computer concept spec",
+      "date_modified": "2026-07-25T23:32:10.000Z",
+      "tags": [
+        "Other"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/OpenCut",
+      "url": "https://github.com/SysAdminDoc/OpenCut",
+      "title": "OpenCut",
+      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
+      "date_modified": "2026-07-25T23:30:25.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ClipForge",
+      "url": "https://github.com/SysAdminDoc/ClipForge",
+      "title": "ClipForge (live)",
+      "content_text": "Browser-based video editor",
+      "date_modified": "2026-07-25T23:27:20.000Z",
       "tags": [
         "Live App"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/BetterTTS",
-      "url": "https://github.com/SysAdminDoc/BetterTTS",
-      "title": "BetterTTS (live)",
-      "content_text": "Private, in-browser text-to-speech studio",
-      "date_modified": "2026-07-25T21:18:37.000Z",
+      "id": "https://github.com/SysAdminDoc/IconForge",
+      "url": "https://github.com/SysAdminDoc/IconForge",
+      "title": "IconForge (live)",
+      "content_text": "Image resizer converter",
+      "date_modified": "2026-07-25T23:24:02.000Z",
       "tags": [
         "Live App"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/GifStudio",
-      "url": "https://github.com/SysAdminDoc/GifStudio",
-      "title": "GifStudio (live)",
-      "content_text": "Browser-based GIF studio",
-      "date_modified": "2026-07-25T21:12:45.000Z",
+      "id": "https://github.com/SysAdminDoc/HurricaneMap",
+      "url": "https://github.com/SysAdminDoc/HurricaneMap",
+      "title": "HurricaneMap (live)",
+      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
+      "date_modified": "2026-07-25T23:23:18.000Z",
       "tags": [
         "Live App"
       ]
@@ -119,37 +149,17 @@
       "url": "https://github.com/SysAdminDoc/StormviewRadar",
       "title": "StormviewRadar (live)",
       "content_text": "Open source weather radar viewer",
-      "date_modified": "2026-07-25T21:11:03.000Z",
+      "date_modified": "2026-07-25T23:20:18.000Z",
       "tags": [
         "Live App"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/OpenCut",
-      "url": "https://github.com/SysAdminDoc/OpenCut",
-      "title": "OpenCut",
-      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
-      "date_modified": "2026-07-25T21:08:07.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/HurricaneMap",
-      "url": "https://github.com/SysAdminDoc/HurricaneMap",
-      "title": "HurricaneMap (live)",
-      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
-      "date_modified": "2026-07-25T21:07:42.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ClipForge",
-      "url": "https://github.com/SysAdminDoc/ClipForge",
-      "title": "ClipForge (live)",
-      "content_text": "Browser-based video editor",
-      "date_modified": "2026-07-25T21:04:39.000Z",
+      "id": "https://github.com/SysAdminDoc/BetterTTS",
+      "url": "https://github.com/SysAdminDoc/BetterTTS",
+      "title": "BetterTTS (live)",
+      "content_text": "Private, in-browser text-to-speech studio",
+      "date_modified": "2026-07-25T22:20:42.000Z",
       "tags": [
         "Live App"
       ]
@@ -159,7 +169,27 @@
       "url": "https://github.com/SysAdminDoc/ImageXpert",
       "title": "ImageXpert (live)",
       "content_text": "Multi-engine reverse image search",
-      "date_modified": "2026-07-25T20:53:24.000Z",
+      "date_modified": "2026-07-25T22:12:20.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/GifStudio",
+      "url": "https://github.com/SysAdminDoc/GifStudio",
+      "title": "GifStudio (live)",
+      "content_text": "Browser-based GIF studio",
+      "date_modified": "2026-07-25T22:09:34.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/UserScriptHunt",
+      "url": "https://github.com/SysAdminDoc/UserScriptHunt",
+      "title": "UserScriptHunt (live)",
+      "content_text": "Unified userscript search engine",
+      "date_modified": "2026-07-25T21:21:51.000Z",
       "tags": [
         "Live App"
       ]
@@ -182,16 +212,6 @@
       "date_modified": "2026-07-25T08:13:46.000Z",
       "tags": [
         "Live App"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-      "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-      "title": "sysadmindoc.github.io",
-      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-25T05:20:09.000Z",
-      "tags": [
-        "Guides"
       ]
     },
     {
@@ -335,6 +355,16 @@
       ]
     },
     {
+      "id": "https://github.com/SysAdminDoc/Cataclysm",
+      "url": "https://github.com/SysAdminDoc/Cataclysm",
+      "title": "Cataclysm",
+      "content_text": "3D-globe multi-hazard simulator tsunamis, asteroid impacts, nuclear bursts, earthquakes with real physics",
+      "date_modified": "2026-07-22T12:24:41.000Z",
+      "tags": [
+        "Web Apps"
+      ]
+    },
+    {
       "id": "https://github.com/SysAdminDoc/StreamKeep",
       "url": "https://github.com/SysAdminDoc/StreamKeep",
       "title": "StreamKeep",
@@ -392,6 +422,16 @@
       "date_modified": "2026-07-19T03:13:48.000Z",
       "tags": [
         "Desktop"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/AIUsageTracker",
+      "url": "https://github.com/SysAdminDoc/AIUsageTracker",
+      "title": "AIUsageTracker",
+      "content_text": "Windows dashboard tracking Claude Codex usage windows with reset alarms",
+      "date_modified": "2026-07-18T16:16:37.000Z",
+      "tags": [
+        "Python"
       ]
     },
     {
@@ -465,6 +505,16 @@
       ]
     },
     {
+      "id": "https://github.com/SysAdminDoc/ForceBGTab",
+      "url": "https://github.com/SysAdminDoc/ForceBGTab",
+      "title": "ForceBGTab",
+      "content_text": "Force link-opened tabs to the background MV3, no page access",
+      "date_modified": "2026-07-13T20:05:43.000Z",
+      "tags": [
+        "Extensions"
+      ]
+    },
+    {
       "id": "https://github.com/SysAdminDoc/AppList",
       "url": "https://github.com/SysAdminDoc/AppList",
       "title": "AppList",
@@ -472,6 +522,16 @@
       "date_modified": "2026-07-10T20:55:20.000Z",
       "tags": [
         "Python"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/SurfaceMedic",
+      "url": "https://github.com/SysAdminDoc/SurfaceMedic",
+      "title": "SurfaceMedic",
+      "content_text": "Surface tune-up thermal toolkit WPF GUI, thermal event scanner",
+      "date_modified": "2026-07-10T18:47:30.000Z",
+      "tags": [
+        "PowerShell"
       ]
     },
     {
@@ -1455,6 +1515,16 @@
       ]
     },
     {
+      "id": "https://github.com/SysAdminDoc/improve-repo",
+      "url": "https://github.com/SysAdminDoc/improve-repo",
+      "title": "improve-repo",
+      "content_text": "Automated repo improvement pipeline research, implement, polish, review, PR",
+      "date_modified": "2026-06-28T03:38:00.000Z",
+      "tags": [
+        "Other"
+      ]
+    },
+    {
       "id": "https://github.com/SysAdminDoc/IMDb_Enhanced",
       "url": "https://github.com/SysAdminDoc/IMDb_Enhanced",
       "title": "IMDb_Enhanced",
@@ -1582,6 +1652,16 @@
       "date_modified": "2026-06-28T03:37:32.000Z",
       "tags": [
         "Security"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/DuplicateFF",
+      "url": "https://github.com/SysAdminDoc/DuplicateFF",
+      "title": "DuplicateFF",
+      "content_text": "Archived reference architecture for a duplicate-file finder",
+      "date_modified": "2026-06-28T03:37:31.000Z",
+      "tags": [
+        "PowerShell"
       ]
     },
     {
