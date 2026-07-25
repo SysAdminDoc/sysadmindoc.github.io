@@ -9,6 +9,10 @@
   "packageManager": "npm@11.13.0",
   "scripts": {
     "dev": "astro dev",
+    "dev:agent": "astro dev --background",
+    "dev:status": "astro dev status",
+    "dev:logs": "astro dev logs",
+    "dev:stop": "astro dev stop",
     "start": "astro dev",
     "build": "npm run profile-feed:sync && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && npm run build:ci",
     "build:ci": "npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run resume:pdf && npm run bundle:audit && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run search:index && npm run search:audit && npm run sw:stamp && npm run schema:audit && npm run sitemap:audit && npm run links:audit",

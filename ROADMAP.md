@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-- [ ] P2 — Adopt Astro 7's agent-oriented dev tooling
-  Why: This repo is driven almost entirely by coding agents, and Astro 7 shipped a background dev-server mode with automatic agent detection, structured JSON logging, and a `/_astro/status` health endpoint — none of which are used, so agents currently poll a foreground server and parse human-formatted logs.
-  Evidence: Astro 7.0 release notes (see RESEARCH.md); `package.json` `dev` script is a bare `astro dev`; installed Astro is 7.1.3.
-  Touches: `package.json` scripts, `CLAUDE.md` build/run section, `README.md` Develop section.
-  Acceptance: A documented `dev:agent` script runs `astro dev --background`, the health endpoint is reachable, and the working notes explain when to prefer it over `npm run dev`.
-  Complexity: S
-
 - [ ] P2 — Make skipped Playwright specs visible in the preflight summary
   Why: `tests/playwright/interaction-smoke.spec.mjs` silently `test.skip`s the screenshots-gallery facet whenever live-app data has a single category — the current state — so a suite reporting "44 passed, 2 skipped" can hide a permanently dormant path.
   Evidence: `tests/playwright/interaction-smoke.spec.mjs:798-801`; the v0.27.0 audit found a real `[hidden]` defect on exactly that skipped path, caught only by a unit test.

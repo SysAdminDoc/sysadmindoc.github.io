@@ -88,6 +88,21 @@ npm run build         # validate data, then output to dist/
 npm run preview       # serve dist/
 ```
 
+Astro 7 can run the dev server detached, which suits automated/agent-driven work
+better than a foreground process: the server survives between commands, and
+`status` and `logs` emit newline-delimited JSON instead of formatted console
+output, so no log scraping is needed.
+
+```bash
+npm run dev:agent     # start the dev server as a background process
+npm run dev:status    # {"message":"Dev server running at http://localhost:4321 ...","level":"info"}
+npm run dev:logs      # replay the background server's JSON log lines (add -- --follow to tail)
+npm run dev:stop      # stop it
+```
+
+`dev:agent` picks the next free port if 4321 is taken, so read the port from
+`npm run dev:status` rather than assuming it.
+
 `npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and a Chromium browser (`npx playwright install chromium`; Linux runs can use `npx playwright install --with-deps chromium`; local Windows runs can set `CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. The visual suite covers desktop, mobile, 1000px, 1280px, 1440px, and a short-height desktop viewport for the main public routes. `npm run audit:playwright` starts its own built-preview server on port `4324` by default; set `PLAYWRIGHT_AUDIT_PORT` to override it. `npm run audit:interactions` runs focused rendered smoke tests over command palette lazy loading, filtering, no-results recovery, degraded search fallback, Escape close behavior, keyboard activation inside the dialog, pointer activation, same-page section jumps, catalog search, direct repository links, console errors, and horizontal overflow without screenshot assertions. The interaction smoke starts its own built-preview server on port `4325` by default so it does not reuse a stale Astro dev server; set `PLAYWRIGHT_INTERACTIONS_PORT` to override it. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.

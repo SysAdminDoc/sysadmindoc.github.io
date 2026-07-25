@@ -35,6 +35,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- `dev:agent` / `dev:status` / `dev:logs` / `dev:stop` scripts wrapping Astro 7's
+  detached dev server. The server survives between commands, and `status` and
+  `logs` emit newline-delimited JSON, so automated work no longer has to hold a
+  foreground process open or scrape formatted console output. Note that the
+  detached server picks the next free port if 4321 is taken — read the port from
+  `dev:status` rather than assuming it.
 - IndieWeb identity markup. Every route declares `rel="me"` links for GitHub,
   LinkedIn, and the contact address — the signal Mastodon uses to verify a
   profile link — and the homepage hero exposes a representative h-card
