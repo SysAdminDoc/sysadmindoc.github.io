@@ -26,6 +26,7 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ['list'],
+    ['./tests/playwright/skip-reporter.mjs'],
     ['html', { outputFolder: '.tmp/playwright-report', open: 'never' }],
   ],
   use: {

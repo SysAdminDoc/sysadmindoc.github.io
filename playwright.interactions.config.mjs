@@ -11,6 +11,7 @@ export default defineConfig({
   timeout: 60_000,
   reporter: [
     ['list'],
+    ['./tests/playwright/skip-reporter.mjs'],
     ['html', { outputFolder: '.tmp/playwright-interactions-report', open: 'never' }],
   ],
   use: {

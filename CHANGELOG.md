@@ -35,6 +35,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- A Playwright skip reporter on both browser suites. Six specs skip themselves
+  when the generated data cannot produce the state under test, and a summary
+  reading "44 passed, 2 skipped" hid which path had gone dormant — the v0.27.0
+  audit found a real defect on exactly such a skipped path. Every skip is now
+  printed with its reason, and the run exits non-zero if the skipped set drifts
+  from the pinned list in either direction, so a newly dormant spec (or a stale
+  pin on a spec that runs again) is a decision rather than an accident.
 - `dev:agent` / `dev:status` / `dev:logs` / `dev:stop` scripts wrapping Astro 7's
   detached dev server. The server survives between commands, and `status` and
   `logs` emit newline-delimited JSON, so automated work no longer has to hold a
