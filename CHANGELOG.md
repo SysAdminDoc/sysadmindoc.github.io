@@ -21,6 +21,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - CSP runtime-sink audits now scan every public JavaScript file in source mode
   and every emitted JavaScript bundle in built mode. A nested bundle fixture
   proves raw HTML writes block the strict production audit.
+- Playwright visual baselines now live in platform-specific Linux and Windows
+  lanes, so refreshing one operating system cannot overwrite the other.
+  Fixture browser checks also derive catalog and timeline expectations from the
+  rendered dataset instead of assuming production-sized generated data.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.

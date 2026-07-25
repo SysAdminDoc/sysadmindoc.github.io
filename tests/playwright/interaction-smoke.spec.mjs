@@ -628,8 +628,30 @@ test.describe('catalog URL-state persistence', () => {
     await preparePage(page, '/#catalog', '#catalog');
 
     const handoff = page.locator('#catalogMore');
+    const grid = page.locator('#catalogGrid');
+    const renderedCount = await grid.locator('.ca').count();
+    const catalogTotal = Number(await grid.getAttribute('data-total'));
     // The homepage renders a ranked slice, so an unnarrowed view needs no handoff.
     await expect(handoff).toBeHidden();
+
+    // Small deterministic fixtures can fit the complete catalog on the
+    // homepage. Exercise the generic narrowed-search handoff in that state;
+    // category-specific "See all N" copy only exists when the preview omits
+    // matching projects.
+    if (catalogTotal <= renderedCount) {
+      const query = 'python';
+      await page.locator('#searchInput').fill(query);
+      await expect(handoff).toBeVisible();
+      await expect(handoff).toHaveAttribute('href', `/catalog/?q=${query}`);
+      await expect(handoff).toHaveText(`Search all ${catalogTotal} projects →`);
+
+      await handoff.click();
+      await page.locator('#catalog').waitFor({ state: 'visible' });
+      expect(page.url()).toContain(`q=${query}`);
+      await expect(page.locator('#searchInput')).toHaveValue(query);
+      expect(runtimeErrors).toEqual([]);
+      return;
+    }
 
     const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
     if (!(await filterBtn.count())) {
@@ -710,8 +732,10 @@ test.describe('full catalog no-JS reachability', () => {
 
     const cards = page.locator('#catalogGrid a.ca[data-repo]');
     const count = await cards.count();
+    const catalogTotal = Number(await page.locator('#catalogGrid').getAttribute('data-total'));
     // The full static catalog renders the complete archive, not a preview slice.
-    expect(count).toBeGreaterThanOrEqual(150);
+    expect(catalogTotal).toBeGreaterThan(0);
+    expect(count).toBe(catalogTotal);
 
     const hrefs = await cards.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
     expect(hrefs.length).toBe(count);
@@ -724,13 +748,14 @@ test.describe('full catalog no-JS reachability', () => {
 });
 
 test.describe('timeline URL-state persistence', () => {
-  test('the timeline fold toggles without discarding keyboard focus', async ({ page }) => {
+  test('the timeline fold toggles without discarding keyboard focus or stays absent for compact data', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await preparePage(page, '/timeline/', '#timeline-events');
 
     const fold = page.locator('#timelineShowMoreBtn');
     if (!(await fold.count())) {
-      test.skip(true, 'Timeline does not exceed the initial fold in this build');
+      await expect(page.locator('[data-beyond-fold]')).toHaveCount(0);
+      expect(runtimeErrors).toEqual([]);
       return;
     }
 
