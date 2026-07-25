@@ -89,6 +89,31 @@ test('summarizeReleaseBody drops fenced code blocks', () => {
   assert.match(summary, /Upgrade notes/);
 });
 
+test('summarizeReleaseBody repairs a legacy hard-cut summary', () => {
+  // Pre-v0.27.0 generator output: one joined line sliced at exactly 220 chars.
+  const legacy = ('Keyboard-complete region capture: type exact dimensions, cycle an aspect lock, '
+    + 'resize with arrows (Shift = coarse), and move the whole region with the mouse wheel '
+    + 'while the overlay stays visible and the capture region wobbles').slice(0, 220);
+  assert.equal(legacy.length, 220);
+  const summary = summarizeReleaseBody(legacy);
+  assert.ok(summary.endsWith('…'), `expected an ellipsis, got: ${summary}`);
+  assert.ok(!/\s\S{1,3}…$/.test(summary) || summary.endsWith(' …') === false);
+  assert.ok(legacy.startsWith(summary.slice(0, -1)), 'repair must not invent text');
+});
+
+test('summarizeReleaseBody leaves a short single-line summary alone', () => {
+  // Below the cap, so it was never truncated — nothing to repair.
+  const clean = 'A complete sentence that ends properly.';
+  assert.equal(summarizeReleaseBody(clean), clean);
+});
+
+test('summarizeReleaseBody does not treat a long raw body as a hard cut', () => {
+  // Multi-line input is a real Markdown body, never a cached summary.
+  const body = ['First line of the release notes.', '- Second line.', '- Third line.'].join('\n');
+  assert.ok(body.length < 220);
+  assert.equal(summarizeReleaseBody(body), 'First line of the release notes. · Second line. · Third line.');
+});
+
 test('summarizeReleaseBody is idempotent over an already summarized value', () => {
   const body = 'First line.\n- **Second** line.\n- Third `line`.';
   const once = summarizeReleaseBody(body);

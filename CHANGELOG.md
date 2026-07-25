@@ -25,6 +25,19 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- Release summaries no longer end mid-word. The v0.27.0 generator produces
+  word-boundary summaries, but `fetch-stars` reuses cached rows for repos that
+  have published nothing new, so 18 of 60 entries kept a pre-v0.27.0 hard cut
+  indefinitely rather than clearing on the next refresh. The render-time
+  summarizer now detects that shape — a single line, at the 220-character cap,
+  with no ellipsis — and drops the severed word. Mid-word endings on `/releases/`
+  went from 23 to 0; the one remaining non-punctuated summary ends on a complete
+  version string.
+- Timeline event descriptions carry `data-pagefind-weight="0.3"`. A live data
+  refresh added AI-named projects to the timeline, and 232 machine-written event
+  summaries outweighed a topical page on raw term frequency — `/timeline/`
+  displaced `/ai/` as the top result for "AI services". Event titles and the page
+  heading keep full weight; all 10 corpus queries pass.
 - Refreshed the stale `search-desktop` visual baseline. It was last captured 20
   commits back and predated both the `/catalog/` route (which adds a Pagefind
   result to the page) and the v0.27.0 rewording of the No-JS fallback copy.
