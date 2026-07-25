@@ -4,6 +4,11 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.28.0] - 2026-07-25
+
+Roadmap drain. The active roadmap is now empty; the one remaining item moved to
+`Roadmap_Blocked.md` because it is gated on a product judgement rather than work.
+
 ### Changed
 
 - Dependency refresh: satori 0.26.0 → 0.29.0, @playwright/test 1.61.1 → 1.62.0,
@@ -25,6 +30,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- The skip reporter no longer fails runs that select a subset of specs. It
+  judged every pinned entry against the current run, so `audit:sw` and any `-g`
+  filter reported unrelated pins as stale. Pins are now only evaluated for specs
+  the invocation actually selected.
 - Release summaries no longer end mid-word. The v0.27.0 generator produces
   word-boundary summaries, but `fetch-stars` reuses cached rows for repos that
   have published nothing new, so 18 of 60 entries kept a pre-v0.27.0 hard cut
