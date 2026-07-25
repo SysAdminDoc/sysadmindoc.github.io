@@ -20,7 +20,8 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Generated timeline** — year-in-review page built from release and project-push evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
-- **Shared section navigation** — homepage and interior jump links reuse command-palette section data through `SectionJumpNav`
+- **Shared interior section navigation** — eight long-form interior route templates render
+  `SectionJumpNav` from the same per-page section data supplied to the command palette
 - **Interior freshness signals** — reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
@@ -161,7 +162,7 @@ Deployment is local-first:
 src/
 ├── assets/
 │   └── screenshots/thumbs/ # Astro <Picture> inputs for live-app card thumbnails
-├── components/      # cards, tag cloud, dividers, greatest-hits modules
+├── components/      # catalog/live/skill cards, navigation, footer, dividers, and proof modules
 ├── data/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
@@ -177,11 +178,13 @@ src/
 │   └── _*.json      # generated GitHub cache files (gitignored)
 ├── layouts/Base.astro
 ├── pages/
-│   ├── index.astro
-│   ├── now.astro · uses.astro · resume.astro · healthcare-it.astro · 404.astro
-│   ├── projects.json.ts · releases.json.ts · feed.json.ts · atom.xml.ts
-│   ├── search.astro · releases.astro · timeline.astro · archive.astro
-│   ├── rss.xml.ts · releases.xml.ts · llms.txt.ts
+│   ├── index.astro · 404.astro
+│   ├── ai.astro · archive.astro · catalog.astro · healthcare-it.astro
+│   ├── now.astro · releases.astro · resume.astro · screenshots.astro
+│   ├── search.astro · status.astro · timeline.astro · uses.astro
+│   ├── projects.json.ts · releases.json.ts · resume.json.ts · status.json.ts
+│   ├── feed.json.ts · atom.xml.ts · rss.xml.ts · releases.xml.ts
+│   ├── cmdk-data.js.ts · llms.txt.ts
 │   ├── lang/[slug].astro · lang/_langs.ts
 │   └── og/[slug].png.ts
 └── styles/
