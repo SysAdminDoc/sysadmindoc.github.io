@@ -1,3 +1,8 @@
+/**
+ * Source-level response defaults for endpoint execution. Astro static builds
+ * serialize endpoint bodies without these headers, so GitHub Pages owns the
+ * deployed header contract verified by scripts/smoke-live-site.mjs.
+ */
 export const GENERATED_ENDPOINT_CACHE_CONTROL = 'public, max-age=300';
 export const GENERATED_IMAGE_CACHE_CONTROL = 'public, max-age=86400';
 
