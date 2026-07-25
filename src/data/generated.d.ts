@@ -1,9 +1,9 @@
 // Shape contracts for the build-time generated caches written by
 // scripts/fetch-stars.mjs and scripts/sync-profile-feed.mjs (src/data/_*.json).
-// Consumers (index.astro, projects/[slug].astro, rss.xml.ts, releases.xml.ts,
-// summarize-generated-data) can reference these so a producer field rename is a
-// type error, not a silent undefined at runtime. The JSON files are gitignored;
-// these types document the agreed shape regardless of whether a cache is present.
+// Consumers include the release/status pages and their generated endpoints, so
+// a producer field rename is a type error rather than a silent undefined at
+// runtime. The JSON files are gitignored; these types document the agreed shape
+// regardless of whether a cache is present.
 
 export interface GeneratedStats {
   totalRepos: number;
