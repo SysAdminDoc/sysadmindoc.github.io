@@ -1,119 +1,158 @@
 # Research — sysadmindoc.github.io
-
-Date: 2026-07-21 — replaces all prior research.
+Date: 2026-07-25 — replaces all prior research.
+Site version at time of research: v0.27.0.
 
 ## Executive Summary
 
-[Verified] `sysadmindoc.github.io` v0.22.0 is a static Astro 7 portfolio/PWA that turns a reviewed GitHub catalog into hiring proof, live-app links, search, releases, machine feeds, and resume exports. Its strongest shape is privacy-first evidence with unusually strong local build, CSP, accessibility, screenshot, and Pages-publishing gates. The highest-value direction is to restore trust in those gates and finish the Operational Clarity migration across every public surface; adding more portfolio-template features would dilute the product.
+A static Astro 7 portfolio and public project archive for Matt Parker (SysAdminDoc), deployed to GitHub Pages from local builds. Its strongest current shape is **verification infrastructure**: 20 audit scripts under `scripts/audit-*.mjs`, wired into 34 npm audit entries, gate the build (CSP, DOM size, bundle budgets, dead CSS selectors, links, sitemap, schema, feeds, endpoints, image pipeline, live-app health, catalog drift, forced-colors, a11y), backed by 183 node tests plus Playwright interaction, visual, service-worker, and search-corpus suites. Zero runtime JS frameworks, `script-src 'self'` with Trusted Types, and a light-first "Operational Clarity" design system. `npm audit --omit=dev` reports 0 vulnerabilities; there are no TODO/FIXME/HACK markers anywhere in source.
 
-Top opportunities, in priority order:
+The site is now doing two jobs: career portfolio *and* a commercial pitch for fractional AI implementation on retainer (`/ai/`, added v0.23.0). The engineering quality of the first job is far ahead of the conversion instrumentation of the second. **The highest-value direction is closing that gap — making the services track machine-legible and reachable — not adding more audit surface.**
 
-1. Remove the live Astro, SVGO, and `fast-uri` advisory findings.
-2. Make publish readiness cover fresh generated data, exact catalog membership, live-app health, and featured-download provenance.
-3. Replace the stale OG image, app icons, install screenshots, manifest colors, and offline presentation with current reviewed assets.
-4. Fix mobile navigation when JavaScript is disabled.
-5. Bind every service-worker background cache write to the fetch-event lifetime.
-6. Make the dark Playwright lane actually load and assert dark theme.
-7. Centralize public role, version, theme, and count facts so `/now/`, `/uses/`, docs, and generated media cannot drift independently.
-8. Validate the resume JSON against JSON Resume and verify PDF reading order/text extraction.
-9. Expand first-install offline coverage and state-based visual/accessibility testing.
+Top opportunities, priority order:
+
+1. `/ai/` pitches four productized service lines but publishes no `Service`/`Offer` structured data — it is typed identically to `/healthcare-it/` (`AboutPage` + `WebPage`). (Verified)
+2. Contact exists on only 3 of 8 sampled routes; a visitor landing on `/catalog/` or `/releases/` from search has no path to contact. Also a WCAG 2.2 SC 3.2.6 gap. (Verified)
+3. Twelve hand-rolled `<footer>` blocks with twelve different link sets and no shared component — the root cause of #2, not a separate problem. (Verified)
+4. No `rel="me"` and no microformats2 anywhere — blocks Mastodon link verification and IndieWeb/fediverse discovery. (Verified)
+5. Astro 7 shipped agent-oriented dev tooling (`astro dev --background`, structured JSON logs, `/_astro/status`) that this agent-driven repo does not use. (Verified)
+6. The four 2026 Astro CVEs do not apply to this architecture — worth documenting so it is not re-litigated each pass. (Verified)
+7. Routine dependency drift: satori 0.26→0.29, Playwright 1.61→1.62, lightningcss 1.32→1.33, sanitize-html 2.17.5→2.17.6. (Verified)
 
 ## Product Map
 
-- [Verified] Core workflows: scan selected work and live evidence; filter/sort the 190-entry reviewed catalog; search indexed pages with Pagefind; inspect releases, timeline, screenshots, status, language lanes, and archive decisions; download HTML/JSON/PDF resume forms.
-- [Verified] User personas: hiring reviewers with short attention windows, technical peers validating source and release evidence, mobile/offline visitors, crawlers consuming feeds and machine endpoints, and the maintainer running local release gates.
-- [Verified] Platforms and distribution: static Astro output on GitHub Pages, installable PWA, Node 24+ Windows-first local tooling, Chromium/Playwright QA, direct GitHub project links, no runtime backend, accounts, or hosted analytics.
-- [Verified] Key data flow: ignored GitHub/profile caches → `src/data/portfolio.ts` reviewed intersection and local fallbacks → Astro pages/JSON/RSS/Atom/LLM endpoints → Pagefind index and stamped service worker → locally verified `gh-pages` publication.
+**Core workflows**
+- Scan credibility fast: hero proof strip → Greatest Hits (8 curated repos with story-driven "why") → live-app evidence rail.
+- Browse the archive: homepage preview slice (84 ranked) → `/catalog/` (all 178, client-side search/sort/filter, `cat=`/`q=`/`sort=`/`view=` URL state, no-JS reachable).
+- Evaluate momentum: `/releases/` (60 cached releases with provenance tiers), `/timeline/` (232 filterable events), `/now/`.
+- Hire or engage: `/resume/` (HTML + PDF + JSON Resume), `/healthcare-it/`, `/ai/` (retainer pitch).
+- Verify the site itself: `/status/` + `/status.json` (build identity, data freshness, coverage, release provenance).
+
+**Personas**
+1. Hiring manager / recruiter — scans for judgment and evidence, not repo counts.
+2. Prospective retainer client (SMB owner or ops lead) — arrives at `/ai/`, needs credibility then a low-friction next step.
+3. Peer developer — arrives from GitHub, uses `/catalog/`, `/search/`, feeds.
+4. Machine consumers — AI crawlers, IDE agents, feed readers. Served by `/llms.txt`, 4 feeds, 3 JSON endpoints, JSON-LD.
+
+**Platforms and distribution**
+Static output → `gh-pages` branch via `npm run publish:pages`, gated by `deploy:preflight`. Node 24 / npm 11. PWA with offline shell and full-route precache. No GitHub Actions by project policy — all builds, tests, and audits are local.
+
+**Key integrations and data flows**
+GitHub REST API (build-time via `scripts/fetch-stars.mjs` → gitignored `_*.json` caches; client-side refresh for live star counts) → `src/data/portfolio.ts` (narrows the 186-row profile feed to the 178-project reviewed catalog) → `src/data/catalog-render.ts` (shared ranking/freshness) → homepage preview + `/catalog/`. Pagefind indexes the built HTML post-build.
 
 ## Competitive Landscape
 
-- [Verified] **AstroPaper** does Astro-native search, RSS/sitemap, generated OG media, typed content, themes, and accessibility well. Learn its small, testable content boundaries; avoid importing blog/MDX, lightbox, callout, or email-obfuscation features without a corpus or spam problem.
-- [Verified] **Accessible Astro Starter** provides strong semantic, contrast, reduced-motion, skip-link, and manual-check patterns. Learn its explicit accessibility contract; avoid adding preference panels or an accessibility statement as substitutes for testing actual states.
-- [Verified] **GitProfile** proves GitHub-derived portfolios can remain configurable and Pages-friendly. Learn its source-driven generation and base-path discipline; avoid becoming a multi-user generator, theme gallery, or hosted-workflow product.
-- [Verified] **minimalist-portfolio-json** demonstrates one JSON Resume-compatible source for web and print output. Learn its cross-output contract; avoid replacing this repo's existing Astro resume UI with another theme.
-- [Verified] **Peerlist** frames projects as ordered proof with role, context, tools, outcome, and source. Learn the evidence hierarchy for selected work; avoid feeds, verification accounts, discussions, jobs, or network mechanics. A related proof-expansion item already exists in `Roadmap_Blocked.md` and must not be duplicated.
-- [Verified] **Carrd** paywalls canonical metadata, share images, icons, local fonts, redirects, and static export, confirming that polished external metadata is table-stakes. Learn to version and validate those assets; avoid forms, payments, embeds, and analytics hooks.
-- [Verified] **Webflow** monetizes CMS scale, localization, faster search indexing, page branching, targeted publishing, and behavioral analytics. Learn previewable, explicit publishing and search validation; avoid CMS, A/B, conversion, and behavioral-tracking surfaces.
-- [Verified] **Framer** treats CMS relationships, localization/RTL/`hreflang`, and cookieless analytics as product layers. Learn structured relationships and localization readiness; avoid locale machinery or analytics until authored translations or a decision need exists.
+**Astrofy / AstroPaper / astro-resume (OSS Astro portfolio templates)**
+Do well: fast setup, blog + CV + projects in one, JSON Resume support, command palette with hotkeys.
+Learn: `astro-resume` ships a hotkey-driven command palette. This site's `cmdk` is click-only by explicit project rule — a deliberate choice, not an oversight — so palette discoverability has to come from the visible nav affordance instead.
+Avoid: Tailwind-based, framework-hydrated templates. The zero-runtime-framework posture (69 KB of minified first-party JS across `dist/scripts/`, no hydration) is this site's clearest technical differentiator.
+
+**Plausible CE / Matomo (self-hosted analytics)**
+Do well: cookieless daily-salt hashing; no consent banner needed under legitimate interest.
+Learn: nothing to adopt directly (see Rejected). The transferable lesson is that "we measure nothing" is defensible only while the site is not also a sales asset — and it now is.
+Avoid: adding any third-party origin to `connect-src`, currently `'self' https://api.github.com`.
+
+**Web3Forms / StaticForms / Formspree (static-site form backends)**
+Do well: zero-backend form handling with Turnstile/Altcha spam control.
+Learn: Altcha is the only option that is self-hostable, cookieless, and GDPR-clean — relevant only if the existing Contabo VPS + Caddy stack documented on `/uses/` is ever used as a first-party endpoint.
+Avoid: third-party form endpoints. They require relaxing `form-action 'self'` and add a vendor that can disappear; the `mailto:` CTA already works.
+
+**Pagefind 1.5 (incumbent dependency)**
+Do well: BM25 ranking, metadata-only matches, web-component UI, per-language indexes with zero config.
+Learn: metadata-aware ranking is already live and corpus-verified here.
+Avoid: replacing the accessible, offline-capable component UI with a bespoke renderer for cosmetic gains — already correctly downgraded to P3 in ROADMAP.md.
+
+**Cloudflare Pages (hosting alternative)**
+Do well: a `_headers` file activates HSTS, CSP, Permissions-Policy, COOP/COEP at the edge.
+Learn: the *proxy* variant — Cloudflare in front of GitHub Pages via a custom domain — is the only realistic unblock for the Permissions-Policy P0 in `Roadmap_Blocked.md`, and it preserves the entire existing build and deploy pipeline.
+Avoid: a full migration. `publish:pages`, the `gh-pages` branch contract, and the live smoke check are all built around GitHub Pages.
+
+**IndieWeb / Bridgy Fed**
+Do well: `rel="me"` identity verification, h-card portable profile, feed-to-fediverse bridging.
+Learn: `rel="me"` and h-card are near-zero-cost additions already justified by the site's four feeds.
+Avoid: Webmention receiving or ActivityPub actor hosting — both need a persistent server.
 
 ## Security, Privacy, and Reliability
 
-- [Verified] `npm run deps:audit` fails on `svgo@4.0.1` (high; fixed in 4.0.2). Full `npm audit` additionally finds `astro@7.0.6` (moderate; fixed in 7.1.0) and `fast-uri@3.1.2` through two high advisories (the complete fix is 3.1.4). `package.json` already permits patched Astro and transitive versions.
-- [Verified] `npm run data:summary:deploy` fails because cached GitHub data is 154.56 hours old against a 36-hour limit. It also reports four unsigned featured ClearCut releases while printing `Featured release provenance required: no`; `package.json` does not pass the existing `--fail-on-unsigned-featured-releases` option.
-- [Verified] `npm run catalog:audit` finds four active non-forks absent from review policy and eight catalog references no longer present as active public repositories. `npm run liveapps:audit` separately finds `ImageForge` returning HTTP 404. The publish preflight runs the catalog audit but not live-app health.
-- [Verified] `public/sw.js:81-102`, `:137-145`, and `:149-160` start cache writes that are not awaited by the response path or attached with `FetchEvent.waitUntil()`. Browsers may terminate those writes after a cached response is returned.
-- [Verified] `src/pages/index.astro:642` loads YouTube thumbnails before consent/click, and `Base.astro:54,145` permits and prefetches that third party. Cross-origin images disclose the visitor IP and referrer and may send existing third-party cookies.
-- [Verified] `public/scripts/service-worker.js:40-48` does not remember “Not now,” so a waiting worker reopens the update toast on the next page. `public/scripts/home-github.js:302-329` can leave live status at “checking” indefinitely when offline.
-- [Verified] `npm audit signatures` currently verifies registry signatures for 319 packages and attestations for 82. Preserve that result as a local publish-time supply-chain check; do not add code signing.
-- [Verified] Permissions-Policy and Trusted Types already exist in `Roadmap_Blocked.md`; do not create duplicate active items. Its Trusted Types rationale is stale because current browser scripts have no runtime HTML sinks and the CSP audit reports trial readiness.
+**Verified: the 2026 Astro CVE class does not apply.** All four — CVE-2026-41067 (`define:vars` XSS), CVE-2026-25545 (`@astrojs/node` SSRF), CVE-2026-45028 (server-island parameter replay), CVE-2026-50146 (`client:*` slot-name XSS) — require SSR, adapters, server islands, or client directives. This repo is `output: 'static'` on Astro 7.1.3 with zero `define:vars`, zero `client:*`, and zero islands (verified by grep across `src/`). The zero-framework architecture is doing real security work, not just performance work.
+
+**Platform ceiling (unchanged).** GitHub Pages serves no custom response headers, so Permissions-Policy, HSTS, COOP, and COEP are unreachable. Tracked as P0 in `Roadmap_Blocked.md`. The Cloudflare-proxy path is the unblock; it requires a custom domain, which is a purchasing decision rather than an engineering one.
+
+**Missing guardrail: no client-side error signal.** `public/scripts/service-worker.js` and `public/scripts/cmdk-loader.js` degrade visibly, but an uncaught error in `public/scripts/home-catalog.js` or `home-github.js` on a real visitor's browser is invisible to the maintainer. The Playwright suites assert `runtimeErrors` is empty, which catches regressions but not field conditions (older Safari, extensions, blocked requests). Genuine observability gap; see Rejected for why third-party error services are still the wrong answer here.
+
+**Recovery and rollback.** `publish:pages` pushes to a `gh-pages` branch, so rollback is `git revert` plus republish. Generated `_*.json` caches are gitignored, so a bad fetch is recoverable by re-running `fetch-stars`. Service-worker rollback is handled by the versioned cache key (`portfolio-v0.27.0`) plus the update toast, which gained a bounded fallback reload in v0.27.0.
+
+**Supply chain.** `npm run verify:signatures` runs inside `deploy:preflight`, `allowScripts` pins the esbuild install-script allowlist for npm v12, and `overrides` pin transitive `vite`/`yaml`/`svgo`/`postcss`/`fast-uri`. Stronger than typical for a personal site. satori v0.28 shipped an OIDC publish-integrity fix worth taking with the version bump.
 
 ## Architecture Assessment
 
-- [Verified] Public brand artifacts have no common release contract. `public/og.png`, `public/favicon.svg`, PNG icons, `public/manifest.json`, install screenshots, and `public/offline.html`/`styles/offline.css` still encode the retired terminal/dark identity, outdated counts, and removed claims; current tests mostly validate presence and dimensions.
-- [Verified] Public facts are split across `src/pages/index.astro`, `src/data/curated.ts`, `src/data/uses.ts`, `src/data/page-freshness.ts`, docs, manifest media, and static OG copy. This produces v0.21/v0.22, dark-first/light-first, and 183/186-project contradictions.
-- [Verified] `.nvmrc` pins Node 22 while `package.json` and repo docs require Node 24+. `package.json` has no `packageManager` pin, despite a local-only release process whose reproducibility depends on Node/npm behavior.
-- [Verified] The “chromium” audit project emulates `prefers-color-scheme: dark`, but `public/scripts/theme-toggle.js` defaults unsaved sessions to light and the test never seeds a dark preference. Twenty-six of 48 light/dark baseline pairs are byte-identical; the dark lane is false coverage.
-- [Verified] At widths ≤1080px, `critical.css`/`global.css` hide navigation links and show a JavaScript-only menu button. `Base.astro`'s `<noscript>` block does not restore the links, and static theme labels claim a light theme switch while markup starts light.
-- [Verified] The service-worker precache in `scripts/stamp-sw.mjs:64-81` covers home, offline, search, releases, and now, but not the generated public route inventory. Tests prove opportunistically cached pages, not deterministic first-install offline access across key routes.
-- [Verified] `src/pages/resume.json.ts` declares JSON Resume 1.0.0 while `src/data/career.ts` stores employment dates only in display strings. There is no official schema validation or PDF text/reading-order assertion.
-- [Verified] The built homepage is about 400 KB and 2,254 catalog DOM nodes, above Chrome's historical 1,400-node excessive-DOM threshold. Preserve direct links, no-JS access, and SEO through static pagination or an equivalent measured boundary rather than client-only virtualization.
-- [Verified] Playwright captures only the first viewport of major routes and omits 404, offline, most language lanes, open menus, catalog no-result/sort/view combinations, command failures, timeline empty, update, print, and offline-recovery states.
-- [Likely] `global.css`/`critical.css` token roots and their documentation have drifted, but the existing blocked CSS split covers the remediation path. Refresh that blocked item's evidence before execution instead of adding another roadmap row.
-- [Needs live validation] Current Pagefind excerpts appear repetitive for broad language queries. Build a frozen query/expected-result corpus before changing weights or sub-result presentation.
+**Boundary improvement: no shared footer.** Twelve routes each hand-roll `<footer>` markup (`src/pages/*.astro`, `src/pages/lang/[slug].astro`), producing twelve different link sets. `src/components/InteriorNav.astro` already establishes the pattern for shared chrome; there is no `Footer.astro` counterpart. Fixing this is the correct root-cause fix for the inconsistent-contact finding.
+
+**Refactor candidate: `src/styles/global.css`.** ~5,800 lines. Already tracked as two P2 items in `Roadmap_Blocked.md` (layer split, CSS nesting), both blocked on Linux-generated Playwright visual baselines. The blocker is real; no new recommendation.
+
+**Data layer is healthy.** `src/data/catalog-render.ts` is the single source for ranking/freshness (test-enforced since v0.27.0), `src/data/github.ts` the canonical URL helper, `src/data/release-summary.mjs` an idempotent normalizer shared by the generator and four render surfaces. The `.mjs`-in-`src/data/` pattern for logic shared between build scripts and Astro pages is sound and should be the default for future shared helpers.
+
+**Test and documentation gaps.**
+- `tests/playwright/interaction-smoke.spec.mjs` `test.skip`s the screenshots-gallery facet whenever live-app data has a single category, which is the current state. The path is covered by a unit test added in v0.27.0, but the skip is easy to miss in summary output.
+- `AGENTS.md` states README.md is "the ONLY .md tracked in git". Actually tracked: `CHANGELOG.md`, `README.md`, `RESEARCH.md`, `ROADMAP.md`, `archive/screenshots/README.md`. The doc is wrong and has already misled at least one session into treating these deliverables as gitignored.
+- Adding an interior route requires ~12 coordinated edits (enumerated in CLAUDE.md). No scaffold script exists; this is the most likely source of a future partial-registration bug.
 
 ## Rejected Ideas
 
-- [Verified] Hosted analytics, A/B testing, conversion overlays, forms, CRM, and behavioral replay from Webflow/Framer/Contra: no decision need justifies violating the no-tracking, backend-free model.
-- [Verified] CMS, blog scaffolding, local project-detail pages, and multi-author content from Magic Portfolio/Astrofy/Squarespace: the repository deliberately removed local project pages and uses direct GitHub proof.
-- [Verified] Accounts, social feeds, endorsements, messaging, payments, collaboration, and plugin marketplaces from Peerlist/Contra/GitProfile: a single-owner static portfolio has no authorization or shared-data model.
-- [Verified] Full localization or machine translation from Framer/Astro i18n: no authored translated resume/project corpus exists; plumbing alone would create stale duplicate surfaces.
-- [Verified] Immediate TypeScript 7 adoption: 7.0.2 is stable, but `@astrojs/check@0.9.9` still peers on TypeScript 5/6 and Astro template tooling cannot yet use the native API. Keep the existing blocked item.
-- [Verified] Email XOR/JavaScript obfuscation from AstroPaper issue #622: it breaks no-JS contact access and is unsupported by current spam evidence.
-- [Verified] Share-target, file-handler, protocol-handler, push, background-sync, or native-store PWA features: the portfolio has no inbound-document, queued-write, or notification workflow.
-- [Verified] GitHub Actions build/deploy: local-only publication is an explicit repository decision; improve local gates rather than reversing it.
-- [Verified] Client RUM SDKs or a public SBOM feature: field tracking conflicts with privacy, and the deployed static artifact contains no Node runtime. Aggregate CrUX and `npm sbom` remain optional maintainer tools, not product work.
-- [Verified] Theme galleries, splash loaders, animation showcases, AI-generated portfolio copy, or tutorial-identical projects: community and competitor evidence favors fast, authentic proof over template spectacle.
+- **Self-hosted analytics (Plausible CE / Matomo).** Contradicts the shipped promise on `/status/` — "Generated at build time; no runtime analytics or uptime service" — and commit `6c07f7c`, which removed pre-click YouTube/Google requests specifically for privacy. Would also require widening `connect-src`. If conversion measurement becomes necessary, change the stated promise deliberately first. *Source: repo philosophy + self-hosted-analytics research.*
+- **Third-party form backend (Web3Forms / Formspree / StaticForms).** Requires relaxing `form-action 'self'`, adds a vendor to the trust boundary, and `/ai/` already ships a working `mailto:` CTA. *Source: static-form-service research.*
+- **Client-side error monitoring SaaS (Sentry / TrackJS / Bugsnag).** Same CSP and third-party objections as analytics; every such tool ships a beacon indistinguishable from tracking to a privacy-minded visitor. *Source: error-monitoring research.*
+- **`/til/` or `/notes/` feed.** Explicitly parked in `NOTES_FEED_POLICY.md` (decision date 2026-05-17) with seven activation criteria, none currently met. *Source: NOTES_FEED_POLICY.md.*
+- **Adopting an Astro portfolio template (Astrofy et al.).** Tailwind plus hydrated islands would forfeit the zero-framework, 69 KB-JS posture. *Source: Astro template landscape research.*
+- **Full migration to Cloudflare Pages / Netlify / Vercel.** Discards `publish:pages`, the `gh-pages` contract, and the live smoke check to gain headers obtainable via a proxy instead. *Source: static-hosting comparison research.*
+- **Blocking AI training crawlers in `robots.txt`.** Each blocked bot costs an estimated 18–34% of potential AI citations on that engine; for a discovery-oriented site, blanket `Allow: /` is correct. *Source: AI-crawler robots.txt research.*
+- **`llms.txt` expansion work.** Adoption sits near 10% of top sites and AI *search* crawlers overwhelmingly skip the file and parse HTML directly; IDE agents are the real consumer, and the existing file already serves them. Structured data is the higher-leverage investment. *Source: llms.txt adoption research.*
+- **i18n / l10n.** Single-author English portfolio targeting a US market (Sarasota, FL; healthcare IT; US retainer clients). No evidence of non-English demand. Consciously excluded.
+- **Multi-user, plugin ecosystem, migration tooling.** Not applicable to a single-author static portfolio. Consciously excluded.
+- **Webmention receiving / ActivityPub actor.** Both require a persistent server; static-only constraint. *Source: IndieWeb research.*
 
 ## Sources
 
-Direct OSS, commercial, and research:
-- https://github.com/satnaing/astro-paper
-- https://github.com/incluud/accessible-astro-starter
-- https://github.com/arifszn/gitprofile
-- https://github.com/midudev/minimalist-portfolio-json
-- https://peerlist.io/
-- https://carrd.co/docs/pro/features
-- https://help.webflow.com/hc/en-us/articles/51059955082387-Updated-pricing-and-simplified-plans-for-May-2026
-- https://www.framer.com/help/localization/
-- https://conf.researchr.org/details/saner-2025/saner-2025-papers/47/Improving-Evidence-Based-Tech-Hiring-with-GitHub-Supported-Resume-Matching
+Framework and dependencies
+- https://astro.build/blog/astro-7/
+- https://github.com/advisories/GHSA-j687-52p2-xcff
+- https://advisories.gitlab.com/npm/astro/CVE-2026-50146/
+- https://advisories.gitlab.com/npm/astro/CVE-2026-45028/
+- https://github.com/vercel/satori/releases
+- https://github.com/Pagefind/pagefind/releases/tag/v1.5.0
+- https://pagefind.app/docs/search-ui/
 
-Community signal:
-- https://www.reddit.com/r/webdev/comments/1sf7jrm/what_do_hiring_managers_look_for_in_portfolio/
-- https://news.ycombinator.com/item?id=41656015
-- https://lobste.rs/s/b7lt29/show_your_personal_websites
+Standards, platform, and discovery
+- https://schema.org/ProfessionalService
+- https://www.schemaapp.com/schema-markup/services-schema-markup-schema-org-services/
+- https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API
+- https://developer.chrome.com/docs/web-platform/prerender-pages
+- https://webkit.org/blog/17818/announcing-interop-2026/
+- https://indieweb.org/discovery
+- https://fed.brid.gy/docs
+- https://www.rankability.com/data/llms-txt-adoption/
+- https://presenc.ai/research/state-of-llms-txt-2026
 
-Standards and platform guidance:
-- https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil
-- https://web.dev/articles/service-worker-lifecycle
-- https://www.w3.org/TR/WCAG22/
-- https://www.w3.org/TR/appmanifest/
-- https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/screenshots
-- https://web.dev/learn/privacy/third-parties
-- https://web.dev/articles/dom-size-and-interactivity
-- https://pagefind.app/docs/filtering/
-- https://jsonresume.org/schema
-- https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF3
+Accessibility and performance
+- https://www.onetrust.com/blog/understanding-the-european-accessibility-act-and-wcag-22/
+- https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/
+- https://webhelpagency.com/blog/core-web-vitals-2026/amp/
 
-Dependencies and security:
-- https://astro.build/blog/astro-710/
-- https://github.com/advisories/GHSA-4g3v-8h47-v7g6
-- https://github.com/advisories/GHSA-2p49-hgcm-8545
-- https://github.com/advisories/GHSA-4c8g-83qw-93j6
-- https://github.com/advisories/GHSA-v2hh-gcrm-f6hx
-- https://docs.npmjs.com/cli/v9/commands/npm-audit/
-- https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
-- https://docs.github.com/en/actions/concepts/security/artifact-attestations
+Hosting, forms, analytics, monitoring
+- https://github.com/orgs/community/discussions/142836
+- https://zeriflow.com/blog/cloudflare-pages-security-guide
+- https://litlyx.com/blog/best-self-hosted-web-analytics-gdpr-compliant-2026
+- https://web3forms.com/
+- https://openalternative.co/alternatives/cloudflare-turnstile
+- https://www.inspectlet.com/guides/best-javascript-error-tracking-tools
+
+Competitive and positioning
+- https://github.com/manuelernestog/astrofy
+- https://github.com/topics/astro-portfolio
+- https://www.anagram.ai/blog/ai-crawlers-explained-gptbot-claudebot-perplexitybot-and-how-to-let-them-in-2026
+- https://www.jobscan.co/blog/20-ats-friendly-resume-templates/
 
 ## Open Questions
 
-- None.
+1. **Is acquiring a custom domain acceptable?** It is the only path to Permissions-Policy/HSTS (Cloudflare proxy in front of GitHub Pages) and would unblock a standing P0 in `Roadmap_Blocked.md`. Pure cost/preference decision; cannot be resolved by inspection or further research.
+2. **Should `/ai/` publish price anchors?** `Service`/`Offer` schema is materially more useful to AI answer engines when it carries an `OfferCatalog` with at least a price range. Whether to publish retainer pricing publicly is a business decision.
+3. **Is "no runtime analytics" a hard commitment or a current default?** It is stated as fact on `/status/`. If the services track needs conversion data, that promise must change first — deliberately, not incidentally.
