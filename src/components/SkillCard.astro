@@ -11,11 +11,15 @@ const langMap: Record<string, string> = {
   'Kotlin': 'kotlin',
   'C#': 'cs',
 };
+// Skills without a dedicated lane hand off to a pre-filtered catalog. Target the
+// full /catalog/ route, not the homepage preview slice: `sec` has projects in the
+// archive but none in the top-ranked preview, so "Open matches" used to land on a
+// surface with nothing to show.
 const fallbackHrefMap: Record<string, string> = {
-  'C#': '/?cat=cs#catalog',
-  'C++': '/?cat=cs#catalog',
-  'HTML / CSS': '/?cat=web#catalog',
-  pfSense: '/?cat=sec#catalog',
+  'C#': '/catalog/?cat=cs',
+  'C++': '/catalog/?cat=cs',
+  'HTML / CSS': '/catalog/?cat=web',
+  pfSense: '/catalog/?cat=sec',
 };
 const slug = langMap[skill.name];
 const href = slug ? `/lang/${slug}/` : fallbackHrefMap[skill.name];
