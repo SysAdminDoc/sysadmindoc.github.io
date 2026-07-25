@@ -130,6 +130,7 @@ export function reviewedWebPageJsonLd({
   description,
   lastReviewed,
   schemaTypes = ['WebPage'],
+  extraNodes = [],
 }: {
   siteUrl: string;
   route: string;
@@ -137,6 +138,13 @@ export function reviewedWebPageJsonLd({
   description: string;
   lastReviewed: string;
   schemaTypes?: string[];
+  /**
+   * Additional schema.org nodes to publish alongside the page node. They are
+   * emitted in the same `@graph` rather than a second `<script>` block, so a
+   * route keeps exactly one JSON-LD element and page-level `@id` references
+   * resolve without a second document.
+   */
+  extraNodes?: Record<string, unknown>[];
 }) {
   const url = `${siteUrl}${route}`;
   const types = schemaTypes.length === 1 ? schemaTypes[0] : schemaTypes;
@@ -156,5 +164,52 @@ export function reviewedWebPageJsonLd({
   if (schemaTypes.includes('ProfilePage')) {
     node.mainEntity = { '@id': personId };
   }
-  return JSON.stringify(node);
+  if (extraNodes.length === 0) return JSON.stringify(node);
+  const { '@context': context, ...pageNode } = node;
+  return JSON.stringify({ '@context': context, '@graph': [pageNode, ...extraNodes] });
+}
+
+/**
+ * Build the `OfferCatalog` + `Service` nodes for a productized services track.
+ *
+ * Derived from the same array that renders the service cards, so the published
+ * offer list cannot drift from the visible copy.
+ */
+export function serviceCatalogNodes({
+  siteUrl,
+  route,
+  catalogName,
+  services,
+}: {
+  siteUrl: string;
+  route: string;
+  catalogName: string;
+  services: readonly { tag: string; name: string; desc: string }[];
+}): Record<string, unknown>[] {
+  const url = `${siteUrl}${route}`;
+  const personId = `${siteUrl}/#matt-parker`;
+  const areaServed = { '@type': 'Country', name: 'United States' };
+  const serviceNodes = services.map((service) => ({
+    '@type': 'Service',
+    '@id': `${url}#service-${service.tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    name: service.name,
+    description: service.desc,
+    serviceType: service.tag,
+    provider: { '@id': personId },
+    areaServed,
+  }));
+  return [
+    {
+      '@type': 'OfferCatalog',
+      '@id': `${url}#services`,
+      name: catalogName,
+      url,
+      provider: { '@id': personId },
+      itemListElement: serviceNodes.map((service) => ({
+        '@type': 'Offer',
+        itemOffered: { '@id': service['@id'] },
+      })),
+    },
+    ...serviceNodes,
+  ];
 }

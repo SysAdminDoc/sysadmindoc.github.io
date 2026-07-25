@@ -4,7 +4,12 @@ import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
-import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import {
+  formatReviewedDate,
+  pageFreshnessBySlug,
+  reviewedWebPageJsonLd,
+  serviceCatalogNodes,
+} from '../data/page-freshness';
 import { catalog, liveApps } from '../data/portfolio';
 import { experienceLabel, experienceShort } from '../data/identity';
 
@@ -13,14 +18,6 @@ const pageOg = interiorOgPageBySlug['ai'];
 const pageFreshness = pageFreshnessBySlug['ai'];
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
-const pageJsonLd = reviewedWebPageJsonLd({
-  siteUrl,
-  route: pageFreshness.route,
-  title,
-  description: pageOg.description,
-  lastReviewed: pageFreshness.lastReviewed,
-  schemaTypes: pageFreshness.schemaTypes,
-});
 const projectCount = catalog.length;
 const liveAppCount = liveApps.length;
 
@@ -46,6 +43,23 @@ const services = [
     desc: 'An open line for whatever comes up: a slow process, a manual report, two systems that will not talk to each other. You describe the friction; it comes back solved, documented, and maintained.',
   },
 ] as const;
+
+// Publish the offer list as structured data from the same array that renders the
+// cards below, so an answer engine reads exactly what a visitor reads.
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+  extraNodes: serviceCatalogNodes({
+    siteUrl,
+    route: pageFreshness.route,
+    catalogName: 'AI implementation services',
+    services,
+  }),
+});
 
 const engagementSteps = [
   {

@@ -10,13 +10,6 @@ Last normalized: 2026-07-24
 
 ### P1
 
-- [ ] P1 — Publish Service/Offer structured data for the `/ai/` services track
-  Why: `/ai/` sells four productized service lines on a monthly retainer but emits only `AboutPage` + `WebPage` JSON-LD — the same shape as `/healthcare-it/` — so no answer engine can read what is actually offered.
-  Evidence: JSON-LD inventory of `dist/ai/index.html` (types: WebSite, Person, [AboutPage, WebPage]); schema.org `Service`/`Offer` guidance and 2026 structured-data-for-AI research in RESEARCH.md.
-  Touches: `src/pages/ai.astro`, `src/data/page-freshness.ts` (`schemaTypes`), `scripts/audit-schema.mjs` (representative-route expectations), `test/` schema coverage.
-  Acceptance: `/ai/` emits a `Service` (or `OfferCatalog` of `Service` nodes) whose `provider` references the existing `#matt-parker` Person `@id`, one node per rollout / automation / training / retainer line, each with `name`, `description`, and `areaServed`; `npm run schema:audit` passes and asserts the new types.
-  Complexity: S
-
 - [ ] P1 — Extract a shared `Footer.astro` and give every route a consistent contact affordance
   Why: Twelve routes hand-roll `<footer>` markup with twelve different link sets, and a contact link appears on only 3 of 8 sampled routes — a visitor arriving at `/catalog/` or `/releases/` from search has no path to contact. Fixing the duplication is the root-cause fix; the contact gap is the symptom.
   Evidence: `grep -c '<footer>' src/pages/*.astro` returns 12 files with no `Footer.astro` in `src/components/`; `mailto:` present in `dist/{index,ai,resume}` only, absent from `dist/{catalog,search,releases,now,status}`. WCAG 2.2 SC 3.2.6 Consistent Help (see RESEARCH.md).
