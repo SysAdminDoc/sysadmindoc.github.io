@@ -3,6 +3,8 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import ts from 'typescript';
+import { parseMarkupAttributes, scanMarkup } from './lib/csp-markup-parser.mjs';
 
 const root = process.cwd();
 const sourceDirs = ['src'];
@@ -85,17 +87,6 @@ function lineFor(text, index) {
   return text.slice(0, index).split(/\r?\n/).length;
 }
 
-function parseAttrs(source) {
-  const attrs = {};
-  const pattern = /([:@\w-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
-  let match;
-  while ((match = pattern.exec(source)) !== null) {
-    const [, name, doubleQuoted, singleQuoted, bare] = match;
-    attrs[name.toLowerCase()] = doubleQuoted ?? singleQuoted ?? bare ?? true;
-  }
-  return attrs;
-}
-
 function sha256Csp(value) {
   return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
 }
@@ -132,21 +123,89 @@ async function resolveStyleBlockContent(filePath, text, attrs, content) {
 async function resolveGeneratedCsp(filePath, text, value) {
   if (value !== '{contentSecurityPolicy}') return value;
 
-  const policyTemplate = text.match(/const\s+contentSecurityPolicy\s*=\s*`([\s\S]*?)`;/)?.[1] ?? null;
-  const criticalImport = text.match(/import\s+criticalCss\s+from\s+['"]([^'"]+)\?raw['"];/)?.[1] ?? null;
-  const noJsRevealCss = extractSingleQuotedConst(text, 'noJsRevealCss');
-  if (!policyTemplate || !criticalImport || !noJsRevealCss) return value;
+  const frontmatter = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? text;
+  const sourceFile = ts.createSourceFile(filePath, frontmatter, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const declarations = new Map();
+  const values = new Map();
+  const resolving = new Set();
+  const criticalCss = await extractRawCssImport(filePath, text, 'criticalCss');
+  if (criticalCss === null) {
+    throw new Error(`Unable to resolve source CSP in ${filePath}: criticalCss ?raw import is missing or unreadable.`);
+  }
+  values.set('isDev', false);
+  values.set('criticalCss', criticalCss);
 
-  const criticalCssPath = path.resolve(path.dirname(filePath), criticalImport);
-  const criticalCss = await fs.readFile(criticalCssPath, 'utf8').catch(() => null);
-  if (criticalCss === null) return value;
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name) && declaration.initializer) {
+        declarations.set(declaration.name.text, declaration.initializer);
+      }
+    }
+  }
 
-  const styleElemSrc = ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
-  return policyTemplate
-    .replace('${scriptSrc}', "'self'")
-    .replace('${styleSrc}', "'self'")
-    .replace('${styleElemSrc}', styleElemSrc)
-    .replace('${styleAttrSrc}', "'none'");
+  function evaluate(node) {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+    if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
+    if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
+    if (ts.isParenthesizedExpression(node)) return evaluate(node.expression);
+    if (ts.isAsExpression(node) || ts.isSatisfiesExpression(node)) return evaluate(node.expression);
+    if (ts.isIdentifier(node)) {
+      const name = node.text;
+      if (values.has(name)) return values.get(name);
+      const declaration = declarations.get(name);
+      if (!declaration) throw new Error(`Unknown CSP source identifier: ${name}`);
+      if (resolving.has(name)) throw new Error(`Circular CSP source constant: ${name}`);
+      resolving.add(name);
+      let resolved;
+      try {
+        resolved = evaluate(declaration);
+      } finally {
+        resolving.delete(name);
+      }
+      values.set(name, resolved);
+      return resolved;
+    }
+    if (ts.isConditionalExpression(node)) {
+      return evaluate(node.condition) ? evaluate(node.whenTrue) : evaluate(node.whenFalse);
+    }
+    if (ts.isArrayLiteralExpression(node)) {
+      return node.elements.map((element) => evaluate(element));
+    }
+    if (ts.isTemplateExpression(node)) {
+      return node.templateSpans.reduce(
+        (result, span) => `${result}${String(evaluate(span.expression))}${span.literal.text}`,
+        node.head.text,
+      );
+    }
+    if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+      return String(evaluate(node.left)) + String(evaluate(node.right));
+    }
+    if (ts.isCallExpression(node)) {
+      if (ts.isIdentifier(node.expression) && node.expression.text === 'sha256Csp' && node.arguments.length === 1) {
+        return sha256Csp(String(evaluate(node.arguments[0])));
+      }
+      if (ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === 'join') {
+        const valuesToJoin = evaluate(node.expression.expression);
+        if (!Array.isArray(valuesToJoin)) throw new Error('CSP .join() receiver is not an array.');
+        const separator = node.arguments.length > 0 ? String(evaluate(node.arguments[0])) : ',';
+        return valuesToJoin.join(separator);
+      }
+    }
+    throw new Error(`Unsupported CSP source expression: ${node.getText(sourceFile)}`);
+  }
+
+  try {
+    const declaration = declarations.get('contentSecurityPolicy');
+    if (!declaration) throw new Error('contentSecurityPolicy declaration is missing.');
+    const resolved = evaluate(declaration);
+    if (typeof resolved !== 'string' || /\$\{[^}]+\}/.test(resolved)) {
+      throw new Error('contentSecurityPolicy did not resolve to a complete string.');
+    }
+    return resolved;
+  } catch (error) {
+    throw new Error(`Unable to resolve source CSP in ${filePath}: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }
 
 function parseCsp(policy) {
@@ -268,14 +327,10 @@ async function auditSourceFile(filePath, text) {
   const styleAttributes = [];
   const styleLinks = [];
 
-  const tagPattern = /<([A-Za-z][\w:-]*)(\s[\s\S]*?)?>/g;
-  let tagMatch;
-  while ((tagMatch = tagPattern.exec(text)) !== null) {
-    const [tagSource, tagNameRaw, attrText = ''] = tagMatch;
-    if (tagSource.startsWith('</')) continue;
-    const tagName = tagNameRaw.toLowerCase();
-    const attrs = parseAttrs(attrText);
-    const line = lineFor(text, tagMatch.index);
+  for (const tag of scanMarkup(text)) {
+    const { tagName, source: tagSource } = tag;
+    const attrs = parseMarkupAttributes(tag.attrText);
+    const line = lineFor(text, tag.start);
 
     if (tagName === 'meta' && String(attrs['http-equiv'] ?? '').toLowerCase() === 'content-security-policy') {
       cspMetas.push({ file: rel, line, content: await resolveGeneratedCsp(filePath, text, String(attrs.content ?? '')) });
@@ -305,10 +360,7 @@ async function auditSourceFile(filePath, text) {
     }
 
     for (const [name, value] of Object.entries(attrs)) {
-      // A valueless bare word is never an event handler — `parseAttrs` records
-      // any token inside the tag, so prose in an Astro expression ("... is one
-      // lane ...") would otherwise register as an `one` handler. Real handlers
-      // always carry a value: `onclick="..."`.
+      // Valueless words are neither executable handlers nor style values.
       if (/^on[a-z]+$/.test(name) && typeof value === 'string') {
         eventHandlers.push({
           file: rel,
@@ -320,7 +372,7 @@ async function auditSourceFile(filePath, text) {
           allowlist: null,
         });
       }
-      if (name === 'style') {
+      if (name === 'style' && typeof value === 'string') {
         styleAttributes.push({
           file: rel,
           line,
@@ -329,88 +381,55 @@ async function auditSourceFile(filePath, text) {
         });
       }
     }
-  }
 
-  const selfClosingScriptPattern = /<script\b([^>]*?)\/>/gi;
-  let selfClosingScriptMatch;
-  while ((selfClosingScriptMatch = selfClosingScriptPattern.exec(text)) !== null) {
-    const [full, attrText] = selfClosingScriptMatch;
-    const attrs = parseAttrs(attrText);
-    const kind = scriptType(attrs);
-    const source = attrs.src ? sourceKindForUrl(String(attrs.src)) : { kind: 'inline' };
-    const executable = source.kind === 'inline' && scriptIsExecutable(kind);
-    const dynamic = Boolean(attrs['define:vars'] || attrs['set:html']);
-    scripts.push({
-      file: rel,
-      line: lineFor(text, selfClosingScriptMatch.index),
-      attrs,
-      type: kind,
-      sourceKind: source.kind,
-      origin: source.origin,
-      protocol: source.protocol,
-      executable,
-      dynamic,
-      content: '',
-      hash: null,
-      tagSource: full.slice(0, Math.min(240, full.length)).replace(/\s+/g, ' ').trim(),
-      allowlist: null,
-    });
-  }
-
-  const scriptPattern = /<script\b((?:(?!\/>)[^>])*)>([\s\S]*?)<\/script>/gi;
-  let scriptMatch;
-  while ((scriptMatch = scriptPattern.exec(text)) !== null) {
-    const [full, attrText, content] = scriptMatch;
-    const attrs = parseAttrs(attrText);
-    const kind = scriptType(attrs);
-    const source = attrs.src ? sourceKindForUrl(String(attrs.src)) : { kind: 'inline' };
-    const executable = source.kind === 'inline' && scriptIsExecutable(kind);
-    const dynamic = Boolean(attrs['define:vars'] || attrs['set:html']);
-    scripts.push({
-      file: rel,
-      line: lineFor(text, scriptMatch.index),
-      attrs,
-      type: kind,
-      sourceKind: source.kind,
-      origin: source.origin,
-      protocol: source.protocol,
-      executable,
-      dynamic,
-      content,
-      hash: executable && !dynamic && content.trim() ? sha256Csp(content) : null,
-      tagSource: full.slice(0, Math.min(240, full.length)).replace(/\s+/g, ' ').trim(),
-      allowlist: null,
-    });
-  }
-
-  const stylePattern = /<style\b([^>]*)>([\s\S]*?)<\/style>/gi;
-  let styleMatch;
-  while ((styleMatch = stylePattern.exec(text)) !== null) {
-    const attrs = parseAttrs(styleMatch[1]);
-    const line = lineFor(text, styleMatch.index);
-    const isAstroSourceStyle = !options.distDir && rel.endsWith('.astro');
-    const isInlineAstroStyle = Boolean(attrs['is:inline'] || attrs['set:html']);
-    if (isAstroSourceStyle && !isInlineAstroStyle) {
-      astroExtractedStyleBlocks.push({
-        kind: 'astro-style-block',
+    if (tagName === 'script') {
+      const content = tag.content ?? '';
+      const kind = scriptType(attrs);
+      const source = attrs.src ? sourceKindForUrl(String(attrs.src)) : { kind: 'inline' };
+      const executable = source.kind === 'inline' && scriptIsExecutable(kind);
+      const dynamic = Boolean(attrs['define:vars'] || attrs['set:html']);
+      scripts.push({
         file: rel,
         line,
-        bytes: styleMatch[2].length,
         attrs,
+        type: kind,
+        sourceKind: source.kind,
+        origin: source.origin,
+        protocol: source.protocol,
+        executable,
+        dynamic,
+        content,
+        hash: executable && !dynamic && content.trim() ? sha256Csp(content) : null,
+        tagSource: tagSource.slice(0, Math.min(240, tagSource.length)).replace(/\s+/g, ' ').trim(),
+        allowlist: null,
       });
-      continue;
     }
 
-    const resolvedContent = await resolveStyleBlockContent(filePath, text, attrs, styleMatch[2]);
-    styleBlocks.push({
-      kind: 'style-block',
-      file: rel,
-      line,
-      dynamic: Boolean(attrs['set:html'] && resolvedContent === null),
-      bytes: resolvedContent?.length ?? styleMatch[2].length,
-      attrs,
-      hash: resolvedContent?.trim() ? sha256Csp(resolvedContent) : null,
-    });
+    if (tagName === 'style' && tag.content !== null) {
+      const isAstroSourceStyle = !options.distDir && rel.endsWith('.astro');
+      const isInlineAstroStyle = Boolean(attrs['is:inline'] || attrs['set:html']);
+      if (isAstroSourceStyle && !isInlineAstroStyle) {
+        astroExtractedStyleBlocks.push({
+          kind: 'astro-style-block',
+          file: rel,
+          line,
+          bytes: tag.content.length,
+          attrs,
+        });
+        continue;
+      }
+
+      const resolvedContent = await resolveStyleBlockContent(filePath, text, attrs, tag.content);
+      styleBlocks.push({
+        kind: 'style-block',
+        file: rel,
+        line,
+        dynamic: Boolean(attrs['set:html'] && resolvedContent === null),
+        bytes: resolvedContent?.length ?? tag.content.length,
+        attrs,
+        hash: resolvedContent?.trim() ? sha256Csp(resolvedContent) : null,
+      });
+    }
   }
 
   return { file: rel, cspMetas, scripts, eventHandlers, styleBlocks, astroExtractedStyleBlocks, styleAttributes, styleLinks };
