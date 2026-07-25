@@ -2,6 +2,11 @@
 // Edit these directly to reshape the story the portfolio tells.
 import type { GreatestHit, ManifestoRule } from './types';
 import { fallbackRepoCount } from './derived';
+import pkg from '../../package.json';
+
+// Derive the shipped version rather than hand-writing it into /now/ copy, which
+// had drifted three minor releases behind the manifest.
+const siteVersion = `v${pkg.version.split('.').slice(0, 2).join('.')}`;
 
 /**
  * Greatest Hits — ~8 repos I'd staple to my résumé.
@@ -93,7 +98,7 @@ export const now = {
   updated: '2026-07-23',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site v0.23 - ${fallbackRepoCount}+ repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
+    `Portfolio site ${siteVersion} - ${fallbackRepoCount} repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
     'AI services track: fractional AI implementation, automation, and training engagements for businesses on a monthly retainer',
     'Healthcare support workflows: migration coordination, customer cutover validation, and documentation cleanup',
     'Customer support operations: hosted account transitions, workstation support, and vendor handoffs',
