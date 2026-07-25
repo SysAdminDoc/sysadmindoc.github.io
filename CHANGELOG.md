@@ -53,6 +53,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Release summaries now wrap unbroken URLs inside their mobile grid track; a
   Playwright regression keeps production-length release copy within the
   viewport.
+- CSP source and built-output audits now scan tags structurally, preserving
+  quoted greater-than signs and Astro expressions while ignoring HTML comments.
+  Source mode evaluates the production constants in `Base.astro` instead of
+  substituting a hardcoded policy.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.

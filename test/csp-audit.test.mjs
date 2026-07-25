@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseMarkupAttributes, scanMarkup } from '../scripts/lib/csp-markup-parser.mjs';
 
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
@@ -33,6 +34,25 @@ function runAudit(args = []) {
   });
 }
 
+test('CSP markup parsing keeps Astro expressions and quoted greater-than signs inside their attributes', () => {
+  const [component] = scanMarkup('<Widget class:list={items.map((item) => item.active)} title={`house style guide`} />');
+  const attrs = parseMarkupAttributes(component.attrText);
+
+  assert.equal(attrs['class:list'], '{items.map((item) => item.active)}');
+  assert.equal(attrs.title, '{`house style guide`}');
+  assert.equal('style' in attrs, false);
+
+  const tags = scanMarkup(`
+    <!--<script>commentedOut()</script>-->
+    <a href="/x" title="a > b" onclick="alert(1)">Link</a>
+    <script data-x="a>b">activeScript()</script>
+  `);
+  assert.deepEqual(tags.map(({ tagName }) => tagName), ['a', 'script']);
+  assert.equal(parseMarkupAttributes(tags[0].attrText).onclick, 'alert(1)');
+  assert.equal(parseMarkupAttributes(tags[1].attrText)['data-x'], 'a>b');
+  assert.equal(tags[1].content, 'activeScript()');
+});
+
 test('csp audit inventories current inline script blockers without failing default mode', () => {
   const output = runAudit();
 
@@ -41,6 +61,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /style-src: 'self'/);
   assert.match(output, /style-src-elem: 'self' 'sha256-[A-Za-z0-9+/=]+' 'sha256-[A-Za-z0-9+/=]+'/);
   assert.match(output, /style-src-attr: 'none'/);
+  assert.doesNotMatch(output, /\$\{[^}]+\}/);
   assert.match(output, /script unsafe-inline active: no/);
   assert.match(output, /style unsafe-inline active: no/);
   assert.match(output, /style element unsafe-inline active: no/);
@@ -63,6 +84,98 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /style-src-attr unsafe-inline required today: no/);
   assert.match(output, /Trusted Types trial ready: yes/);
   assert.match(output, /CSP preflight audit passed/);
+});
+
+test('csp audit sees handlers after quoted greater-than signs and ignores commented scripts', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-markup-parser-'));
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "style-src-attr 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+
+  try {
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body><!--<script>commentedOut()</script>--><div style></div><a title="a > b" onclick="alert(1)">Link</a></body></html>`,
+    );
+    const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--strict'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /executable inline scripts: 0/);
+    assert.match(result.stdout, /inline event handlers: 1/);
+    assert.match(result.stdout, /inline style attributes: 0/);
+    assert.match(result.stderr, /1 inline event handler\(s\) are outside the CSP audit allowlist/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('csp audit hashes scripts correctly when an attribute contains a greater-than sign', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-script-attribute-'));
+  const content = 'activeScript()';
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "style-src-attr 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+
+  try {
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body><script data-x="a>b">${content}</script></body></html>`,
+    );
+    const output = execFileSync(process.execPath, [scriptPath, '--dist', tmp], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+
+    assert.match(output, /executable inline scripts: 1/);
+    assert.match(output, new RegExp(`hash='${sha256Csp(content).replaceAll('+', '\\+')}'`));
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('source-mode CSP resolution follows the production branch and rejects unsafe-inline drift', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-source-policy-'));
+  const layoutDir = path.join(tmp, 'src', 'layouts');
+  const stylesDir = path.join(tmp, 'src', 'styles');
+  fs.mkdirSync(layoutDir, { recursive: true });
+  fs.mkdirSync(stylesDir, { recursive: true });
+  const source = fs.readFileSync(baseLayoutPath, 'utf8');
+  const mutated = source.replace(
+    `const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";`,
+    `const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self' 'unsafe-inline'";`,
+  );
+  assert.notEqual(mutated, source);
+
+  try {
+    fs.writeFileSync(path.join(layoutDir, 'Base.astro'), mutated);
+    fs.copyFileSync(criticalCssPath, path.join(stylesDir, 'critical.css'));
+    const result = spawnSync(process.execPath, [scriptPath, '--strict'], {
+      cwd: tmp,
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /active CSP: .*script-src 'self' 'unsafe-inline'/);
+    assert.doesNotMatch(result.stdout, /\$\{[^}]+\}/);
+    assert.match(result.stderr, /script-src still allows 'unsafe-inline'/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 });
 
 test('csp style element hashes match the critical and no-js inline style blocks', () => {
