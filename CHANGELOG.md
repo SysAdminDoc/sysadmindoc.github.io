@@ -9,6 +9,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
+- Strict rendered CSP audits now fail when the active policy blocks an inline
+  style attribute or an external script origin; both findings were previously
+  reported as advisory inventory while the build still exited successfully.
 
 ## [v0.28.0] - 2026-07-25
 

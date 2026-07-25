@@ -258,3 +258,62 @@ test('csp audit strict dist mode fails on missing or divergent CSP metadata', ()
   assert.match(result.stderr, /1 built HTML file\(s\) are missing a CSP meta tag: .*missing\.html/);
   assert.match(result.stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*(index\.html|nested\/divergent\.html)/);
 });
+
+test('csp audit strict dist mode fails when active style-src-attr blocks an inline style', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-style-attr-active-'));
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "style-src-elem 'self'",
+    "style-src-attr 'none'",
+    "form-action 'self'",
+  ].join('; ');
+
+  try {
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body style="color:red"></body></html>`,
+    );
+    const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--strict'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /style-src-attr unsafe-inline required today: yes/);
+    assert.match(result.stderr, /1 style attribute\/write surface\(s\) are blocked by the active style-src-attr policy/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('csp audit strict dist mode fails when script-src blocks an external origin', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-script-origin-active-'));
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "style-src-elem 'self'",
+    "style-src-attr 'none'",
+    "form-action 'self'",
+  ].join('; ');
+
+  try {
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><script src="https://cdn.example.com/app.js"></script></head><body></body></html>`,
+    );
+    const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--strict'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /third-party external scripts: 1/);
+    assert.match(result.stdout, /external-script: .*https:\/\/cdn\.example\.com\/app\.js blocked by active script-src/);
+    assert.match(result.stderr, /1 external script source\(s\) are blocked by the active script-src/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
