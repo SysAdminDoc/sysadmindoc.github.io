@@ -83,6 +83,7 @@ export function computeDonutArcs(langCount, total) {
  * @returns {{ langCount: Record<string,number>, total: number }}
  */
 export function buildDonutLangCount(catalog, meta) {
+  /** @type {Record<string, number>} */
   const langCount = {};
   let total = 0;
   for (const entry of Array.isArray(catalog) ? catalog : []) {

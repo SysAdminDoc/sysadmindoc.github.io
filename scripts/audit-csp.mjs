@@ -317,6 +317,7 @@ async function auditSourceFile(filePath, text) {
           attribute: name,
           value: String(value),
           tagSource,
+          allowlist: null,
         });
       }
       if (name === 'style') {
@@ -352,6 +353,7 @@ async function auditSourceFile(filePath, text) {
       content: '',
       hash: null,
       tagSource: full.slice(0, Math.min(240, full.length)).replace(/\s+/g, ' ').trim(),
+      allowlist: null,
     });
   }
 
@@ -377,6 +379,7 @@ async function auditSourceFile(filePath, text) {
       content,
       hash: executable && !dynamic && content.trim() ? sha256Csp(content) : null,
       tagSource: full.slice(0, Math.min(240, full.length)).replace(/\s+/g, ' ').trim(),
+      allowlist: null,
     });
   }
 

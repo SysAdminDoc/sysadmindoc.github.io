@@ -5,6 +5,7 @@ import { test } from 'node:test';
 
 const root = process.cwd();
 const layerOrder = '@layer site.critical, site.foundation, site.audit, site.homepage, site.secondary, site.polish, site.refinement, site.additions;';
+/** @type {Array<[string, RegExp]>} */
 const globalLayerAnchors = [
   ['foundation', /^@layer site\.critical, site\.foundation, site\.audit, site\.homepage, site\.secondary, site\.polish, site\.refinement, site\.additions;\s*@layer site\.foundation \{/],
   ['audit', /\/\* ===== v0\.4 AUDIT FIXES \(a11y \+ mobile \+ cls\) ===== \*\/\s*@layer site\.audit \{/],

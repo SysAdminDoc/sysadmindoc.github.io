@@ -87,7 +87,7 @@ async function generate() {
     res.end(readFileSync(filePath));
   });
 
-  await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
+  await new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve()));
 
   let browser;
   try {

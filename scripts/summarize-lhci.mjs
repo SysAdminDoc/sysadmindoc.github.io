@@ -102,7 +102,9 @@ async function discoverReports() {
   const reportFiles = new Set(entries.filter((entry) => entry.endsWith('.report.json')));
   const manifestPath = path.join(reportDir, 'manifest.json');
   const manifest = await readJson(manifestPath).catch(() => null);
-  if (!Array.isArray(manifest)) return [...reportFiles].sort().map((file) => ({ file }));
+  if (!Array.isArray(manifest)) {
+    return [...reportFiles].sort().map((file) => ({ file, url: null, summary: null }));
+  }
 
   return manifest
     .filter((entry) => entry.isRepresentativeRun !== false)

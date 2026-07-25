@@ -110,7 +110,8 @@ class CdpClient {
       }, { once: true });
       this.socket.addEventListener('error', (event) => {
         clearTimeout(timer);
-        reject(event.error || new Error('CDP socket error.'));
+        const socketError = /** @type {{ error?: unknown }} */ (event).error;
+        reject(socketError instanceof Error ? socketError : new Error('CDP socket error.'));
       }, { once: true });
       this.socket.addEventListener('message', (event) => this.handleMessage(event.data));
       this.socket.addEventListener('close', () => {
@@ -155,7 +156,7 @@ class CdpClient {
     });
   }
 
-  waitFor(method, predicate = () => true, timeoutMs = 45000) {
+  waitFor(method, predicate = (_params) => true, timeoutMs = 45000) {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         const handlers = this.handlers.get(method) || [];
@@ -200,8 +201,9 @@ async function startStaticServer() {
       response.end(error.message);
     }
   });
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve()));
   const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('Unable to resolve the local audit server port.');
   return { server, baseUrl: `http://127.0.0.1:${address.port}/` };
 }
 

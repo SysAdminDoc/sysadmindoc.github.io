@@ -313,7 +313,7 @@ async function main() {
   console.log(`Wrote ${metaPath}: ${Object.keys(meta).length} repo metadata entries`);
 
   const topPushed = [...publicRepos]
-    .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
+    .sort((a, b) => Date.parse(b.pushed_at) - Date.parse(a.pushed_at))
     .slice(0, 40);
 
   const existingReleasesByRepo = new Map();
@@ -368,7 +368,7 @@ async function main() {
       console.warn(`Unable to refresh releases for ${repo.name}: ${error.message}`);
     }
   }
-  allReleases.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+  allReleases.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
   const releasesOutput =
     allReleases.length > 0 || releasesFetched > 0 || !Array.isArray(existingReleases) || existingReleases.length === 0
       ? allReleases.slice(0, 60)

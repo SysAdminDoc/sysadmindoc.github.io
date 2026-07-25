@@ -43,6 +43,17 @@ test('publish preflight verifies dependency registry signatures', async () => {
   assert.match(pkg.scripts['deploy:preflight'], /npm run verify:signatures/);
 });
 
+test('project check type-checks Node scripts and tests in checkJs mode', async () => {
+  const pkg = await readPackage();
+  const config = JSON.parse(await fs.readFile(path.join(root, 'tsconfig.scripts.json'), 'utf8'));
+
+  assert.equal(pkg.scripts['typecheck:scripts'], 'tsc --project tsconfig.scripts.json --pretty false');
+  assert.match(pkg.scripts.check, /npm run typecheck:scripts/);
+  assert.equal(config.compilerOptions.allowJs, true);
+  assert.equal(config.compilerOptions.checkJs, true);
+  assert.deepEqual(config.include, ['scripts/**/*.mjs', 'test/**/*.mjs']);
+});
+
 test('npm v12 install-script allowlist covers the build-script dependency', async () => {
   const pkg = await readPackage();
   assert.ok(

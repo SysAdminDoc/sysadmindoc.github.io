@@ -538,7 +538,10 @@ const summary = {
     top: rankingTopRows,
   },
   provenanceDistribution: {
-    ...provenanceCounts,
+    'no-assets': provenanceCounts['no-assets'],
+    unsigned: provenanceCounts.unsigned,
+    checksum: provenanceCounts.checksum,
+    attested: provenanceCounts.attested,
     unknown: provenanceUnknown,
     trusted: provenanceCounts.checksum + provenanceCounts.attested,
     total: releaseEntries,

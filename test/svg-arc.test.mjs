@@ -47,6 +47,7 @@ test('computeDonutArcs falls back to default color/tone for unknown language', (
 
 test('computeDonutArcs buckets languages beyond top-N into Other', () => {
   // Create DONUT_TOP_N + 2 languages each with count 1
+  /** @type {Record<string, number>} */
   const langCount = {};
   for (let i = 0; i < DONUT_TOP_N + 2; i++) langCount[`Lang${i}`] = 1;
   const total = DONUT_TOP_N + 2;

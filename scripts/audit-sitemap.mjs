@@ -7,6 +7,7 @@ const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const siteUrl = 'https://sysadmindoc.github.io';
 const errors = [];
+/** @type {Map<string, string>} */
 const reviewedDateByRoute = new Map(
   reviewedInteriorPages.map((page) => [page.route, page.lastReviewed]),
 );

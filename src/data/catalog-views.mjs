@@ -80,6 +80,7 @@ export function computeViewCounts(viewStateMap) {
  * @returns {Record<string, number>}
  */
 export function computeCategoryCounts(catalog) {
+  /** @type {Record<string, number>} */
   const counts = {};
   for (const entry of Array.isArray(catalog) ? catalog : []) {
     if (entry.category) counts[entry.category] = (counts[entry.category] ?? 0) + 1;
