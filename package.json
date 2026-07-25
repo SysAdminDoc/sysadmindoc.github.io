@@ -32,6 +32,7 @@
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "data:summary:strict": "node scripts/summarize-generated-data.mjs --fail-on-stale",
     "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes",
+    "deploy:status": "node scripts/smoke-live-site.mjs --status-only --retries 1",
     "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm test && npm run check && npm run build",
     "verify:signatures": "node scripts/verify-signatures.mjs",
     "publish:pages": "node scripts/publish-pages.mjs",

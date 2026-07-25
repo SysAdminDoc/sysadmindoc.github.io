@@ -66,6 +66,7 @@ npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness
 npm run data:summary -- --fail-on-unsigned-featured-releases # fail on featured releases without checksum or attestation
 npm run data:summary:strict # fail on stale, partial, or low-coverage generated-data caches
 npm run data:summary:deploy # strict generated-data gate plus token-backed README telemetry requirement
+npm run deploy:status # fail when the live Pages version or commit differs from local package.json + HEAD
 npm run deploy:preflight # deploy gate: generated-data summary, catalog drift audit, tests, check, and build
 npm run publish:pages # run preflight, publish dist/ to gh-pages, and smoke the live Pages URL
 npm run search:index   # build Pagefind static search index under dist/pagefind

@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
 import { appendFileSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
 const runId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const DEFAULT_LIVE_SITE_URL = 'https://sysadmindoc.github.io/';
 
 function hasFlag(name) {
   return process.argv.includes(name);
@@ -54,6 +56,21 @@ function commitsMatch(actual, expected) {
   if (!expected) return true;
   if (actual === 'unknown' || expected === 'unknown') return actual === expected;
   return actual.startsWith(expected) || expected.startsWith(actual);
+}
+
+function readHeadCommit() {
+  try {
+    return normalizeCommit(
+      execFileSync('git', ['rev-parse', 'HEAD'], {
+        cwd: root,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }),
+      'Local HEAD commit',
+    );
+  } catch {
+    throw new Error('Could not resolve local HEAD. Pass --expected-commit explicitly.');
+  }
 }
 
 async function readJson(filePath) {
@@ -300,12 +317,37 @@ async function checkLiveArtifacts(baseUrl, expected) {
   return summary;
 }
 
+async function checkDeployStatus(baseUrl, expected) {
+  const statusResponse = await fetchText(baseUrl, '/status.json', 'application/json');
+  requireHeader(statusResponse, '/status.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
+  const status = parseJson(statusResponse.body, '/status.json');
+  if (status.schema !== 'sysadmindoc.status.v1') throw new Error('/status.json schema drifted.');
+
+  const liveVersion = normalizeVersion(status.version);
+  const liveCommit = requireBuildCommit(status.build?.commit ?? 'unknown', '/status.json build.commit');
+  if (liveVersion !== expected.version || !commitsMatch(liveCommit, expected.commit)) {
+    throw new Error(
+      `Deploy drift detected: live v${liveVersion} (${liveCommit}) does not match local v${expected.version} (${expected.commit}).`,
+    );
+  }
+
+  requireDate(status.generatedAt, '/status.json generatedAt');
+  console.log('Deploy status');
+  console.log(`  live:  v${liveVersion} (${liveCommit})`);
+  console.log(`  local: v${expected.version} (${expected.commit})`);
+  console.log('Live deployment matches local HEAD.');
+}
+
 async function sleep(ms) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function smokeLiveSite() {
-  const baseUrl = option('--base-url', '--base') ?? process.env.LIVE_SITE_URL;
+  const statusOnly = hasFlag('--status-only');
+  const baseUrl =
+    option('--base-url', '--base') ??
+    process.env.LIVE_SITE_URL ??
+    (statusOnly ? DEFAULT_LIVE_SITE_URL : undefined);
   if (!baseUrl) throw new Error('Provide --base-url or LIVE_SITE_URL.');
   const parsedBase = new URL(baseUrl);
   if (!['http:', 'https:'].includes(parsedBase.protocol)) {
@@ -315,12 +357,12 @@ async function smokeLiveSite() {
   const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
   const expected = {
     version: normalizeVersion(option('--expected-version') ?? process.env.EXPECTED_VERSION ?? pkg.version),
-    commit: normalizeCommit(option('--expected-commit') ?? process.env.EXPECTED_COMMIT),
+    commit: normalizeCommit(option('--expected-commit') ?? process.env.EXPECTED_COMMIT) ?? readHeadCommit(),
     projects: positiveInteger(option('--expected-projects'), '--expected-projects'),
     releases: positiveInteger(option('--expected-releases'), '--expected-releases'),
     feedItems: positiveInteger(option('--expected-feed-items'), '--expected-feed-items'),
   };
-  if (!expected.projects || !expected.releases || !expected.feedItems) {
+  if (!statusOnly && (!expected.projects || !expected.releases || !expected.feedItems)) {
     throw new Error('Expected project, release, and feed item counts are required.');
   }
 
@@ -330,6 +372,10 @@ async function smokeLiveSite() {
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
+      if (statusOnly) {
+        await checkDeployStatus(parsedBase.toString(), expected);
+        return;
+      }
       const summary = await checkLiveArtifacts(parsedBase.toString(), expected);
       console.log('Live artifact smoke');
       console.log(`  base: ${parsedBase.toString()}`);
