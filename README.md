@@ -103,6 +103,20 @@ npm run dev:stop      # stop it
 `dev:agent` picks the next free port if 4321 is taken, so read the port from
 `npm run dev:status` rather than assuming it.
 
+Adding an interior route touches about a dozen files that must agree. Scaffold it
+rather than doing that by hand:
+
+```bash
+npm run scaffold:route -- talks --title "Talks" --label "Speaking" --dry-run
+npm run scaffold:route -- talks --title "Talks" --label "Speaking"
+```
+
+It writes the page stub and patches the OG page list, page freshness, schema
+audit routes, the `InteriorNav` union and link, and the Base command-palette
+section — exiting non-zero and naming anything whose anchor it could not find. It
+deliberately does not touch the frozen expectation sets in `test/`, since
+widening those is a review decision; it prints exactly which ones to update.
+
 `npm run audit:playwright` and `npm run audit:interactions` require a built `dist/` and a Chromium browser (`npx playwright install chromium`; Linux runs can use `npx playwright install --with-deps chromium`; local Windows runs can set `CHROME_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe"`). Visual baselines are fixture-backed: run `npm run generated:fixtures`, then `PROFILE_PROJECTS_OFFLINE=1 npm run build:ci`, then `npm run audit:playwright`. The visual suite covers desktop, mobile, 1000px, 1280px, 1440px, and a short-height desktop viewport for the main public routes. `npm run audit:playwright` starts its own built-preview server on port `4324` by default; set `PLAYWRIGHT_AUDIT_PORT` to override it. `npm run audit:interactions` runs focused rendered smoke tests over command palette lazy loading, filtering, no-results recovery, degraded search fallback, Escape close behavior, keyboard activation inside the dialog, pointer activation, same-page section jumps, catalog search, direct repository links, console errors, and horizontal overflow without screenshot assertions. The interaction smoke starts its own built-preview server on port `4325` by default so it does not reuse a stale Astro dev server; set `PLAYWRIGHT_INTERACTIONS_PORT` to override it. The visual/axe suite writes `.tmp/playwright-report` and `.tmp/playwright-results`; the interaction smoke writes `.tmp/playwright-interactions-report` and `.tmp/playwright-interactions-results`. `npm run capture-screenshots` uses the same Playwright browser dependency for screenshot capture.
 
 `npm run fetch-stars` works best with `GITHUB_TOKEN` set; without it, local runs preserve the existing README cache instead of exhausting the anonymous GitHub rate limit.

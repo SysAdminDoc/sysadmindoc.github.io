@@ -10,15 +10,6 @@ Last normalized: 2026-07-24
 
 ### P2
 
-### P3
-
-- [ ] P3 — Scaffold script for new interior routes
-  Why: Adding an interior route requires ~12 coordinated registration edits; the enumeration lives only in prose, making partial registration the most likely future defect class.
-  Evidence: `CLAUDE.md` Gotchas enumerates the registration points (interior-og-pages, page-freshness + pinned test array, audit-schema representativeRoutes, audit-image-pipeline requiredInteriorOgSlugs, InteriorNav ActiveRoute, cmdk quick link, Base cmdk section, Playwright routes, csp-audit pinned counts).
-  Touches: new `scripts/scaffold-route.mjs`, `package.json`, `CLAUDE.md`.
-  Acceptance: `node scripts/scaffold-route.mjs <slug>` creates the page stub and patches every registration point, or fails loudly listing the ones it could not patch; a dry-run mode reports the diff without writing.
-  Complexity: M
-
 ## Deep audit follow-ups (2026-07-25 pass)
 
 ### Not audited in the 2026-07-25 pass
