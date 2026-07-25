@@ -40,3 +40,15 @@ test('no public surface hardcodes a tenure figure', async () => {
   }
   assert.deepEqual(offenders, [], `Tenure figure must come from src/data/identity.ts, not literals in: ${offenders.join(', ')}`);
 });
+
+test('Person schema uses the site canonical and keeps external identity links in sameAs', async () => {
+  const [base, audit] = await Promise.all([
+    fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8'),
+    fs.readFile(path.join(root, 'scripts', 'audit-schema.mjs'), 'utf8'),
+  ]);
+
+  assert.match(base, /'@type': 'Person',[\s\S]*?url: 'https:\/\/sysadmindoc\.github\.io\/'/);
+  assert.match(base, /sameAs: \['https:\/\/github\.com\/SysAdminDoc','https:\/\/www\.linkedin\.com\/in\/matthewryanparker'\]/);
+  assert.match(audit, /Person url and @id must share the site origin/);
+  assert.match(audit, /Person sameAs is missing/);
+});

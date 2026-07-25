@@ -36,6 +36,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   files in JavaScript `checkJs` mode. Inferred callback, record, server-address,
   and fixture contracts were made explicit; a negative probe confirms a wrong
   argument in an audit helper fails the gate.
+- The JSON-LD `Person.url` now resolves to the portfolio canonical instead of
+  duplicating the GitHub profile already present in `sameAs`. The rendered
+  schema audit locks the `url`/`@id` origin and both external identity links.
 - The printable resume now overrides the wide interior-page grid with a compact
   Letter layout, keeps roles intact without pushing the entire experience
   section to a new page, and avoids repeating URLs already visible as link text.
