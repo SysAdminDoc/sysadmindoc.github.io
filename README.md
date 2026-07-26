@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.33.0-blue)
+![Version](https://img.shields.io/badge/version-0.34.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -28,7 +28,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance, PWA, update, and CSP hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
-- **Image pipeline checks** — Sharp-generated 640x400 live-app thumbnails, Astro-managed AVIF/WebP card previews, and generated interior OG PNG validation
+- **Image and brand pipeline checks** — Sharp-generated live-app thumbnails, Astro-managed card previews, reproducible MP app icons/install captures, and data-backed homepage/interior OG PNG generation
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
@@ -54,6 +54,8 @@ npm run assets:audit  # detect stale screenshots and unreferenced source/public 
 npm run css:audit     # verify critical/global parity and source-backed selector inventory
 npm run images:audit  # validate screenshot masters, public/Astro thumbnails, and OG PNG metadata
 npm run screenshots:thumbs # regenerate 640x400 live-app thumbnail derivatives and Astro inputs
+npm run brand:assets # regenerate favicon-derived MP PWA and Apple touch icons
+npm run capture:install-screenshots # capture current 1600px/390px PWA install previews from a running build
 npm run liveapps:audit # verify live app availability and screenshot manifest provenance
 npm run csp:audit     # verify source CSP script/style inventory, strict script-src readiness, and Trusted Types trial readiness
 npm run csp:audit:style # report current style-src 'self' blockers without failing
@@ -77,8 +79,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.33.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
-npm run smoke:release -- --tag v0.33.0 --asset sysadmindoc-portfolio-v0.33.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.34.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:release -- --tag v0.34.0 --asset sysadmindoc-portfolio-v0.34.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
