@@ -254,6 +254,45 @@ test.describe('Homepage live-card containment', () => {
   }
 });
 
+test('light-theme mobile ledgers reflow without squeezed columns or overlaps', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await preparePage(page, '/', '#hero');
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+
+  const proofRows = page.locator('.hero-proof-strip .hero-proof');
+  await expect(proofRows).toHaveCount(3);
+  const proofLayout = await proofRows.evaluateAll((rows) => rows.map((row) => {
+    const rect = row.getBoundingClientRect();
+    const value = row.querySelector('.hero-proof-value')?.getBoundingClientRect();
+    return {
+      x: rect.x,
+      width: rect.width,
+      valueRight: value?.right ?? 0,
+      rowRight: rect.right,
+    };
+  }));
+  expect(new Set(proofLayout.map((row) => Math.round(row.x))).size).toBe(1);
+  expect(proofLayout.every((row) => row.width > 300)).toBe(true);
+  expect(proofLayout.every((row) => row.valueRight <= row.rowRight + 1)).toBe(true);
+
+  await preparePage(page, '/catalog/', '#catalog');
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+  const catalogHeading = page.locator('#catalog .sh');
+  await catalogHeading.scrollIntoViewIfNeeded();
+  const catalogLayout = await catalogHeading.evaluate((heading) => {
+    const title = heading.querySelector('h2')?.getBoundingClientRect();
+    const copy = heading.querySelector('p')?.getBoundingClientRect();
+    return {
+      columns: getComputedStyle(heading).gridTemplateColumns.split(' ').length,
+      titleWidth: title?.width ?? 0,
+      copyWidth: copy?.width ?? 0,
+    };
+  });
+  expect(catalogLayout.columns).toBe(1);
+  expect(catalogLayout.titleWidth).toBeGreaterThan(300);
+  expect(catalogLayout.copyWidth).toBeGreaterThan(300);
+});
+
 test('release summaries with unbroken URLs stay inside the mobile viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await preparePage(page, '/releases/', '.rel-month:first-of-type .rel-item:first-child .rel-body');

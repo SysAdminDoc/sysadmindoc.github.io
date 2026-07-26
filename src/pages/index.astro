@@ -356,7 +356,7 @@ const cmdkSections = [
           </div>
           {latestRelease && (
             <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${heroReleaseDate.format(new Date(latestRelease.publishedAt))}`}>
-              <span class="pulse-k">Latest release</span>
+              <span class="pulse-k">Latest tagged release</span>
               <span class="pulse-v">{latestReleaseName}<span class="pulse-sub">{latestRelease.tag || heroReleaseDate.format(new Date(latestRelease.publishedAt))}</span></span>
             </a>
           )}
