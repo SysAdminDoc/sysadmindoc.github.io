@@ -58,7 +58,13 @@ test.describe('Pagefind relevance corpus', () => {
     await expect(page.locator('pagefind-filter-pane')).toContainText('Scope', { timeout: 20_000 });
 
     // Top results have unique excerpts (no repeated boilerplate snippets).
-    const excerpts = (await page.locator('.portfolio-result-card .pf-result-excerpt').allTextContents())
+    const resultExcerpts = page.locator('.portfolio-result-card .pf-result-excerpt');
+    await expect.poll(async () => {
+      const texts = await resultExcerpts.allTextContents();
+      return texts.map((text) => text.trim()).filter(Boolean).length;
+    }, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
+
+    const excerpts = (await resultExcerpts.allTextContents())
       .slice(0, 3)
       .map((text) => text.trim())
       .filter(Boolean);
