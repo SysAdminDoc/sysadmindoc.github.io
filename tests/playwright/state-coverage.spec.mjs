@@ -162,7 +162,7 @@ test.describe('open navigation state coverage', () => {
 test.describe('empty catalog state coverage', () => {
   test('the no-results catalog state is calm, accessible, and reachable', async ({ page }) => {
     await page.setViewportSize({ width: 1365, height: 900 });
-    await prepare(page, '/', '#catalog');
+    await prepare(page, '/catalog/', '#catalog');
     const input = page.locator('#searchInput');
     await input.fill('zzqqxxwwvvnothingmatchesthis');
     await expect(page.locator('#catalogGrid .ca:visible')).toHaveCount(0, { timeout: 10_000 });

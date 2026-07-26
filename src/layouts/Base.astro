@@ -43,7 +43,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const isHome = Astro.url.pathname === '/';
 // The /catalog/ route reuses the homepage catalog controller (filter/sort/view/
 // search + URL state) over the full project list. home-catalog.js is a
-// standalone IIFE with no main.js dependency, so it loads on its own here.
+// standalone IIFE with no homepage-controller dependency, so it loads on its own here.
 const isCatalog = Astro.url.pathname === '/catalog/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
@@ -209,15 +209,9 @@ if (isHome) {
   <script src="/scripts/mobile-nav.js" is:inline></script>
   <script src="/scripts/scroll-reveal.js" is:inline></script>
   <script src="/scripts/service-worker.js" is:inline></script>
-  {/* Homepage scripts depend on shared.js globals
-       (prefersReducedMotion/escapeHTML) + __PORTFOLIO_DATA, so main.js stays
-       after shared.js + cmdk-data.js, then feature scripts load in DOM order. */}
-  {isHome && <script src="/scripts/main.js" is:inline></script>}
+  {/* The homepage only needs shared behavior and active-section navigation.
+      Catalog filtering remains isolated to /catalog/. */}
   {isHome && <script src="/scripts/home-nav.js" is:inline></script>}
-  {isHome && <script src="/scripts/home-catalog.js" is:inline></script>}
-  {isHome && <script src="/scripts/home-github.js" is:inline></script>}
-  {isHome && <script src="/scripts/home-media.js" is:inline></script>}
-  {isHome && <script src="/scripts/home-effects.js" is:inline></script>}
   {isCatalog && <script src="/scripts/home-catalog.js" is:inline></script>}
 </body>
 </html>

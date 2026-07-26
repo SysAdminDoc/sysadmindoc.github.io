@@ -168,14 +168,14 @@ test.describe('rendered interaction smoke', () => {
       /script-src 'self'/,
     );
 
-    const timelineLink = page.locator('a[href="/timeline/"]').first();
-    await timelineLink.hover();
-    await timelineLink.focus();
+    const servicesLink = page.locator('#nav a[href="/ai/"]').first();
+    await servicesLink.hover();
+    await servicesLink.focus();
     await page.waitForTimeout(500);
     await expectNoCspViolations(page);
-    await timelineLink.click();
-    await expect(page).toHaveURL(/\/timeline\/$/);
-    await expect(page.locator('main.timeline-page')).toBeVisible();
+    await servicesLink.click();
+    await expect(page).toHaveURL(/\/ai\/$/);
+    await expect(page.locator('main.aisvc-page')).toBeVisible();
     await expectNoCspViolations(page);
 
     // The interior nav "Catalog" now points at the full static /catalog/ route.
@@ -214,13 +214,14 @@ test.describe('rendered interaction smoke', () => {
 
     await page.setViewportSize({ width: 390, height: 900 });
     await preparePage(page, '/search/?q=python', '#pagefindSearch');
-    const projectMeta = page.locator('.portfolio-result-meta').filter({ hasText: /Home|Project|Live app/ }).first();
-    await expect(projectMeta).toBeVisible({ timeout: 20_000 });
-    await expect(projectMeta).toContainText(/Portfolio|Project|Live app/);
-    const projectCard = page.locator('.portfolio-result-card').filter({
-      has: page.locator('.portfolio-result-meta').filter({ hasText: /Home|Project|Live app/ }),
+    const routeMeta = page.locator('.portfolio-result-meta').filter({ hasText: /Language Lane|Home/ }).first();
+    await expect(routeMeta).toBeVisible({ timeout: 20_000 });
+    await expect(routeMeta).toContainText(/Portfolio|Language Lane/);
+    const routeCard = page.locator('.portfolio-result-card').filter({
+      has: page.locator('.portfolio-result-meta').filter({ hasText: /Language Lane|Home/ }),
     }).first();
-    await expect(projectCard.locator('.portfolio-result-image')).toBeVisible();
+    await expect(routeCard).toBeVisible();
+    await expect(routeCard.locator('a[href*="/lang/"]').first()).toBeVisible();
     await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
     await expect(page.locator('#pagefindFallback')).toBeHidden();
     await expectNoHorizontalOverflow(page);
@@ -336,19 +337,17 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', '');
     await page.locator('#cmdkInput').fill('full-text search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
-    await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
+    await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(1);
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', /^cmdk-option-\d+$/);
     await page.keyboard.press('Escape');
     await expectCommandPaletteState(page, false);
     await openCommandPalette(page);
-    await page.locator('#cmdkInput').fill('full-text search');
+    await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     await expect.poll(async () => page.locator('#cmdkList .cmdk-item').count()).toBeGreaterThanOrEqual(2);
     const firstActiveId = await page.locator('#cmdkInput').getAttribute('aria-activedescendant');
     const firstSelected = page.locator('#cmdkList .cmdk-item[aria-selected="true"]');
-    const firstHref = await firstSelected.getAttribute('data-href');
     expect(firstActiveId).toMatch(/^cmdk-option-\d+$/);
-    expect(firstHref).toMatch(/^\/[^/]/);
     await expect(firstSelected).toHaveAttribute('id', firstActiveId);
     await page.keyboard.press('ArrowDown');
     const secondActiveId = await page.locator('#cmdkInput').getAttribute('aria-activedescendant');
@@ -357,6 +356,10 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator(`#${secondActiveId}`)).toHaveAttribute('aria-selected', 'true');
     await page.keyboard.press('ArrowUp');
     await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', firstActiveId);
+    await page.locator('#cmdkInput').fill('full-text search');
+    await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(1);
+    const firstHref = await page.locator('#cmdkList .cmdk-item').first().getAttribute('data-href');
+    expect(firstHref).toMatch(/^\/[^/]/);
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(new RegExp(`${escapeRegExp(firstHref)}$`));
     await expectCommandPaletteState(page, false);
@@ -429,7 +432,7 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
-  test('command palette section results update the hash and focus the target section', async ({ page }) => {
+  test('command palette sends exhaustive project discovery to the dedicated catalog', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
@@ -443,53 +446,28 @@ test.describe('rendered interaction smoke', () => {
     await expect.poll(async () => cmdkScriptRequests.length).toBe(1);
     await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(1);
     await page.locator('#cmdkInput').fill('catalog');
-    const catalogSectionResult = page.locator('#cmdkList .cmdk-item[data-href="#catalog"]').first();
-    await expect(catalogSectionResult).toBeVisible();
-    await catalogSectionResult.click();
+    const catalogResult = page.locator('#cmdkList .cmdk-item[data-href="/catalog/"]').first();
+    await expect(catalogResult).toBeVisible();
+    await catalogResult.click();
 
-    await expect(page).toHaveURL(/#catalog$/);
-    await expectCommandPaletteState(page, false);
-    await expect.poll(async () => page.evaluate(() => document.activeElement?.id ?? '')).toBe('catalog');
-    await expect.poll(async () => page.locator('#catalog').evaluate((node) => {
-      const rect = node.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < 180 && rect.bottom > rect.top;
-    })).toBe(true);
-    const targetPosition = await page.locator('#catalog').evaluate((node) => {
-      const rect = node.getBoundingClientRect();
-      return {
-        top: rect.top,
-        bottom: rect.bottom,
-        viewportHeight: window.innerHeight,
-      };
-    });
-    expect(targetPosition.top).toBeGreaterThanOrEqual(0);
-    expect(targetPosition.top).toBeLessThan(180);
-    expect(targetPosition.bottom).toBeGreaterThan(targetPosition.top);
-    expect(targetPosition.bottom).toBeGreaterThan(0);
-    expect(targetPosition.viewportHeight).toBeGreaterThan(0);
+    await expect(page).toHaveURL(/\/catalog\/$/);
+    await expect(page.locator('#catalog')).toBeVisible();
 
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
 
-  test('homepage video and catalog search work without runtime errors', async ({ page }) => {
+  test('homepage keeps project and media discovery as compact handoffs', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/', '#hero');
     await expectNoHorizontalOverflow(page);
 
-    await page.locator('#searchInput').fill('python');
-    await page.locator('#catalogSearchForm').evaluate((form) => form.requestSubmit());
-    await expect(page.locator('#catalogStatus')).toContainText(/python/i);
-    await expect(page.locator('#catalogGrid .ca:visible')).not.toHaveCount(0);
-
-    const videoThumb = page.locator('.video-thumb[data-yt]').first();
-    if (await videoThumb.count()) {
-      await videoThumb.click();
-      await expect(page.locator('.video-close')).toBeVisible();
-      await page.locator('.video-close').click();
-      await expect(page.locator('.video-close')).toHaveCount(0);
-    }
+    await expect(page.locator('#catalog a[href="/catalog/"]')).toBeVisible();
+    await expect(page.locator('#catalog a[href="/search/"]')).toBeVisible();
+    await expect(page.locator('#catalog a[href="/releases/"]')).toBeVisible();
+    await expect(page.locator('#live a[href="/screenshots/"]')).toBeVisible();
+    await expect(page.locator('#catalogGrid, #catalogSearchForm, .video-thumb')).toHaveCount(0);
 
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
@@ -543,7 +521,7 @@ test.describe('rendered interaction smoke', () => {
     await preparePage(page, '/', '#hero');
     await page.locator('#mobileToggle').click();
     await expect(page.locator('#navLinks')).toHaveClass(/open/);
-    await page.locator('#navLinks a[href="#catalog"]').click();
+    await page.locator('#navLinks a[href="#greatest-hits"]').click();
     await expect(page.locator('#navLinks')).not.toHaveClass(/open/);
     await expect.poll(() => page.evaluate(() => document.activeElement?.id || '')).not.toBe('mobileToggle');
 
@@ -583,102 +561,12 @@ test.describe('cross-document view transition smoke', () => {
     expect(title2).not.toEqual(title1);
     expect(title2).toContain('Search');
 
-    await page.getByRole('link', { name: 'Home', exact: true }).dispatchEvent('click');
+    await page.locator('a.nl[href="/"]').dispatchEvent('click');
     await page.waitForURL(/\/$/);
     await page.locator('main').waitFor({ state: 'visible' });
 
     expect(runtimeErrors).toEqual([]);
     await expectNoHorizontalOverflow(page);
-  });
-});
-
-test.describe('catalog URL-state persistence', () => {
-  test('category filter updates URL and survives reload', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await preparePage(page, '/#catalog', '#catalog');
-
-    const catalogSearch = page.locator('.search-input');
-    await expect(catalogSearch).toBeVisible();
-
-    const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
-    if (!(await filterBtn.count())) {
-      test.skip(true, 'No category filter buttons in this build');
-      return;
-    }
-
-    const category = await filterBtn.getAttribute('data-filter');
-    await filterBtn.click();
-
-    await expect.poll(() => page.url()).toContain(`cat=${category}`);
-
-    await page.reload({ waitUntil: 'load' });
-    await page.locator('#catalog').waitFor({ state: 'visible' });
-
-    expect(page.url()).toContain(`cat=${category}`);
-
-    const activeFilter = page.locator(`.fb[data-filter="${category}"].act`);
-    await expect(activeFilter).toBeVisible();
-    await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
-
-    expect(runtimeErrors).toEqual([]);
-  });
-
-  test('the preview offers a full-catalog handoff only while narrowed', async ({ page }) => {
-    const runtimeErrors = collectRuntimeErrors(page);
-    await preparePage(page, '/#catalog', '#catalog');
-
-    const handoff = page.locator('#catalogMore');
-    const grid = page.locator('#catalogGrid');
-    const renderedCount = await grid.locator('.ca').count();
-    const catalogTotal = Number(await grid.getAttribute('data-total'));
-    // The homepage renders a ranked slice, so an unnarrowed view needs no handoff.
-    await expect(handoff).toBeHidden();
-
-    // Small deterministic fixtures can fit the complete catalog on the
-    // homepage. Exercise the generic narrowed-search handoff in that state;
-    // category-specific "See all N" copy only exists when the preview omits
-    // matching projects.
-    if (catalogTotal <= renderedCount) {
-      const query = 'python';
-      await page.locator('#searchInput').fill(query);
-      await expect(handoff).toBeVisible();
-      await expect(handoff).toHaveAttribute('href', `/catalog/?q=${query}`);
-      await expect(handoff).toHaveText(`Search all ${catalogTotal} projects →`);
-
-      await handoff.click();
-      await page.locator('#catalog').waitFor({ state: 'visible' });
-      expect(page.url()).toContain(`q=${query}`);
-      await expect(page.locator('#searchInput')).toHaveValue(query);
-      expect(runtimeErrors).toEqual([]);
-      return;
-    }
-
-    const filterBtn = page.locator('.fb[data-filter]:not([data-filter="all"])').first();
-    if (!(await filterBtn.count())) {
-      test.skip(true, 'No category filter buttons in this build');
-      return;
-    }
-    const category = await filterBtn.getAttribute('data-filter');
-    await filterBtn.click();
-
-    await expect(handoff).toBeVisible();
-    await expect(handoff).toHaveAttribute('href', `/catalog/?cat=${category}`);
-    // The count must come from the archive, not the rendered slice.
-    const label = (await handoff.textContent()) ?? '';
-    const promised = Number(label.match(/See all (\d+)/)?.[1]);
-    const shown = await page.locator('#catalogGrid .ca:not(.hid)').count();
-    expect(Number.isFinite(promised)).toBe(true);
-    expect(promised).toBeGreaterThan(shown);
-
-    // Following it must land on a catalog filtered to the same category.
-    await handoff.click();
-    await page.locator('#catalog').waitFor({ state: 'visible' });
-    expect(page.url()).toContain(`cat=${category}`);
-    await expect(page.locator(`.fb[data-filter="${category}"].act`)).toBeVisible();
-    const fullCount = await page.locator('#catalogGrid .ca:not(.hid)').count();
-    expect(fullCount).toBe(promised);
-
-    expect(runtimeErrors).toEqual([]);
   });
 });
 

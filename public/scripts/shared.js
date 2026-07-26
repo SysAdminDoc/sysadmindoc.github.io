@@ -1,5 +1,5 @@
 /* ===== SHARED UTILITIES =====
- * Loaded before main.js and cmdk.js — defines globals consumed by both. */
+ * Loaded before route controllers and cmdk.js — defines shared globals. */
 var _escMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 function escapeHTML(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return _escMap[c]; }); }
 

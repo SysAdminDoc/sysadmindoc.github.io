@@ -33,14 +33,13 @@ test('skill ring metrics derive from rendered catalog lane counts', async () => 
   assert.equal(ringTargetForCount(0, 2), RING_CIRCUMFERENCE);
 });
 
-test('hydrated language donut uses portfolio language metadata instead of raw repo denominator', async () => {
+test('homepage removes the language chart runtime while retaining searchable language metadata', async () => {
   const cmdk = await fs.readFile(path.join(root, 'src', 'data', 'cmdk.ts'), 'utf8');
-  const github = await fs.readFile(path.join(root, 'public', 'scripts', 'home-github.js'), 'utf8');
+  const index = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
+  const base = await fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8');
 
   assert.match(cmdk, /language\?: string \| null/);
   assert.match(cmdk, /language: repoMeta\[project\.repo\]\?\.language \?\? null/);
-  assert.match(github, /function getPortfolioLanguageSummary\(\)/);
-  assert.match(github, /renderLangDonut\(portfolioLangs\.langs,portfolioLangs\.total\)/);
-  assert.match(github, /renderLangDonut\(langCount,countLanguageTotal\(langCount\)\|\|repoCount\)/);
-  assert.doesNotMatch(github, /if\(langCount\)renderLangDonut\(langCount,repoCount\);/);
+  assert.doesNotMatch(index, /svg-arc|lang-donut|SkillCard|skills \} from '\.\.\/data\/portfolio'/);
+  assert.doesNotMatch(base, /home-github\.js/);
 });

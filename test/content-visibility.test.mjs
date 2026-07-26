@@ -10,7 +10,6 @@ const deferredSections = [
   '#catalog',
   '#live',
   '#skills',
-  '#beyond',
   '#connect',
 ];
 
@@ -23,7 +22,7 @@ test('homepage below-fold sections opt into content-visibility with stable intri
 
   assert.match(css, /@supports\s*\(content-visibility:auto\)/, 'content-visibility should stay feature-gated');
   assert.match(css, /content-visibility:auto/, 'deferred sections should set content-visibility:auto');
-  assert.match(css, /contain-intrinsic-size:auto var\(--cv-intrinsic-size,900px\)/, 'deferred sections need an intrinsic-size fallback');
+  assert.match(css, /contain-intrinsic-size:auto var\(--cv-intrinsic-size,700px\)/, 'deferred sections need an intrinsic-size fallback');
 
   for (const section of deferredSections) {
     assert.match(css, new RegExp(`${section.replace('#', '#')}\\{--cv-intrinsic-size:\\d+px\\}`), `${section} needs an explicit intrinsic size`);

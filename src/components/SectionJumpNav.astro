@@ -15,16 +15,86 @@ const { items = [], label = 'On This Page' } = Astro.props;
 const sectionItems = items.filter((item) => item.href?.startsWith('#'));
 ---
 {sectionItems.length > 1 && (
-  <nav class="page-jump-nav rv" aria-label={label} data-page-jump-nav>
-    <span class="page-jump-label">{label}</span>
-    <div class="page-jump-links">
+  <details class="page-jump-nav rv" data-page-jump-nav>
+    <summary class="page-jump-label">
+      <span>{label}</span>
+      <small>{sectionItems.length} sections</small>
+    </summary>
+    <nav class="page-jump-links" aria-label={label}>
       {sectionItems.map((item) => (
         <a href={item.href} class="page-jump-link" title={item.desc ?? item.label} data-page-jump-link={item.href.slice(1)}>
           <span class="page-jump-link-label">{item.label}</span>
           {item.badge && <span class="page-jump-badge">{item.badge}</span>}
         </a>
       ))}
-    </div>
-  </nav>
+    </nav>
+  </details>
 )}
 {sectionItems.length > 1 && <script src="/scripts/section-jump-nav.js" is:inline></script>}
+
+<style>
+  .page-jump-nav{
+    display:block;
+    max-width:1080px;
+    margin-top:18px;
+    padding:0;
+    overflow:visible;
+    border:0;
+    border-block:1px solid var(--border-soft);
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .page-jump-label{
+    display:flex;
+    min-height:46px;
+    padding:0;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    color:var(--t2);
+    cursor:pointer;
+    list-style:none;
+    user-select:none;
+  }
+  .page-jump-label::-webkit-details-marker{display:none}
+  .page-jump-label::after{
+    content:'+';
+    color:var(--blue);
+    font-family:var(--mono);
+    font-size:16px;
+    line-height:1;
+  }
+  .page-jump-nav[open] .page-jump-label::after{content:'−'}
+  .page-jump-label span{
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+  }
+  .page-jump-label small{
+    margin-left:auto;
+    color:var(--t3);
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:500;
+    letter-spacing:.04em;
+    text-transform:none;
+  }
+  .page-jump-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:4px 0 14px;
+  }
+  @media(max-width:720px){
+    .page-jump-nav{padding:0}
+    .page-jump-links{
+      display:grid;
+      grid-template-columns:1fr;
+      mask-image:none;
+    }
+    .page-jump-link{width:100%}
+  }
+</style>

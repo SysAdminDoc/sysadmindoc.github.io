@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.34.0-blue)
+![Version](https://img.shields.io/badge/version-0.35.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -13,17 +13,16 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
 - **Content collections**: featured (9), live apps (22), catalog (186 feed-backed / 186 local fallback), skills (8)
-- **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Technical Service Bureau design system** — a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
 - **Shared career dossier** — résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
-- **Homepage operating index** — identity, résumé-backed practice lanes, public proof, one selected live system, and a compact diagnostic panel form the same responsive evidence hierarchy
+- **Minimal homepage evidence sequence** — concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs
 - **Operating-proof AI track** — links the public Parker AI platform to explicit delivery, data-boundary, production-operations, and recovery standards without exposing private planning or infrastructure repositories
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline** — year-in-review page built from release and project-push evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search** — Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
-- **Shared interior section navigation** — eight long-form interior route templates render
-  `SectionJumpNav` from the same per-page section data supplied to the command palette
+- **Shared interior navigation** — five primary routes stay visible while long-page section
+  indexes remain available in a compact `SectionJumpNav` disclosure
 - **Interior freshness signals** — reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
 - **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
@@ -79,8 +78,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.34.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
-npm run smoke:release -- --tag v0.34.0 --asset sysadmindoc-portfolio-v0.34.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.35.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:release -- --tag v0.35.0 --asset sysadmindoc-portfolio-v0.35.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
@@ -147,13 +146,12 @@ Offline fixture checks do not use GitHub metadata credentials. They install trac
 
 The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`, and an `ok` provenance entry in `public/screenshots/manifest.json` from `npm run capture-screenshots`.
 
-- Featured: surface in the hero signature reel, command palette, and feeds
-- Live Apps: for GitHub Pages demos
+- Featured: surface in Selected Work, the command palette, and feeds
+- Live Apps: for GitHub Pages demos, the screenshots gallery, and two homepage previews
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
-- Skills: animated ring charts in the Stack section
-- Beyond Code: click-to-load aerial footage cards with no Spotify embed
+- Skills: reviewed technology metadata for language lanes and discovery
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, and `npm run deploy:preflight` runs that gate plus catalog drift, package signatures, and strict exact-override freshness before tests, check, and build. Documented major holds remain visible but non-blocking until their upstream compatibility work lands. `npm run publish:pages` copies the verified build to the `gh-pages` branch with `.nojekyll` before smoking the live Pages URL. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides, and the homepage catalog search is also a no-JS `GET /search/?q=...` fallback. Project cards and project entries in search, feeds, releases, screenshots, timeline, language lanes, and archive surfaces point directly to their GitHub repositories. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can be narrowed by Scope; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body, Scope filter, removed project-route boundary, and direct GitHub catalog-link contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, and `npm run deploy:preflight` runs that gate plus catalog drift, package signatures, and strict exact-override freshness before tests, check, and build. Documented major holds remain visible but non-blocking until their upstream compatibility work lands. `npm run publish:pages` copies the verified build to the `gh-pages` branch with `.nojekyll` before smoking the live Pages URL. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides on `/catalog/`; its search form remains a no-JS `GET /search/?q=...` fallback. The homepage links to that complete archive instead of duplicating it. Project cards and project entries in search, feeds, releases, screenshots, timeline, language lanes, and archive surfaces point directly to their GitHub repositories. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can be narrowed by Scope; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body, Scope filter, removed project-route boundary, and direct GitHub catalog-link contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
 
 Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists.
 
@@ -172,7 +170,7 @@ Deployment is local-first:
 src/
 ├── assets/
 │   └── screenshots/thumbs/ # Astro <Picture> inputs for live-app card thumbnails
-├── components/      # catalog/live/skill cards, navigation, footer, dividers, and proof modules
+├── components/      # catalog/live modules, navigation, footer, dividers, and proof modules
 ├── data/
 │   ├── types.ts     # TypeScript schemas
 │   ├── categories.ts
@@ -205,7 +203,7 @@ public/
 ├── manifest.json · robots.txt · sw.js · humans.txt · llms is served from src
 ├── .well-known/security.txt
 ├── screenshots/      # public captured live-app masters plus stable thumbs/
-└── scripts/          # shared/sitewide scripts plus homepage feature entry points
+└── scripts/          # shared/sitewide scripts plus the focused homepage navigation entry
 scripts/
 ├── fetch-stars.mjs        # GitHub data refresh (build-time, atomic writes)
 ├── sync-profile-feed.mjs  # raw profile projects.json cache for rendered catalog

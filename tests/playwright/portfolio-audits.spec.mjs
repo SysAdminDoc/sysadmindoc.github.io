@@ -248,8 +248,10 @@ test.describe('Homepage live-card containment', () => {
         };
       });
       expect(featureWidths.thumb).toBeGreaterThan(featureWidths.card - 2);
-      expect(featureWidths.picture).toBeCloseTo(featureWidths.thumb, 0);
-      expect(featureWidths.image).toBeCloseTo(featureWidths.thumb, 0);
+      expect(featureWidths.picture).toBeGreaterThanOrEqual(featureWidths.thumb - 2);
+      expect(featureWidths.picture).toBeLessThanOrEqual(featureWidths.thumb);
+      expect(featureWidths.image).toBeGreaterThanOrEqual(featureWidths.thumb - 2);
+      expect(featureWidths.image).toBeLessThanOrEqual(featureWidths.thumb);
     });
   }
 });
@@ -367,7 +369,7 @@ test.describe('Mid-wide desktop layout regression audit', () => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await preparePage(page, route.path, route.ready);
         if (route.name === 'home') {
-          await expect(page.locator('.hero-evidence')).toBeVisible();
+          await expect(page.locator('.minimal-hero .hero-proof-strip')).toBeVisible();
         }
         if (isLight) {
           await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
@@ -390,64 +392,47 @@ test.describe('Mid-wide desktop layout regression audit', () => {
   }
 });
 
-test('homepage operating index and selected system stay usable at every breakpoint', async ({ page }) => {
-  const expectServiceBureauLayout = async (width) => {
+test('homepage stays intentionally bounded at every breakpoint', async ({ page }) => {
+  const expectMinimalLayout = async (width) => {
     await page.setViewportSize({ width, height: 900 });
     await preparePage(page, '/', '#hero');
 
-    const operatingIndex = page.locator('.hero-operating-index');
-    const selectedSystem = page.locator('.hero-selected');
-    await expect(operatingIndex).toBeVisible();
-    await expect(operatingIndex.locator('.hero-lane')).toHaveCount(3);
-    await expect(selectedSystem.locator('.hero-showcase')).toHaveCount(1);
-    await expect(selectedSystem.locator('.hero-showcase')).toBeVisible();
-    const evidence = await selectedSystem.evaluate((node) => {
-      const showcase = node.querySelector('.hero-showcase');
-      const showcaseName = showcase?.querySelector('.hero-showcase-brand strong')?.textContent?.trim() ?? '';
-      return {
-        showcaseName,
-        showcaseHref: showcase?.getAttribute('href') ?? '',
-        showcaseImageAlt: showcase?.querySelector('img')?.getAttribute('alt') ?? '',
-        cardNames: Array.from(node.querySelectorAll('.hero-app-card strong')).map((card) => card.textContent?.trim() ?? ''),
-      };
-    });
-    expect(evidence.showcaseName).toMatch(/\S/);
-    expect(evidence.showcaseHref).toMatch(/^https:\/\/sysadmindoc\.github\.io\/[^/]+\/$/);
-    expect(evidence.showcaseImageAlt).toContain(evidence.showcaseName);
-    expect(evidence.cardNames.length).toBeGreaterThanOrEqual(1);
-    expect(evidence.cardNames.at(-1)).toBe('More live systems');
-
     const layoutMetrics = await page.evaluate(() => {
-      const railElement = document.querySelector('.hero-operating-index');
-      const railRect = railElement?.getBoundingClientRect();
-      const status = railElement?.querySelector('.hero-evidence-status');
+      const hero = document.querySelector('#hero')?.getBoundingClientRect();
+      const work = document.querySelector('#greatest-hits')?.getBoundingClientRect();
+      const live = document.querySelector('#live')?.getBoundingClientRect();
+      const practice = document.querySelector('#skills')?.getBoundingClientRect();
       return {
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
-        railTop: railRect?.top ?? 0,
-        railLeft: railRect?.left ?? 0,
-        railRight: railRect?.right ?? 0,
-        railHeight: railRect?.height ?? 0,
-        statusWritingMode: status ? getComputedStyle(status).writingMode : '',
+        pageHeight: document.documentElement.scrollHeight,
+        heroHeight: hero?.height ?? 0,
+        workTop: work?.top ?? 0,
+        liveTop: live?.top ?? 0,
+        practiceTop: practice?.top ?? 0,
       };
     });
+
+    await expect(page.locator('.hero-proof-strip .hero-proof')).toHaveCount(3);
+    await expect(page.locator('#greatest-hits .selected-work-row')).toHaveCount(3);
+    await expect(page.locator('#live .lc2')).toHaveCount(2);
+    await expect(page.locator('#skills .practice-row')).toHaveCount(3);
+    await expect(page.locator('#catalog .ca')).toHaveCount(0);
+    await expect(page.locator('#catalog .handoff-links a')).toHaveCount(3);
+    await expect(page.locator('.hero-selected, .hero-showcase, .video-grid')).toHaveCount(0);
+
     expect(layoutMetrics.scrollWidth).toBeLessThanOrEqual(layoutMetrics.clientWidth + 1);
-    if (width > 1180) {
-      expect(layoutMetrics.railTop).toBeLessThan(160);
-      expect(layoutMetrics.railLeft).toBeGreaterThan(layoutMetrics.clientWidth * 0.47);
-      expect(layoutMetrics.statusWritingMode).toBe('vertical-rl');
-    } else {
-      expect(layoutMetrics.railTop).toBeGreaterThan(400);
-      expect(layoutMetrics.railLeft).toBeLessThan(layoutMetrics.clientWidth * 0.1);
-      expect(layoutMetrics.statusWritingMode).toBe('horizontal-tb');
-    }
-    expect(layoutMetrics.railRight).toBeLessThanOrEqual(layoutMetrics.clientWidth);
-    expect(layoutMetrics.railHeight).toBeGreaterThan(300);
+    expect(layoutMetrics.heroHeight).toBeGreaterThan(520);
+    expect(layoutMetrics.heroHeight).toBeLessThan(width <= 640 ? 1300 : 1100);
+    expect(layoutMetrics.workTop).toBeGreaterThanOrEqual(layoutMetrics.heroHeight - 2);
+    expect(layoutMetrics.liveTop).toBeGreaterThan(layoutMetrics.workTop);
+    expect(layoutMetrics.practiceTop).toBeGreaterThan(layoutMetrics.liveTop);
+    expect(layoutMetrics.pageHeight).toBeLessThan(width <= 640 ? 10_000 : 8_000);
   };
 
-  await expectServiceBureauLayout(1365);
-  await expectServiceBureauLayout(980);
-  await expectServiceBureauLayout(390);
+  await expectMinimalLayout(1365);
+  await expectMinimalLayout(980);
+  await expectMinimalLayout(390);
 });
 
 test.describe('Playwright visual baselines', () => {
@@ -459,7 +444,7 @@ test.describe('Playwright visual baselines', () => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await preparePage(page, route.path, route.ready);
         if (route.name === 'home' && viewport.width >= 980) {
-          await expect(page.locator('.hero-evidence')).toBeVisible();
+          await expect(page.locator('.minimal-hero .hero-proof-strip')).toBeVisible();
         }
         if (isLight) {
           await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));

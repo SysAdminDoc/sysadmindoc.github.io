@@ -6,9 +6,8 @@ import { readCssEntry } from '../scripts/lib/css-entry.mjs';
 
 const root = process.cwd();
 
-test('homepage catalog search has a no-JS form fallback', async () => {
-  // The catalog search/controls markup lives in the shared CatalogSection component,
-  // rendered by both the homepage preview and the full /catalog/ route.
+test('full catalog search has a no-JS form fallback', async () => {
+  // The dedicated /catalog/ route owns the exhaustive project controls.
   const section = await fs.readFile(path.join(root, 'src', 'components', 'CatalogSection.astro'), 'utf8');
   const catalog = await fs.readFile(path.join(root, 'public', 'scripts', 'home-catalog.js'), 'utf8');
   const css = await readCssEntry(path.join(root, 'src', 'styles', 'global.css'), { root });

@@ -65,44 +65,6 @@
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
-.hero-signals{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px 12px;
-  max-width:680px;
-  margin:18px 0 0;
-}
-.hero-signal{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  min-height:44px;
-  padding:10px 16px;
-  border:1px solid var(--border-soft);
-  border-radius:10px;
-  background:var(--surface-2);
-  box-shadow:0 14px 28px rgba(0,0,0,.12);
-  transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out);
-  will-change:transform;
-}
-.hero-signal:hover{
-  border-color:var(--border-strong);
-  background:var(--surface-1);
-  transform:translateY(-1px);
-}
-.hero-signal-label{
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--t3);
-}
-.hero-signal-value{
-  color:var(--t1);
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.25;
-}
 .hs{
   margin-bottom:18px;
   padding:16px 0;
@@ -278,15 +240,7 @@
   background:var(--surface-strong);
   box-shadow:var(--shadow-strong);
 }
-@media(max-width:1100px){
-  .hero-signals{
-    max-width:560px;
-  }
-}
 @media(max-width:900px){
-  .hero-signals{
-    max-width:none;
-  }
   .route-interior .page-shell > .sh{
     padding:26px 24px 24px;
   }
@@ -304,16 +258,6 @@
   }
   .hero-proof-value{
     font-size:20px;
-  }
-  .hero-signals{
-    gap:8px;
-    margin-top:16px;
-  }
-  .hero-signal{
-    width:100%;
-    justify-content:space-between;
-    padding:12px 14px;
-    border-radius:10px;
   }
   .page-shell{
     gap:22px;
@@ -423,16 +367,16 @@ html[data-theme="light"] .nk.open{
   background:rgba(248,244,234,.96);
 }
 
-html[data-theme="light"] .lc2,html[data-theme="light"] .skc,html[data-theme="light"] .cnc,html[data-theme="light"] .video-card{
+html[data-theme="light"] .lc2{
   background:rgba(255,255,255,.72);
   box-shadow:0 16px 36px rgba(29,42,70,.1);
 }
-html[data-theme="light"] .lc2:hover,html[data-theme="light"] .skc:hover,html[data-theme="light"] .cnc:hover{
+html[data-theme="light"] .lc2:hover{
   box-shadow:0 22px 48px rgba(29,42,70,.14);
 }
 
 /* Light theme — page panels and stat cards */
-html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .hcit-card,html[data-theme="light"] .hcit-why,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .stack-overview,html[data-theme="light"] .lang-donut-panel,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
+html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .hcit-card,html[data-theme="light"] .hcit-why,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
   background:rgba(255,255,255,.72);
   box-shadow:0 14px 32px rgba(29,42,70,.08);
 }
@@ -443,10 +387,6 @@ html[data-theme="light"] footer{
 }
 
 /* Light theme — back-to-top button */
-html[data-theme="light"] .btt{
-  background:rgba(255,255,255,.82);
-  border-color:var(--border-soft);
-}
 
 /* Light theme — grid overlay & hero glows */
 html[data-theme="light"] body::before{
@@ -454,12 +394,6 @@ html[data-theme="light"] body::before{
     linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
   opacity:.18;
-}
-html[data-theme="light"] .hero-grid{
-  background-image:
-    linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
-  opacity:.2;
 }
 html[data-theme="light"] .hero::before{
   background:radial-gradient(circle, rgba(124,184,255,.12) 0%, rgba(124,184,255,.04) 32%, transparent 70%);
@@ -489,12 +423,6 @@ html[data-theme="light"] .scroll-progress{
   .page-jump-link{
     min-height:44px;
     padding:12px 14px;
-  }
-  .hero-signal{
-    min-height:48px;
-  }
-  .hero-pulse .pulse-item{
-    min-height:44px;
   }
 }
 

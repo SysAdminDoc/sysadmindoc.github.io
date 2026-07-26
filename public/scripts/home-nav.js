@@ -2,7 +2,7 @@
 (function(){
     'use strict';
 
-    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#catalog,#live,#skills,#beyond,#connect';
+    const HOMEPAGE_SCROLL_SECTION_SELECTOR='#greatest-hits,#live,#skills,#catalog,#connect';
     const HOMEPAGE_HASH_RESTORE_DELAYS=[0,250,750,1400,2400,3600];
     const HOMEPAGE_INITIAL_HASH=window.location.hash;
     let homepageHashRestoreToken=0;
@@ -93,7 +93,6 @@
     }
 
     const scrollProg=document.getElementById('scrollProgress');
-    const bttBtn=document.getElementById('backToTop');
     const navEl=document.getElementById('nav');
     let lastScrollY=0;
     let scrollRaf=0;
@@ -112,13 +111,12 @@
         if(mobileToggle)mobileToggle.setAttribute('aria-expanded','false');
     }
 
-    if(scrollProg||bttBtn||navEl){
+    if(scrollProg||navEl){
         window.addEventListener('scroll',()=>{
             if(scrollRaf)return;
             scrollRaf=requestAnimationFrame(()=>{
                 scrollRaf=0;
                 const sy=window.scrollY;
-                if(bttBtn)bttBtn.classList.toggle('show',sy>600);
                 const max=document.documentElement.scrollHeight-innerHeight;
                 const pct=max>0?(sy/max)*100:0;
                 if(scrollProg)scrollProg.style.width=pct+'%';
@@ -132,8 +130,6 @@
             });
         },{passive:true});
     }
-
-    if(bttBtn)bttBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:prefersReducedMotion?'auto':'smooth'})});
 
     const indicator=document.getElementById('navIndicator');
     const navLinksContainer=document.getElementById('navLinks');
