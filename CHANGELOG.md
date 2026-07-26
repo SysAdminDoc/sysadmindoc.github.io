@@ -4,6 +4,35 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.34.0] - 2026-07-26
+
+### Fixed
+
+- Changed service-worker document requests from stale-while-revalidate to
+  network-first navigation with preload, cached-document recovery, and offline
+  fallback, preventing an older deploy from winning a fresh online visit.
+- Repaired the light-mobile proof ledger and catalog introduction at 390px;
+  rendered tests now protect both cascade-specific regressions.
+- Serialized shared Satori/Resvg social-card rendering after concurrent static
+  generation exposed a partially painted AI card.
+
+### Changed
+
+- Replaced the retired terminal favicon, app icons, offline shell, PWA colors,
+  install previews, and static social card with one light-first MP Technical
+  Service Bureau identity backed by current career, catalog, and live-app data.
+- Reduced the homepage archive teaser from 84 projects to 12 while preserving
+  every one of the 186 reviewed entries on the static `/catalog/` route.
+- Clarified the status copy as “Latest tagged release” so it cannot be mistaken
+  for the site’s independently versioned deployment.
+
+### Added
+
+- Added reproducible brand-icon and install-screenshot scripts plus guards that
+  reject retired terminal tokens and incorrect icon dimensions.
+- Added service-worker regression coverage proving a fresh network document
+  supersedes a cached previous deploy.
+
 ## [v0.33.0] - 2026-07-25
 
 ### Changed
