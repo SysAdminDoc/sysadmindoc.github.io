@@ -289,7 +289,7 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <p class="hero-eyebrow">AI-augmented software · Practical tools · Healthcare technology</p>
+        <p class="hero-eyebrow">Field journal / systems dossier · MP-001</p>
         {/* Representative h-card. Microformats2 is what Bridgy Fed and other
             IndieWeb consumers read to build a profile; the classes are additive
             and carry no styling. The u-url anchor is hidden — mf2 parses the
@@ -308,7 +308,7 @@ const cmdkSections = [
             </div>
           ))}
         </div>
-        <p class="hr">I build practical software and put AI to work solving real problems.</p>
+        <p class="hr">Practical software. AI that earns its place.</p>
         <p class="hero-summary"><strong>{experienceLabel} in enterprise IT and healthcare technology</strong>, now directing AI tooling end to end — research, build, test, and ship. {publicProjectCount}+ public projects and {liveApps.length} live apps as the proof.</p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
@@ -353,9 +353,10 @@ const cmdkSections = [
       <aside class="hero-evidence" aria-label="Live project evidence">
         <div class="hero-evidence-head">
           <div>
-            <strong>Live app evidence</strong>
-            <p>{liveApps.length} browser apps, available without an install.</p>
+            <strong>Live work viewport</strong>
+            <p>{liveApps.length} browser apps · available without an install or account.</p>
           </div>
+          <span class="hero-evidence-status"><i aria-hidden="true"></i>Monitoring</span>
         </div>
         {heroEvidencePrimary && (
           <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
@@ -390,6 +391,7 @@ const cmdkSections = [
                 <strong>{app.name}</strong>
                 <small>{plainHeroText(app.desc)}</small>
               </span>
+              <em aria-hidden="true">Open ↗</em>
             </a>
           ))}
           <a href="#live" class="hero-app-card hero-app-more">
@@ -397,6 +399,7 @@ const cmdkSections = [
               <strong>More Live Apps</strong>
               <small>{heroEvidenceMoreCount} more apps in the catalog</small>
             </span>
+            <em aria-hidden="true">Browse →</em>
           </a>
         </div>
       </aside>
