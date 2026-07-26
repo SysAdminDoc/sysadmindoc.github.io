@@ -4,7 +4,8 @@ import globalCssUrl from '../styles/global.css?url';
 import interiorQuietCssUrl from '../styles/interior-quiet.css?url';
 import criticalCss from '../styles/critical.css?raw';
 import type { CmdkSection } from '../data/cmdk';
-import { contactMailto, experienceLabel } from '../data/identity';
+import { contactMailto } from '../data/identity';
+import { careerProfile } from '../data/career';
 
 export interface Props {
   title?: string;
@@ -30,8 +31,8 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'AI Services', href: '/ai/', desc: 'Fractional AI implementation, automation, and training for businesses on a monthly retainer.', badge: 'TRACK' },
 ];
 const {
-  title = 'Matt Parker - Senior Technical Support Manager',
-  description = `Career portfolio for Matt Parker - ${experienceLabel} in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, and escalation-heavy troubleshooting.`,
+  title = `Matt Parker - ${careerProfile.headline}`,
+  description = `Career portfolio for Matt Parker - ${careerProfile.summary}`,
   ogImage = '/og.png',
   ogImageAlt = description,
   cmdkSections = defaultCmdkSections,
@@ -84,7 +85,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     '@id': personId,
     name: 'Matt Parker',
     url: 'https://sysadmindoc.github.io/',
-    jobTitle: 'Senior Technical Support Manager',
+    jobTitle: careerProfile.currentTitle,
     worksFor: { '@type': 'Organization', name: 'Maven Imaging' },
     address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' },
     knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Healthcare IT','Customer Support','Technical Documentation','Active Directory','Hyper-V','Cisco Networking','AI Implementation','LLM Tooling','Workflow Automation'],

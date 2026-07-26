@@ -1,4 +1,8 @@
-// Single source of truth for the /resume page and /resume.json export.
+// Single source of truth for career claims shared by the homepage, track pages,
+// /resume, and /resume.json. Keep profile language here so those surfaces can
+// adapt the same facts without drifting into separate biographies.
+
+import { experienceLabel } from './identity';
 
 export interface CareerRole {
   role: string;
@@ -18,33 +22,82 @@ export interface CareerRole {
   note?: string;
 }
 
+export const careerProfile = {
+  name: 'Matt Parker',
+  headline: 'AI Implementation Consultant · Healthcare IT · Systems & Automation',
+  currentTitle: 'Technical Support Manager',
+  currentCompany: 'Maven Imaging',
+  location: 'Sarasota, FL',
+  summary: `AI implementation consultant and technical operations leader with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, and customer support. I help businesses select and safely roll out AI tools, automate repetitive workflows, train teams, and maintain deployed solutions.`,
+  operatingNote: 'I build the systems, document the work, and train the teams that run them.',
+} as const;
+
+export const careerProof = [
+  { label: 'Experience', value: experienceLabel, detail: 'Enterprise IT and healthcare systems' },
+  { label: 'Public execution', value: '186+ shipped', detail: 'Software projects delivered' },
+  { label: 'Live proof', value: '22 live apps', detail: 'Publicly available online' },
+] as const;
+
+export const careerLanes = [
+  {
+    id: 'ai',
+    name: 'AI implementation',
+    short: 'AI tools · automation · enablement',
+    focus: 'Evaluate and roll out AI tools, build automation for system gaps, and train teams to adopt the work safely.',
+    expertise: ['AI implementation', 'LLM tooling', 'Workflow automation', 'Prompt engineering', 'AI training', 'Process automation'],
+    href: '/ai/',
+  },
+  {
+    id: 'healthcare',
+    name: 'Healthcare systems',
+    short: 'PACS/DICOM · healthcare IT · support',
+    focus: 'Support healthcare technology environments, PACS/DICOM workflows, hosted-service migrations, and customer escalation.',
+    expertise: ['PACS', 'DICOM', 'Healthcare IT', 'Hosted services', 'Migrations', 'Customer support'],
+    href: '/healthcare-it/',
+  },
+  {
+    id: 'systems',
+    name: 'Infrastructure & automation',
+    short: 'Windows · networks · software delivery',
+    focus: 'Operate Windows infrastructure and build practical software that closes recurring gaps between people and systems.',
+    expertise: ['Windows Server', 'Active Directory', 'Group Policy', 'SCCM', 'Hyper-V', 'Cisco networking'],
+    href: '/#skills',
+  },
+] as const;
+
+export const consultingHighlights = [
+  'Evaluate and roll out AI tools for a business, including Claude, ChatGPT, Copilot, and local models when data should remain in-house.',
+  'Build automation for the gaps between existing systems, then document, deploy, maintain, and hand over the work.',
+  'Deliver hands-on team training around real daily workflows so tools are adopted, not merely licensed.',
+  'Personally research, build, test, document, and release public software projects with live, inspectable output.',
+] as const;
+
 export const careerSkills = [
-  { name: 'Healthcare IT Support', sub: 'customer systems, workflows, escalation' },
-  { name: 'Systems Administration', sub: 'Windows Server, AD, GPO, Hyper-V' },
-  { name: 'Networking', sub: 'Cisco, VPN, DNS/DHCP, monitoring' },
-  { name: 'Customer Escalation', sub: 'troubleshooting, recovery, vendor coordination' },
-  { name: 'Migration Coordination', sub: 'archive transfers, cutovers, validation' },
-  { name: 'Documentation', sub: 'runbooks, knowledge base, training material' },
+  { name: 'AI & Automation', sub: 'implementation, LLM tooling, workflow automation' },
+  { name: 'Healthcare Systems', sub: 'PACS, DICOM, migrations, customer support' },
+  { name: 'Enterprise Infrastructure', sub: 'Windows Server, AD, GPO, SCCM, Hyper-V' },
+  { name: 'Development & Delivery', sub: 'Python, PowerShell, TypeScript, C#/.NET' },
+  { name: 'Customer Operations', sub: 'escalation, recovery, vendor coordination' },
+  { name: 'Documentation & Training', sub: 'runbooks, knowledge bases, team enablement' },
 ] as const;
 
 export const careerRoles: readonly CareerRole[] = [
   {
-    role: 'Senior Technical Support Manager',
+    role: 'Technical Support Manager',
     company: 'Maven Imaging',
     location: 'Sarasota, FL',
     period: 'Feb 2021 — Present',
     startDate: '2021-02-01',
     tag: 'Current',
     tone: 'current',
-    summary: 'Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.',
+    note: 'Part-time February 2021–January 2025; full-time since February 2025.',
+    summary: 'Support healthcare technology environments across PACS deployments, DR panel configuration, DICOM routing, hosted-service migrations, workstation and network troubleshooting, and customer escalation.',
     highlights: [
-      'Coordinate customer migrations, legacy archive transfers, cutovers, and validation follow-up',
-      'Support customer workstations, network connectivity, account access, and vendor application issues',
-      'Troubleshoot licensing, workstation, networking, VPN, and hosted-service access issues across customer environments',
-      'Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support',
-      'Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps',
+      'Own issues from diagnosis through resolution, coordinating vendors, cutovers, documentation, and follow-up',
+      'Turn recurring operational gaps into procedures, training content, and purpose-built software or automation',
+      'Maintain practical security and data-handling discipline across customer support and migration work',
     ],
-    stack: ['Healthcare IT', 'Customer systems', 'Windows workstations', 'Hosted services', 'Migration coordination', 'Hyper-V', 'VPN', 'Freshdesk'],
+    stack: ['PACS', 'DICOM', 'Healthcare IT', 'Windows workstations', 'Hosted services', 'Migration coordination', 'Networking'],
   },
   {
     role: 'Systems Administrator',
@@ -55,13 +108,12 @@ export const careerRoles: readonly CareerRole[] = [
     endDate: '2025-02-01',
     tag: '~11 years',
     tone: 'previous',
-    note: 'Concurrent with the start of the Maven Imaging role.',
+    note: 'Full-time; concurrent with Maven Imaging’s part-time phase before the February 2025 transition.',
     summary: 'Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.',
     highlights: [
-      'Supported Hyper-V virtualization and server consolidation for Windows Server workloads',
-      'Administered endpoint management for Windows workstation fleets using SCCM-era tooling',
-      'Maintained Cisco routing, firewall, and switching infrastructure with monitoring and troubleshooting',
-      'Supported broadcast-related server and encoder infrastructure with escalation and maintenance as needed',
+      'Supported and administered network, server, workstation, and broadcast infrastructure',
+      'Implemented and maintained SCCM for 100+ Windows workstations, including imaging, application deployment, updates, and lifecycle work',
+      'Documented systems and procedures, coordinated vendors and escalations, and supported broadcast servers and automation platforms',
     ],
     stack: ['Windows Server 2008–2016', 'Active Directory & GPO', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP'],
   },
@@ -76,10 +128,18 @@ export const careerRoles: readonly CareerRole[] = [
     tone: 'previous',
     summary: 'Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.',
     highlights: [
-      'Assisted with server refreshes and legacy Windows Server decommissioning',
-      'Documented client networks, topology notes, runbooks, and recurring support procedures',
-      'Onboarded users and provided practical training on business software, phone systems, and account access',
+      'Managed IT operations across multiple MSP client environments with Active Directory, Group Policy, DNS, DHCP, endpoint security, and user support',
+      'Performed 24/7/365 monitoring and coordinated escalation for outages and business-critical application failures',
+      'Migrated legacy servers, onboarded and trained users, and created topology diagrams, network documentation, and knowledge-base guides',
     ],
     stack: ['Windows Server 2003–2012 R2', 'Active Directory', 'Group Policy', 'Avaya IP Office', 'Endpoint security'],
   },
 ];
+
+export const careerEducation = {
+  program: 'Computer Networking Technologies',
+  detail: 'Coursework',
+  school: 'Sinclair Community College',
+  location: 'Dayton, OH',
+  period: '2002–2004',
+} as const;

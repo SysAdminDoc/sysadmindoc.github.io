@@ -2,6 +2,7 @@ import type { APIContext } from 'astro';
 import { interiorOgPages } from '../data/interior-og-pages';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { experienceLabel } from '../data/identity';
+import { careerProfile } from '../data/career';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { LANGS } from './lang/_langs';
 import { githubRepoUrl } from '../data/github';
@@ -58,7 +59,7 @@ export async function GET(context: APIContext) {
   lines.push('# Matt Parker — Portfolio');
   lines.push('');
   lines.push(
-    `> Senior Technical Support Manager with ${experienceLabel} in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.`,
+    `> ${careerProfile.headline} with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation. Static, privacy-first site - no analytics, no cookies, no third-party scripts.`,
   );
   lines.push('');
 

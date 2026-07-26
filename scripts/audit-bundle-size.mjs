@@ -26,7 +26,7 @@ const budgets = {
   jsTotalBytes: 153_600,      // 150 KB total JS
   cssFileLimitBytes: 122_880, // 120 KB per route/component CSS file
   cssGlobalFileLimitBytes: 163_840, // 160 KB for the shared shell, tokens, and cross-route UI primitives
-  cssTotalBytes: 217_088,     // 212 KB total CSS (v0.30 field-journal system adds ~4.7 KB while global CSS stays below 160 KB)
+  cssTotalBytes: 225_280,     // 220 KB aggregate; v0.32 adds route-local career-dossier and print CSS while the shared shell stays below 160 KB
 };
 
 const distDir = path.resolve(root, options.distDir);
