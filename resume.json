@@ -2,16 +2,21 @@
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
     "name": "Matt Parker",
-    "label": "Senior Technical Support Manager",
+    "label": "AI Implementation Consultant · Healthcare IT · Systems & Automation",
     "email": "matt_parker@outlook.com",
     "url": "https://sysadmindoc.github.io",
-    "summary": "15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting.",
+    "summary": "AI implementation consultant and technical operations leader with 15+ years across enterprise IT, healthcare systems, Windows infrastructure, migrations, and customer support. I help businesses select and safely roll out AI tools, automate repetitive workflows, train teams, and maintain deployed solutions.",
     "location": {
       "city": "Sarasota",
       "region": "FL",
       "countryCode": "US"
     },
     "profiles": [
+      {
+        "network": "Website",
+        "username": "Parker AI",
+        "url": "https://getparkerai.com"
+      },
       {
         "network": "GitHub",
         "username": "SysAdminDoc",
@@ -27,26 +32,23 @@
   "work": [
     {
       "name": "Maven Imaging",
-      "position": "Senior Technical Support Manager",
+      "position": "Technical Support Manager",
       "location": "Sarasota, FL",
       "startDate": "2021-02-01",
-      "summary": "Tier II escalation and support management for healthcare technology environments. Work centers on customer troubleshooting, migration coordination, vendor handoffs, documentation, and keeping customer environments stable through support incidents and planned transitions.",
+      "summary": "Support healthcare technology environments across PACS deployments, DR panel configuration, DICOM routing, hosted-service migrations, workstation and network troubleshooting, and customer escalation.",
       "highlights": [
-        "Coordinate customer migrations, legacy archive transfers, cutovers, and validation follow-up",
-        "Support customer workstations, network connectivity, account access, and vendor application issues",
-        "Troubleshoot licensing, workstation, networking, VPN, and hosted-service access issues across customer environments",
-        "Document repeatable support procedures and maintain knowledge-base material for customers, field teams, and internal support",
-        "Escalate service-impacting issues across customers, vendors, and internal teams with clear status updates and recovery steps"
+        "Own issues from diagnosis through resolution, coordinating vendors, cutovers, documentation, and follow-up",
+        "Turn recurring operational gaps into procedures, training content, and purpose-built software or automation",
+        "Maintain practical security and data-handling discipline across customer support and migration work"
       ],
       "keywords": [
+        "PACS",
+        "DICOM",
         "Healthcare IT",
-        "Customer systems",
         "Windows workstations",
         "Hosted services",
         "Migration coordination",
-        "Hyper-V",
-        "VPN",
-        "Freshdesk"
+        "Networking"
       ]
     },
     {
@@ -57,10 +59,9 @@
       "endDate": "2025-02-01",
       "summary": "Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.",
       "highlights": [
-        "Supported Hyper-V virtualization and server consolidation for Windows Server workloads",
-        "Administered endpoint management for Windows workstation fleets using SCCM-era tooling",
-        "Maintained Cisco routing, firewall, and switching infrastructure with monitoring and troubleshooting",
-        "Supported broadcast-related server and encoder infrastructure with escalation and maintenance as needed"
+        "Supported and administered network, server, workstation, and broadcast infrastructure",
+        "Implemented and maintained SCCM for 100+ Windows workstations, including imaging, application deployment, updates, and lifecycle work",
+        "Documented systems and procedures, coordinated vendors and escalations, and supported broadcast servers and automation platforms"
       ],
       "keywords": [
         "Windows Server 2008–2016",
@@ -80,9 +81,9 @@
       "endDate": "2014-04-01",
       "summary": "Supported multiple MSP client environments across Active Directory, Group Policy, DNS/DHCP, server refreshes, user onboarding, documentation, and 24/7 monitoring with escalation to senior administrators when needed.",
       "highlights": [
-        "Assisted with server refreshes and legacy Windows Server decommissioning",
-        "Documented client networks, topology notes, runbooks, and recurring support procedures",
-        "Onboarded users and provided practical training on business software, phone systems, and account access"
+        "Managed IT operations across multiple MSP client environments with Active Directory, Group Policy, DNS, DHCP, endpoint security, and user support",
+        "Performed 24/7/365 monitoring and coordinated escalation for outages and business-critical application failures",
+        "Migrated legacy servers, onboarded and trained users, and created topology diagrams, network documentation, and knowledge-base guides"
       ],
       "keywords": [
         "Windows Server 2003–2012 R2",
@@ -95,54 +96,66 @@
   ],
   "skills": [
     {
-      "name": "Healthcare IT Support",
+      "name": "AI & Automation",
       "keywords": [
-        "customer systems",
-        "workflows",
-        "escalation"
+        "implementation",
+        "LLM tooling",
+        "workflow automation"
       ]
     },
     {
-      "name": "Systems Administration",
+      "name": "Healthcare Systems",
+      "keywords": [
+        "PACS",
+        "DICOM",
+        "migrations",
+        "customer support"
+      ]
+    },
+    {
+      "name": "Enterprise Infrastructure",
       "keywords": [
         "Windows Server",
         "AD",
         "GPO",
+        "SCCM",
         "Hyper-V"
       ]
     },
     {
-      "name": "Networking",
+      "name": "Development & Delivery",
       "keywords": [
-        "Cisco",
-        "VPN",
-        "DNS/DHCP",
-        "monitoring"
+        "Python",
+        "PowerShell",
+        "TypeScript",
+        "C#/.NET"
       ]
     },
     {
-      "name": "Customer Escalation",
+      "name": "Customer Operations",
       "keywords": [
-        "troubleshooting",
+        "escalation",
         "recovery",
         "vendor coordination"
       ]
     },
     {
-      "name": "Migration Coordination",
-      "keywords": [
-        "archive transfers",
-        "cutovers",
-        "validation"
-      ]
-    },
-    {
-      "name": "Documentation",
+      "name": "Documentation & Training",
       "keywords": [
         "runbooks",
-        "knowledge base",
-        "training material"
+        "knowledge bases",
+        "team enablement"
       ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Sinclair Community College",
+      "area": "Computer Networking Technologies",
+      "studyType": "Coursework",
+      "startDate": "2002",
+      "endDate": "2004",
+      "location": "Dayton, OH"
     }
   ]
 }

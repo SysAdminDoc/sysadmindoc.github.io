@@ -1,6 +1,6 @@
 # Matt Parker — Portfolio
 
-> Senior Technical Support Manager with 15+ years in enterprise IT and systems administration, with recent healthcare technology support across customer systems, hosted workflows, migrations, documentation, vendor coordination, and escalation-heavy troubleshooting. Static, privacy-first site - no analytics, no cookies, no third-party scripts.
+> AI Implementation Consultant · Healthcare IT · Systems & Automation with 15+ years across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation. Static, privacy-first site - no analytics, no cookies, no third-party scripts.
 
 ## Featured projects
 - [win11-nvme-driver-patcher](https://github.com/SysAdminDoc/win11-nvme-driver-patcher): GUI to enable Windows Server 2025 NVMe driver on Windows 11 ~80% IOPS improvement on modern SSDs.
