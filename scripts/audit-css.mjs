@@ -29,10 +29,6 @@ const sharedFirstViewportSelectors = [
   '.hero-proof-label',
   '.hero-proof-value',
   '.hero-proof-copy',
-  '.hero-signals',
-  '.hero-signal',
-  '.hero-signal-label',
-  '.hero-signal-value',
 ];
 
 const sharedMobileSelectors = [
@@ -43,8 +39,6 @@ const sharedMobileSelectors = [
   '.hero-proof-strip',
   '.hero-proof',
   '.hero-proof-value',
-  '.hero-pulse',
-  '.hero-pulse .pulse-item',
 ];
 
 function extractSelectors(css) {

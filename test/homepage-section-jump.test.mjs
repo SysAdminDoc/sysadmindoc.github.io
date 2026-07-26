@@ -11,8 +11,9 @@ test('homepage keeps command navigation without a redundant section jump band', 
   assert.doesNotMatch(home, /import SectionJumpNav/);
   assert.doesNotMatch(home, /home-jump-shell/);
   assert.doesNotMatch(home, /label: 'Project Mix', href: '#volume'/);
-  assert.match(home, /label: 'Catalog', href: '#catalog'/);
+  assert.match(home, /label: 'Selected Work', href: '#greatest-hits'/);
+  assert.match(home, /label: 'Project Catalog', href: '\/catalog\/'/);
   assert.match(home, /label: 'Live Apps', href: '#live'/);
-  // The catalog section is rendered by <CatalogSection> (which emits <section id="catalog">).
-  assert.ok(home.indexOf('<section id="live"') < home.indexOf('<CatalogSection'));
+  assert.ok(home.indexOf('<section id="live"') < home.indexOf('<section id="catalog"'));
+  assert.doesNotMatch(home, /<CatalogSection\b/);
 });

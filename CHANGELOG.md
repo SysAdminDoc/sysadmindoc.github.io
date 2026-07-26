@@ -4,6 +4,26 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.35.0] - 2026-07-26
+
+### Changed
+
+- Rebuilt the homepage as a restrained editorial sequence: concise positioning,
+  three selected systems, two live previews, three practice lanes, and direct
+  handoffs replace the operating-index, chart, media, and card-wall density.
+- Reduced shared navigation to five durable destinations and moved long-page
+  section links into a closed-by-default disclosure on interior routes.
+- Cut the shared stylesheet from 159.4 KB to 119.4 KB by removing 726 selectors
+  tied to retired source surfaces, while preserving the light and dark systems.
+- Reduced the homepage runtime to its focused navigation behavior and removed
+  four retired feature entry points.
+
+### Added
+
+- Added rendered density contracts for the new homepage hierarchy, including
+  bounded hero/page height, exact content counts, mobile reflow, and archive
+  handoff coverage.
+
 ## [v0.34.0] - 2026-07-26
 
 ### Fixed

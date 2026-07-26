@@ -7,7 +7,7 @@
 
 /* Global focus indicators — WCAG 2.4.7. Unified system: 2px outline + 3px offset + soft halo for cards. */
 :focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px;border-radius:4px;transition:outline-offset var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-.lc2:focus-visible,.ca:focus-visible,.skc:focus-visible,.video-card:focus-visible,.cnc:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+.lc2:focus-visible,.ca:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
 button:focus-visible,.fb:focus-visible,.btn:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
 
 /* Search highlighting */
@@ -27,21 +27,14 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 
 /* Homepage below-fold render containment. Hero and first follow-up sections stay eager. */
 @supports (content-visibility:auto){
-  :where(#catalog,#live,#skills,#beyond,#connect){
+  :where(#live,#skills,#catalog,#connect){
     content-visibility:auto;
-    contain-intrinsic-size:auto var(--cv-intrinsic-size,900px);
+    contain-intrinsic-size:auto var(--cv-intrinsic-size,700px);
   }
-  #live{--cv-intrinsic-size:820px}
-  #catalog{--cv-intrinsic-size:5200px}
-  #skills{--cv-intrinsic-size:980px}
-  #beyond{--cv-intrinsic-size:780px}
-  #connect{--cv-intrinsic-size:980px}
-}
-@media print{
-  :where(#catalog,#live,#skills,#beyond,#connect){
-    content-visibility:visible;
-    contain-intrinsic-size:none;
-  }
+  #live{--cv-intrinsic-size:1280px}
+  #skills{--cv-intrinsic-size:760px}
+  #catalog{--cv-intrinsic-size:560px}
+  #connect{--cv-intrinsic-size:560px}
 }
 
 /* Command palette — native <dialog> */
@@ -119,13 +112,6 @@ html[data-theme="light"] .cmdk{background:#fff}
 #greatest-hits{padding-top:60px}
 
 /* Hero pulse widget (v0.7.0 — replaces runtime last-active) */
-.hero-pulse{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:18px 0;font-family:var(--mono);font-size:12px}
-.hero-pulse .pulse-dot{width:7px;height:7px;border-radius:4px;background:var(--grn);box-shadow:0 0 10px var(--grn-glow);animation:freshPulse 2s ease-in-out infinite;flex-shrink:0}
-.hero-pulse .pulse-item{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-2);text-decoration:none;color:var(--t2);transition:color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
-.hero-pulse .pulse-item:hover{color:var(--t1);border-color:var(--border-strong);background:var(--surface-1);transform:translateY(-1px)}
-.hero-pulse .pulse-k{color:var(--t3);font-size:10px;letter-spacing:var(--ls-caps);text-transform:uppercase}
-.hero-pulse .pulse-v{color:var(--t1);font-size:12px;font-variant-numeric:tabular-nums}
-.hero-pulse .pulse-sub{color:var(--grn);font-weight:600;margin-left:4px}
 
 /* ===== v0.8.1 audit hardening ===== */
 html{color-scheme:dark;scroll-padding-top:72px}
@@ -135,23 +121,21 @@ main[id],section[id]{scroll-margin-top:72px}
 a,button,[role="button"],summary{touch-action:manipulation}
 .hn,.st,.lang-title,.now-title,.rel-title,.hcit-title{text-wrap:balance}
 @supports (text-wrap:pretty){
-  .hero-summary,.sd,.lcd,.stack-copy,.lang-donut-copy,.footer-summary,.rel-body,.lang-card-desc,.archive-summary,.hcit-card-desc,.resume-summary,.uses-section-head p,.uses-item-note,.now-section-copy,.now-li,.now-p,.page-stat-copy{
+  .hero-summary,.sd,.lcd,.footer-summary,.rel-body,.lang-card-desc,.archive-summary,.hcit-card-desc,.resume-summary,.uses-section-head p,.uses-item-note,.now-section-copy,.now-li,.now-p,.page-stat-copy{
     text-wrap:pretty;
   }
 }
-.hsn,.hero-pulse .pulse-v,.footer-year,.ca-age,.lang-stat-num,.lang-card-stars,.now-pulse-value,.rel-date,time[data-rel]{font-variant-numeric:tabular-nums}
+.hsn,.footer-year,.ca-age,.lang-stat-num,.lang-card-stars,.now-pulse-value,.rel-date,time[data-rel]{font-variant-numeric:tabular-nums}
 .footer-year{font-family:var(--mono);font-size:12px;color:var(--t2)}
 .cna,.cds,.cmdk-item .cmdk-title{min-width:0}
-.video-thumb{outline:2px solid transparent;outline-offset:3px}
-.video-thumb:focus-visible,.cmdk-item:focus-visible,.gh-card:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+.cmdk-item:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
 .cmdk-item:focus-visible{background:var(--glass-hover)}
 .search-input,.sort-select{outline:2px solid transparent;outline-offset:3px}
 .search-input:focus-visible,.sort-select:focus-visible{outline-color:var(--focus-outline);box-shadow:var(--focus-ring)}
 .nk a{transition:color .25s,background-color .25s,box-shadow .25s}
-.ng{transition:color .3s,background-color .3s,border-color .3s,box-shadow .3s,transform .3s}
 .btn{transition:color .3s,background-color .3s,border-color .3s,box-shadow .3s,transform .3s,opacity .3s}
-.lc2,.skc,.video-card,.cnc{transition:border-color .4s cubic-bezier(.16,1,.3,1),background-color .4s cubic-bezier(.16,1,.3,1),box-shadow .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1),color .4s cubic-bezier(.16,1,.3,1)}
-.fb,.btt,.theme-toggle,.hero-pulse .pulse-item{transition:color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,transform .2s ease-out,opacity .2s ease-out}
+.lc2{transition:border-color .4s cubic-bezier(.16,1,.3,1),background-color .4s cubic-bezier(.16,1,.3,1),box-shadow .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1),color .4s cubic-bezier(.16,1,.3,1)}
+.fb,.theme-toggle{transition:color .2s ease-out,background-color .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,transform .2s ease-out,opacity .2s ease-out}
 .ca{transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s cubic-bezier(.16,1,.3,1),border-color .25s ease,background-color .4s cubic-bezier(.16,1,.3,1),color .4s cubic-bezier(.16,1,.3,1)}
 .nav-indicator{transition:left .35s cubic-bezier(.16,1,.3,1),width .35s cubic-bezier(.16,1,.3,1),opacity .35s cubic-bezier(.16,1,.3,1),background-color .35s cubic-bezier(.16,1,.3,1),border-color .35s cubic-bezier(.16,1,.3,1)}
 /* Safe areas for notched/mobile browsers */
@@ -168,9 +152,5 @@ main[id],section[id]{scroll-margin-top:calc(72px + env(safe-area-inset-top,0px))
 }
 @media(max-width:640px){
   .nk.open{top:calc(64px + env(safe-area-inset-top,0px))}
-  .btt{
-    right:max(20px,env(safe-area-inset-right,0px));
-    bottom:calc(20px + env(safe-area-inset-bottom,0px));
-  }
 }
 }

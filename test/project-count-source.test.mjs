@@ -6,24 +6,26 @@ import { test } from 'node:test';
 const root = process.cwd();
 const indexPath = path.join(root, 'src', 'pages', 'index.astro');
 const githubScriptPath = path.join(root, 'public', 'scripts', 'home-github.js');
+const basePath = path.join(root, 'src', 'layouts', 'Base.astro');
 const readmePath = path.join(root, 'README.md');
 
 test('homepage project count copy uses rendered catalog count', async () => {
   const source = await fs.readFile(indexPath, 'utf8');
 
-  assert.match(source, /const publicProjectCount = catalogTotal;/);
-  assert.match(source, /id="statRepos" data-live>\{publicProjectCount\}/);
+  assert.match(source, /const publicProjectCount = catalog\.length;/);
+  assert.match(source, /id="statRepos">\{publicProjectCount\}/);
   assert.doesNotMatch(source, /stats\.totalRepos/);
 });
 
-test('live GitHub refresh does not overwrite project count with raw repo totals', async () => {
-  const source = await fs.readFile(githubScriptPath, 'utf8');
+test('homepage project count remains build-time truth without GitHub hydration', async () => {
+  const [index, base] = await Promise.all([
+    fs.readFile(indexPath, 'utf8'),
+    fs.readFile(basePath, 'utf8'),
+  ]);
 
-  assert.match(source, /const projectCount=getFallbackRepoCount\(\)\|\|cached\.displayTotal\|\|cached\.total;/);
-  assert.match(source, /writeJsonCache\(GITHUB_CACHE_KEY,\{data:ghData,total:count,displayTotal:projectCount,/);
-  assert.match(source, /applyGitHubData\(projectCount,totalStars,langCount,\{skipAggregate\}\);/);
-  assert.doesNotMatch(source, /applyGitHubData\(cached\.total/);
-  assert.doesNotMatch(source, /applyGitHubData\(count,totalStars/);
+  await assert.rejects(fs.access(githubScriptPath), { code: 'ENOENT' });
+  assert.doesNotMatch(base, /home-github\.js/);
+  assert.doesNotMatch(index, /data-live|stats\.totalRepos|total_count/);
 });
 
 test('README public command examples match generated portfolio counts', async (t) => {

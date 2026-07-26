@@ -182,7 +182,11 @@ for (const match of indexHtml.matchAll(/<a\b[^>]*\bclass=(["'])[^"']*\bca\b[^"']
   if (target !== '_blank') fail(`Homepage catalog card ${repo} must open GitHub in a new tab.`);
   if (!rel.split(/\s+/).includes('noopener')) fail(`Homepage catalog card ${repo} must use rel=noopener.`);
 }
-if (catalogLinkCount === 0) fail('Homepage catalog contains no project links.');
+if (catalogLinkCount !== 0) fail(`Homepage should delegate project discovery to /catalog/; found ${catalogLinkCount} catalog cards.`);
+const homepageCatalogSection = indexHtml.match(/<section\b[^>]*\bid=(["'])catalog\1[\s\S]*?(?=<section\b[^>]*\bid=(["'])connect\2)/i)?.[0] ?? '';
+if (!homepageCatalogSection) fail('Homepage is missing the compact #catalog handoff section.');
+if (!/href=(["'])\/catalog\/\1/i.test(homepageCatalogSection)) fail('Homepage catalog handoff is missing /catalog/.');
+if (!/href=(["'])\/search\/\1/i.test(homepageCatalogSection)) fail('Homepage catalog handoff is missing /search/.');
 
 const pagefind = await loadPagefind().catch((error) => {
   fail(`Unable to load generated Pagefind API: ${error.message}`);
@@ -254,7 +258,7 @@ console.log('Search index audit');
 console.log(`  HTML pages scanned: ${htmlFiles.length}`);
 console.log(`  data-pagefind-body pages indexed: ${indexedPageCount}`);
 console.log(`  removed project routes: ${removedProjectRoutes.length}`);
-console.log(`  homepage GitHub project links: ${catalogLinkCount}`);
+console.log(`  homepage catalog cards: ${catalogLinkCount} (handoff-only)`);
 console.log(`  Scope filters checked: ${pagefindScopeCounts.size}`);
 console.log(`  filtered route results checked: ${filteredResultCount}`);
 console.log('  Scope counts:');

@@ -21,6 +21,7 @@ body.route-interior .page-jump-link:hover,body.route-interior .page-jump-link[ar
 body.route-interior .page-jump-badge{display:none}
 body.route-interior .dv{display:none}
 body.route-interior footer{margin-top:64px}
+@media(max-width:640px){body.route-interior .page-jump-link{min-height:44px}}
 
 body.route-interior .rel-month{max-width:var(--content-max);margin:0 auto;padding:0 32px}
 body.route-interior .rel-month-shell{display:grid;grid-template-columns:180px minmax(0,1fr);gap:32px;padding:28px 0;border:0;border-top:1px solid var(--border-soft);border-radius:0;background:transparent;box-shadow:none}

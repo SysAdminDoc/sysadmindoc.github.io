@@ -79,7 +79,7 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
 .nk{gap:8px}
 .nk a{border-radius:10px;padding:7px 14px}
 .nk a:hover,.nk a.active{background:rgba(255,255,255,.05)}
-.ng,.theme-toggle{border-color:rgba(255,255,255,.08)}
+.theme-toggle{border-color:rgba(255,255,255,.08)}
 .hero{
   min-height:100svh;
   padding:92px 32px 72px;
@@ -112,17 +112,6 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
   filter:blur(18px);
   pointer-events:none;
   z-index:0;
-}
-.hero-grid{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  opacity:.34;
-  background-image:
-    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
-  background-size:120px 120px;
-  mask-image:linear-gradient(180deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.35) 48%, transparent 100%);
 }
 .hi{
   max-width:1320px;
@@ -166,7 +155,6 @@ html[data-theme="light"] #nav{background:rgba(248,244,234,.8)}
 .hs-item:not(:last-child){border-right:1px solid rgba(255,255,255,.08)}
 .hsn{font-size:clamp(30px,3.2vw,42px)}
 .hsl{margin-top:5px}
-.hero-pulse{margin:0 0 20px}
 .ha{margin-top:4px}
 .btn{
   padding:13px 24px;
@@ -204,18 +192,13 @@ section{padding:118px 32px}
   font-size:17px;
   line-height:var(--lh-relaxed);
 }
-.lg{
-  grid-template-columns:repeat(12,minmax(0,1fr));
-  gap:16px;
-}
-.lg .lc2{grid-column:span 4;min-height:176px}
-.lc2,.skc,.video-card,.cnc{
+.lc2{
   border-radius:12px;
   border-color:rgba(255,255,255,.08);
   background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
   box-shadow:0 18px 42px rgba(0,0,0,.18);
 }
-.lc2:hover,.skc:hover,.video-card:hover,.cnc:hover{
+.lc2:hover{
   transform:translateY(-4px);
   box-shadow:0 24px 56px rgba(0,0,0,.24);
 }
@@ -377,12 +360,6 @@ html[data-theme="light"] .ca:hover{
   letter-spacing:var(--ls-caps);
   font-weight:600;
 }
-.skg{
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:16px;
-}
-.skc{padding:24px 20px}
-.video-info{padding:18px}
 #connect .si{
   position:relative;
   overflow:hidden;
@@ -409,97 +386,12 @@ html[data-theme="light"] .ca:hover{
   padding-top:0;
   border-top:0;
 }
-.cng{
-  position:relative;
-  z-index:1;
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
-  max-width:none;
-}
-.cnc{
-  flex-direction:column;
-  min-width:0;
-  padding:24px 28px;
-  align-items:flex-start;
-  justify-content:flex-start;
-  gap:18px;
-}
-.cnc-top{
-  display:flex;
-  align-items:flex-start;
-  gap:16px;
-  width:100%;
-}
-.cnc svg{
-  width:24px;
-  height:24px;
-  flex-shrink:0;
-}
-.cnc-info{
-  gap:5px;
-  min-width:0;
-}
-.cnc-name{
-  font-size:16px;
-}
-.cnc-handle{
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--t3);
-}
-.cnc-desc{
-  margin:0;
-  color:var(--t2);
-  font-size:15px;
-  line-height:var(--lh-relaxed);
-}
-.cnc-foot{
-  width:100%;
-  margin-top:auto;
-  padding-top:16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:var(--ls-caps);
-  text-transform:uppercase;
-}
-.cnc-meta{
-  color:var(--t3);
-  line-height:1.6;
-  max-width:25ch;
-}
-.cnc-cta{
-  color:var(--t1);
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  flex-shrink:0;
-}
-.cnc-cta::after{
-  content:'→';
-  color:var(--blue);
-  transition:transform .2s ease-out;
-}
-.cnc:hover .cnc-cta::after,
-.cnc:focus-visible .cnc-cta::after{
-  transform:translateX(3px);
-}
 @media(max-width:1100px){
   .hi{grid-template-columns:1fr;gap:36px;align-items:start}
   .ht{max-width:none;padding-bottom:0}
   .sh{grid-template-columns:1fr}
   .sh .st,.sh .sd{grid-column:auto}
   .st{max-width:16ch}
-  .lg,.skg{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .lg .lc2{grid-column:auto;min-height:auto}
-  .cng{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:640px){
   section{padding:84px 16px}
@@ -509,11 +401,7 @@ html[data-theme="light"] .ca:hover{
   .hero-summary{font-size:16px}
   .hs{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:18px 0}
   .hs-item{padding-right:8px}
-  .lg,.skg{grid-template-columns:1fr}
   #connect .si{padding:24px}
-  .cng{grid-template-columns:1fr}
-  .cnc{width:100%;min-width:0}
-  .cnc-foot{align-items:flex-start;flex-direction:column}
 }
 @media(max-width:460px){
   .hs{grid-template-columns:1fr}

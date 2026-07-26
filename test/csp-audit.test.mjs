@@ -13,7 +13,7 @@ const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
 const baseLayoutPath = path.join(repoRoot, 'src', 'layouts', 'Base.astro');
 const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 2;
-const astroExtractedStyleBlockCount = 13;
+const astroExtractedStyleBlockCount = 14;
 
 function countJavaScriptFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).reduce((count, entry) => {
@@ -76,7 +76,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, new RegExp(`runtime JavaScript files scanned: ${countJavaScriptFiles(path.join(repoRoot, 'public'))}`));
   assert.match(output, /runtime style\.cssText writes: 0/);
   assert.match(output, /runtime setAttribute\("style"\) writes: 0/);
-  assert.match(output, /runtime direct style property references: 7/);
+  assert.match(output, /runtime direct style property references: 4/);
   assert.match(output, /runtime HTML sink writes: 0/);
   assert.match(output, /script-src unsafe-inline required today: no/);
   assert.match(output, /style-src unsafe-inline required today: no/);

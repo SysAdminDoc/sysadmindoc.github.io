@@ -13,7 +13,6 @@ import {
 } from '../data/page-freshness';
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto, experienceLabel, experienceShort } from '../data/identity';
-import { careerProfile } from '../data/career';
 
 const title = 'AI Services — Matt Parker';
 const pageOg = interiorOgPageBySlug['ai'];
@@ -161,12 +160,6 @@ const cmdkSections = [
           <div class="page-stat-copy">Systems administration and healthcare support background — I build for how businesses actually run, not for demos.</div>
         </div>
       </div>
-      <aside class="aisvc-operator rv" aria-label="Operator profile">
-        <span>Operator profile</span>
-        <strong>{careerProfile.headline}</strong>
-        <p>{careerProfile.operatingNote}</p>
-        <a href="/resume/">Open career record <span aria-hidden="true">→</span></a>
-      </aside>
       <div class="aisvc-actions page-actions rv">
         <a href={contactMailto('AI services')} class="btn bp">Start a conversation</a>
         <a href="https://getparkerai.com" target="_blank" rel="noopener" class="btn bg2">Visit Parker AI <span aria-hidden="true">↗</span></a>
@@ -262,8 +255,6 @@ const cmdkSections = [
   .aisvc-stats{margin-top:32px;max-width:1080px}
   .aisvc-stat{min-height:100%}
   .aisvc-stat-num{color:var(--pur)}
-  .aisvc-operator{display:grid;grid-template-columns:130px minmax(240px,1fr) minmax(220px,.8fr) auto;gap:20px;align-items:center;max-width:1080px;margin-top:22px;padding:16px 0;border-block:1px solid var(--border-soft)}
-  .aisvc-operator>span,.aisvc-operator a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}.aisvc-operator>span{color:var(--pur)}.aisvc-operator>strong{font-size:14px}.aisvc-operator p{margin:0;color:var(--t3);font-size:13px}.aisvc-operator a{color:var(--t1);text-decoration:none;white-space:nowrap}
   .aisvc-actions{margin-top:22px}
   .aisvc-h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.035em;color:var(--t1);margin:0 auto 28px;max-width:900px}
   .aisvc-grid{max-width:1100px;margin:0 auto;border-top:1px solid var(--border-strong)}
@@ -292,7 +283,6 @@ const cmdkSections = [
   .aisvc-why p{margin-bottom:18px}
   .aisvc-why strong{color:var(--t1);font-weight:600}
   @media(max-width:720px){
-    .aisvc-operator{grid-template-columns:1fr;gap:8px}.aisvc-operator a{margin-top:4px}
     .aisvc-card{grid-template-columns:1fr;gap:10px}
     .aisvc-proof-row{grid-template-columns:30px minmax(0,1fr);gap:14px}
     .aisvc-proof-link{grid-column:2;margin-top:0}
