@@ -5,8 +5,16 @@
     <link>https://sysadmindoc.github.io/releases/</link>
     <description>Tagged releases across the public archive by Matt Parker.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Jul 2026 21:45:14 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 26 Jul 2026 00:22:09 GMT</lastBuildDate>
     <atom:link href="https://sysadmindoc.github.io/releases.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>sysadmindoc.github.io v0.29.0</title>
+      <link>https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.29.0</link>
+      <description>Roadmap drain focused on visual coherence, verifiable browser behavior, static · delivery hardening, and release reliability. The active roadmap is empty; work · that still requires product, provenance, or operator…</description>
+      <category>sysadmindoc.github.io</category>
+      <pubDate>Sun, 26 Jul 2026 00:22:09 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.29.0</guid>
+    </item>
     <item>
       <title>BetterTTS v0.20.0</title>
       <link>https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.20.0</link>
@@ -48,20 +56,36 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.2</guid>
     </item>
     <item>
-      <title>sysadmindoc.github.io v0.26.1</title>
-      <link>https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.1</link>
-      <description>Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads…</description>
-      <category>sysadmindoc.github.io</category>
-      <pubDate>Sat, 25 Jul 2026 21:41:24 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.26.1</guid>
-    </item>
-    <item>
       <title>Aura v6.38.0</title>
       <link>https://github.com/SysAdminDoc/Aura/releases/tag/v6.38.0</link>
       <description>Signed universal release APK for Aura v6.38.0 (versionCode 138). First GitHub release since v6.31.2, so it also carries the v6.32.0–v6.37.0 work; see CHANGELOG.md for the full history. · Highlights · v6.38.0</description>
       <category>Aura</category>
       <pubDate>Thu, 23 Jul 2026 04:56:24 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/Aura/releases/tag/v6.38.0</guid>
+    </item>
+    <item>
+      <title>SwiftShot v2.10.1</title>
+      <link>https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.1</link>
+      <description>SwiftShot v2.10.1 — deep-audit pass over the v2.10.0 feature drain. ~20 verified fixes. · Fixed · OCR: selecting a Tesseract language no longer breaks auto-redact / Copy as Table (the tesseract: tag leaked into the…</description>
+      <category>SwiftShot</category>
+      <pubDate>Thu, 23 Jul 2026 04:24:08 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.1</guid>
+    </item>
+    <item>
+      <title>SnapCrop v6.91.0</title>
+      <link>https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.91.0</link>
+      <description>SnapCrop v6.91.0 · Delete-original on save now actually removes the original screenshot from the gallery. The previous path used a direct MediaStore update to move the source into a visible Pictures/trashed/ album —…</description>
+      <category>SnapCrop</category>
+      <pubDate>Thu, 23 Jul 2026 04:18:04 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.91.0</guid>
+    </item>
+    <item>
+      <title>SwiftShot v2.10.0</title>
+      <link>https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.0</link>
+      <description>SwiftShot v2.10.0 — research-backlog drain (R-22..R-32). · Highlights · Keyboard-complete region capture (R-22): type exact W×H (D), cycle an aspect lock (A), resize with arrows (Shift = coarse), and move the whole…</description>
+      <category>SwiftShot</category>
+      <pubDate>Thu, 23 Jul 2026 03:48:07 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.10.0</guid>
     </item>
     <item>
       <title>ClearCut v3.75.0</title>
@@ -72,12 +96,60 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.75.0</guid>
     </item>
     <item>
+      <title>SnapCrop v6.90.0</title>
+      <link>https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.90.0</link>
+      <description>SnapCrop v6.90.0 · Moved on-device ML model inventory queries off the main thread. OcrModelManager and TranslationModelManager now construct ML Kit recognizer clients and initiate Play services module IPC on…</description>
+      <category>SnapCrop</category>
+      <pubDate>Thu, 23 Jul 2026 03:02:03 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.90.0</guid>
+    </item>
+    <item>
+      <title>StreamKeep v4.41.0</title>
+      <link>https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.41.0</link>
+      <description>Roadmap drain: rules engine, retention, REST spec, and test coverage. · Ordered rules engine (V15, Packagizer-class): match on site/uploader/title-regex/duration/type and set output folder, filename/argv template…</description>
+      <category>StreamKeep</category>
+      <pubDate>Mon, 20 Jul 2026 03:50:13 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.41.0</guid>
+    </item>
+    <item>
+      <title>Cataclysm v0.13.0</title>
+      <link>https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.13.0</link>
+      <description>What&apos;s new in v0.13.0 · Solver improvements · Radiation/open-boundary mode — characteristic absorbing BC damps η at domain edges using local phase speed; selectable from Advanced solver controls alongside the existing…</description>
+      <category>Cataclysm</category>
+      <pubDate>Sun, 19 Jul 2026 23:07:20 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.13.0</guid>
+    </item>
+    <item>
+      <title>AIUsageTracker v0.2.0</title>
+      <link>https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.2.0</link>
+      <description>What&apos;s new in v0.2.0 · Brand logos — Claude (clay sunburst) and Codex (OpenAI hexafoil) tiles now identify each provider, plus a new app/tray mark. All rendered crisply at runtime. · Selectable alarm sounds — choose…</description>
+      <category>AIUsageTracker</category>
+      <pubDate>Sat, 18 Jul 2026 01:34:46 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.2.0</guid>
+    </item>
+    <item>
+      <title>AIUsageTracker v0.1.0</title>
+      <link>https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.1.0</link>
+      <description>First release of AIUsageTracker — a Windows dashboard that monitors your Claude and Codex usage windows and alarms the instant a usage window resets. · Highlights · Live usage bars for every Claude &amp; Codex limit window…</description>
+      <category>AIUsageTracker</category>
+      <pubDate>Sat, 18 Jul 2026 01:02:59 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/AIUsageTracker/releases/tag/v0.1.0</guid>
+    </item>
+    <item>
       <title>Droidsmith v0.5.3</title>
       <link>https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.5.3</link>
       <description>Fixed · Package enumeration no longer fails on some devices. pm list packages was always run with -U (package UID, Android 9+) and -i (installer) flags; a device whose pm rejects an unknown flag exited non-zero and…</description>
       <category>Droidsmith</category>
       <pubDate>Fri, 17 Jul 2026 23:53:28 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.5.3</guid>
+    </item>
+    <item>
+      <title>StreamKeep v4.36.4</title>
+      <link>https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.4</link>
+      <description>StreamKeep v4.36.4 completes the production-mockup parity pass and introduces a unified application identity across every shipped surface. · Highlights · Rebuilt the Download workspace around a compact header and…</description>
+      <category>StreamKeep</category>
+      <pubDate>Fri, 17 Jul 2026 22:15:53 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.4</guid>
     </item>
     <item>
       <title>VideoSubtitleRemover v3.22.0</title>
@@ -88,12 +160,44 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.22.0</guid>
     </item>
     <item>
+      <title>UniversalConverterX v2.31.3</title>
+      <link>https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.3</link>
+      <description>v2.31.4 — hotfix (delivered on the existing v2.31.3 release, no new tag) · The download assets on this release have been rebuilt from v2.31.4, which fixes crashes and layout problems in v2.31.3. Version strings inside…</description>
+      <category>UniversalConverterX</category>
+      <pubDate>Fri, 17 Jul 2026 21:49:04 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.3</guid>
+    </item>
+    <item>
+      <title>UniversalConverterX v2.31.2</title>
+      <link>https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.2</link>
+      <description>Converter workspace parity · Opens directly on Converter with core workflows ordered first. · Replaces separate Add Files/Add Folder actions with one split intake control.</description>
+      <category>UniversalConverterX</category>
+      <pubDate>Fri, 17 Jul 2026 21:23:49 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.2</guid>
+    </item>
+    <item>
       <title>VideoSubtitleRemover v3.21.0</title>
       <link>https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.21.0</link>
       <description>Video Subtitle Remover Pro 3.21.0 delivers a calmer, command-first desktop workbench. Primary setup stays in one compact toolbar, typography is larger and more readable, the inspector uses separator-led disclosure…</description>
       <category>VideoSubtitleRemover</category>
       <pubDate>Fri, 17 Jul 2026 21:21:21 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.21.0</guid>
+    </item>
+    <item>
+      <title>UniversalConverterX v2.31.1</title>
+      <link>https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.1</link>
+      <description>Density and hierarchy follow-up · Reduced oversized empty queues across 38 workflow surfaces and compacted 46 placeholder illustrations. · Moved Converter Format and Save controls to the top of the inspector and…</description>
+      <category>UniversalConverterX</category>
+      <pubDate>Fri, 17 Jul 2026 21:02:34 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.1</guid>
+    </item>
+    <item>
+      <title>UniversalConverterX v2.31.0</title>
+      <link>https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.0</link>
+      <description>Highlights · Rebuilt the desktop visual system around readable typography, tonal surfaces, compact headers, tighter spacing, and clearer control grouping across all 53 pages. · Moved primary actions higher in…</description>
+      <category>UniversalConverterX</category>
+      <pubDate>Fri, 17 Jul 2026 20:22:05 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.31.0</guid>
     </item>
     <item>
       <title>VideoSubtitleRemover v3.20.0</title>
@@ -104,12 +208,44 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.20.0</guid>
     </item>
     <item>
+      <title>UniversalConverterX v2.30.0</title>
+      <link>https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.30.0</link>
+      <description>UniversalConverter X 2.30.0 completes the actionable roadmap and refreshes the product identity. · Highlights: · New UniversalConverter X logo across the executable, README, MSIX tiles, Store assets, and file-type…</description>
+      <category>UniversalConverterX</category>
+      <pubDate>Fri, 17 Jul 2026 16:38:24 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/UniversalConverterX/releases/tag/v2.30.0</guid>
+    </item>
+    <item>
+      <title>StreamKeep v4.36.3</title>
+      <link>https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.3</link>
+      <description>Premium six-page visual-system refinement derived from a fresh image-generated production mockup. This release raises default readability, replaces outlined card chrome with quiet tonal work surfaces, separates primary…</description>
+      <category>StreamKeep</category>
+      <pubDate>Fri, 17 Jul 2026 16:12:29 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.3</guid>
+    </item>
+    <item>
+      <title>StreamKeep v4.36.2</title>
+      <link>https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.2</link>
+      <description>Fix · Prevents duplicate desktop launches from racing over the shared SQLite library during startup. · A second click now exits cleanly before persistent state opens instead of showing a misleading database is locked…</description>
+      <category>StreamKeep</category>
+      <pubDate>Fri, 17 Jul 2026 15:34:43 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.2</guid>
+    </item>
+    <item>
       <title>AlarmClockXtreme v1.15.29</title>
       <link>https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.29</link>
       <description>Reliability and quality audit of the never-audited work since v1.15.27 (timer restart, fixed-zone alarms, Fossify import, jet-lag planner, the localization sweep) plus the core alarm and firing paths. · Highlights…</description>
       <category>AlarmClockXtreme</category>
       <pubDate>Fri, 17 Jul 2026 15:26:21 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.29</guid>
+    </item>
+    <item>
+      <title>StreamKeep v4.36.1</title>
+      <link>https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.1</link>
+      <description>Highlights · Reworked all six desktop pages around a premium, restrained visual system with readable typography, tighter spacing, open tables, hairline structure, and text-led status. · Consolidated Download into one…</description>
+      <category>StreamKeep</category>
+      <pubDate>Fri, 17 Jul 2026 14:53:18 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/StreamKeep/releases/tag/v4.36.1</guid>
     </item>
     <item>
       <title>VideoSubtitleRemover v3.19.1</title>
@@ -128,6 +264,14 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/VideoSubtitleRemover/releases/tag/v3.19.0</guid>
     </item>
     <item>
+      <title>Cataclysm v0.10.5</title>
+      <link>https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.5</link>
+      <description>Professional workspace, multi-hazard validation, and release hardening. · Highlights · Desktop visual system finalized across the mission-control workspace (transport, DART, layers, log viewer, glossary, trust…</description>
+      <category>Cataclysm</category>
+      <pubDate>Fri, 17 Jul 2026 04:44:27 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.5</guid>
+    </item>
+    <item>
       <title>ScriptVault v3.22.0</title>
       <link>https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.22.0</link>
       <description>Highlights · Install .user.css styles — navigate to a .user.css URL for a review-and-install prompt, or open a UserCSS draft in the editor and choose Install Style. Installed styles inject early on matching pages with…</description>
@@ -144,12 +288,84 @@
       <guid isPermaLink="true">https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.21.0</guid>
     </item>
     <item>
+      <title>Images v0.2.27</title>
+      <link>https://github.com/SysAdminDoc/Images/releases/tag/v0.2.27</link>
+      <description>Archive books now offer a persisted continuous vertical-reading mode for webtoons and long strips; the virtualized reader lazily decodes nearby pages, recycles offscreen pixels, preserves per-book position, exposes…</description>
+      <category>Images</category>
+      <pubDate>Tue, 14 Jul 2026 23:32:11 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Images/releases/tag/v0.2.27</guid>
+    </item>
+    <item>
+      <title>SwiftShot v2.9.0</title>
+      <link>https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.9.0</link>
+      <description>SwiftShot v2.9.0 is a substantial reliability, accessibility, security, and workflow release built from the 59 commits after v2.8.0. · Highlights · Added macOS- and Windows-style backdrop frames, a scriptable headless…</description>
+      <category>SwiftShot</category>
+      <pubDate>Tue, 14 Jul 2026 20:03:14 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SwiftShot/releases/tag/v2.9.0</guid>
+    </item>
+    <item>
       <title>ScriptVault v3.19.2</title>
       <link>https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.2</link>
       <description>Restore broad install-time host access · v3.18.x/3.19.0–3.19.1 scoped the Chromium build to optional_host_permissions and enabled a scopedHostPermissions gate by default. Together these stranded userscripts behind a…</description>
       <category>ScriptVault</category>
       <pubDate>Tue, 14 Jul 2026 04:41:00 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.2</guid>
+    </item>
+    <item>
+      <title>SnapCrop v6.89.0</title>
+      <link>https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.89.0</link>
+      <description>Capture-first redesign and prompt-free replacement. · What&apos;s changed since v6.88.0 · Save &amp; Replace now publishes the edited crop first, then moves the source MediaStore item into the visible Pictures/trashed/ album…</description>
+      <category>SnapCrop</category>
+      <pubDate>Mon, 13 Jul 2026 16:18:07 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.89.0</guid>
+    </item>
+    <item>
+      <title>Images v0.2.26</title>
+      <link>https://github.com/SysAdminDoc/Images/releases/tag/v0.2.26</link>
+      <description>Changed · Loupe and zoom-to-selection are documented - The ? keyboard-shortcuts overlay now lists the middle-button loupe and Ctrl+Shift+drag zoom-to-selection gestures so they are discoverable. · Serilog updated to…</description>
+      <category>Images</category>
+      <pubDate>Mon, 13 Jul 2026 16:16:58 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Images/releases/tag/v0.2.26</guid>
+    </item>
+    <item>
+      <title>SnapCrop v6.88.0</title>
+      <link>https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.88.0</link>
+      <description>Highlights · Adds a deterministic Unfiled screenshot inbox with File, Remind, Keep unfiled, and recoverable Trash actions. · Adds private local two-screenshot comparison and user-managed optional ML model delivery.</description>
+      <category>SnapCrop</category>
+      <pubDate>Mon, 13 Jul 2026 11:04:49 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.88.0</guid>
+    </item>
+    <item>
+      <title>Cataclysm v0.10.3</title>
+      <link>https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.3</link>
+      <description>Source-aware result stories and redesigned workspace · Reimagines the desktop shell, scenario library, results rail, transport, and dark/light themes around a calmer mission-control layout. · Adds Outcome, Science, and…</description>
+      <category>Cataclysm</category>
+      <pubDate>Mon, 13 Jul 2026 04:10:59 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.3</guid>
+    </item>
+    <item>
+      <title>Cataclysm v0.10.2</title>
+      <link>https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.2</link>
+      <description>Hardens the desktop trust and release boundary: explicit main-window permissions for every custom Tauri command, fail-safe mandatory safety guidance when settings persistence is unavailable, and bounded reference…</description>
+      <category>Cataclysm</category>
+      <pubDate>Mon, 13 Jul 2026 02:12:08 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.2</guid>
+    </item>
+    <item>
+      <title>SnapCrop v6.68.0</title>
+      <link>https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.68.0</link>
+      <description>Privacy-safe home widget with Latest, Quick Crop, and Gallery actions that never render screenshot pixels. Focused PDF and crop raster renderers reduce activity complexity without behavior changes. Lossless…</description>
+      <category>SnapCrop</category>
+      <pubDate>Sun, 12 Jul 2026 22:41:15 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/SnapCrop/releases/tag/v6.68.0</guid>
+    </item>
+    <item>
+      <title>Cataclysm v0.10.0</title>
+      <link>https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.0</link>
+      <description>Cataclysm now opens in a progressively disclosed simulator workspace. Simple keeps the scenario, live globe, Run &amp; Watch journey, timeline, and outcomes dominant. Customize reveals a small understandable control set…</description>
+      <category>Cataclysm</category>
+      <pubDate>Sun, 12 Jul 2026 10:34:09 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Cataclysm/releases/tag/v0.10.0</guid>
     </item>
     <item>
       <title>ClearCut v3.74.117</title>
@@ -190,222 +406,6 @@
       <category>AppManagerNG</category>
       <pubDate>Fri, 10 Jul 2026 06:42:49 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5</guid>
-    </item>
-    <item>
-      <title>ScriptVault v3.19.1</title>
-      <link>https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.1</link>
-      <description>Premium workbench parity release: canonical navigation, deeper dashboard destinations, reliable settings autosave, recoverable editor fallback, polished compact surfaces, four-theme rendered evidence, and verified…</description>
-      <category>ScriptVault</category>
-      <pubDate>Fri, 10 Jul 2026 04:15:54 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.1</guid>
-    </item>
-    <item>
-      <title>BetterTTS v0.19.0</title>
-      <link>https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.19.0</link>
-      <description>Premium product-quality release for the web and Windows editions.\n\nHighlights:\n- Recoverable Queue and Library deletion with Undo\n- Complete mobile workspace rail and editor-level Generate action\n- Keyboard tab…</description>
-      <category>BetterTTS</category>
-      <pubDate>Fri, 10 Jul 2026 03:48:19 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.19.0</guid>
-    </item>
-    <item>
-      <title>ScriptVault v3.19.0</title>
-      <link>https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.0</link>
-      <description>Professional workbench redesign with a premium graphite-and-emerald dashboard, live vault metrics, contextual script inspection, unified popup/side-panel/install/DevTools surfaces, and browser-rendered visual…</description>
-      <category>ScriptVault</category>
-      <pubDate>Thu, 09 Jul 2026 21:56:49 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/ScriptVault/releases/tag/v3.19.0</guid>
-    </item>
-    <item>
-      <title>BetterTTS v0.17.0</title>
-      <link>https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.17.0</link>
-      <description>Premium production-workspace redesign for the web and Windows desktop app. Adds persistent workspace navigation, real Output/Queue/Library tabs, integrated output transport, compact properties controls, neutral…</description>
-      <category>BetterTTS</category>
-      <pubDate>Thu, 09 Jul 2026 21:46:13 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.17.0</guid>
-    </item>
-    <item>
-      <title>BetterTTS v0.15.0</title>
-      <link>https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.15.0</link>
-      <description>Changed: Reworked the studio shell into a professional workstation layout with a six-tile command summary, side-by-side script/output workbench, tabbed waveform-style output deck, denser queue/library treatment…</description>
-      <category>BetterTTS</category>
-      <pubDate>Thu, 09 Jul 2026 14:04:09 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.15.0</guid>
-    </item>
-    <item>
-      <title>BetterTTS v0.14.0</title>
-      <link>https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0</link>
-      <description>Deep audit hardening release. Includes import/library/queue recovery guardrails, UI accessibility and contrast fixes, diagnostics privacy hardening, bounded article imports, safer service-worker cache keys, exact…</description>
-      <category>BetterTTS</category>
-      <pubDate>Thu, 09 Jul 2026 10:18:27 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/BetterTTS/releases/tag/v0.14.0</guid>
-    </item>
-    <item>
-      <title>AlarmClockXtreme v1.15.27</title>
-      <link>https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.27</link>
-      <description>AlarmClockXtreme v1.15.27 · Added rotating shift-pattern scheduling for DDNNO, 4-on-4-off, Panama, DuPont, and Pitman cycles. · Shift patterns can act as the recurring schedule by themselves or narrow existing weekday…</description>
-      <category>AlarmClockXtreme</category>
-      <pubDate>Mon, 06 Jul 2026 01:12:19 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.27</guid>
-    </item>
-    <item>
-      <title>AlarmClockXtreme v1.15.26</title>
-      <link>https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.26</link>
-      <description>AlarmClockXtreme v1.15.26 · Adds Bedtime pre-sleep factor tiles for caffeine, exercise, alcohol, and stress. · Adds a local correlation chart comparing tagged nights with Sonar/smart-wake restlessness.</description>
-      <category>AlarmClockXtreme</category>
-      <pubDate>Mon, 06 Jul 2026 00:33:14 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.26</guid>
-    </item>
-    <item>
-      <title>AlarmClockXtreme v1.15.25</title>
-      <link>https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.25</link>
-      <description>AlarmClockXtreme v1.15.25 · Adds a local Sonar snore/loud-sound event timeline on the Bedtime screen. · Stores compact start/end/duration/peak/average dB metadata only; no raw audio is retained.</description>
-      <category>AlarmClockXtreme</category>
-      <pubDate>Mon, 06 Jul 2026 00:09:42 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.25</guid>
-    </item>
-    <item>
-      <title>AlarmClockXtreme v1.15.24</title>
-      <link>https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.24</link>
-      <description>AlarmClockXtreme v1.15.24 · Adds a local chronotype quiz on the Bedtime screen. · Estimates ideal bedtime and wake windows from five on-device answers and the sleep-duration target.</description>
-      <category>AlarmClockXtreme</category>
-      <pubDate>Sun, 05 Jul 2026 23:08:39 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AlarmClockXtreme/releases/tag/v1.15.24</guid>
-    </item>
-    <item>
-      <title>HurricaneMap v1.4.6</title>
-      <link>https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.6</link>
-      <description>Desktop panel fit.\n\n- Lowered the right analytical panel lane so it sits closer to the season/timeline shelf.\n- Tightened the shelf gutter from 12px to 6px while preserving separation.\n- Added smoke coverage that…</description>
-      <category>HurricaneMap</category>
-      <pubDate>Fri, 03 Jul 2026 23:37:48 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.6</guid>
-    </item>
-    <item>
-      <title>HurricaneMap v1.4.5</title>
-      <link>https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.5</link>
-      <description>Desktop shelf alignment.\n\n- Moved the season summary inline to the left of the timeline as one bottom shelf.\n- Reserved bottom shelf space so desktop side panels stop above the season/timeline row.\n- Moved update…</description>
-      <category>HurricaneMap</category>
-      <pubDate>Fri, 03 Jul 2026 23:06:13 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.5</guid>
-    </item>
-    <item>
-      <title>HurricaneMap v1.4.4</title>
-      <link>https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.4</link>
-      <description>Desktop panel refinement.\n\n- Rebalanced desktop side panels into a wider bounded inspector lane.\n- Reworked storm, state, and statistics panels into stable two-column desktop grids.\n- Hid the season summary while…</description>
-      <category>HurricaneMap</category>
-      <pubDate>Fri, 03 Jul 2026 22:49:31 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.4</guid>
-    </item>
-    <item>
-      <title>HurricaneMap v1.4.3</title>
-      <link>https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.3</link>
-      <description>Premium layout and settings polish.\n\n- Prioritizes the map during mobile track playback with compact header chrome, a smaller restore handle, and a tighter animation dock.\n- Refines Settings with helper copy…</description>
-      <category>HurricaneMap</category>
-      <pubDate>Fri, 03 Jul 2026 22:22:10 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.3</guid>
-    </item>
-    <item>
-      <title>HurricaneMap v1.4.2</title>
-      <link>https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.2</link>
-      <description>Playback map-first layout. Starting track playback now collapses the storm details panel to a restore tab, moves animation controls into a compact fixed map dock, hides competing bottom overlays during playback, and…</description>
-      <category>HurricaneMap</category>
-      <pubDate>Fri, 03 Jul 2026 21:46:31 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HurricaneMap/releases/tag/v1.4.2</guid>
-    </item>
-    <item>
-      <title>Aura v6.31.2</title>
-      <link>https://github.com/SysAdminDoc/Aura/releases/tag/v6.31.2</link>
-      <description>v6.31.2 — Deep audit fixes · What changed · Fixed upload data loss: Both sound and wallpaper upload repositories had a callable fallback bypass — if the Cloud Function returned an unexpected status or threw a…</description>
-      <category>Aura</category>
-      <pubDate>Mon, 15 Jun 2026 07:16:36 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/Aura/releases/tag/v6.31.2</guid>
-    </item>
-    <item>
-      <title>AppManagerNG v0.6.1</title>
-      <link>https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.1</link>
-      <description>v0.6.1 — Hardening Release (2026-06-15) · Fixed — Resource leaks · Fixed unclosed InputStream resource leak in XposedModuleInfo when parsing modern Xposed module properties from ZIP entries</description>
-      <category>AppManagerNG</category>
-      <pubDate>Mon, 15 Jun 2026 06:50:50 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.1</guid>
-    </item>
-    <item>
-      <title>HostShield v6.9.16</title>
-      <link>https://github.com/SysAdminDoc/HostShield/releases/tag/v6.9.16</link>
-      <description>Deep Engineering Audit · 12 correctness, reliability, and security fixes from an end-to-end audit. · Fixed</description>
-      <category>HostShield</category>
-      <pubDate>Mon, 15 Jun 2026 06:37:57 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostShield/releases/tag/v6.9.16</guid>
-    </item>
-    <item>
-      <title>OpenTasker v0.2.67</title>
-      <link>https://github.com/SysAdminDoc/OpenTasker/releases/tag/v0.2.67</link>
-      <description>Deep engineering audit — thread safety, correctness, UX, and design system hardening · Thread safety · ArrayStore and VariableStore local scopes now use ConcurrentHashMap to prevent crashes in parallel automation mode</description>
-      <category>OpenTasker</category>
-      <pubDate>Mon, 15 Jun 2026 06:37:08 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/OpenTasker/releases/tag/v0.2.67</guid>
-    </item>
-    <item>
-      <title>OpenTasker v0.2.60</title>
-      <link>https://github.com/SysAdminDoc/OpenTasker/releases/tag/v0.2.60</link>
-      <description>Signed release build — sideload-ready, no special setup required. · Install · Download OpenTasker-v0.2.60-release.apk below.</description>
-      <category>OpenTasker</category>
-      <pubDate>Sun, 14 Jun 2026 07:19:42 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/OpenTasker/releases/tag/v0.2.60</guid>
-    </item>
-    <item>
-      <title>AppManagerNG v0.6.0</title>
-      <link>https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.0</link>
-      <description>AppManagerNG v0.6.0 — Rootless Power · Signed with the same release key as v0.5.0, so it installs cleanly as an in-place update (and as a fresh install for new users). No special steps, no key issues — just download…</description>
-      <category>AppManagerNG</category>
-      <pubDate>Sun, 14 Jun 2026 07:17:21 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.0</guid>
-    </item>
-    <item>
-      <title>HostShield v6.9.10</title>
-      <link>https://github.com/SysAdminDoc/HostShield/releases/tag/v6.9.10</link>
-      <description>HostShield v6.9.10 · Encrypted DNS (DoH) now actually works — and never silently leaks to plaintext. · This release fixes a chain of bugs (reported in #1) where turning on DNS‑over‑HTTPS appeared to do nothing and leak…</description>
-      <category>HostShield</category>
-      <pubDate>Sun, 14 Jun 2026 05:58:35 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/HostShield/releases/tag/v6.9.10</guid>
-    </item>
-    <item>
-      <title>win11-nvme-driver-patcher v5.0.0</title>
-      <link>https://github.com/SysAdminDoc/win11-nvme-driver-patcher/releases/tag/v5.0.0</link>
-      <description>NVMe Driver Patcher v5.0.0 · Downloads · NVMeDriverPatcher.exe — Compiled GUI application (run as Administrator)</description>
-      <category>win11-nvme-driver-patcher</category>
-      <pubDate>Thu, 11 Jun 2026 03:14:23 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/win11-nvme-driver-patcher/releases/tag/v5.0.0</guid>
-    </item>
-    <item>
-      <title>Aura v6.31.1</title>
-      <link>https://github.com/SysAdminDoc/Aura/releases/tag/v6.31.1</link>
-      <description>Aura v6.31.1 · Fixed · Sounds tab / YouTube search crash on Android 8–12 (#2). Opening the Sounds tab — or running any YouTube search — crashed instantly on devices below Android 13 with NoSuchMethodError…</description>
-      <category>Aura</category>
-      <pubDate>Wed, 03 Jun 2026 16:14:24 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/Aura/releases/tag/v6.31.1</guid>
-    </item>
-    <item>
-      <title>AppManagerNG v0.5.0</title>
-      <link>https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0</link>
-      <description>Full Changelog: https://github.com/SysAdminDoc/AppManagerNG/compare/v0.4.2...v0.5.0</description>
-      <category>AppManagerNG</category>
-      <pubDate>Tue, 26 May 2026 01:07:12 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.5.0</guid>
-    </item>
-    <item>
-      <title>Droidsmith v0.1.0</title>
-      <link>https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0</link>
-      <description>Droidsmith v0.1.0 — first tagged release · Cross-platform open-source GUI for managing Android devices over ADB. · MIT-licensed, no telemetry, no paywall. This is the first semver-tagged</description>
-      <category>Droidsmith</category>
-      <pubDate>Tue, 26 May 2026 00:20:49 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/Droidsmith/releases/tag/v0.1.0</guid>
-    </item>
-    <item>
-      <title>CallShield v1.7.11</title>
-      <link>https://github.com/SysAdminDoc/CallShield/releases/tag/v1.7.11</link>
-      <description>Bug-fix release. · Fixed · Profile selection auto-reset (#2) — Selecting a blocking profile (Work / Personal / Sleep / Maximum / Off) appeared to &quot;reset&quot; on the Dashboard chip row after process death or ViewModel…</description>
-      <category>CallShield</category>
-      <pubDate>Tue, 19 May 2026 02:48:09 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/CallShield/releases/tag/v1.7.11</guid>
     </item>
   </channel>
 </rss>

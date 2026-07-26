@@ -15,21 +15,11 @@
   ],
   "items": [
     {
-      "id": "https://github.com/SysAdminDoc/OpenCut",
-      "url": "https://github.com/SysAdminDoc/OpenCut",
-      "title": "OpenCut",
-      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
-      "date_modified": "2026-07-25T22:22:19.000Z",
-      "tags": [
-        "Featured"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/Vigil",
       "url": "https://github.com/SysAdminDoc/Vigil",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Desktop"
       ]
@@ -39,7 +29,17 @@
       "url": "https://github.com/SysAdminDoc/android-debloat-list",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
+      "tags": [
+        "Guides"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
+      "title": "sysadmindoc.github.io",
+      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Guides"
       ]
@@ -49,7 +49,7 @@
       "url": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Other"
       ]
@@ -59,7 +59,7 @@
       "url": "https://github.com/SysAdminDoc/RcloneBrowser",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Other"
       ]
@@ -69,7 +69,7 @@
       "url": "https://github.com/SysAdminDoc/TabExplorer",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Other"
       ]
@@ -79,7 +79,7 @@
       "url": "https://github.com/SysAdminDoc/TagStudio",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Other"
       ]
@@ -89,7 +89,7 @@
       "url": "https://github.com/SysAdminDoc/mnamer",
       "title": "mnamer",
       "content_text": "Media file renaming organizing tool",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Python"
       ]
@@ -99,27 +99,37 @@
       "url": "https://github.com/SysAdminDoc/project-nomad",
       "title": "project-nomad",
       "content_text": "Project N.O.M.A.D the original offline survival computer concept spec",
-      "date_modified": "2026-07-25T22:22:19.000Z",
+      "date_modified": "2026-07-26T00:19:53.000Z",
       "tags": [
         "Other"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/BetterTTS",
-      "url": "https://github.com/SysAdminDoc/BetterTTS",
-      "title": "BetterTTS (live)",
-      "content_text": "Private, in-browser text-to-speech studio",
-      "date_modified": "2026-07-25T22:20:42.000Z",
+      "id": "https://github.com/SysAdminDoc/StormviewRadar",
+      "url": "https://github.com/SysAdminDoc/StormviewRadar",
+      "title": "StormviewRadar (live)",
+      "content_text": "Open source weather radar viewer",
+      "date_modified": "2026-07-25T23:59:35.000Z",
       "tags": [
         "Live App"
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/HurricaneMap",
-      "url": "https://github.com/SysAdminDoc/HurricaneMap",
-      "title": "HurricaneMap (live)",
-      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
-      "date_modified": "2026-07-25T22:18:26.000Z",
+      "id": "https://github.com/SysAdminDoc/OpenCut",
+      "url": "https://github.com/SysAdminDoc/OpenCut",
+      "title": "OpenCut",
+      "content_text": "AI-powered video editing automation for Premiere Pro captions, audio processing, visual effects, all running locally.",
+      "date_modified": "2026-07-25T23:58:25.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/ClipForge",
+      "url": "https://github.com/SysAdminDoc/ClipForge",
+      "title": "ClipForge (live)",
+      "content_text": "Browser-based video editor",
+      "date_modified": "2026-07-25T23:27:20.000Z",
       "tags": [
         "Live App"
       ]
@@ -129,7 +139,27 @@
       "url": "https://github.com/SysAdminDoc/IconForge",
       "title": "IconForge (live)",
       "content_text": "Image resizer converter",
-      "date_modified": "2026-07-25T22:12:30.000Z",
+      "date_modified": "2026-07-25T23:24:02.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/HurricaneMap",
+      "url": "https://github.com/SysAdminDoc/HurricaneMap",
+      "title": "HurricaneMap (live)",
+      "content_text": "Every U.S. hurricane landfall (1851 present) from NOAA HURDAT2",
+      "date_modified": "2026-07-25T23:23:18.000Z",
+      "tags": [
+        "Live App"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/BetterTTS",
+      "url": "https://github.com/SysAdminDoc/BetterTTS",
+      "title": "BetterTTS (live)",
+      "content_text": "Private, in-browser text-to-speech studio",
+      "date_modified": "2026-07-25T22:20:42.000Z",
       "tags": [
         "Live App"
       ]
@@ -145,41 +175,11 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/StormviewRadar",
-      "url": "https://github.com/SysAdminDoc/StormviewRadar",
-      "title": "StormviewRadar (live)",
-      "content_text": "Open source weather radar viewer",
-      "date_modified": "2026-07-25T22:09:59.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/GifStudio",
       "url": "https://github.com/SysAdminDoc/GifStudio",
       "title": "GifStudio (live)",
       "content_text": "Browser-based GIF studio",
       "date_modified": "2026-07-25T22:09:34.000Z",
-      "tags": [
-        "Live App"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-      "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
-      "title": "sysadmindoc.github.io",
-      "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-25T22:08:22.000Z",
-      "tags": [
-        "Guides"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/ClipForge",
-      "url": "https://github.com/SysAdminDoc/ClipForge",
-      "title": "ClipForge (live)",
-      "content_text": "Browser-based video editor",
-      "date_modified": "2026-07-25T22:02:48.000Z",
       "tags": [
         "Live App"
       ]
