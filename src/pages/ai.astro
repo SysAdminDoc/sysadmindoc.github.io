@@ -13,6 +13,7 @@ import {
 } from '../data/page-freshness';
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto, experienceLabel, experienceShort } from '../data/identity';
+import { careerProfile } from '../data/career';
 
 const title = 'AI Services — Matt Parker';
 const pageOg = interiorOgPageBySlug['ai'];
@@ -139,7 +140,7 @@ const cmdkSections = [
       <div class="sh rv">
         <div class="sl">// Track</div>
         <h1 class="st aisvc-title">How can AI help your business get real work done?</h1>
-        <p class="sd aisvc-intro">I turn AI into working tools, safer rollouts, and trained teams for small and mid-size businesses. I select and secure the right tools, scope a measurable first build, and stay accountable for what runs in production.</p>
+        <p class="sd aisvc-intro">I turn AI into working tools, safer rollouts, and trained teams for small and mid-size businesses. The approach is grounded in {experienceLabel} of enterprise IT, healthcare systems, migrations, and customer operations—not demo-only software.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
 
@@ -160,6 +161,12 @@ const cmdkSections = [
           <div class="page-stat-copy">Systems administration and healthcare support background — I build for how businesses actually run, not for demos.</div>
         </div>
       </div>
+      <aside class="aisvc-operator rv" aria-label="Operator profile">
+        <span>Operator profile</span>
+        <strong>{careerProfile.headline}</strong>
+        <p>{careerProfile.operatingNote}</p>
+        <a href="/resume/">Open career record <span aria-hidden="true">→</span></a>
+      </aside>
       <div class="aisvc-actions page-actions rv">
         <a href={contactMailto('AI services')} class="btn bp">Start a conversation</a>
         <a href="https://getparkerai.com" target="_blank" rel="noopener" class="btn bg2">Visit Parker AI <span aria-hidden="true">↗</span></a>
@@ -171,10 +178,10 @@ const cmdkSections = [
     <div class="si" id="services">
       <h2 class="aisvc-h2">What AI work can I deliver for your business?</h2>
       <div class="aisvc-grid">
-        {services.map((s) => (
+        {services.map((s, index) => (
           <article class="aisvc-card card-enter">
             <div class="aisvc-card-head">
-              <span class="aisvc-card-tag">{s.tag}</span>
+              <span class="aisvc-card-tag">{String(index + 1).padStart(2, '0')} · {s.tag}</span>
               <span class="aisvc-card-line">{s.name}</span>
             </div>
             <h3 class="aisvc-card-name">{s.question}</h3>
@@ -250,21 +257,22 @@ const cmdkSections = [
 <style is:global>
   .aisvc-page{min-height:calc(100vh - 200px)}
   .aisvc-page>.si:not(.page-shell){padding-inline:clamp(20px,5vw,72px)}
-  .aisvc-title{font-size:clamp(44px,6vw,72px)!important;background:linear-gradient(120deg,var(--t1),var(--pur));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .aisvc-title{font-size:clamp(44px,6vw,72px)!important;color:var(--t1)}
   .aisvc-intro{font-size:18px!important;max-width:720px}
   .aisvc-stats{margin-top:32px;max-width:1080px}
   .aisvc-stat{min-height:100%}
   .aisvc-stat-num{color:var(--pur)}
+  .aisvc-operator{display:grid;grid-template-columns:130px minmax(240px,1fr) minmax(220px,.8fr) auto;gap:20px;align-items:center;max-width:1080px;margin-top:22px;padding:16px 0;border-block:1px solid var(--border-soft)}
+  .aisvc-operator>span,.aisvc-operator a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}.aisvc-operator>span{color:var(--pur)}.aisvc-operator>strong{font-size:14px}.aisvc-operator p{margin:0;color:var(--t3);font-size:13px}.aisvc-operator a{color:var(--t1);text-decoration:none;white-space:nowrap}
   .aisvc-actions{margin-top:22px}
   .aisvc-h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.035em;color:var(--t1);margin:0 auto 28px;max-width:900px}
-  .aisvc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto}
-  .aisvc-card{display:flex;flex-direction:column;gap:10px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);color:var(--t1);box-shadow:var(--shadow-soft);transition:border-color .25s,transform .25s,box-shadow .25s,background-color .25s}
-  .aisvc-card:hover{border-color:var(--border-strong);background:var(--surface-strong);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
-  .aisvc-card-head{display:flex;align-items:center;justify-content:space-between}
-  .aisvc-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--pur);padding:3px 8px;border:1px solid color-mix(in srgb, var(--pur) 38%, transparent);border-radius:4px}
-  .aisvc-card-line{font-family:var(--mono);font-size:11px;color:var(--t3);text-align:right}
-  .aisvc-card-name{font-size:19px;line-height:1.35;font-weight:650;letter-spacing:-.015em;margin:2px 0 0;color:var(--t1)}
-  .aisvc-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0;flex:1}
+  .aisvc-grid{max-width:1100px;margin:0 auto;border-top:1px solid var(--border-strong)}
+  .aisvc-card{display:grid;grid-template-columns:170px minmax(240px,.75fr) minmax(0,1.25fr);gap:24px;align-items:start;padding:24px 0;border-bottom:1px solid var(--border-soft);color:var(--t1)}
+  .aisvc-card-head{display:grid;gap:7px}
+  .aisvc-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--pur)}
+  .aisvc-card-line{font-family:var(--mono);font-size:10px;color:var(--t3)}
+  .aisvc-card-name{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.015em;margin:0;color:var(--t1)}
+  .aisvc-card-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
   .aisvc-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:1100px;margin:0 auto 28px}
   .aisvc-step{display:flex;flex-direction:column;gap:8px;padding:26px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
   .aisvc-step-num{font-family:var(--mono);font-size:12px;letter-spacing:.15em;color:var(--pur)}
@@ -284,6 +292,8 @@ const cmdkSections = [
   .aisvc-why p{margin-bottom:18px}
   .aisvc-why strong{color:var(--t1);font-weight:600}
   @media(max-width:720px){
+    .aisvc-operator{grid-template-columns:1fr;gap:8px}.aisvc-operator a{margin-top:4px}
+    .aisvc-card{grid-template-columns:1fr;gap:10px}
     .aisvc-proof-row{grid-template-columns:30px minmax(0,1fr);gap:14px}
     .aisvc-proof-link{grid-column:2;margin-top:0}
   }

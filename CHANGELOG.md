@@ -4,6 +4,27 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.32.0] - 2026-07-25
+
+### Added
+
+- Added one résumé-backed career source for the operator profile, three practice
+  lanes, public execution proof, consulting highlights, education, skills, and
+  employment record shared across public and machine-readable surfaces.
+- Added a ruled “Three operating lanes” sequence to the homepage and a compact
+  operator record to the AI services track.
+
+### Changed
+
+- Reimagined the résumé as an editorial career dossier with a file spine,
+  proof ledger, operating-lane table, professional record, print layout, and
+  synchronized JSON Resume export.
+- Replaced generic service cards with a scan-friendly delivery ledger and
+  grounded the healthcare track in PACS/DICOM, migrations, and issue ownership
+  from the supplied résumé.
+- Aligned sitewide identity copy around AI implementation, healthcare IT, and
+  systems automation without introducing unsupported metrics or testimonials.
+
 ## [v0.31.0] - 2026-07-25
 
 ### Added

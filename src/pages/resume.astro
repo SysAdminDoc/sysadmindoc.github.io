@@ -5,7 +5,15 @@ import { contactEmail, contactMailto } from '../data/identity';
 import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
-import { careerRoles, careerSkills } from '../data/career';
+import {
+  careerEducation,
+  careerLanes,
+  careerProfile,
+  careerProof,
+  careerRoles,
+  careerSkills,
+  consultingHighlights,
+} from '../data/career';
 
 const title = 'Resume - Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
@@ -21,7 +29,8 @@ const pageJsonLd = reviewedWebPageJsonLd({
   schemaTypes: pageFreshness.schemaTypes,
 });
 const cmdkSections = [
-  { label: 'Overview', href: '#resume-header', desc: 'Name, title, location, and core skills.', badge: 'RESUME' },
+  { label: 'Overview', href: '#resume-header', desc: 'Identity, career summary, and public proof.', badge: 'DOSSIER' },
+  { label: 'Operating Lanes', href: '#resume-lanes', desc: 'AI implementation, healthcare systems, and infrastructure.', badge: '3 LANES' },
   { label: 'Experience', href: '#resume-experience', desc: 'Career history with highlights and technology stacks.', badge: `${careerRoles.length} ROLES` },
 ];
 ---
@@ -36,34 +45,101 @@ const cmdkSections = [
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
     <div class="si resume-shell">
       <section class="resume-header" id="resume-header">
-        <div class="resume-name-block">
-          <h1>Matt Parker</h1>
-          <p class="resume-title-line">Senior Technical Support Manager</p>
-          <p class="resume-location">Sarasota, FL</p>
-          <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
+        <div class="resume-file-mark" aria-hidden="true">
+          <strong>MP–01</strong>
+          <span>Career record</span>
+          <small>Verified · {pageFreshness.lastReviewed}</small>
         </div>
-        <div class="resume-actions no-print">
-          <a href="/resume.pdf" class="btn bp" download="matt-parker-resume.pdf">Download PDF</a>
-          <button type="button" class="btn bg2" id="resumePrint" aria-label="Print this page">Print</button>
-          <a href="/resume.json" class="btn bg2" download="matt-parker-resume.json">JSON Resume</a>
-          <a href="/" class="btn bg2">Back to portfolio</a>
+        <div class="resume-header-main">
+          <div class="resume-name-block">
+            <p class="resume-kicker">Field dossier / career record</p>
+            <h1>{careerProfile.name}</h1>
+            <p class="resume-title-line">{careerProfile.headline}</p>
+            <p class="resume-location">{careerProfile.location}</p>
+            <p class="resume-summary-lead">{careerProfile.summary}</p>
+            <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
+          </div>
+          <div class="resume-actions no-print">
+            <a href="/resume.pdf" class="btn bp" download="matt-parker-resume.pdf">Download PDF</a>
+            <button type="button" class="btn bg2" id="resumePrint" aria-label="Print this page">Print</button>
+            <a href="/resume.json" class="btn bg2" download="matt-parker-resume.json">JSON Resume</a>
+            <a href="/" class="btn bg2">Portfolio</a>
+          </div>
+        </div>
+        <div class="resume-proof" aria-label="Career proof">
+          {careerProof.map((item) => (
+            <div class="resume-proof-item">
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+              <small>{item.detail}</small>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section class="resume-section" aria-labelledby="resume-skills-title">
-        <h2 id="resume-skills-title">Skills</h2>
+      <section class="resume-section" id="resume-lanes" aria-labelledby="resume-lanes-title">
+        <div class="resume-section-head">
+          <span>02</span>
+          <div>
+            <h2 id="resume-lanes-title">Three operating lanes</h2>
+            <p>{careerProfile.operatingNote}</p>
+          </div>
+        </div>
+        <div class="resume-lanes">
+          {careerLanes.map((lane, index) => (
+            <a href={lane.href} class="resume-lane">
+              <span class="resume-lane-index">{String(index + 1).padStart(2, '0')}</span>
+              <span>
+                <strong>{lane.name}</strong>
+                <small>{lane.short}</small>
+              </span>
+              <p>{lane.focus}</p>
+              <span class="resume-lane-action" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="resume-section resume-consulting" aria-labelledby="resume-consulting-title">
+        <div class="resume-section-head">
+          <span>03</span>
+          <div>
+            <h2 id="resume-consulting-title">AI implementation & public portfolio</h2>
+            <p>Consulting work is backed by inspectable delivery, not a list of tools.</p>
+          </div>
+        </div>
+        <ul class="resume-highlights">
+          {consultingHighlights.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="resume-section resume-skills-section" aria-labelledby="resume-skills-title">
+        <div class="resume-section-head">
+          <span>04</span>
+          <div>
+            <h2 id="resume-skills-title">Core expertise</h2>
+            <p>Tools and practices grouped by the work they support.</p>
+          </div>
+        </div>
         <div class="resume-skills">
           {careerSkills.map((skill) => (
-            <span class="resume-skill">{skill.name}<small>{skill.sub}</small></span>
+            <span class="resume-skill"><strong>{skill.name}</strong><small>{skill.sub}</small></span>
           ))}
         </div>
       </section>
 
       <section class="resume-section" id="resume-experience" aria-labelledby="resume-experience-title">
-        <h2 id="resume-experience-title">Experience</h2>
+        <div class="resume-section-head">
+          <span>05</span>
+          <div>
+            <h2 id="resume-experience-title">Professional experience</h2>
+            <p>Operations leadership built from customer support, systems administration, and managed services.</p>
+          </div>
+        </div>
         <div class="resume-roles">
-          {careerRoles.map((role) => (
+          {careerRoles.map((role, index) => (
             <article class="resume-role">
+              <span class="resume-role-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <div class="resume-role-header">
                 <div>
                   <h3>{role.role}</h3>
@@ -88,10 +164,24 @@ const cmdkSections = [
         </div>
       </section>
 
+      <section class="resume-section resume-education" aria-labelledby="resume-education-title">
+        <div class="resume-section-head">
+          <span>06</span>
+          <div>
+            <h2 id="resume-education-title">Education</h2>
+            <p>{careerEducation.program} ({careerEducation.detail}) · {careerEducation.school} · {careerEducation.location} · {careerEducation.period}</p>
+          </div>
+        </div>
+      </section>
+
       <section class="resume-section" aria-labelledby="resume-links-title">
-        <h2 id="resume-links-title">Links</h2>
+        <div class="resume-section-head">
+          <span>07</span>
+          <div><h2 id="resume-links-title">Public record</h2></div>
+        </div>
         <div class="resume-link-list">
           <a href={contactMailto()}>{contactEmail}</a>
+          <a class="resume-visible-url" href="https://getparkerai.com" target="_blank" rel="noopener">getparkerai.com</a>
           <a class="resume-visible-url" href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener">linkedin.com/in/matthewryanparker</a>
           <a class="resume-visible-url" href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">github.com/SysAdminDoc</a>
           <a class="resume-visible-url" href="https://sysadmindoc.github.io" target="_blank" rel="noopener">sysadmindoc.github.io</a>
@@ -114,40 +204,66 @@ const cmdkSections = [
 
 <style is:global>
   .resume-page{min-height:calc(100vh - 200px);padding-top:112px;padding-bottom:80px}
-  .resume-shell{max-width:860px;margin:0 auto;display:grid;gap:38px}
-  .resume-header{display:flex;align-items:start;justify-content:space-between;gap:24px;flex-wrap:wrap}
-  .resume-name-block h1{font-size:clamp(34px,4.8vw,48px);line-height:1.1;margin:0}
-  .resume-title-line{font-size:18px;color:var(--t2);margin:6px 0 0}
-  .resume-location{font-size:14px;color:var(--t3);margin:4px 0 0;font-family:var(--mono)}
-  .resume-actions{display:flex;gap:10px;max-width:100%;flex-wrap:wrap}
+  .resume-shell{max-width:1180px;margin:0 auto;display:grid;gap:0;border:1px solid var(--border-soft);background:var(--surface-1)}
+  .resume-header{display:grid;grid-template-columns:88px minmax(0,1fr);padding:0;border-bottom:1px solid var(--border-strong)}
+  .resume-file-mark{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px 12px;border-right:1px solid var(--border-soft);color:var(--blue);font-family:var(--mono);text-align:center;text-transform:uppercase}
+  .resume-file-mark strong{font-size:12px;letter-spacing:.14em}.resume-file-mark span{font-size:9px;letter-spacing:.12em;writing-mode:vertical-rl}.resume-file-mark small{margin-top:auto;color:var(--t3);font-size:8px;line-height:1.4}
+  .resume-header-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;padding:34px 38px}
+  .resume-kicker{margin:0 0 18px;color:var(--org);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .resume-name-block h1{font-size:clamp(58px,7vw,96px);font-weight:780;line-height:.82;letter-spacing:-.065em;margin:0}
+  .resume-title-line{font-family:var(--mono);font-size:clamp(13px,1.6vw,18px);font-weight:650;letter-spacing:.035em;color:var(--blue);margin:20px 0 0}
+  .resume-location{font-size:12px;color:var(--t3);margin:12px 0 0;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase}
+  .resume-summary-lead{max-width:70ch;margin:24px 0 0;color:var(--t2);font-size:16px;line-height:1.7}
+  .resume-actions{display:flex;align-items:flex-start;gap:10px;max-width:100%;flex-wrap:wrap}
   .resume-actions .btn{justify-content:center;white-space:normal}
-  .resume-section h2{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--grn);margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-soft)}
-  .resume-skills{display:flex;flex-wrap:wrap;gap:8px}
-  .resume-skill{display:inline-flex;align-items:baseline;gap:6px;padding:6px 10px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-1);font-size:14px;font-weight:600;color:var(--t1)}
-  .resume-skill small{font-weight:400;font-size:12px;color:var(--t3)}
-  .resume-roles{display:grid;gap:28px}
-  .resume-role{padding:24px;border:1px solid var(--border-soft);border-radius:8px;background:var(--surface-1);box-shadow:var(--shadow-soft)}
+  .resume-proof{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border-soft)}
+  .resume-proof-item{display:grid;gap:4px;padding:18px 24px;border-right:1px solid var(--border-soft)}.resume-proof-item:last-child{border-right:0}
+  .resume-proof-item span,.resume-proof-item small{color:var(--t3);font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase}.resume-proof-item strong{font-size:25px;letter-spacing:-.035em}
+  .resume-section{padding:34px 38px;border-bottom:1px solid var(--border-soft)}
+  .resume-section-head{display:grid;grid-template-columns:52px minmax(0,1fr);gap:16px;margin-bottom:24px}
+  .resume-section-head>span{color:var(--blue);font-family:var(--mono);font-size:11px;padding-top:4px}
+  .resume-section h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.14em;color:var(--t1);margin:0}
+  .resume-section-head p{max-width:75ch;margin:6px 0 0;color:var(--t3);font-size:13px;line-height:1.55}
+  .resume-lanes{border-top:1px solid var(--border-strong)}
+  .resume-lane{display:grid;grid-template-columns:44px minmax(190px,.72fr) minmax(280px,1.28fr) 24px;gap:18px;align-items:center;min-height:100px;padding:16px 0;border-bottom:1px solid var(--border-soft);color:inherit;text-decoration:none}
+  .resume-lane-index,.resume-lane small{color:var(--t3);font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase}.resume-lane strong{display:block;font-size:17px;text-transform:uppercase}.resume-lane small{display:block;margin-top:4px}.resume-lane p{margin:0;color:var(--t2);font-size:14px;line-height:1.55}.resume-lane-action{color:var(--blue);font-size:22px}
+  .resume-consulting .resume-highlights{max-width:900px;margin-left:68px}
+  .resume-skills{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--border-soft)}
+  .resume-skill{display:grid;gap:5px;padding:15px 16px 15px 0;border-bottom:1px solid var(--border-soft);color:var(--t1)}.resume-skill:nth-child(odd){border-right:1px solid var(--border-soft)}.resume-skill:nth-child(even){padding-left:18px}
+  .resume-skill strong{font-size:14px}.resume-skill small{font-family:var(--mono);font-size:10px;color:var(--t3)}
+  .resume-roles{border-top:1px solid var(--border-strong)}
+  .resume-role{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);padding:26px 0;border-bottom:1px solid var(--border-soft)}
+  .resume-role-index{grid-row:1/7;color:var(--t3);font-family:var(--mono);font-size:10px}
   .resume-role-header{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .resume-role h3{font-size:20px;line-height:1.3;margin:0}
   .resume-company{font-size:15px;color:var(--t2);margin:4px 0 0}
   .resume-period{font-family:var(--mono);font-size:12px;color:var(--t3);white-space:nowrap;flex-shrink:0;padding-top:4px}
   .resume-note{font-size:12.5px;color:var(--t3);font-style:italic;margin:6px 0 0}
   .resume-summary{font-size:15px;color:var(--t2);line-height:1.65;margin:14px 0 0}
-  .resume-highlights{margin:14px 0 0;padding-left:18px;display:grid;gap:6px}
+  .resume-highlights{margin:14px 0 0;padding-left:20px;display:grid;gap:6px}
   .resume-highlights li{font-size:14px;color:var(--t2);line-height:1.6}
   .resume-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft)}
-  .resume-stack span{font-family:var(--mono);font-size:11px;color:var(--t3);padding:4px 8px;border:1px solid var(--border-soft);border-radius:4px;background:rgba(255,255,255,.03)}
+  .resume-stack span{font-family:var(--mono);font-size:10px;color:var(--t3);padding:3px 0;margin-right:12px}
+  .resume-education .resume-section-head{margin-bottom:0}
   .resume-link-list{display:flex;gap:16px;flex-wrap:wrap}
-  .resume-link-list a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--mono);font-size:14px;color:var(--grn);text-decoration:none}
+  .resume-link-list a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--mono);font-size:12px;color:var(--blue);text-decoration:none}
   .resume-link-list a:hover{text-decoration:underline}
 
-  @media(max-width:640px){
+  @media(max-width:760px){
     .resume-page{padding-top:96px;padding-bottom:64px}
-    .resume-header{flex-direction:column}
+    .resume-shell{border-inline:0}
+    .resume-header{grid-template-columns:1fr}
+    .resume-file-mark{display:none}
+    .resume-header-main{grid-template-columns:1fr;padding:26px 20px}
     .resume-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+    .resume-name-block h1{font-size:clamp(44px,14vw,66px)}
+    .resume-proof{grid-template-columns:1fr}.resume-proof-item{border-right:0;border-bottom:1px solid var(--border-soft)}.resume-proof-item:last-child{border-bottom:0}
+    .resume-section{padding:28px 20px}.resume-section-head{grid-template-columns:34px minmax(0,1fr)}
+    .resume-lane{grid-template-columns:30px minmax(0,1fr) 20px}.resume-lane p{grid-column:2/4}.resume-lane-action{grid-column:3;grid-row:1}
+    .resume-consulting .resume-highlights{margin-left:34px}
+    .resume-skills{grid-template-columns:1fr}.resume-skill:nth-child(odd){border-right:0}.resume-skill:nth-child(even){padding-left:0}
     .resume-role-header{flex-direction:column}
-    .resume-role{padding:20px}
-    .resume-name-block h1{font-size:clamp(28px,8vw,36px)}
+    .resume-role{grid-template-columns:30px minmax(0,1fr)}
   }
 
   @media(max-width:380px){
@@ -156,33 +272,41 @@ const cmdkSections = [
 
   @media print{
     :root{--t1:#111!important;--t2:#333!important;--t3:#666!important;--surface-1:#fff!important;--border-soft:#ddd!important;--grn:#111!important;--bg:#fff!important}
-    body.route-interior{background:#fff!important;color:#111!important;font-size:11pt}
+    body.route-interior{background:#fff!important;color:#111!important;font-size:10pt}
     .no-print,#nav,.scroll-progress,footer,.skip-link,#cmdk,.theme-toggle,.nav-search,.mt,.ng{display:none!important}
     body.route-interior main.resume-page{min-height:auto;padding:0}
-    body.route-interior main.resume-page .resume-shell{max-width:100%;grid-template-columns:1fr;gap:18px;padding:0}
-    body.route-interior main.resume-page .resume-header,
-    body.route-interior main.resume-page .resume-section:nth-of-type(2),
-    body.route-interior main.resume-page #resume-experience,
-    body.route-interior main.resume-page .resume-section[aria-labelledby="resume-links-title"]{grid-column:auto;grid-row:auto}
-    body.route-interior main.resume-page .resume-header{padding-bottom:12px}
-    body.route-interior main.resume-page .resume-section{padding:0!important;break-inside:auto}
+    body.route-interior main.resume-page .resume-shell{max-width:100%;display:block;border:0;padding:0}
+    body.route-interior main.resume-page .resume-header{display:block;border-bottom:2px solid #111}
+    body.route-interior main.resume-page .resume-file-mark{display:none}
+    body.route-interior main.resume-page .resume-header-main{display:block;padding:0 0 12px}
+    body.route-interior main.resume-page .resume-summary-lead{font-size:9pt;line-height:1.45;margin-top:10px}
+    body.route-interior main.resume-page .resume-proof{display:grid;grid-template-columns:repeat(3,1fr)}
+    body.route-interior main.resume-page .resume-proof-item{padding:7px 10px;border-bottom:0}
+    body.route-interior main.resume-page .resume-proof-item strong{font-size:13pt}
+    body.route-interior main.resume-page .resume-section{padding:12px 0!important;break-inside:auto}
+    body.route-interior main.resume-page .resume-skills-section{break-before:page}
+    body.route-interior main.resume-page .resume-section-head{grid-template-columns:24px 1fr;gap:6px;margin-bottom:8px}
     body.route-interior main.resume-page .resume-name-block h1{font-size:24pt;color:#111}
-    body.route-interior main.resume-page .resume-title-line{font-size:13pt;color:#333}
-    body.route-interior main.resume-page .resume-location{font-size:10pt;color:#666}
-    body.route-interior main.resume-page .resume-section h2{font-size:10pt;color:#111;border-bottom-color:#ddd}
-    body.route-interior main.resume-page .resume-skills{display:flex;gap:6px}
-    body.route-interior main.resume-page .resume-skill{display:inline-flex;justify-content:initial;border:1px solid #ddd;border-radius:4px;background:#f9f9f9;font-size:10pt;padding:3px 6px}
+    body.route-interior main.resume-page .resume-title-line{font-size:10pt;color:#333;margin-top:7px}
+    body.route-interior main.resume-page .resume-location{font-size:8pt;color:#666;margin-top:5px}
+    body.route-interior main.resume-page .resume-section h2{font-size:9pt;color:#111}
+    body.route-interior main.resume-page .resume-section-head p{font-size:8pt;margin-top:2px}
+    body.route-interior main.resume-page .resume-lane{min-height:0;grid-template-columns:24px 175px 1fr 12px;gap:6px;padding:6px 0}
+    body.route-interior main.resume-page .resume-lane strong{font-size:9pt}
+    body.route-interior main.resume-page .resume-lane p{font-size:8pt;line-height:1.35}
+    body.route-interior main.resume-page .resume-skills{display:grid;grid-template-columns:repeat(2,1fr)}
+    body.route-interior main.resume-page .resume-skill{font-size:9pt;padding:4px 6px}
     body.route-interior main.resume-page .resume-skill small{font-size:8pt}
-    body.route-interior main.resume-page .resume-roles{gap:12px;border-top:0}
-    body.route-interior main.resume-page .resume-role{border:1px solid #ddd;border-radius:6px;background:#fff;box-shadow:none;padding:14px;page-break-inside:avoid}
-    body.route-interior main.resume-page .resume-role h3{font-size:13pt}
-    body.route-interior main.resume-page .resume-company{font-size:11pt}
-    body.route-interior main.resume-page .resume-period{font-size:9pt}
-    body.route-interior main.resume-page .resume-summary{font-size:10pt}
-    body.route-interior main.resume-page .resume-highlights li{font-size:10pt}
+    body.route-interior main.resume-page .resume-role{grid-template-columns:24px 1fr;padding:8px 0;page-break-inside:avoid}
+    body.route-interior main.resume-page .resume-role h3{font-size:10pt}
+    body.route-interior main.resume-page .resume-company{font-size:9pt}
+    body.route-interior main.resume-page .resume-period{font-size:8pt}
+    body.route-interior main.resume-page .resume-summary{font-size:8pt;line-height:1.4;margin-top:5px}
+    body.route-interior main.resume-page .resume-highlights{margin-top:5px;gap:1px}
+    body.route-interior main.resume-page .resume-highlights li{font-size:8pt;line-height:1.35}
     body.route-interior main.resume-page .resume-stack{gap:6px}
-    body.route-interior main.resume-page .resume-stack span{font-size:8pt;padding:2px 5px;border:1px solid #ddd;border-radius:3px;background:#f5f5f5}
-    body.route-interior main.resume-page .resume-link-list a{color:#111;font-size:10pt}
+    body.route-interior main.resume-page .resume-stack span{font-size:7pt;padding:0}
+    body.route-interior main.resume-page .resume-link-list a{color:#111;font-size:8pt}
     body.route-interior main.resume-page a.resume-visible-url[href^="http"]::after{content:none}
     a{color:#111!important;text-decoration:none!important}
   }

@@ -7,7 +7,8 @@ import SkillCard from '../components/SkillCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
 import Footer from '../components/Footer.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
-import { contactEmail, contactMailto, experienceLabel } from '../data/identity';
+import { contactEmail, contactMailto } from '../data/identity';
+import { careerLanes, careerProfile } from '../data/career';
 import { fallbackRepoCount } from '../data/derived';
 import { computeCategoryCounts } from '../data/catalog-views.mjs';
 import { categoryLabels } from '../data/categories';
@@ -264,7 +265,7 @@ const cmdkSections = [
         <span class="brand-mark" aria-hidden="true">MP</span>
         <span class="brand-copy">
           <strong>SysAdminDoc</strong>
-          <small>Systems · Support · Software</small>
+          <small>AI · Healthcare · Systems</small>
         </span>
       </a>
       <div class="nk" id="navLinks">
@@ -299,7 +300,7 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <p class="hero-eyebrow">Field journal / systems dossier · MP-001</p>
+        <p class="hero-eyebrow">Field dossier / operator file · MP-001</p>
         {/* Representative h-card. Microformats2 is what Bridgy Fed and other
             IndieWeb consumers read to build a profile; the classes are additive
             and carry no styling. The u-url anchor is hidden — mf2 parses the
@@ -318,8 +319,8 @@ const cmdkSections = [
             </div>
           ))}
         </div>
-        <p class="hr">Practical software. AI that earns its place.</p>
-        <p class="hero-summary"><strong>{experienceLabel} in enterprise IT and healthcare technology</strong>, now directing AI tooling end to end — research, build, test, and ship. {publicProjectCount}+ public projects and {liveApps.length} live apps as the proof.</p>
+        <p class="hr">{careerProfile.headline}</p>
+        <p class="hero-summary">{careerProfile.summary} <strong>{publicProjectCount}+ public projects and {liveApps.length} live apps are the public execution record.</strong></p>
         <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
           <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
           <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
@@ -347,8 +348,8 @@ const cmdkSections = [
           )}
         </div>
         <div class="ha">
-          <a href="#greatest-hits" class="btn bp"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Explore selected work</a>
-          <a href="https://github.com/SysAdminDoc" target="_blank" rel="noopener" class="btn bg2"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>View GitHub archive</a>
+          <a href="/ai/" class="btn bp">Review AI services <span aria-hidden="true">↗</span></a>
+          <a href="/resume/" class="btn bg2">Open career record <span aria-hidden="true">→</span></a>
         </div>
         <div class="hero-signals" aria-label="Portfolio differentiators">
           {heroSignals.map((signal) => (
@@ -363,10 +364,10 @@ const cmdkSections = [
       <aside class="hero-evidence" aria-label="Live project evidence">
         <div class="hero-evidence-head">
           <div>
-            <strong>Live work viewport</strong>
-            <p>{liveApps.length} browser apps · available without an install or account.</p>
+            <strong>Public execution record</strong>
+            <p>{liveApps.length} browser apps · working output available without an install or account.</p>
           </div>
-          <span class="hero-evidence-status"><i aria-hidden="true"></i>Monitoring</span>
+          <span class="hero-evidence-status"><i aria-hidden="true"></i>Verified / online</span>
         </div>
         {heroEvidencePrimary && (
           <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
@@ -414,6 +415,25 @@ const cmdkSections = [
         </div>
       </aside>
     </div>
+    <div class="hero-lanes" aria-labelledby="hero-lanes-title">
+      <div class="hero-lanes-head">
+        <span>02</span>
+        <div>
+          <h2 id="hero-lanes-title">Three operating lanes</h2>
+          <p>{careerProfile.operatingNote}</p>
+        </div>
+      </div>
+      <div class="hero-lanes-table">
+        {careerLanes.map((lane, index) => (
+          <a href={lane.href} class="hero-lane">
+            <span class="hero-lane-index">{String(index + 1).padStart(2, '0')}</span>
+            <span class="hero-lane-name"><strong>{lane.name}</strong><small>{lane.short}</small></span>
+            <span class="hero-lane-focus">{lane.focus}</span>
+            <span class="hero-lane-action" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </div>
   </section>
 
   <Divider />
@@ -422,7 +442,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="live" aria-label="Live apps"><div class="si">
-    <div class="sh rv"><div class="sl">02 / Live apps · {liveApps.length}</div><h2 class="st">Live apps</h2><p class="sd">Browser-ready work—no install or account.</p></div>
+    <div class="sh rv"><div class="sl">04 / Live apps · {liveApps.length}</div><h2 class="st">Live apps</h2><p class="sd">Browser-ready work—no install or account.</p></div>
     <div class="lg">
       {liveApps.map((a) => <LiveCard app={a} />)}
     </div>
@@ -433,7 +453,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="skills" aria-label="Stack and skills"><div class="si">
-    <div class="sh rv"><div class="sl">04 / Capabilities</div><h2 class="st">Stack</h2><p class="sd">Languages and tools across the archive.</p></div>
+    <div class="sh rv"><div class="sl">06 / Capabilities</div><h2 class="st">Stack</h2><p class="sd">Languages and tools across the archive.</p></div>
     <div class="stack-shell rv">
       <div class="stack-overview">
         <div class="stack-kicker">Browse by language</div>
@@ -497,7 +517,7 @@ const cmdkSections = [
 
 
   <section id="beyond" aria-label="Beyond code"><div class="si">
-    <div class="sh rv"><div class="sl">05 / Beyond code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
+    <div class="sh rv"><div class="sl">07 / Beyond code</div><h2 class="st">Beyond code</h2><p class="sd">Aerial footage from coastal Florida.</p></div>
 
     <h3 class="beyond-subtitle rv" id="beyond-video">Aerial Footage</h3>
     <div class="video-grid">
@@ -515,7 +535,7 @@ const cmdkSections = [
   <Divider />
 
   <section id="connect" aria-label="Connect"><div class="si">
-    <div class="sh rv"><div class="sl">06 / Contact</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
+    <div class="sh rv"><div class="sl">08 / Contact</div><h2 class="st">Contact</h2><p class="sd">GitHub, LinkedIn, email, and release feeds.</p></div>
     <div class="cng">
       {connectPaths.map((path) => (
         <a

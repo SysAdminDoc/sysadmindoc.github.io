@@ -2,6 +2,7 @@
 // Edit these directly to reshape the story the portfolio tells.
 import type { GreatestHit, ManifestoRule } from './types';
 import { fallbackRepoCount } from './derived';
+import { careerProfile } from './career';
 import pkg from '../../package.json';
 
 // Derive the shipped version rather than hand-writing it into /now/ copy, which
@@ -84,7 +85,7 @@ export const manifesto: ManifestoRule[] = [
  */
 export const healthcareIT = {
   intro:
-    "I'm the Senior Technical Support Manager at Maven Imaging, supporting healthcare technology environments. The work is customer-facing and operational: troubleshoot system issues, coordinate migrations and archive transfers, support cutovers, document repeatable procedures, and work with vendors and internal teams when customer workflows are interrupted.",
+    `I'm the ${careerProfile.currentTitle} at ${careerProfile.currentCompany}, supporting healthcare technology environments. The work is customer-facing and operational: PACS/DICOM workflows, hosted-service migrations, workstation and network troubleshooting, customer escalation, documentation, and vendor coordination.`,
   // Public showcases for this track currently live as private internal tooling.
   // Kept as a track narrative; project cards intentionally omitted.
   repos: [] as string[],
