@@ -89,6 +89,8 @@ export const filterLabelByKey: Record<string, string> = Object.fromEntries(
 );
 
 // How many ranked projects the homepage preview renders before delegating the
-// full, filterable list to /catalog/. Kept comfortably below the homepage
-// catalog DOM-node budget (see scripts/audit-dom-size.mjs).
-export const HOMEPAGE_CATALOG_LIMIT = 84;
+// full, filterable list to /catalog/. Twelve keeps the landing page comfortably
+// below the excessive-DOM threshold, shortens the mobile journey, and still
+// spans five project categories in the current ranking; /catalog/ remains the
+// complete no-JS and indexable archive.
+export const HOMEPAGE_CATALOG_LIMIT = 12;

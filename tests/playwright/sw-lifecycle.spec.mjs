@@ -90,6 +90,27 @@ test('service worker enables navigation preload when supported', async ({ page }
   expect(['enabled', 'unsupported']).toContain(preloadState);
 });
 
+test('online navigation bypasses a document cached by a previous deploy', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+
+  const staleUrl = new URL('/?sw-freshness-regression=1', page.url()).toString();
+  await page.evaluate(async (url) => {
+    const cacheNames = await caches.keys();
+    const portfolioCache = cacheNames.find((name) => name.startsWith('portfolio-v'));
+    if (!portfolioCache) throw new Error('Portfolio cache was not installed.');
+    const cache = await caches.open(portfolioCache);
+    await cache.put(url, new Response(
+      '<!doctype html><html><body><main data-stale-deploy>Previous deploy</main></body></html>',
+      { status: 200, headers: { 'Content-Type': 'text/html; charset=UTF-8' } },
+    ));
+  }, staleUrl);
+
+  await page.goto(staleUrl, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-stale-deploy]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Matt Parker', level: 1 })).toBeVisible();
+});
+
 for (const route of ['/search/', '/status/', '/lang/powershell/']) {
   test(`service worker registers on direct ${route} landing`, async ({ page }) => {
     await page.goto(route, { waitUntil: 'networkidle' });

@@ -2364,7 +2364,9 @@ body.route-home .gh-grid .gh-foot{padding-right:8px}
   .hr{font-size:20px}.hero-summary{font-size:14px;line-height:1.58}.ha{display:grid;grid-template-columns:1fr}.ha .btn{width:100%;justify-content:space-between}
   .hero-operating-index{padding-block:28px}.hero-operating-index .hero-evidence-head strong{font-size:29px}
   .hero-lane{grid-template-columns:28px minmax(0,1fr) 18px;gap:10px;padding:16px 0}.hero-lane-focus{grid-column:2/4}.hero-lane-action{grid-column:3;grid-row:1}
-  .hs.hero-proof-strip{grid-template-columns:1fr}.hero-proof-strip .hs-item{min-height:102px;padding:18px 0;border-right:0;border-bottom:1px solid var(--border-soft)}
+  .hs.hero-proof-strip,
+  html[data-theme="light"] .hs.hero-proof-strip{grid-template-columns:1fr}
+  .hero-proof-strip .hs-item{min-height:102px;padding:18px 0;border-right:0;border-bottom:1px solid var(--border-soft)}
   .hero-proof-strip .hs-item:first-child{padding-left:0}.hero-proof-strip .hs-item:last-child{border-bottom:0}
   .hero-proof-value{font-size:33px}
   .hero-lanes.hero-selected{margin-top:46px;padding-bottom:30px}.hero-lanes-head{grid-template-columns:30px 1fr}.hero-lanes-head h2{font-size:34px}
@@ -2375,4 +2377,5 @@ body.route-home .gh-grid .gh-foot{padding-right:8px}
   .hero-app-card>span:nth-child(2){display:block}.hero-app-card small{display:block;margin-top:5px}.hero-app-card em{align-self:start;margin-top:2px}
   body.route-home .gh-grid .gh-card{grid-template-columns:34px minmax(0,1fr)}
   body.route-home .gh-grid .gh-name,body.route-home .gh-grid .gh-why,body.route-home .gh-grid .gh-foot{padding-left:0;border-left:0}
+  .sh{grid-template-columns:1fr}
 }

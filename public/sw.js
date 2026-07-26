@@ -98,16 +98,13 @@ async function navigationNetworkResponse(request, preloadResponsePromise, cached
     }
 }
 
-async function handleNavigation(request, preloadResponsePromise, event) {
+async function handleNavigation(request, preloadResponsePromise) {
     const cached = await caches.match(request);
-    const network = navigationNetworkResponse(request, preloadResponsePromise, cached);
-    if (cached) {
-        // Serve the cached shell immediately but keep the background refresh (and
-        // its awaited cache write) alive past the response via the event lifetime.
-        if (event && typeof event.waitUntil === 'function') event.waitUntil(network.catch(() => {}));
-        return cached;
-    }
-    return network;
+    // Documents are the portfolio's source of truth. Prefer the preloaded/fresh
+    // network response so a returning visitor cannot open a newly navigated tab
+    // and receive a previous deploy. The cached document remains the offline
+    // fallback, preserving installed-PWA resilience.
+    return navigationNetworkResponse(request, preloadResponsePromise, cached);
 }
 
 self.addEventListener('install', (e) => {
@@ -139,10 +136,10 @@ self.addEventListener('fetch', (e) => {
     const isNavigation = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
 
     if (isNavigation && sameOrigin) {
-        // Stale-while-revalidate: paint the cached shell instantly for repeat
-        // visits, refresh the cache in the background. A new deploy still surfaces
-        // via the SW update toast (controllerchange reload in main.js).
-        e.respondWith(handleNavigation(e.request, e.preloadResponse, e));
+        // Network-first navigation keeps deploys truthful while navigation
+        // preload avoids serial service-worker startup latency. Cached pages and
+        // the dedicated offline shell remain available when the network fails.
+        e.respondWith(handleNavigation(e.request, e.preloadResponse));
         return;
     }
 
