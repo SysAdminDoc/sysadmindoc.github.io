@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.30.0-blue)
+![Version](https://img.shields.io/badge/version-0.31.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -16,6 +16,7 @@ Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysad
 - **Portfolio stack metrics** — rendered project language metadata powers the homepage donut, and skill rings derive lane counts from the active catalog
 - **Systems Dossier design system** — a warm-paper technical field journal with hard-edged rules, instrument typography, high-signal accents, and a complete dark-theme counterpart
 - **Homepage live-work viewport** — desktop joins the identity dossier to a dark, source-backed app monitor while the mobile composition preserves the same proof hierarchy without visual clutter
+- **Operating-proof AI track** — links the public Parker AI platform to explicit delivery, data-boundary, production-operations, and recovery standards without exposing private planning or infrastructure repositories
 - **Build-time GitHub API** — stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline** — year-in-review page built from release and project-push evidence
 - **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
@@ -75,8 +76,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.30.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
-npm run smoke:release -- --tag v0.30.0 --asset sysadmindoc-portfolio-v0.30.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.31.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:release -- --tag v0.31.0 --asset sysadmindoc-portfolio-v0.31.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

@@ -81,7 +81,7 @@ export const interiorOgPages: InteriorOgPage[] = [
     slug: 'ai',
     route: '/ai/',
     title: 'AI Services',
-    description: 'Fractional AI implementation for businesses: tool selection and rollout, workflow automation, employee training, and custom software on a monthly retainer.',
+    description: 'AI implementation for businesses: tool rollout, workflow automation, employee training, and custom software backed by a live production platform and explicit delivery controls.',
     label: 'AI Track',
     accent: '#c084fc',
     command: 'cat ai-services.md',

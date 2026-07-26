@@ -4,6 +4,23 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.31.0] - 2026-07-25
+
+### Added
+
+- Added a source-grounded operating-proof ledger to `/ai/`: the live Parker AI
+  platform, client-ownable delivery standards, sensitive-data architecture
+  boundaries, and the recovery controls behind production deployment.
+- Added Parker AI to the homepage contact dossier as a direct public proof
+  surface, while keeping private business, career, and server repositories out
+  of public source and copy.
+
+### Changed
+
+- Tightened the AI engagement story around discovery, a measurable pilot,
+  accountable implementation, handoff, and ongoing support instead of reducing
+  the offer to a monthly retainer.
+
 ## [v0.30.0] - 2026-07-25
 
 ### Changed

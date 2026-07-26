@@ -87,11 +87,36 @@ const engagementSteps = [
   },
 ] as const;
 
+const operatingProof = [
+  {
+    code: 'PUBLIC SYSTEM',
+    title: 'The consultancy platform is live.',
+    desc: 'Parker AI publishes the offer, package fit, readiness tools, intake path, and data-and-security posture in one working production site. It is a usable operating surface, not a placeholder landing page.',
+    href: 'https://getparkerai.com',
+    cta: 'Open Parker AI',
+  },
+  {
+    code: 'DELIVERY CONTRACT',
+    title: 'The handoff is part of the build.',
+    desc: 'My delivery standard requires written success criteria, versioned releases, logging, a failure path, a re-run path, client-owned source and accounts, and a runbook a non-developer can follow.',
+  },
+  {
+    code: 'DATA BOUNDARY',
+    title: 'Sensitive data changes the architecture.',
+    desc: 'Consumer cloud tools are not the default for confidential or regulated inputs. The safe path is client-owned, local or on-prem, de-identified, or explicitly covered by the right contract and configuration—with human review matched to the cost of an error.',
+  },
+  {
+    code: 'PRODUCTION OPS',
+    title: 'Deployment includes recovery.',
+    desc: 'The production estate behind Parker AI is containerized behind Caddy and TLS, with restrictive network policy, health checks, drift audits, rollback snapshots, backup coverage, and restore-rehearsal evidence.',
+  },
+] as const;
+
 const cmdkSections = [
   { label: 'Where AI Helps', href: '#track-overview', desc: 'How AI can remove real work from a small or mid-size business.', badge: 'TRACK' },
   { label: 'Services', href: '#services', desc: 'Answers about rollout, automation, training, and ongoing support.', badge: 'SERVICES' },
   { label: 'Engagement', href: '#engagement', desc: 'Answers about discovery, a pilot, and ongoing delivery.', badge: 'PROCESS' },
-  { label: 'Evidence', href: '#proof', desc: 'What this public portfolio proves about the working model.', badge: 'CONTEXT' },
+  { label: 'Operating Proof', href: '#proof', desc: 'The public system, delivery controls, data boundaries, and production operations behind the offer.', badge: 'EVIDENCE' },
   { label: 'Start', href: '#ai-contact', desc: 'What to send to begin a useful conversation.', badge: 'CONTACT' },
 ] as const;
 ---
@@ -114,7 +139,7 @@ const cmdkSections = [
       <div class="sh rv">
         <div class="sl">// Track</div>
         <h1 class="st aisvc-title">How can AI help your business get real work done?</h1>
-        <p class="sd aisvc-intro">I turn AI into working tools, safer rollouts, and trained teams for small and mid-size businesses. As a contractor on a monthly retainer, I select and secure the right tools, build automation around your workflows, and stay accountable after launch.</p>
+        <p class="sd aisvc-intro">I turn AI into working tools, safer rollouts, and trained teams for small and mid-size businesses. I select and secure the right tools, scope a measurable first build, and stay accountable for what runs in production.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
 
@@ -137,7 +162,7 @@ const cmdkSections = [
       </div>
       <div class="aisvc-actions page-actions rv">
         <a href={contactMailto('AI services')} class="btn bp">Start a conversation</a>
-        <a href="/resume/" class="btn bg2">Open resume</a>
+        <a href="https://getparkerai.com" target="_blank" rel="noopener" class="btn bg2">Visit Parker AI <span aria-hidden="true">↗</span></a>
       </div>
       <SectionJumpNav items={cmdkSections} />
     </div>
@@ -178,13 +203,28 @@ const cmdkSections = [
     <Divider />
 
     <div class="si" id="proof">
-      <h2 class="aisvc-h2">What proves this AI-assisted model works?</h2>
+      <h2 class="aisvc-h2">What is already operating behind this offer?</h2>
+      <div class="aisvc-proof-ledger">
+        {operatingProof.map((item, index) => (
+          <article class="aisvc-proof-row card-enter">
+            <div class="aisvc-proof-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+            <div class="aisvc-proof-body">
+              <div class="aisvc-proof-code">{item.code}</div>
+              <h3 class="aisvc-proof-title">{item.title}</h3>
+              <p>{item.desc}</p>
+            </div>
+            {'href' in item && item.href && (
+              <a href={item.href} target="_blank" rel="noopener" class="aisvc-proof-link">
+                {item.cta}<span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
       <div class="aisvc-why rv">
         <p>This public portfolio is the proof. For the past year I have treated AI-assisted building as a discipline, not a novelty: <strong>{projectCount}+ public projects</strong> spanning Windows tools, desktop apps, Android apps, browser extensions, and {liveAppCount} live web apps, all researched, built, tested, documented, and released by one person using AI as a force multiplier.</p>
-        <p>That is the working model I install in your business. Not a chatbot bolted onto your website — <strong>a faster way to get real work done</strong>, fitted to the workflows you already have and the people who already run them.</p>
-        <p><strong>How that works is the honest part:</strong> AI writes the fast draft — scaffolding, boilerplate, test cases, and research sweeps — and I own every decision that ships. The architecture, the security review, the tests, and the judgment about what is good enough are mine. You get working software I stand behind, never raw model output.</p>
-        <p>Before AI, I spent {experienceLabel} in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operational constraints that make or break a rollout. I have lived the side of the business that most AI consultants have only read about.</p>
-        <p>This is a fit for <strong>small and mid-size businesses without a software team</strong> — owners who keep hearing "you should be using AI" and want one accountable person to make it true.</p>
+        <p><strong>AI accelerates the draft; I remain accountable for what ships.</strong> Architecture, security review, testing, recovery, and the judgment about what is good enough stay human-owned. Before AI, I spent {experienceLabel} in enterprise IT and healthcare technology support: tickets, migrations, vendors, uptime, and the operating constraints that make or break a rollout.</p>
+        <p>This is a fit for <strong>small and mid-size businesses without a software team</strong> that want one accountable builder—not raw model output, a slide deck, or a tool nobody owns after launch.</p>
       </div>
     </div>
     <Divider />
@@ -230,7 +270,21 @@ const cmdkSections = [
   .aisvc-step-num{font-family:var(--mono);font-size:12px;letter-spacing:.15em;color:var(--pur)}
   .aisvc-step-name{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.015em;margin:0;color:var(--t1)}
   .aisvc-step-desc{color:var(--t2);font-size:14px;line-height:1.6;margin:0}
+  .aisvc-proof-ledger{max-width:1100px;margin:0 auto 36px;border-top:1px solid var(--border-strong)}
+  .aisvc-proof-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:20px;align-items:start;padding:24px 0;border-bottom:1px solid var(--border-soft)}
+  .aisvc-proof-index,.aisvc-proof-code{font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase}
+  .aisvc-proof-index{color:var(--t3)}
+  .aisvc-proof-code{margin-bottom:6px;color:var(--pur)}
+  .aisvc-proof-title{margin:0 0 7px;color:var(--t1);font-size:19px;line-height:1.3;letter-spacing:-.015em}
+  .aisvc-proof-body p{max-width:72ch;margin:0;color:var(--t2);font-size:14px;line-height:1.65}
+  .aisvc-proof-link{display:inline-flex;align-items:center;gap:8px;margin-top:19px;color:var(--t1);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .aisvc-proof-link span{color:var(--pur)}
+  .aisvc-proof-link:hover,.aisvc-proof-link:focus-visible{color:var(--pur)}
   .aisvc-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
   .aisvc-why p{margin-bottom:18px}
   .aisvc-why strong{color:var(--t1);font-weight:600}
+  @media(max-width:720px){
+    .aisvc-proof-row{grid-template-columns:30px minmax(0,1fr);gap:14px}
+    .aisvc-proof-link{grid-column:2;margin-top:0}
+  }
 </style>
