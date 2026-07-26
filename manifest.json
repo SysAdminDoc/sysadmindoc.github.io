@@ -1,15 +1,15 @@
 {
   "id": "/?source=pwa",
-  "name": "Matt Parker - Portfolio",
+  "name": "Matt Parker - Technical Service Bureau",
   "short_name": "SysAdminDoc",
-  "description": "Open-source repos spanning PowerShell, Python, JavaScript, Kotlin, C#, and C++.",
+  "description": "AI implementation, healthcare IT, systems, and automation portfolio for Matt Parker.",
   "start_url": "/",
   "scope": "/",
   "lang": "en",
   "dir": "ltr",
   "display": "standalone",
-  "background_color": "#f7f5ef",
-  "theme_color": "#f7f5ef",
+  "background_color": "#f4f0e7",
+  "theme_color": "#f4f0e7",
   "categories": ["developer", "productivity", "utilities"],
   "launch_handler": {
     "client_mode": "navigate-existing"
@@ -46,14 +46,14 @@
       "sizes": "1600x1000",
       "type": "image/jpeg",
       "form_factor": "wide",
-      "label": "Desktop portfolio homepage with featured project evidence and live app previews."
+      "label": "Desktop Technical Service Bureau homepage with the operating index, proof ledger, and selected system."
     },
     {
       "src": "/screenshots/install/narrow.jpg",
       "sizes": "390x844",
       "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "Mobile portfolio homepage with proof stats and primary portfolio actions."
+      "label": "Mobile Technical Service Bureau homepage with operating lanes, proof metrics, and primary actions."
     }
   ],
   "shortcuts": [

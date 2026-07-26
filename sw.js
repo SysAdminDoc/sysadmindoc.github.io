@@ -1,4 +1,4 @@
-const CACHE = 'portfolio-v0.33.0';
+const CACHE = 'portfolio-v0.34.0';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE = [
   "/",
@@ -34,7 +34,7 @@ const PRECACHE = [
   "/_assets/_slug_.DZTTMy9Y.css",
   "/_assets/ai.fnzaZfF7.css",
   "/_assets/catalog.CA--t_VP.css",
-  "/_assets/global.CvL01jNI.css",
+  "/_assets/global.MFnmwl4b.css",
   "/_assets/healthcare-it.BkRbthb_.css",
   "/_assets/index.BgPzmJHS.css",
   "/_assets/interior-quiet.CALZRdIm.css",
@@ -70,30 +70,30 @@ const PRECACHE = [
   "/fonts/jetbrains-mono-latin.woff2",
   "/fonts/outfit-latin-ext.woff2",
   "/fonts/outfit-latin.woff2",
-  "/pagefind/filter/en_3d9078c.pf_filter",
+  "/pagefind/filter/en_bca6232.pf_filter",
+  "/pagefind/fragment/en_01f4eca.pf_fragment",
   "/pagefind/fragment/en_111482d.pf_fragment",
   "/pagefind/fragment/en_13437c4.pf_fragment",
   "/pagefind/fragment/en_1528e86.pf_fragment",
   "/pagefind/fragment/en_196442e.pf_fragment",
   "/pagefind/fragment/en_1abf53a.pf_fragment",
   "/pagefind/fragment/en_25d55dc.pf_fragment",
+  "/pagefind/fragment/en_2afd7bb.pf_fragment",
   "/pagefind/fragment/en_2dcb02a.pf_fragment",
+  "/pagefind/fragment/en_3df4b6f.pf_fragment",
   "/pagefind/fragment/en_44bc7fd.pf_fragment",
   "/pagefind/fragment/en_4bf1881.pf_fragment",
-  "/pagefind/fragment/en_599c113.pf_fragment",
   "/pagefind/fragment/en_5afea67.pf_fragment",
   "/pagefind/fragment/en_73fb399.pf_fragment",
   "/pagefind/fragment/en_84672a6.pf_fragment",
   "/pagefind/fragment/en_9017d27.pf_fragment",
-  "/pagefind/fragment/en_941792f.pf_fragment",
-  "/pagefind/fragment/en_aad0c55.pf_fragment",
-  "/pagefind/fragment/en_c476673.pf_fragment",
   "/pagefind/fragment/en_c93db0c.pf_fragment",
   "/pagefind/fragment/en_d8b3e68.pf_fragment",
+  "/pagefind/fragment/en_ff69b22.pf_fragment",
   "/pagefind/fragment/en_ffa1be6.pf_fragment",
-  "/pagefind/index/en_53f6203.pf_index",
-  "/pagefind/index/en_5d7b5ed.pf_index",
-  "/pagefind/index/en_98cbc6b.pf_index",
+  "/pagefind/index/en_183340f.pf_index",
+  "/pagefind/index/en_5f74a93.pf_index",
+  "/pagefind/index/en_cb21821.pf_index",
   "/pagefind/pagefind-component-ui.css",
   "/pagefind/pagefind-component-ui.js",
   "/pagefind/pagefind-entry.json",
@@ -103,7 +103,7 @@ const PRECACHE = [
   "/pagefind/pagefind-ui.css",
   "/pagefind/pagefind-ui.js",
   "/pagefind/pagefind-worker.js",
-  "/pagefind/pagefind.en_47a2c6f345.pf_meta",
+  "/pagefind/pagefind.en_a3b5dc4280.pf_meta",
   "/pagefind/pagefind.js",
   "/pagefind/wasm.en.pagefind",
   "/pagefind/wasm.unknown.pagefind"
@@ -205,16 +205,13 @@ async function navigationNetworkResponse(request, preloadResponsePromise, cached
     }
 }
 
-async function handleNavigation(request, preloadResponsePromise, event) {
+async function handleNavigation(request, preloadResponsePromise) {
     const cached = await caches.match(request);
-    const network = navigationNetworkResponse(request, preloadResponsePromise, cached);
-    if (cached) {
-        // Serve the cached shell immediately but keep the background refresh (and
-        // its awaited cache write) alive past the response via the event lifetime.
-        if (event && typeof event.waitUntil === 'function') event.waitUntil(network.catch(() => {}));
-        return cached;
-    }
-    return network;
+    // Documents are the portfolio's source of truth. Prefer the preloaded/fresh
+    // network response so a returning visitor cannot open a newly navigated tab
+    // and receive a previous deploy. The cached document remains the offline
+    // fallback, preserving installed-PWA resilience.
+    return navigationNetworkResponse(request, preloadResponsePromise, cached);
 }
 
 self.addEventListener('install', (e) => {
@@ -246,10 +243,10 @@ self.addEventListener('fetch', (e) => {
     const isNavigation = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
 
     if (isNavigation && sameOrigin) {
-        // Stale-while-revalidate: paint the cached shell instantly for repeat
-        // visits, refresh the cache in the background. A new deploy still surfaces
-        // via the SW update toast (controllerchange reload in main.js).
-        e.respondWith(handleNavigation(e.request, e.preloadResponse, e));
+        // Network-first navigation keeps deploys truthful while navigation
+        // preload avoids serial service-worker startup latency. Cached pages and
+        // the dedicated offline shell remain available when the network fails.
+        e.respondWith(handleNavigation(e.request, e.preloadResponse));
         return;
     }
 
