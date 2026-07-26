@@ -114,7 +114,6 @@ const cmdkSections = [
     description: '${description}',
     label: '${label}',
     accent: '#1f5fcc',
-    command: 'cat ${slug}.md',
     ogImage: '/og/${slug}.png',
     ogImageAlt: '${title} page social preview card',
   },

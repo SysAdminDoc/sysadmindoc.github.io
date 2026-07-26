@@ -13,6 +13,8 @@ import {
 const root = process.cwd();
 const interiorOgPagesPath = path.join(root, 'src', 'data', 'interior-og-pages.ts');
 const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
+const homepageOgEndpointPath = path.join(root, 'src', 'pages', 'og.png.ts');
+const ogRendererPath = path.join(root, 'src', 'data', 'og-card.ts');
 const requiredSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases'];
 
 function fakeFont(signature = Buffer.from([0x00, 0x01, 0x00, 0x00])) {
@@ -76,15 +78,33 @@ test('OG endpoint generates only reviewed interior social-card routes', async ()
 });
 
 test('OG endpoint returns exact cached font buffers to Satori', async () => {
-  const [source, helper] = await Promise.all([
-    fs.readFile(ogEndpointPath, 'utf8'),
+  const [renderer, helper] = await Promise.all([
+    fs.readFile(ogRendererPath, 'utf8'),
     fs.readFile(path.join(root, 'src', 'data', 'og-font-cache.ts'), 'utf8'),
   ]);
 
-  assert.match(source, /loadCachedFont\(cachePath, urlByWeight\[weight\]\)/);
+  assert.match(renderer, /loadCachedFont\(join\(FONT_CACHE,/);
   assert.match(helper, /function bufferToExactArrayBuffer\(buffer: Buffer\): ArrayBuffer/);
   assert.match(helper, /new Uint8Array\(buffer\)\.buffer/);
-  assert.doesNotMatch(source, /readFileSync\(cachePath\)\.buffer as ArrayBuffer/);
+  assert.doesNotMatch(renderer, /readFileSync\(cachePath\)\.buffer as ArrayBuffer/);
+});
+
+test('social cards use the Technical Service Bureau identity and live data', async () => {
+  const [interiorSource, homepageSource, rendererSource] = await Promise.all([
+    fs.readFile(ogEndpointPath, 'utf8'),
+    fs.readFile(homepageOgEndpointPath, 'utf8'),
+    fs.readFile(ogRendererPath, 'utf8'),
+  ]);
+  const combined = `${interiorSource}\n${homepageSource}\n${rendererSource}`;
+
+  assert.match(rendererSource, /SYSADMINDOC/);
+  assert.match(rendererSource, /INDEPENDENT TECHNICAL PRACTICE/);
+  assert.match(rendererSource, /#f4f0e7/i);
+  assert.match(rendererSource, /#1648dc/i);
+  assert.match(rendererSource, /renderQueue/, 'Satori/Resvg renders should remain serialized');
+  assert.match(homepageSource, /catalog\.length/);
+  assert.match(homepageSource, /liveApps\.length/);
+  assert.doesNotMatch(combined, /matt@sysadmin|~\$|#050913|#4ade80/i);
 });
 
 test('OG font validation accepts supported signatures and rejects truncated or HTML payloads', () => {

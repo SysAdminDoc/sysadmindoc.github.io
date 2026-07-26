@@ -11,6 +11,8 @@ const screenshotsDir = path.join(root, 'public', 'screenshots');
 const thumbsDir = path.join(screenshotsDir, 'thumbs');
 const astroThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
 const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
+const homepageOgEndpointPath = path.join(root, 'src', 'pages', 'og.png.ts');
+const ogRendererPath = path.join(root, 'src', 'data', 'og-card.ts');
 const baseLayoutPath = path.join(root, 'src', 'layouts', 'Base.astro');
 const maxFullBytes = 350_000;
 const maxThumbBytes = 80_000;
@@ -109,6 +111,8 @@ for (const slug of liveSlugs) {
 }
 
 const ogSource = await fs.readFile(ogEndpointPath, 'utf8');
+const homepageOgSource = await fs.readFile(homepageOgEndpointPath, 'utf8');
+const ogRendererSource = await fs.readFile(ogRendererPath, 'utf8');
 const baseSource = await fs.readFile(baseLayoutPath, 'utf8');
 const interiorOgSourceText = await fs.readFile(interiorOgPagesPath, 'utf8');
 const interiorOgPages = exportedArray(sourceFile(interiorOgPagesPath, interiorOgSourceText), 'interiorOgPages');
@@ -119,7 +123,7 @@ for (const slug of requiredInteriorOgSlugs) {
 }
 
 for (const page of interiorOgPages) {
-  if (!page.slug || !page.route || !page.title || !page.description || !page.label || !page.accent || !page.command || !page.ogImage || !page.ogImageAlt) {
+  if (!page.slug || !page.route || !page.title || !page.description || !page.label || !page.accent || !page.ogImage || !page.ogImageAlt) {
     fail(`Interior OG page is missing required metadata: ${page.slug || '(missing slug)'}`);
     continue;
   }
@@ -136,17 +140,23 @@ for (const page of interiorOgPages) {
   }
 }
 
-if (!/satori/i.test(ogSource) || !/new\s+Resvg/.test(ogSource)) {
-  fail('OG endpoint must continue using Satori + Resvg for static PNG generation.');
+if (!/satori/i.test(ogRendererSource) || !/new\s+Resvg/.test(ogRendererSource)) {
+  fail('Shared OG renderer must continue using Satori + Resvg for static PNG generation.');
 }
 if (!/interiorOgPages/.test(ogSource) || !/getInteriorOgPage/.test(ogSource)) {
   fail('OG endpoint must include interior page social-card paths.');
 }
-if (!/width:\s*1200/.test(ogSource) || !/height:\s*630/.test(ogSource)) {
-  fail('OG endpoint must keep 1200x630 social-card dimensions.');
+if (!/OG_WIDTH\s*=\s*1200/.test(ogRendererSource) || !/OG_HEIGHT\s*=\s*630/.test(ogRendererSource)) {
+  fail('Shared OG renderer must keep 1200x630 social-card dimensions.');
+}
+if (!/renderOgCard/.test(homepageOgSource) || !/catalog\.length/.test(homepageOgSource) || !/liveApps\.length/.test(homepageOgSource)) {
+  fail('Homepage OG endpoint must render current portfolio and live-app counts.');
 }
 if (!/['"]Content-Type['"]\s*:\s*['"]image\/png['"]/.test(ogSource) && !/imageEndpointHeaders\(['"]image\/png['"]\)/.test(ogSource)) {
   fail('OG endpoint must return Content-Type: image/png.');
+}
+if (/matt@sysadmin|~\$|#050913|#4ade80/i.test(`${ogSource}\n${homepageOgSource}\n${ogRendererSource}`)) {
+  fail('OG sources still contain retired terminal-brand tokens.');
 }
 if (!/property="og:image:type"\s+content="image\/png"/.test(baseSource)) {
   fail('Base layout must advertise generated social cards as image/png.');

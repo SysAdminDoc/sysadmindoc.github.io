@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -28,6 +28,8 @@
     "generated:fixtures": "node scripts/install-generated-fixtures.mjs",
     "generated:fixtures:check": "node scripts/install-generated-fixtures.mjs --check",
     "capture-screenshots": "node scripts/capture-screenshots.mjs",
+    "capture:install-screenshots": "node scripts/capture-install-screenshots.mjs",
+    "brand:assets": "node scripts/generate-brand-assets.mjs",
     "data:validate": "node scripts/validate-project-data.mjs",
     "public-source:audit": "node scripts/audit-public-source-hygiene.mjs",
     "data:summary": "node scripts/summarize-generated-data.mjs",
