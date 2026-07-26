@@ -8,11 +8,8 @@ import GreatestHits from '../components/GreatestHits.astro';
 import Footer from '../components/Footer.astro';
 import { featured, liveApps, catalog, skills } from '../data/portfolio';
 import { contactEmail, contactMailto } from '../data/identity';
-import { careerLanes, careerProfile } from '../data/career';
+import { careerLanes, careerProfile, careerProof } from '../data/career';
 import { fallbackRepoCount } from '../data/derived';
-import { computeCategoryCounts } from '../data/catalog-views.mjs';
-import { categoryLabels } from '../data/categories';
-import type { Lang } from '../data/types';
 import { rankedCatalog, HOMEPAGE_CATALOG_LIMIT } from '../data/catalog-render';
 import {
   DONUT_R,
@@ -54,8 +51,6 @@ const latestRelease = releases[0];
 // same shared ranked catalog so ordering and freshness never drift.
 const previewCatalog = rankedCatalog.slice(0, HOMEPAGE_CATALOG_LIMIT);
 
-// Derive category counts from catalog data (fixes hardcoded-count gotcha)
-const catCounts = computeCategoryCounts(catalog);
 const catalogTotal = catalog.length;
 const publicProjectCount = catalogTotal;
 
@@ -68,58 +63,11 @@ const donutLead = donutArcs[0];
 const donutLeadLang = donutLead ? donutLead.lang : 'Mixed';
 const donutLeadPct = donutLead ? donutLead.pct : 0;
 
-// Label from the canonical map, which covers every Lang key — the old local
-// copy of the filter-button list omitted `fork`/`other`, so a top-3 category in
-// either would have surfaced a raw code ("other") in the hero.
-const heroTopCategories = Object.entries(catCounts)
-  .sort(([, a], [, b]) => b - a)
-  .slice(0, 3)
-  .map(([key, count]) => ({
-    key,
-    label: categoryLabels[key as Lang] ?? key,
-    count,
-  }));
-const heroDomainText = heroTopCategories.map(({ label, count }) => `${label} ${count}`).join(' / ');
-const heroSignalCategories = heroTopCategories.map(({ label }) => label).join(' / ');
-const heroSignals = [
-  {
-    label: 'Current role',
-    value: 'Technical Support Manager',
-    meta: 'Maven Imaging - healthcare technology support, customer systems, and escalation.',
-  },
-  {
-    label: 'Scope',
-    value: 'Healthcare support',
-    meta: 'Customer systems, hosted workflows, migrations, documentation, and escalation.',
-  },
-  {
-    label: 'Primary focus',
-    value: heroSignalCategories,
-    meta: `${heroDomainText}.`,
-  },
-] as const;
-const heroExperienceHighlights = [
-  {
-    label: 'Builds',
-    value: 'AI-augmented software',
-    copy: 'Desktop, web, mobile, and automation — shipped end to end.',
-  },
-  {
-    label: 'Healthcare IT',
-    value: 'Customer systems',
-    copy: 'Support, migrations, documentation, and recovery workflows.',
-  },
-  {
-    label: 'Systems',
-    value: 'Windows / AD',
-    copy: 'Servers, workstations, identity, monitoring, and networking.',
-  },
-] as const;
 const heroEvidencePrimary = liveApps.find((app) => app.slug === 'SPECTRE') ?? liveApps[0] ?? null;
-const heroEvidenceCards = ['IconForge', 'ImageXpert', 'Text-Filter-Editor']
-  .map((slug) => liveApps.find((app) => app.slug === slug))
-  .filter(Boolean) as typeof liveApps;
-const heroEvidenceMoreCount = Math.max(0, liveApps.length - heroEvidenceCards.length - (heroEvidencePrimary ? 1 : 0));
+const heroSelectedSystems = liveApps
+  .filter((app) => app.slug !== heroEvidencePrimary?.slug)
+  .slice(0, 3);
+const heroEvidenceMoreCount = Math.max(0, liveApps.length - heroSelectedSystems.length - (heroEvidencePrimary ? 1 : 0));
 function plainHeroText(value: string) {
   return value
     .replace(/&mdash;/g, '\u2014')
@@ -300,7 +248,7 @@ const cmdkSections = [
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hi">
       <div class="ht">
-        <p class="hero-eyebrow">Field dossier / operator file · MP-001</p>
+        <p class="hero-eyebrow">Independent technical practice · MP-001</p>
         {/* Representative h-card. Microformats2 is what Bridgy Fed and other
             IndieWeb consumers read to build a profile; the classes are additive
             and carry no styling. The u-url anchor is hidden — mf2 parses the
@@ -310,67 +258,72 @@ const cmdkSections = [
           <h1 class="hn p-name">Matt <span class="a">Parker</span></h1>
           <a class="u-url" href="/" hidden>Matt Parker</a>
         </div>
-        <div class="hero-proof-strip" aria-label="Experience focus areas">
-          {heroExperienceHighlights.map((item) => (
-            <div class="hero-proof" title={item.copy} aria-label={`${item.label}. ${item.value}. ${item.copy}`}>
-              <span class="hero-proof-label">{item.label}</span>
-              <strong class="hero-proof-value">{item.value}</strong>
-              <span class="hero-proof-copy">{item.copy}</span>
-            </div>
-          ))}
-        </div>
         <p class="hr">{careerProfile.headline}</p>
-        <p class="hero-summary">{careerProfile.summary} <strong>{publicProjectCount}+ public projects and {liveApps.length} live apps are the public execution record.</strong></p>
-        <div class="hs" role="group" aria-label="Portfolio statistics" aria-live="polite">
-          <div class="hs-item"><div class="hsn" id="statRepos" data-live>{publicProjectCount}</div><div class="hsl">Projects</div></div>
-          <div class="hs-item"><div class="hsn" id="statStars" data-live>{stats.totalStars}</div><div class="hsl">Stars</div></div>
-          <div class="hs-item"><div class="hsn" id="statLive">{liveApps.length}</div><div class="hsl">Live Apps</div></div>
-        </div>
-        <div class="hero-pulse">
-          <span class="pulse-dot"></span>
-          {stats.streak > 0 && (
-            <a href="/now/" class="pulse-item" title="Current consecutive-day commit streak">
-              <span class="pulse-k">streak</span>
-              <span class="pulse-v">{stats.streak}d</span>
-            </a>
-          )}
-          {latestRelease && (
-            <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${heroReleaseDate.format(new Date(latestRelease.publishedAt))}`}>
-              <span class="pulse-k">latest</span>
-              <span class="pulse-v">{latestReleaseName} {latestRelease.tag && <span class="pulse-sub">{latestRelease.tag}</span>}</span>
-            </a>
-          )}
-          {stats.lastPushedRepo && stats.lastPushedAt && (
-            <a href={`https://github.com/SysAdminDoc/${stats.lastPushedRepo}`} target="_blank" rel="noopener" class="pulse-item" title={lastPushedProjectName ? `Last push to ${lastPushedProjectName}` : `Last push ${stats.lastPushedAt}`}>
-              <span class="pulse-k">pushed</span>
-              <span class="pulse-v"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time>{lastPushedProjectName && <span class="pulse-sub">{lastPushedProjectName}</span>}</span>
-            </a>
-          )}
-        </div>
+        <p class="hero-summary"><strong>{careerProfile.operatingNote}</strong> {careerProfile.summary}</p>
         <div class="ha">
           <a href="/ai/" class="btn bp">Review AI services <span aria-hidden="true">↗</span></a>
           <a href="/resume/" class="btn bg2">Open career record <span aria-hidden="true">→</span></a>
         </div>
-        <div class="hero-signals" aria-label="Portfolio differentiators">
-          {heroSignals.map((signal) => (
-            <div class="hero-signal" title={signal.meta}>
-              <span class="hero-signal-label">{signal.label}</span>
-              <strong class="hero-signal-value">{signal.value}</strong>
-              <span class="sr-only">{signal.meta}</span>
-            </div>
-          ))}
-        </div>
       </div>
-      <aside class="hero-evidence" aria-label="Live project evidence">
+      <aside class="hero-evidence hero-operating-index" aria-labelledby="hero-lanes-title">
         <div class="hero-evidence-head">
           <div>
-            <strong>Public execution record</strong>
-            <p>{liveApps.length} browser apps · working output available without an install or account.</p>
+            <span class="hero-section-number">01</span>
+            <strong id="hero-lanes-title">Operating index</strong>
+            <p>Three connected lanes, one accountable operator.</p>
           </div>
-          <span class="hero-evidence-status"><i aria-hidden="true"></i>Verified / online</span>
+          <span class="hero-evidence-status"><i aria-hidden="true"></i>Available for select implementation work</span>
         </div>
+        <div class="hero-lanes-table">
+          {careerLanes.map((lane, index) => (
+            <a href={lane.href} class="hero-lane">
+              <span class="hero-lane-index">{String(index + 1).padStart(2, '0')}</span>
+              <span class="hero-lane-name"><strong>{lane.name}</strong><small>{lane.short}</small></span>
+              <span class="hero-lane-focus">{lane.focus}</span>
+              <span class="hero-lane-action" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      </aside>
+      <div class="hs hero-proof-strip" role="group" aria-label="Experience and portfolio proof" aria-live="polite">
+        <div class="hs-item hero-proof">
+          <span class="hero-proof-label hsl">{careerProof[0].label}</span>
+          <strong class="hero-proof-value hsn">{careerProof[0].value}</strong>
+          <span class="hero-proof-copy">{careerProof[0].detail}</span>
+        </div>
+        <div class="hs-item hero-proof">
+          <span class="hero-proof-label hsl">Public execution</span>
+          <strong class="hero-proof-value hsn"><span id="statRepos" data-live>{publicProjectCount}</span><sup>+</sup> shipped</strong>
+          <span class="hero-proof-copy">Software projects delivered in public</span>
+        </div>
+        <div class="hs-item hero-proof">
+          <span class="hero-proof-label hsl">Live proof</span>
+          <strong class="hero-proof-value hsn"><span id="statLive">{liveApps.length}</span> live apps</strong>
+          <span class="hero-proof-copy">Working output available online</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-lanes hero-selected" aria-labelledby="hero-selected-title">
+      <div class="hero-lanes-head">
+        <span>02</span>
+        <div>
+          <h2 id="hero-selected-title">Selected system</h2>
+          <p>One working product, shown in context—not a wall of project cards.</p>
+        </div>
+      </div>
+      <div class="hero-selected-grid">
         {heroEvidencePrimary && (
           <a href={heroEvidencePrimary.url} target="_blank" rel="noopener" class="hero-showcase" aria-label={`Open ${heroEvidencePrimary.name} live app in a new tab`}>
+            <span class="hero-showcase-shot">
+              <img
+                src={`/screenshots/thumbs/${heroEvidencePrimary.slug}.jpg`}
+                alt={`${heroEvidencePrimary.name} live app screenshot`}
+                width="640"
+                height="400"
+                loading="eager"
+                decoding="async"
+              >
+            </span>
             <span class="hero-showcase-brand">
               <span class="hero-showcase-kicker">Featured live app</span>
               <span class="hero-app-icon" aria-hidden="true">
@@ -382,56 +335,59 @@ const cmdkSections = [
               </span>
               <strong>{heroEvidencePrimary.name}</strong>
               <small>{plainHeroText(heroEvidencePrimary.desc)}</small>
-            </span>
-            <span class="hero-showcase-shot">
-              <img
-                src={`/screenshots/thumbs/${heroEvidencePrimary.slug}.jpg`}
-                alt={`${heroEvidencePrimary.name} live app screenshot`}
-                width="640"
-                height="400"
-                loading="eager"
-                decoding="async"
-              >
+              <em aria-hidden="true">Open live system ↗</em>
             </span>
           </a>
         )}
-        <div class="hero-app-grid" aria-label="Featured live app shortcuts">
-          {heroEvidenceCards.map((app) => (
-            <a href={app.url} target="_blank" rel="noopener" class="hero-app-card" aria-label={`Open ${app.name} live app in a new tab`}>
-              <span>
-                <strong>{app.name}</strong>
-                <small>{plainHeroText(app.desc)}</small>
-              </span>
-              <em aria-hidden="true">Open ↗</em>
+        <aside class="hero-pulse hero-diagnostic" aria-label="Public execution record">
+          <div class="hero-diagnostic-head">
+            <span>System diagnostic</span>
+            <strong>Public execution record</strong>
+          </div>
+          <div class="hero-signals">
+            <div class="hero-signal">
+              <span class="hero-signal-label">Portfolio</span>
+              <strong class="hero-signal-value">{publicProjectCount}+</strong>
+            </div>
+            <div class="hero-signal">
+              <span class="hero-signal-label">GitHub stars</span>
+              <strong class="hero-signal-value" id="statStars" data-live>{stats.totalStars}</strong>
+            </div>
+          </div>
+          {latestRelease && (
+            <a href={latestRelease.url} target="_blank" rel="noopener" class="pulse-item" title={`Released ${heroReleaseDate.format(new Date(latestRelease.publishedAt))}`}>
+              <span class="pulse-k">Latest release</span>
+              <span class="pulse-v">{latestReleaseName}<span class="pulse-sub">{latestRelease.tag || heroReleaseDate.format(new Date(latestRelease.publishedAt))}</span></span>
             </a>
-          ))}
-          <a href="#live" class="hero-app-card hero-app-more">
-            <span>
-              <strong>More Live Apps</strong>
-              <small>{heroEvidenceMoreCount} more apps in the catalog</small>
-            </span>
-            <em aria-hidden="true">Browse →</em>
-          </a>
-        </div>
-      </aside>
-    </div>
-    <div class="hero-lanes" aria-labelledby="hero-lanes-title">
-      <div class="hero-lanes-head">
-        <span>02</span>
-        <div>
-          <h2 id="hero-lanes-title">Three operating lanes</h2>
-          <p>{careerProfile.operatingNote}</p>
-        </div>
+          )}
+          {stats.lastPushedRepo && stats.lastPushedAt && (
+            <a href={`https://github.com/SysAdminDoc/${stats.lastPushedRepo}`} target="_blank" rel="noopener" class="pulse-item" title={lastPushedProjectName ? `Last push to ${lastPushedProjectName}` : `Last push ${stats.lastPushedAt}`}>
+              <span class="pulse-k">Last push</span>
+              <span class="pulse-v"><time datetime={stats.lastPushedAt} data-rel={stats.lastPushedAt}>{compactUtcDate.format(new Date(stats.lastPushedAt))}</time><span class="pulse-sub">{lastPushedProjectName}</span></span>
+            </a>
+          )}
+          <span class="hero-evidence-status"><i class="pulse-dot" aria-hidden="true"></i>Verified / online</span>
+        </aside>
       </div>
-      <div class="hero-lanes-table">
-        {careerLanes.map((lane, index) => (
-          <a href={lane.href} class="hero-lane">
-            <span class="hero-lane-index">{String(index + 1).padStart(2, '0')}</span>
-            <span class="hero-lane-name"><strong>{lane.name}</strong><small>{lane.short}</small></span>
-            <span class="hero-lane-focus">{lane.focus}</span>
-            <span class="hero-lane-action" aria-hidden="true">→</span>
+      <div class="hero-app-grid" aria-label="Additional live systems">
+        {heroSelectedSystems.map((app, index) => (
+          <a href={app.url} target="_blank" rel="noopener" class="hero-app-card" aria-label={`Open ${app.name} live app in a new tab`}>
+            <span class="hero-app-card-index">{String(index + 1).padStart(2, '0')}</span>
+            <span>
+              <strong>{app.name}</strong>
+              <small>{plainHeroText(app.desc)}</small>
+            </span>
+            <em aria-hidden="true">Open ↗</em>
           </a>
         ))}
+        <a href="#live" class="hero-app-card hero-app-more">
+          <span class="hero-app-card-index">+</span>
+          <span>
+            <strong>More live systems</strong>
+            <small>{heroEvidenceMoreCount} additional browser-ready apps</small>
+          </span>
+          <em aria-hidden="true">Browse ↓</em>
+        </a>
       </div>
     </div>
   </section>
