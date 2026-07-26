@@ -4,6 +4,20 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.30.0] - 2026-07-25
+
+### Changed
+
+- Reimagined the portfolio as a systems dossier: warm technical-paper surfaces,
+  hard-edged rules, instrument labels, and disciplined cobalt, chartreuse, and
+  rust signals replace the softer card-heavy presentation across both themes.
+- Joined the homepage identity statement and live-app evidence into one
+  editorial spread, with a dark monitoring viewport on desktop and a concise,
+  overflow-safe proof sequence on mobile.
+- Reworked Selected Work into ruled case-study rows with visible category and
+  action labels, strengthening scan order without changing the underlying
+  catalog or source-backed project evidence.
+
 ## [v0.29.0] - 2026-07-25
 
 Roadmap drain focused on visual coherence, verifiable browser behavior, static
