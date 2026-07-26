@@ -351,15 +351,18 @@ test.describe('Mid-wide desktop layout regression audit', () => {
   }
 });
 
-test('homepage hero evidence showcase fills desktop and stays off mobile', async ({ page }) => {
-  const expectDesktopRail = async (width) => {
+test('homepage operating index and selected system stay usable at every breakpoint', async ({ page }) => {
+  const expectServiceBureauLayout = async (width) => {
     await page.setViewportSize({ width, height: 900 });
     await preparePage(page, '/', '#hero');
 
-    const rail = page.locator('.hero-evidence');
-    await expect(rail).toBeVisible();
-    await expect(page.locator('.hero-evidence .hero-showcase')).toHaveCount(1);
-    const evidence = await page.locator('.hero-evidence').evaluate((node) => {
+    const operatingIndex = page.locator('.hero-operating-index');
+    const selectedSystem = page.locator('.hero-selected');
+    await expect(operatingIndex).toBeVisible();
+    await expect(operatingIndex.locator('.hero-lane')).toHaveCount(3);
+    await expect(selectedSystem.locator('.hero-showcase')).toHaveCount(1);
+    await expect(selectedSystem.locator('.hero-showcase')).toBeVisible();
+    const evidence = await selectedSystem.evaluate((node) => {
       const showcase = node.querySelector('.hero-showcase');
       const showcaseName = showcase?.querySelector('.hero-showcase-brand strong')?.textContent?.trim() ?? '';
       return {
@@ -373,11 +376,12 @@ test('homepage hero evidence showcase fills desktop and stays off mobile', async
     expect(evidence.showcaseHref).toMatch(/^https:\/\/sysadmindoc\.github\.io\/[^/]+\/$/);
     expect(evidence.showcaseImageAlt).toContain(evidence.showcaseName);
     expect(evidence.cardNames.length).toBeGreaterThanOrEqual(1);
-    expect(evidence.cardNames.at(-1)).toBe('More Live Apps');
+    expect(evidence.cardNames.at(-1)).toBe('More live systems');
 
-    const desktopMetrics = await page.evaluate(() => {
-      const railElement = document.querySelector('.hero-evidence');
+    const layoutMetrics = await page.evaluate(() => {
+      const railElement = document.querySelector('.hero-operating-index');
       const railRect = railElement?.getBoundingClientRect();
+      const status = railElement?.querySelector('.hero-evidence-status');
       return {
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
@@ -385,32 +389,26 @@ test('homepage hero evidence showcase fills desktop and stays off mobile', async
         railLeft: railRect?.left ?? 0,
         railRight: railRect?.right ?? 0,
         railHeight: railRect?.height ?? 0,
+        statusWritingMode: status ? getComputedStyle(status).writingMode : '',
       };
     });
-    expect(desktopMetrics.scrollWidth).toBeLessThanOrEqual(desktopMetrics.clientWidth + 1);
-    if (width > 1080) {
-      expect(desktopMetrics.railTop).toBeLessThan(160);
-      expect(desktopMetrics.railLeft).toBeGreaterThan(desktopMetrics.clientWidth * 0.47);
+    expect(layoutMetrics.scrollWidth).toBeLessThanOrEqual(layoutMetrics.clientWidth + 1);
+    if (width > 1180) {
+      expect(layoutMetrics.railTop).toBeLessThan(160);
+      expect(layoutMetrics.railLeft).toBeGreaterThan(layoutMetrics.clientWidth * 0.47);
+      expect(layoutMetrics.statusWritingMode).toBe('vertical-rl');
     } else {
-      expect(desktopMetrics.railTop).toBeGreaterThan(400);
-      expect(desktopMetrics.railLeft).toBeLessThan(desktopMetrics.clientWidth * 0.1);
+      expect(layoutMetrics.railTop).toBeGreaterThan(400);
+      expect(layoutMetrics.railLeft).toBeLessThan(layoutMetrics.clientWidth * 0.1);
+      expect(layoutMetrics.statusWritingMode).toBe('horizontal-tb');
     }
-    expect(desktopMetrics.railRight).toBeLessThanOrEqual(desktopMetrics.clientWidth);
-    expect(desktopMetrics.railHeight).toBeGreaterThan(420);
+    expect(layoutMetrics.railRight).toBeLessThanOrEqual(layoutMetrics.clientWidth);
+    expect(layoutMetrics.railHeight).toBeGreaterThan(300);
   };
 
-  await expectDesktopRail(1365);
-  await expectDesktopRail(980);
-
-  await page.setViewportSize({ width: 390, height: 900 });
-  await preparePage(page, '/', '#hero');
-  await expect(page.locator('.hero-evidence')).toBeHidden();
-
-  const mobileMetrics = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-  expect(mobileMetrics.scrollWidth).toBeLessThanOrEqual(mobileMetrics.clientWidth + 1);
+  await expectServiceBureauLayout(1365);
+  await expectServiceBureauLayout(980);
+  await expectServiceBureauLayout(390);
 });
 
 test.describe('Playwright visual baselines', () => {

@@ -4,6 +4,22 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.33.0] - 2026-07-25
+
+### Changed
+
+- Reimagined the homepage as an independent technical service bureau: a compact
+  masthead, résumé-backed operating index, full-width proof ribbon, and
+  publication-scale identity replace the previous systems-dossier composition.
+- Replaced the dense live-evidence rail with one contextual SPECTRE case study,
+  a restrained dark diagnostic panel, and ruled live-system rows that keep
+  working output prominent without returning to a card wall.
+- Made warm mineral paper, civic-blue rules, and vermilion signals the
+  light-first visual system while preserving a complete dark counterpart,
+  critical/deferred first-paint parity, and the enforced CSS bundle budgets.
+- Updated responsive visual regression coverage for the operating index and
+  selected-system composition across desktop, mid-wide, mobile, and both themes.
+
 ## [v0.32.0] - 2026-07-25
 
 ### Added
