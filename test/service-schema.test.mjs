@@ -37,6 +37,25 @@ test('the /ai/ service and engagement cards lead with prospect questions', async
   assert.match(source, /engagementSteps\.map[\s\S]*?<h3[^>]*>\{s\.question\}<\/h3>/);
 });
 
+test('the /ai/ track exposes public operating proof without naming private repositories', async () => {
+  const source = await fs.readFile(aiPagePath, 'utf8');
+  const proofItems = [...source.matchAll(/\bcode:\s*'([^']+)'/g)].map((match) => match[1]);
+
+  assert.deepEqual(proofItems, [
+    'PUBLIC SYSTEM',
+    'DELIVERY CONTRACT',
+    'DATA BOUNDARY',
+    'PRODUCTION OPS',
+  ]);
+  assert.match(source, /href:\s*'https:\/\/getparkerai\.com'/);
+  assert.match(source, /operatingProof\.map[\s\S]*?rel="noopener"/);
+  assert.doesNotMatch(
+    source,
+    /\b(?:JobSeek|AI-LLC|LLC-TODO|Contabo-VPS-Ops)\b/,
+    'public copy should describe the evidence without exposing private repository names',
+  );
+});
+
 test('the schema audit pins the services-track types and provider references', async () => {
   const audit = await fs.readFile(path.join(root, 'scripts', 'audit-schema.mjs'), 'utf8');
 
