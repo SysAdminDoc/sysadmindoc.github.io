@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.37.0-blue)
+![Version](https://img.shields.io/badge/version-0.38.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -31,7 +31,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
 - **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
 - **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
-- **GitHub Pages deployment** — local build, audit, and smoke process for static Pages output
+- **VPS deployment** — local build, audit, and smoke process; static site served from a Caddy container on the Contabo VPS (GitHub Pages remains a fallback)
 
 ## Develop
 
@@ -71,15 +71,15 @@ npm run data:summary  # summarize GitHub metadata/profile-feed/ranking freshness
 npm run data:summary -- --fail-on-unsigned-featured-releases # fail on featured releases without checksum or attestation
 npm run data:summary:strict # fail on stale, partial, or low-coverage generated-data caches
 npm run data:summary:deploy # strict generated-data gate plus token-backed README telemetry requirement
-npm run deploy:status # fail when the live Pages version or commit differs from local package.json + HEAD
+npm run deploy:status # fail when the live version or commit differs from local package.json + HEAD
 npm run deploy:preflight # deploy gate: data/catalog/dependency audits, tests, check, and build
 npm run publish:pages # run preflight, publish dist/ to gh-pages, and smoke the live Pages URL
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.37.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
-npm run smoke:release -- --tag v0.37.0 --asset sysadmindoc-portfolio-v0.37.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.38.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:release -- --tag v0.38.0 --asset sysadmindoc-portfolio-v0.38.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

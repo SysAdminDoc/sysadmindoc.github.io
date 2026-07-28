@@ -1,9 +1,16 @@
 # Internal static file server for the portfolio container (portfolio-app:80).
 # The shared edge Caddy reverse-proxies to this and adds the security headers;
-# this instance only serves the built site and its branded offline/404 page.
+# this instance serves the built site and replicates the machine-endpoint cache
+# policy the live smoke expects (GitHub Pages served max-age=600 globally).
 :80 {
 	root * /srv
 	encode zstd gzip
+
+	# Machine-readable endpoints and the service worker: short shared cache,
+	# matching the previous GitHub Pages contract that `smoke:live` asserts.
+	@cache600 path /status.json /projects.json /releases.json /feed.json /rss.xml /atom.xml /releases.xml /llms.txt /cmdk-data.js /sitemap-index.xml /sitemap-0.xml /sw.js
+	header @cache600 Cache-Control "max-age=600"
+
 	file_server
 	handle_errors {
 		rewrite * /404.html
