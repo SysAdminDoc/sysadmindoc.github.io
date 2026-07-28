@@ -74,7 +74,7 @@ export const interiorOgPages: InteriorOgPage[] = [
     slug: 'ai',
     route: '/ai/',
     title: 'AI Services',
-    description: 'AI tool rollout, workflow automation, workforce enablement, and custom software backed by explicit delivery controls.',
+    description: 'Practical AI implementation for workflow automation, internal tools, and team adoption—with client-owned delivery and documented handoff.',
     label: 'AI Track',
     accent: '#1648dc',
     ogImage: '/og/ai.png',
