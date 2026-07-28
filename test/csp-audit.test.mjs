@@ -156,7 +156,7 @@ test('source-mode CSP resolution follows the production branch and rejects unsaf
   fs.mkdirSync(stylesDir, { recursive: true });
   const source = fs.readFileSync(baseLayoutPath, 'utf8');
   const mutated = source.replace(
-    `const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self' 'inline-speculation-rules'";`,
+    `const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";`,
     `const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self' 'unsafe-inline'";`,
   );
   assert.notEqual(mutated, source);

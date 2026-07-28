@@ -11,13 +11,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P2
 
-- [ ] P2 — Add focused Firefox and WebKit interaction smoke
-  Why: All current browser projects are Chromium variants, leaving the custom layout, dialog, search, theme, print-link, and no-overflow contracts untested in the other engines.
-  Evidence: `playwright.audits.config.mjs` defines only `chromium` and `chromium-light`; `tests/playwright/interaction-smoke.spec.mjs`.
-  Touches: `playwright.interactions.config.mjs`, a focused cross-engine spec, CI/browser setup documentation.
-  Acceptance: Firefox and WebKit each pass navigation, menu/dialog keyboard flow, catalog filtering, theme persistence, key 390px/1440px overflow checks, and console-error checks without creating a duplicate visual-snapshot matrix.
-  Complexity: M
-
 ### P3
 
 - [ ] P3 — Remove dead code left by the v0.35/v0.36 rebuilds

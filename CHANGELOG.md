@@ -20,11 +20,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added deployed brand-fingerprint checks to the live smoke test: `/favicon.svg`,
   `/manifest.json`, and `/og.png` are verified after deploy for the current MP
   Technical Service Bureau identity and a fully painted 1200×630 card.
-- Added Speculation Rules to prerender same-origin document navigations on
-  moderate (hover) intent, pairing with the existing View Transitions for
-  instant multi-page navigation with no framework runtime. The production CSP
-  admits the inline rules through the narrow `'inline-speculation-rules'`
-  keyword; unsupported engines ignore the hint.
+- Added a focused Firefox + WebKit interaction smoke
+  (`npm run audit:cross-engine`) covering navigation, the command-palette
+  dialog, catalog filtering, theme persistence, and mobile/desktop overflow,
+  without duplicating the Chromium visual-baseline matrix.
 
 ### Fixed
 
