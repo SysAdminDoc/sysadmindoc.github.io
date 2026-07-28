@@ -203,6 +203,64 @@ function requireHeader(response, pathname, { contentTypes, cacheControl }) {
   }
 }
 
+// Edge security headers the VPS Caddy route injects (deploy/vps/caddy-block.txt)
+// and that GitHub Pages could not serve. This is the whole point of the move off
+// Pages, so the live smoke asserts they are actually being served — a Caddy
+// config regression that dropped them would otherwise pass silently.
+const REQUIRED_SECURITY_HEADERS = [
+  { name: 'strict-transport-security', label: 'HSTS', test: (v) => /max-age=\d{7,}/i.test(v) && /includeSubDomains/i.test(v) },
+  { name: 'x-content-type-options', label: 'X-Content-Type-Options', test: (v) => /\bnosniff\b/i.test(v) },
+  { name: 'referrer-policy', label: 'Referrer-Policy', test: (v) => /strict-origin-when-cross-origin/i.test(v) },
+  { name: 'x-frame-options', label: 'X-Frame-Options', test: (v) => /^deny$/i.test(v.trim()) },
+  {
+    name: 'permissions-policy',
+    label: 'Permissions-Policy',
+    test: (v) => ['camera', 'microphone', 'geolocation', 'payment', 'usb'].every((feature) => new RegExp(`\\b${feature}=\\(\\)`, 'i').test(v)),
+  },
+  { name: 'cross-origin-opener-policy', label: 'COOP', test: (v) => /same-origin/i.test(v) },
+];
+
+function isEdgeHost(baseUrl) {
+  try {
+    return new URL(baseUrl).host === new URL(SITE_URL).host;
+  } catch {
+    return false;
+  }
+}
+
+async function checkSecurityHeaders(baseUrl, summary) {
+  // Only the production edge injects these; a localhost/preview base URL serves
+  // the bare container, so gate the assertion to the canonical origin.
+  if (!isEdgeHost(baseUrl)) {
+    summary.push(`edge security headers: skipped (non-edge base ${new URL(baseUrl).host})`);
+    return;
+  }
+  const target = siteUrl('/', baseUrl);
+  const response = await fetch(target, {
+    headers: { Accept: 'text/html,*/*', 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
+    redirect: 'follow',
+  });
+  if (response.status !== 200) {
+    throw new Error(`/ returned HTTP ${response.status} from ${target} for the security-header check.`);
+  }
+  const problems = [];
+  for (const header of REQUIRED_SECURITY_HEADERS) {
+    const value = response.headers.get(header.name);
+    if (value === null) {
+      problems.push(`${header.label} (${header.name}) is missing`);
+    } else if (!header.test(value)) {
+      problems.push(`${header.label} (${header.name}) is "${value}"`);
+    }
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      `Edge security headers missing/incorrect: ${problems.join('; ')}. ` +
+        'The VPS edge Caddy must serve these (see deploy/vps/caddy-block.txt).',
+    );
+  }
+  summary.push('edge security headers: HSTS, X-Frame-Options, Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options');
+}
+
 function findFirstAssetPath(html, pattern, label) {
   const match = html.match(pattern);
   if (!match?.[1]) throw new Error(`Homepage did not reference a ${label}.`);
@@ -213,6 +271,8 @@ function findFirstAssetPath(html, pattern, label) {
 
 async function checkLiveArtifacts(baseUrl, expected) {
   const summary = [];
+
+  await checkSecurityHeaders(baseUrl, summary);
 
   const homepage = await fetchText(baseUrl, '/', 'text/html,*/*');
   requireHeader(homepage, '/', { contentTypes: ['text/html'], cacheControl: null });
