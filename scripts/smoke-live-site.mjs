@@ -5,10 +5,11 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
 import sharp from 'sharp';
+import { SITE_URL } from '../site.config.mjs';
 
 const root = process.cwd();
 const runId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-const DEFAULT_LIVE_SITE_URL = 'https://sysadmindoc.github.io/';
+const DEFAULT_LIVE_SITE_URL = `${SITE_URL}/`;
 
 function hasFlag(name) {
   return process.argv.includes(name);

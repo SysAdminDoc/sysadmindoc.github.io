@@ -4,6 +4,17 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Migrated the canonical origin to `https://portfolio.getparkerai.com` and staged
+  a VPS deploy: the site now builds to a hardened static Caddy container behind
+  the shared edge Caddy on the Contabo box (`deploy/vps/`, `npm run deploy:vps`),
+  which serves the response headers GitHub Pages could not — HSTS,
+  `X-Frame-Options`, `Permissions-Policy`, and COOP — while the CSP stays
+  delivered by the site's own `<meta>` tag. The origin now flows from one
+  `site.config.mjs` constant shared by Astro and the audit/smoke scripts.
+  GitHub Pages (`publish:pages`) remains available during the DNS cutover.
+
 ## [v0.37.0] - 2026-07-28
 
 ### Added

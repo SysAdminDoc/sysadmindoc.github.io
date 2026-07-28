@@ -12,7 +12,7 @@ import { githubRepoUrl } from '../data/github';
 // strongest work and key routes. Generated from the same project data that
 // feeds the command palette and RSS so it never drifts.
 export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+  const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
   const clean = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim();
   const firstSentence = (s: string) => {
     const text = clean(s);

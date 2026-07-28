@@ -40,6 +40,7 @@
     "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run deps:audit -- --strict && npm test && npm run check && npm run build",
     "verify:signatures": "node scripts/verify-signatures.mjs",
     "publish:pages": "node scripts/publish-pages.mjs",
+    "deploy:vps": "node scripts/deploy-vps.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
     "csp:audit": "node scripts/audit-csp.mjs",

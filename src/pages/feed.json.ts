@@ -16,7 +16,7 @@ const dateFor = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
 
 export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+  const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
   const seen = new Set<string>();
   const items: { id: string; url: string; title: string; summary: string; date: string; tags: string[] }[] = [];
 

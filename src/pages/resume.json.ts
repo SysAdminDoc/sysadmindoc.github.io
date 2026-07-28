@@ -12,7 +12,7 @@ export async function GET(_context: APIContext) {
       name: careerProfile.name,
       label: careerProfile.headline,
       email: contactEmail,
-      url: 'https://sysadmindoc.github.io',
+      url: 'https://portfolio.getparkerai.com',
       summary: careerProfile.summary,
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
       profiles: [

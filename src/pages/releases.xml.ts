@@ -21,7 +21,7 @@ const escapeXml = (s: string) =>
   s.replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!);
 
 export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+  const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
   const items = [...releases]
     .filter((r) => r.tag && r.url)
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())

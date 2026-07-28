@@ -63,7 +63,7 @@ function plain(value: string | undefined) {
 }
 
 export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+  const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
   const generatedAt = stats.fetchedAt || new Date().toISOString();
   const projects = slugs.map((slug) => {
     const featuredProject = featuredBySlug.get(slug);

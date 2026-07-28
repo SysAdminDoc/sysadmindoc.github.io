@@ -11,7 +11,7 @@ const title = 'Uses - Matt Parker';
 const pageOg = interiorOgPageBySlug.uses;
 const pageFreshness = pageFreshnessBySlug.uses;
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,

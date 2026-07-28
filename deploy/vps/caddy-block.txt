@@ -1,0 +1,27 @@
+# OWNERSHIP: portfolio static site (sites/portfolio/)
+# Route block for portfolio.getparkerai.com. Merged into the live
+# /home/deploy/proxy/Caddyfile (mirror: Contabo-VPS-Ops/server-state/Caddyfile).
+#
+# This is the whole point of moving off GitHub Pages: it serves the static
+# portfolio container AND sets the response headers Pages cannot — HSTS,
+# X-Frame-Options (clickjacking, since a <meta> CSP cannot deliver
+# frame-ancestors), Permissions-Policy, and COOP. The Content-Security-Policy
+# stays delivered by the site's own <meta http-equiv> tag (single source of
+# truth, no double-CSP), so no CSP header is set here.
+
+portfolio.getparkerai.com {
+	encode zstd gzip
+	reverse_proxy portfolio-app:80
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options    "nosniff"
+		Referrer-Policy           "strict-origin-when-cross-origin"
+		X-Frame-Options           "DENY"
+		Permissions-Policy        "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		Cross-Origin-Opener-Policy "same-origin"
+	}
+	log {
+		output file /var/log/caddy/portfolio.log
+		format json
+	}
+}

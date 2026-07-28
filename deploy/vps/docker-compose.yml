@@ -1,0 +1,35 @@
+# Portfolio (sysadmindoc) — static site on the Contabo VPS, behind the shared
+# edge Caddy on the `web` network. Lives at
+# /home/deploy/sites/portfolio/docker-compose.yml; built site at ./dist, the
+# internal file-server config at ./Caddyfile. Deploy with `npm run deploy:vps`.
+services:
+  portfolio-app:
+    image: caddy:2.8-alpine
+    container_name: portfolio-app
+    restart: unless-stopped
+    stop_grace_period: 10s
+    mem_limit: 128m
+    cpus: "0.25"
+    pids_limit: 64
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./dist:/srv:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

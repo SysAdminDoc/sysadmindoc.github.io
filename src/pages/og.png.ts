@@ -9,7 +9,7 @@ export async function GET() {
     eyebrow: careerProfile.headline,
     title: 'Matt Parker',
     description: careerProfile.operatingNote,
-    route: 'sysadmindoc.github.io',
+    route: 'portfolio.getparkerai.com',
     metrics: [
       { label: 'Experience', value: experienceLabel },
       { label: 'Public execution', value: `${catalog.length}+ shipped` },
