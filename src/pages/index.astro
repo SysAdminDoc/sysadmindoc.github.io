@@ -5,7 +5,7 @@ import GreatestHits from '../components/GreatestHits.astro';
 import Footer from '../components/Footer.astro';
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto } from '../data/identity';
-import { careerLanes, careerProfile, careerProof } from '../data/career';
+import { careerLanes, careerProfile, careerProofExperience } from '../data/career';
 
 let avatarUrl = 'https://avatars.githubusercontent.com/u/55504284';
 try {
@@ -106,9 +106,9 @@ const cmdkSections = [
 
         <div class="hs hero-proof-strip" role="group" aria-label="Experience and portfolio proof">
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">{careerProof[0].label}</span>
-            <strong class="hero-proof-value hsn">{careerProof[0].value}</strong>
-            <span class="hero-proof-copy">{careerProof[0].detail}</span>
+            <span class="hero-proof-label hsl">{careerProofExperience.label}</span>
+            <strong class="hero-proof-value hsn">{careerProofExperience.value}</strong>
+            <span class="hero-proof-copy">{careerProofExperience.detail}</span>
           </div>
           <div class="hs-item hero-proof">
             <span class="hero-proof-label hsl">Public execution</span>

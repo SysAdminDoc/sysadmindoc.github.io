@@ -32,11 +32,22 @@ export const careerProfile = {
   operatingNote: 'I build the systems, document the work, and train the teams that run them.',
 } as const;
 
-export const careerProof = [
-  { label: 'Experience', value: experienceLabel, detail: 'Enterprise IT and healthcare systems' },
-  { label: 'Public execution', value: '186+ shipped', detail: 'Software projects delivered' },
-  { label: 'Live proof', value: '22 live apps', detail: 'Publicly available online' },
-] as const;
+// The experience proof point is a stable, non-count claim.
+export const careerProofExperience = {
+  label: 'Experience',
+  value: experienceLabel,
+  detail: 'Enterprise IT and healthcare systems',
+} as const;
+
+// The project/live-app proof points are derived from the live catalog so the
+// résumé cannot drift from the homepage hero. Never hardcode these counts.
+export function buildCareerProof(projectCount: number, liveCount: number) {
+  return [
+    careerProofExperience,
+    { label: 'Public execution', value: `${projectCount}+ shipped`, detail: 'Software projects delivered' },
+    { label: 'Live proof', value: `${liveCount} live apps`, detail: 'Publicly available online' },
+  ] as const;
+}
 
 export const careerLanes = [
   {
