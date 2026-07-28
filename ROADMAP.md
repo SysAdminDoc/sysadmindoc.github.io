@@ -11,13 +11,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P2
 
-- [ ] P2 — Add Speculation Rules prerender to pair with the shipped View Transitions
-  Why: Cross-document View Transitions already ship (`foundation.css:9`); adding document prerender/prefetch makes multi-page navigation across the 186-page site feel instant with near-zero JS, and non-Chromium browsers silently ignore the rules.
-  Evidence: `src/styles/layers/foundation.css:9` (`@view-transition { navigation: auto; }`); no speculation-rules script or Astro `clientPrerender` flag present (grep of `src/`/`public/`/`astro.config.mjs`); RESEARCH.md "Modern web platform features".
-  Touches: `astro.config.mjs` (experimental `clientPrerender`) or a hand-authored `<script type="speculationrules">` in `src/layouts/Base.astro`; CSP (`script-src 'self'` blocks inline speculation-rules scripts — add the `'inline-speculation-rules'` keyword and update `scripts/audit-csp.mjs`); bundle-size audit.
-  Acceptance: Same-origin navigations prerender/prefetch on moderate hover/viewport eagerness, the CSP admits the speculation-rules script via `'inline-speculation-rules'` (not a blanket `unsafe-inline`), unsupported engines are unaffected, INP is not regressed, and CSP/bundle audits stay green.
-  Complexity: M
-
 - [ ] P2 — Add focused Firefox and WebKit interaction smoke
   Why: All current browser projects are Chromium variants, leaving the custom layout, dialog, search, theme, print-link, and no-overflow contracts untested in the other engines.
   Evidence: `playwright.audits.config.mjs` defines only `chromium` and `chromium-light`; `tests/playwright/interaction-smoke.spec.mjs`.
