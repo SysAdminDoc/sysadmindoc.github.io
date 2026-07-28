@@ -13,7 +13,7 @@ import { featured, liveApps, catalog } from '../data/portfolio';
 const title = 'Now — Matt Parker';
 const pageOg = interiorOgPageBySlug.now;
 const pageFreshness = pageFreshnessBySlug.now;
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,

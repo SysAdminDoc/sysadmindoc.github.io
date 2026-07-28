@@ -2,10 +2,10 @@
 
 ![Version](https://img.shields.io/badge/version-0.37.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-black)](https://sysadmindoc.github.io)
+[![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
 
-Personal portfolio and project showcase at [sysadmindoc.github.io](https://sysadmindoc.github.io).
+Personal portfolio and project showcase at [portfolio.getparkerai.com](https://portfolio.getparkerai.com).
 
 ## Stack
 
@@ -78,7 +78,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://sysadmindoc.github.io/ --expected-version 0.37.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.37.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
 npm run smoke:release -- --tag v0.37.0 --asset sysadmindoc-portfolio-v0.37.0.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
@@ -157,12 +157,32 @@ Public notes/TIL content is intentionally not published until a durable reviewed
 
 ## Deploy
 
+The canonical origin is **`https://portfolio.getparkerai.com`**, a static site served
+from the Contabo VPS behind the shared edge Caddy (config under
+[`deploy/vps/`](deploy/vps/)). Moving off GitHub Pages is what lets the site set
+response headers Pages cannot — HSTS, `X-Frame-Options`, `Permissions-Policy`,
+and COOP — while the CSP stays delivered by the site's own `<meta>` tag.
+
 Deployment is local-first:
 1. Run `npm ci` from a normal local worktree.
 2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.
 3. Run `npm run deploy:preflight`; it fails if generated data is stale, coverage is low, README refresh telemetry was not token-backed, the public GitHub repo catalog has unreviewed drift, dependency signatures fail, or an exact override pin trails a patch/minor release.
 4. Preview `dist/` with `npm run preview` and run any relevant browser audits.
-5. Run `npm run publish:pages` to rebuild, copy `dist/` to `gh-pages`, guarantee `.nojekyll`, push the deploy branch, and smoke the live URL.
+5. Deploy: `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps` — builds, mirrors
+   `dist/` to `/home/deploy/sites/portfolio/`, recreates the static container, and
+   smokes the live origin.
+
+### Go-live (one-time cutover)
+1. Point `portfolio.getparkerai.com` DNS at the VPS.
+2. Add [`deploy/vps/caddy-block.txt`](deploy/vps/caddy-block.txt) to the live
+   `/home/deploy/proxy/Caddyfile`, then `caddy validate` + reload.
+3. Mirror the live state back into `Contabo-VPS-Ops` (`sites/portfolio/`,
+   `server-state/Caddyfile`, provenance, generated snippets) per that repo's
+   `runbook/03-add-a-site.md`.
+4. Keep `sysadmindoc.github.io` serving (with a canonical/redirect to the new
+   origin) until search equity settles.
+
+`npm run publish:pages` still deploys the GitHub Pages copy during the transition.
 
 ## Layout
 

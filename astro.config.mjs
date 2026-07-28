@@ -1,13 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { reviewedInteriorPages } from './src/data/page-freshness.ts';
+import { SITE_URL } from './site.config.mjs';
 
 const reviewedDateByRoute = new Map(
   reviewedInteriorPages.map((page) => [page.route, page.lastReviewed]),
 );
 
 export default defineConfig({
-  site: 'https://sysadmindoc.github.io',
+  site: SITE_URL,
   integrations: [
     sitemap({
       // Keep machine endpoints (OG images, JSON indexes) out of the page sitemap.
@@ -17,7 +18,7 @@ export default defineConfig({
         if (reviewedDate) {
           item.lastmod = new Date(`${reviewedDate}T00:00:00Z`);
         }
-        if (item.url === 'https://sysadmindoc.github.io/') {
+        if (item.url === `${SITE_URL}/`) {
           item.priority = 1.0;
           item.changefreq = 'weekly';
         } else if (item.url.includes('/lang/')) {

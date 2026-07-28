@@ -23,7 +23,7 @@ const title = 'Resume - Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
 const pageFreshness = pageFreshnessBySlug.resume;
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,
@@ -188,7 +188,7 @@ const cmdkSections = [
           <a class="resume-visible-url" href="https://getparkerai.com" target="_blank" rel="noopener">getparkerai.com</a>
           <a class="resume-visible-url" href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener">linkedin.com/in/matthewryanparker</a>
           <a class="resume-visible-url" href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">github.com/SysAdminDoc</a>
-          <a class="resume-visible-url" href="https://sysadmindoc.github.io" target="_blank" rel="noopener">sysadmindoc.github.io</a>
+          <a class="resume-visible-url" href="https://portfolio.getparkerai.com" target="_blank" rel="noopener">portfolio.getparkerai.com</a>
         </div>
       </section>
     </div>

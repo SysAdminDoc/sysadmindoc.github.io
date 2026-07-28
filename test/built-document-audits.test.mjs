@@ -20,7 +20,7 @@ function run(script, args) {
 const rssFixture = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
   <title>Projects</title>
-  <link>https://sysadmindoc.github.io/</link>
+  <link>https://portfolio.getparkerai.com/</link>
   <description>Project updates.</description>
   <item>
     <title>Example</title>
@@ -33,7 +33,7 @@ const rssFixture = `<?xml version="1.0" encoding="UTF-8"?>
 const releaseRssFixture = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
   <title>Releases</title>
-  <link>https://sysadmindoc.github.io/releases/</link>
+  <link>https://portfolio.getparkerai.com/releases/</link>
   <description>Release updates.</description>
   <item>
     <title>Example v1.0.0</title>
@@ -49,10 +49,10 @@ async function writeFeedFixture(dist) {
   await fs.writeFile(path.join(dist, 'feed.json'), JSON.stringify({
     version: 'https://jsonfeed.org/version/1.1',
     title: 'Projects',
-    home_page_url: 'https://sysadmindoc.github.io/',
-    feed_url: 'https://sysadmindoc.github.io/feed.json',
-    icon: 'https://sysadmindoc.github.io/icon.png',
-    favicon: 'https://sysadmindoc.github.io/favicon.svg',
+    home_page_url: 'https://portfolio.getparkerai.com/',
+    feed_url: 'https://portfolio.getparkerai.com/feed.json',
+    icon: 'https://portfolio.getparkerai.com/icon.png',
+    favicon: 'https://portfolio.getparkerai.com/favicon.svg',
     items: [{
       id: 'https://github.com/SysAdminDoc/example',
       url: 'https://github.com/SysAdminDoc/example',
@@ -63,9 +63,9 @@ async function writeFeedFixture(dist) {
   await fs.writeFile(path.join(dist, 'atom.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Projects</title>
-  <id>https://sysadmindoc.github.io/</id>
+  <id>https://portfolio.getparkerai.com/</id>
   <updated>2026-07-24T12:00:00Z</updated>
-  <link href="https://sysadmindoc.github.io/atom.xml" rel="self" type="application/atom+xml" />
+  <link href="https://portfolio.getparkerai.com/atom.xml" rel="self" type="application/atom+xml" />
   <entry>
     <title>Example</title>
     <id>https://github.com/SysAdminDoc/example</id>
@@ -108,7 +108,7 @@ test('resume endpoint audit validates built JSON and rejects truncation', async 
       name: 'Matt Parker',
       label: 'Senior Technical Support Manager',
       email: 'matt_parker@outlook.com',
-      url: 'https://sysadmindoc.github.io/',
+      url: 'https://portfolio.getparkerai.com/',
       summary: 'Enterprise IT and healthcare technology support.',
       location: { city: 'Sarasota', region: 'FL', countryCode: 'US' },
       profiles: [{ network: 'GitHub', username: 'SysAdminDoc', url: 'https://github.com/SysAdminDoc' }],

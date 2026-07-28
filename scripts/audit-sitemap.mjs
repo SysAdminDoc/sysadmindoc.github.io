@@ -2,10 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { reviewedInteriorPages } from '../src/data/page-freshness.ts';
+import { SITE_URL } from '../site.config.mjs';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
-const siteUrl = 'https://sysadmindoc.github.io';
+const siteUrl = SITE_URL;
 const errors = [];
 /** @type {Map<string, string>} */
 const reviewedDateByRoute = new Map(

@@ -70,12 +70,12 @@ const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; styl
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas
 // (BreadcrumbList, CollectionPage) reference the same @ids.
-const personId = 'https://sysadmindoc.github.io/#matt-parker';
+const personId = 'https://portfolio.getparkerai.com/#matt-parker';
 const jsonLdGraph: Record<string, unknown>[] = [
   {
     '@type': 'WebSite',
-    '@id': 'https://sysadmindoc.github.io/#website',
-    url: 'https://sysadmindoc.github.io',
+    '@id': 'https://portfolio.getparkerai.com/#website',
+    url: 'https://portfolio.getparkerai.com',
     name: 'Matt Parker Portfolio',
     description: 'Career portfolio and public project archive spanning systems administration, healthcare technology support, and practical software work.',
     publisher: { '@id': personId },
@@ -84,7 +84,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     '@type': 'Person',
     '@id': personId,
     name: 'Matt Parker',
-    url: 'https://sysadmindoc.github.io/',
+    url: 'https://portfolio.getparkerai.com/',
     jobTitle: careerProfile.currentTitle,
     worksFor: { '@type': 'Organization', name: 'Maven Imaging' },
     address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' },
@@ -95,8 +95,8 @@ const jsonLdGraph: Record<string, unknown>[] = [
 if (isHome) {
   jsonLdGraph.push({
     '@type': 'ProfilePage',
-    '@id': 'https://sysadmindoc.github.io/#profile',
-    url: 'https://sysadmindoc.github.io/',
+    '@id': 'https://portfolio.getparkerai.com/#profile',
+    url: 'https://portfolio.getparkerai.com/',
     name: title,
     mainEntity: { '@id': personId },
     about: { '@id': personId },

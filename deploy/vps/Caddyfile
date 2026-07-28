@@ -1,0 +1,12 @@
+# Internal static file server for the portfolio container (portfolio-app:80).
+# The shared edge Caddy reverse-proxies to this and adds the security headers;
+# this instance only serves the built site and its branded offline/404 page.
+:80 {
+	root * /srv
+	encode zstd gzip
+	file_server
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
+}

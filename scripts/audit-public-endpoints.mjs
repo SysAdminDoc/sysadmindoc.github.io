@@ -1,11 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { SITE_URL } from '../site.config.mjs';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const resumeOnly = process.argv.includes('--resume-only');
-const siteUrl = 'https://sysadmindoc.github.io';
+const siteUrl = SITE_URL;
 const errors = [];
 const releaseProvenanceLevels = new Set(['no-assets', 'unsigned', 'checksum', 'attested', 'unknown']);
 

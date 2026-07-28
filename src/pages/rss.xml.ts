@@ -22,7 +22,7 @@ const getItemDate = (slug: string) =>
 const cleanDesc = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 export async function GET(context: APIContext) {
-  const site = context.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+  const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 
   const seen = new Set<string>();
   const raw: { title: string; slug: string; desc: string; cat: string }[] = [];

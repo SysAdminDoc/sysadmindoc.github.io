@@ -63,7 +63,7 @@ import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshne
 const title = '${title} — Matt Parker';
 const pageOg = interiorOgPageBySlug['${slug}'];
 const pageFreshness = pageFreshnessBySlug['${slug}'];
-const siteUrl = Astro.site?.toString().replace(/\\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\\/$/, '') || 'https://portfolio.getparkerai.com';
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,

@@ -14,7 +14,7 @@ import { summarizeReleaseBody } from '../data/release-summary.mjs';
 const title = 'Releases — Matt Parker';
 const pageOg = interiorOgPageBySlug.releases;
 const pageFreshness = pageFreshnessBySlug.releases;
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,

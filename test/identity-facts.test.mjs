@@ -47,7 +47,7 @@ test('Person schema uses the site canonical and keeps external identity links in
     fs.readFile(path.join(root, 'scripts', 'audit-schema.mjs'), 'utf8'),
   ]);
 
-  assert.match(base, /'@type': 'Person',[\s\S]*?url: 'https:\/\/sysadmindoc\.github\.io\/'/);
+  assert.match(base, /'@type': 'Person',[\s\S]*?url: 'https:\/\/portfolio\.getparkerai\.com\/'/);
   assert.match(base, /sameAs: \['https:\/\/github\.com\/SysAdminDoc','https:\/\/www\.linkedin\.com\/in\/matthewryanparker'\]/);
   assert.match(audit, /Person url and @id must share the site origin/);
   assert.match(audit, /Person sameAs is missing/);

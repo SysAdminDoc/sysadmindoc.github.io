@@ -82,7 +82,7 @@ const cmdkSections = [
   { label: 'Overview', href: '#lane-overview', desc: `${lang.label} lane summary, stats, and the clearest next routes.`, badge: 'LANE' },
   { label: 'Projects in This Lane', href: '#lane-projects', desc: `Browse the public ${lang.label} projects collected in this stack view.`, badge: 'ARCHIVE' },
 ];
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sysadmindoc.github.io';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 const langJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@graph': [
@@ -91,7 +91,7 @@ const langJsonLd = JSON.stringify({
       name: title,
       description,
       url: `${siteUrl}/lang/${slug}/`,
-      about: { '@id': 'https://sysadmindoc.github.io/#matt-parker' },
+      about: { '@id': 'https://portfolio.getparkerai.com/#matt-parker' },
       mainEntity: {
         '@type': 'ItemList',
         numberOfItems: repos.length,
