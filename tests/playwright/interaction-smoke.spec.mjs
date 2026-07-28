@@ -334,7 +334,7 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#cmdkMeta')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-empty')).toContainText('Nothing matched that search');
     await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(0);
-    await expect(page.locator('#cmdkInput')).toHaveAttribute('aria-activedescendant', '');
+    expect(await page.locator('#cmdkInput').getAttribute('aria-activedescendant')).toBeNull();
     await page.locator('#cmdkInput').fill('full-text search');
     await expect(page.locator('#cmdkMeta')).toContainText(/matches ready to open|match ready to open/);
     await expect(page.locator('#cmdkList .cmdk-item')).toHaveCount(1);
@@ -525,6 +525,26 @@ test.describe('rendered interaction smoke', () => {
     await expect(page.locator('#navLinks')).not.toHaveClass(/open/);
     await expect.poll(() => page.evaluate(() => document.activeElement?.id || '')).not.toBe('mobileToggle');
 
+    await expectNoHorizontalOverflow(page);
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('opening the mobile nav dismisses an open command palette', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 390, height: 900 });
+    await preparePage(page, '/', '#hero');
+
+    await openCommandPalette(page);
+    await expect(page.locator('#cmdk')).toBeVisible();
+
+    // Models any path that opens the nav while the palette is up: only one modal
+    // may trap focus, so the palette must close.
+    await page.evaluate(() => window.PortfolioNav.setMobileNav(true));
+    await expectCommandPaletteState(page, false);
+    await expect(page.locator('#navLinks')).toHaveClass(/open/);
+    await expect(page.locator('#cmdkInput')).not.toHaveAttribute('aria-activedescendant', /.*/);
+
+    await page.evaluate(() => window.PortfolioNav.closeMobileNav({ returnFocus: false }));
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });

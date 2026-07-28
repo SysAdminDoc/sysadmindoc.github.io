@@ -41,6 +41,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   `#hero`, `#live`, and `#catalog` sections: the scroll observer now governs each
   section by its nearest linked ancestor, keeping exactly one nav item active. A
   test pins nav↔section correspondence so future sections can't silently drift.
+- Command palette accessibility: `aria-activedescendant` is now removed (not set
+  to an empty string) when no option is active, and opening the mobile nav
+  dismisses an open palette so only one modal traps focus at a time.
 
 ## [v0.36.0] - 2026-07-27
 

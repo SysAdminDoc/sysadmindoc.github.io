@@ -313,7 +313,7 @@
     const top = results.slice(0, 30);
     if (!top.length) {
       selected = 0;
-      input.setAttribute('aria-activedescendant', '');
+      input.removeAttribute('aria-activedescendant');
       setMeta('Nothing matched that search. Try a project name, stack, category, or route.');
       replaceChildren(list, renderEmptyState());
       return;
@@ -332,7 +332,7 @@
     const nodes = list.querySelectorAll('.cmdk-item');
     if (!nodes.length) {
       selected = 0;
-      input.setAttribute('aria-activedescendant', '');
+      input.removeAttribute('aria-activedescendant');
       return;
     }
     nodes[selected]?.setAttribute('aria-selected', 'false');
@@ -340,7 +340,8 @@
     const target = nodes[selected];
     if (!target) return;
     target.setAttribute('aria-selected', 'true');
-    input.setAttribute('aria-activedescendant', target.id || '');
+    if (target.id) input.setAttribute('aria-activedescendant', target.id);
+    else input.removeAttribute('aria-activedescendant');
   }
 
   function navigateTo(href) {
@@ -376,6 +377,12 @@
 
   function open() {
     if (backdrop.open) return;
+    // Only one modal traps focus at a time: close the mobile nav before opening
+    // the command palette so their focus/inert handling never overlaps.
+    if (window.PortfolioNav && typeof window.PortfolioNav.closeMobileNav === 'function'
+      && typeof window.PortfolioNav.isMobileNavOpen === 'function' && window.PortfolioNav.isMobileNavOpen()) {
+      window.PortfolioNav.closeMobileNav({ returnFocus: false });
+    }
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     input.value = '';
     render('');
@@ -390,7 +397,7 @@
     if (!backdrop.open) return;
     var restoreFocus = options.restoreFocus !== false;
     backdrop.close();
-    input.setAttribute('aria-activedescendant', '');
+    input.removeAttribute('aria-activedescendant');
     setExpanded(false);
     if (restoreFocus && previousFocus && typeof previousFocus.focus === 'function') {
       previousFocus.focus();
@@ -427,6 +434,13 @@
   backdrop.addEventListener('click', event => {
     if (event.target === backdrop) close();
   });
+
+  // Expose a minimal controller so the mobile nav can dismiss the palette when it
+  // opens — only one modal traps focus at a time.
+  window.PortfolioCmdk = {
+    close: function (options) { close(options); },
+    isOpen: function () { return backdrop.open; },
+  };
 
   let renderDebounce = 0;
   function flushPendingRender() {
