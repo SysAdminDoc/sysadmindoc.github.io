@@ -11,20 +11,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P1
 
-- [ ] P1 — Derive résumé proof counts from live data so surfaces cannot disagree
-  Why: The hero computes project/live-app counts live from the profile feed, but `/resume/` renders frozen `careerProof` strings, so the two public surfaces can show different totals; nothing guards it.
-  Evidence: `src/data/career.ts:37-38` hardcodes `186+ shipped` / `22 live apps`; `src/pages/index.astro:115,120` derives `catalog.length`/`liveApps.length`; `src/pages/resume.astro:70-77` renders the frozen values; `test/identity-facts.test.mjs:27-42` scans only `src/pages`+`src/layouts`, not `src/data`.
-  Touches: `src/data/career.ts`, `src/pages/resume.astro`, `test/identity-facts.test.mjs` (or a new count-parity test).
-  Acceptance: The résumé proof counts are derived from (or test-pinned to) the same catalog/live-app source the hero uses; a test fails when a hardcoded `src/data` count diverges from `catalog.length`/`liveApps.length`.
-  Complexity: S
-
-- [ ] P1 — Add a JS-free progressive-enhancement intake form to /ai/ and homepage contact
-  Why: `/ai/` and the homepage `#connect` are mailto-only, which drops most conversions; peer consultancy pages all offer a structured intake with a persistent discovery CTA. A native-POST form preserves the no-third-party-script CSP posture (no SDK loaded on page load).
-  Evidence: `src/pages/ai.astro:138,229` and `src/pages/index.astro:189-206` use only `contactMailto`; RESEARCH.md "Competitive Landscape"/"Static-site lead capture" (Formspree native `action=` POST, works without JS, single `form-action` CSP entry).
-  Touches: `src/pages/ai.astro`, `src/pages/index.astro`, a shared contact-form component, `scripts/audit-csp.mjs` (add `form-action`), CSP meta in `src/layouts/Base.astro`.
-  Acceptance: A structured intake form submits via native POST to a form backend with no third-party script loaded on page load, degrades to mailto without JS, keeps CSP audits green (`form-action` scoped to the endpoint), and `/ai/` shows a discovery CTA in its final section. Owner decides the backend/privacy tradeoff (see RESEARCH open questions) before shipping.
-  Complexity: M
-
 - [ ] P1 — Add rendered social-card baselines and deployed brand fingerprints
   Why: Source-token and dimension checks did not detect a partially painted 1200×630 AI card during concurrent static rendering, and stale terminal assets survived several site redesigns.
   Evidence: `src/data/og-card.ts`, `test/brand-assets.test.mjs`, `scripts/audit-image-pipeline.mjs`, retired `public/og.png` and pre-v0.34 install/icon assets.
