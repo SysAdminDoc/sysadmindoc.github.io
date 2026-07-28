@@ -5,8 +5,16 @@
     <link>https://sysadmindoc.github.io/releases/</link>
     <description>Tagged releases across the public archive by Matt Parker.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 26 Jul 2026 00:22:09 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2026 02:53:35 GMT</lastBuildDate>
     <atom:link href="https://sysadmindoc.github.io/releases.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Astra-Deck v4.50.2</title>
+      <link>https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.50.2</link>
+      <description>Changed · Re-imagined the in-page Settings workspace as a premium control center: · grouped category navigation, live category preference summaries, visible</description>
+      <category>Astra-Deck</category>
+      <pubDate>Mon, 27 Jul 2026 02:53:35 GMT</pubDate>
+      <guid isPermaLink="true">https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.50.2</guid>
+    </item>
     <item>
       <title>sysadmindoc.github.io v0.29.0</title>
       <link>https://github.com/SysAdminDoc/sysadmindoc.github.io/releases/tag/v0.29.0</link>
@@ -398,14 +406,6 @@
       <category>ClearCut</category>
       <pubDate>Sat, 11 Jul 2026 21:49:30 GMT</pubDate>
       <guid isPermaLink="true">https://github.com/SysAdminDoc/ClearCut/releases/tag/v3.74.114</guid>
-    </item>
-    <item>
-      <title>AppManagerNG v0.6.5</title>
-      <link>https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5</link>
-      <description>v0.6.5 — Roadmap reliability release · Highlights · Privileged-server sessions now keep secrets device-local, rebind safely after port changes, and roll back failed transitions.</description>
-      <category>AppManagerNG</category>
-      <pubDate>Fri, 10 Jul 2026 06:42:49 GMT</pubDate>
-      <guid isPermaLink="true">https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5</guid>
     </item>
   </channel>
 </rss>

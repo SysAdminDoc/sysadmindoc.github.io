@@ -5,7 +5,7 @@
   <link href="https://sysadmindoc.github.io/" />
   <link href="https://sysadmindoc.github.io/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://sysadmindoc.github.io/</id>
-  <updated>2026-07-26T00:19:53.000Z</updated>
+  <updated>2026-07-28T03:09:51.000Z</updated>
   <author>
     <name>Matt Parker</name>
     <uri>https://github.com/SysAdminDoc</uri>
@@ -15,7 +15,7 @@
     <title>Vigil</title>
     <link href="https://github.com/SysAdminDoc/Vigil" />
     <id>https://github.com/SysAdminDoc/Vigil</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Desktop" />
     <summary type="text">Windows packaging for ungoogled-chromium</summary>
     <content type="html">&lt;p&gt;Windows packaging for ungoogled-chromium&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Vigil&quot;&gt;View Vigil on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -24,7 +24,7 @@
     <title>android-debloat-list</title>
     <link href="https://github.com/SysAdminDoc/android-debloat-list" />
     <id>https://github.com/SysAdminDoc/android-debloat-list</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Guides" />
     <summary type="text">Curated Android debloat list with vulnerability notes — companion to AppManagerNG</summary>
     <content type="html">&lt;p&gt;Curated Android debloat list with vulnerability notes — companion to AppManagerNG&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/android-debloat-list&quot;&gt;View android-debloat-list on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -33,7 +33,7 @@
     <title>sysadmindoc.github.io</title>
     <link href="https://github.com/SysAdminDoc/sysadmindoc.github.io" />
     <id>https://github.com/SysAdminDoc/sysadmindoc.github.io</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Guides" />
     <summary type="text">Personal portfolio and project showcase site hosted on GitHub Pages</summary>
     <content type="html">&lt;p&gt;Personal portfolio and project showcase site hosted on GitHub Pages&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/sysadmindoc.github.io&quot;&gt;View sysadmindoc.github.io on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -42,7 +42,7 @@
     <title>LTSC-MicrosoftStore</title>
     <link href="https://github.com/SysAdminDoc/LTSC-MicrosoftStore" />
     <id>https://github.com/SysAdminDoc/LTSC-MicrosoftStore</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Other" />
     <summary type="text">Add Windows Store to Win11 24H2 LTSC</summary>
     <content type="html">&lt;p&gt;Add Windows Store to Win11 24H2 LTSC&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/LTSC-MicrosoftStore&quot;&gt;View LTSC-MicrosoftStore on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -51,7 +51,7 @@
     <title>RcloneBrowser</title>
     <link href="https://github.com/SysAdminDoc/RcloneBrowser" />
     <id>https://github.com/SysAdminDoc/RcloneBrowser</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Other" />
     <summary type="text">Cross-platform GUI for rclone</summary>
     <content type="html">&lt;p&gt;Cross-platform GUI for rclone&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/RcloneBrowser&quot;&gt;View RcloneBrowser on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -60,7 +60,7 @@
     <title>TabExplorer</title>
     <link href="https://github.com/SysAdminDoc/TabExplorer" />
     <id>https://github.com/SysAdminDoc/TabExplorer</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Other" />
     <summary type="text">Tabbed file manager for Windows</summary>
     <content type="html">&lt;p&gt;Tabbed file manager for Windows&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/TabExplorer&quot;&gt;View TabExplorer on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -69,7 +69,7 @@
     <title>TagStudio</title>
     <link href="https://github.com/SysAdminDoc/TagStudio" />
     <id>https://github.com/SysAdminDoc/TagStudio</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Other" />
     <summary type="text">User-focused photo file management system</summary>
     <content type="html">&lt;p&gt;User-focused photo &amp;amp; file management system&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/TagStudio&quot;&gt;View TagStudio on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -78,7 +78,7 @@
     <title>mnamer</title>
     <link href="https://github.com/SysAdminDoc/mnamer" />
     <id>https://github.com/SysAdminDoc/mnamer</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Python" />
     <summary type="text">Media file renaming organizing tool</summary>
     <content type="html">&lt;p&gt;Media file renaming &amp;amp; organizing tool&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/mnamer&quot;&gt;View mnamer on GitHub&lt;/a&gt;&lt;/p&gt;</content>
@@ -87,10 +87,46 @@
     <title>project-nomad</title>
     <link href="https://github.com/SysAdminDoc/project-nomad" />
     <id>https://github.com/SysAdminDoc/project-nomad</id>
-    <updated>2026-07-26T00:19:53.000Z</updated>
+    <updated>2026-07-28T03:09:51.000Z</updated>
     <category term="Other" />
     <summary type="text">Project N.O.M.A.D the original offline survival computer concept spec</summary>
     <content type="html">&lt;p&gt;Project N.O.M.A.D — the original offline survival computer concept &amp;amp; spec&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/project-nomad&quot;&gt;View project-nomad on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Astra-Deck</title>
+    <link href="https://github.com/SysAdminDoc/Astra-Deck" />
+    <id>https://github.com/SysAdminDoc/Astra-Deck</id>
+    <updated>2026-07-28T03:08:21.000Z</updated>
+    <category term="Featured" />
+    <summary type="text">Premium YouTube enhancement extension 150+ features for Chrome Firefox.</summary>
+    <content type="html">&lt;p&gt;Premium YouTube enhancement extension — 150+ features for Chrome &amp;amp; Firefox.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Astra-Deck&quot;&gt;View Astra-Deck on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>StreamKeep</title>
+    <link href="https://github.com/SysAdminDoc/StreamKeep" />
+    <id>https://github.com/SysAdminDoc/StreamKeep</id>
+    <updated>2026-07-28T02:45:51.000Z</updated>
+    <category term="Media" />
+    <summary type="text">Multi-platform stream/VOD downloader with built-in media converter</summary>
+    <content type="html">&lt;p&gt;Multi-platform stream/VOD downloader with built-in media converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/StreamKeep&quot;&gt;View StreamKeep on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>CallShield</title>
+    <link href="https://github.com/SysAdminDoc/CallShield" />
+    <id>https://github.com/SysAdminDoc/CallShield</id>
+    <updated>2026-07-28T01:38:20.000Z</updated>
+    <category term="Android" />
+    <summary type="text">Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions</summary>
+    <content type="html">&lt;p&gt;Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/CallShield&quot;&gt;View CallShield on GitHub&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Vantage</title>
+    <link href="https://github.com/SysAdminDoc/Vantage" />
+    <id>https://github.com/SysAdminDoc/Vantage</id>
+    <updated>2026-07-27T23:05:03.000Z</updated>
+    <category term="Extensions" />
+    <summary type="text">New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links</summary>
+    <content type="html">&lt;p&gt;New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Vantage&quot;&gt;View Vantage on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>StormviewRadar (live)</title>
@@ -174,15 +210,6 @@
     <content type="html">&lt;p&gt;Unified userscript search engine&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/UserScriptHunt&quot;&gt;View UserScriptHunt (live) on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>CallShield</title>
-    <link href="https://github.com/SysAdminDoc/CallShield" />
-    <id>https://github.com/SysAdminDoc/CallShield</id>
-    <updated>2026-07-25T15:36:15.000Z</updated>
-    <category term="Android" />
-    <summary type="text">Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions</summary>
-    <content type="html">&lt;p&gt;Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/CallShield&quot;&gt;View CallShield on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
     <title>ApocalypseWatch (live)</title>
     <link href="https://github.com/SysAdminDoc/ApocalypseWatch" />
     <id>https://github.com/SysAdminDoc/ApocalypseWatch</id>
@@ -208,15 +235,6 @@
     <category term="Android" />
     <summary type="text">Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*</summary>
     <content type="html">&lt;p&gt;Cross-platform ADB GUI for managing Android devices over USB/WiFi *(Rust)*&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Droidsmith&quot;&gt;View Droidsmith on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Astra-Deck</title>
-    <link href="https://github.com/SysAdminDoc/Astra-Deck" />
-    <id>https://github.com/SysAdminDoc/Astra-Deck</id>
-    <updated>2026-07-23T17:11:47.000Z</updated>
-    <category term="Featured" />
-    <summary type="text">Premium YouTube enhancement extension 150+ features for Chrome Firefox.</summary>
-    <content type="html">&lt;p&gt;Premium YouTube enhancement extension — 150+ features for Chrome &amp;amp; Firefox.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Astra-Deck&quot;&gt;View Astra-Deck on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>Aura</title>
@@ -325,15 +343,6 @@
     <category term="Web Apps" />
     <summary type="text">3D-globe multi-hazard simulator tsunamis, asteroid impacts, nuclear bursts, earthquakes with real physics</summary>
     <content type="html">&lt;p&gt;3D-globe multi-hazard simulator — tsunamis, asteroid impacts, nuclear bursts, earthquakes with real physics&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Cataclysm&quot;&gt;View Cataclysm on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>StreamKeep</title>
-    <link href="https://github.com/SysAdminDoc/StreamKeep" />
-    <id>https://github.com/SysAdminDoc/StreamKeep</id>
-    <updated>2026-07-21T14:23:07.000Z</updated>
-    <category term="Media" />
-    <summary type="text">Multi-platform stream/VOD downloader with built-in media converter</summary>
-    <content type="html">&lt;p&gt;Multi-platform stream/VOD downloader with built-in media converter&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/StreamKeep&quot;&gt;View StreamKeep on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>Images</title>
@@ -838,15 +847,6 @@
     <category term="Extensions" />
     <summary type="text">CSS customization extension — visual editor for any website</summary>
     <content type="html">&lt;p&gt;CSS customization extension — visual editor for any website&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/StyleKit&quot;&gt;View StyleKit on GitHub&lt;/a&gt;&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Vantage</title>
-    <link href="https://github.com/SysAdminDoc/Vantage" />
-    <id>https://github.com/SysAdminDoc/Vantage</id>
-    <updated>2026-07-01T02:41:32.000Z</updated>
-    <category term="Extensions" />
-    <summary type="text">New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links</summary>
-    <content type="html">&lt;p&gt;New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/SysAdminDoc/Vantage&quot;&gt;View Vantage on GitHub&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>MSStoreHelper</title>

@@ -46,7 +46,7 @@
 - [Timeline](https://sysadmindoc.github.io/timeline/): Year-in-review timeline generated from GitHub releases and project metadata.
 - [Archive Decisions](https://sysadmindoc.github.io/archive/): Public-safe record of retired, moved, held, and superseded project decisions without exposing private work.
 - [Now](https://sysadmindoc.github.io/now/): What I'm currently building, thinking about, and deliberately not working on.
-- [AI Services](https://sysadmindoc.github.io/ai/): AI tool rollout, workflow automation, workforce enablement, and custom software backed by explicit delivery controls.
+- [AI Services](https://sysadmindoc.github.io/ai/): Practical AI implementation for workflow automation, internal tools, and team adoption—with client-owned delivery and documented handoff.
 - [Project Catalog](https://sysadmindoc.github.io/catalog/): The complete public project archive: every repository in one searchable, sortable, filterable list with direct GitHub links.
 - [Healthcare IT](https://sysadmindoc.github.io/healthcare-it/): Healthcare IT context for customer support, hosted workflows, migrations, vendor coordination, and support documentation.
 - [Status](https://sysadmindoc.github.io/status/): Portfolio build health, data freshness, live-app availability, and deployment version.

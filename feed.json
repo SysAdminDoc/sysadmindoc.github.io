@@ -19,7 +19,7 @@
       "url": "https://github.com/SysAdminDoc/Vigil",
       "title": "Vigil",
       "content_text": "Windows packaging for ungoogled-chromium",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Desktop"
       ]
@@ -29,7 +29,7 @@
       "url": "https://github.com/SysAdminDoc/android-debloat-list",
       "title": "android-debloat-list",
       "content_text": "Curated Android debloat list with vulnerability notes — companion to AppManagerNG",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Guides"
       ]
@@ -39,7 +39,7 @@
       "url": "https://github.com/SysAdminDoc/sysadmindoc.github.io",
       "title": "sysadmindoc.github.io",
       "content_text": "Personal portfolio and project showcase site hosted on GitHub Pages",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Guides"
       ]
@@ -49,7 +49,7 @@
       "url": "https://github.com/SysAdminDoc/LTSC-MicrosoftStore",
       "title": "LTSC-MicrosoftStore",
       "content_text": "Add Windows Store to Win11 24H2 LTSC",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Other"
       ]
@@ -59,7 +59,7 @@
       "url": "https://github.com/SysAdminDoc/RcloneBrowser",
       "title": "RcloneBrowser",
       "content_text": "Cross-platform GUI for rclone",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Other"
       ]
@@ -69,7 +69,7 @@
       "url": "https://github.com/SysAdminDoc/TabExplorer",
       "title": "TabExplorer",
       "content_text": "Tabbed file manager for Windows",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Other"
       ]
@@ -79,7 +79,7 @@
       "url": "https://github.com/SysAdminDoc/TagStudio",
       "title": "TagStudio",
       "content_text": "User-focused photo file management system",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Other"
       ]
@@ -89,7 +89,7 @@
       "url": "https://github.com/SysAdminDoc/mnamer",
       "title": "mnamer",
       "content_text": "Media file renaming organizing tool",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Python"
       ]
@@ -99,9 +99,49 @@
       "url": "https://github.com/SysAdminDoc/project-nomad",
       "title": "project-nomad",
       "content_text": "Project N.O.M.A.D the original offline survival computer concept spec",
-      "date_modified": "2026-07-26T00:19:53.000Z",
+      "date_modified": "2026-07-28T03:09:51.000Z",
       "tags": [
         "Other"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Astra-Deck",
+      "url": "https://github.com/SysAdminDoc/Astra-Deck",
+      "title": "Astra-Deck",
+      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
+      "date_modified": "2026-07-28T03:08:21.000Z",
+      "tags": [
+        "Featured"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/StreamKeep",
+      "url": "https://github.com/SysAdminDoc/StreamKeep",
+      "title": "StreamKeep",
+      "content_text": "Multi-platform stream/VOD downloader with built-in media converter",
+      "date_modified": "2026-07-28T02:45:51.000Z",
+      "tags": [
+        "Media"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/CallShield",
+      "url": "https://github.com/SysAdminDoc/CallShield",
+      "title": "CallShield",
+      "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
+      "date_modified": "2026-07-28T01:38:20.000Z",
+      "tags": [
+        "Android"
+      ]
+    },
+    {
+      "id": "https://github.com/SysAdminDoc/Vantage",
+      "url": "https://github.com/SysAdminDoc/Vantage",
+      "title": "Vantage",
+      "content_text": "New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links",
+      "date_modified": "2026-07-27T23:05:03.000Z",
+      "tags": [
+        "Extensions"
       ]
     },
     {
@@ -195,16 +235,6 @@
       ]
     },
     {
-      "id": "https://github.com/SysAdminDoc/CallShield",
-      "url": "https://github.com/SysAdminDoc/CallShield",
-      "title": "CallShield",
-      "content_text": "Spam call and text blocker — GitHub-hosted spam database, no API keys, no subscriptions",
-      "date_modified": "2026-07-25T15:36:15.000Z",
-      "tags": [
-        "Android"
-      ]
-    },
-    {
       "id": "https://github.com/SysAdminDoc/ApocalypseWatch",
       "url": "https://github.com/SysAdminDoc/ApocalypseWatch",
       "title": "ApocalypseWatch (live)",
@@ -232,16 +262,6 @@
       "date_modified": "2026-07-24T21:21:11.000Z",
       "tags": [
         "Android"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Astra-Deck",
-      "url": "https://github.com/SysAdminDoc/Astra-Deck",
-      "title": "Astra-Deck",
-      "content_text": "Premium YouTube enhancement extension 150+ features for Chrome Firefox.",
-      "date_modified": "2026-07-23T17:11:47.000Z",
-      "tags": [
-        "Featured"
       ]
     },
     {
@@ -362,16 +382,6 @@
       "date_modified": "2026-07-22T12:24:41.000Z",
       "tags": [
         "Web Apps"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/StreamKeep",
-      "url": "https://github.com/SysAdminDoc/StreamKeep",
-      "title": "StreamKeep",
-      "content_text": "Multi-platform stream/VOD downloader with built-in media converter",
-      "date_modified": "2026-07-21T14:23:07.000Z",
-      "tags": [
-        "Media"
       ]
     },
     {
@@ -930,16 +940,6 @@
       "title": "StyleKit",
       "content_text": "CSS customization extension — visual editor for any website",
       "date_modified": "2026-07-01T02:43:19.000Z",
-      "tags": [
-        "Extensions"
-      ]
-    },
-    {
-      "id": "https://github.com/SysAdminDoc/Vantage",
-      "url": "https://github.com/SysAdminDoc/Vantage",
-      "title": "Vantage",
-      "content_text": "New tab dashboard for Chromium — customizable search, RSS, news, weather, quick links",
-      "date_modified": "2026-07-01T02:41:32.000Z",
       "tags": [
         "Extensions"
       ]

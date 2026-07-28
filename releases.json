@@ -1,16 +1,30 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-26T00:52:38.130Z",
+  "generatedAt": "2026-07-28T03:11:13.288Z",
   "source": {
     "repository": "SysAdminDoc/sysadmindoc.github.io",
     "data": "src/data/_releases.json",
-    "githubMetadataFetchedAt": "2026-07-26T00:52:38.130Z"
+    "githubMetadataFetchedAt": "2026-07-28T03:11:13.288Z"
   },
   "counts": {
     "releases": 60,
-    "repositories": 18
+    "repositories": 17
   },
   "releases": [
+    {
+      "repo": "Astra-Deck",
+      "projectName": "Astra-Deck",
+      "tag": "v4.50.2",
+      "name": "Astra Deck v4.50.2",
+      "publishedAt": "2026-07-27T02:53:35Z",
+      "provenance": "checksum",
+      "summary": "Changed · Re-imagined the in-page Settings workspace as a premium control center: · grouped category navigation, live category preference summaries, visible",
+      "urls": {
+        "release": "https://github.com/SysAdminDoc/Astra-Deck/releases/tag/v4.50.2",
+        "repository": "https://github.com/SysAdminDoc/Astra-Deck",
+        "detail": "https://github.com/SysAdminDoc/Astra-Deck"
+      }
+    },
     {
       "repo": "sysadmindoc.github.io",
       "projectName": "sysadmindoc.github.io",
@@ -709,20 +723,6 @@
         "release": "https://github.com/SysAdminDoc/AppManagerNG/releases/tag/v0.6.5",
         "repository": "https://github.com/SysAdminDoc/AppManagerNG",
         "detail": "https://github.com/SysAdminDoc/AppManagerNG"
-      }
-    },
-    {
-      "repo": "ImgConverter",
-      "projectName": "ImgConverter",
-      "tag": "v3.5.0",
-      "name": "ImgConverter v3.5.0",
-      "publishedAt": "2026-07-10T04:33:32Z",
-      "provenance": "checksum",
-      "summary": "Premium workspace redesign · Reframed the desktop workflow as Source → Output recipe → Batch summary with responsive wide and compact layouts. · Added a unified line-icon system, new ImgConverter app icon, clearer…",
-      "urls": {
-        "release": "https://github.com/SysAdminDoc/ImgConverter/releases/tag/v3.5.0",
-        "repository": "https://github.com/SysAdminDoc/ImgConverter",
-        "detail": "https://github.com/SysAdminDoc/ImgConverter"
       }
     },
     {
