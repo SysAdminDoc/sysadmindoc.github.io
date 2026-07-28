@@ -4,6 +4,25 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.39.0] - 2026-07-28
+
+### Added
+
+- `smoke:live` now verifies the edge security headers the VPS Caddy injects
+  (HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`,
+  `Permissions-Policy` locking down camera/microphone/geolocation/payment/usb,
+  and `Cross-Origin-Opener-Policy`). The check runs against the canonical origin
+  and is skipped for non-edge base URLs, so a Caddy route regression that dropped
+  a header fails the live smoke instead of going unnoticed. This closes the
+  long-blocked "Add Permissions-Policy restrictive defaults" item — unreachable
+  on GitHub Pages, delivered and now regression-gated on the VPS edge.
+
+### Changed
+
+- Corrected the endpoint header-contract narrative (`src/data/endpoint-headers.ts`
+  and its test) to reflect that the VPS edge Caddy — not GitHub Pages — owns the
+  deployed header contract.
+
 ## [v0.38.0] - 2026-07-28
 
 ### Changed
