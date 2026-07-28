@@ -19,6 +19,11 @@
     mobileToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
     mobileToggle.setAttribute('title', open ? 'Close navigation menu' : 'Open navigation menu');
     if(open){
+      // Only one modal traps focus at a time: dismiss the command palette if it
+      // is open before the mobile nav takes over focus/inert handling.
+      if(window.PortfolioCmdk && typeof window.PortfolioCmdk.isOpen === 'function' && window.PortfolioCmdk.isOpen()){
+        window.PortfolioCmdk.close({ restoreFocus: false });
+      }
       modalTargets.forEach(function(target){
         priorInert.set(target, target.inert);
         target.inert = true;
