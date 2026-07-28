@@ -25,6 +25,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   dialog, catalog filtering, theme persistence, and mobile/desktop overflow,
   without duplicating the Chromium visual-baseline matrix.
 
+### Removed
+
+- Removed dead code left by earlier rebuilds: the never-rendered healthcare
+  repo-card branch (and its now-unused card CSS across the style layers), the
+  unused `manifesto`/`ManifestoRule` export, and a dead catalog preview-surface
+  code path.
+
 ### Fixed
 
 - Derived the résumé proof counts (`/resume/`) from the live catalog so they can

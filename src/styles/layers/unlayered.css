@@ -1361,7 +1361,7 @@ section{padding:112px 32px;overflow:clip}
 .ca:hover{transform:translateY(-2px);border-color:var(--border-strong);background:var(--surface-strong);box-shadow:var(--shadow-sm)}
 html[data-theme="light"] .ca,html[data-theme="light"] .ca:hover{background:var(--surface-1)}
 .ca-kind,.ca-age,.ca-stars,.ca-side .lb2{border-radius:4px}
-.lc2,.page-panel,.page-stat,.page-jump-nav,.now-section,.hcit-card,.lang-card{border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--surface-1);box-shadow:var(--shadow-xs)}
+.lc2,.page-panel,.page-stat,.page-jump-nav,.now-section,.lang-card{border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--surface-1);box-shadow:var(--shadow-xs)}
 .lc2{padding:14px}
 .lc2::before{display:none!important}
 .lc2:hover{transform:translateY(-3px);border-color:var(--border-strong);background:var(--surface-strong);box-shadow:var(--shadow-md)}

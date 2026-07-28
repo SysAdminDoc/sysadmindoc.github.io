@@ -13,13 +13,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P3
 
-- [ ] P3 — Remove dead code left by the v0.35/v0.36 rebuilds
-  Why: Permanently-false branches and unused exports add build cost and read as live surface area; they mislead future edits (e.g. anyone adding a healthcare repo would expect the grid to render).
-  Evidence: `src/data/curated.ts:91` (`healthcareIT.repos: []`) makes `hasRepos` always false, so `src/pages/healthcare-it.astro:116-139` (+ its `StarSvg` import and `_stars.json` load at lines 6,27-28) never render; `manifesto` (`curated.ts:72`) has no consumer in `src/`; `public/scripts/home-catalog.js` preview-surface paths (`:13,94-95`) are dead now that the homepage catalog is static handoff links.
-  Touches: `src/data/curated.ts`, `src/pages/healthcare-it.astro`, `public/scripts/home-catalog.js`, related tests.
-  Acceptance: The dead healthcare-repo render path, unused `manifesto` export, and dead preview-surface code are removed or intentionally re-wired; `npm run check`, `npm run css:audit`, and `npm test` stay green.
-  Complexity: S
-
 - [ ] P3 — Polish command-palette accessibility and add a keyboard/focus spec
   Why: The combobox clears `aria-activedescendant` to an empty string rather than removing it (an invalid ARIA state), no guard prevents the cmdk dialog and mobile-nav modal being open together, and no test drives the palette's keyboard flow.
   Evidence: `public/scripts/cmdk.js:335,343,393` set `aria-activedescendant=''`; `public/scripts/mobile-nav.js:22-25` and `cmdk.js:383` both trap focus with no coordination; no Playwright spec drives open→type→ArrowDown→Enter→focus-return.

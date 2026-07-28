@@ -1,6 +1,6 @@
 // Hand-curated lists that don't fit the auto-extracted projects.ts model.
 // Edit these directly to reshape the story the portfolio tells.
-import type { GreatestHit, ManifestoRule } from './types';
+import type { GreatestHit } from './types';
 import { fallbackRepoCount } from './derived';
 import { careerProfile } from './career';
 import pkg from '../../package.json';
@@ -66,29 +66,14 @@ export const greatestHits: GreatestHit[] = [
 ];
 
 /**
- * Manifesto — the 7 rules every project on this site follows.
- * Order matters: read top to bottom, they compound.
- */
-export const manifesto: ManifestoRule[] = [
-  { word: 'Turnkey', rule: 'Auto-installs deps and prerequisites. Zero manual setup.' },
-  { word: 'Single-file', rule: 'One download when possible. A builder when not.' },
-  { word: 'Dark by default', rule: 'Deep palettes, glassmorphism, polished UI — always.' },
-  { word: 'No confirms', rule: 'Immediate action plus feedback. Fewer dialogs, not more.' },
-  { word: 'Async', rule: 'GUI never blocks. Threading, embedded consoles, live logs.' },
-  { word: 'Versioned', rule: 'Semver on everything. No "-fixed" suffixes.' },
-  { word: 'Open', rule: 'MIT by default. No telemetry, no paywalls, no trials.' },
-];
-
-/**
  * Healthcare IT track — the moat.
  * Repos and work context from healthcare support environments.
  */
 export const healthcareIT = {
   intro:
     `I'm the ${careerProfile.currentTitle} at ${careerProfile.currentCompany}, supporting healthcare technology environments. The work is customer-facing and operational: PACS/DICOM workflows, hosted-service migrations, workstation and network troubleshooting, customer escalation, documentation, and vendor coordination.`,
-  // Public showcases for this track currently live as private internal tooling.
-  // Kept as a track narrative; project cards intentionally omitted.
-  repos: [] as string[],
+  // Public showcases for this track currently live as private internal tooling,
+  // so this lane is a narrative track with no project cards.
 };
 
 /**

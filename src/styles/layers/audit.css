@@ -121,7 +121,7 @@ main[id],section[id]{scroll-margin-top:72px}
 a,button,[role="button"],summary{touch-action:manipulation}
 .hn,.st,.lang-title,.now-title,.rel-title,.hcit-title{text-wrap:balance}
 @supports (text-wrap:pretty){
-  .hero-summary,.sd,.lcd,.footer-summary,.rel-body,.lang-card-desc,.archive-summary,.hcit-card-desc,.resume-summary,.uses-section-head p,.uses-item-note,.now-section-copy,.now-li,.now-p,.page-stat-copy{
+  .hero-summary,.sd,.lcd,.footer-summary,.rel-body,.lang-card-desc,.archive-summary,.resume-summary,.uses-section-head p,.uses-item-note,.now-section-copy,.now-li,.now-p,.page-stat-copy{
     text-wrap:pretty;
   }
 }

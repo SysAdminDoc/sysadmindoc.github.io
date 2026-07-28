@@ -225,14 +225,6 @@
   font-size:14px;
   line-height:var(--lh-relaxed);
 }
-.hcit-grid{
-  gap:18px;
-}
-.hcit-card{
-  padding:28px;
-  border-radius:12px;
-  background:var(--surface-1);
-}
 .hcit-why{
   padding:32px 34px;
   border:1px solid var(--border-soft);
@@ -281,8 +273,7 @@
     grid-template-columns:1fr;
   }
   .rel-item,
-  .lang-card,
-  .hcit-card{
+  .lang-card{
     padding:20px;
   }
 }
@@ -376,7 +367,7 @@ html[data-theme="light"] .lc2:hover{
 }
 
 /* Light theme — page panels and stat cards */
-html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .hcit-card,html[data-theme="light"] .hcit-why,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
+html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .hcit-why,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
   background:rgba(255,255,255,.72);
   box-shadow:0 14px 32px rgba(29,42,70,.08);
 }
