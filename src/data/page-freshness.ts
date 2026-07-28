@@ -84,7 +84,7 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     slug: 'ai',
     route: '/ai/',
     label: 'AI Services',
-    lastReviewed: '2026-07-25',
+    lastReviewed: '2026-07-27',
     schemaTypes: ['AboutPage', 'WebPage'],
     visibleFreshness: true,
   },

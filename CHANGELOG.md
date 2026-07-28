@@ -4,6 +4,24 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.36.0] - 2026-07-27
+
+### Changed
+
+- Rebuilt the AI services page around one outcome-led hero, three concrete
+  offers, a four-stage delivery path, one inspectable proof block, and one
+  direct conversion section.
+- Removed the vanity-stat hero, repeated question cards, redundant section
+  index, unsupported agency-cost comparison, and reveal-hidden content that
+  made the page feel dense despite its vertical length.
+- Cut the page from 795 to 425 words while preserving client ownership, human
+  review, data boundaries, recovery, public software proof, and Parker AI.
+
+### Added
+
+- Added source contracts and reviewed dark/light desktop/mobile visual
+  baselines for the focused AI implementation narrative.
+
 ## [v0.35.0] - 2026-07-26
 
 ### Changed

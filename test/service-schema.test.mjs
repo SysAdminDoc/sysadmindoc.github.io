@@ -7,8 +7,8 @@ const root = process.cwd();
 const aiPagePath = path.join(root, 'src', 'pages', 'ai.astro');
 
 /**
- * The /ai/ track sells four productized service lines. The offer list must be
- * derived from the same array that renders the cards, or the structured data an
+ * The /ai/ track sells three focused service lines. The offer list must be
+ * derived from the same array that renders the page, or the structured data an
  * answer engine reads drifts from the copy a visitor reads.
  */
 test('the /ai/ services track publishes its offer list as structured data', async () => {
@@ -27,28 +27,36 @@ test('the /ai/ services track publishes its offer list as structured data', asyn
   );
 });
 
-test('the /ai/ service and engagement cards lead with prospect questions', async () => {
+test('the /ai/ page keeps a focused offer set and an end-to-end delivery path', async () => {
   const source = await fs.readFile(aiPagePath, 'utf8');
-  const questions = [...source.matchAll(/\bquestion:\s*'([^']+)'/g)].map((match) => match[1]);
+  const servicesBlock = source.match(/const services = \[([\s\S]*?)\] as const;/)?.[1] || '';
+  const engagementBlock = source.match(/const engagementSteps = \[([\s\S]*?)\] as const;/)?.[1] || '';
+  const serviceTitles = [...servicesBlock.matchAll(/\btitle:\s*'([^']+)'/g)].map((match) => match[1]);
+  const engagementStages = [...engagementBlock.matchAll(/\bname:\s*'([^']+)'/g)].map((match) => match[1]);
 
-  assert.equal(questions.length, 7, 'expected four service questions and three engagement questions');
-  assert.ok(questions.every((question) => question.endsWith('?')), 'every card question should be explicit');
-  assert.match(source, /services\.map[\s\S]*?<h3[^>]*>\{s\.question\}<\/h3>/);
-  assert.match(source, /engagementSteps\.map[\s\S]*?<h3[^>]*>\{s\.question\}<\/h3>/);
+  assert.equal(serviceTitles.length, 3, 'expected three distinct service offers');
+  assert.deepEqual(engagementStages, ['Map', 'Pilot', 'Harden', 'Hand off']);
+  assert.match(source, /services\.map[\s\S]*?<h3>\{service\.title\}<\/h3>/);
+  assert.match(source, /engagementSteps\.map[\s\S]*?<h3>\{item\.title\}<\/h3>/);
 });
 
-test('the /ai/ track exposes public operating proof without naming private repositories', async () => {
+test('the /ai/ page avoids a redundant jump band and reveal-hidden card wall', async () => {
   const source = await fs.readFile(aiPagePath, 'utf8');
-  const proofItems = [...source.matchAll(/\bcode:\s*'([^']+)'/g)].map((match) => match[1]);
 
-  assert.deepEqual(proofItems, [
-    'PUBLIC SYSTEM',
-    'DELIVERY CONTRACT',
-    'DATA BOUNDARY',
-    'PRODUCTION OPS',
-  ]);
-  assert.match(source, /href:\s*'https:\/\/getparkerai\.com'/);
-  assert.match(source, /operatingProof\.map[\s\S]*?rel="noopener"/);
+  assert.doesNotMatch(source, /SectionJumpNav|card-enter|aisvc-stats/);
+  assert.match(source, /aria-label="Delivery standards"/);
+  assert.match(source, /class="aisvc-proof-grid"/);
+});
+
+test('the /ai/ track exposes inspectable public proof without naming private repositories', async () => {
+  const source = await fs.readFile(aiPagePath, 'utf8');
+
+  assert.match(source, /Public system \/ Parker AI/);
+  assert.match(source, /client-owned delivery/i);
+  assert.match(source, /data boundaries, human review, logging, recovery/i);
+  assert.match(source, /projectCount/);
+  assert.match(source, /liveAppCount/);
+  assert.match(source, /href="https:\/\/getparkerai\.com"[\s\S]*?rel="noopener"/);
   assert.doesNotMatch(
     source,
     /\b(?:JobSeek|AI-LLC|LLC-TODO|Contabo-VPS-Ops)\b/,
