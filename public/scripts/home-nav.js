@@ -69,12 +69,23 @@
     const secs=document.querySelectorAll('section[id]');
     const nla=document.querySelectorAll('.nk a');
     if('IntersectionObserver' in window&&secs.length&&nla.length){
+        // Map every section to the nav link that should be active while it is in
+        // view: its own link, or the nearest linked section above it. Sections
+        // without a direct nav link (hero/live/catalog) governed this way no
+        // longer blank the nav highlight as they scroll through.
+        const linkForId=new Map();
+        let governing=null;
+        secs.forEach(function(sec){
+            const direct=document.querySelector('.nk a[href="#'+sec.id+'"]');
+            if(direct)governing=direct;
+            linkForId.set(sec.id,governing);
+        });
         const so=new IntersectionObserver(entries=>{
             entries.forEach(entry=>{
                 if(!entry.isIntersecting)return;
-                nla.forEach(link=>{link.classList.remove('active');link.removeAttribute('aria-current')});
-                const active=document.querySelector('.nk a[href="#'+entry.target.id+'"]');
+                const active=linkForId.get(entry.target.id);
                 if(!active)return;
+                nla.forEach(link=>{link.classList.remove('active');link.removeAttribute('aria-current')});
                 active.classList.add('active');
                 active.setAttribute('aria-current','location');
                 if(history.replaceState&&Date.now()>=(window.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL||0)){

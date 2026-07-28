@@ -11,13 +11,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P2
 
-- [ ] P2 — Repair homepage active-nav blanking and pin nav↔section correspondence
-  Why: The active-section observer clears all nav highlights then finds no match when `#hero`/`#live`/`#catalog` intersect, so the nav indicator blanks while scrolling those sections; no test catches the drift the v0.35 rebuild introduced.
-  Evidence: `public/scripts/home-nav.js:69-93` matches `section[id]` against `.nk a[href="#id"]`, but `src/pages/index.astro:62-66` ships nav links only for `#greatest-hits`/`#skills`/`#connect` while sections `hero`/`live`/`catalog` also exist. `.search-page` min-height coupling (`src/pages/404.astro:10` vs `src/pages/search.astro` `<style is:global>`) is a related route-scoping nit.
-  Touches: `public/scripts/home-nav.js`, `src/pages/index.astro`, a nav-correspondence test (extend `test/homepage-section-jump.test.mjs`).
-  Acceptance: Scrolling the homepage always leaves exactly one nav item active (nearest linked ancestor section when the intersecting section has no direct link); a test asserts every rendered `section[id]` resolves to a nav link or an intentional no-link section, and every nav `#hash` resolves to a real section.
-  Complexity: S
-
 - [ ] P2 — Add FAQPage JSON-LD and answer-first section intros to /ai/ and /healthcare-it/
   Why: AI-Overview/AEO citation research shows FAQPage schema and answer-first intros are top citation surfaces; the service pages have neither, leaving the retainer offer under-discoverable to answer engines.
   Evidence: RESEARCH.md "Competitive Landscape" (Frase/O8 AEO); `src/data/page-freshness.ts:178` already provides `serviceCatalogNodes` as a proven pattern to mirror; `src/pages/ai.astro`/`healthcare-it.astro` emit no FAQ nodes.

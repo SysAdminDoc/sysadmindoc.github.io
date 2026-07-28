@@ -20,6 +20,10 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Derived the résumé proof counts (`/resume/`) from the live catalog so they can
   no longer drift from the homepage hero; a parity test blocks any hardcoded
   project/live-app count in the data layer.
+- Fixed the homepage active-nav highlight blanking while scrolling through the
+  `#hero`, `#live`, and `#catalog` sections: the scroll observer now governs each
+  section by its nearest linked ancestor, keeping exactly one nav item active. A
+  test pins nav↔section correspondence so future sections can't silently drift.
 
 ## [v0.36.0] - 2026-07-27
 
