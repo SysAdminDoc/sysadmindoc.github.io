@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.37.0] - 2026-07-28
+
 ### Added
 
 - Added a visible FAQ plus `FAQPage` structured data to `/ai/` and
