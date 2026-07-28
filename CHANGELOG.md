@@ -44,6 +44,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Command palette accessibility: `aria-activedescendant` is now removed (not set
   to an empty string) when no option is active, and opening the mobile nav
   dismisses an open palette so only one modal traps focus at a time.
+- Search warms the Pagefind index on first focus/hover of the search box instead
+  of on the first keystroke, trimming the cold-load delay before the first query.
 
 ## [v0.36.0] - 2026-07-27
 
