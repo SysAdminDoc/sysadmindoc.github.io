@@ -4,6 +4,23 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Added a post-build raster-integrity gate (`scripts/audit-og-cards.mjs`, wired
+  into `build:ci`) that reads the rendered 1200×630 social cards from `dist/` and
+  fails on wrong dimensions, blank/near-uniform paint, a missing brand palette,
+  or a missing ink/accent content layer — catching partial-paint regressions that
+  source-token and dimension checks cannot.
+- Added deployed brand-fingerprint checks to the live smoke test: `/favicon.svg`,
+  `/manifest.json`, and `/og.png` are verified after deploy for the current MP
+  Technical Service Bureau identity and a fully painted 1200×630 card.
+
+### Fixed
+
+- Derived the résumé proof counts (`/resume/`) from the live catalog so they can
+  no longer drift from the homepage hero; a parity test blocks any hardcoded
+  project/live-app count in the data layer.
+
 ## [v0.36.0] - 2026-07-27
 
 ### Changed

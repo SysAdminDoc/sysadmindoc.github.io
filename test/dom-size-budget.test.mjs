@@ -11,7 +11,7 @@ test('build path enforces a handoff-only homepage catalog budget', async () => {
   const buildCi = pkg.scripts['build:ci'];
 
   assert.equal(pkg.scripts['dom:audit'], 'node scripts/audit-dom-size.mjs');
-  assert.match(buildCi, /npm run feed:audit && npm run dom:audit && npm run search:index && npm run search:audit && npm run sw:stamp/);
+  assert.match(buildCi, /npm run feed:audit && npm run dom:audit && npm run og-cards:audit && npm run search:index && npm run search:audit && npm run sw:stamp/);
   assert.match(script, /homepageHtmlBytes: 96_000/);
   assert.match(script, /catalogSectionBytes: 4_000/);
   assert.match(script, /catalogDomNodes: 60/);

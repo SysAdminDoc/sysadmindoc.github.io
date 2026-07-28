@@ -9,20 +9,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ## Research-Driven Additions
 
-### P1
-
-- [ ] P1 — Add rendered social-card baselines and deployed brand fingerprints
-  Why: Source-token and dimension checks did not detect a partially painted 1200×630 AI card during concurrent static rendering, and stale terminal assets survived several site redesigns.
-  Evidence: `src/data/og-card.ts`, `test/brand-assets.test.mjs`, `scripts/audit-image-pipeline.mjs`, retired `public/og.png` and pre-v0.34 install/icon assets.
-  Touches: `scripts/audit-image-pipeline.mjs`, `scripts/smoke-live-site.mjs`, `test/brand-assets.test.mjs`, `tests/playwright/__screenshots__/`.
-  Acceptance: Homepage plus representative short/long interior social cards have reviewed raster baselines; the gate fails on blank/partial paint, stale counts/headline, wrong palette, or dimensions other than 1200×630; live smoke verifies current favicon/manifest/OG fingerprints after deploy.
-  Complexity: M
-  Why: Source-token and dimension checks did not detect a partially painted 1200×630 AI card during concurrent static rendering, and stale terminal assets survived several site redesigns.
-  Evidence: `src/data/og-card.ts`, `test/brand-assets.test.mjs`, `scripts/audit-image-pipeline.mjs`, retired `public/og.png` and pre-v0.34 install/icon assets.
-  Touches: `scripts/audit-image-pipeline.mjs`, `scripts/smoke-live-site.mjs`, `test/brand-assets.test.mjs`, `tests/playwright/__screenshots__/`.
-  Acceptance: Homepage plus representative short/long interior social cards have reviewed raster baselines; the gate fails on blank/partial paint, stale counts/headline, wrong palette, or dimensions other than 1200×630; live smoke verifies current favicon/manifest/OG fingerprints after deploy.
-  Complexity: M
-
 ### P2
 
 - [ ] P2 — Repair homepage active-nav blanking and pin nav↔section correspondence

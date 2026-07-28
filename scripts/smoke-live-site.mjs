@@ -4,6 +4,7 @@ import { appendFileSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import sharp from 'sharp';
 
 const root = process.cwd();
 const runId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -143,6 +144,27 @@ async function fetchText(baseUrl, pathname, accept) {
     body,
     cacheControl: response.headers.get('cache-control') ?? '',
     contentType: response.headers.get('content-type') ?? '',
+    status: response.status,
+  };
+}
+
+async function fetchBinary(baseUrl, pathname, accept) {
+  const target = siteUrl(pathname, baseUrl);
+  const response = await fetch(target, {
+    headers: {
+      Accept: accept,
+      'User-Agent': `sysadmindoc-live-smoke/${runId}`,
+    },
+    redirect: 'follow',
+  });
+  if (response.status !== 200) {
+    throw new Error(`${pathname} returned HTTP ${response.status} from ${target}`);
+  }
+  const buffer = Buffer.from(await response.arrayBuffer());
+  return {
+    buffer,
+    contentType: response.headers.get('content-type') ?? '',
+    cacheControl: response.headers.get('cache-control') ?? '',
     status: response.status,
   };
 }
@@ -313,6 +335,41 @@ async function checkLiveArtifacts(baseUrl, expected) {
   if (!/<sitemapindex\b/i.test(sitemap.body)) throw new Error('/sitemap-index.xml did not return a sitemap index document.');
   summary.push('sitemap index: 200');
   summary.push('live cache-control: max-age=600');
+
+  // Deployed brand fingerprints: the current MP Technical Service Bureau identity
+  // must actually be serving, and the social card must be a fully painted
+  // 1200x630 PNG (not a blank/partial paint that passed at build then went stale).
+  const favicon = await fetchText(baseUrl, '/favicon.svg', 'image/svg+xml,*/*');
+  requireHeader(favicon, '/favicon.svg', { contentTypes: ['image/svg+xml'], cacheControl: null });
+  if (!/>MP<\/text>/.test(favicon.body) || !/#1648dc/i.test(favicon.body)) {
+    throw new Error('/favicon.svg is not the current MP cobalt identity.');
+  }
+  if (/~\$|#4ade80|#050913/i.test(favicon.body)) {
+    throw new Error('/favicon.svg still contains retired terminal brand tokens.');
+  }
+  summary.push('favicon fingerprint: MP cobalt');
+
+  const manifestResponse = await fetchText(baseUrl, '/manifest.json', 'application/manifest+json,application/json,*/*');
+  const manifest = parseJson(manifestResponse.body, '/manifest.json');
+  if (!/Technical Service Bureau/.test(`${manifest.name ?? ''} ${manifest.description ?? ''}`)) {
+    throw new Error('/manifest.json is not the current Technical Service Bureau identity.');
+  }
+  summary.push('manifest fingerprint: Technical Service Bureau');
+
+  const ogCard = await fetchBinary(baseUrl, '/og.png', 'image/png,*/*');
+  if (!ogCard.contentType.toLowerCase().startsWith('image/png')) {
+    throw new Error(`/og.png returned Content-Type "${ogCard.contentType || '(missing)'}"; expected image/png.`);
+  }
+  const ogMeta = await sharp(ogCard.buffer).metadata();
+  if (ogMeta.width !== 1200 || ogMeta.height !== 630) {
+    throw new Error(`/og.png is ${ogMeta.width}x${ogMeta.height}; expected 1200x630.`);
+  }
+  const ogStats = await sharp(ogCard.buffer).stats();
+  const maxStdev = Math.max(...ogStats.channels.map((channel) => channel.stdev));
+  if (maxStdev < 20) {
+    throw new Error(`/og.png appears blank/near-uniform (max channel stdev ${maxStdev.toFixed(1)} < 20).`);
+  }
+  summary.push(`og.png fingerprint: 1200x630 painted (stdev ${maxStdev.toFixed(0)})`);
 
   return summary;
 }
