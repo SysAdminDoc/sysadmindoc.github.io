@@ -11,13 +11,6 @@ Last researched: 2026-07-27 (RESEARCH.md)
 
 ### P2
 
-- [ ] P2 — Add FAQPage JSON-LD and answer-first section intros to /ai/ and /healthcare-it/
-  Why: AI-Overview/AEO citation research shows FAQPage schema and answer-first intros are top citation surfaces; the service pages have neither, leaving the retainer offer under-discoverable to answer engines.
-  Evidence: RESEARCH.md "Competitive Landscape" (Frase/O8 AEO); `src/data/page-freshness.ts:178` already provides `serviceCatalogNodes` as a proven pattern to mirror; `src/pages/ai.astro`/`healthcare-it.astro` emit no FAQ nodes.
-  Touches: `src/data/page-freshness.ts` (new `faqPageNodes` helper), `src/pages/ai.astro`, `src/pages/healthcare-it.astro`, `scripts/audit-schema.mjs`, a schema test.
-  Acceptance: `/ai/` and `/healthcare-it/` render a visible FAQ whose Q&A is emitted as valid `FAQPage` JSON-LD derived from the same array as the visible copy (no drift), each section opens with a 30–60-word answer-first intro, and `npm run schema:audit` stays green.
-  Complexity: M
-
 - [ ] P2 — Add Speculation Rules prerender to pair with the shipped View Transitions
   Why: Cross-document View Transitions already ship (`foundation.css:9`); adding document prerender/prefetch makes multi-page navigation across the 186-page site feel instant with near-zero JS, and non-Chromium browsers silently ignore the rules.
   Evidence: `src/styles/layers/foundation.css:9` (`@view-transition { navigation: auto; }`); no speculation-rules script or Astro `clientPrerender` flag present (grep of `src/`/`public/`/`astro.config.mjs`); RESEARCH.md "Modern web platform features".

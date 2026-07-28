@@ -213,3 +213,34 @@ export function serviceCatalogNodes({
     ...serviceNodes,
   ];
 }
+
+/**
+ * Build the `FAQPage` node for a route's question/answer list.
+ *
+ * Derived from the same array that renders the visible FAQ, so an answer engine
+ * reads exactly the questions and answers a visitor reads — no drift. Returns a
+ * single node meant for `reviewedWebPageJsonLd`'s `extraNodes`, so the route
+ * keeps one JSON-LD `<script>` block.
+ */
+export function faqPageNodes({
+  siteUrl,
+  route,
+  faqs,
+}: {
+  siteUrl: string;
+  route: string;
+  faqs: readonly { q: string; a: string }[];
+}): Record<string, unknown>[] {
+  const url = `${siteUrl}${route}`;
+  return [
+    {
+      '@type': 'FAQPage',
+      '@id': `${url}#faq`,
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: { '@type': 'Answer', text: faq.a },
+      })),
+    },
+  ];
+}
