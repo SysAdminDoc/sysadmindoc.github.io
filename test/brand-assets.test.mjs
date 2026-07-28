@@ -23,6 +23,13 @@ test('brand assets use the MP Technical Service Bureau identity', async () => {
   assert.doesNotMatch(combined, /matt@sysadmin|~\$|#050913|#4ade80/i);
 });
 
+test('build:ci runs the rendered OG-card raster gate', async () => {
+  const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+  assert.match(pkg.scripts['build:ci'], /npm run dom:audit && npm run og-cards:audit && npm run search:index/);
+  assert.equal(pkg.scripts['og-cards:audit'], 'node scripts/audit-og-cards.mjs');
+  await fs.access(path.join(root, 'scripts', 'audit-og-cards.mjs'));
+});
+
 test('generated app icons match their declared dimensions', async () => {
   const iconSizes = {
     'icon-192.png': 192,
