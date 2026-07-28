@@ -10,7 +10,6 @@
     // The homepage renders a ranked slice, so the rendered card count is not the
     // archive total. Keep the server-rendered "of TOTAL" framing after hydration.
     const catalogTotal=Number(grid.dataset.total)||allItems.length;
-    const isPreviewSurface=grid.dataset.variant==='preview';
     allItems.forEach(item=>{
         const desc=item.querySelector('.cds');
         item.dataset.searchText=(item.dataset.name+' '+(desc?desc.textContent:'')+' '+(item.dataset.terms||'')).toLowerCase();
@@ -91,9 +90,7 @@
         const sortLabel=getSortLabel(currentSort);
         const parts=[];
         if(currentFilter==='all'&&currentView==='all'&&!q){
-            parts.push(isPreviewSurface
-                ?'Showing the top '+visible+' of '+catalogTotal+' projects'
-                :'Showing all '+visible+' projects');
+            parts.push('Showing all '+visible+' projects');
         }else{
             parts.push('Showing '+visible+' result'+(visible!==1?'s':''));
             if(currentView!=='all')parts.push('in '+viewLabel);

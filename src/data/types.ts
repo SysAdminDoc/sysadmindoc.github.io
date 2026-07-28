@@ -16,11 +16,6 @@ export interface GreatestHit {
   tag: string; // short tag like "Windows" | "Android" | "Healthcare IT"
 }
 
-export interface ManifestoRule {
-  word: string; // one word e.g. "Turnkey"
-  rule: string; // short sentence
-}
-
 export interface LiveApp {
   slug: string;
   name: string;
