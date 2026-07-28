@@ -53,7 +53,23 @@ function sha256Csp(value: string) {
 }
 
 const isDev = import.meta.env.DEV;
-const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
+// `'inline-speculation-rules'` admits ONLY the inline speculation-rules hint
+// rendered below — it does not permit any other inline script.
+const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self' 'inline-speculation-rules'";
+// Prerender same-origin document navigations on moderate (hover/pointerdown)
+// intent so multi-page navigation feels instant with no framework runtime.
+// Query-string URLs (search/catalog filter state) are excluded so their many
+// permutations are not speculatively rendered. Non-supporting engines ignore it.
+const speculationRules = JSON.stringify({
+  prerender: [
+    {
+      where: {
+        and: [{ href_matches: '/*' }, { not: { href_matches: '/*\\?*' } }],
+      },
+      eagerness: 'moderate',
+    },
+  ],
+});
 const styleSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
 const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"
@@ -213,5 +229,6 @@ if (isHome) {
       Catalog filtering remains isolated to /catalog/. */}
   {isHome && <script src="/scripts/home-nav.js" is:inline></script>}
   {isCatalog && <script src="/scripts/home-catalog.js" is:inline></script>}
+  {!isDev && <script type="speculationrules" is:inline set:html={speculationRules}></script>}
 </body>
 </html>
