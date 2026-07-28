@@ -4,6 +4,7 @@ import InteriorNav from '../components/InteriorNav.astro';
 import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import {
+  faqPageNodes,
   formatReviewedDate,
   pageFreshnessBySlug,
   reviewedWebPageJsonLd,
@@ -41,8 +42,29 @@ const services = [
   },
 ] as const;
 
-// Publish the offer list as structured data from the same array that renders the
-// page below, so an answer engine reads exactly what a visitor reads.
+// Answer-first questions a prospective client actually asks, rendered visibly
+// below and published as FAQPage structured data from this same array.
+const faqs = [
+  {
+    q: 'What does an AI implementation engagement actually deliver?',
+    a: 'A working, documented system your team owns — not a slide deck. I map one high-friction workflow, ship a fixed-scope pilot with a clear success measure, harden it with data boundaries and human review, then hand over the source, accounts, and runbooks.',
+  },
+  {
+    q: 'Where does my data go when you add AI?',
+    a: 'Wherever you decide. Defining data boundaries is part of the first step — which tools may see which data, and when a local or in-house model is the right call so sensitive information never leaves your environment.',
+  },
+  {
+    q: 'How do you keep AI from making costly mistakes?',
+    a: 'By designing for the failure path, not just the demo. Each workflow keeps human review where an error carries a cost, plus logging, recovery, and a safe re-run path, so the system degrades predictably instead of failing silently.',
+  },
+  {
+    q: 'How small can a first project be?',
+    a: 'Deliberately small. The best first engagement is one recurring, well-owned task — a report, a document flow, a data-entry step — proven end to end before anything expands. Bring the workflow that keeps getting postponed.',
+  },
+] as const;
+
+// Publish the offer list and FAQ as structured data from the same arrays that
+// render the page below, so an answer engine reads exactly what a visitor reads.
 const pageJsonLd = reviewedWebPageJsonLd({
   siteUrl,
   route: pageFreshness.route,
@@ -50,12 +72,15 @@ const pageJsonLd = reviewedWebPageJsonLd({
   description: pageOg.description,
   lastReviewed: pageFreshness.lastReviewed,
   schemaTypes: pageFreshness.schemaTypes,
-  extraNodes: serviceCatalogNodes({
-    siteUrl,
-    route: pageFreshness.route,
-    catalogName: 'AI implementation services',
-    services,
-  }),
+  extraNodes: [
+    ...serviceCatalogNodes({
+      siteUrl,
+      route: pageFreshness.route,
+      catalogName: 'AI implementation services',
+      services,
+    }),
+    ...faqPageNodes({ siteUrl, route: pageFreshness.route, faqs }),
+  ],
 });
 
 const engagementSteps = [
@@ -108,6 +133,7 @@ const cmdkSections = [
   { label: 'Work', href: '#services', desc: 'Workflow automation, internal tools, and adoption.', badge: 'SERVICES' },
   { label: 'Delivery', href: '#engagement', desc: 'Map, pilot, harden, and hand off.', badge: 'PROCESS' },
   { label: 'Proof', href: '#proof', desc: 'The public platform and inspectable delivery record.', badge: 'EVIDENCE' },
+  { label: 'Questions', href: '#ai-faq', desc: 'Delivery, data boundaries, risk, and first-project scope.', badge: 'FAQ' },
   { label: 'Start', href: '#ai-contact', desc: 'Bring one workflow to discuss.', badge: 'CONTACT' },
 ] as const;
 ---
@@ -150,7 +176,7 @@ const cmdkSections = [
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">01 / Work</div>
           <h2 class="aisvc-h2">From operational friction to working software.</h2>
-          <p>AI is useful when it shortens a real process, reduces a real risk, or gives a team a tool it will keep using.</p>
+          <p>AI earns its place when it shortens a real process, removes a real risk, or hands a team a tool it keeps using. These three offers cover the work I take on: automating handoffs, building the missing internal tool, and rolling AI out under control.</p>
         </header>
         <div class="aisvc-offer-list">
           {services.map((service, index) => (
@@ -175,7 +201,7 @@ const cmdkSections = [
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">02 / Delivery</div>
           <h2 class="aisvc-h2">Start with one workflow. Leave with a system.</h2>
-          <p>The pilot proves the value; the delivery work makes it safe to operate after the demo is over.</p>
+          <p>Every engagement starts with one workflow and ends with a system your team runs without me. The pilot proves the value in a fixed scope; the hardening and hand-off work make it safe to operate long after the demo is over.</p>
         </header>
         <ol class="aisvc-process-list" role="list">
           {engagementSteps.map((item) => (
@@ -195,7 +221,7 @@ const cmdkSections = [
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">03 / Proof</div>
           <h2 class="aisvc-h2">Judge the offer by what is already operating.</h2>
-          <p>The public work shows the delivery range; Parker AI shows the consulting model as a live production system.</p>
+          <p>Judge the offer by what is already running, not by promises. The public projects show the delivery range across Windows, web, Android, and browser platforms, and Parker AI runs the whole consulting model — offer, intake, and security posture — as a live production system.</p>
         </header>
         <div class="aisvc-proof-grid">
           <article class="aisvc-case">
@@ -216,6 +242,24 @@ const cmdkSections = [
             ))}
           </dl>
         </div>
+      </div>
+    </section>
+
+    <section class="aisvc-section" id="ai-faq">
+      <div class="si">
+        <header class="aisvc-section-head">
+          <div class="aisvc-eyebrow">04 / Questions</div>
+          <h2 class="aisvc-h2">The questions clients ask before starting.</h2>
+          <p>Straight answers on what you get, where your data goes, how mistakes are contained, and how small a first project can be — the four things that decide whether AI belongs in the work at all.</p>
+        </header>
+        <dl class="aisvc-faq-list">
+          {faqs.map((faq) => (
+            <div class="aisvc-faq">
+              <dt>{faq.q}</dt>
+              <dd>{faq.a}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
 
@@ -289,6 +333,10 @@ const cmdkSections = [
   .aisvc-proof-list dt strong{color:var(--pur);font-family:var(--mono);font-size:24px;font-weight:500;line-height:1}
   .aisvc-proof-list dt span{color:var(--t3);font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase}
   .aisvc-proof-list dd{margin:0;color:var(--t2);font-size:14px;line-height:1.6}
+  .aisvc-faq-list{max-width:1100px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
+  .aisvc-faq{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;padding:24px 0;border-bottom:1px solid var(--border-soft)}
+  .aisvc-faq dt{margin:0;color:var(--t1);font-size:18px;font-weight:600;line-height:1.32;letter-spacing:-.01em}
+  .aisvc-faq dd{margin:0;color:var(--t2);font-size:14px;line-height:1.65}
   .aisvc-contact{padding:clamp(70px,8vw,108px) clamp(20px,5vw,72px);border-top:1px solid var(--border-strong)}
   .aisvc-contact-grid{display:grid;grid-template-columns:140px minmax(0,720px);gap:30px}
   .aisvc-contact h2{max-width:15ch;margin:0;color:var(--t1);font-size:clamp(34px,4.6vw,54px);line-height:1;letter-spacing:-.045em}
@@ -326,6 +374,8 @@ const cmdkSections = [
     .aisvc-proof-grid{grid-template-columns:1fr;gap:28px}
     .aisvc-case{padding:24px 22px}
     .aisvc-proof-list>div{grid-template-columns:120px minmax(0,1fr);gap:18px}
+    .aisvc-faq-list{margin-top:34px}
+    .aisvc-faq{grid-template-columns:1fr;gap:8px;padding:20px 0}
     .aisvc-contact-grid{grid-template-columns:1fr;gap:14px}
     .aisvc-contact h2{font-size:38px}
   }

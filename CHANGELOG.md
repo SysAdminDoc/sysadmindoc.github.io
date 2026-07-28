@@ -6,6 +6,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- Added a visible FAQ plus `FAQPage` structured data to `/ai/` and
+  `/healthcare-it/`, derived from the same question/answer arrays that render on
+  the page so answer engines cite exactly what a visitor reads. Section intros
+  now lead answer-first. The schema audit validates every published Question and
+  acceptedAnswer.
+
 - Added a post-build raster-integrity gate (`scripts/audit-og-cards.mjs`, wired
   into `build:ci`) that reads the rendered 1200×630 social cards from `dist/` and
   fails on wrong dimensions, blank/near-uniform paint, a missing brand palette,

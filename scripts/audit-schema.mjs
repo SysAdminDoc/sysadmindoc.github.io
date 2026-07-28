@@ -43,11 +43,11 @@ const representativeRoutes = new Map([
     checks: checkReviewedInteriorRoute,
   }],
   ['/healthcare-it/', {
-    types: ['WebSite', 'Person', 'AboutPage', 'WebPage'],
-    checks: checkReviewedInteriorRoute,
+    types: ['WebSite', 'Person', 'AboutPage', 'WebPage', 'FAQPage'],
+    checks: checkFaqTrackRoute,
   }],
   ['/ai/', {
-    types: ['WebSite', 'Person', 'AboutPage', 'WebPage', 'OfferCatalog', 'Service'],
+    types: ['WebSite', 'Person', 'AboutPage', 'WebPage', 'OfferCatalog', 'Service', 'FAQPage'],
     checks: checkServicesTrackRoute,
   }],
   ['/releases/', {
@@ -198,6 +198,7 @@ function checkLanguageRoute(nodes, route) {
 // can read, with every offer resolving to a Service provided by the site owner.
 function checkServicesTrackRoute(nodes, route) {
   checkReviewedInteriorRoute(nodes, route);
+  checkFaqNodes(nodes, route);
   const catalog = requireType(nodes, 'OfferCatalog', route);
   if (catalog['@id'] !== `${siteUrl}${route}#services`) fail(`${route} OfferCatalog @id drifted`);
   if (catalog.provider?.['@id'] !== personId) fail(`${route} OfferCatalog provider must reference ${personId}`);
@@ -224,6 +225,31 @@ function checkServicesTrackRoute(nodes, route) {
     }
     if (!service.areaServed) fail(`${route} Service ${service['@id']} is missing areaServed`);
   }
+}
+
+// A published FAQ must expose every visible question as a Question node with a
+// non-empty acceptedAnswer, so an answer engine can cite the same Q&A a visitor
+// reads.
+function checkFaqNodes(nodes, route) {
+  const faq = requireType(nodes, 'FAQPage', route);
+  if (faq['@id'] !== `${siteUrl}${route}#faq`) fail(`${route} FAQPage @id drifted`);
+  const questions = Array.isArray(faq.mainEntity) ? faq.mainEntity : [];
+  if (questions.length === 0) fail(`${route} FAQPage has no questions`);
+  for (const [index, question] of questions.entries()) {
+    if (question?.['@type'] !== 'Question') fail(`${route} FAQPage item ${index + 1} must be a Question`);
+    if (!question.name || typeof question.name !== 'string') {
+      fail(`${route} FAQPage question ${index + 1} is missing a name`);
+    }
+    const answer = question.acceptedAnswer;
+    if (answer?.['@type'] !== 'Answer' || !answer.text || typeof answer.text !== 'string') {
+      fail(`${route} FAQPage question ${index + 1} is missing an acceptedAnswer with text`);
+    }
+  }
+}
+
+function checkFaqTrackRoute(nodes, route) {
+  checkReviewedInteriorRoute(nodes, route);
+  checkFaqNodes(nodes, route);
 }
 
 function checkReviewedInteriorRoute(nodes, route) {

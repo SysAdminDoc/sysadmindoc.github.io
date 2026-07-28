@@ -17,13 +17,18 @@ test('the /ai/ services track publishes its offer list as structured data', asyn
   assert.match(source, /serviceCatalogNodes/, 'ai.astro should build the offer catalog');
   assert.match(
     source,
-    /extraNodes:\s*serviceCatalogNodes\(\{/s,
+    /extraNodes:\s*\[\s*\.\.\.serviceCatalogNodes\(\{/s,
     'the offer catalog should ride the page JSON-LD graph, not a second script block',
   );
   assert.match(
     source,
     /serviceCatalogNodes\(\{[^}]*services,/s,
     'the catalog must be derived from the rendered `services` array, not a duplicate list',
+  );
+  assert.match(
+    source,
+    /\.\.\.faqPageNodes\(\{\s*siteUrl,\s*route:\s*pageFreshness\.route,\s*faqs\s*\}\)/s,
+    'the FAQ must be published in the same JSON-LD graph, derived from the rendered `faqs` array',
   );
 });
 
@@ -109,4 +114,34 @@ test('serviceCatalogNodes emits one Service per offer with resolvable ids', asyn
     assert.ok(service.description);
     assert.ok(service.areaServed);
   }
+});
+
+test('faqPageNodes emits one FAQPage whose Questions mirror the source array', async () => {
+  const { faqPageNodes } = await import('../src/data/page-freshness.ts');
+  const faqs = [
+    { q: 'What do you deliver?', a: 'A working system.' },
+    { q: 'Where does data go?', a: 'Wherever you decide.' },
+  ];
+  const nodes = faqPageNodes({ siteUrl: 'https://example.test', route: '/ai/', faqs });
+
+  assert.equal(nodes.length, 1);
+  const faqPage = nodes[0];
+  assert.equal(faqPage['@type'], 'FAQPage');
+  assert.equal(faqPage['@id'], 'https://example.test/ai/#faq');
+  const questions = /** @type {Array<Record<string, any>>} */ (faqPage.mainEntity);
+  assert.equal(questions.length, faqs.length);
+  questions.forEach((question, index) => {
+    assert.equal(question['@type'], 'Question');
+    assert.equal(question.name, faqs[index].q);
+    assert.equal(question.acceptedAnswer['@type'], 'Answer');
+    assert.equal(question.acceptedAnswer.text, faqs[index].a);
+  });
+});
+
+test('the schema audit requires a validated FAQPage on the service tracks', async () => {
+  const audit = await fs.readFile(path.join(root, 'scripts', 'audit-schema.mjs'), 'utf8');
+  assert.match(audit, /checkFaqNodes/);
+  assert.match(audit, /'\/healthcare-it\/',\s*\{\s*types:\s*\[[^\]]*'FAQPage'/s);
+  assert.match(audit, /'\/ai\/',\s*\{\s*types:\s*\[[^\]]*'FAQPage'/s);
+  assert.match(audit, /FAQPage question \$\{index \+ 1\} is missing an acceptedAnswer/);
 });
