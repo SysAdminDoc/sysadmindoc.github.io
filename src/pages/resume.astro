@@ -6,14 +6,18 @@ import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import {
+  buildCareerProof,
   careerEducation,
   careerLanes,
   careerProfile,
-  careerProof,
   careerRoles,
   careerSkills,
   consultingHighlights,
 } from '../data/career';
+import { catalog, liveApps } from '../data/portfolio';
+
+// Derived from the live catalog so the résumé cannot drift from the hero.
+const careerProof = buildCareerProof(catalog.length, liveApps.length);
 
 const title = 'Resume - Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
