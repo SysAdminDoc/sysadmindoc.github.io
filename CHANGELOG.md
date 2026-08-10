@@ -1641,3 +1641,24 @@ Data layer
 - 10 site improvements: SEO, performance, accessibility, UX
 - Fixed: Fix stale fallback values missed in update
 - Changed: Update portfolio: 108 → 134+ repos, add 17 new projects, remove 5 deleted
+
+## Roadmap archive — 2026-08-10 — ROADMAP.md
+
+<details>
+<summary>Original roadmap snapshot</summary>
+
+```markdown
+# Portfolio Roadmap
+
+Open work only. Completed work is recorded in git history and CHANGELOG.md.
+Blocked items are tracked in Roadmap_Blocked.md.
+
+Current version: v0.39.0
+Last normalized: 2026-07-28
+Last researched: 2026-07-27 (RESEARCH.md)
+
+No open actionable items. Research-driven work from the 2026-07-27 pass is
+complete; remaining candidates are tracked in Roadmap_Blocked.md.
+```
+
+</details>
