@@ -17,13 +17,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: Submitting the form on the live site with JS and without JS delivers the lead to the owner with no third-party request anywhere in the flow; CSP/bundle/csp:audit gates stay green; spam probes are dropped by honeypot/ALTCHA; rate limit returns 429 under abuse.
   Complexity: L
 
-- [ ] P1 — Restore the cache headers lost in the Pages→VPS migration
-  Why: `endpoint-headers.ts` declares `public, max-age=86400` for generated images, but static output drops endpoint headers and the internal Caddyfile's cache matcher covers only 12 machine endpoints — OG PNGs and hashed `/_assets/*` (where `immutable` is free) ship with no Cache-Control.
-  Evidence: `src/data/endpoint-headers.ts:8`; `deploy/vps/Caddyfile` `@cache600` matcher list; live header probe 2026-08-20 (no Cache-Control on `/`).
-  Touches: `deploy/vps/Caddyfile` (add `/og.png`, `/og/*` → max-age=86400; `/_assets/*` → `public, max-age=31536000, immutable`; decide an explicit HTML policy, e.g. `max-age=0, must-revalidate`), `scripts/smoke-live-site.mjs` (assert the new header contract), `test/endpoint-header-contract.test.mjs`.
-  Acceptance: Live probes show the declared Cache-Control on OG images, hashed assets, and HTML; `smoke:live` gates all three classes.
-  Complexity: S
-
 - [ ] P1 — Bring /healthcare-it/ conversion parity with /ai/ and add data-boundary trust language
   Why: The two pages that exist to convert are asymmetric — `/ai/` has two primary prefilled-mailto CTAs, `/healthcare-it/` one secondary-styled anchor to `/#connect`; and healthcare buyers now run formal AI-vendor risk reviews the page never pre-answers (BAA willingness, PHI boundaries, training-data use).
   Evidence: `src/pages/healthcare-it.astro:95` vs `src/pages/ai.astro:164,273`; HSCC Third-Party AI Risk guide (2026-04) and Censinet checklist in RESEARCH.md; Fisher Phillips warning against overstated compliance claims.

@@ -288,6 +288,44 @@ async function checkNotFoundStatus(baseUrl, summary) {
   summary.push('missing path: HTTP 404 with the 404 document');
 }
 
+async function checkCachePolicy(baseUrl, summary, homepageHtml) {
+  const hashedAsset = findFirstAssetPath(
+    homepageHtml,
+    /href=["']([^"']*\/_assets\/[^"']+\.css(?:\?[^"']*)?)["']/i,
+    'built Astro CSS asset',
+  );
+  const expectations = [
+    { pathname: '/', label: 'HTML', pattern: /max-age=0/i, accept: 'text/html,*/*' },
+    { pathname: '/og.png', label: 'social card', pattern: /max-age=86400/i, accept: 'image/png,*/*' },
+    {
+      pathname: hashedAsset,
+      label: 'hashed asset',
+      pattern: /max-age=31536000/i,
+      accept: 'text/css,*/*',
+    },
+  ];
+
+  const problems = [];
+  for (const expectation of expectations) {
+    const response = await fetch(siteUrl(expectation.pathname, baseUrl), {
+      headers: { Accept: expectation.accept, 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
+      redirect: 'follow',
+    });
+    const value = response.headers.get('cache-control') ?? '';
+    if (!expectation.pattern.test(value)) {
+      problems.push(`${expectation.label} (${expectation.pathname}) sent "${value || '(missing)'}"`);
+    }
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `Edge cache policy missing/incorrect: ${problems.join('; ')}. ` +
+        'The internal Caddyfile owns these (see deploy/vps/Caddyfile).',
+    );
+  }
+  summary.push('cache policy: HTML revalidates, social cards 1d, hashed assets immutable');
+}
+
 function findFirstAssetPath(html, pattern, label) {
   const match = html.match(pattern);
   if (!match?.[1]) throw new Error(`Homepage did not reference a ${label}.`);
@@ -424,6 +462,12 @@ async function checkLiveArtifacts(baseUrl, expected) {
   if (!/<sitemapindex\b/i.test(sitemap.body)) throw new Error('/sitemap-index.xml did not return a sitemap index document.');
   summary.push('sitemap index: 200');
   summary.push('live cache-control: max-age=600');
+
+  // The Pages -> VPS move dropped every Cache-Control the old host set by
+  // default, and a static build cannot emit them (Astro discards endpoint
+  // Response headers), so the edge is the only place these live. Assert each
+  // class so a Caddyfile edit cannot silently drop them again.
+  await checkCachePolicy(baseUrl, summary, homepage.body);
 
   // Deployed brand fingerprints: the current MP Technical Service Bureau identity
   // must actually be serving, and the social card must be a fully painted

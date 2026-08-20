@@ -38,6 +38,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   site serving. The previous tree is kept for rollback, and the script accepts
   an explicit SSH key and known_hosts file for unattended runs.
 
+- Restored the Cache-Control headers lost in the move from GitHub Pages, which
+  had left social cards, content-hashed assets, and HTML with no expiry at all
+  and subject to browser heuristics. Hashed `/_assets/` files are now immutable
+  for a year, generated social cards last a day, and HTML revalidates so a
+  cached copy cannot pin a visitor to an old build. `smoke:live` asserts each
+  class against the live origin.
+
 - `smoke:live` now asserts that a missing path returns HTTP 404 with the 404
   document. Nothing in the suite checked a response status before, so an error
   route that started answering 200 (a soft 404, the usual failure mode of a
