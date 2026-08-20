@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.41.4] - 2026-08-20
+
+### Docs
+
+- Corrected the tracked edge Caddy snippet so its CSP header ownership note
+  matches the deployed internal response header.
+
 ## [v0.41.3] - 2026-08-20
 
 ### Fixed
