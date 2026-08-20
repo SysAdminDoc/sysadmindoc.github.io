@@ -80,3 +80,11 @@ test('CSP reporting stays first-party, bounded, and live-smoke gated', async () 
   assert.match(smoke, /Reporting-Endpoints/);
   assert.match(smoke, /report-to\\s\+csp-endpoint/);
 });
+
+test('deploy extracts CSP content without treating policy apostrophes as delimiters', async () => {
+  const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+
+  assert.ok(deploy.includes('.match(/<meta\\b[^>]*>/gi)'));
+  assert.ok(deploy.includes(".match(/\\bcontent\\s*=\\s*([\"'])([\\s\\S]*?)\\1/i)"));
+  assert.ok(deploy.includes('decodeHtmlAttribute(contentMatch[2])'));
+});

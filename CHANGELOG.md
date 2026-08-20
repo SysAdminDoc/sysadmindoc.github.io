@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.41.1] - 2026-08-20
+
+### Fixed
+
+- Corrected deployment CSP extraction so apostrophes inside the policy do not
+  terminate the HTML attribute match.
+
 ## [v0.41.0] - 2026-08-20
 
 ### Security
