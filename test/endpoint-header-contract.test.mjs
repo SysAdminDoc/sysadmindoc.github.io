@@ -18,8 +18,21 @@ test('source header intents stay separate from the deployed edge contract', asyn
   assert.doesNotMatch(audit, /generatedEndpointCacheControl|generatedImageCacheControl/);
   assert.doesNotMatch(audit, /\bcontentType:|\bcacheControl:/);
 
-  assert.match(helpers, /VPS edge Caddy owns\s+ \* the deployed header contract/);
+  // The source constants are intents only — a static build drops endpoint
+  // Response headers — so the file must keep pointing at Caddy as the owner of
+  // the deployed contract, and name the Caddyfile that has to stay in step.
+  assert.match(helpers, /deployed contract\s+ \* lives in Caddy/);
+  assert.match(helpers, /deploy\/vps\/Caddyfile/);
   assert.match(liveSmoke, /summary\.push\('live cache-control: max-age=600'\)/);
+
+  // Cache-Control for HTML, social cards, and hashed assets was lost in the move
+  // off GitHub Pages and only exists at the edge now, so the smoke must assert
+  // each class rather than trusting the Caddyfile to stay correct.
+  assert.match(liveSmoke, /async function checkCachePolicy\(/);
+  assert.match(liveSmoke, /await checkCachePolicy\(baseUrl, summary, homepage\.body\)/);
+  for (const directive of ['max-age=0', 'max-age=86400', 'max-age=31536000']) {
+    assert.match(liveSmoke, new RegExp(directive.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
 });
 
 test('live smoke verifies the edge security headers the VPS Caddy injects', async () => {
