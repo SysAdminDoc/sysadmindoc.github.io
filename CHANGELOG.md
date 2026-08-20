@@ -22,6 +22,14 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   container with every edge header and the machine-endpoint cache contract
   intact. The shared edge proxy was already current.
 
+### Added
+
+- Covered the runtime scripts that had no tests: relative-time formatting,
+  screenshots category filtering (including the dormant case where every live
+  app shares one category, so the filter UI never renders), the command-palette
+  dataset endpoint's shape and size budget, and a browser check that no reveal
+  target is left invisible under `prefers-reduced-motion`.
+
 ### Changed
 
 - Upgraded Astro to 7.2.4 and turned on its incremental build, which reuses

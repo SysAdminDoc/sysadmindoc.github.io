@@ -33,13 +33,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: `/colophon/` renders a per-live-app provenance table from generated data plus the disclosure notes, passes all route audits, and is linked from the footer and `/ai/` proof block.
   Complexity: M
 
-- [ ] P2 — Cover the untested runtime scripts and the cmdk-data endpoint
-  Why: `scroll-reveal.js`, `relative-time.js`, and `screenshots-page.js` have zero test references, and `/cmdk-data.js` — the largest payload, loaded on every page — is referenced by one test; regressions there ship silently.
-  Evidence: Recon cross-reference of `public/scripts/*` and endpoints vs `test/`/`tests/` (RESEARCH.md "Architecture Assessment"); `src/pages/cmdk-data.js.ts`.
-  Touches: new `test/*.test.mjs` for relative-time formatting and cmdk-data shape/size budget; a Playwright assertion for scroll-reveal (reduced-motion honored) and screenshots-page filtering; also tie `public/offline.html`'s hardcoded style hashes to `Base.astro`'s in a test (drift trap).
-  Acceptance: Each named script/endpoint has at least one meaningful assertion; offline-hash drift fails a test; suite time stays reasonable.
-  Complexity: M
-
 ### P3
 
 - [ ] P3 — Publish a deliberate AI-crawler policy in robots.txt
