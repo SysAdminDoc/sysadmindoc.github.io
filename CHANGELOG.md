@@ -33,6 +33,14 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- Repaired the README cache, which had collapsed to 18 of 193 repositories and
+  was publishing a coverage warning on `/status/`. The cause was a split-brain
+  cache: `_etags.json` kept an ETag for every README while `_readmes.json` had
+  lost the bodies, so each refresh sent a conditional request, got "not
+  modified", and skipped the repo — leaving 42 READMEs permanently
+  unrecoverable until someone edited them upstream. The fetcher now drops an
+  ETag whose cached body is missing and refetches unconditionally, and reports a
+  `recovered` count so a recurrence is visible. Coverage is back to 193/193.
 - `/status/` now recalculates its data ages in the browser against the
   build-stamped timestamps instead of reporting the ages frozen at build time. A
   deployment that stops being rebuilt used to keep claiming its data was fresh;
