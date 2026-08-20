@@ -2,6 +2,7 @@ import { categoryLabels } from './categories';
 import { githubRepoUrl } from './github';
 import { buildSkillsWithMetrics } from './skill-metrics.mjs';
 import sanitizeHtml from 'sanitize-html';
+import { TEXT_ONLY_SANITIZE } from './feed-sanitize';
 import {
   catalog as localCatalog,
   featured as localFeatured,
@@ -129,11 +130,7 @@ function mapCategory(value?: string): Lang {
 }
 
 function cleanDescription(value?: string | null) {
-  return sanitizeHtml(String(value ?? '').trim(), {
-    allowedTags: [],
-    allowedAttributes: {},
-    disallowedTagsMode: 'discard',
-  }).replace(/\s+/g, ' ').trim();
+  return sanitizeHtml(String(value ?? '').trim(), TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
 }
 
 function primaryAction(project: ProfileProject) {

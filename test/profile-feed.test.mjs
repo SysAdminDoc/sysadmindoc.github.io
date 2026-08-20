@@ -63,8 +63,11 @@ test('portfolio adapter sanitizes feed descriptions before rendered set:html usa
 
   assert.match(source, /import sanitizeHtml from 'sanitize-html'/);
   assert.match(source, /function cleanDescription\(value\?: string \| null\)/);
-  assert.match(source, /allowedTags:\s*\[\]/);
-  assert.match(source, /allowedAttributes:\s*\{\}/);
+  // The strip-everything options moved into src/data/feed-sanitize.ts so the
+  // feed endpoints and this adapter cannot drift apart; assert the shared
+  // constant is used and let feed-sanitize.test.mjs prove it strips markup.
+  assert.match(source, /TEXT_ONLY_SANITIZE/);
+  assert.match(source, /sanitizeHtml\(String\(value \?\? ''\)\.trim\(\), TEXT_ONLY_SANITIZE\)/);
   assert.doesNotMatch(source, /return String\(value \?\? ''\)\.trim\(\);/);
 });
 

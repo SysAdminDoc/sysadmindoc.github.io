@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import sanitizeHtml from 'sanitize-html';
+import { FEED_CONTENT_SANITIZE } from '../data/feed-sanitize';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
@@ -55,7 +56,7 @@ export async function GET(context: APIContext) {
       const description = cleanDesc(item.desc);
       const contentHtml = sanitizeHtml(
         `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on GitHub</a></p>`,
-        { allowedTags: ['p', 'a', 'strong', 'em', 'code'], allowedAttributes: { a: ['href'] } },
+        FEED_CONTENT_SANITIZE,
       );
       return `  <entry>
     <title>${escapeXml(item.title)}</title>

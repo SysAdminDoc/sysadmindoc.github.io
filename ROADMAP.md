@@ -19,13 +19,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A daily-refreshed GoAccess report over anonymized logs is reachable by the owner; no page payload, script, or cookie changes on the public site.
   Complexity: M
 
-- [ ] P2 — Harden the sanitize-html call sites and settle its maintenance story
-  Why: The upstream GitHub repo is archived, but patches still ship to npm (2.17.7 landed 2026-08-13, five months after the archive), so the package is neither healthy nor abandoned. It sits on the feed/README sanitization path and deserves a tightened allowlist plus a decision recorded once, rather than a re-investigation every audit.
-  Evidence: `gh api repos/apostrophecms/sanitize-html` → `archived: true`, `pushed_at: 2026-02-26`; `npm view sanitize-html time` → `2.17.7: 2026-08-13`; usage in `src/pages/atom.xml.ts` and README excerpt sanitization; RESEARCH.md security section (corrected 2026-08-20).
-  Touches: enumerate every call site and pin build-time-only usage in a test; tighten `allowedSchemes` and URI-carrying attributes (`href`, `src`, `action`, `formaction`, `poster`, `data`); establish who publishes the npm releases now; record the keep-or-migrate decision (DOMPurify+jsdom is the migration target if it comes to that).
-  Acceptance: Call sites enumerated and asserted build-time-only; tightened allowlist ships with no output diff on current feed data; the maintenance decision is written down with its evidence so the next audit doesn't redo it.
-  Complexity: M
-
 - [ ] P2 — AI-build colophon page (Willison pattern) scaffolded from public data
   Why: For a portfolio selling AI implementation, a colophon showing how the 22 live apps were actually built (commits, cadence, tooling, AI assistance disclosed) is proof-of-competence, marketing, and an honesty signal in one page — the strongest differentiator surfaced by the landscape research that isn't blocked on long-form human writing.
   Evidence: https://tools.simonwillison.net/colophon and https://simonwillison.net/2025/Mar/13/tools-colophon/; hiring-signal sources in RESEARCH.md (reviewers inspect commit history to distinguish real building from AI output).
