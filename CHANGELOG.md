@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.40.0] - 2026-08-20
+
 ### Security
 
 - Cleared the production dependency tree of high-severity advisories and
