@@ -72,6 +72,7 @@ test('CSP reporting stays first-party, bounded, and live-smoke gated', async () 
   assert.match(internalCaddy, /Content-Security-Policy "\{\$CSP_POLICY\}"/);
   assert.match(compose, /CSP_POLICY: \$\{CSP_POLICY:\?/);
   assert.match(compose, /csp-report-server\.mjs/);
+  assert.match(compose, /test: \["CMD", "wget", "-q", "-O", "\/dev\/null", "http:\/\/127\.0\.0\.1:8080\/healthz"\]/);
   assert.match(reporter, /maxBodyBytes: 64 \* 1024/);
   assert.match(reporter, /maxLogBytes: 5 \* 1024 \* 1024/);
   assert.match(reporter, /maxRequestsPerMinute: 120/);

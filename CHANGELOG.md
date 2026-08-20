@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.41.3] - 2026-08-20
+
+### Fixed
+
+- Switched the sidecar health probe to the image's bounded `wget` client so
+  Docker reports the service healthy without leaving a fetch process waiting.
+
 ## [v0.41.2] - 2026-08-20
 
 ### Fixed
