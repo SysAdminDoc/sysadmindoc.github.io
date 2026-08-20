@@ -6,6 +6,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Security
 
+- Cleared the production dependency tree of high-severity advisories and
+  unblocked `deploy:preflight`, which had been failing its strict dependency
+  gate: `js-yaml` moves to 4.3.1 (quadratic CPU consumption in `!!omap`
+  resolution), `nanoid` to 3.3.18 (custom generators could loop forever on a
+  zero size), and the pinned `vite` override to 8.2.2. `npm audit --omit=dev`
+  now reports no vulnerabilities. Also took `sanitize-html` 2.17.7.
 - Bumped satori to 0.29.1, which hardens its SSRF guard against trailing dots,
   redirects, and DNS rebinding. The rendered social cards are byte-identical
   before and after, so this is a pure security patch.

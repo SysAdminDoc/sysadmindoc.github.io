@@ -68,11 +68,11 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: Build and full `build:ci` pass on 7.2.x; incremental build measured and either adopted (with timing noted in CLAUDE.md) or declined with the measured reason.
   Complexity: S
 
-- [ ] P2 — Contain and plan the exit from archived sanitize-html
-  Why: Upstream was archived 2026-02-26; installed 2.17.6 has all 2026 CVE fixes but will never get another patch, and it sits on the feed/README sanitization path.
-  Evidence: https://github.com/apostrophecms/sanitize-html (read-only); usage in `src/pages/atom.xml.ts` and README excerpt sanitization; RESEARCH.md security section.
-  Touches: audit every call site to confirm build-time-only over reviewed input; tighten `allowedSchemes` and URI-carrying attributes now; add a `deps:audit` note marking the package frozen-by-policy; document the DOMPurify+jsdom migration sketch in this item for when it's scheduled.
-  Acceptance: Call sites enumerated and confirmed build-time-only in a test; tightened allowlist ships without output diffs on current data; `deps:audit` documents the hold so strict mode doesn't nag.
+- [ ] P2 — Harden the sanitize-html call sites and settle its maintenance story
+  Why: The upstream GitHub repo is archived, but patches still ship to npm (2.17.7 landed 2026-08-13, five months after the archive), so the package is neither healthy nor abandoned. It sits on the feed/README sanitization path and deserves a tightened allowlist plus a decision recorded once, rather than a re-investigation every audit.
+  Evidence: `gh api repos/apostrophecms/sanitize-html` → `archived: true`, `pushed_at: 2026-02-26`; `npm view sanitize-html time` → `2.17.7: 2026-08-13`; usage in `src/pages/atom.xml.ts` and README excerpt sanitization; RESEARCH.md security section (corrected 2026-08-20).
+  Touches: enumerate every call site and pin build-time-only usage in a test; tighten `allowedSchemes` and URI-carrying attributes (`href`, `src`, `action`, `formaction`, `poster`, `data`); establish who publishes the npm releases now; record the keep-or-migrate decision (DOMPurify+jsdom is the migration target if it comes to that).
+  Acceptance: Call sites enumerated and asserted build-time-only; tightened allowlist ships with no output diff on current feed data; the maintenance decision is written down with its evidence so the next audit doesn't redo it.
   Complexity: M
 
 - [ ] P2 — AI-build colophon page (Willison pattern) scaffolded from public data
