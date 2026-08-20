@@ -15,13 +15,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A scheduled run refreshes caches and redeploys unattended when preflight passes; a failed run leaves the last good deploy in place and records why; live `status.json` `fetchedAt` stays under 36h across a week without manual action.
   Complexity: M
 
-- [ ] P0 — Compute /status/ staleness at view time, not build time
-  Why: `status.astro` bakes `ageHours`/`stale` tones at build, so the live page reported "stale: false" while 23 days old — the trust surface lies exactly when it matters.
-  Evidence: `src/pages/status.astro:75,110` (build-time `new Date()` and frozen `generatedData.ageHours`); live `status.json` observed 2026-08-20 with `ageHours: 11.07`.
-  Touches: `src/pages/status.astro`, a small `public/scripts/` view-time age updater (CSP-clean, SafeDOM), `src/pages/status.json.ts` (document that consumers must derive age from `fetchedAt`/`generatedAt`, or add a `computedAt` field), `test/generated-data-trust.test.mjs`.
-  Acceptance: With JS, `/status/` age and stale tones reflect the viewer's clock against `fetchedAt` (build-time values remain the no-JS fallback and are labeled "as of build"); a Playwright check with a mocked old build shows the stale tone.
-  Complexity: S
-
 - [ ] P0 — Gate live response status codes in smoke:live
   Why: A live probe on 2026-08-20 confirmed missing paths correctly return HTTP 404 today, but nothing in the suite asserts any response status code — a Caddy `handle_errors` config regression to soft-404s (a known footgun in rewrite-based error handling) would ship silently and hurt crawlers.
   Evidence: Live probe `curl -sI https://portfolio.getparkerai.com/definitely-not-a-real-page/` → 404 (2026-08-20); `scripts/smoke-live-site.mjs` contains no status-code assertion for missing paths; `tests/playwright/state-coverage.spec.mjs:94` checks rendering only.

@@ -4,6 +4,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- `/status/` now recalculates its data ages in the browser against the
+  build-stamped timestamps instead of reporting the ages frozen at build time. A
+  deployment that stops being rebuilt used to keep claiming its data was fresh;
+  it now shows the real age, flips the affected signals to the attention tone,
+  and reveals a panel explaining that the deployment has gone stale. Without
+  JavaScript the build-time values still render, and the page says so.
+
 ## [v0.39.0] - 2026-07-28
 
 ### Added

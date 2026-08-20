@@ -159,6 +159,69 @@ test.describe('open navigation state coverage', () => {
   });
 });
 
+test.describe('status freshness state coverage', () => {
+  // A static page bakes its ages at build time, so a deployment nobody rebuilds
+  // keeps claiming it is fresh. These two cases pin the view-time recomputation:
+  // the same build reads healthy right after publish and stale months later.
+  async function prepareAtClock(page, path, now) {
+    await page.addInitScript((fixed) => {
+      const RealDate = Date;
+      class FixedDate extends RealDate {
+        constructor(...args) {
+          return args.length === 0 ? new RealDate(fixed) : new RealDate(...args);
+        }
+        static now() {
+          return fixed;
+        }
+      }
+      FixedDate.parse = RealDate.parse;
+      FixedDate.UTC = RealDate.UTC;
+      Object.setPrototypeOf(FixedDate, RealDate);
+      window.Date = FixedDate;
+    }, now);
+    await page.goto(path, { waitUntil: 'load' });
+    await page.locator('main').first().waitFor({ state: 'visible' });
+  }
+
+  function dataAgeCard(page) {
+    return page.locator('.status-card[data-freshness="age"]').first();
+  }
+
+  test('a build older than the freshness contract reports stale at view time', async ({ page }) => {
+    const card = dataAgeCard(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+
+    // Read the build-stamped timestamp, then revisit far past the 36h contract.
+    await page.goto('/status/', { waitUntil: 'load' });
+    const iso = await card.getAttribute('data-freshness-iso');
+    expect(iso, '/status/ must stamp the fetchedAt timestamp for view-time math').toBeTruthy();
+    const wayLater = Date.parse(iso) + 40 * 24 * 3600 * 1000;
+
+    await prepareAtClock(page, '/status/', wayLater);
+    await expect(card.locator('.status-dot')).toHaveClass(/status-dot-amber/);
+    await expect(card.locator('.status-value')).toHaveText(/\d+\.\dd|\d+\.\dmo/);
+    await expect(card.locator('.sr-only')).toHaveText('Needs attention');
+    await expect(page.locator('#status-stale-now')).toBeVisible();
+    await expectAxeClean(page, '#status-health');
+    await expectNoHorizontalOverflow(page);
+  });
+
+  test('a freshly published build reports healthy and hides the stale panel', async ({ page }) => {
+    const card = dataAgeCard(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+
+    await page.goto('/status/', { waitUntil: 'load' });
+    const iso = await card.getAttribute('data-freshness-iso');
+    const justAfter = Date.parse(iso) + 60 * 60 * 1000;
+
+    await prepareAtClock(page, '/status/', justAfter);
+    await expect(card.locator('.status-dot')).toHaveClass(/status-dot-green/);
+    await expect(card.locator('.status-value')).toHaveText('1.0h');
+    await expect(card.locator('.sr-only')).toHaveText('Healthy');
+    await expect(page.locator('#status-stale-now')).toBeHidden();
+  });
+});
+
 test.describe('empty catalog state coverage', () => {
   test('the no-results catalog state is calm, accessible, and reachable', async ({ page }) => {
     await page.setViewportSize({ width: 1365, height: 900 });
