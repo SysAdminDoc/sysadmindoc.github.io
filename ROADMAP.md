@@ -12,13 +12,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
 
 ### P2
 
-- [ ] P2 — AI-build colophon page (Willison pattern) scaffolded from public data
-  Why: For a portfolio selling AI implementation, a colophon showing how the 22 live apps were actually built (commits, cadence, tooling, AI assistance disclosed) is proof-of-competence, marketing, and an honesty signal in one page — the strongest differentiator surfaced by the landscape research that isn't blocked on long-form human writing.
-  Evidence: https://tools.simonwillison.net/colophon and https://simonwillison.net/2025/Mar/13/tools-colophon/; hiring-signal sources in RESEARCH.md (reviewers inspect commit history to distinguish real building from AI output).
-  Touches: `npm run scaffold:route -- colophon` + the registration surfaces it names, a build-time generator deriving per-app records from existing `_meta.json`/`_releases.json`/`_stats.json` (first/last commit, release count, stack), a short `aiAssistance` note field in `src/data/projects.ts` per live app (one factual sentence each, owner-reviewable), Pagefind/sitemap/OG registration, tests.
-  Acceptance: `/colophon/` renders a per-live-app provenance table from generated data plus the disclosure notes, passes all route audits, and is linked from the footer and `/ai/` proof block.
-  Complexity: M
-
 ### P3
 
 - [ ] P3 — Evaluate Astro native CSP against the hand-rolled meta-CSP pipeline
@@ -28,9 +21,10 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A documented decision with the emitted-policy diff attached; if adopted, the bespoke hash-generation path is removed with all CSP tests green; if declined, the reason is recorded so it isn't re-investigated.
   Complexity: M
 
-- [ ] P3 — First-party CSP report endpoint on the VPS (rides the intake handler)
-  Why: The Reporting API was parked because the static site had no report sink; the intake-form handler (P1) gives it one for near-zero marginal cost, turning silent CSP breakage in the field into a signal.
-  Evidence: Roadmap_Blocked.md P0 resolution note (2026-07-28) parking `Reporting-Endpoints`/`report-to`; the P1 intake endpoint above.
-  Touches: the P1 handler binary (accept `application/reports+json` on `/api/reports`, log-rotate to disk), edge `Reporting-Endpoints` header in `deploy/vps/caddy-block.txt`, CSP `report-to`/`report-uri` addition, `smoke:live` header assertion.
-  Acceptance: A deliberate CSP violation in a test page produces a stored report on the VPS; headers verified by `smoke:live`; no third-party involved.
-  Complexity: S (after P1 intake endpoint lands)
+- [ ] P3 — First-party CSP report endpoint on the VPS
+  Why: The Reporting API was parked in July because a static site had no report sink. The VPS removes that constraint, and CSP breakage in the field is currently invisible — the build-time audits prove the policy is well-formed, not that real browsers accept it.
+  Evidence: Roadmap_Blocked.md P0 resolution note (2026-07-28) parking `Reporting-Endpoints`/`report-to`; the site now runs its own origin behind an edge Caddy that can serve arbitrary headers.
+  Note (2026-08-20): this was written as riding on the P1 intake handler, which is now blocked on a notification channel. That dependency was never real — a report sink only appends to a rotated file and needs no delivery channel, so this can ship standalone.
+  Touches: a small handler accepting `application/reports+json` (or a Caddy route writing the body to a rotated log), `Reporting-Endpoints` in `deploy/vps/caddy-block.txt`, a `report-to` directive in the meta CSP, and a `smoke:live` assertion for the header.
+  Acceptance: A deliberate CSP violation produces a stored report on the VPS, the header is gated by `smoke:live`, and no third party is involved.
+  Complexity: S
