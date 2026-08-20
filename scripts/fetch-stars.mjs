@@ -329,8 +329,22 @@ async function main() {
   let releasesFetched = 0;
   let releasesFailed = 0;
   let releasesReused = 0;
+  let releasesRecovered = 0;
   for (const repo of topPushed) {
     const releaseUrl = `https://api.github.com/repos/${USER}/${repo.name}/releases?per_page=5`;
+    // Same cache-coherence rule as the README pass below: an ETag is only
+    // meaningful while the entries it described are still cached. If the
+    // releases cache lost this repo's rows but _etags.json kept its ETag, the
+    // conditional request answers 304, the "reuse" branch contributes nothing,
+    // and those releases disappear from the site until the repo publishes
+    // again. Dropping the stale ETag forces one unconditional refetch.
+    // A repo with genuinely no releases also has no cached rows, so it refetches
+    // each run; topPushed is a bounded slice, so that costs a few requests
+    // rather than risking silent data loss.
+    if (!existingReleasesByRepo.has(repo.name) && savedEtags[releaseUrl]) {
+      delete savedEtags[releaseUrl];
+      releasesRecovered += 1;
+    }
     try {
       const list = await fetchJsonConditional(
         releaseUrl,
@@ -375,7 +389,9 @@ async function main() {
       : existingReleases;
   writeJson(releasesPath, releasesOutput);
   console.log(
-    `Wrote ${releasesPath}: ${releasesOutput.length} releases from ${releasesFetched} refreshed, ${releasesReused} reused, ${releasesFailed} failed.`,
+    `Wrote ${releasesPath}: ${releasesOutput.length} releases from ${releasesFetched} refreshed, ${releasesReused} reused, ${releasesFailed} failed${
+      releasesRecovered > 0 ? `, ${releasesRecovered} recovered from stale ETags` : ''
+    }.`,
   );
 
   const repoNames = new Set(publicRepos.map((repo) => repo.name));
