@@ -42,13 +42,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A documented decision with the emitted-policy diff attached; if adopted, the bespoke hash-generation path is removed with all CSP tests green; if declined, the reason is recorded so it isn't re-investigated.
   Complexity: M
 
-- [ ] P3 — Small hygiene sweep: dead export, vestigial build step, LHCI decision
-  Why: `filterLabelByKey` has zero consumers; `scripts/fix-html-structure.mjs` is a self-described "Historical Astro 6 guard" still running every build; LHCI is advisory-only (all `warn`) sampling 2 of 16 routes while the a11y gate blocks — each is small, but all three are standing confusion for future agents.
-  Evidence: `src/data/catalog-render.ts:87`; `scripts/fix-html-structure.mjs` header comment; `lighthouserc.cjs` (12 warn-only assertions, 2 URLs).
-  Touches: delete the export (+ any type residue); either remove fix-html-structure with its test or re-comment it as a cheap permanent guard (decide once); either add 2–3 more LHCI routes and promote CWV assertions to `error`, or record in CLAUDE.md that LHCI is deliberately advisory; also give `public/offline.html` a dark `theme-color` alternate (`media="(prefers-color-scheme: dark)"`) so dark-mode users don't get a light flash on the offline fallback.
-  Acceptance: No unused export; the vestigial step is removed-or-justified in place; the LHCI stance is explicit in config comments or CLAUDE.md; offline.html declares both theme-color variants and `offline-fallback.test.mjs` stays green.
-  Complexity: S
-
 - [ ] P3 — First-party CSP report endpoint on the VPS (rides the intake handler)
   Why: The Reporting API was parked because the static site had no report sink; the intake-form handler (P1) gives it one for near-zero marginal cost, turning silent CSP breakage in the field into a signal.
   Evidence: Roadmap_Blocked.md P0 resolution note (2026-07-28) parking `Reporting-Endpoints`/`report-to`; the P1 intake endpoint above.
