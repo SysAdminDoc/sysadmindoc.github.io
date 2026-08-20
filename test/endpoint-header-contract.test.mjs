@@ -69,7 +69,7 @@ test('CSP reporting stays first-party, bounded, and live-smoke gated', async () 
 
   assert.match(edgeCaddy, /Reporting-Endpoints\s+"csp-endpoint=\\"https:\/\/portfolio\.getparkerai\.com\/csp-report\\""/);
   assert.match(internalCaddy, /reverse_proxy csp-reporter:8080/);
-  assert.match(internalCaddy, /Content-Security-Policy \{\$CSP_POLICY\}/);
+  assert.match(internalCaddy, /Content-Security-Policy "\{\$CSP_POLICY\}"/);
   assert.match(compose, /CSP_POLICY: \$\{CSP_POLICY:\?/);
   assert.match(compose, /csp-report-server\.mjs/);
   assert.match(reporter, /maxBodyBytes: 64 \* 1024/);
