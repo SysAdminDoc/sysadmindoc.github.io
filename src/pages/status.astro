@@ -98,17 +98,21 @@ const releaseProvenanceRows = [
   { label: 'Unknown', value: releaseProvenance.unknown, tone: releaseProvenance.unknown > 0 ? 'amber' : 'green' },
 ];
 
+// Ages are recomputed in the browser against the viewer's clock (see
+// public/scripts/status-freshness.js). Without JS the build-time values below
+// stand, which is why the page says so in .status-note: a static page cannot
+// know how long it has been sitting on the origin since it was built.
 const signals = [
   { label: 'Version', value: `v${version}`, tone: 'green' },
-  { label: 'Built', value: builtAt.slice(0, 10), tone: 'blue' },
+  { label: 'Built', value: builtAt.slice(0, 10), tone: 'blue', freshness: 'built', iso: builtAt },
   { label: 'Catalog', value: `${catalog.length} projects`, tone: 'blue' },
   { label: 'Live apps', value: `${liveApps.length}`, tone: 'green' },
   { label: 'Profile feed', value: feedActive ? 'Active' : 'Fallback', tone: feedActive ? 'green' : 'amber' },
   { label: 'Feed source', value: feedSource.length > 40 ? feedSource.slice(0, 37) + '...' : feedSource, tone: 'blue' },
   { label: 'Feed projects', value: `${profileFeedInfo.projectCount}`, tone: 'blue' },
   { label: 'Data mode', value: labelize(generatedData.mode), tone: dataTone },
-  { label: 'Data age', value: formatAge(generatedData.ageHours), tone: generatedData.stale ? 'amber' : 'green' },
-  { label: 'Profile cache', value: formatAge(generatedData.profileFeed.cachedAgeHours), tone: generatedData.profileFeed.stale ? 'amber' : 'green' },
+  { label: 'Data age', value: formatAge(generatedData.ageHours), tone: generatedData.stale ? 'amber' : 'green', freshness: 'age', iso: generatedData.fetchedAt, maxAge: generatedData.maxAgeHours },
+  { label: 'Profile cache', value: formatAge(generatedData.profileFeed.cachedAgeHours), tone: generatedData.profileFeed.stale ? 'amber' : 'green', freshness: 'age', iso: generatedData.profileFeed.cachedAt, maxAge: generatedData.maxAgeHours },
   { label: 'Stars coverage', value: `${formatPercent(generatedData.coverage.stars)} (${generatedData.coverage.starEntries})`, tone: generatedData.coverage.stars != null && generatedData.coverage.stars >= generatedData.coverage.threshold ? 'green' : 'amber' },
   { label: 'Metadata coverage', value: `${formatPercent(generatedData.coverage.metadata)} (${generatedData.coverage.metadataEntries})`, tone: generatedData.coverage.metadata != null && generatedData.coverage.metadata >= generatedData.coverage.threshold ? 'green' : 'amber' },
   { label: 'README coverage', value: `${formatPercent(generatedData.coverage.readmes)} (${generatedData.coverage.readmeEntries})`, tone: generatedData.coverage.readmes != null && generatedData.coverage.readmes >= generatedData.coverage.threshold ? 'green' : 'amber' },
@@ -153,7 +157,12 @@ const cmdkSections = [
 
       <div class="status-grid rv">
         {signals.map((s) => (
-          <div class="status-card">
+          <div
+            class="status-card"
+            data-freshness={s.freshness}
+            data-freshness-iso={s.iso}
+            data-freshness-max={s.maxAge != null ? String(s.maxAge) : undefined}
+          >
             <div class={`status-dot status-dot-${s.tone}`} aria-hidden="true"></div>
             <div class="status-card-body">
               <div class="status-label">{s.label}</div>
@@ -188,12 +197,30 @@ const cmdkSections = [
         </div>
       )}
 
-      <p class="status-note rv">Generated at build time; no runtime analytics or uptime service.</p>
+      {/* Revealed by status-freshness.js when the deployed build has aged past
+          the freshness contract since it was published. A build-time warning
+          cannot cover this case: at build time the data was fresh. */}
+      <div class="status-warning-panel" id="status-stale-now" role="status" aria-label="Deployment freshness warning" hidden>
+        <div class="status-warning-title">This deployment has gone stale</div>
+        <ul>
+          <li>
+            The cached GitHub data behind this page is older than the {generatedData.maxAgeHours}h freshness
+            contract. The site has not been rebuilt since that data was fetched, so counts and dates
+            here may lag the real repositories.
+          </li>
+        </ul>
+      </div>
+
+      <p class="status-note rv">
+        Figures are computed during the build from cached GitHub metadata; there is no runtime analytics
+        or uptime service. Ages are recalculated in your browser against the timestamps above, so without
+        JavaScript they read as they were at build time.
+      </p>
     </div>
   </main>
 
   <Footer
-    summary="Every figure here is computed during the build from cached GitHub metadata. Nothing on this page is measured at runtime."
+    summary="Every figure here is computed during the build from cached GitHub metadata. Only the ages are recalculated in your browser, against the build-stamped timestamps; nothing is measured from a live service."
     links={[
       { href: '/status.json', label: 'status.json' },
       { href: '/releases/', label: 'Releases' },

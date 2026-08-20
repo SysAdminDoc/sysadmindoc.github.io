@@ -45,6 +45,10 @@ const isHome = Astro.url.pathname === '/';
 // search + URL state) over the full project list. home-catalog.js is a
 // standalone IIFE with no homepage-controller dependency, so it loads on its own here.
 const isCatalog = Astro.url.pathname === '/catalog/';
+// /status/ recomputes its build-stamped ages against the viewer's clock so a
+// deployment that stops being rebuilt reports its real age, not the age it had
+// when it was published.
+const isStatus = Astro.url.pathname === '/status/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
 
@@ -213,5 +217,6 @@ if (isHome) {
       Catalog filtering remains isolated to /catalog/. */}
   {isHome && <script src="/scripts/home-nav.js" is:inline></script>}
   {isCatalog && <script src="/scripts/home-catalog.js" is:inline></script>}
+  {isStatus && <script src="/scripts/status-freshness.js" is:inline></script>}
 </body>
 </html>
