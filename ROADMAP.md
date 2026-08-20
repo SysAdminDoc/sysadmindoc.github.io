@@ -31,13 +31,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: Live probes show the declared Cache-Control on OG images, hashed assets, and HTML; `smoke:live` gates all three classes.
   Complexity: S
 
-- [ ] P1 — Diagnose and fix the README cache coverage collapse
-  Why: The live `/status/` publicly warns "README cache coverage is below 80%" — only 18 of 182 repos have cached READMEs, while `_readme-refresh.json` simultaneously claims `attempted: 182, missRate: 0, rateLimited: false`, an internal contradiction pointing at a counting or cache-write bug in the fetcher.
-  Evidence: Live `status.json` (`readmeEntries: 18`, `cacheCoverage: 0.0989`, warning array); `src/data/_readme-refresh.json`; `scripts/fetch-stars.mjs` README refresh path; also `_profile-projects.json` internal `generatedAt: 2026-06-01` despite a 2026-07-28 sync — verify `sync-profile-feed.mjs` surfaces upstream-feed staleness instead of silently reusing it.
-  Touches: `scripts/fetch-stars.mjs`, `scripts/sync-profile-feed.mjs`, `scripts/summarize-generated-data.mjs`, `test/generated-data-trust.test.mjs` (add a fixture reproducing attempted≫entries with missRate 0).
-  Acceptance: A token-backed `npm run fetch-stars` yields README coverage ≥80% (or the summarizer correctly attributes why not, with `missRate`/`attempted` arithmetic that adds up), and the live `/status/` warning clears after the next deploy; upstream profile-feed staleness is reported, not masked.
-  Complexity: M
-
 - [ ] P1 — Bring /healthcare-it/ conversion parity with /ai/ and add data-boundary trust language
   Why: The two pages that exist to convert are asymmetric — `/ai/` has two primary prefilled-mailto CTAs, `/healthcare-it/` one secondary-styled anchor to `/#connect`; and healthcare buyers now run formal AI-vendor risk reviews the page never pre-answers (BAA willingness, PHI boundaries, training-data use).
   Evidence: `src/pages/healthcare-it.astro:95` vs `src/pages/ai.astro:164,273`; HSCC Third-Party AI Risk guide (2026-04) and Censinet checklist in RESEARCH.md; Fisher Phillips warning against overstated compliance claims.

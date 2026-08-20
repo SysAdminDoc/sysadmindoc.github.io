@@ -394,6 +394,7 @@ async function main() {
     failureSamples = [],
     skippedReason = null,
     trimmed = 0,
+    recovered = 0,
   }) {
     const cacheEntries = Object.keys(readmes).length;
     const preserved = Object.keys(readmes).filter((name) => !readmeRefreshedRepos.has(name)).length;
@@ -417,6 +418,7 @@ async function main() {
       skippedReason,
       cacheEntries,
       trimmed,
+      recovered,
     });
   }
 
@@ -439,6 +441,9 @@ async function main() {
   let readmeReused = 0;
   let readmeRateLimited = false;
   let readmeTrimmed = 0;
+  // Counts READMEs whose ETag outlived their cached body; a non-zero value
+  // means the cache was repaired on this run.
+  let readmeRecovered = 0;
   const readmeFailures = [];
   const CONCURRENCY = 8;
   let cursor = 0;
@@ -450,6 +455,18 @@ async function main() {
       const repo = publicRepos[index];
       if (!repo) continue;
       const readmeUrl = `https://api.github.com/repos/${USER}/${repo.name}/readme`;
+      // An ETag is only meaningful while the body it described is still cached.
+      // If the README cache lost an entry but _etags.json kept its ETag, the
+      // conditional request answers 304 forever and that README can never come
+      // back — it stays missing until someone edits it upstream. Dropping the
+      // stale ETag forces one unconditional fetch that repairs the cache.
+      const cachedReadme = readmes[repo.name];
+      if (typeof cachedReadme !== 'string' || cachedReadme.length === 0) {
+        if (savedEtags[readmeUrl]) {
+          delete savedEtags[readmeUrl];
+          readmeRecovered += 1;
+        }
+      }
       try {
         const result = await fetchTextConditional(
           readmeUrl,
@@ -490,6 +507,7 @@ async function main() {
     rateLimited: readmeRateLimited,
     failureSamples: readmeFailures,
     trimmed: readmeTrimmed,
+    recovered: readmeRecovered,
   });
   const readmeSummary = readmeRateLimited
     ? `rate limit hit after ${readmeOk} refreshes; preserved cache for the remaining repos`
