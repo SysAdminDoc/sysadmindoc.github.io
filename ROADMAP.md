@@ -15,13 +15,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A scheduled run refreshes caches and redeploys unattended when preflight passes; a failed run leaves the last good deploy in place and records why; live `status.json` `fetchedAt` stays under 36h across a week without manual action.
   Complexity: M
 
-- [ ] P0 — Upgrade Caddy containers from 2.8-alpine to 2.11-alpine
-  Why: 2.8-alpine is three minors behind; 2026 fixes it lacks include CVE-2026-27585 (path-matcher backslash bypass) and CVE-2026-27586 (mTLS fail-open), plus a header-injection escalation fixed in 2.11.2, and the frozen tag means an unpatched Alpine base.
-  Evidence: `deploy/vps/docker-compose.yml` (`caddy:2.8-alpine`); https://github.com/caddyserver/caddy/releases (2.11.2, 2026-03-06); RESEARCH.md "Security, Privacy, and Reliability".
-  Touches: `deploy/vps/docker-compose.yml`, VPS pull/restart via `deploy:vps` docs; flag the edge proxy Caddy (Contabo-VPS-Ops repo) for the same bump in that repo's notes.
-  Acceptance: `docker image inspect` on the VPS shows a 2.11.x static container, `smoke:live` passes with all edge headers intact, and CLAUDE.md records the version.
-  Complexity: S
-
 - [ ] P0 — Bump satori to 0.29.1+ for the SSRF-guard security patch
   Why: Lockfile pins satori 0.29.0; 0.29.1 (2026-08-19) hardens the SSRF guard against trailing dots, redirects, and DNS rebinding — low exploitability at build time, but it is a security patch on a rendering dependency.
   Evidence: `package-lock.json` (`satori 0.29.0`); https://github.com/vercel/satori/releases (0.29.1–0.32.0, 2026-08-19/20).

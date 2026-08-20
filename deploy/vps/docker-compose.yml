@@ -4,7 +4,11 @@
 # internal file-server config at ./Caddyfile. Deploy with `npm run deploy:vps`.
 services:
   portfolio-app:
-    image: caddy:2.8-alpine
+    # Pinned to the 2.11 line (2.11.4 as of 2026-08-20). The old 2.8-alpine tag
+    # stopped receiving image rebuilds, so its Alpine base went unpatched, and
+    # 2.9-2.11 carry the 2026 Caddy fixes (path-matcher bypass CVE-2026-27585,
+    # mTLS fail-open CVE-2026-27586, header-injection escalation in 2.11.2).
+    image: caddy:2.11-alpine
     container_name: portfolio-app
     restart: unless-stopped
     stop_grace_period: 10s
