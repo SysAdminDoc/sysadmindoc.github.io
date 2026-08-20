@@ -34,7 +34,7 @@
 	# response header matches the hash-pinned meta policy and can report real
 	# violations. A missing value makes compose fail before an incomplete policy
 	# is served.
-	header Content-Security-Policy {$CSP_POLICY}
+	header Content-Security-Policy "{$CSP_POLICY}"
 
 	# HTML must revalidate: the URLs are stable, so a cached copy would otherwise
 	# pin a visitor to an old build. The service worker owns offline behavior.

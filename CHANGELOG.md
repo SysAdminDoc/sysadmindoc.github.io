@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.41.2] - 2026-08-20
+
+### Fixed
+
+- Quoted the stamped CSP environment expansion as one Caddy header value so
+  every directive reaches browsers intact.
+
 ## [v0.41.1] - 2026-08-20
 
 ### Fixed
