@@ -8,13 +8,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
 
 ### P0
 
-- [ ] P0 — Automate the generated-data refresh and VPS redeploy loop
-  Why: The deployed site froze at 2026-07-28 — generated data is ~23 days old against the 36-hour contract because nothing schedules `fetch-stars`/`profile-feed:sync`/`deploy:vps`; the trust surface degrades silently whenever work pauses.
-  Evidence: Live `status.json` shows `fetchedAt: 2026-07-28T03:02:45Z` on 2026-08-20; `src/data/generated-trust.ts:1` (`GENERATED_DATA_MAX_AGE_HOURS = 36`); no scheduler in repo or docs; RESEARCH.md "Security, Privacy, and Reliability".
-  Touches: new `scripts/refresh-and-deploy.mjs` orchestrator (fetch-stars → profile-feed:sync → deploy:preflight → deploy:vps, with failure log + non-zero exit), a registered Windows Scheduled Task on the build machine (documented in CLAUDE.md), `package.json`.
-  Acceptance: A scheduled run refreshes caches and redeploys unattended when preflight passes; a failed run leaves the last good deploy in place and records why; live `status.json` `fetchedAt` stays under 36h across a week without manual action.
-  Complexity: M
-
 ### P1
 
 - [ ] P1 — Add a first-party intake form + VPS endpoint (moved from Roadmap_Blocked; blocker dissolved)

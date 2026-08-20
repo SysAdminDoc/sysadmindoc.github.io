@@ -41,6 +41,8 @@
     "verify:signatures": "node scripts/verify-signatures.mjs",
     "publish:pages": "node scripts/publish-pages.mjs",
     "deploy:vps": "node scripts/deploy-vps.mjs",
+    "refresh:deploy": "node scripts/refresh-and-deploy.mjs",
+    "refresh:deploy:dry": "node scripts/refresh-and-deploy.mjs --dry-run",
     "assets:audit": "node scripts/audit-assets.mjs",
     "css:audit": "node scripts/audit-css.mjs",
     "csp:audit": "node scripts/audit-csp.mjs",

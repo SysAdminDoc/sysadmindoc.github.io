@@ -24,6 +24,20 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- Added `npm run refresh:deploy`, an unattended refresh-and-deploy chain
+  (`fetch-stars` → `profile-feed:sync` → `deploy:preflight` → `deploy:vps`)
+  registered as a daily scheduled task. Every refresh step used to be manual, so
+  the deployed site quietly aged past its own 36-hour freshness contract
+  whenever work paused — it had been serving 23-day-old data. The runner fails
+  closed: a failing gate aborts before deploying, leaves the previous
+  deployment live, records the reason in `.tmp/refresh-and-deploy.log`, and
+  exits non-zero. `npm run refresh:deploy:dry` stops after the preflight.
+- `deploy:vps` no longer depends on rsync, which is absent on the Windows build
+  box. It ships one tarball over ssh, unpacks into a staging directory, and
+  swaps it in, so an interrupted transfer can no longer leave a half-written
+  site serving. The previous tree is kept for rollback, and the script accepts
+  an explicit SSH key and known_hosts file for unattended runs.
+
 - `smoke:live` now asserts that a missing path returns HTTP 404 with the 404
   document. Nothing in the suite checked a response status before, so an error
   route that started answering 200 (a soft 404, the usual failure mode of a
