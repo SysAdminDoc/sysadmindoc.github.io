@@ -159,6 +159,43 @@ test.describe('open navigation state coverage', () => {
   });
 });
 
+test.describe('reduced-motion reveal coverage', () => {
+  // Reveal targets start at opacity 0 and are un-hidden either by the .vis class
+  // that scroll-reveal.js adds or, under prefers-reduced-motion, by a CSS
+  // override (foundation.css). Assert the outcome rather than the mechanism: a
+  // reduced-motion visitor must never be left with invisible content, whichever
+  // layer does the work. Both audit projects run with reducedMotion: 'reduce'.
+  test('no reveal target renders invisible under reduced motion', async ({ page }) => {
+    await page.setViewportSize({ width: 1365, height: 900 });
+    // Set the preference explicitly rather than relying on the project's `use`
+    // block: this test is only meaningful in the reduced-motion branch, and a
+    // config change that dropped the emulation would otherwise turn it into a
+    // test of the animated path that happens to pass for the wrong reason.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/', { waitUntil: 'load' });
+    await page.locator('main').first().waitFor({ state: 'visible' });
+    expect(
+      await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches),
+      'the reduced-motion branch must actually be active',
+    ).toBe(true);
+
+    // The deferred stylesheet swaps in after load, so poll rather than sampling
+    // one instant: the contract is that content ends up visible, not that it is
+    // visible on a particular frame.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() =>
+            Array.from(document.querySelectorAll('.rv, .card-enter, .dv'))
+              .filter((el) => Number(getComputedStyle(el).opacity) < 1)
+              .map((el) => `${el.className} @ opacity ${getComputedStyle(el).opacity}`),
+          ),
+        { message: 'reduced motion must leave every reveal target fully opaque', timeout: 10_000 },
+      )
+      .toEqual([]);
+  });
+});
+
 test.describe('status freshness state coverage', () => {
   // A static page bakes its ages at build time, so a deployment nobody rebuilds
   // keeps claiming it is fresh. These two cases pin the view-time recomputation:
