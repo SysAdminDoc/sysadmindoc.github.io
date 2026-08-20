@@ -12,13 +12,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
 
 ### P2
 
-- [ ] P2 — GoAccess over the edge Caddy JSON logs for first-party traffic visibility
-  Why: The site has zero visibility into whether `/ai/` gets any traffic, which gates every funnel decision; the edge already writes JSON access logs, and GoAccess reads them server-side with no client script, no cookies, and IP anonymization — consistent with the no-analytics-runtime posture.
-  Evidence: `deploy/vps/caddy-block.txt` (`log` → `/var/log/caddy/portfolio.log`); https://goaccess.io/ CADDY log-format support; analytics comparison in RESEARCH.md (Plausible/Umami rejected).
-  Touches: VPS-side: GoAccess container or cron in `deploy/vps/` docs, log rotation check, output as a static HTML report served on an authenticated/obscured path (not linked publicly); repo-side: document the runbook in CLAUDE.md.
-  Acceptance: A daily-refreshed GoAccess report over anonymized logs is reachable by the owner; no page payload, script, or cookie changes on the public site.
-  Complexity: M
-
 - [ ] P2 — AI-build colophon page (Willison pattern) scaffolded from public data
   Why: For a portfolio selling AI implementation, a colophon showing how the 22 live apps were actually built (commits, cadence, tooling, AI assistance disclosed) is proof-of-competence, marketing, and an honesty signal in one page — the strongest differentiator surfaced by the landscape research that isn't blocked on long-form human writing.
   Evidence: https://tools.simonwillison.net/colophon and https://simonwillison.net/2025/Mar/13/tools-colophon/; hiring-signal sources in RESEARCH.md (reviewers inspect commit history to distinguish real building from AI output).
