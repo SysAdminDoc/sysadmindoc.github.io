@@ -40,20 +40,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: `/colophon/` renders a per-live-app provenance table from generated data plus the disclosure notes, passes all route audits, and is linked from the footer and `/ai/` proof block.
   Complexity: M
 
-- [ ] P2 — Restore release tagging and tag the untagged releases
-  Why: Git tags stop at v0.30.0 while v0.31–v0.39 shipped via CHANGELOG/package.json only — release archaeology and any tag-based tooling silently broke.
-  Evidence: `git tag` output vs CHANGELOG.md v0.31.0–v0.39.0 entries; release commits f460da8 (v0.37.0), 27f6cfa (v0.38.0), 9baa2c6 (v0.39.0).
-  Touches: annotated tags on the nine release commits (from CHANGELOG dates), push tags; add a tag step to the release routine in CLAUDE.md.
-  Acceptance: `git tag` lists v0.31.0 through v0.39.0 on the correct commits, tags are pushed, and the release procedure documents tagging.
-  Complexity: S
-
-- [ ] P2 — Fix stale current-state claims in decision records
-  Why: `IMAGE_PIPELINE.md` claims the v0.23-deleted `projects/[slug].astro` route still consumes masters and counts 10 interior OG pages (actual: 12); `PERFORMANCE_AUDIT.md` reports results for the removed `/projects/project-nomad-desktop/` — future agents will act on these as current.
-  Evidence: `IMAGE_PIPELINE.md:30`, `PERFORMANCE_AUDIT.md:51`, `src/data/interior-og-pages.ts` (12 slugs).
-  Touches: both decision records (mark historical claims as history, correct counts); re-run `audit:perf` to refresh the results table with current routes.
-  Acceptance: No decision record describes a removed route in present tense; interior OG count matches source; performance table lists only live routes.
-  Complexity: S
-
 - [ ] P2 — Cover the untested runtime scripts and the cmdk-data endpoint
   Why: `scroll-reveal.js`, `relative-time.js`, and `screenshots-page.js` have zero test references, and `/cmdk-data.js` — the largest payload, loaded on every page — is referenced by one test; regressions there ship silently.
   Evidence: Recon cross-reference of `public/scripts/*` and endpoints vs `test/`/`tests/` (RESEARCH.md "Architecture Assessment"); `src/pages/cmdk-data.js.ts`.
