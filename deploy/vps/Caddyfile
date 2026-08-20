@@ -11,6 +11,22 @@
 	@cache600 path /status.json /projects.json /releases.json /feed.json /rss.xml /atom.xml /releases.xml /llms.txt /cmdk-data.js /sitemap-index.xml /sitemap-0.xml /sw.js
 	header @cache600 Cache-Control "max-age=600"
 
+	# Astro emits content-hashed filenames under /_assets/, so a new build means a
+	# new URL and these can be cached permanently.
+	@immutable path /_assets/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Generated social cards keep stable slugs, so they need a real expiry rather
+	# than browser heuristics. Matches GENERATED_IMAGE_CACHE_CONTROL in
+	# src/data/endpoint-headers.ts, whose value a static build cannot deliver.
+	@ogimages path /og.png /og/*
+	header @ogimages Cache-Control "public, max-age=86400"
+
+	# HTML must revalidate: the URLs are stable, so a cached copy would otherwise
+	# pin a visitor to an old build. The service worker owns offline behavior.
+	@html path / */ *.html
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
 	file_server
 	# handle_errors runs a fresh handler chain, so file_server would otherwise
 	# write the 404 document with HTTP 200 (a soft 404). Pass the original error
