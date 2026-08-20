@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import rss from '@astrojs/rss';
 import sanitizeHtml from 'sanitize-html';
+import { FEED_CONTENT_SANITIZE } from '../data/feed-sanitize';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { withEndpointCache } from '../data/endpoint-headers';
@@ -51,7 +52,7 @@ export async function GET(context: APIContext) {
       // Full-content body for readers that render content:encoded.
       const contentHtml = sanitizeHtml(
         `<p>${item.desc}</p><p><a href="${link}">View ${item.title} on GitHub →</a></p>`,
-        { allowedTags: ['p', 'a', 'strong', 'em', 'code'], allowedAttributes: { a: ['href'] } },
+        FEED_CONTENT_SANITIZE,
       );
       return {
         title: item.title,

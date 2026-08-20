@@ -12,6 +12,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   resolution), `nanoid` to 3.3.18 (custom generators could loop forever on a
   zero size), and the pinned `vite` override to 8.2.2. `npm audit --omit=dev`
   now reports no vulnerabilities. Also took `sanitize-html` 2.17.7.
+- Narrowed the feed sanitizer and moved its options into one shared module
+  (`src/data/feed-sanitize.ts`). The RSS and Atom endpoints each carried their
+  own copy of the option object and inherited the library's default URL policy,
+  which permits `http`, `ftp`, `mailto`, `tel`, and protocol-relative links.
+  Every link the feeds emit is an absolute HTTPS GitHub URL, so anything else is
+  now dropped. Tests pin the policy, prove hostile markup is neutralized, and
+  assert the sanitizer never reaches the client bundle.
 - Bumped satori to 0.29.1, which hardens its SSRF guard against trailing dots,
   redirects, and DNS rebinding. The rendered social cards are byte-identical
   before and after, so this is a pure security patch.
