@@ -8,6 +8,13 @@ const reviewedDateByRoute = new Map(
 );
 
 export default defineConfig({
+  // Astro 7.2 hashes each route's module graph and reuses unchanged prerendered
+  // output. Measured 2026-08-20: warm `astro build` 7.8s -> 4.8s. Verified safe
+  // for this site's build-time data injection — mutating src/data/_stats.json
+  // and rebuilding propagated the new value to both /status.json and the
+  // rendered /status/ HTML, so the generated JSON caches are part of the key.
+  // The cache lives in the gitignored .astro/ directory.
+  experimental: { incrementalBuild: true },
   site: SITE_URL,
   integrations: [
     sitemap({

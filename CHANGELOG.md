@@ -22,6 +22,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   container with every edge header and the machine-endpoint cache contract
   intact. The shared edge proxy was already current.
 
+### Changed
+
+- Upgraded Astro to 7.2.4 and turned on its incremental build, which reuses
+  prerendered output for routes whose module graph did not change. Warm builds
+  drop from about 7.8s to 4.8s. Verified that the generated data caches are part
+  of the cache key before adopting it: mutating `src/data/_stats.json` and
+  rebuilding propagated the new value to both `/status.json` and the rendered
+  `/status/` page, so a stale route cannot survive a data refresh.
+
 ### Added
 
 - Added `npm run refresh:deploy`, an unattended refresh-and-deploy chain

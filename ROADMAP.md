@@ -19,13 +19,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A daily-refreshed GoAccess report over anonymized logs is reachable by the owner; no page payload, script, or cookie changes on the public site.
   Complexity: M
 
-- [ ] P2 — Upgrade Astro 7.1.3 → 7.2.x and evaluate incremental builds
-  Why: 7.2 (2026-08-06) adds `experimental.incrementalBuild` — a content site with mostly-unchanged prerendered routes is the ideal case and would cut the (soon-scheduled) rebuild loop's cost; staying current also keeps ahead of Astro's 2026 advisory cadence.
-  Evidence: https://astro.build/blog/astro-720/; `package.json` (`astro ^7.1.3`).
-  Touches: `package.json`/lockfile, `astro.config.mjs` (flag evaluation, measure with/without), `deps:audit` expectations.
-  Acceptance: Build and full `build:ci` pass on 7.2.x; incremental build measured and either adopted (with timing noted in CLAUDE.md) or declined with the measured reason.
-  Complexity: S
-
 - [ ] P2 — Harden the sanitize-html call sites and settle its maintenance story
   Why: The upstream GitHub repo is archived, but patches still ship to npm (2.17.7 landed 2026-08-13, five months after the archive), so the package is neither healthy nor abandoned. It sits on the feed/README sanitization path and deserves a tightened allowlist plus a decision recorded once, rather than a re-investigation every audit.
   Evidence: `gh api repos/apostrophecms/sanitize-html` → `archived: true`, `pushed_at: 2026-02-26`; `npm view sanitize-html time` → `2.17.7: 2026-08-13`; usage in `src/pages/atom.xml.ts` and README excerpt sanitization; RESEARCH.md security section (corrected 2026-08-20).
