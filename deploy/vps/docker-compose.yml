@@ -17,6 +17,8 @@ services:
     pids_limit: 64
     security_opt:
       - no-new-privileges:true
+    environment:
+      CSP_POLICY: ${CSP_POLICY:?csp.env with the built CSP_POLICY is required}
     volumes:
       - ./dist:/srv:ro
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
@@ -31,6 +33,34 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    networks:
+      - web
+
+  csp-reporter:
+    # The reporter has no third-party runtime dependency and is not published
+    # on a host port. It is reachable only from portfolio-app on the web net.
+    image: node:24-alpine
+    container_name: portfolio-csp-reporter
+    restart: unless-stopped
+    stop_grace_period: 10s
+    mem_limit: 64m
+    cpus: "0.10"
+    pids_limit: 32
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    command: ["node", "/app/csp-report-server.mjs"]
+    environment:
+      CSP_REPORT_LOG: /var/lib/csp-reports/reports.ndjson
+    volumes:
+      - ./csp-report-server.mjs:/app/csp-report-server.mjs:ro
+      - ./csp-reports:/var/lib/csp-reports
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - web
 

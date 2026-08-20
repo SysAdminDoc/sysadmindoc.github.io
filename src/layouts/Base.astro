@@ -69,7 +69,7 @@ const styleAttrSrc = isDev ? "'unsafe-inline'" : "'none'";
 // command-palette loader, and Pagefind's own result HTML. Skipped in dev because
 // Vite HMR uses string sinks.
 const trustedTypes = isDev ? '' : "; require-trusted-types-for 'script'";
-const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'${trustedTypes}`;
+const contentSecurityPolicy = `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; style-src-elem ${styleElemSrc}; style-src-attr ${styleAttrSrc}; font-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com https://opengraph.githubassets.com https://raw.githubusercontent.com https://img.shields.io https://github.com https://github-production-user-asset-6210df.s3.amazonaws.com; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'${trustedTypes}; report-to csp-endpoint`;
 
 // One connected knowledge graph: a stable Person @id referenced by WebSite
 // (publisher) and, on the homepage, a ProfilePage. Page-level schemas

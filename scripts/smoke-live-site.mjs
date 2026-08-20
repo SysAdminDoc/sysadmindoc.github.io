@@ -258,7 +258,22 @@ async function checkSecurityHeaders(baseUrl, summary) {
         'The VPS edge Caddy must serve these (see deploy/vps/caddy-block.txt).',
     );
   }
+  const reportingEndpoints = response.headers.get('reporting-endpoints') ?? '';
+  if (!/csp-endpoint="https:\/\/portfolio\.getparkerai\.com\/csp-report"/i.test(reportingEndpoints)) {
+    throw new Error(
+      `Reporting-Endpoints is missing the absolute CSP sink: "${reportingEndpoints || '(missing)'}". ` +
+        'The edge Caddy must publish csp-endpoint for the report-to policy.',
+    );
+  }
+  const csp = response.headers.get('content-security-policy') ?? '';
+  if (!/\breport-to\s+csp-endpoint\b/i.test(csp) || !/\breport-uri\s+\/csp-report\b/i.test(csp)) {
+    throw new Error(
+      `The deployed CSP header is missing report-to/report-uri wiring: "${csp || '(missing)'}". ` +
+        'The internal Caddy header must be stamped from the built policy.',
+    );
+  }
   summary.push('edge security headers: HSTS, X-Frame-Options, Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options');
+  summary.push('CSP reporting: Reporting-Endpoints + report-to + report-uri');
 }
 
 async function checkNotFoundStatus(baseUrl, summary) {
@@ -286,6 +301,41 @@ async function checkNotFoundStatus(baseUrl, summary) {
     throw new Error(`A missing path returned HTTP 404 but did not render the 404 document from ${target}.`);
   }
   summary.push('missing path: HTTP 404 with the 404 document');
+}
+
+async function checkCspReportEndpoint(baseUrl, summary) {
+  if (!isEdgeHost(baseUrl)) {
+    summary.push(`CSP report endpoint: skipped (non-edge base ${new URL(baseUrl).host})`);
+    return;
+  }
+
+  const target = siteUrl('/csp-report', baseUrl);
+  const response = await fetch(target, {
+    method: 'POST',
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'application/reports+json',
+      'User-Agent': `sysadmindoc-live-smoke/${runId}`,
+    },
+    body: JSON.stringify([{
+      type: 'csp-violation',
+      url: `${new URL(baseUrl).origin}/__live-smoke-${runId}/?synthetic=1`,
+      body: {
+        documentURL: `${new URL(baseUrl).origin}/__live-smoke-${runId}/?synthetic=1`,
+        effectiveDirective: 'script-src',
+        blockedURL: 'https://live-smoke.invalid/synthetic.js?synthetic=1',
+      },
+    }]),
+    redirect: 'follow',
+  });
+  const body = await response.text();
+  if (response.status !== 204 || response.headers.get('x-csp-report-stored') !== 'yes') {
+    throw new Error(
+      `CSP report endpoint returned HTTP ${response.status} with X-CSP-Report-Stored="${response.headers.get('x-csp-report-stored') ?? '(missing)'}". ` +
+        `Body: ${body.slice(0, 200)}`,
+    );
+  }
+  summary.push('CSP report endpoint: synthetic report accepted and stored');
 }
 
 async function checkCachePolicy(baseUrl, summary, homepageHtml) {
@@ -339,6 +389,7 @@ async function checkLiveArtifacts(baseUrl, expected) {
 
   await checkSecurityHeaders(baseUrl, summary);
   await checkNotFoundStatus(baseUrl, summary);
+  await checkCspReportEndpoint(baseUrl, summary);
 
   const homepage = await fetchText(baseUrl, '/', 'text/html,*/*');
   requireHeader(homepage, '/', { contentTypes: ['text/html'], cacheControl: null });

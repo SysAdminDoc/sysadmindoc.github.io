@@ -4,6 +4,18 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.41.0] - 2026-08-20
+
+### Security
+
+- Added a first-party CSP report sink on the VPS. The bounded Node sidecar
+  accepts Reporting API batches, removes query strings and user-agent data,
+  rotates its NDJSON log, and stays private behind the portfolio Caddy route.
+  The deploy step stamps the built CSP into the response header so browsers can
+  report violations without adding analytics or a third-party service.
+- Extended `smoke:live` to verify the Reporting API endpoint map, CSP reporting
+  directives, and a synthetic report accepted and stored by the live service.
+
 ## [v0.40.0] - 2026-08-20
 
 ### Security
