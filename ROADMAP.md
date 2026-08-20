@@ -10,20 +10,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
 
 ### P1
 
-- [ ] P1 — Add a first-party intake form + VPS endpoint (moved from Roadmap_Blocked; blocker dissolved)
-  Why: Mailto-only CTAs forfeit the entire speed-to-lead advantage (~78% of B2B buyers choose the first responder); the July blocker — third-party form backends conflicting with the privacy posture — is obsolete now that the owned VPS can host the endpoint with zero third parties.
-  Evidence: Roadmap_Blocked.md P1 (2026-07); `src/pages/ai.astro:164,273` and `index.astro` `#connect` are mailto-only; RESEARCH.md "Competitive Landscape" speed-to-lead sources; ALTCHA (https://altcha.org/) for third-party-free spam defense.
-  Touches: a small single-binary handler (Go or Node) in `deploy/vps/` compose (POST validate → honeypot + minimum-time + ALTCHA → SMTP or ntfy notify), Caddy `handle /api/contact` route + `mholt/caddy-ratelimit` on that path only, a shared form component used on `/ai/` and `#connect` (native POST, degrades to mailto without JS), CSP `form-action` in `src/layouts/Base.astro` + `scripts/audit-csp.mjs`, qualification fields (multiple-choice budget/timeline, free-text problem, contact last), visible "reply within one business day" promise, tests (noscript fallback, CSP audits, endpoint smoke).
-  Acceptance: Submitting the form on the live site with JS and without JS delivers the lead to the owner with no third-party request anywhere in the flow; CSP/bundle/csp:audit gates stay green; spam probes are dropped by honeypot/ALTCHA; rate limit returns 429 under abuse.
-  Complexity: L
-
-- [ ] P1 — AEO refresh: shift FAQ investment from schema to visible answer quality
-  Why: Google retired FAQ rich results 2026-05-07 (Search Console API support ends 2026-08), so the v0.37 FAQPage markup is inert; citations now follow visible 50–150-word answers under question-form headings and passage-level specificity, with ranking no longer predicting citation (62% of AI Mode citations come from outside the top 10).
-  Evidence: https://seoscore.tools/blog/faq-schema-markup/, https://www.quattr.com/blog/faq-schema-in-2026, https://www.shadow.inc/resources/google-ai-mode-citations; `src/pages/ai.astro` / `healthcare-it.astro` FAQ arrays.
-  Touches: FAQ answer copy in `src/pages/ai.astro` and `src/pages/healthcare-it.astro` (audit each answer to 50–150 words, question-form H2/H3, answer-first first sentence; keep the existing schema — harmless), `page-freshness.ts` reviewed dates, schema audit expectations.
-  Acceptance: Every published FAQ answer is 50–150 words with an answer-first opening sentence; schema audit passes unchanged; reviewed dates bump so freshness signals update.
-  Complexity: S
-
 ### P2
 
 - [ ] P2 — GoAccess over the edge Caddy JSON logs for first-party traffic visibility
