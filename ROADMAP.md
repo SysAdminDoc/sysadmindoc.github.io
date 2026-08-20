@@ -21,13 +21,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
 
 ### P3
 
-- [ ] P3 — Publish a deliberate AI-crawler policy in robots.txt
-  Why: The current robots.txt is allow-all by default rather than by decision; a site selling AI services wants answer-engine and agent bots (citations) while the owner may want training-only bots excluded — either way the policy should be explicit and documented.
-  Evidence: `public/robots.txt` (allow-all, 153 bytes); https://github.com/ai-robots-txt/ai.robots.txt taxonomy; llms.txt adoption evidence in RESEARCH.md.
-  Touches: `public/robots.txt` (explicit sections: allow search/answer/agent bots; owner-decided stance on training-only crawlers), a sentence on the colophon page documenting the policy, `test/` robots assertion if one exists.
-  Acceptance: robots.txt enumerates bot classes deliberately with a comment linking the policy rationale; the colophon states it in one line.
-  Complexity: S
-
 - [ ] P3 — Evaluate Astro native CSP against the hand-rolled meta-CSP pipeline
   Why: `security.csp` is stable and emits the same meta-tag-with-hashes the repo hand-builds, which could retire several bespoke audit scripts — but the current system works, is heavily test-pinned, and handles the CRLF subtlety, so this is an evaluation, not a migration mandate.
   Evidence: https://docs.astro.build/en/reference/experimental-flags/csp/ (stable guide); `scripts/audit-csp.mjs` + `test/csp-audit.test.mjs` (the largest test).

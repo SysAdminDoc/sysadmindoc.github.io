@@ -1,3 +1,21 @@
+# Crawling policy for portfolio.getparkerai.com
+#
+# The stance is deliberate rather than inherited: this site sells technical
+# implementation work, so being read, indexed, and cited by search engines and
+# answer engines is the point. Everything is public, static, and already
+# published under an open license, so there is nothing here to withhold.
+#
+# Search and answer engines (Google, Bing, and the AI crawlers that feed
+# assistant answers) are allowed on purpose. Agent and IDE crawlers are too:
+# they are how a developer audience actually reaches this content, and
+# /llms.txt exists specifically to give them a curated index.
+#
+# If training-only crawlers should ever be excluded, this is where that goes —
+# add explicit `User-agent: <name>` / `Disallow: /` blocks above the wildcard
+# rather than narrowing the wildcard, so the citation-bearing crawlers keep
+# their access. Note that compliance is voluntary either way; robots.txt is a
+# request, not an access control.
+
 User-agent: *
 Allow: /
 
