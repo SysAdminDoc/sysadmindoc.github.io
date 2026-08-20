@@ -31,6 +31,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 
+- Added server-side traffic reporting (`deploy/vps/analytics-report.sh`), run
+  daily on the VPS. It renders the access log the edge already writes into a
+  static GoAccess report with anonymized IPs, so the site gains traffic
+  visibility while still shipping no analytics runtime — no script, no cookie,
+  no third party, and no change to any page. The report is stored outside the
+  served directory and is not reachable over HTTP.
 - Covered the runtime scripts that had no tests: relative-time formatting,
   screenshots category filtering (including the dormant case where every live
   app shares one category, so the filter UI never renders), the command-palette
