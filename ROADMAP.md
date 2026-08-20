@@ -17,13 +17,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: Submitting the form on the live site with JS and without JS delivers the lead to the owner with no third-party request anywhere in the flow; CSP/bundle/csp:audit gates stay green; spam probes are dropped by honeypot/ALTCHA; rate limit returns 429 under abuse.
   Complexity: L
 
-- [ ] P1 — Bring /healthcare-it/ conversion parity with /ai/ and add data-boundary trust language
-  Why: The two pages that exist to convert are asymmetric — `/ai/` has two primary prefilled-mailto CTAs, `/healthcare-it/` one secondary-styled anchor to `/#connect`; and healthcare buyers now run formal AI-vendor risk reviews the page never pre-answers (BAA willingness, PHI boundaries, training-data use).
-  Evidence: `src/pages/healthcare-it.astro:95` vs `src/pages/ai.astro:164,273`; HSCC Third-Party AI Risk guide (2026-04) and Censinet checklist in RESEARCH.md; Fisher Phillips warning against overstated compliance claims.
-  Touches: `src/pages/healthcare-it.astro` (primary CTA with prefilled subject; a short "Data boundaries" block: signs BAAs, PHI stays in the client boundary, no client data in model training, no multi-tenant LLM APIs for PHI workloads — no certification claims), `src/data/curated.ts`, visual baselines, schema audit if FAQ answers change.
-  Acceptance: `/healthcare-it/` has a primary CTA equivalent to `/ai/`'s and a visible data-boundary section making the four commitments above; axe/visual/schema audits stay green.
-  Complexity: S
-
 - [ ] P1 — AEO refresh: shift FAQ investment from schema to visible answer quality
   Why: Google retired FAQ rich results 2026-05-07 (Search Console API support ends 2026-08), so the v0.37 FAQPage markup is inert; citations now follow visible 50–150-word answers under question-form headings and passage-level specificity, with ranking no longer predicting citation (62% of AI Mode citations come from outside the top 10).
   Evidence: https://seoscore.tools/blog/faq-schema-markup/, https://www.quattr.com/blog/faq-schema-in-2026, https://www.shadow.inc/resources/google-ai-mode-citations; `src/pages/ai.astro` / `healthcare-it.astro` FAQ arrays.

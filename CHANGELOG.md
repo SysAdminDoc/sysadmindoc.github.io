@@ -54,6 +54,14 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 
+- Fixed the same split-brain cache defect in the releases pass, found while
+  verifying the README fix: a repo whose cached rows were gone but whose ETag
+  survived answered "not modified", contributed nothing, and still counted as
+  reused, so the release feed silently collapsed from 60 entries to 10. It now
+  refetches unconditionally and reports how many sets it recovered.
+- `/healthcare-it/` now leads with a subject-prefilled email CTA instead of a
+  secondary link to the homepage contact block, matching `/ai/`. Both track
+  pages exist to start a conversation, and only one of them was asking.
 - Repaired the README cache, which had collapsed to 18 of 193 repositories and
   was publishing a coverage warning on `/status/`. The cause was a split-brain
   cache: `_etags.json` kept an ETag for every README while `_readmes.json` had

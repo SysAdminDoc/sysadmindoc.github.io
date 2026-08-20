@@ -51,6 +51,25 @@ test('fetch-stars drops a README ETag whose cached body is missing', () => {
   );
 });
 
+// The releases pass has the same shape as the README pass and had the same
+// defect: on a 304 it pushed `existingReleasesByRepo.get(name)` into the output
+// and counted a "reuse" even when that returned undefined, so a trimmed
+// releases cache silently collapsed (observed 2026-08-20: 60 releases -> 10,
+// with 39 repos "reused" contributing nothing).
+test('fetch-stars drops a releases ETag whose cached rows are missing', () => {
+  const source = fs.readFileSync(fetchStars, 'utf8');
+  assert.match(
+    source,
+    /if \(!existingReleasesByRepo\.has\(repo\.name\) && savedEtags\[releaseUrl\]\)/,
+    'fetch-stars must refetch releases unconditionally when the cache lost that repo rows',
+  );
+  assert.match(
+    source,
+    /releasesRecovered\s*\+=\s*1/,
+    'fetch-stars must count recovered release sets so a recurrence is visible',
+  );
+});
+
 test('the generated README cache has a body for every README ETag it holds', (t) => {
   const etags = readJsonIfPresent('_etags.json');
   const readmes = readJsonIfPresent('_readmes.json');

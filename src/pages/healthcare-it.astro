@@ -5,6 +5,7 @@ import InteriorNav from '../components/InteriorNav.astro';
 import SectionJumpNav from '../components/SectionJumpNav.astro';
 import Footer from '../components/Footer.astro';
 import { healthcareIT } from '../data/curated';
+import { contactMailto } from '../data/identity';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { faqPageNodes, formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
@@ -90,9 +91,12 @@ const cmdkSections = [
           <div class="page-stat-copy">Issue ownership from diagnosis through vendor coordination, recovery, documentation, and follow-up.</div>
         </div>
       </div>
+      {/* Parity with /ai/: both track pages exist to start a conversation, so
+          the primary action is a subject-prefilled email rather than a
+          secondary jump to the homepage contact block. */}
       <div class="hcit-actions page-actions rv">
-        <a href="/resume/" class="btn bp">Open resume</a>
-        <a href="/#connect" class="btn bg2">Contact</a>
+        <a href={contactMailto('Healthcare IT')} class="btn bp">Discuss a project</a>
+        <a href="/resume/" class="btn bg2">Open resume</a>
       </div>
       <SectionJumpNav items={cmdkSections} />
     </div>
