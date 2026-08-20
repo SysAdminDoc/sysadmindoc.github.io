@@ -57,3 +57,26 @@ test('live smoke verifies the edge security headers the VPS Caddy injects', asyn
   }
   assert.match(liveSmoke, /await checkSecurityHeaders\(baseUrl, summary\)/);
 });
+
+test('CSP reporting stays first-party, bounded, and live-smoke gated', async () => {
+  const [smoke, edgeCaddy, internalCaddy, compose, reporter] = await Promise.all([
+    fs.readFile(path.join(root, 'scripts', 'smoke-live-site.mjs'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'caddy-block.txt'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'), 'utf8'),
+  ]);
+
+  assert.match(edgeCaddy, /Reporting-Endpoints\s+"csp-endpoint=\\"https:\/\/portfolio\.getparkerai\.com\/csp-report\\""/);
+  assert.match(internalCaddy, /reverse_proxy csp-reporter:8080/);
+  assert.match(internalCaddy, /Content-Security-Policy \{\$CSP_POLICY\}/);
+  assert.match(compose, /CSP_POLICY: \$\{CSP_POLICY:\?/);
+  assert.match(compose, /csp-report-server\.mjs/);
+  assert.match(reporter, /maxBodyBytes: 64 \* 1024/);
+  assert.match(reporter, /maxLogBytes: 5 \* 1024 \* 1024/);
+  assert.match(reporter, /maxRequestsPerMinute: 120/);
+  assert.match(reporter, /X-CSP-Report-Stored/);
+  assert.match(smoke, /await checkCspReportEndpoint\(baseUrl, summary\)/);
+  assert.match(smoke, /Reporting-Endpoints/);
+  assert.match(smoke, /report-to\\s\+csp-endpoint/);
+});

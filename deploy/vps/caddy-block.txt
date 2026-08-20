@@ -19,6 +19,10 @@ portfolio.getparkerai.com {
 		X-Frame-Options           "DENY"
 		Permissions-Policy        "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
 		Cross-Origin-Opener-Policy "same-origin"
+		# The internal Caddy delivers the full hash-pinned CSP. This edge-owned
+		# endpoint map supplies the absolute Reporting API destination that the
+		# CSP report-to directive selects.
+		Reporting-Endpoints      "csp-endpoint=\"https://portfolio.getparkerai.com/csp-report\""
 	}
 	log {
 		output file /var/log/caddy/portfolio.log

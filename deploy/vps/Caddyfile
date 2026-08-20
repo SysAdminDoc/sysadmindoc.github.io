@@ -22,6 +22,20 @@
 	@ogimages path /og.png /og/*
 	header @ogimages Cache-Control "public, max-age=86400"
 
+	# Reporting API sink. The edge publishes Reporting-Endpoints, and this
+	# private sidecar accepts only the bounded POST body on the named route.
+	@csp_report path /csp-report
+	handle @csp_report {
+		header Cache-Control "no-store"
+		reverse_proxy csp-reporter:8080
+	}
+
+	# The deploy script stamps CSP_POLICY from the built index.html so the
+	# response header matches the hash-pinned meta policy and can report real
+	# violations. A missing value makes compose fail before an incomplete policy
+	# is served.
+	header Content-Security-Policy {$CSP_POLICY}
+
 	# HTML must revalidate: the URLs are stable, so a cached copy would otherwise
 	# pin a visitor to an old build. The service worker owns offline behavior.
 	@html path / */ *.html

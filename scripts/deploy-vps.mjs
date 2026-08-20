@@ -54,6 +54,39 @@ function runRemote(script) {
   run('ssh', [...sshOptions, ssh, script]);
 }
 
+function decodeHtmlAttribute(value) {
+  return value
+    .replaceAll('&amp;', '&')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', "'")
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>');
+}
+
+function buildCspHeaderValue(distDir) {
+  const html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+  const match = html.match(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*content=["']([^"']+)["']/i);
+  if (!match?.[1]) {
+    throw new Error('deploy-vps: dist/index.html is missing the production CSP meta policy.');
+  }
+  const policy = decodeHtmlAttribute(match[1]).replace(/[\r\n]+/g, ' ').trim();
+  if (!policy.includes('report-to csp-endpoint')) {
+    throw new Error('deploy-vps: built CSP policy is missing report-to csp-endpoint.');
+  }
+  if (policy.includes('"') || policy.includes('`') || policy.includes('\n')) {
+    throw new Error('deploy-vps: built CSP policy contains unsupported env-file characters.');
+  }
+  return `${policy}; report-uri /csp-report`;
+}
+
+function writeComposeEnvFile(distDir) {
+  const envFile = path.join(root, '.tmp', 'csp.env');
+  fs.mkdirSync(path.dirname(envFile), { recursive: true });
+  const policy = buildCspHeaderValue(distDir);
+  fs.writeFileSync(envFile, `CSP_POLICY="${policy}"\n`, 'utf8');
+  return envFile;
+}
+
 // 1. Build the static site unless reusing an existing dist/.
 if (process.env.SKIP_BUILD !== '1') {
   run('npm', ['run', 'build']);
@@ -63,17 +96,21 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
   console.error('deploy-vps: dist/index.html not found — build first or unset SKIP_BUILD.');
   process.exit(1);
 }
+const cspEnvFile = writeComposeEnvFile(distDir);
 
 // 2. Ensure the remote site dir exists.
-runRemote(`mkdir -p ${remoteDir}`);
+runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports`);
 
-// 3. Ship the server config, then the site itself.
+// 3. Ship the server config, reporter, CSP environment, then the site itself.
 run('scp', [
   ...sshOptions,
   path.join(root, 'deploy', 'vps', 'docker-compose.yml'),
   path.join(root, 'deploy', 'vps', 'Caddyfile'),
+  path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'),
+  cspEnvFile,
   `${ssh}:${remoteDir}/`,
 ]);
+fs.rmSync(cspEnvFile, { force: true });
 
 // tar over ssh rather than rsync: rsync is not present on the Windows build
 // box, and this needs no extra remote tooling. The tree is unpacked into a
@@ -103,7 +140,7 @@ fs.rmSync(tarball, { force: true });
 // 4. Recreate the container from the shipped compose file. The bind mount
 // resolves at container start, so swapping the dist/ directory above requires a
 // recreate for the container to serve the new tree rather than the moved one.
-runRemote(`cd ${remoteDir} && docker compose up -d --force-recreate --remove-orphans`);
+runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-recreate --remove-orphans`);
 
 // 5. Verify the deploy against the live origin unless skipped.
 if (process.env.SKIP_SMOKE !== '1') {
