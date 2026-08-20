@@ -65,11 +65,14 @@ function decodeHtmlAttribute(value) {
 
 function buildCspHeaderValue(distDir) {
   const html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
-  const match = html.match(/<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*content=["']([^"']+)["']/i);
-  if (!match?.[1]) {
+  const cspMeta = html
+    .match(/<meta\b[^>]*>/gi)
+    ?.find((tag) => /\bhttp-equiv\s*=\s*(["'])Content-Security-Policy\1/i.test(tag));
+  const contentMatch = cspMeta?.match(/\bcontent\s*=\s*(["'])([\s\S]*?)\1/i);
+  if (!contentMatch?.[2]) {
     throw new Error('deploy-vps: dist/index.html is missing the production CSP meta policy.');
   }
-  const policy = decodeHtmlAttribute(match[1]).replace(/[\r\n]+/g, ' ').trim();
+  const policy = decodeHtmlAttribute(contentMatch[2]).replace(/[\r\n]+/g, ' ').trim();
   if (!policy.includes('report-to csp-endpoint')) {
     throw new Error('deploy-vps: built CSP policy is missing report-to csp-endpoint.');
   }
