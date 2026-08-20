@@ -261,6 +261,33 @@ async function checkSecurityHeaders(baseUrl, summary) {
   summary.push('edge security headers: HSTS, X-Frame-Options, Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options');
 }
 
+async function checkNotFoundStatus(baseUrl, summary) {
+  // Caddy's handle_errors runs a fresh handler chain, so a `rewrite` + plain
+  // `file_server` error route serves the 404 document with HTTP 200. Nothing
+  // else in the suite asserts a response status, so a soft-404 regression would
+  // reach crawlers unnoticed. The path carries the run id, so it can never
+  // collide with a real route.
+  const pathname = `/__live-smoke-missing-${runId}/`;
+  const target = siteUrl(pathname, baseUrl);
+  const response = await fetch(target, {
+    headers: { Accept: 'text/html,*/*', 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
+    redirect: 'follow',
+  });
+  const body = await response.text();
+
+  if (response.status !== 404) {
+    throw new Error(
+      `A missing path returned HTTP ${response.status} from ${target}; expected 404. ` +
+        'A 200 here means the error route is serving the 404 document as success ' +
+        '(see the handle_errors block in deploy/vps/Caddyfile).',
+    );
+  }
+  if (!/404/.test(body)) {
+    throw new Error(`A missing path returned HTTP 404 but did not render the 404 document from ${target}.`);
+  }
+  summary.push('missing path: HTTP 404 with the 404 document');
+}
+
 function findFirstAssetPath(html, pattern, label) {
   const match = html.match(pattern);
   if (!match?.[1]) throw new Error(`Homepage did not reference a ${label}.`);
@@ -273,6 +300,7 @@ async function checkLiveArtifacts(baseUrl, expected) {
   const summary = [];
 
   await checkSecurityHeaders(baseUrl, summary);
+  await checkNotFoundStatus(baseUrl, summary);
 
   const homepage = await fetchText(baseUrl, '/', 'text/html,*/*');
   requireHeader(homepage, '/', { contentTypes: ['text/html'], cacheControl: null });

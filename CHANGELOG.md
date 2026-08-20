@@ -4,6 +4,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `smoke:live` now asserts that a missing path returns HTTP 404 with the 404
+  document. Nothing in the suite checked a response status before, so an error
+  route that started answering 200 (a soft 404, the usual failure mode of a
+  rewrite-based `handle_errors` block) would have reached crawlers unnoticed.
+  The internal Caddyfile now passes the original status through explicitly, so
+  the behavior is pinned on both sides rather than inherited.
+
 ### Fixed
 
 - `/status/` now recalculates its data ages in the browser against the

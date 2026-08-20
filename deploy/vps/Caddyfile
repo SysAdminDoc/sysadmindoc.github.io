@@ -12,8 +12,14 @@
 	header @cache600 Cache-Control "max-age=600"
 
 	file_server
+	# handle_errors runs a fresh handler chain, so file_server would otherwise
+	# write the 404 document with HTTP 200 (a soft 404). Pass the original error
+	# status through explicitly so the code survives Caddy upgrades;
+	# `npm run smoke:live` fails if a missing path stops returning 404.
 	handle_errors {
 		rewrite * /404.html
-		file_server
+		file_server {
+			status {err.status_code}
+		}
 	}
 }

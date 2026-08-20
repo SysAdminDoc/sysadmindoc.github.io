@@ -15,13 +15,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A scheduled run refreshes caches and redeploys unattended when preflight passes; a failed run leaves the last good deploy in place and records why; live `status.json` `fetchedAt` stays under 36h across a week without manual action.
   Complexity: M
 
-- [ ] P0 — Gate live response status codes in smoke:live
-  Why: A live probe on 2026-08-20 confirmed missing paths correctly return HTTP 404 today, but nothing in the suite asserts any response status code — a Caddy `handle_errors` config regression to soft-404s (a known footgun in rewrite-based error handling) would ship silently and hurt crawlers.
-  Evidence: Live probe `curl -sI https://portfolio.getparkerai.com/definitely-not-a-real-page/` → 404 (2026-08-20); `scripts/smoke-live-site.mjs` contains no status-code assertion for missing paths; `tests/playwright/state-coverage.spec.mjs:94` checks rendering only.
-  Touches: `scripts/smoke-live-site.mjs` (assert a nonsense path returns 404 with the 404 page body, and spot-check 200 on key routes), optionally `deploy/vps/Caddyfile` comment documenting why the handle_errors block preserves the status.
-  Acceptance: `npm run smoke:live` fails if a missing path ever returns a non-404 status, and passes against the current live origin.
-  Complexity: S
-
 - [ ] P0 — Upgrade Caddy containers from 2.8-alpine to 2.11-alpine
   Why: 2.8-alpine is three minors behind; 2026 fixes it lacks include CVE-2026-27585 (path-matcher backslash bypass) and CVE-2026-27586 (mTLS fail-open), plus a header-injection escalation fixed in 2.11.2, and the frozen tag means an unpatched Alpine base.
   Evidence: `deploy/vps/docker-compose.yml` (`caddy:2.8-alpine`); https://github.com/caddyserver/caddy/releases (2.11.2, 2026-03-06); RESEARCH.md "Security, Privacy, and Reliability".
