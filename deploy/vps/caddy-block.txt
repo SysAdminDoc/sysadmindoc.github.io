@@ -5,9 +5,10 @@
 # This is the whole point of moving off GitHub Pages: it serves the static
 # portfolio container AND sets the response headers Pages cannot — HSTS,
 # X-Frame-Options (clickjacking, since a <meta> CSP cannot deliver
-# frame-ancestors), Permissions-Policy, and COOP. The Content-Security-Policy
-# stays delivered by the site's own <meta http-equiv> tag (single source of
-# truth, no double-CSP), so no CSP header is set here.
+# frame-ancestors), Permissions-Policy, and COOP. The full
+# Content-Security-Policy is delivered by the portfolio container's internal
+# Caddy response header, while the site's own <meta http-equiv> tag remains the
+# source policy used to stamp that header.
 
 portfolio.getparkerai.com {
 	encode zstd gzip
