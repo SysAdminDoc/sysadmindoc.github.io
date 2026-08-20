@@ -1,10 +1,15 @@
 #!/usr/bin/env node
-// Historical Astro 6 guard: older builds emitted a stray </html> immediately
-// after </head>, which put <body> outside <html> and broke Pagefind parsing.
+// Structural assertion over built HTML, kept permanently rather than as a
+// version-specific workaround.
 //
-// Current Astro 6.4.4 output is structurally correct on both fixture and live
-// profile builds, so the build path is now assert/no-op by default. Use
-// --repair only as an explicit legacy-output recovery tool.
+// It exists because an Astro 6 build once emitted a stray </html> right after
+// </head>, which put <body> outside <html>. Nothing failed loudly: the pages
+// looked fine and Pagefind quietly mis-parsed them, so search degraded without
+// a single error. Output has been structurally correct since (verified on Astro
+// 7.2.4, 2026-08-20), so this runs assert/no-op on every build and costs
+// milliseconds. That is cheap insurance against a silent search regression.
+//
+// Use --repair only as an explicit recovery tool for legacy output.
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

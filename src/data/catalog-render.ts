@@ -84,10 +84,6 @@ export const filterButtons = [
   { key: 'other', label: 'Other' },
 ] as const;
 
-export const filterLabelByKey: Record<string, string> = Object.fromEntries(
-  filterButtons.map((button) => [button.key, button.label]),
-);
-
 // How many ranked projects the homepage preview renders before delegating the
 // full, filterable list to /catalog/. Twelve keeps the landing page comfortably
 // below the excessive-DOM threshold, shortens the mobile journey, and still

@@ -1,3 +1,12 @@
+// Lighthouse here is deliberately advisory, not a gate: every assertion below
+// is `warn`, it samples two representative routes, and it is absent from
+// `build`, `check`, and `deploy:preflight`. That asymmetry against the blocking
+// a11y gate is intentional — `npm run audit:perf` (scripts/audit-performance.mjs)
+// is the repeatable canonical performance check for this repo, because the
+// Lighthouse CLI proved flaky on Windows with EPERM temp-directory cleanup
+// failures after Chrome shutdown (see PERFORMANCE_AUDIT.md). Run `npm run
+// lhci:audit` for a second opinion; do not wire it into a gate without fixing
+// that flake first.
 const urls = [
   'http://localhost/',
   'http://localhost/lang/python/',
