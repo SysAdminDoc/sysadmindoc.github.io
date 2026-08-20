@@ -6,6 +6,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Security
 
+- Bumped satori to 0.29.1, which hardens its SSRF guard against trailing dots,
+  redirects, and DNS rebinding. The rendered social cards are byte-identical
+  before and after, so this is a pure security patch.
 - Upgraded the portfolio's static container from `caddy:2.8-alpine` to
   `caddy:2.11-alpine` (v2.11.4) and deployed it. The 2.8 tag had stopped
   receiving image rebuilds, so its Alpine base went unpatched, and the 2.9-2.11

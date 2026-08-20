@@ -15,13 +15,6 @@ Added 2026-08-20 from the research pass recorded in RESEARCH.md.
   Acceptance: A scheduled run refreshes caches and redeploys unattended when preflight passes; a failed run leaves the last good deploy in place and records why; live `status.json` `fetchedAt` stays under 36h across a week without manual action.
   Complexity: M
 
-- [ ] P0 — Bump satori to 0.29.1+ for the SSRF-guard security patch
-  Why: Lockfile pins satori 0.29.0; 0.29.1 (2026-08-19) hardens the SSRF guard against trailing dots, redirects, and DNS rebinding — low exploitability at build time, but it is a security patch on a rendering dependency.
-  Evidence: `package-lock.json` (`satori 0.29.0`); https://github.com/vercel/satori/releases (0.29.1–0.32.0, 2026-08-19/20).
-  Touches: `package.json`, `package-lock.json`; rerun `og-cards:audit` + visual baselines to confirm identical output (or adopt 0.32.0 if card styling benefits).
-  Acceptance: `npm ls satori` shows ≥0.29.1, `npm run build:ci` passes including the OG raster gate, `deps:audit` stays green.
-  Complexity: S
-
 ### P1
 
 - [ ] P1 — Add a first-party intake form + VPS endpoint (moved from Roadmap_Blocked; blocker dissolved)
