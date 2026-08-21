@@ -9,7 +9,7 @@ import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshne
 import { rankedCatalog, catalogTotal } from '../data/catalog-render';
 import { liveApps } from '../data/portfolio';
 
-const title = 'Project Catalog — Matt Parker';
+const title = 'Project Catalog | Matt Parker';
 const pageOg = interiorOgPageBySlug['catalog'];
 const pageFreshness = pageFreshnessBySlug['catalog'];
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
@@ -47,7 +47,7 @@ const cmdkSections = [
       <div class="sh rv">
         <div class="sl">// Catalog</div>
         <h1 class="st catalog-page-title">Project catalog</h1>
-        <p class="sd">Every public project in one place — {catalogTotal} repositories plus {liveAppCount} live apps. Search, sort, and filter the whole archive; every card opens its GitHub repository directly.</p>
+        <p class="sd">Every public project in one place. Browse {catalogTotal} repositories plus {liveAppCount} live apps, then search, sort, or filter the archive. Every card opens its GitHub repository directly.</p>
       </div>
       <div class="catalog-page-actions page-actions rv">
         <a href="/#greatest-hits" class="btn bg2">See the highlights</a>

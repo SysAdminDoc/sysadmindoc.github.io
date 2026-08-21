@@ -21,7 +21,7 @@ export const LANGS: Record<string, { label: string; category: string; intro: str
     category: 'ext',
     accent: '--yel',
     intro:
-      "Userscripts and Chrome MV3 extensions — document-start injection, anti-FOUC styling, Trusted Types, split-context patterns for ad blocking. No jQuery, no frameworks where they aren't needed. Scope every CSS class to avoid leaking into the host page.",
+      "Userscripts and Chrome MV3 extensions with document-start injection, anti-FOUC styling, Trusted Types, and split-context ad-blocking patterns. No jQuery. No frameworks where they aren't needed. Scope every CSS class to avoid leaking into the host page.",
   },
   web: {
     label: 'Web Apps',
@@ -49,6 +49,6 @@ export const LANGS: Record<string, { label: string; category: string; intro: str
     category: 'sec',
     accent: '--red',
     intro:
-      "Defensive security tooling — pfSense automations, NextDNS panels, network auditing. Not exploit development. Threat modeling, telemetry suppression, hosts-file management.",
+      "Defensive security tooling for pfSense automation, NextDNS panels, and network auditing. This isn't exploit development. The work covers threat modeling, telemetry suppression, and hosts-file management.",
   },
 };

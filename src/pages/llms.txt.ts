@@ -56,10 +56,10 @@ export async function GET(context: APIContext) {
   ];
 
   const lines: string[] = [];
-  lines.push('# Matt Parker — Portfolio');
+  lines.push('# Matt Parker | Portfolio');
   lines.push('');
   lines.push(
-    `> ${careerProfile.headline} with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation. Static, privacy-first site - no analytics, no cookies, no third-party scripts.`,
+      `> ${careerProfile.headline} with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation. Static and privacy-first, with no analytics, cookies, or third-party scripts.`,
   );
   lines.push('');
 

@@ -58,7 +58,7 @@ const laneHeroProjects = repos.slice(0, 3).map((repo) => {
   };
 });
 
-const title = `${lang.label} — ${repos.length} projects by Matt Parker`;
+const title = `${lang.label} | ${repos.length} projects by Matt Parker`;
 const description = `Everything I've shipped in ${lang.label}. ${repos.length} public projects, ${totalStars} stars.`;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const laneHeroSignals = [

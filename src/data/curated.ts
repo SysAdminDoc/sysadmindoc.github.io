@@ -18,19 +18,19 @@ export const greatestHits: GreatestHit[] = [
   {
     repo: 'win11-nvme-driver-patcher',
     name: 'win11-nvme-driver-patcher',
-    why: '~80% IOPS uplift on modern NVMe SSDs by swapping in the Server 2025 driver — two clicks, auto-elevates, logs every step.',
+    why: '~80% IOPS uplift on modern NVMe SSDs by swapping in the Server 2025 driver. It takes two clicks, auto-elevates, and logs every step.',
     tag: 'Windows',
   },
   {
     repo: 'UniversalConverterX',
     name: 'UniversalConverterX',
-    why: '1000+ format desktop converter — WinUI 3 shell with sidecar engines covering media, docs, archives, PDFs, subtitles, fonts, ebooks, OCR. The Wondershare alternative that doesn\u2019t phone home.',
+    why: '1000+ format desktop converter. Its WinUI 3 shell uses sidecar engines for media, docs, archives, PDFs, subtitles, fonts, ebooks, and OCR. The Wondershare alternative that doesn\u2019t phone home.',
     tag: 'Desktop',
   },
   {
     repo: 'HostShield',
     name: 'HostShield',
-    why: 'AMOLED-dark hosts-based ad blocker for Android — dual-mode (root + VPN) so it works on stock Pixel without a custom ROM.',
+    why: 'AMOLED-dark hosts-based ad blocker for Android. Root and VPN modes let it work on a stock Pixel without a custom ROM.',
     tag: 'Android',
   },
   {
@@ -54,13 +54,13 @@ export const greatestHits: GreatestHit[] = [
   {
     repo: 'Astra-Deck',
     name: 'Astra-Deck',
-    why: '150+ YouTube enhancements across Chrome & Firefox — split-context ad blocking, shortcuts, polish. Formerly YouTube-Kit.',
+    why: '150+ YouTube enhancements across Chrome and Firefox, including split-context ad blocking, shortcuts, and interface polish. Formerly YouTube-Kit.',
     tag: 'Extension',
   },
   {
     repo: 'project-nomad-desktop',
     name: 'project-nomad-desktop',
-    why: 'Offline survival command center — maps, AI chat, situation room, 600+ routes, 95+ tables. Runs without internet.',
+    why: 'Offline survival command center with maps, AI chat, a situation room, 600+ routes, and 95+ tables. Runs without internet.',
     tag: 'Offline',
   },
 ];
@@ -84,7 +84,7 @@ export const now = {
   updated: '2026-07-23',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site ${siteVersion} - ${fallbackRepoCount} repos, resume PDF generation, Pagefind search, and Playwright visual baselines`,
+    `Portfolio site ${siteVersion}. Includes ${fallbackRepoCount} repos, resume PDF generation, Pagefind search, and browser visual baselines`,
     'AI services track: fractional AI implementation, automation, and training engagements for businesses on a monthly retainer',
     'Healthcare support workflows: migration coordination, customer cutover validation, and documentation cleanup',
     'Customer support operations: hosted account transitions, workstation support, and vendor handoffs',

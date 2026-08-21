@@ -31,7 +31,7 @@ export async function GET(context: APIContext) {
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Matt Parker — Releases</title>
+    <title>Matt Parker | Releases</title>
     <link>${site}/releases/</link>
     <description>Tagged releases across the public archive by Matt Parker.</description>
     <language>en-us</language>

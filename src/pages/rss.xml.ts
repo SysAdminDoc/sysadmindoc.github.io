@@ -65,10 +65,10 @@ export async function GET(context: APIContext) {
     });
 
   return withEndpointCache(await rss({
-    title: 'Matt Parker — Projects',
+    title: 'Matt Parker | Projects',
     // Count the categories actually represented, not every declared label —
     // several labels have no projects behind them.
-    description: `Public projects, live web apps, and the full catalog by Matt Parker - ${catalog.length} projects across ${new Set(catalog.map((entry) => entry.category)).size} categories.`,
+    description: `Public projects, live web apps, and the full catalog by Matt Parker. Browse ${catalog.length} projects across ${new Set(catalog.map((entry) => entry.category)).size} categories.`,
     site,
     items,
     xmlns: { content: 'http://purl.org/rss/1.0/modules/content/' },

@@ -35,12 +35,12 @@ export async function GET(context: APIContext) {
 
   const feed = {
     version: 'https://jsonfeed.org/version/1.1',
-    title: 'Matt Parker — Projects',
+    title: 'Matt Parker | Projects',
     home_page_url: `${site}/`,
     feed_url: `${site}/feed.json`,
     icon: `${site}/icon-512.png`,
     favicon: `${site}/favicon.svg`,
-    description: `Public projects, live web apps, and the full catalog - ${catalog.length}+ projects.`,
+    description: `Public projects, live web apps, and the full catalog. Browse ${catalog.length}+ projects.`,
     language: 'en-US',
     authors: [{ name: 'Matt Parker', url: 'https://github.com/SysAdminDoc' }],
     items: items.map((i) => ({

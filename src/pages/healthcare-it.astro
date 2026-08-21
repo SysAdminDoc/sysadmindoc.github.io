@@ -9,7 +9,7 @@ import { contactMailto } from '../data/identity';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { faqPageNodes, formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
-const title = 'Healthcare IT — Matt Parker';
+const title = 'Healthcare IT | Matt Parker';
 const pageOg = interiorOgPageBySlug['healthcare-it'];
 const pageFreshness = pageFreshnessBySlug['healthcare-it'];
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
@@ -21,7 +21,7 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.
 const faqs = [
   {
     q: 'What healthcare IT work do you actually do?',
-    a: 'Hands-on support for imaging environments: PACS deployments, DR panel configuration, DICOM routing, hosted-service migrations, workstation and network troubleshooting, and customer escalation — owning each issue from diagnosis through vendor coordination, recovery, and documentation.',
+    a: 'Hands-on support for imaging environments, including PACS deployments, DR panel configuration, DICOM routing, hosted-service migrations, workstation and network troubleshooting, and customer escalation. I own each issue from diagnosis through vendor coordination, recovery, and documentation.',
   },
   {
     q: 'Do you handle PACS and hosted-service migrations?',
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: 'Why aren’t individual customer projects listed here?',
-    a: 'Most healthcare support work is operational and customer-specific — migration notes, account recovery, workflow validation, and communication during service-impacting issues. The useful public summary is the role context and résumé, not customer-specific implementation detail.',
+    a: 'Most healthcare support work is operational and customer-specific. It includes migration notes, account recovery, workflow validation, and communication during service-impacting issues. The useful public summary is the role context and résumé, not customer-specific implementation detail.',
   },
 ] as const;
 
@@ -123,7 +123,7 @@ const cmdkSections = [
 
     <div class="si" id="hcit-faq">
       <h2 class="hcit-h2">Common questions</h2>
-      <p class="hcit-faq-lead rv">Plain answers on the scope of the work, how migrations are handled, and why individual customer projects stay private — the context that a role summary or résumé line can’t carry on its own.</p>
+      <p class="hcit-faq-lead rv">Plain answers on the work, how migrations are handled, and why individual customer projects stay private. It’s context that a role summary or résumé line can’t carry on its own.</p>
       <dl class="hcit-faq rv">
         {faqs.map((faq) => (
           <div class="hcit-faq-item">
