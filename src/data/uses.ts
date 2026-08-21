@@ -8,7 +8,7 @@ export const uses: UsesCategory[] = [
     title: 'Editor',
     items: [
       { name: 'VSCodium', note: 'Primary editor for everything except Android' },
-      { name: 'GitHub Copilot', note: 'Inline completions and chat' },
+      { name: 'VS Code language tooling', note: 'Type-aware templates and route checks' },
     ],
   },
   {
@@ -20,11 +20,11 @@ export const uses: UsesCategory[] = [
     ],
   },
   {
-    title: 'AI Tools',
+    title: 'Quality',
     items: [
-      { name: 'Claude Code (CLI)', note: 'Primary development agent' },
-      { name: 'Claude Max', note: 'Research, planning, and long-form work' },
-      { name: 'Codex', note: 'Background autonomous tasks' },
+      { name: 'Playwright', note: 'Interaction, accessibility, and browser-state checks' },
+      { name: 'axe-core', note: 'Automated accessibility rules' },
+      { name: 'Lighthouse CI', note: 'Performance and browser health audits' },
     ],
   },
   {
@@ -66,7 +66,7 @@ export const uses: UsesCategory[] = [
   {
     title: 'Design',
     items: [
-      { name: 'Dark-first', note: 'Every UI ships dark by default' },
+      { name: 'Theme by context', note: 'Warm editorial light here. Dark-first in most apps.' },
       { name: 'Catppuccin Mocha', note: 'Preferred color palette' },
       { name: 'Glassmorphism', note: 'Frosted glass, shimmer, and depth' },
     ],

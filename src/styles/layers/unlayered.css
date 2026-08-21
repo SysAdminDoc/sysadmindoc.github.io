@@ -1502,12 +1502,11 @@ body.route-home .ca{grid-template-columns:minmax(0,1fr) auto;align-items:center;
 body.route-home .ca-copy{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.5fr);align-items:baseline;gap:28px}
 body.route-home .ca .cds{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 body.route-home .ca-side{grid-column:2;grid-row:1;justify-self:end}
-body.route-home .catalog-reset[hidden]{display:none!important}
 .catalog-more{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--blue);text-decoration:none;white-space:nowrap}
 .catalog-more:hover{text-decoration:underline}
 .catalog-more:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px;border-radius:4px}
 /* The feedback row is a flex container, so the anchor needs an explicit
-   [hidden] rule for the same reason .catalog-reset above does. */
+   [hidden] rule alongside its author-level display behavior. */
 .catalog-more[hidden]{display:none!important}
 @media(max-width:640px){.catalog-more{white-space:normal}}
 body.route-home .ca-kind,

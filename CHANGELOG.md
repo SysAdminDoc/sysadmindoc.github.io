@@ -13,6 +13,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Kept full-text search queries visible in the input and synchronized with the
   page URL, added a useful no-results recovery panel, and placed mobile results
   ahead of the longer filter list.
+- Removed the full-catalog heading echo, restored the hidden reset-button
+  contract, simplified the command-search empty state, and aligned the Uses
+  page with the portfolio's actual light-default theme and current quality tools.
 
 ## [v0.41.4] - 2026-08-20
 
