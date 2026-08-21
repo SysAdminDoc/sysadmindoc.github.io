@@ -563,6 +563,38 @@ test.describe('rendered interaction smoke', () => {
     await expectNoHorizontalOverflow(page);
     expect(runtimeErrors).toEqual([]);
   });
+
+  test('language lane desktop heroes keep copy and proof columns separated', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page);
+    await page.setViewportSize({ width: 1440, height: 1000 });
+
+    for (const slug of ['powershell', 'python', 'javascript', 'web', 'kotlin', 'cs', 'security']) {
+      await preparePage(page, `/lang/${slug}/`, '#lane-overview');
+      const geometry = await page.locator('.lang-hero-layout').evaluate((hero) => {
+        const copy = hero.querySelector('.lang-hero-copy');
+        const aside = hero.querySelector('.lang-hero-aside');
+        const title = hero.querySelector('.lang-title');
+        const intro = hero.querySelector('.lang-intro');
+        if (!copy || !aside || !title || !intro) return null;
+        const copyRect = copy.getBoundingClientRect();
+        const asideRect = aside.getBoundingClientRect();
+        return {
+          copyRight: Math.max(
+            copyRect.right,
+            title.getBoundingClientRect().left + title.scrollWidth,
+            intro.getBoundingClientRect().left + intro.scrollWidth,
+          ),
+          asideLeft: asideRect.left,
+        };
+      });
+
+      expect(geometry, `${slug} lane should expose both hero columns`).not.toBeNull();
+      expect(geometry.copyRight, `${slug} lane copy overlaps its proof column`).toBeLessThanOrEqual(geometry.asideLeft - 24);
+      await expectNoHorizontalOverflow(page);
+    }
+
+    expect(runtimeErrors).toEqual([]);
+  });
 });
 
 test.describe('cross-document view transition smoke', () => {
