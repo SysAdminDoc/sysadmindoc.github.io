@@ -198,6 +198,7 @@ test.describe('rendered interaction smoke', () => {
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
     await expect(page.locator('pagefind-filter-pane')).toContainText('Scope', { timeout: 20_000 });
     await expect(page.locator('pagefind-filter-pane')).not.toContainText('Category');
+    await expect(page.locator('#pagefindSearch input[type="search"]')).toHaveValue('archive');
 
     const archiveMeta = page.locator('.portfolio-result-meta').filter({ hasText: 'Archive' }).first();
     await expect(archiveMeta).toBeVisible({ timeout: 20_000 });
@@ -235,10 +236,18 @@ test.describe('rendered interaction smoke', () => {
 
     await expect(page.locator('pagefind-summary .pf-summary')).toContainText('No results', { timeout: 20_000 });
     await expect(page.locator('.pf-results .portfolio-result-card')).toHaveCount(0);
+    await expect(page.locator('#pagefindEmpty')).toBeVisible();
+    await expect(page.locator('#pagefindEmpty')).toContainText('No indexed pages matched that search.');
+    await expect(page.locator('#pagefindEmpty a[href="/catalog/"]')).toBeVisible();
     await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'ready');
     await expect(page.locator('#pagefindFallback')).toBeHidden();
     await expectSearchFallbackLinks(page);
     await expectNoHorizontalOverflow(page);
+
+    await page.locator('#pagefindEmptyReset').click();
+    await expect(page.locator('#pagefindSearch input[type="search"]')).toHaveValue('');
+    await expect(page).not.toHaveURL(/\?q=/);
+    await expect(page.locator('#pagefindEmpty')).toBeHidden();
     expect(runtimeErrors).toEqual([]);
   });
 

@@ -10,6 +10,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   interior heading grid had been forcing the lane copy into a 190-pixel track,
   which made titles, descriptions, representative builds, and signal rows
   overlap at desktop widths.
+- Kept full-text search queries visible in the input and synchronized with the
+  page URL, added a useful no-results recovery panel, and placed mobile results
+  ahead of the longer filter list.
 
 ## [v0.41.4] - 2026-08-20
 
