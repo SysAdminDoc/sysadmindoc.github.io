@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Separated every desktop language-lane hero from its proof column. The shared
+  interior heading grid had been forcing the lane copy into a 190-pixel track,
+  which made titles, descriptions, representative builds, and signal rows
+  overlap at desktop widths.
+
 ## [v0.41.4] - 2026-08-20
 
 ### Docs
