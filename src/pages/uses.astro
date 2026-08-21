@@ -22,7 +22,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
 });
 const cmdkSections = [
   { label: 'Overview', href: '#uses-overview', desc: 'What this page covers and why it exists.', badge: 'USES' },
-  { label: 'Setup', href: '#uses-setup', desc: 'Editor, terminal, AI tools, languages, frameworks, devops, hardware, and design.', badge: `${uses.length} CATEGORIES` },
+  { label: 'Setup', href: '#uses-setup', desc: 'Editor, terminal, quality tools, languages, frameworks, devops, hardware, and design.', badge: `${uses.length} CATEGORIES` },
 ];
 ---
 <Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
@@ -46,7 +46,7 @@ const cmdkSections = [
         <div class="page-stat">
           <div class="page-stat-value">{uses.length}</div>
           <div class="page-stat-label">Categories</div>
-          <div class="page-stat-copy">Editor, terminal, AI, languages, frameworks, devops, hardware, and design.</div>
+          <div class="page-stat-copy">Editor, terminal, quality, languages, frameworks, devops, hardware, and design.</div>
         </div>
         <div class="page-stat">
           <div class="page-stat-value">{uses.reduce((sum, cat) => sum + cat.items.length, 0)}</div>
@@ -54,9 +54,9 @@ const cmdkSections = [
           <div class="page-stat-copy">The specific software, services, and conventions used day-to-day.</div>
         </div>
         <div class="page-stat">
-          <div class="page-stat-value">Dark</div>
-          <div class="page-stat-label">Default Theme</div>
-          <div class="page-stat-copy">Every UI ships with a dark theme first. Catppuccin Mocha is the go-to palette.</div>
+          <div class="page-stat-value">Light</div>
+          <div class="page-stat-label">Portfolio Theme</div>
+          <div class="page-stat-copy">The portfolio opens in warm editorial light. Dark mode stays available and persists.</div>
         </div>
       </div>
 

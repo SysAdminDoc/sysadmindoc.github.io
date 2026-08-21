@@ -54,8 +54,8 @@ const statusLead = isPreview
 ---
 <section id="catalog" aria-label="Project catalog"><div class="si">
   <div class="sh rv">
-    <div class="sl">05 / Catalog</div>
-    <h2 class="st">Project catalog</h2>
+    <div class="sl">{isPreview ? '05 / Catalog' : '// All projects'}</div>
+    <h2 class="st">{isPreview ? 'Project catalog' : 'Browse the archive'}</h2>
     {isPreview ? (
       <p class="sd">A recommended slice of the archive. Browse, search, and filter all {total} public projects in the <a href={browseAllHref} class="page-inline-link">full catalog</a>.</p>
     ) : (

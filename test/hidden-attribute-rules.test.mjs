@@ -19,6 +19,7 @@ const HIDDEN_TOGGLED_SELECTORS = [
   { file: 'src/pages/screenshots.astro', selector: '.screenshots-empty' },
   { file: 'src/pages/search.astro', selector: '.search-degraded' },
   { file: 'src/pages/search.astro', selector: '.search-empty' },
+  { file: 'src/styles/layers/foundation.css', selector: '.catalog-reset' },
 ];
 
 function hasDisplayRule(css, selector) {
