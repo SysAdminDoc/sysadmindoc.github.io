@@ -19,7 +19,7 @@ import { catalog, liveApps } from '../data/portfolio';
 // Derived from the live catalog so the résumé cannot drift from the hero.
 const careerProof = buildCareerProof(catalog.length, liveApps.length);
 
-const title = 'Resume - Matt Parker';
+const title = 'Resume | Matt Parker';
 const pageOg = interiorOgPageBySlug.resume;
 const pageFreshness = pageFreshnessBySlug.resume;
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
@@ -50,7 +50,7 @@ const cmdkSections = [
     <div class="si resume-shell">
       <section class="resume-header" id="resume-header">
         <div class="resume-file-mark" aria-hidden="true">
-          <strong>MP–01</strong>
+          <strong>MP-01</strong>
           <span>Career record</span>
           <small>Verified · {pageFreshness.lastReviewed}</small>
         </div>
@@ -147,7 +147,7 @@ const cmdkSections = [
               <div class="resume-role-header">
                 <div>
                   <h3>{role.role}</h3>
-                  <p class="resume-company">{role.company} — {role.location}</p>
+                  <p class="resume-company">{role.company}, {role.location}</p>
                 </div>
                 <span class="resume-period">{role.period}</span>
               </div>

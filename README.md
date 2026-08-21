@@ -9,29 +9,29 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 
 ## Stack
 
-- **Astro 7** — static site generator with focused client-side enhancements for the homepage experience
+- **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
 - **Content collections**: featured (9), live apps (22), catalog (193 feed-backed / 186 local fallback), skills (8)
-- **Technical Service Bureau design system** — a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
-- **Shared career dossier** — résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
-- **Minimal homepage evidence sequence** — concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs
-- **Focused AI implementation track** — three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
-- **Build-time GitHub API** — stars, repo metadata, release summaries, and cached README telemetry
-- **Generated timeline** — year-in-review page built from release and project-push evidence
-- **Archive decisions** — public-safe anti-portfolio for retired, moved, or held-back project surfaces
-- **Static full-text search** — Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
-- **Shared interior navigation** — five primary routes stay visible while long-page section
+- **Technical Service Bureau design system**: a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
+- **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
+- **Minimal homepage evidence sequence**: concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs
+- **Focused AI implementation track**: three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
+- **Build-time GitHub API**: stars, repo metadata, release summaries, and cached README telemetry
+- **Generated timeline**: year-in-review page built from release and project-push evidence
+- **Archive decisions**: public-safe anti-portfolio for retired, moved, or held-back project surfaces
+- **Static full-text search**: Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
+- **Shared interior navigation**: five primary routes stay visible while long-page section
   indexes remain available in a compact `SectionJumpNav` disclosure
-- **Interior freshness signals** — reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
-- **Catalog discovery** — build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
-- **Machine-readable indexes** — audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
-- **Performance, PWA, update, and CSP hygiene** — Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
-- **Image and brand pipeline checks** — Sharp-generated live-app thumbnails, Astro-managed card previews, reproducible MP app icons/install captures, and data-backed homepage/interior OG PNG generation
-- **Local semantic audit** — advisory project similarity and category-drift review without hosted inference
-- **Browser accessibility and visual baselines** — Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
-- **Public-safe notes policy** — `/til` stays parked until a reviewed note corpus exists
-- **VPS deployment** — local build, audit, and smoke process; static site served from a Caddy container on the Contabo VPS (GitHub Pages remains a fallback)
+- **Interior freshness signals**: reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
+- **Catalog discovery**: build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
+- **Machine-readable indexes**: audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
+- **Performance, PWA, update, and CSP hygiene**: Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
+- **Image and brand pipeline checks**: Sharp-generated live-app thumbnails, Astro-managed card previews, reproducible MP app icons/install captures, and data-backed homepage/interior OG PNG generation
+- **Local semantic audit**: advisory project similarity and category-drift review without hosted inference
+- **Browser accessibility and visual baselines**: Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
+- **Public-safe notes policy**: `/til` stays parked until a reviewed note corpus exists
+- **VPS deployment**: local build, audit, and smoke process. A Caddy container serves the static site from the Contabo VPS, with GitHub Pages retained as a fallback.
 
 ## Develop
 
@@ -124,7 +124,7 @@ npm run scaffold:route -- talks --title "Talks" --label "Speaking"
 
 It writes the page stub and patches the OG page list, page freshness, schema
 audit routes, the `InteriorNav` union and link, and the Base command-palette
-section — exiting non-zero and naming anything whose anchor it could not find. It
+section. It exits non-zero and names anything whose anchor it could not find. It
 deliberately does not touch the frozen expectation sets in `test/`, since
 widening those is a review decision; it prints exactly which ones to update.
 
@@ -160,7 +160,7 @@ Public notes/TIL content is intentionally not published until a durable reviewed
 The canonical origin is **`https://portfolio.getparkerai.com`**, a static site served
 from the Contabo VPS behind the shared edge Caddy (config under
 [`deploy/vps/`](deploy/vps/)). Moving off GitHub Pages is what lets the site set
-response headers Pages cannot — HSTS, `X-Frame-Options`, `Permissions-Policy`,
+response headers Pages cannot, including HSTS, `X-Frame-Options`, `Permissions-Policy`,
 and COOP. The hash-pinned CSP remains declared in the site's own `<meta>` tag and
 is copied into the internal Caddy response header for reporting.
 `npm run smoke:live` asserts every one of those edge security headers against the
@@ -178,7 +178,7 @@ Deployment is local-first:
 2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.
 3. Run `npm run deploy:preflight`; it fails if generated data is stale, coverage is low, README refresh telemetry was not token-backed, the public GitHub repo catalog has unreviewed drift, dependency signatures fail, or an exact override pin trails a patch/minor release.
 4. Preview `dist/` with `npm run preview` and run any relevant browser audits.
-5. Deploy: `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps` — builds, mirrors
+5. Deploy with `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps`. It builds and mirrors
    `dist/` to `/home/deploy/sites/portfolio/`, recreates the static container, and
    smokes the live origin.
 
@@ -279,4 +279,4 @@ Open work is tracked locally in `ROADMAP.md`; public delivery history lives in t
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

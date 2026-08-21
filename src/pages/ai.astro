@@ -13,7 +13,7 @@ import {
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto, experienceLabel, experienceShort } from '../data/identity';
 
-const title = 'AI Services — Matt Parker';
+const title = 'AI Services | Matt Parker';
 const pageOg = interiorOgPageBySlug['ai'];
 const pageFreshness = pageFreshnessBySlug['ai'];
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
@@ -47,11 +47,11 @@ const services = [
 const faqs = [
   {
     q: 'What does an AI implementation engagement actually deliver?',
-    a: 'A working, documented system your team owns — not a slide deck. I map one high-friction workflow, ship a fixed-scope pilot with a clear success measure, harden it with data boundaries and human review, then hand over the source, accounts, and runbooks.',
+    a: 'A working, documented system your team owns, not a slide deck. I map one high-friction workflow, ship a fixed-scope pilot with a clear success measure, harden it with data boundaries and human review, then hand over the source, accounts, and runbooks.',
   },
   {
     q: 'Where does my data go when you add AI?',
-    a: 'Wherever you decide. Defining data boundaries is part of the first step — which tools may see which data, and when a local or in-house model is the right call so sensitive information never leaves your environment.',
+    a: 'Wherever you decide. Defining data boundaries is part of the first step. We decide which tools may see each kind of data, and when a local or in-house model is the right call so sensitive information never leaves your environment.',
   },
   {
     q: 'How do you keep AI from making costly mistakes?',
@@ -59,7 +59,7 @@ const faqs = [
   },
   {
     q: 'How small can a first project be?',
-    a: 'Deliberately small. The best first engagement is one recurring, well-owned task — a report, a document flow, a data-entry step — proven end to end before anything expands. Bring the workflow that keeps getting postponed.',
+    a: 'Deliberately small. The best first engagement is one recurring, well-owned task, such as a report, document flow, or data-entry step. We prove it end to end before anything expands. Bring the workflow that keeps getting postponed.',
   },
 ] as const;
 
@@ -157,7 +157,7 @@ const cmdkSections = [
       <div class="sh">
         <div class="sl">// AI implementation</div>
         <h1 class="st aisvc-title">Turn repetitive work into reliable systems.</h1>
-        <p class="sd aisvc-intro">I design and ship AI-assisted tools for document workflows, internal operations, and team adoption—then secure, document, and hand them over. The work is grounded in {experienceLabel} of enterprise IT and healthcare operations.</p>
+        <p class="sd aisvc-intro">I design and ship AI-assisted tools for document workflows, internal operations, and team adoption. Then I secure, document, and hand them over. The work is grounded in {experienceLabel} of enterprise IT and healthcare operations.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
       <div class="aisvc-actions page-actions">
@@ -221,7 +221,7 @@ const cmdkSections = [
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">03 / Proof</div>
           <h2 class="aisvc-h2">Judge the offer by what is already operating.</h2>
-          <p>Judge the offer by what is already running, not by promises. The public projects show the delivery range across Windows, web, Android, and browser platforms, and Parker AI runs the whole consulting model — offer, intake, and security posture — as a live production system.</p>
+          <p>Judge the offer by what is already running, not by promises. The public projects show the delivery range across Windows, web, Android, and browser platforms. Parker AI runs the consulting offer, intake, and security posture as a live production system.</p>
         </header>
         <div class="aisvc-proof-grid">
           <article class="aisvc-case">
@@ -250,7 +250,7 @@ const cmdkSections = [
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">04 / Questions</div>
           <h2 class="aisvc-h2">The questions clients ask before starting.</h2>
-          <p>Straight answers on what you get, where your data goes, how mistakes are contained, and how small a first project can be — the four things that decide whether AI belongs in the work at all.</p>
+          <p>Straight answers on what you get, where your data goes, how mistakes are contained, and how small a first project can be. Those answers decide whether AI belongs in the work at all.</p>
         </header>
         <dl class="aisvc-faq-list">
           {faqs.map((faq) => (

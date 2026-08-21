@@ -4,6 +4,12 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Reworked route titles, feed labels, career date ranges, service answers, and
+  project summaries so the public copy is easier to scan and uses one consistent
+  editorial voice. The README now follows the same punctuation standard.
+
 ### Fixed
 
 - Separated every desktop language-lane hero from its proof column. The shared
