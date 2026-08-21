@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.42.0] - 2026-08-21
+
 ### Changed
 
 - Reworked route titles, feed labels, career date ranges, service answers, and
