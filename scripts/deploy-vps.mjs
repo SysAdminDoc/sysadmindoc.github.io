@@ -47,6 +47,13 @@ if (process.env.PORTFOLIO_VPS_KNOWN_HOSTS) {
 
 function run(command, args, options = {}) {
   console.log(`$ ${command} ${args.join(' ')}`);
+  // npm is npm.cmd on Windows; execFileSync cannot spawn .cmd files directly
+  // (ENOENT, and Node >=18.20 refuses .cmd without a shell), so route through
+  // cmd.exe. Args here are fixed strings, never user input.
+  if (process.platform === 'win32' && command === 'npm') {
+    execFileSync('cmd.exe', ['/d', '/s', '/c', ['npm', ...args].join(' ')], { stdio: 'inherit', ...options });
+    return;
+  }
   execFileSync(command, args, { stdio: 'inherit', ...options });
 }
 
