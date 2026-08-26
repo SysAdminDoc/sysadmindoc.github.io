@@ -4,6 +4,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.42.1] - 2026-08-26
+
+### Added
+- Cataloged ten public repos the drift audit flagged: AstraDownloader, Segue, FantasyLeagueFootball, HostnameForensics, LogVerdict, PatchDock, kick-focus, StarBoard, codex-terminal, and TerminalAI. Local fallback catalog grows from 186 to 196 entries.
+- Marked the `.github` community-health repo as a reviewed exclusion in the catalog policy.
+
+### Fixed
+- The nightly refresh-and-deploy task had failed closed at `deploy:preflight` since 2026-08-24 over the uncataloged repos. The gate passes again and deploys resume.
+
 ## [v0.42.0] - 2026-08-21
 
 ### Changed

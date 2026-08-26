@@ -224,7 +224,17 @@ export const catalog: CatalogEntry[] = [
   { repo: "sysadmindoc.github.io", name: "sysadmindoc.github.io", url: "https://github.com/SysAdminDoc/sysadmindoc.github.io", category: "guide", desc: "Portfolio &amp; project showcase" },
   { repo: "octopus-factory", name: "octopus-factory", url: "https://github.com/SysAdminDoc/octopus-factory", category: "other", desc: "Recipe-driven autonomous coding pipeline &mdash; multi-agent build/audit/release" },
   { repo: "improve-repo", name: "improve-repo", url: "https://github.com/SysAdminDoc/improve-repo", category: "other", desc: "Automated repo improvement pipeline &mdash; research, implement, polish, review, PR" },
-  { repo: "project-nomad", name: "project-nomad", url: "https://github.com/SysAdminDoc/project-nomad", category: "other", desc: "Project N.O.M.A.D &mdash; the original offline survival computer concept &amp; spec" }
+  { repo: "project-nomad", name: "project-nomad", url: "https://github.com/SysAdminDoc/project-nomad", category: "other", desc: "Project N.O.M.A.D &mdash; the original offline survival computer concept &amp; spec" },
+  { repo: "AstraDownloader", name: "AstraDownloader", url: "https://github.com/SysAdminDoc/AstraDownloader", category: "py", desc: "Desktop video downloader for Windows; paste a link from almost any site" },
+  { repo: "Segue", name: "Segue", url: "https://github.com/SysAdminDoc/Segue", category: "py", desc: "Move Spotify playlists to YouTube Music with a match-review step" },
+  { repo: "FantasyLeagueFootball", name: "FantasyLeagueFootball", url: "https://github.com/SysAdminDoc/FantasyLeagueFootball", category: "py", desc: "Offline draft-day board for Yahoo fantasy football, zero dependencies" },
+  { repo: "HostnameForensics", name: "HostnameForensics", url: "https://github.com/SysAdminDoc/HostnameForensics", category: "ps", desc: "Trace how and when a Windows hostname was changed, with raw evidence bundle" },
+  { repo: "LogVerdict", name: "LogVerdict", url: "https://github.com/SysAdminDoc/LogVerdict", category: "ps", desc: "Scan Windows logs and rule on each signature in plain English" },
+  { repo: "PatchDock", name: "PatchDock", url: "https://github.com/SysAdminDoc/PatchDock", category: "kt", desc: "Find, patch, sign, and install Android apps on-device, no PC needed" },
+  { repo: "kick-focus", name: "kick-focus", url: "https://github.com/SysAdminDoc/kick-focus", category: "ext", desc: "Desktop-first layout, filters, and ad defense for Kick.com" },
+  { repo: "StarBoard", name: "StarBoard", url: "https://github.com/SysAdminDoc/StarBoard", category: "ext", desc: "Your repos ranked by stars, with gains since last check. Chrome MV3" },
+  { repo: "codex-terminal", name: "codex-terminal", url: "https://github.com/SysAdminDoc/codex-terminal", category: "ext", desc: "Codex CLI in a real VS Code terminal tab, with resume and fork" },
+  { repo: "TerminalAI", name: "TerminalAI", url: "https://github.com/SysAdminDoc/TerminalAI", category: "other", desc: "Run fleets of Claude Code and Codex sessions from one Rust GUI" }
 ];
 
 export const skills: Skill[] = [

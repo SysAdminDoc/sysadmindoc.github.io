@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.42.0-blue)
+![Version](https://img.shields.io/badge/version-0.42.1-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -12,7 +12,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (193 feed-backed / 186 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (193 feed-backed / 196 local fallback), skills (8)
 - **Technical Service Bureau design system**: a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
 - **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
 - **Minimal homepage evidence sequence**: concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs
@@ -78,8 +78,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.42.0 --expected-commit <commit-sha> --expected-projects 186 --expected-releases 60 --expected-feed-items 186
-npm run smoke:release -- --tag v0.42.0 --asset sysadmindoc-portfolio-v0.42.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.42.1 --expected-commit <commit-sha> --expected-projects 196 --expected-releases 60 --expected-feed-items 196
+npm run smoke:release -- --tag v0.42.1 --asset sysadmindoc-portfolio-v0.42.1.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/

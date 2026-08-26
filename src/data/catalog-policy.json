@@ -22,6 +22,10 @@
     {
       "repo": "null",
       "reason": "Placeholder repository; intentionally excluded from the public portfolio catalog."
+    },
+    {
+      "repo": ".github",
+      "reason": "Default community health files shared across public repos; not a portfolio project."
     }
   ],
   "privacyReviewRequired": [
