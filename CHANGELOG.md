@@ -12,6 +12,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 - The nightly refresh-and-deploy task had failed closed at `deploy:preflight` since 2026-08-24 over the uncataloged repos. The gate passes again and deploys resume.
+- `deploy:vps` never worked from Windows: `execFileSync('npm')` cannot spawn npm.cmd, so the build step died with ENOENT before reaching the server. The runner now routes npm through cmd.exe on Windows.
+- The deploy SSH key was unusable where it sat (`Contabo-VPS-Ops\access` ACLs are too open for OpenSSH and not fixable without elevation). The key now lives at `~\.ssh\portfolio_vps_ed25519` with owner-only ACLs, and `PORTFOLIO_VPS_SSH_KEY` points there.
 
 ## [v0.42.0] - 2026-08-21
 
