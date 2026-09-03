@@ -4,6 +4,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.42.3] - 2026-09-03
+
+### Added
+- Cataloged ColumnKit, a new public VS Code extension repo. Local fallback catalog grows from 201 to 202 entries.
+
+### Fixed
+- Kept `catalog:audit` green. It fails closed on any unreviewed public repo, so creating ColumnKit would have blocked the next nightly deploy.
+- Updated the counts the catalog tests assert: the README content-collections line (198 feed-backed / 202 local fallback) and the `smoke:live` `--expected-projects` / `--expected-feed-items` arguments.
+
 ## [v0.42.2] - 2026-09-03
 
 ### Added
