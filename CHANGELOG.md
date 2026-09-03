@@ -4,6 +4,15 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.42.2] - 2026-09-03
+
+### Added
+- Cataloged five public repos the drift audit flagged: WeightTrack, NoNo, IRL_Streamer, BillMinder4PC, and OpenRadar. Local fallback catalog grows from 196 to 201 entries, and the rendered catalog from 196 to 201.
+
+### Fixed
+- Restored the nightly deploy. `catalog:audit` had failed closed on those five repos since 8/31, so the site had not shipped a change in four days.
+- Updated the counts the catalog tests assert: the README content-collections line (198 feed-backed / 201 local fallback) and the `smoke:live` `--expected-projects` / `--expected-feed-items` arguments.
+
 ## [v0.42.1] - 2026-08-26
 
 ### Added

@@ -234,7 +234,12 @@ export const catalog: CatalogEntry[] = [
   { repo: "kick-focus", name: "kick-focus", url: "https://github.com/SysAdminDoc/kick-focus", category: "ext", desc: "Desktop-first layout, filters, and ad defense for Kick.com" },
   { repo: "StarBoard", name: "StarBoard", url: "https://github.com/SysAdminDoc/StarBoard", category: "ext", desc: "Your repos ranked by stars, with gains since last check. Chrome MV3" },
   { repo: "codex-terminal", name: "codex-terminal", url: "https://github.com/SysAdminDoc/codex-terminal", category: "ext", desc: "Codex CLI in a real VS Code terminal tab, with resume and fork" },
-  { repo: "TerminalAI", name: "TerminalAI", url: "https://github.com/SysAdminDoc/TerminalAI", category: "other", desc: "Run fleets of Claude Code and Codex sessions from one Rust GUI" }
+  { repo: "TerminalAI", name: "TerminalAI", url: "https://github.com/SysAdminDoc/TerminalAI", category: "other", desc: "Run fleets of Claude Code and Codex sessions from one Rust GUI" },
+  { repo: "WeightTrack", name: "WeightTrack", url: "https://github.com/SysAdminDoc/WeightTrack", category: "kt", desc: "Free Android weight tracker. No subscription, no account, no ads" },
+  { repo: "NoNo", name: "NoNo", url: "https://github.com/SysAdminDoc/NoNo", category: "kt", desc: "Local-first Android notification rule manager with redacted metadata" },
+  { repo: "IRL_Streamer", name: "IRL_Streamer", url: "https://github.com/SysAdminDoc/IRL_Streamer", category: "kt", desc: "Android live-streaming console with camera, mic, and RTMP/RTMPS broadcast" },
+  { repo: "BillMinder4PC", name: "BillMinder4PC", url: "https://github.com/SysAdminDoc/BillMinder4PC", category: "cs", desc: "Tray-resident Windows bill tracker. Offline, no account. Compose Multiplatform" },
+  { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" }
 ];
 
 export const skills: Skill[] = [
