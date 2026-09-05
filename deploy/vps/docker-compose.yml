@@ -4,11 +4,20 @@
 # internal file-server config at ./Caddyfile. Deploy with `npm run deploy:vps`.
 services:
   portfolio-app:
-    # Pinned to the 2.11 line (2.11.4 as of 2026-08-20). The old 2.8-alpine tag
-    # stopped receiving image rebuilds, so its Alpine base went unpatched, and
-    # 2.9-2.11 carry the 2026 Caddy fixes (path-matcher bypass CVE-2026-27585,
-    # mTLS fail-open CVE-2026-27586, header-injection escalation in 2.11.2).
-    image: caddy:2.11-alpine
+    # Pinned to an exact patch, not the floating 2.11-alpine tag. The deploy
+    # recreates the container but a recreate reuses whatever image was last
+    # pulled, so a floating tag reported "2.11" while silently staying on an old
+    # patch. deploy-vps.mjs now pulls and then asserts the running `caddy
+    # version` matches this pin, so a drifted image fails the deploy.
+    #
+    # 2.11.4 (2026-06-03) is current. The 2.11 line carries the 2026 fixes the
+    # old 2.8-alpine tag never got: path-matcher bypass CVE-2026-27585, mTLS
+    # fail-open CVE-2026-27586, Host-matcher bypass CVE-2026-27588, admin
+    # cross-origin CVE-2026-27589, FastCGI CVE-2026-27590, plus the 2.11.3
+    # admin-auth and 2.11.4 placeholder re-expansion fixes.
+    #
+    # PORTFOLIO_CADDY_VERSION in scripts/deploy-vps.mjs must be bumped with this.
+    image: caddy:2.11.4-alpine
     container_name: portfolio-app
     restart: unless-stopped
     stop_grace_period: 10s
