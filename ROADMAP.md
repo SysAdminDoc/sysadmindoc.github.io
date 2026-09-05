@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Make experimental.incrementalBuild actually cache, or remove the flag
-  Why: `astro.config.mjs:17` enables the flag, but Astro only skips pages from `getStaticPaths()` that return a `cacheKey`, and `grep -rn cacheKey src/` finds none. Nothing is cached, and on Astro 7.2.4 the flag also forces `build.concurrency` to 1, so the config currently costs build parallelism for zero benefit.
-  Evidence: https://docs.astro.build/en/reference/experimental-flags/incremental-build/ ; `src/pages/og/[slug].png.ts:8` and `src/pages/lang/[slug].astro:13` both return bare `params`.
-  Touches: `astro.config.mjs`, `src/pages/og/[slug].png.ts`, `src/pages/lang/[slug].astro`, `test/toolchain.test.mjs`.
-  Acceptance: either every `getStaticPaths()` route returns a content-derived `cacheKey` and a second consecutive build logs skipped pages, or the flag is removed and a test asserts the config declares no experimental flag whose precondition is unmet.
-  Complexity: S
-
 - [ ] P1 — Re-anchor the script-order guard on shared.js and stop cmdk failing open
   Why: `scripts/fix-html-structure.mjs` computes `mainBeforeShared` and `featureBeforeMain`, both gated on `html.indexOf('/scripts/main.js') >= 0`. That file was deleted and `test/homepage-runtime.test.mjs:11` asserts its absence, so both checks are permanently false on every built page. The real dependency — `cmdk.js` needing `window.SafeDOM` from `shared.js` — is unguarded, and `public/scripts/cmdk.js:39` degrades silently to `{}`.
   Evidence: `scripts/fix-html-structure.mjs:75-88`; `public/scripts/shared.js:52`; `public/scripts/cmdk.js:39`; `src/layouts/Base.astro:210-220`.
