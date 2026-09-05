@@ -45,6 +45,28 @@ if (process.env.PORTFOLIO_VPS_KNOWN_HOSTS) {
   sshOptions.push('-o', `UserKnownHostsFile=${process.env.PORTFOLIO_VPS_KNOWN_HOSTS}`);
 }
 
+// The smoke compares the live endpoints against these. Reading them from the
+// built tree rather than hardcoding keeps the deploy honest as the catalog grows.
+function readArtifactCounts() {
+  const readJson = (name) => {
+    const file = path.join(root, 'dist', name);
+    try {
+      return JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (error) {
+      throw new Error(`deploy-vps: cannot read dist/${name} for the live smoke: ${error.message}`);
+    }
+  };
+  const projects = readJson('projects.json').projects;
+  const releases = readJson('releases.json').releases;
+  const feedItems = readJson('feed.json').items;
+  for (const [name, value] of [['projects', projects], ['releases', releases], ['feed items', feedItems]]) {
+    if (!Array.isArray(value) || value.length === 0) {
+      throw new Error(`deploy-vps: built ${name} artifact is empty or malformed; refusing to smoke against it.`);
+    }
+  }
+  return { projects: projects.length, releases: releases.length, feedItems: feedItems.length };
+}
+
 function run(command, args, options = {}) {
   console.log(`$ ${command} ${args.join(' ')}`);
   // npm is npm.cmd on Windows; execFileSync cannot spawn .cmd files directly
@@ -153,8 +175,31 @@ fs.rmSync(tarball, { force: true });
 runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-recreate --remove-orphans`);
 
 // 5. Verify the deploy against the live origin unless skipped.
+//
+// This used to pass --status-only, which returns after comparing the live
+// version and commit. Every security-header assertion (HSTS, X-Frame-Options,
+// Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options), the
+// Reporting-Endpoints and report-to/report-uri checks, the synthetic CSP report
+// POST, and the artifact count checks all live past that early return, so an
+// unattended deploy verified none of them. The counts come from the tree that
+// was just shipped, which is the only artifact that can define them.
 if (process.env.SKIP_SMOKE !== '1') {
-  run('npm', ['run', 'smoke:live', '--', '--base-url', `${SITE_URL}/`, '--status-only', '--retries', '5']);
+  const counts = readArtifactCounts();
+  run('npm', [
+    'run',
+    'smoke:live',
+    '--',
+    '--base-url',
+    `${SITE_URL}/`,
+    '--expected-projects',
+    String(counts.projects),
+    '--expected-releases',
+    String(counts.releases),
+    '--expected-feed-items',
+    String(counts.feedItems),
+    '--retries',
+    '5',
+  ]);
 }
 
 console.log(`deploy-vps: ${SITE_URL} updated.`);

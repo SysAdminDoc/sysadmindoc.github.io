@@ -213,3 +213,23 @@ test('the catalog page derives its completeness claim from the same record', asy
   );
   assert.match(source, /completeness\.complete === true/);
 });
+
+test('the unattended deploy runs the full live smoke, not the status-only shortcut', async () => {
+  const source = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+
+  // --status-only returns after comparing version and commit, before every
+  // security-header assertion, the CSP report POST and the artifact counts. A
+  // deploy that passes it verifies almost nothing.
+  assert.doesNotMatch(source, /'--status-only'/);
+  assert.match(source, /'--expected-projects'/);
+  assert.match(source, /'--expected-releases'/);
+  assert.match(source, /'--expected-feed-items'/);
+
+  // The counts must come from the tree that was just shipped. Hardcoding them
+  // would silently rot as the catalog grows and turn the gate into a no-op.
+  assert.match(source, /function readArtifactCounts\(\)/);
+  assert.match(source, /readJson\('projects\.json'\)\.projects/);
+  assert.match(source, /readJson\('releases\.json'\)\.releases/);
+  assert.match(source, /readJson\('feed\.json'\)\.items/);
+  assert.match(source, /refusing to smoke against it/);
+});
