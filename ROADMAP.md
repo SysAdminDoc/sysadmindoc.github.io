@@ -8,13 +8,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P0
 
-- [ ] P0 — Split catalog:audit so new public repos block the completeness claim, not the redeploy
-  Why: this is the fourth deploy outage from the identical cause (2026-08-24 to 08-26, 2026-08-31 to 09-03, and 2026-09-04). The gate correctly refuses to publish an incomplete catalog claim, but it also refuses to redeploy already-correct content with refreshed data, so publishing any public repo freezes the site's data at whatever age it had that day.
-  Evidence: CHANGELOG v0.42.1, v0.42.2 and v0.42.3 are each a release whose only content is cataloging repos to unfreeze the nightly; `scripts/audit-catalog.mjs`; `scripts/refresh-and-deploy.mjs`.
-  Touches: `scripts/audit-catalog.mjs`, `scripts/refresh-and-deploy.mjs`, `package.json` (`deploy:preflight`), `test/` new coverage.
-  Acceptance: with an uncataloged public repo present, `refresh:deploy` still deploys refreshed data and exits non-zero on the catalog claim only; a build with a stale catalog cannot publish a `/status.json` or `/catalog/` that asserts completeness. A planted uncataloged repo fixture proves both halves.
-  Complexity: M
-
 - [ ] P0 — Alert on a failed nightly refresh instead of failing silently
   Why: three of the four outages ran for days before anyone noticed, because a fail-closed abort leaves the previous deployment live and looks identical from outside. This machine already runs a daily health check that writes `HEALTH-ALERT.txt` to the Desktop.
   Evidence: `.tmp/refresh-and-deploy.log` ABORT lines dated 2026-09-04; `~/.claude/scripts/daily-health.ps1`; `CLAUDE.md` scheduled-refresh section.
