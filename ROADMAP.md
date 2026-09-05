@@ -12,14 +12,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P2
 
-- [ ] P2 — Stabilise the flaky Pagefind degraded-state interaction test
-  Why: tests/playwright/interaction-smoke.spec.mjs:276 waits 6s for [data-pagefind-shell] to reach data-pagefind-state="degraded" after a simulated missing bundle. Under a loaded machine it stayed "loading" and failed; the same test passes in isolation (2 passed, 2026-09-05). A fixed timeout on a machine-speed-dependent transition is the wrong shape of assertion.
-  Evidence: a full `npm run audit:interactions` run on 2026-09-05 failed this test in the chromium project while 45 others passed; re-running it alone with `playwright test --config=playwright.interactions.config.mjs -g "search missing bundle exposes fallback recovery"` passed both projects.
-  Touches: tests/playwright/interaction-smoke.spec.mjs, public/scripts/search-page.js.
-  Acceptance: the test asserts the degraded state is reached without a hand-tuned millisecond budget (poll on the state the page reports, or drive the failure deterministically), and ten consecutive full audit:interactions runs show no flake.
-  Complexity: S
-
-
 - [ ] P2 — Ship Speculation Rules through the response header instead of an inline script
   Why: the 2026-07-28 revert (`57b9be1`) happened because `'inline-speculation-rules'` in a meta CSP made WebKit log console errors, breaking the zero-console-error contract. The `Speculation-Rules` response header points at an external JSON file, so the inline keyword is never needed and no CSP-delivery redesign is required. The internal Caddy already stamps headers. This supersedes the "Prerender same-origin navigations via Speculation Rules" item in `Roadmap_Blocked.md`, whose stated blocker no longer applies.
   Evidence: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Speculation-Rules (external rules must be served as `application/speculationrules+json`); https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API (the `'inline-speculation-rules'` requirement is documented against the `<script>` form only); `deploy/vps/Caddyfile:37`; the 2026-07-28 revert `57b9be1`. Needs live validation: MDN does not state which directive governs the external rules fetch, so confirm under the shipped `script-src 'self'` before relying on it.

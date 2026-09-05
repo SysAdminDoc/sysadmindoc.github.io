@@ -26,6 +26,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - `refresh:deploy` keeps each step's full output in `.tmp/refresh-and-deploy-step-<label>.log` and copies the last 40 lines into the main log when a step fails. The scheduled task has no console, so a failed nightly used to leave only "result 0x1" and a step name. The 2026-09-05 03:00 run failed inside `deploy:preflight` after 25 minutes with nothing to say which of its ten gates stopped it.
 
 ### Fixed
+- The search degraded-state checks derive their wait from the page's own `readyTimeoutMs` instead of a literal 6s. The page waits 4s of real time before declaring the search degraded, so two seconds of slack failed under load while passing in isolation.
 - A release no longer reaches the attested provenance tier because its notes mention the word. RcloneBrowserNG v2.0.2 was published as attested on the strength of a release note reading "This repository has no CI, so there are no build attestations"; the trust surface reported the opposite of what the release said about itself. Attested now requires a Sigstore bundle among the assets.
 - Release provenance is reclassified when the classifier changes. It is derived from asset names but cached alongside the fetched rows, so an ETag 304 replayed the old tier and a fix never reached unchanged releases.
 - The GitHub repository description and homepage URL point at the current origin. Both still claimed GitHub Pages hosting, superseded on 2026-07-28.

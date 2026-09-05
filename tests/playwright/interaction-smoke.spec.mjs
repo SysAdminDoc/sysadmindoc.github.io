@@ -126,6 +126,38 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow).toBeLessThanOrEqual(1);
 }
 
+// public/scripts/search-page.js waits readyTimeoutMs before declaring the search
+// degraded, measured with performance.now(), so it is real wall-clock time that
+// preparePage's frozen Date does not shorten. The assertions used a literal
+// 6_000, which left about two seconds of slack over a four-second wait and
+// failed under load while passing in isolation. Reading the page's own constant
+// keeps the budget correct if that wait is ever changed, and the generous
+// multiplier means the test is waiting on the state the page reports rather than
+// on a number somebody tuned once.
+let cachedReadyTimeoutMs = null;
+async function degradedStateTimeout(page) {
+  if (cachedReadyTimeoutMs === null) {
+    const response = await page.request.get('/scripts/search-page.js');
+    expect(response.ok(), 'search-page.js must be served to read its ready timeout').toBe(true);
+    const source = await response.text();
+    // The served file is minified, so the value arrives as `4e3` rather than
+    // `4000`; match a JS numeric literal, not just digits.
+    const declared = source.match(/readyTimeoutMs\s*=\s*([\d.]+(?:e[+-]?\d+)?)/i)?.[1];
+    const parsed = Number(declared);
+    expect(Number.isFinite(parsed) && parsed > 0, `search-page.js must declare readyTimeoutMs (got ${declared})`).toBe(
+      true,
+    );
+    cachedReadyTimeoutMs = parsed;
+  }
+  return cachedReadyTimeoutMs * 4;
+}
+
+async function expectSearchDegraded(page) {
+  await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', {
+    timeout: await degradedStateTimeout(page),
+  });
+}
+
 async function expectSearchFallbackLinks(page) {
   const fallbackLinks = page.locator('#search-fallbacks');
   await expect(fallbackLinks.locator('a[href="/catalog/"]')).toBeVisible();
@@ -262,7 +294,7 @@ test.describe('rendered interaction smoke', () => {
 
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
-    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expectSearchDegraded(page);
     await expect(page.locator('#pagefindLoading')).toBeHidden();
     await expect(page.locator('#pagefindFallback')).toBeVisible();
     await expect(page.locator('#pagefindFallback')).toContainText('Search fallback active.');
@@ -273,7 +305,7 @@ test.describe('rendered interaction smoke', () => {
 
     await page.setViewportSize({ width: 390, height: 900 });
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
-    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expectSearchDegraded(page);
     await expect(page.locator('#pagefindFallback')).toBeVisible();
     await expect(page.locator('#pagefindFallback a[href="#search-fallbacks"]')).toBeVisible();
     await expect(page.locator('#pagefindFallback a[href="/catalog/"]')).toBeVisible();
@@ -299,7 +331,7 @@ test.describe('rendered interaction smoke', () => {
 
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/search/?q=archive', '#pagefindSearch');
-    await expect(page.locator('[data-pagefind-shell]')).toHaveAttribute('data-pagefind-state', 'degraded', { timeout: 6_000 });
+    await expectSearchDegraded(page);
     await expect(page.locator('#pagefindLoading')).toBeHidden();
     await expect(page.locator('#pagefindFallback')).toContainText('did not finish loading');
     await expect(page.locator('#pagefindFallback a[href="#search-fallbacks"]')).toBeVisible();
