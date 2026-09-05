@@ -151,6 +151,58 @@ function isExactVersionSpec(value) {
   return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(String(value ?? ''));
 }
 
+/**
+ * How many minors a first-party dependency may sit behind registry latest before
+ * strict mode refuses the release.
+ *
+ * One is normal drift between a release and the next `npm update`. Two or more is
+ * a package nobody is tracking: on 2026-09-04 this audit reported PASS in strict
+ * mode while satori was four minors behind (0.29.1 against 0.33.4), because
+ * strict only ever failed on stale exact override pins. Majors are deliberately
+ * excluded — those are judgement calls, and the ones being held are documented in
+ * knownMajorBlocks.
+ */
+export const MAX_MINORS_BEHIND = 1;
+
+function minorOf(version) {
+  const match = String(version ?? '').match(/^v?\d+\.(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+export function summarizeFirstPartyFreshness(packages, { maxMinorsBehind = MAX_MINORS_BEHIND } = {}) {
+  // Overrides are transitive pins covered by summarizeOverrideFreshness; these
+  // are the dependencies this repo declares and chooses.
+  const firstParty = packages.filter((row) => row.type === 'production' || row.type === 'development');
+  const failures = firstParty
+    .map((row) => {
+      if (!['range-update', 'latest-update'].includes(row.status)) return null;
+      const currentMinor = minorOf(row.current);
+      const latestMinor = minorOf(row.latest);
+      if (currentMinor === null || latestMinor === null) return null;
+      if (majorOf(row.current) !== majorOf(row.latest)) return null;
+      const behind = latestMinor - currentMinor;
+      if (behind <= maxMinorsBehind) return null;
+      return {
+        name: row.name,
+        type: row.type,
+        current: row.current,
+        latest: row.latest,
+        minorsBehind: behind,
+        reason: `${row.name} is ${behind} minors behind registry latest (${row.current} -> ${row.latest}); at most ${maxMinorsBehind} is allowed.`,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.minorsBehind - a.minorsBehind || a.name.localeCompare(b.name));
+
+  return {
+    trackedCount: firstParty.length,
+    maxMinorsBehind,
+    failureCount: failures.length,
+    failures,
+    ok: failures.length === 0,
+  };
+}
+
 export function summarizeOverrideFreshness(packages) {
   const pinned = packages.filter((row) => row.type === 'override' && isExactVersionSpec(row.requested));
   const failures = pinned
@@ -226,6 +278,7 @@ export function buildDependencyReport({ manifest, lock, outdated, audit, thresho
   return {
     ...report,
     overrideFreshness: summarizeOverrideFreshness(packages),
+    firstPartyFreshness: summarizeFirstPartyFreshness(packages),
   };
 }
 
@@ -235,13 +288,15 @@ function pad(value, width) {
 }
 
 export function formatDependencyReport(report, { strict = false } = {}) {
-  const overallOk = report.security.ok && (!strict || report.overrideFreshness.ok);
+  const overallOk =
+    report.security.ok && (!strict || (report.overrideFreshness.ok && report.firstPartyFreshness.ok));
   const lines = [
     'Dependency freshness report',
     `  packages tracked: ${report.packageCount}`,
     `  audit threshold: ${report.security.threshold}`,
     `  security: ${report.security.ok ? 'PASS' : 'FAIL'} (${report.security.counts.high} high, ${report.security.counts.critical} critical)`,
     `  exact override freshness: ${report.overrideFreshness.ok ? 'PASS' : strict ? 'FAIL' : 'ADVISORY'} (${report.overrideFreshness.pinnedCount} pinned, ${report.overrideFreshness.failureCount} stale)`,
+    `  first-party freshness: ${report.firstPartyFreshness.ok ? 'PASS' : strict ? 'FAIL' : 'ADVISORY'} (${report.firstPartyFreshness.trackedCount} tracked, ${report.firstPartyFreshness.failureCount} more than ${report.firstPartyFreshness.maxMinorsBehind} minor(s) behind)`,
     '',
     'Packages',
     `${pad('name', 28)} ${pad('type', 11)} ${pad('current', 12)} ${pad('wanted', 12)} ${pad('latest', 12)} status`,
@@ -250,6 +305,13 @@ export function formatDependencyReport(report, { strict = false } = {}) {
 
   for (const row of report.packages) {
     lines.push(`${pad(row.name, 28)} ${pad(row.type, 11)} ${pad(row.current, 12)} ${pad(row.wanted, 12)} ${pad(row.latest, 12)} ${row.status}`);
+  }
+
+  if (report.firstPartyFreshness.failures.length > 0) {
+    lines.push('', strict ? 'Blocking stale first-party dependencies' : 'Stale first-party dependencies (advisory)');
+    for (const failure of report.firstPartyFreshness.failures) {
+      lines.push(`  - ${failure.reason}`);
+    }
   }
 
   const blocked = report.packages.filter((row) => row.blocked);
@@ -280,7 +342,7 @@ export function formatDependencyReport(report, { strict = false } = {}) {
 }
 
 export function dependencyAuditExitCode(report, { strict = false } = {}) {
-  return report.security.ok && (!strict || report.overrideFreshness.ok) ? 0 : 1;
+  return report.security.ok && (!strict || (report.overrideFreshness.ok && report.firstPartyFreshness.ok)) ? 0 : 1;
 }
 
 async function readJson(filePath) {

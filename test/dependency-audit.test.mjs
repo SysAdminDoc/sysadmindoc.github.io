@@ -153,3 +153,77 @@ test('dependency audit fails only at the configured security threshold', () => {
   assert.equal(summarizeAudit(audit, 'critical').ok, true);
   assert.equal(summarizeAudit(audit, 'none').ok, true);
 });
+
+test('strict mode fails a production dependency two minors behind registry latest', () => {
+  const report = buildDependencyReport({
+    manifest,
+    lock,
+    outdated: {
+      // Two minors behind: the smallest gap the gate is meant to catch.
+      shiki: { current: '4.3.1', wanted: '4.5.0', latest: '4.5.0', location: '/repo/node_modules/shiki' },
+    },
+    audit: { metadata: { vulnerabilities: {} } },
+  });
+
+  assert.equal(report.firstPartyFreshness.ok, false);
+  assert.equal(report.firstPartyFreshness.failureCount, 1);
+  const [failure] = report.firstPartyFreshness.failures;
+  assert.equal(failure.name, 'shiki');
+  assert.equal(failure.minorsBehind, 2);
+  assert.match(failure.reason, /2 minors behind registry latest \(4\.3\.1 -> 4\.5\.0\)/);
+
+  assert.equal(dependencyAuditExitCode(report, { strict: true }), 1);
+  // Advisory mode still reports it without blocking a local run.
+  assert.equal(dependencyAuditExitCode(report, { strict: false }), 0);
+  assert.match(formatDependencyReport(report, { strict: true }), /Blocking stale first-party dependencies/);
+  assert.match(formatDependencyReport(report, { strict: false }), /Stale first-party dependencies \(advisory\)/);
+});
+
+test('one minor behind is normal drift and does not block a release', () => {
+  const report = buildDependencyReport({
+    manifest,
+    lock,
+    outdated: {
+      astro: { current: '7.0.6', wanted: '7.1.0', latest: '7.1.0', location: '/repo/node_modules/astro' },
+    },
+    audit: { metadata: { vulnerabilities: {} } },
+  });
+
+  assert.equal(report.firstPartyFreshness.ok, true);
+  assert.equal(dependencyAuditExitCode(report, { strict: true }), 0);
+});
+
+test('documented blocked majors are not reported as stale first-party drift', () => {
+  const report = buildDependencyReport({
+    manifest,
+    lock,
+    outdated: {
+      // typescript is held at 6 by knownMajorBlocks; fast-uri at 3.
+      typescript: { current: '6.0.3', wanted: '6.0.3', latest: '7.0.2', location: '/repo/node_modules/typescript' },
+      'fast-uri': [{ current: '3.1.4', wanted: '3.1.7', latest: '4.1.4', dependent: 'ajv' }],
+    },
+    audit: { metadata: { vulnerabilities: {} } },
+  });
+
+  const names = report.firstPartyFreshness.failures.map((failure) => failure.name);
+  assert.ok(!names.includes('typescript'), 'a documented major hold is not minor drift');
+  assert.ok(!names.includes('fast-uri'), 'overrides are covered by the override freshness check');
+  assert.equal(report.packages.find((row) => row.name === 'typescript').status, 'major-blocked');
+  assert.equal(report.firstPartyFreshness.ok, true);
+});
+
+test('a package whose major moved is left to the blocked-majors path, not the minor gate', () => {
+  const report = buildDependencyReport({
+    manifest,
+    lock,
+    outdated: {
+      // 4.3.1 -> 5.0.0 is a major move. Comparing minors across majors would
+      // read as "3 minors ahead" and produce a nonsense verdict.
+      shiki: { current: '4.3.1', wanted: '4.3.1', latest: '5.0.0', location: '/repo/node_modules/shiki' },
+    },
+    audit: { metadata: { vulnerabilities: {} } },
+  });
+
+  assert.equal(report.firstPartyFreshness.ok, true);
+  assert.equal(report.packages.find((row) => row.name === 'shiki').status, 'major-available');
+});
