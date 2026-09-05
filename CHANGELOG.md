@@ -17,6 +17,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - A newly published public repo no longer freezes the nightly deploy. `catalog:audit` gained a report-only mode (`CATALOG_AUDIT_REPORT_ONLY`, set by `refresh:deploy`) that records drift in `src/data/_catalog-drift.json` and lets refreshed data ship, then exits non-zero so the run still reports failure. Stale catalog refs and privacy-review violations stay fatal in every mode.
 
 ### Fixed
+- Removed `experimental.incrementalBuild`. Astro only skips pages from `getStaticPaths()` that return a `cacheKey`, and no route returned one, so the flag cached nothing while pinning `build.concurrency` to 1 on Astro 7.2.x. Measured 2026-09-05: warm builds 8.8s with the flag and 10.0s without, with no page-skip logging either way. A test now fails if the flag comes back without cacheKeys on every dynamic route.
 - A catalog drift record older than the 36h freshness window no longer counts as a measurement. `catalog:audit` runs in `deploy:preflight`, not in `npm run build`, and `deploy:vps` builds again on its own, so a leftover record was what a plain build read.
 - A malformed drift record degrades to "not measured" instead of throwing during the Astro render and failing the build.
 - Restored the nightly deploy. `catalog:audit` had been failing since 2026-09-04, so v0.42.3 never shipped and the live site stayed on v0.42.2.

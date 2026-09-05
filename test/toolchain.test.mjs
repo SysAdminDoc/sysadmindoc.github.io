@@ -70,3 +70,38 @@ test('npm v12 install-script allowlist covers the build-script dependency', asyn
     'every allowScripts entry must be explicitly approved (true)',
   );
 });
+
+test('no experimental Astro flag is declared whose precondition the routes do not meet', async () => {
+  const config = await fs.readFile(path.join(root, 'astro.config.mjs'), 'utf8');
+  const experimental = config.match(/experimental:\s*\{([^}]*)\}/)?.[1] ?? '';
+
+  // incrementalBuild only skips pages from getStaticPaths() that return a
+  // cacheKey. With no cacheKey anywhere it caches nothing, and on Astro 7.2.x it
+  // additionally pins build.concurrency to 1 — an experimental flag's breakage
+  // risk for no benefit. Measured 2026-09-05: warm builds 8.8s with the flag and
+  // 10.0s without, no page-skip logging in either, i.e. inside the noise.
+  if (/incrementalBuild/.test(experimental)) {
+    const routeFiles = await Promise.all(
+      ['src/pages/og/[slug].png.ts', 'src/pages/lang/[slug].astro'].map((file) =>
+        fs.readFile(path.join(root, file), 'utf8'),
+      ),
+    );
+    for (const source of routeFiles) {
+      assert.match(
+        source,
+        /cacheKey/,
+        'every getStaticPaths route must return a content-derived cacheKey before incrementalBuild is enabled',
+      );
+    }
+  }
+
+  // Guard the inverse too: a new getStaticPaths route added later must be listed
+  // above, or this check silently stops covering it.
+  const pages = await fs.readdir(path.join(root, 'src', 'pages'), { recursive: true });
+  const dynamic = pages.filter((entry) => typeof entry === 'string' && /\[.+\]/.test(entry));
+  assert.deepEqual(
+    dynamic.map((entry) => entry.split(path.sep).join('/')).sort(),
+    ['lang/[slug].astro', 'og/[slug].png.ts'],
+    'a new dynamic route needs adding to this check',
+  );
+});

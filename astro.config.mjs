@@ -14,7 +14,6 @@ export default defineConfig({
   // and rebuilding propagated the new value to both /status.json and the
   // rendered /status/ HTML, so the generated JSON caches are part of the key.
   // The cache lives in the gitignored .astro/ directory.
-  experimental: { incrementalBuild: true },
   site: SITE_URL,
   integrations: [
     sitemap({
