@@ -708,6 +708,37 @@ function auditRobotsTxt(text) {
   return { userAgents, sitemapUrl };
 }
 
+// The rules file is delivered by the Speculation-Rules response header rather
+// than an inline <script type="speculationrules">, which would need
+// 'inline-speculation-rules' in script-src and make WebKit log a console error
+// on every page. A malformed or empty rules file is silently ignored by the
+// browser, so its shape is checked at build time.
+function auditSpeculationRules(rules) {
+  if (!isObject(rules)) {
+    fail('dist/speculation-rules.json must be a JSON object.');
+    return { ruleCount: 0 };
+  }
+  const prerender = rules.prerender;
+  if (!Array.isArray(prerender) || prerender.length === 0) {
+    fail('dist/speculation-rules.json must declare a non-empty prerender rule list.');
+    return { ruleCount: 0 };
+  }
+  for (const [index, rule] of prerender.entries()) {
+    const label = `dist/speculation-rules.json prerender[${index}]`;
+    if (!isObject(rule)) {
+      fail(`${label} must be an object.`);
+      continue;
+    }
+    if (!isObject(rule.where)) fail(`${label} must scope itself with a where clause.`);
+    // `eager` prerenders on mere link presence; moderate waits for hover or
+    // pointerdown, which is what keeps this to a couple of documents at a time.
+    if (rule.eagerness !== 'moderate' && rule.eagerness !== 'conservative') {
+      fail(`${label} eagerness must be moderate or conservative, got "${rule.eagerness}".`);
+    }
+  }
+  return { ruleCount: prerender.length };
+}
+
 function auditHumansTxt(text) {
   if (!text.trim()) {
     fail('dist/humans.txt is empty.');
@@ -775,10 +806,12 @@ const headerSummary = await auditSourceHeaderIntents();
 
 const securityTxt = await readText('.well-known/security.txt');
 const robotsTxt = await readText('robots.txt');
+const speculationRules = await readJson('speculation-rules.json');
 const humansTxt = await readText('humans.txt');
 
 const securitySummary = auditSecurityTxt(securityTxt);
 const robotsSummary = auditRobotsTxt(robotsTxt);
+const speculationSummary = auditSpeculationRules(speculationRules);
 const humansSummary = auditHumansTxt(humansTxt);
 
 if (errors.length > 0) {
@@ -803,4 +836,5 @@ console.log(`  source header intents: ${headerSummary.sourceHeaderIntents}`);
 console.log(`  security.txt contacts: ${securitySummary.contacts.length}, expires: ${securitySummary.expires}`);
 console.log(`  robots.txt user-agents: ${robotsSummary.userAgents.length}, sitemap: ${robotsSummary.sitemapUrl}`);
 console.log(`  humans.txt: ${humansSummary.present ? 'present' : 'missing'}`);
+console.log(`  speculation-rules.json prerender rules: ${speculationSummary.ruleCount}`);
 console.log('Public endpoint audit passed.');

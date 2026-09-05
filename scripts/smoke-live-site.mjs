@@ -281,6 +281,29 @@ async function checkSecurityHeaders(baseUrl, summary) {
         'scripts/deploy-vps.mjs appends it to the stamped policy; a header without it means an older csp.env is live.',
     );
   }
+  // Speculation Rules ship as a header pointing at a same-origin file, which is
+  // what avoids needing 'inline-speculation-rules' in script-src. Both halves
+  // have to be live: a header naming a file that 404s, or a file served as plain
+  // application/json, silently disables prerendering with nothing to see.
+  const speculationHeader = response.headers.get('speculation-rules') ?? '';
+  const speculationMatch = speculationHeader.match(/^"([^"]+)"$/);
+  if (!speculationMatch) {
+    throw new Error(
+      `Speculation-Rules header is missing or not a quoted URL: "${speculationHeader || '(missing)'}". ` +
+        'deploy/vps/Caddyfile sets it on HTML responses.',
+    );
+  }
+  const rulesResponse = await fetchText(baseUrl, speculationMatch[1], 'application/speculationrules+json');
+  requireHeader(rulesResponse, speculationMatch[1], {
+    contentTypes: ['application/speculationrules+json'],
+    cacheControl: '',
+  });
+  const rules = parseJson(rulesResponse.body, speculationMatch[1]);
+  if (!Array.isArray(rules.prerender) || rules.prerender.length === 0) {
+    throw new Error(`${speculationMatch[1]} does not declare any prerender rules.`);
+  }
+  summary.push(`speculation rules: ${speculationMatch[1]} (${rules.prerender.length} prerender rule(s))`);
+
   summary.push('edge security headers: HSTS, X-Frame-Options, Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options');
   summary.push("CSP reporting: Reporting-Endpoints + report-to + report-uri; framing: frame-ancestors 'none'");
 }
