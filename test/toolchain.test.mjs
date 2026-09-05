@@ -162,11 +162,65 @@ test('the deploy preflight refuses an untagged release', async () => {
   assert.match(script, /merge-base', '--is-ancestor'/);
   assert.match(script, /is not on origin/);
 
+  // A malformed manifest at HEAD must produce this file's usual actionable
+  // error rather than an uncaught SyntaxError.
+  assert.match(script, /package\.json at HEAD is not valid JSON/);
+});
+
+test('the release-tag gate refuses a dirty tree that disagrees with HEAD', async () => {
   // The deploy builds the working tree but a tag points at a commit. Checking
   // only the working tree let a dirty checkout pass: commit an untagged bump,
   // edit package.json back to an already-tagged version, and the gate agreed.
-  assert.match(script, /git\(\['show', 'HEAD:package\.json'\]/);
-  assert.match(script, /headVersion !== version/);
+  // Asserting that by matching source text would keep passing through any
+  // refactor that preserved the strings, so this runs the real script against a
+  // throwaway repository instead.
+  const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-release-tag-'));
+  const git = (...args) => spawnSync('git', args, { cwd: sandbox, encoding: 'utf8' });
+  const writeVersion = (version) =>
+    fs.writeFile(path.join(sandbox, 'package.json'), `${JSON.stringify({ name: 'fixture', version }, null, 2)}\n`);
+  const runGate = () =>
+    spawnSync(process.execPath, [path.join(root, 'scripts', 'verify-release-tag.mjs'), '--skip-remote'], {
+      cwd: sandbox,
+      encoding: 'utf8',
+    });
+
+  try {
+    git('init', '-q');
+    git('config', 'user.email', 'fixture@example.invalid');
+    git('config', 'user.name', 'Fixture');
+
+    await writeVersion('0.1.0');
+    git('add', '-A');
+    git('commit', '-qm', 'v0.1.0');
+    git('tag', '-a', 'v0.1.0', '-m', 'v0.1.0');
+
+    const tagged = runGate();
+    assert.equal(tagged.status, 0, `a tagged, committed version must pass: ${tagged.stderr}`);
+
+    // Commit an untagged bump, then dirty the tree back to the tagged version.
+    await writeVersion('0.2.0');
+    git('add', '-A');
+    git('commit', '-qm', 'v0.2.0');
+    await writeVersion('0.1.0');
+
+    const dirty = runGate();
+    assert.equal(dirty.status, 1, 'a working tree disagreeing with HEAD must be refused');
+    assert.match(dirty.stderr, /working tree declares 0\.1\.0 but HEAD declares 0\.2\.0/);
+
+    // Restoring the committed version leaves a genuinely untagged release.
+    await writeVersion('0.2.0');
+    const untagged = runGate();
+    assert.equal(untagged.status, 1, 'an untagged version must be refused');
+    assert.match(untagged.stderr, /no tag v0\.2\.0 exists/);
+
+    // A lightweight tag carries no author or date.
+    git('tag', 'v0.2.0');
+    const lightweight = runGate();
+    assert.equal(lightweight.status, 1, 'a lightweight tag must be refused');
+    assert.match(lightweight.stderr, /is a commit, not an annotated tag/);
+  } finally {
+    await fs.rm(sandbox, { recursive: true, force: true });
+  }
 });
 
 test('the build removes dist/ first so stale artifacts cannot ship', async () => {
