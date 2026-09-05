@@ -134,9 +134,24 @@ test('the preview hooks refuse a concurrent run instead of stopping another run 
   assert.match(teardown, /marker\.pid !== process\.pid/);
 
   // A killed run must not block every later run with a stale marker.
-  const { markerOwnerAlive } = await import('../tests/playwright/preview-server-control.mjs');
-  assert.equal(markerOwnerAlive({ pid: 0x7ffffffe }), false, 'a dead owner must not look alive');
-  assert.equal(markerOwnerAlive(null), false);
-  assert.equal(markerOwnerAlive({}), false);
-  assert.equal(markerOwnerAlive({ pid: process.pid }), true);
+  const { markerOwnerAlive, MARKER_MAX_AGE_MS } = await import('../tests/playwright/preview-server-control.mjs');
+  const now = Date.now();
+  const fresh = new Date(now).toISOString();
+
+  assert.equal(markerOwnerAlive(null, now), false);
+  assert.equal(markerOwnerAlive({}, now), false);
+  assert.equal(markerOwnerAlive({ pid: 0x7ffffffe, startedAt: fresh }, now), false, 'a dead owner must not look alive');
+  assert.equal(markerOwnerAlive({ pid: process.pid, startedAt: fresh }, now), true);
+
+  // process.kill(pid, 0) answers "does some process exist", not "is it the run
+  // that wrote this marker". Windows recycles pids quickly, so a hard-killed run
+  // whose pid gets reused would otherwise refuse every later audit for as long
+  // as that unrelated process happened to live.
+  assert.equal(
+    markerOwnerAlive({ pid: process.pid, startedAt: new Date(now - MARKER_MAX_AGE_MS - 1000).toISOString() }, now),
+    false,
+    'a marker older than the cap must be stale even when its pid is live',
+  );
+  // No timestamp means it cannot be aged out, so it must not be trusted either.
+  assert.equal(markerOwnerAlive({ pid: process.pid }, now), false);
 });
