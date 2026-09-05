@@ -12,15 +12,31 @@
 // it to answer, and let preview-server-teardown.mjs stop it. Setting
 // PLAYWRIGHT_BASE_URL bypasses all of this, which is what a manual run against an
 // already-serving preview wants.
-import fs from 'node:fs';
-import path from 'node:path';
 import process from 'node:process';
-import { astroPreview, ownedMarkerPath } from './preview-server-control.mjs';
+import {
+  astroPreview,
+  clearMarker,
+  markerOwnerAlive,
+  readMarker,
+  writeMarker,
+} from './preview-server-control.mjs';
 
 export default async function globalSetup(config) {
-  // Ownership travels through a file, not an env var: Playwright evaluates the
-  // teardown module separately, so a mutation here is not visible there.
-  fs.rmSync(ownedMarkerPath, { force: true });
+  const existing = readMarker();
+  if (markerOwnerAlive(existing)) {
+    // Astro keys its preview daemon lock on the project root, not the port
+    // (.astro/preview.json), so only one preview can exist per checkout however
+    // many ports the configs declare. A second concurrent run would stop the
+    // first run's server mid-test and then have its own stopped by the first
+    // run's teardown. Refuse loudly rather than corrupting both.
+    throw new Error(
+      `preview-server: another Playwright run (pid ${existing.pid}, ${existing.baseURL}) already owns the preview server. ` +
+        'Astro allows one preview daemon per project, so audit configs cannot run concurrently. ' +
+        'Wait for it to finish, or run this one against your own server with PLAYWRIGHT_BASE_URL.',
+    );
+  }
+  // The owner is gone (killed run), so its marker is meaningless.
+  clearMarker();
   if (process.env.PLAYWRIGHT_BASE_URL) return;
 
   const baseURL = config.projects[0]?.use?.baseURL ?? config.use?.baseURL;
@@ -37,9 +53,7 @@ export default async function globalSetup(config) {
     try {
       const response = await fetch(baseURL, { redirect: 'manual' });
       if (response.status > 0) {
-        fs.mkdirSync(path.dirname(ownedMarkerPath), { recursive: true });
-        fs.writeFileSync(ownedMarkerPath, `${baseURL}\n`, 'utf8');
-        process.env.PLAYWRIGHT_BASE_URL = baseURL;
+        writeMarker({ pid: process.pid, baseURL, startedAt: new Date().toISOString() });
         return;
       }
     } catch {

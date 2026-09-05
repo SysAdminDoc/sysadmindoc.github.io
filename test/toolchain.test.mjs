@@ -80,19 +80,32 @@ test('no experimental Astro flag is declared whose precondition the routes do no
   // additionally pins build.concurrency to 1 — an experimental flag's breakage
   // risk for no benefit. Measured 2026-09-05: warm builds 8.8s with the flag and
   // 10.0s without, no page-skip logging in either, i.e. inside the noise.
-  if (/incrementalBuild/.test(experimental)) {
-    const routeFiles = await Promise.all(
-      ['src/pages/og/[slug].png.ts', 'src/pages/lang/[slug].astro'].map((file) =>
-        fs.readFile(path.join(root, file), 'utf8'),
-      ),
-    );
-    for (const source of routeFiles) {
-      assert.match(
-        source,
-        /cacheKey/,
-        'every getStaticPaths route must return a content-derived cacheKey before incrementalBuild is enabled',
+  // Every declared flag must be named here with the precondition it needs, so a
+  // future flag cannot be added and pass this check by not being incrementalBuild.
+  const preconditions = {
+    async incrementalBuild() {
+      const routeFiles = await Promise.all(
+        ['src/pages/og/[slug].png.ts', 'src/pages/lang/[slug].astro'].map((file) =>
+          fs.readFile(path.join(root, file), 'utf8'),
+        ),
       );
-    }
+      for (const source of routeFiles) {
+        assert.match(
+          source,
+          /cacheKey/,
+          'every getStaticPaths route must return a content-derived cacheKey before incrementalBuild is enabled',
+        );
+      }
+    },
+  };
+
+  const declared = [...experimental.matchAll(/([A-Za-z][A-Za-z0-9]*)\s*:/g)].map((match) => match[1]);
+  for (const flag of declared) {
+    assert.ok(
+      Object.hasOwn(preconditions, flag),
+      `experimental.${flag} is declared with no precondition check; add one here before enabling it`,
+    );
+    await preconditions[flag]();
   }
 
   // Guard the inverse too: a new getStaticPaths route added later must be listed
