@@ -8,13 +8,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P0
 
-- [ ] P0 — Catalog GLP-Ultra and HubSpot-Ticket-Refined so the nightly deploy resumes
-  Why: `.tmp/refresh-and-deploy.log` shows `ABORT ... at step "deploy:preflight"` for the 2026-09-04T07:00:01Z run; `npm run catalog:audit` exits 1 naming both repos. Live `/status.json` serves v0.42.2 from commit `1f9575eb` while local HEAD is `838a72e` (v0.42.3), so the current release has never shipped.
-  Evidence: `.tmp/refresh-and-deploy.log`; `scripts/audit-catalog.mjs` exit 1 reproduced 2026-09-04; `https://portfolio.getparkerai.com/status.json`.
-  Touches: `src/data/projects.ts` or `src/data/catalog-policy.json`, `README.md` catalog counts, `test/project-count-source.test.mjs` expectations.
-  Acceptance: `npm run catalog:audit` exits 0, `npm run refresh:deploy` completes with a `DONE deployed` verdict line, and `/status.json` reports version 0.42.4 or later.
-  Complexity: S
-
 - [ ] P0 — Split catalog:audit so new public repos block the completeness claim, not the redeploy
   Why: this is the fourth deploy outage from the identical cause (2026-08-24 to 08-26, 2026-08-31 to 09-03, and 2026-09-04). The gate correctly refuses to publish an incomplete catalog claim, but it also refuses to redeploy already-correct content with refreshed data, so publishing any public repo freezes the site's data at whatever age it had that day.
   Evidence: CHANGELOG v0.42.1, v0.42.2 and v0.42.3 are each a release whose only content is cataloging repos to unfreeze the nightly; `scripts/audit-catalog.mjs`; `scripts/refresh-and-deploy.mjs`.
