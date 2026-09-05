@@ -4,12 +4,166 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ## Research-Driven Additions
 
-Added 2026-08-20 from the research pass recorded in RESEARCH.md.
+Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 additions under this heading were all completed and have been removed per the ROADMAP hygiene rule.
 
 ### P0
 
+- [ ] P0 — Catalog GLP-Ultra and HubSpot-Ticket-Refined so the nightly deploy resumes
+  Why: `.tmp/refresh-and-deploy.log` shows `ABORT ... at step "deploy:preflight"` for the 2026-09-04T07:00:01Z run; `npm run catalog:audit` exits 1 naming both repos. Live `/status.json` serves v0.42.2 from commit `1f9575eb` while local HEAD is `838a72e` (v0.42.3), so the current release has never shipped.
+  Evidence: `.tmp/refresh-and-deploy.log`; `scripts/audit-catalog.mjs` exit 1 reproduced 2026-09-04; `https://portfolio.getparkerai.com/status.json`.
+  Touches: `src/data/projects.ts` or `src/data/catalog-policy.json`, `README.md` catalog counts, `test/project-count-source.test.mjs` expectations.
+  Acceptance: `npm run catalog:audit` exits 0, `npm run refresh:deploy` completes with a `DONE deployed` verdict line, and `/status.json` reports version 0.42.4 or later.
+  Complexity: S
+
+- [ ] P0 — Split catalog:audit so new public repos block the completeness claim, not the redeploy
+  Why: this is the fourth deploy outage from the identical cause (2026-08-24 to 08-26, 2026-08-31 to 09-03, and 2026-09-04). The gate correctly refuses to publish an incomplete catalog claim, but it also refuses to redeploy already-correct content with refreshed data, so publishing any public repo freezes the site's data at whatever age it had that day.
+  Evidence: CHANGELOG v0.42.1, v0.42.2 and v0.42.3 are each a release whose only content is cataloging repos to unfreeze the nightly; `scripts/audit-catalog.mjs`; `scripts/refresh-and-deploy.mjs`.
+  Touches: `scripts/audit-catalog.mjs`, `scripts/refresh-and-deploy.mjs`, `package.json` (`deploy:preflight`), `test/` new coverage.
+  Acceptance: with an uncataloged public repo present, `refresh:deploy` still deploys refreshed data and exits non-zero on the catalog claim only; a build with a stale catalog cannot publish a `/status.json` or `/catalog/` that asserts completeness. A planted uncataloged repo fixture proves both halves.
+  Complexity: M
+
+- [ ] P0 — Alert on a failed nightly refresh instead of failing silently
+  Why: three of the four outages ran for days before anyone noticed, because a fail-closed abort leaves the previous deployment live and looks identical from outside. This machine already runs a daily health check that writes `HEALTH-ALERT.txt` to the Desktop.
+  Evidence: `.tmp/refresh-and-deploy.log` ABORT lines dated 2026-09-04; `~/.claude/scripts/daily-health.ps1`; `CLAUDE.md` scheduled-refresh section.
+  Touches: `scripts/refresh-and-deploy.mjs` (non-zero exit already present — add a machine-readable status artifact), `~/.claude/scripts/daily-health.ps1` to read it.
+  Acceptance: an aborted `refresh:deploy` produces a Desktop `HEALTH-ALERT.txt` naming the failing step within one health-check cycle, and the alert clears on the next successful deploy. Proven by forcing an abort.
+  Complexity: S
+
 ### P1
+
+- [ ] P1 — Wire the accessibility audits into a chain that actually runs
+  Why: `a11y:audit` is invoked by no npm chain. `deploy:preflight` runs `data:summary:deploy`, `catalog:audit`, `liveapps:audit`, `verify:signatures`, `deps:audit --strict`, `test`, `check` and `build`, and none of them reach it. Neither does anything reach `audit:playwright` (the real axe-core run), `audit:interactions`, `audit:cross-engine`, `forced-colors:audit`, `audit:perf` or `audit:sw`. `test/a11y-gate.test.mjs:9` is named "a11y audit npm script is blocking by default" but only asserts the script string exists in `package.json`, so the gate reads green while blocking nothing.
+  Evidence: `package.json` script chains; `test/a11y-gate.test.mjs:9-20`; `npm run a11y:audit` run by hand 2026-09-04 passes six static checks over 22 pages.
+  Touches: `package.json` (`build:ci` or `deploy:preflight`), `test/a11y-gate.test.mjs`, `playwright.audits.config.mjs`.
+  Acceptance: `a11y:audit --strict` runs inside `build:ci`, the axe-core browser suite runs inside `deploy:preflight` against built `dist/`, and `test/a11y-gate.test.mjs` asserts the audit is *reachable from a chain* rather than merely present. Planting a violation (an image with no `alt`) reds the deploy.
+  Complexity: M
+
+- [ ] P1 — Run the full live smoke on unattended deploys, not --status-only
+  Why: `scripts/deploy-vps.mjs:157` calls `smoke:live --status-only`, and `scripts/smoke-live-site.mjs:616` returns straight after `checkDeployStatus()` in that mode. Every security-header assertion (lines 214-275), the `Reporting-Endpoints` and `report-to`/`report-uri` checks, the synthetic CSP-report POST, and the artifact count checks live in `checkLiveArtifacts()` at line 387 and never execute on a nightly deploy. The documented claim that `smoke:live` gates the edge security headers is only true when run by hand.
+  Evidence: `scripts/deploy-vps.mjs:157`; `scripts/smoke-live-site.mjs:606,616,387`; `CLAUDE.md` deploy section.
+  Touches: `scripts/deploy-vps.mjs`, `scripts/refresh-and-deploy.mjs`, `scripts/smoke-live-site.mjs`.
+  Acceptance: an unattended deploy runs the full artifact smoke including the header and CSP-sink assertions, deriving `--expected-projects`/`--expected-releases`/`--expected-feed-items` from the artifact it just built. Removing a security header from the Caddy block makes the deploy fail.
+  Complexity: M
+
+- [ ] P1 — Make experimental.incrementalBuild actually cache, or remove the flag
+  Why: `astro.config.mjs:17` enables the flag, but Astro only skips pages from `getStaticPaths()` that return a `cacheKey`, and `grep -rn cacheKey src/` finds none. Nothing is cached, and on Astro 7.2.4 the flag also forces `build.concurrency` to 1, so the config currently costs build parallelism for zero benefit.
+  Evidence: https://docs.astro.build/en/reference/experimental-flags/incremental-build/ ; `src/pages/og/[slug].png.ts:8` and `src/pages/lang/[slug].astro:13` both return bare `params`.
+  Touches: `astro.config.mjs`, `src/pages/og/[slug].png.ts`, `src/pages/lang/[slug].astro`, `test/toolchain.test.mjs`.
+  Acceptance: either every `getStaticPaths()` route returns a content-derived `cacheKey` and a second consecutive build logs skipped pages, or the flag is removed and a test asserts the config declares no experimental flag whose precondition is unmet.
+  Complexity: S
+
+- [ ] P1 — Re-anchor the script-order guard on shared.js and stop cmdk failing open
+  Why: `scripts/fix-html-structure.mjs` computes `mainBeforeShared` and `featureBeforeMain`, both gated on `html.indexOf('/scripts/main.js') >= 0`. That file was deleted and `test/homepage-runtime.test.mjs:11` asserts its absence, so both checks are permanently false on every built page. The real dependency — `cmdk.js` needing `window.SafeDOM` from `shared.js` — is unguarded, and `public/scripts/cmdk.js:39` degrades silently to `{}`.
+  Evidence: `scripts/fix-html-structure.mjs:75-88`; `public/scripts/shared.js:52`; `public/scripts/cmdk.js:39`; `src/layouts/Base.astro:210-220`.
+  Touches: `scripts/fix-html-structure.mjs`, `public/scripts/cmdk.js`, `test/html-structure.test.mjs`.
+  Acceptance: a built page that loads `cmdk.js` before `shared.js` fails `fix-html-structure`, proven by planting that order into a real `dist/` page; and `cmdk.js` throws a named error rather than silently no-op'ing when `SafeDOM` is absent.
+  Complexity: S
+
+- [ ] P1 — Fail deps:audit --strict on stale first-party production dependencies
+  Why: the strict run on 2026-09-04 reported PASS while listing astro 7.2.4→7.3.1, satori 0.29.1→0.33.4, esbuild 0.28.1→0.28.2, sharp 0.35.3→0.35.4, postcss 8.5.23→8.5.28, svgo 4.0.2→4.1.0, `@playwright/test` 1.62.0→1.63.0 and `@axe-core/playwright` 4.12.1→4.13.0. Strict mode only fails on stale exact override pins, so the packages that carry the most risk drift without ever reddening a gate.
+  Evidence: `scripts/audit-dependencies.mjs`; `npm run deps:audit -- --strict` output 2026-09-04.
+  Touches: `scripts/audit-dependencies.mjs`, `test/dependency-audit.test.mjs`, `package.json`.
+  Acceptance: a fixture declaring a production dependency two minors behind registry latest fails `--strict` with a named reason, and known holds (`typescript`, `fast-uri`) still pass through the documented blocked-majors path.
+  Complexity: S
+
+- [ ] P1 — Upgrade the drifted dependencies and re-baseline the visual suite
+  Why: the individual gaps are small but two matter. esbuild 0.28.2 exists specifically to rebuild binaries against a patched Go toolchain, and `@axe-core/playwright` 4.13.0 changes rule behaviour (Element Internals support, ten false-positive fixes), so the a11y gate result can move.
+  Evidence: `npm run deps:audit -- --strict` output 2026-09-04; https://github.com/dequelabs/axe-core/releases ; https://github.com/withastro/astro/blob/main/packages/astro/CHANGELOG.md (7.3.0 adds concurrent rendering under `incrementalBuild`).
+  Touches: `package.json`, `package-lock.json`, `test/toolchain.test.mjs` (the `esbuild@` allowScripts pin), `tests/playwright/__screenshots__/`.
+  Acceptance: `npm run check`, `npm test`, `npm run build`, `npm run a11y:audit` and `npm run audit:playwright` all pass on the upgraded tree, and any a11y result change is recorded rather than baselined away.
+  Complexity: M
+
+- [ ] P1 — Add frame-ancestors 'none' to the Caddy-delivered CSP header
+  Why: the live response on 2026-09-04 carries `X-Frame-Options: DENY` and no `frame-ancestors`. `deploy/vps/caddy-block.txt:20` explains the omission as a meta-CSP limitation, which is true of the meta form only — `deploy/vps/Caddyfile:37` already stamps a CSP *header*, and the header form can carry the directive that supersedes XFO.
+  Evidence: live headers captured 2026-09-04; `deploy/vps/Caddyfile:37`; `deploy/vps/caddy-block.txt:7-11`.
+  Touches: `deploy/vps/Caddyfile`, `scripts/deploy-vps.mjs` (csp.env stamping), `scripts/audit-csp.mjs`, `scripts/smoke-live-site.mjs`, `test/csp-audit.test.mjs`.
+  Acceptance: `smoke:live` asserts the deployed header contains `frame-ancestors 'none'`, the meta policy stays unchanged, and `csp:audit:dist:style:elem` still passes.
+  Complexity: S
+
+- [ ] P1 — Pull a pinned Caddy digest on deploy instead of a floating minor tag
+  Why: `deploy/vps/docker-compose.yml:11` pins `caddy:2.11-alpine` and `scripts/deploy-vps.mjs` force-recreates the container without pulling, so the running image can be arbitrarily old. Caddy 2.11.3 adds fixes beyond the 2.11.1 CVE set already adopted (rewrite placeholder re-expansion, unbounded body-buffer DoS, `fileHidden` case-sensitivity bypass).
+  Evidence: `deploy/vps/docker-compose.yml:11`; `scripts/deploy-vps.mjs`; https://github.com/caddyserver/caddy/security/advisories
+  Touches: `deploy/vps/docker-compose.yml`, `scripts/deploy-vps.mjs`, `scripts/smoke-live-site.mjs`.
+  Acceptance: the compose file pins an explicit patch version or image digest, the deploy pulls it, and the smoke records the deployed Caddy version so a drifted image is visible rather than assumed.
+  Complexity: S
+
+- [ ] P1 — Enable npm min-release-age via a committed .npmrc
+  Why: the repo has no `.npmrc`, so freshly published versions install immediately. npm 11.10+ supports `min-release-age` but leaves it off, and `packageManager` pins npm 11.13.0. Shai-Hulud V2 moved to the `preinstall` hook, so even a failed install executes the payload, and the "Mini Shai-Hulud" waves continued from 2026-04-29 into May 2026.
+  Evidence: no `.npmrc` in the tree; `package.json` `packageManager: npm@11.13.0`; https://www.nodejs-security.com/blog/hardening-your-npm-pnpm-config-for-shai-hulud
+  Touches: new `.npmrc`, `test/toolchain.test.mjs`, `README.md` setup notes.
+  Acceptance: `.npmrc` sets a documented `min-release-age`, a test pins the value alongside the existing `packageManager` assertion, and `npm ci` still resolves the current lockfile.
+  Complexity: S
+
+- [ ] P1 — Point the PWA Catalog shortcut at /catalog/
+  Why: `public/manifest.json` describes the shortcut as "Open the full project catalog" but targets `/?source=pwa#catalog`, which since the v0.26.0 split renders only the top-84 preview slice. The full list is the static `/catalog/` route.
+  Evidence: `public/manifest.json` shortcuts entry; `CLAUDE.md` catalog-split architecture note; `src/pages/catalog.astro`.
+  Touches: `public/manifest.json`, `test/pwa-manifest.test.mjs`.
+  Acceptance: every manifest shortcut URL resolves to a built route whose content matches the shortcut description, asserted by a test against `dist/`.
+  Complexity: S
+
+- [ ] P1 — Tag v0.42.1, v0.42.2 and v0.42.3, and gate future releases on a tag
+  Why: `git tag` stops at v0.42.0 while three versions have shipped since. This is the second lapse; v0.31.0 through v0.38.0 were backfilled on 2026-08-20 by locating each version-bump commit.
+  Evidence: `git tag` output 2026-09-04; `CLAUDE.md` release-tagging section.
+  Touches: git tags, `scripts/refresh-and-deploy.mjs` or `scripts/publish-pages.mjs`.
+  Acceptance: each shipped version has an annotated tag on its version-bump commit, tags are pushed, and a deploy of a `package.json` version with no matching tag fails a gate.
+  Complexity: S
 
 ### P2
 
+- [ ] P2 — Ship Speculation Rules through the response header instead of an inline script
+  Why: the 2026-07-28 revert (`57b9be1`) happened because `'inline-speculation-rules'` in a meta CSP made WebKit log console errors, breaking the zero-console-error contract. The `Speculation-Rules` response header points at an external JSON file, so the inline keyword is never needed and no CSP-delivery redesign is required. The internal Caddy already stamps headers. This supersedes the "Prerender same-origin navigations via Speculation Rules" item in `Roadmap_Blocked.md`, whose stated blocker no longer applies.
+  Evidence: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Speculation-Rules (external rules must be served as `application/speculationrules+json`); https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API (the `'inline-speculation-rules'` requirement is documented against the `<script>` form only); `deploy/vps/Caddyfile:37`; the 2026-07-28 revert `57b9be1`. Needs live validation: MDN does not state which directive governs the external rules fetch, so confirm under the shipped `script-src 'self'` before relying on it.
+  Touches: new `public/speculation-rules.json`, `deploy/vps/Caddyfile` (header plus MIME type), `scripts/smoke-live-site.mjs`, `scripts/audit-public-endpoints.mjs`.
+  Acceptance: the live response carries a `Speculation-Rules` header, the referenced file serves `application/speculationrules+json`, Chromium prerenders a same-origin navigation, and a WebKit run through `audit:cross-engine` logs zero console errors. Confirm via the existing `/csp-report` sink that the external fetch raises no violation under `script-src 'self'`.
+  Complexity: M
+
+- [ ] P2 — Persist the edge access log outside the container
+  Why: `deploy/vps/caddy-block.txt` writes to `/var/log/caddy/portfolio.log` inside the edge container, and `deploy:vps` recreates containers on every deploy, so the GoAccess report loses its history each time the site ships. The report itself is correct and correctly kept outside `dist/`.
+  Evidence: `deploy/vps/caddy-block.txt` log block; `scripts/deploy-vps.mjs` force-recreate; `CLAUDE.md` traffic-reporting caveat.
+  Touches: `deploy/vps/docker-compose.yml` or the edge compose in the ops repo, `deploy/vps/analytics-report.sh`.
+  Acceptance: a deploy leaves the previous days' log entries intact and the GoAccess report spans more than one deploy cycle, verified by comparing the report's date range before and after a deploy.
+  Complexity: S
+
+- [ ] P2 — Validate /resume.json against the published JSON Resume schema
+  Why: `src/pages/resume.json.ts` pins `$schema` to jsonresume v1.0.0, but `test/resume-schema.test.mjs` only asserts ISO date format and ordering. `work[].keywords` is emitted and is not a field in the v1.0.0 schema, so the export already deviates from the contract it advertises.
+  Evidence: `src/pages/resume.json.ts:9` and its `work` mapping; `test/resume-schema.test.mjs`; https://jsonresume.org/schema
+  Touches: `test/resume-schema.test.mjs`, `package.json` devDependency on `@jsonresume/schema`, `src/pages/resume.json.ts`.
+  Acceptance: the built `dist/resume.json` validates against `@jsonresume/schema` in the test run, and a deliberately invalid field makes the test fail.
+  Complexity: S
+
+- [ ] P2 — Close the release-provenance gap or retire the unreachable attested tier
+  Why: live `/status.json` reports 60 releases as 31 checksum, 29 unsigned, 0 attested. GitHub Artifact Attestations are produced by `actions/attest-build-provenance` inside a GitHub Actions workflow, which repo policy forbids, so the `attested` tier the trust surface publishes cannot ever be non-zero. Publishing a tier that is unreachable by construction weakens the surface's credibility.
+  Evidence: https://portfolio.getparkerai.com/status.json ; https://docs.github.com/en/actions/concepts/security/artifact-attestations ; `src/data/generated-trust.ts`. Distinct from the `Roadmap_Blocked.md` P0 provenance item, which is scoped to enabling `--fail-on-unsigned-featured-releases` for *featured* repos and is blocked on ClearCut; this item is about the whole 60-release distribution and the reachability of the tier itself, and is not blocked.
+  Touches: `src/data/generated-trust.ts`, `src/pages/status.astro`, `scripts/summarize-generated-data.mjs`, `test/generated-data-trust.test.mjs`.
+  Acceptance: either the 29 unsigned releases carry SHA-256 checksums and the distribution reflects it, or the provenance model documents that `attested` is out of reach under local-build policy and stops reporting it as an achievable tier.
+  Complexity: M
+
+- [ ] P2 — Refresh the GitHub repository description and homepage URL
+  Why: `gh repo view` returns description "Personal portfolio and project showcase site hosted on GitHub Pages" and `homepageUrl` `https://sysadmindoc.github.io/`. Both were superseded on 2026-07-28 when the canonical origin moved to portfolio.getparkerai.com; the repo page is the first thing a visitor arriving from GitHub reads.
+  Evidence: `gh repo view --json description,homepageUrl` on 2026-09-04; `CLAUDE.md` hosting section.
+  Touches: repository settings only (no tracked files).
+  Acceptance: `gh repo view` reports the current origin and a description that does not claim GitHub Pages hosting.
+  Complexity: S
+
+- [ ] P2 — Prove each audit gate can fail by planting a real violation
+  Why: three separate mechanisms were found measuring nothing while their own tests stayed green, because those tests exercise helper functions against synthetic fixtures rather than the production path. `test/html-structure.test.mjs` passes `main.js` into `inspectHtml` directly, so the guard looks healthy while being unreachable on every real page.
+  Evidence: `scripts/fix-html-structure.mjs:75-88` vs `test/html-structure.test.mjs:22`; `astro.config.mjs:17` vs the absent `cacheKey`; `scripts/audit-dependencies.mjs` strict PASS on a drifted tree.
+  Touches: `test/` (new self-test coverage), `scripts/` audits that currently lack a negative control.
+  Acceptance: for each build-time audit, a test injects a violation into the real artifact the audit inspects and asserts a non-zero exit; a gate that cannot be made to fail is either fixed or removed.
+  Complexity: M
+
 ### P3
+
+- [ ] P3 — Publish a single derived data page and cite it from /ai/
+  Why: 2026 citation studies consistently find that pages carrying dense original statistics earn substantially more AI-search citations than prose, and that owned content is otherwise rarely cited. This site already computes 201 project records, language metrics, release-provenance distributions and freshness telemetry, so the data exists and needs no invented content.
+  Evidence: https://citemetrix.com/state-of-ai-search-2026/ ; https://www.5wpr.com/research/state-of-ai-citations-2026/ ; `src/data/generated-trust.ts`, `src/pages/status.json.ts`.
+  Touches: new route under `src/pages/`, `src/data/interior-og-pages.ts`, `src/pages/llms.txt.ts`, sitemap/schema/endpoint/search/image audits, `scripts/scaffold-route.mjs` registration surfaces.
+  Acceptance: the route renders only figures derived from existing generated data with no hand-written claims, passes every registration audit named by `npm run scaffold:route -- --dry-run`, and appears in `/llms.txt` and the sitemap.
+  Complexity: M
+
+- [ ] P3 — Evaluate declarative WebMCP on the search form during the Chrome origin trial
+  Why: Lighthouse now ships an Agentic browsing audit category covering llms.txt, registered WebMCP tools, declarative WebMCP on forms and agent accessibility. A site that sells AI implementation and already invites agent crawlers in `robots.txt` is the natural place to dogfood it. Chrome runs the public origin trial from Chrome 149 to 156.
+  Evidence: https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt ; https://developer.chrome.com/blog/ai-webmcp-origin-trial ; https://www.spronta.com/blog/state-of-webmcp-july-2026/ (no mainstream agent consumes WebMCP tools yet, and the API surface still changes between drafts).
+  Touches: `src/pages/search.astro`, `src/layouts/Base.astro` (origin-trial token), `deploy/vps/Caddyfile`, `scripts/audit-public-endpoints.mjs`.
+  Acceptance: the search form exposes a declarative tool that Chrome's WebMCP surface registers, the origin-trial token is scoped and dated, no runtime JavaScript is added to non-search routes, and the change is reverted cleanly if the trial lapses without adoption.
+  Complexity: M
