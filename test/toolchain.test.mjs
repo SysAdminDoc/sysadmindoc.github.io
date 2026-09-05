@@ -191,6 +191,9 @@ test('the build removes dist/ first so stale artifacts cannot ship', async () =>
   // The guard has to interrogate root itself, and the test has to exercise it
   // rather than regex-match its text.
   assert.match(script, /function assertRepoRoot\(\)/);
+  // Windows still holds handles on files a build just wrote, so a plain
+  // recursive rmSync threw ENOTEMPTY and part-deleted dist/, leaving dist/og.
+  assert.match(script, /maxRetries: 10, retryDelay: 100/);
   assert.doesNotMatch(script, /path\.basename\(distDir\) !== 'dist'/, 'the tautological guard must not come back');
 
   const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-clean-dist-'));
