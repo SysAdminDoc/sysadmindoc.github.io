@@ -51,7 +51,15 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
   assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium')), false);
   assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium-light')), false);
   assert.match(config, /PLAYWRIGHT_AUDIT_PORT \?\? process\.env\.PLAYWRIGHT_PORT \?\? '4324'/);
-  assert.match(config, /reuseExistingServer: false/);
+  // Was: assert.match(config, /reuseExistingServer: false/). That assertion
+  // pinned a webServer block that provably cannot work here — Astro 7 preview
+  // self-daemonizes under a non-TTY stdout, so Playwright always reported
+  // "exited early". The intent behind it (never audit against a leftover server
+  // serving an older dist/) is kept, and now pinned against the mechanism that
+  // actually runs: setup stops any existing daemon before starting its own.
+  const previewSetup = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server.mjs'), 'utf8');
+  assert.match(previewSetup, /astroPreview\(\['stop'\], \{ ignoreErrors: true \}\);/);
+  assert.doesNotMatch(config, /reuseExistingServer/);
   assert.match(interactionsConfig, /playwright\.audits\.config\.mjs/);
   assert.match(interactionsConfig, /outputDir: '\.tmp\/playwright-interactions-results'/);
   assert.match(interactionsConfig, /outputFolder: '\.tmp\/playwright-interactions-report'/);
@@ -60,4 +68,48 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
   assert.match(stateSpec, /expectTargetSizeClean/);
   assert.match(targetSizeHelper, /export async function collectTargetSizeViolations/);
   assert.match(spec, /toHaveScreenshot/);
+});
+
+test('the a11y gates are reachable from a chain, not merely declared', async () => {
+  const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+
+  // The previous assertions in this file check that the scripts EXIST. That is
+  // what let a11y sit outside every chain: `deploy:preflight` never reached
+  // `a11y:audit` and nothing reached the axe suite, so both read green while
+  // blocking nothing. Assert the call path instead.
+  assert.match(pkg.scripts['build:ci'], /npm run a11y:audit\b/, 'build:ci must run the static a11y gate');
+  assert.match(
+    pkg.scripts['deploy:preflight'],
+    /npm run a11y:audit:browser\b/,
+    'deploy:preflight must run the axe-core browser gate',
+  );
+
+  // build:ci reads dist/, so the gate has to come after the build produces it.
+  const ci = pkg.scripts['build:ci'];
+  assert.ok(ci.indexOf('astro build') < ci.indexOf('npm run a11y:audit'), 'a11y:audit must run after astro build');
+
+  // The browser gate deliberately excludes the screenshot suites: those baselines
+  // are fixture-backed and per-platform, so they cannot run against live data.
+  assert.match(pkg.scripts['a11y:audit:browser'], /-g "accessibility audit\|target-size audit"/);
+});
+
+test('the audits config manages the preview itself because Astro 7 daemonizes it', async () => {
+  const config = await fs.readFile(path.join(root, 'playwright.audits.config.mjs'), 'utf8');
+
+  // `astro preview` self-daemonizes under a non-TTY stdout, so Playwright's
+  // managed webServer always reports "exited early". Reintroducing webServer here
+  // would make deploy:preflight fail on a server that is actually running fine.
+  assert.doesNotMatch(config, /webServer\s*:/);
+  assert.match(config, /globalSetup: '\.\/tests\/playwright\/preview-server\.mjs'/);
+  assert.match(config, /globalTeardown: '\.\/tests\/playwright\/preview-server-teardown\.mjs'/);
+
+  // Setup and teardown must be separate modules: Playwright invokes each hook's
+  // default export, so pointing both at one file runs setup twice.
+  const setup = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server.mjs'), 'utf8');
+  const teardown = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server-teardown.mjs'), 'utf8');
+  assert.match(setup, /export default async function globalSetup/);
+  assert.match(teardown, /export default async function globalTeardown/);
+  // Ownership crosses a process boundary, so it cannot ride on an env var.
+  assert.match(setup, /ownedMarkerPath/);
+  assert.match(teardown, /ownedMarkerPath/);
 });

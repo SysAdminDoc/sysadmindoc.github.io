@@ -28,14 +28,11 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'off',
   },
-  webServer: process.env.PLAYWRIGHT_BASE_URL
-    ? undefined
-    : {
-        command: `npm run preview -- --host ${host} --port ${port}`,
-        url: baseURL,
-        reuseExistingServer: false,
-        timeout: 60_000,
-      },
+  // Astro 7's preview self-daemonizes under Playwright's piped stdout, so a
+  // managed webServer always reads as "exited early". The preview is started and
+  // stopped by these hooks instead; see tests/playwright/preview-server.mjs.
+  globalSetup: './tests/playwright/preview-server.mjs',
+  globalTeardown: './tests/playwright/preview-server-teardown.mjs',
   projects: [
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
