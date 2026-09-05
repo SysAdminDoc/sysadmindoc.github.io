@@ -61,7 +61,7 @@
       "name": "Catalog",
       "short_name": "Catalog",
       "description": "Open the full project catalog.",
-      "url": "/?source=pwa#catalog"
+      "url": "/catalog/?source=pwa"
     },
     {
       "name": "Search",
