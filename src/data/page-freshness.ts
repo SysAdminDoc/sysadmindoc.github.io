@@ -9,6 +9,16 @@ export interface ReviewedInteriorPage {
 
 export const reviewedInteriorPages: ReviewedInteriorPage[] = [
   {
+    slug: 'data',
+    route: '/data/',
+    label: 'Data',
+    lastReviewed: '2026-09-05',
+    schemaTypes: ['WebPage'],
+    // The figures state their own cache age in the intro, so a separate
+    // reviewed-on line would be a second, weaker freshness claim.
+    visibleFreshness: false,
+  },
+  {
     slug: 'uses',
     route: '/uses/',
     label: 'Uses',

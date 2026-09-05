@@ -13,7 +13,7 @@ const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
 const baseLayoutPath = path.join(repoRoot, 'src', 'layouts', 'Base.astro');
 const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 2;
-const astroExtractedStyleBlockCount = 14;
+const astroExtractedStyleBlockCount = 15;
 
 function countJavaScriptFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).reduce((count, entry) => {
@@ -67,7 +67,7 @@ test('csp audit inventories current inline script blockers without failing defau
   assert.match(output, /style element unsafe-inline active: no/);
   assert.match(output, /style attribute unsafe-inline active: no/);
   assert.match(output, /executable inline scripts: 0/);
-  assert.match(output, /JSON-LD\/data script blocks: 15/);
+  assert.match(output, /JSON-LD\/data script blocks: 16/);
   assert.match(output, /inline event handlers: 0/);
   assert.match(output, new RegExp(`inline style blocks: ${inlineStyleSurfaceCount}`));
   assert.match(output, new RegExp(`Astro extracted style blocks: ${astroExtractedStyleBlockCount}`));

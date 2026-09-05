@@ -1,0 +1,259 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import Footer from '../components/Footer.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
+import { catalogStars, filterButtons } from '../data/catalog-render';
+import { buildGeneratedDataTrust, RELEASE_PROVENANCE_CEILING_REASON } from '../data/generated-trust';
+import type { GeneratedCatalogDrift, GeneratedMeta, GeneratedReadmeRefresh, GeneratedRelease, GeneratedStats } from '../data/generated';
+
+// Every figure on this page is computed from the same generated caches that feed
+// /status.json and the catalog. Nothing here is hand-written, which is the point:
+// it is a measurement of the archive, not a claim about it.
+let stats: Partial<GeneratedStats> = {};
+try {
+  const mod = await import('../data/_stats.json');
+  stats = (mod.default ?? mod) as Partial<GeneratedStats>;
+} catch {}
+
+let starEntries = 0;
+try {
+  const mod = await import('../data/_stars.json');
+  starEntries = Object.keys(mod.default ?? mod).length;
+} catch {}
+
+// Read the metadata cache with its declared type rather than through
+// catalog-render's narrower view, which drops licenseSpdx.
+let repoMeta: GeneratedMeta = {};
+try {
+  const mod = await import('../data/_meta.json');
+  repoMeta = (mod.default ?? mod) as GeneratedMeta;
+} catch {}
+const metadataEntries = Object.keys(repoMeta).length;
+
+let readmeEntries = 0;
+try {
+  const mod = await import('../data/_readmes.json');
+  readmeEntries = Object.keys(mod.default ?? mod).length;
+} catch {}
+
+let releases: GeneratedRelease[] = [];
+try {
+  const mod = await import('../data/_releases.json');
+  const rows = mod.default ?? mod;
+  releases = Array.isArray(rows) ? (rows as GeneratedRelease[]) : [];
+} catch {}
+
+let readmeRefresh: Partial<GeneratedReadmeRefresh> | null = null;
+try {
+  const mod = await import('../data/_readme-refresh.json');
+  readmeRefresh = (mod.default ?? mod) as Partial<GeneratedReadmeRefresh>;
+} catch {}
+
+let catalogDrift: Partial<GeneratedCatalogDrift> | null = null;
+try {
+  const mod = await import('../data/_catalog-drift.json');
+  catalogDrift = (mod.default ?? mod) as Partial<GeneratedCatalogDrift>;
+} catch {}
+
+const generatedData = buildGeneratedDataTrust({
+  stats,
+  starEntries,
+  metadataEntries,
+  readmeEntries,
+  releaseEntries: releases.length,
+  releases,
+  profileFeedInfo,
+  readmeRefresh,
+  catalogDrift,
+});
+
+const title = 'Portfolio data — Matt Parker';
+const pageOg = interiorOgPageBySlug['data'];
+const pageFreshness = pageFreshnessBySlug['data'];
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+
+const categoryLabelByKey = new Map<string, string>(filterButtons.map((button) => [button.key, button.label]));
+const categoryRows = [...catalog.reduce((counts, entry) => {
+  counts.set(entry.category, (counts.get(entry.category) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>())]
+  .map(([key, count]) => ({ label: categoryLabelByKey.get(key) ?? key, count }))
+  .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+
+const languageRows = [...Object.values(repoMeta).reduce((counts, meta) => {
+  const language = meta?.language;
+  if (!language) return counts;
+  counts.set(language, (counts.get(language) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>())]
+  .map(([language, count]) => ({ language, count }))
+  .sort((a, b) => b.count - a.count || a.language.localeCompare(b.language))
+  .slice(0, 8);
+
+const licenseRows = [...Object.values(repoMeta).reduce((counts, meta) => {
+  const spdx = meta?.licenseSpdx ?? 'Unlicensed';
+  counts.set(spdx, (counts.get(spdx) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>())]
+  .map(([license, count]) => ({ license, count }))
+  .sort((a, b) => b.count - a.count || a.license.localeCompare(b.license))
+  .slice(0, 6);
+
+const provenance = generatedData.releaseProvenance;
+const provenanceRows = [
+  { label: 'Checksum', count: provenance.checksum },
+  { label: 'Unsigned', count: provenance.unsigned },
+  { label: 'No assets', count: provenance['no-assets'] },
+  { label: 'Attested', count: provenance.attested },
+];
+
+const totalStars = Object.values(catalogStars).reduce((sum, value) => sum + (Number(value) || 0), 0);
+const releaseRepos = new Set(releases.map((release) => release.repo)).size;
+const percent = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : '—');
+
+const headline = [
+  { label: 'Catalogued projects', value: catalog.length },
+  { label: 'Live apps', value: liveApps.length },
+  { label: 'Stars across the archive', value: totalStars },
+  { label: 'Repos with a release', value: releaseRepos },
+];
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="data" contextLabel="Data" contextTone="slate" />
+
+  <main id="main" data-pagefind-body data-pagefind-filter="Scope:Portfolio data">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Portfolio data"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="si page-shell" id="data-overview">
+      <div class="sh rv">
+        <div class="sl">// Portfolio data</div>
+        <h1 class="st">Portfolio data</h1>
+        <p class="sd">
+          Every number below is computed at build time from the same caches that produce
+          <a href="/status.json">/status.json</a> and <a href="/catalog/">the catalog</a>. Nothing is
+          hand-entered, so the page is only ever as current as the data behind it, which was
+          refreshed {generatedData.ageHours == null ? 'at an unknown time' : `${generatedData.ageHours.toFixed(1)} hours ago`}.
+        </p>
+      </div>
+
+      <dl class="data-headline rv">
+        {headline.map((row) => (
+          <div class="data-headline-cell">
+            <dt>{row.label}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <section class="data-block rv" aria-labelledby="data-categories">
+        <h2 id="data-categories">Projects by category</h2>
+        <table class="data-table">
+          <thead><tr><th scope="col">Category</th><th scope="col">Projects</th><th scope="col">Share</th></tr></thead>
+          <tbody>
+            {categoryRows.map((row) => (
+              <tr>
+                <th scope="row">{row.label}</th>
+                <td>{row.count}</td>
+                <td>{percent(row.count, catalog.length)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="data-block rv" aria-labelledby="data-languages">
+        <h2 id="data-languages">Primary language, as GitHub reports it</h2>
+        <table class="data-table">
+          <thead><tr><th scope="col">Language</th><th scope="col">Repositories</th></tr></thead>
+          <tbody>
+            {languageRows.map((row) => (
+              <tr><th scope="row">{row.language}</th><td>{row.count}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="data-block rv" aria-labelledby="data-licenses">
+        <h2 id="data-licenses">Declared licence</h2>
+        <table class="data-table">
+          <thead><tr><th scope="col">SPDX</th><th scope="col">Repositories</th></tr></thead>
+          <tbody>
+            {licenseRows.map((row) => (
+              <tr><th scope="row">{row.license}</th><td>{row.count}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="data-block rv" aria-labelledby="data-provenance">
+        <h2 id="data-provenance">Release artifact provenance</h2>
+        <table class="data-table">
+          <thead><tr><th scope="col">Tier</th><th scope="col">Releases</th><th scope="col">Share</th></tr></thead>
+          <tbody>
+            {provenanceRows.map((row) => (
+              <tr>
+                <th scope="row">{row.label}</th>
+                <td>{row.count}</td>
+                <td>{percent(row.count, provenance.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="data-note">{RELEASE_PROVENANCE_CEILING_REASON}</p>
+      </section>
+
+      <section class="data-block rv" aria-labelledby="data-coverage">
+        <h2 id="data-coverage">Cache coverage behind these figures</h2>
+        <table class="data-table">
+          <thead><tr><th scope="col">Cache</th><th scope="col">Entries</th><th scope="col">Of feed projects</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Stars</th><td>{starEntries}</td><td>{percent(starEntries, generatedData.coverage.profileProjectCount ?? 0)}</td></tr>
+            <tr><th scope="row">Repository metadata</th><td>{metadataEntries}</td><td>{percent(metadataEntries, generatedData.coverage.profileProjectCount ?? 0)}</td></tr>
+            <tr><th scope="row">READMEs</th><td>{readmeEntries}</td><td>{percent(readmeEntries, generatedData.coverage.profileProjectCount ?? 0)}</td></tr>
+            <tr><th scope="row">Releases</th><td>{releases.length}</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p class="data-note">
+          Source: {generatedData.profileFeed.source ?? 'local fallback'}. Mode: {generatedData.mode}.
+          <a href="/status/">Status</a> carries the same telemetry with its warnings.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer
+    summary="Figures derived at build time from the generated GitHub caches. The status page carries the same telemetry with its freshness warnings."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/status/', label: 'Status' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
+</Base>
+
+<style is:global>
+  .data-headline{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:28px 0 0}
+  .data-headline-cell{border-top:2px solid var(--blue);padding:12px 0 0}
+  .data-headline-cell dt{color:var(--t3);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .data-headline-cell dd{margin:6px 0 0;font-size:30px;font-weight:700;line-height:1.1}
+  .data-block{margin:38px 0 0}
+  .data-block h2{font-size:20px;margin:0 0 12px}
+  .data-table{border-collapse:collapse;width:100%;font-size:15px}
+  .data-table th,.data-table td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left}
+  .data-table thead th{color:var(--t3);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .data-table td{font-variant-numeric:tabular-nums}
+  .data-note{color:var(--t3);font-size:14px;line-height:1.55;margin:12px 0 0}
+</style>

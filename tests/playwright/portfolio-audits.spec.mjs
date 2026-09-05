@@ -17,6 +17,7 @@ const routes = [
   { name: 'releases', path: '/releases/', ready: '#release-timeline' },
   { name: 'screenshots', path: '/screenshots/', ready: '#screenshots-gallery' },
   { name: 'resume', path: '/resume/', ready: '#resume-header' },
+  { name: 'data', path: '/data/', ready: '#data-overview' },
   { name: 'uses', path: '/uses/', ready: '#uses-overview' },
   { name: 'now', path: '/now/', ready: '#now-overview' },
   { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },

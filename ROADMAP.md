@@ -14,13 +14,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P3
 
-- [ ] P3 — Publish a single derived data page and cite it from /ai/
-  Why: 2026 citation studies consistently find that pages carrying dense original statistics earn substantially more AI-search citations than prose, and that owned content is otherwise rarely cited. This site already computes 201 project records, language metrics, release-provenance distributions and freshness telemetry, so the data exists and needs no invented content.
-  Evidence: https://citemetrix.com/state-of-ai-search-2026/ ; https://www.5wpr.com/research/state-of-ai-citations-2026/ ; `src/data/generated-trust.ts`, `src/pages/status.json.ts`.
-  Touches: new route under `src/pages/`, `src/data/interior-og-pages.ts`, `src/pages/llms.txt.ts`, sitemap/schema/endpoint/search/image audits, `scripts/scaffold-route.mjs` registration surfaces.
-  Acceptance: the route renders only figures derived from existing generated data with no hand-written claims, passes every registration audit named by `npm run scaffold:route -- --dry-run`, and appears in `/llms.txt` and the sitemap.
-  Complexity: M
-
 - [ ] P3 — Evaluate declarative WebMCP on the search form during the Chrome origin trial
   Why: Lighthouse now ships an Agentic browsing audit category covering llms.txt, registered WebMCP tools, declarative WebMCP on forms and agent accessibility. A site that sells AI implementation and already invites agent crawlers in `robots.txt` is the natural place to dogfood it. Chrome runs the public origin trial from Chrome 149 to 156.
   Evidence: https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt ; https://developer.chrome.com/blog/ai-webmcp-origin-trial ; https://www.spronta.com/blog/state-of-webmcp-july-2026/ (no mainstream agent consumes WebMCP tools yet, and the API surface still changes between drafts).

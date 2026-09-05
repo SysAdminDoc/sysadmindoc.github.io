@@ -11,6 +11,17 @@ export interface InteriorOgPage {
 
 export const interiorOgPages: InteriorOgPage[] = [
   {
+    slug: 'data',
+    route: '/data/',
+    title: 'Portfolio data',
+    description:
+      'Counts, language mix, licence spread and release provenance for the public project archive, derived at build time from the generated GitHub caches.',
+    label: 'Data',
+    accent: '#1f5fcc',
+    ogImage: '/og/data.png',
+    ogImageAlt: 'Portfolio data page social preview card',
+  },
+  {
     slug: 'uses',
     route: '/uses/',
     title: 'Uses',

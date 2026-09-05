@@ -15,7 +15,7 @@ const interiorOgPagesPath = path.join(root, 'src', 'data', 'interior-og-pages.ts
 const ogEndpointPath = path.join(root, 'src', 'pages', 'og', '[slug].png.ts');
 const homepageOgEndpointPath = path.join(root, 'src', 'pages', 'og.png.ts');
 const ogRendererPath = path.join(root, 'src', 'data', 'og-card.ts');
-const requiredSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases'];
+const requiredSlugs = ['uses', 'resume', 'search', 'timeline', 'archive', 'now', 'healthcare-it', 'releases', 'data'];
 
 function fakeFont(signature = Buffer.from([0x00, 0x01, 0x00, 0x00])) {
   const buffer = Buffer.alloc(MIN_FONT_BYTES);
