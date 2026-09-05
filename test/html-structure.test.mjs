@@ -19,7 +19,7 @@ test('html structure guard is no-op for valid build output', async () => {
   await withTempDist(async (dir) => {
     const file = path.join(dir, 'index.html');
     const html =
-      '<!doctype html><html lang="en"><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/main.js"></script><script src="/scripts/home-catalog.js"></script></body></html>';
+      '<!doctype html><html lang="en"><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/home-catalog.js"></script></body></html>';
     await fs.writeFile(file, html);
 
     const result = auditDist(dir);
@@ -61,11 +61,14 @@ test('html structure guard can repair legacy output only when requested', async 
   });
 });
 
-test('html structure guard still catches homepage script order regressions', async () => {
+test('html structure guard catches a SafeDOM consumer loading before shared.js', async () => {
   await withTempDist(async (dir) => {
+    // Was keyed on main.js, a file deleted in the homepage runtime split, so the
+    // guard it exercised could never fire on a real page. cmdk.js reading
+    // window.SafeDOM from shared.js is the dependency that actually exists.
     await fs.writeFile(
       path.join(dir, 'index.html'),
-      '<!doctype html><html><head></head><body><script src="/scripts/main.js"></script><script src="/scripts/shared.js"></script></body></html>',
+      '<!doctype html><html><head></head><body><script src="/scripts/cmdk-loader.js"></script><script src="/scripts/shared.js"></script></body></html>',
     );
 
     const result = auditDist(dir);
@@ -73,11 +76,11 @@ test('html structure guard still catches homepage script order regressions', asy
   });
 });
 
-test('html structure guard catches feature scripts before homepage core', async () => {
+test('html structure guard catches a SafeDOM consumer with no shared.js at all', async () => {
   await withTempDist(async (dir) => {
     await fs.writeFile(
       path.join(dir, 'index.html'),
-      '<!doctype html><html><head></head><body><script src="/scripts/shared.js"></script><script src="/scripts/home-catalog.js"></script><script src="/scripts/main.js"></script></body></html>',
+      '<!doctype html><html><head></head><body><script src="/scripts/home-catalog.js"></script><script src="/scripts/cmdk.js"></script></body></html>',
     );
 
     const result = auditDist(dir);

@@ -66,26 +66,29 @@ export function inspectHtml(html) {
       hasBody: false,
       hasEarlyHtmlClose: false,
       missingFinalHtmlClose: false,
-      mainBeforeShared: false,
-      featureBeforeMain: false,
+      dependentWithoutShared: false,
+      dependentBeforeShared: false,
     };
   }
 
   const head = html.slice(0, bodyIdx);
-  const mainIdx = html.indexOf('/scripts/main.js');
   const sharedIdx = html.indexOf('/scripts/shared.js');
-  const featureIndexes = [...html.matchAll(/\/scripts\/home-[^"']+\.js/g)].map((match) => match.index);
+  // Scripts that read `window.SafeDOM`, which shared.js defines. Keep this list
+  // in step with the SafeDOM consumers under public/scripts/ — a consumer that is
+  // not listed here is not protected by this guard.
+  const dependentIndexes = [...html.matchAll(/\/scripts\/cmdk(?:-loader)?\.js/g)].map((match) => match.index);
 
   return {
     hasBody: true,
     hasEarlyHtmlClose: /<\/html>/i.test(head),
     missingFinalHtmlClose: !/<\/html>\s*$/i.test(html),
-    mainBeforeShared: mainIdx >= 0 && (sharedIdx < 0 || mainIdx < sharedIdx),
-    // Feature scripts (home-*.js) must not load before their homepage core
-    // (main.js) when the page uses it. Routes like /catalog/ load a standalone
-    // home-catalog.js with no main.js dependency, so the order guard only
-    // applies when main.js is actually present on the page.
-    featureBeforeMain: mainIdx >= 0 && featureIndexes.some((index) => index < mainIdx),
+    // Was keyed on /scripts/main.js, which was deleted in the homepage runtime
+    // split — test/homepage-runtime.test.mjs asserts its absence. Both checks
+    // were therefore permanently false on every built page while looking green.
+    // The dependency that actually exists is cmdk.js needing window.SafeDOM from
+    // shared.js, so that is what is guarded.
+    dependentWithoutShared: dependentIndexes.length > 0 && sharedIdx < 0,
+    dependentBeforeShared: sharedIdx >= 0 && dependentIndexes.some((index) => index < sharedIdx),
   };
 }
 
@@ -116,7 +119,7 @@ export function auditDist(dist = defaultDist, options = {}) {
     if (!inspection.hasBody) continue;
 
     const relative = normalizePath(file, dist);
-    if (inspection.mainBeforeShared || inspection.featureBeforeMain) {
+    if (inspection.dependentWithoutShared || inspection.dependentBeforeShared) {
       orderViolations.push(relative);
     }
 
