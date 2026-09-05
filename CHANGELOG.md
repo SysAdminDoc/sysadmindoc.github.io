@@ -10,6 +10,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Cataloged GLP-Ultra and HubSpot-Ticket-Refined, two new public userscript repos. Local fallback catalog grows from 202 to 204 entries.
 
 ### Changed
+- `deps:audit --strict` now fails when a first-party dependency is more than one minor behind registry latest. It previously failed only on stale exact override pins, so it reported PASS on 2026-09-04 while satori sat four minors behind. Documented major holds (`typescript`, `fast-uri`) still pass through the blocked-majors path.
+- satori 0.29.1 to 0.33.4, which brings corner-shape, `shape()` in `clip-path`, backdrop-filter, HarfBuzz text shaping and a font-cache speedup to the OG card renderer.
 - Unattended deploys now run the full live smoke instead of `--status-only`. That flag returned after comparing the live version and commit, so the edge security headers, the CSP reporting directives, the synthetic CSP report POST and every artifact count check were skipped on exactly the runs nobody watches. The expected counts are read from the tree that was just shipped.
 - Accessibility is now gated on deploy. `build:ci` runs the static `a11y:audit --strict` against the built `dist/`, and `deploy:preflight` runs a new `a11y:audit:browser` (axe-core plus the WCAG 2.2 target-size suite, screenshots excluded so it works against live data). Both were previously declared but reachable from no chain.
 - The Playwright audit configs manage the preview server themselves. Astro 7 self-daemonizes `astro preview` under a non-TTY stdout, so a managed `webServer` always reported "exited early"; the browser audits could not run unattended at all.
