@@ -89,3 +89,23 @@ test('deploy extracts CSP content without treating policy apostrophes as delimit
   assert.ok(deploy.includes(".match(/\\bcontent\\s*=\\s*([\"'])([\\s\\S]*?)\\1/i)"));
   assert.ok(deploy.includes('decodeHtmlAttribute(contentMatch[2])'));
 });
+
+test('the deployed CSP header carries frame-ancestors, which a meta policy cannot', async () => {
+  const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+  const smoke = await fs.readFile(path.join(root, 'scripts', 'smoke-live-site.mjs'), 'utf8');
+  const base = await fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8');
+
+  // frame-ancestors is ignored in a <meta> policy, so it belongs only on the
+  // stamped response header. Putting it in the meta source would be inert and
+  // would make the two policies disagree.
+  assert.match(deploy, /frame-ancestors 'none'/);
+  assert.match(deploy, /the meta policy already declares frame-ancestors/);
+  assert.doesNotMatch(base, /frame-ancestors/);
+
+  // Without the smoke assertion, an older csp.env on the box would silently
+  // drop the directive and clickjacking defence would fall back to XFO alone.
+  assert.ok(
+    smoke.includes("The deployed CSP header is missing frame-ancestors 'none'"),
+    'the live smoke must fail when the deployed header drops frame-ancestors',
+  );
+});
