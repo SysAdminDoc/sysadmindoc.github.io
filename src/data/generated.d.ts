@@ -61,6 +61,17 @@ export interface GeneratedProfileFeedCache {
   suppressed?: GeneratedProfileProject[];
 }
 
+export interface GeneratedCatalogDrift {
+  schema: string;
+  generatedAt: string;
+  owner: string;
+  activePublicNonForks: number;
+  portfolioRefs: number;
+  complete: boolean;
+  uncataloged: string[];
+  staleRefs: string[];
+}
+
 export interface GeneratedReadmeRefresh {
   schema: string;
   generatedAt: string;
@@ -87,6 +98,8 @@ export type GeneratedStars = Record<string, number>;
 export type GeneratedMeta = Record<string, GeneratedRepoMeta>;
 /** _readmes.json — repo slug → raw README markdown */
 export type GeneratedReadmes = Record<string, string>;
+/** _catalog-drift.json — catalog completeness check written by scripts/audit-catalog.mjs */
+export type GeneratedCatalogDriftReport = GeneratedCatalogDrift;
 /** _readme-refresh.json — README refresh quality telemetry */
 export type GeneratedReadmeRefreshSummary = GeneratedReadmeRefresh;
 /** _releases.json — most recent releases across the archive */

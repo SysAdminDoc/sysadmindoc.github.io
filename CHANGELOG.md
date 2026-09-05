@@ -5,7 +5,11 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- `/status/` and `/status.json` now publish catalog completeness (`generatedData.catalogCompleteness`). An unchecked catalog reports `measured: false` rather than implying it is complete, and uncataloged repos are named in the published warnings.
 - Cataloged GLP-Ultra and HubSpot-Ticket-Refined, two new public userscript repos. Local fallback catalog grows from 202 to 204 entries.
+
+### Changed
+- A newly published public repo no longer freezes the nightly deploy. `catalog:audit` gained a report-only mode (`CATALOG_AUDIT_REPORT_ONLY`, set by `refresh:deploy`) that records drift in `src/data/_catalog-drift.json` and lets refreshed data ship, then exits non-zero so the run still reports failure. Stale catalog refs and privacy-review violations stay fatal in every mode.
 
 ### Fixed
 - Restored the nightly deploy. `catalog:audit` had been failing since 2026-09-04, so v0.42.3 never shipped and the live site stayed on v0.42.2.

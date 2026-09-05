@@ -8,7 +8,19 @@ import { collectPortfolioRepos } from './lib/ts-data-utils.mjs';
 const root = process.cwd();
 const projectsPath = path.join(root, 'src', 'data', 'projects.ts');
 const policyPath = path.join(root, 'src', 'data', 'catalog-policy.json');
+const driftPath = path.join(root, 'src', 'data', '_catalog-drift.json');
 const execFileAsync = promisify(execFile);
+
+// Report-only downgrades ONE failure class: active public repos that are not yet
+// cataloged. Four nightly deploys were lost to that class between 2026-08-24 and
+// 2026-09-04 while the deployed data aged past its own 36h contract, and holding
+// a stale site hostage to a curation decision trades a real freshness guarantee
+// for a paperwork one. The build reads _catalog-drift.json and reports the gap on
+// /status/, so the site stops claiming a complete catalog instead of pretending.
+// Stale refs and privacy-review violations stay fatal in every mode: those are
+// wrong-or-unsafe published content, not pending curation.
+const reportOnly =
+  process.argv.includes('--report-only') || /^(1|true|yes)$/i.test(process.env.CATALOG_AUDIT_REPORT_ONLY ?? '');
 
 async function resolveGithubToken() {
   const envToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
@@ -103,6 +115,18 @@ for (const entry of policy.privacyReviewRequired ?? []) {
 }
 privacyScreenshots.sort((a, b) => a.repo.localeCompare(b.repo));
 
+const drift = {
+  schema: 'sysadmindoc.catalog-drift.v1',
+  generatedAt: new Date().toISOString(),
+  owner: policy.owner,
+  activePublicNonForks: activePublicNonFork.length,
+  portfolioRefs: portfolioRefs.size,
+  complete: missing.length === 0,
+  uncataloged: missing.map((repo) => repo.name),
+  staleRefs: stale,
+};
+await fs.writeFile(driftPath, `${JSON.stringify(drift, null, 2)}\n`, 'utf8');
+
 console.log('Catalog audit');
 console.log(`  owner: ${policy.owner}`);
 console.log(`  github auth: ${token ? 'authenticated' : 'anonymous'}`);
@@ -115,10 +139,16 @@ console.log('Reviewed public repos not cataloged:');
 console.log(formatList(reviewedMissing, (repo) => `${repo.name} - ${reviewedExceptions.get(repo.name)}`));
 console.log('');
 
-if (missing.length > 0 || stale.length > 0 || privacyListed.length > 0 || privacyScreenshots.length > 0) {
+const fatal = (reportOnly ? false : missing.length > 0) || stale.length > 0 || privacyListed.length > 0 || privacyScreenshots.length > 0;
+
+if (missing.length > 0 || fatal) {
   if (missing.length > 0) {
-    console.error('Unreviewed active public repos missing from portfolio data:');
-    console.error(formatList(missing, (repo) => `${repo.name} (${repo.html_url})`));
+    const write = reportOnly ? console.warn : console.error;
+    write('Unreviewed active public repos missing from portfolio data:');
+    write(formatList(missing, (repo) => `${repo.name} (${repo.html_url})`));
+    if (reportOnly) {
+      write('Report-only mode: recorded in src/data/_catalog-drift.json and surfaced on /status/; not blocking the deploy.');
+    }
   }
   if (stale.length > 0) {
     console.error('Portfolio repo refs not found as active public repositories:');
@@ -132,7 +162,7 @@ if (missing.length > 0 || stale.length > 0 || privacyListed.length > 0 || privac
     console.error('Privacy-review repos must not have public screenshot artifacts:');
     console.error(formatList(privacyScreenshots, (entry) => `${entry.repo} - public/screenshots/${entry.repo}.jpg`));
   }
-  process.exitCode = 1;
+  if (fatal) process.exitCode = 1;
 } else {
   console.log('Catalog audit passed: no unreviewed active public repo drift found.');
 }

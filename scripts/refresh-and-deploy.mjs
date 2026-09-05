@@ -51,7 +51,18 @@ function resolveGithubToken() {
 }
 
 const githubToken = resolveGithubToken();
-const env = { ...process.env, ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}) };
+// Unattended runs report catalog drift instead of aborting on it. A newly
+// published public repo used to freeze the whole deploy, so the live site kept
+// serving data that aged past its own 36h contract while waiting on a curation
+// decision. The build now records the gap in _catalog-drift.json and /status/
+// reports an incomplete catalog, so the claim stays honest while the data ships.
+// This run still exits non-zero at the end, which is what the scheduled task and
+// the daily health check surface.
+const env = {
+  ...process.env,
+  ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}),
+  CATALOG_AUDIT_REPORT_ONLY: '1',
+};
 
 function step(label, command, args) {
   log(`START ${label}`);
@@ -61,6 +72,15 @@ function step(label, command, args) {
   } catch (error) {
     log(`FAIL  ${label}: ${error.message}`);
     throw new Error(label);
+  }
+}
+
+function readCatalogDrift() {
+  try {
+    const drift = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_catalog-drift.json'), 'utf8'));
+    return Array.isArray(drift.uncataloged) ? drift.uncataloged : [];
+  } catch {
+    return [];
   }
 }
 
@@ -93,7 +113,12 @@ try {
   step('deploy:preflight', 'npm', ['run', 'deploy:preflight']);
 
   if (dryRun) {
+    const uncataloged = readCatalogDrift();
     log('DONE  dry run complete; preflight passed and nothing was deployed');
+    if (uncataloged.length > 0) {
+      log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+      process.exit(1);
+    }
     process.exit(0);
   }
 
@@ -106,6 +131,14 @@ try {
   step('deploy:vps', 'npm', ['run', 'deploy:vps']);
 
   const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
+  const uncataloged = readCatalogDrift();
+  if (uncataloged.length > 0) {
+    // The site is fresh and honest about the gap, but somebody still has to
+    // catalog these, so the run reports failure rather than passing quietly.
+    log(`DONE  deployed in ${elapsed}s`);
+    log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+    process.exit(1);
+  }
   log(`DONE  deployed in ${elapsed}s`);
   process.exit(0);
 } catch (error) {
