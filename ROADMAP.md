@@ -8,13 +8,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P0
 
-- [ ] P0 — Alert on a failed nightly refresh instead of failing silently
-  Why: three of the four outages ran for days before anyone noticed, because a fail-closed abort leaves the previous deployment live and looks identical from outside. This machine already runs a daily health check that writes `HEALTH-ALERT.txt` to the Desktop.
-  Evidence: `.tmp/refresh-and-deploy.log` ABORT lines dated 2026-09-04; `~/.claude/scripts/daily-health.ps1`; `CLAUDE.md` scheduled-refresh section.
-  Touches: `scripts/refresh-and-deploy.mjs` (non-zero exit already present — add a machine-readable status artifact), `~/.claude/scripts/daily-health.ps1` to read it.
-  Acceptance: an aborted `refresh:deploy` produces a Desktop `HEALTH-ALERT.txt` naming the failing step within one health-check cycle, and the alert clears on the next successful deploy. Proven by forcing an abort.
-  Complexity: S
-
 ### P1
 
 - [ ] P1 — Wire the accessibility audits into a chain that actually runs
