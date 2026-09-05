@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Run the full live smoke on unattended deploys, not --status-only
-  Why: `scripts/deploy-vps.mjs:157` calls `smoke:live --status-only`, and `scripts/smoke-live-site.mjs:616` returns straight after `checkDeployStatus()` in that mode. Every security-header assertion (lines 214-275), the `Reporting-Endpoints` and `report-to`/`report-uri` checks, the synthetic CSP-report POST, and the artifact count checks live in `checkLiveArtifacts()` at line 387 and never execute on a nightly deploy. The documented claim that `smoke:live` gates the edge security headers is only true when run by hand.
-  Evidence: `scripts/deploy-vps.mjs:157`; `scripts/smoke-live-site.mjs:606,616,387`; `CLAUDE.md` deploy section.
-  Touches: `scripts/deploy-vps.mjs`, `scripts/refresh-and-deploy.mjs`, `scripts/smoke-live-site.mjs`.
-  Acceptance: an unattended deploy runs the full artifact smoke including the header and CSP-sink assertions, deriving `--expected-projects`/`--expected-releases`/`--expected-feed-items` from the artifact it just built. Removing a security header from the Caddy block makes the deploy fail.
-  Complexity: M
-
 - [ ] P1 — Make experimental.incrementalBuild actually cache, or remove the flag
   Why: `astro.config.mjs:17` enables the flag, but Astro only skips pages from `getStaticPaths()` that return a `cacheKey`, and `grep -rn cacheKey src/` finds none. Nothing is cached, and on Astro 7.2.4 the flag also forces `build.concurrency` to 1, so the config currently costs build parallelism for zero benefit.
   Evidence: https://docs.astro.build/en/reference/experimental-flags/incremental-build/ ; `src/pages/og/[slug].png.ts:8` and `src/pages/lang/[slug].astro:13` both return bare `params`.
