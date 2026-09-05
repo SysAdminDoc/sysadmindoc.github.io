@@ -10,6 +10,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Cataloged GLP-Ultra and HubSpot-Ticket-Refined, two new public userscript repos. Local fallback catalog grows from 202 to 204 entries.
 
 ### Changed
+- Dependency refresh: astro 7.2.4 to 7.3.1, @astrojs/sitemap 3.7.4, @astrojs/check 0.9.10, @axe-core/playwright 4.13.0, @playwright/test 1.63.0, esbuild 0.28.2, fast-xml-parser 5.11.1, sharp 0.35.4, and the postcss and svgo overrides. axe-core 4.13 reports no new violations across the 88 accessibility and target-size checks.
+- Visual baselines re-captured for win32. They were last updated 2026-08-20 and eight commits changed rendered surfaces after that, including the v0.42.0 editorial and discovery passes, so 31 of them no longer matched the site they were meant to pin.
 - `deps:audit --strict` now fails when a first-party dependency is more than one minor behind registry latest. It previously failed only on stale exact override pins, so it reported PASS on 2026-09-04 while satori sat four minors behind. Documented major holds (`typescript`, `fast-uri`) still pass through the blocked-majors path.
 - satori 0.29.1 to 0.33.4, which brings corner-shape, `shape()` in `clip-path`, backdrop-filter, HarfBuzz text shaping and a font-cache speedup to the OG card renderer.
 - Unattended deploys now run the full live smoke instead of `--status-only`. That flag returned after comparing the live version and commit, so the edge security headers, the CSP reporting directives, the synthetic CSP report POST and every artifact count check were skipped on exactly the runs nobody watches. The expected counts are read from the tree that was just shipped.

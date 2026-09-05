@@ -52,6 +52,20 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
   Acceptance: each shipped version has an annotated tag on its version-bump commit, tags are pushed, and a deploy of a `package.json` version with no matching tag fails a gate.
   Complexity: S
 
+- [ ] P1 — Clean dist/ before a build so stale artifacts cannot ship
+  Why: `astro build` writes into an existing dist/ without removing files a previous build left behind, and `scripts/deploy-vps.mjs:155` tars the whole directory (`tar -czf ... -C distDir .`), so anything stale ships. Observed 2026-09-05: a leftover `dist/.prerender/chunks/server_*.mjs` from an interrupted build failed `csp:audit:dist:style:elem` on a `createContextualFragment` sink; a clean rebuild has no such directory. The audit caught it, but a stale file that happens to contain no sink would deploy silently.
+  Evidence: `.tmp/b11.log` CSP preflight failure naming `dist/.prerender/chunks/server_BLci6zst.mjs`; `ls -a dist/` after a clean `npx astro build` shows no `.prerender`; `scripts/deploy-vps.mjs:155`.
+  Touches: `package.json` (`build`/`build:ci`), `scripts/deploy-vps.mjs`, `test/toolchain.test.mjs`.
+  Acceptance: a build removes dist/ first (or the deploy refuses a dist/ containing files the build did not write), proven by planting a stray file in dist/ and watching it be absent from the shipped tree.
+  Complexity: S
+
+- [ ] P1 — Fix the focus-obscured failure on /search/ in the light theme with fixture data
+  Why: WCAG 2.2 AA 2.4.11 Focus Not Obscured. `tests/playwright/interaction-smoke.spec.mjs:887` fails with "A element obscured by sticky nav" on the brand link at the top of /search/. It fails only in the `chromium-light` project and only against fixture-backed data; the same suite passes on live data (46 passed, 2026-09-05), so it is data- or layout-dependent rather than a flat regression. `elementFromPoint` at the focused link centre returns a node that is neither the link nor a descendant, which points at a sticky-nav backdrop or pseudo-element painting over it in the light palette.
+  Evidence: `.tmp/playwright-results/interaction-smoke-focus-no-9e8a4-isible-above-the-sticky-nav-chromium-light/test-failed-1.png` shows the brand link focused with its ring visible while the assertion reports it obscured; `tests/playwright/interaction-smoke.spec.mjs:854-889`.
+  Touches: `src/styles/critical.css` and `src/styles/layers/unlayered.css` (`.ni` sticky header stacking), `tests/playwright/interaction-smoke.spec.mjs`.
+  Acceptance: `npm run audit:interactions` passes in both `chromium` and `chromium-light` against fixture-backed data, and the assertion still fails when the nav is deliberately given a higher stacking context over the focused element.
+  Complexity: M
+
 ### P2
 
 - [ ] P2 — Ship Speculation Rules through the response header instead of an inline script

@@ -153,7 +153,9 @@ test('a malformed drift record degrades to unmeasured instead of throwing', () =
   // fails the whole build rather than reporting "not measured".
   const now = new Date();
   const fresh = now.toISOString();
-  const malformed = [
+  // Cast: the whole point is to feed shapes the type says are impossible, which
+  // is exactly what a hand-edited JSON file on disk can be.
+  const malformed = /** @type {any[]} */ ([
     { generatedAt: fresh, complete: true, uncataloged: 'Widget', staleRefs: [] },
     { generatedAt: fresh, complete: true, uncataloged: null, staleRefs: null },
     { generatedAt: fresh, complete: true },
@@ -161,7 +163,7 @@ test('a malformed drift record degrades to unmeasured instead of throwing', () =
     { generatedAt: 'not-a-date', complete: false, uncataloged: ['A'] },
     {},
     null,
-  ];
+  ]);
 
   for (const drift of malformed) {
     const result = buildCatalogCompleteness(drift, { now });
@@ -172,10 +174,16 @@ test('a malformed drift record degrades to unmeasured instead of throwing', () =
   }
 
   // A non-boolean `complete` is not a verdict.
-  assert.equal(buildCatalogCompleteness({ generatedAt: fresh, complete: 'true' }, { now }).measured, false);
-  // A string that slipped into the list is dropped rather than rendered.
+  assert.equal(
+    buildCatalogCompleteness(/** @type {any} */ ({ generatedAt: fresh, complete: 'true' }), { now }).measured,
+    false,
+  );
+  // A non-string that slipped into the list is dropped rather than rendered.
   assert.deepEqual(
-    buildCatalogCompleteness({ generatedAt: fresh, complete: false, uncataloged: ['A', 3, null, 'B'] }, { now }).uncataloged,
+    buildCatalogCompleteness(
+      /** @type {any} */ ({ generatedAt: fresh, complete: false, uncataloged: ['A', 3, null, 'B'] }),
+      { now },
+    ).uncataloged,
     ['A', 'B'],
   );
 });
