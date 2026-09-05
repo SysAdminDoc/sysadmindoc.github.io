@@ -48,13 +48,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
   Acceptance: either the 29 unsigned releases carry SHA-256 checksums and the distribution reflects it, or the provenance model documents that `attested` is out of reach under local-build policy and stops reporting it as an achievable tier.
   Complexity: M
 
-- [ ] P2 — Refresh the GitHub repository description and homepage URL
-  Why: `gh repo view` returns description "Personal portfolio and project showcase site hosted on GitHub Pages" and `homepageUrl` `https://sysadmindoc.github.io/`. Both were superseded on 2026-07-28 when the canonical origin moved to portfolio.getparkerai.com; the repo page is the first thing a visitor arriving from GitHub reads.
-  Evidence: `gh repo view --json description,homepageUrl` on 2026-09-04; `CLAUDE.md` hosting section.
-  Touches: repository settings only (no tracked files).
-  Acceptance: `gh repo view` reports the current origin and a description that does not claim GitHub Pages hosting.
-  Complexity: S
-
 - [ ] P2 — Prove each audit gate can fail by planting a real violation
   Why: three separate mechanisms were found measuring nothing while their own tests stayed green, because those tests exercise helper functions against synthetic fixtures rather than the production path. `test/html-structure.test.mjs` passes `main.js` into `inspectHtml` directly, so the guard looks healthy while being unreachable on every real page.
   Evidence: `scripts/fix-html-structure.mjs:75-88` vs `test/html-structure.test.mjs:22`; `astro.config.mjs:17` vs the absent `cacheKey`; `scripts/audit-dependencies.mjs` strict PASS on a drifted tree.
