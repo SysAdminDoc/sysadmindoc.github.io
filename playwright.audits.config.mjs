@@ -43,14 +43,11 @@ export default defineConfig({
     video: 'off',
     ...(launchOptions ? { launchOptions } : {}),
   },
-  webServer: process.env.PLAYWRIGHT_BASE_URL
-    ? undefined
-    : {
-        command: `npm run preview -- --host ${host} --port ${port}`,
-        url: baseURL,
-        reuseExistingServer: false,
-        timeout: 60_000,
-      },
+  // Not `webServer`: Astro 7's preview self-daemonizes under Playwright's piped
+  // stdout, so the managed process always looks like it exited early. See
+  // tests/playwright/preview-server.mjs.
+  globalSetup: './tests/playwright/preview-server.mjs',
+  globalTeardown: './tests/playwright/preview-server-teardown.mjs',
   projects: [
     {
       name: 'chromium',
