@@ -18,11 +18,33 @@ import process from 'node:process';
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
 
-// Refuse to delete anything that is not the build output directory of this repo.
-if (path.dirname(distDir) !== root || path.basename(distDir) !== 'dist') {
-  console.error(`clean-dist: refusing to remove ${distDir}; it is not <repo>/dist.`);
-  process.exit(1);
+// Refuse to delete anything unless the cwd really is this repo.
+//
+// The previous guard compared path.dirname(distDir) against root and
+// path.basename(distDir) against 'dist', but distDir is built as
+// path.join(root, 'dist'), so both comparisons were tautologically false and the
+// guard could never fire — including in the one case it existed for, a wrong
+// cwd. What actually needs checking is root, not the path derived from it.
+function assertRepoRoot() {
+  const manifestPath = path.join(root, 'package.json');
+  let name;
+  try {
+    ({ name } = JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
+  } catch {
+    console.error(`clean-dist: refusing to remove ${distDir}; no readable package.json at ${manifestPath}.`);
+    process.exit(1);
+  }
+  if (name !== 'sysadmindoc-portfolio') {
+    console.error(`clean-dist: refusing to remove ${distDir}; ${manifestPath} declares "${name}", not this repo.`);
+    process.exit(1);
+  }
+  if (!fs.existsSync(path.join(root, '.git'))) {
+    console.error(`clean-dist: refusing to remove ${distDir}; ${root} is not a git working tree.`);
+    process.exit(1);
+  }
 }
+
+assertRepoRoot();
 
 if (!fs.existsSync(distDir)) {
   console.log('clean-dist: dist/ does not exist; nothing to remove.');

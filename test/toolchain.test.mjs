@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 
@@ -184,7 +186,33 @@ test('the build removes dist/ first so stale artifacts cannot ship', async () =>
   assert.ok(ci.startsWith('npm run build:clean'), 'the clean must be the first step of build:ci');
 
   // Deleting a directory from a script deserves a guard against being pointed
-  // somewhere else by a stray cwd.
-  assert.match(script, /refusing to remove/);
-  assert.match(script, /path\.basename\(distDir\) !== 'dist'/);
+  // somewhere else by a stray cwd. The first attempt compared distDir against
+  // path.join(root, 'dist'), which it was built from, so it could never fire.
+  // The guard has to interrogate root itself, and the test has to exercise it
+  // rather than regex-match its text.
+  assert.match(script, /function assertRepoRoot\(\)/);
+  assert.doesNotMatch(script, /path\.basename\(distDir\) !== 'dist'/, 'the tautological guard must not come back');
+
+  const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-clean-dist-'));
+  try {
+    for (const [label, manifest] of [
+      ['a foreign package.json', '{"name":"some-other-project"}'],
+      ['no package.json', null],
+    ]) {
+      const dir = path.join(sandbox, label.replace(/\W+/g, '-'));
+      await fs.mkdir(path.join(dir, 'dist'), { recursive: true });
+      if (manifest) await fs.writeFile(path.join(dir, 'package.json'), manifest);
+
+      const run = spawnSync(process.execPath, [path.join(root, 'scripts', 'clean-dist.mjs')], {
+        cwd: dir,
+        encoding: 'utf8',
+      });
+      assert.equal(run.status, 1, `clean-dist must refuse to run in a directory with ${label}`);
+      assert.match(run.stderr, /refusing to remove/);
+      const survived = await fs.access(path.join(dir, 'dist')).then(() => true, () => false);
+      assert.ok(survived, `clean-dist deleted dist/ in a directory with ${label}`);
+    }
+  } finally {
+    await fs.rm(sandbox, { recursive: true, force: true });
+  }
 });
