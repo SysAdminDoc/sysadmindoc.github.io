@@ -34,13 +34,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
   Acceptance: a deploy leaves the previous days' log entries intact and the GoAccess report spans more than one deploy cycle, verified by comparing the report's date range before and after a deploy.
   Complexity: S
 
-- [ ] P2 — Validate /resume.json against the published JSON Resume schema
-  Why: `src/pages/resume.json.ts` pins `$schema` to jsonresume v1.0.0, but `test/resume-schema.test.mjs` only asserts ISO date format and ordering. `work[].keywords` is emitted and is not a field in the v1.0.0 schema, so the export already deviates from the contract it advertises.
-  Evidence: `src/pages/resume.json.ts:9` and its `work` mapping; `test/resume-schema.test.mjs`; https://jsonresume.org/schema
-  Touches: `test/resume-schema.test.mjs`, `package.json` devDependency on `@jsonresume/schema`, `src/pages/resume.json.ts`.
-  Acceptance: the built `dist/resume.json` validates against `@jsonresume/schema` in the test run, and a deliberately invalid field makes the test fail.
-  Complexity: S
-
 - [ ] P2 — Close the release-provenance gap or retire the unreachable attested tier
   Why: live `/status.json` reports 60 releases as 31 checksum, 29 unsigned, 0 attested. GitHub Artifact Attestations are produced by `actions/attest-build-provenance` inside a GitHub Actions workflow, which repo policy forbids, so the `attested` tier the trust surface publishes cannot ever be non-zero. Publishing a tier that is unreachable by construction weakens the surface's credibility.
   Evidence: https://portfolio.getparkerai.com/status.json ; https://docs.github.com/en/actions/concepts/security/artifact-attestations ; `src/data/generated-trust.ts`. Distinct from the `Roadmap_Blocked.md` P0 provenance item, which is scoped to enabling `--fail-on-unsigned-featured-releases` for *featured* repos and is blocked on ClearCut; this item is about the whole 60-release distribution and the reachability of the tier itself, and is not blocked.

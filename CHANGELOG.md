@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- `npm run resume:audit`, wired into `build:ci`. It validates the built `/resume.json` against the published `@jsonresume/schema` and reports fields the schema permits but no spec-following consumer reads (`work[].keywords`, `education[].location`). The endpoint advertised v1.0.0 while nothing checked it satisfied it.
 - `npm run verify:release-tag`, wired into `deploy:preflight`. It refuses to ship a `package.json` version with no annotated tag on an ancestor of HEAD that is also pushed to origin. Backfilled the missing v0.42.1, v0.42.2 and v0.42.3 tags.
 - A committed `.npmrc` setting `min-release-age=3`, so the dependency tree is built only from versions published more than three days ago. npm supports this from 11.10 but leaves it off.
 - `/catalog/` now derives its "complete public archive" sentence from the same drift record `/status/` reads, so the two surfaces cannot contradict each other.
