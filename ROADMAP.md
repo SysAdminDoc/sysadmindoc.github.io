@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Re-anchor the script-order guard on shared.js and stop cmdk failing open
-  Why: `scripts/fix-html-structure.mjs` computes `mainBeforeShared` and `featureBeforeMain`, both gated on `html.indexOf('/scripts/main.js') >= 0`. That file was deleted and `test/homepage-runtime.test.mjs:11` asserts its absence, so both checks are permanently false on every built page. The real dependency — `cmdk.js` needing `window.SafeDOM` from `shared.js` — is unguarded, and `public/scripts/cmdk.js:39` degrades silently to `{}`.
-  Evidence: `scripts/fix-html-structure.mjs:75-88`; `public/scripts/shared.js:52`; `public/scripts/cmdk.js:39`; `src/layouts/Base.astro:210-220`.
-  Touches: `scripts/fix-html-structure.mjs`, `public/scripts/cmdk.js`, `test/html-structure.test.mjs`.
-  Acceptance: a built page that loads `cmdk.js` before `shared.js` fails `fix-html-structure`, proven by planting that order into a real `dist/` page; and `cmdk.js` throws a named error rather than silently no-op'ing when `SafeDOM` is absent.
-  Complexity: S
-
 - [ ] P1 — Fail deps:audit --strict on stale first-party production dependencies
   Why: the strict run on 2026-09-04 reported PASS while listing astro 7.2.4→7.3.1, satori 0.29.1→0.33.4, esbuild 0.28.1→0.28.2, sharp 0.35.3→0.35.4, postcss 8.5.23→8.5.28, svgo 4.0.2→4.1.0, `@playwright/test` 1.62.0→1.63.0 and `@axe-core/playwright` 4.12.1→4.13.0. Strict mode only fails on stale exact override pins, so the packages that carry the most risk drift without ever reddening a gate.
   Evidence: `scripts/audit-dependencies.mjs`; `npm run deps:audit -- --strict` output 2026-09-04.
