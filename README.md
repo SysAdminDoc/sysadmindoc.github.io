@@ -37,6 +37,8 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 
 ```bash
 npm install
+# .npmrc pins min-release-age=3, so installs skip versions published in the last 3 days.
+# Pass --min-release-age=0 for a single command to take a fresh release deliberately.
 npm run profile-feed:sync # optional: refresh ignored profile projects cache from raw GitHub
 npm run generated:fixtures:check # audit tracked generated-data fixtures
 npm run generated:fixtures # install fixture caches into ignored src/data/_*.json files

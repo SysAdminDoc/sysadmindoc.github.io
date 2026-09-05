@@ -35,6 +35,32 @@ test('packageManager pins the validated npm line', async () => {
     /^npm@11\.\d+\.\d+$/,
     'packageManager must pin a concrete npm 11.x version for reproducible local publishing',
   );
+
+  // min-release-age needs npm 11.10 or newer, so the pinned line and the setting
+  // have to stay compatible: an older pin would make the cooldown silently inert.
+  const minor = Number(pkg.packageManager.match(/^npm@11\.(\d+)\./)[1]);
+  assert.ok(minor >= 10, `packageManager pins npm 11.${minor}, which predates min-release-age support`);
+});
+
+test('a committed .npmrc sets the supply-chain cooldown', async () => {
+  const npmrc = await fs.readFile(path.join(root, '.npmrc'), 'utf8');
+  const gitignore = await fs.readFile(path.join(root, '.gitignore'), 'utf8');
+
+  // npm supports min-release-age but leaves it off, so a fresh publish from a
+  // hijacked maintainer account installs immediately. Shai-Hulud V2 runs from
+  // preinstall, so even a failed install executes it.
+  const value = npmrc.match(/^min-release-age\s*=\s*(\d+)\s*$/m)?.[1];
+  assert.ok(value, '.npmrc must set min-release-age');
+  assert.ok(Number(value) >= 1, 'min-release-age must be at least one day to be a cooldown at all');
+
+  // The unit is days, not minutes: a value copied from pnpm's 1440-minute
+  // default would silently mean four years and block every install.
+  assert.ok(Number(value) <= 30, `min-release-age is ${value} days; the option takes days, not minutes`);
+
+  // It only helps if it ships with the repo.
+  assert.doesNotMatch(gitignore, /^\.npmrc$/m, '.npmrc must stay committed');
+  // No credentials belong in a committed npmrc.
+  assert.doesNotMatch(npmrc, /_authToken|_auth\s*=|password/i);
 });
 
 test('publish preflight verifies dependency registry signatures', async () => {
