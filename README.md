@@ -12,7 +12,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (198 feed-backed / 204 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (201 feed-backed / 204 local fallback), skills (8)
 - **Technical Service Bureau design system**: a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
 - **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
 - **Minimal homepage evidence sequence**: concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs

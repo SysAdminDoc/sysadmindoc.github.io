@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { buildGeneratedDataTrust } from '../src/data/generated-trust.ts';
+import { buildCatalogCompleteness, buildGeneratedDataTrust } from '../src/data/generated-trust.ts';
 
 const root = process.cwd();
 
@@ -128,6 +128,12 @@ test('every terminal path of the unattended refresh records a machine-readable s
   // written down somewhere the health check can quote it.
   assert.match(source, /sysadmindoc\.refresh-deploy-status\.v1/);
   assert.match(source, /refresh-and-deploy-status\.json/);
+  // ~/.claude/scripts/daily-health.ps1 reads status/step/detail/at off this
+  // payload to build the Desktop alert. That consumer lives outside the repo, so
+  // renaming a field here would break alerting with nothing else catching it.
+  for (const field of ['schema', 'status', 'step', 'detail', 'at', 'elapsedSeconds', 'dryRun']) {
+    assert.match(source, new RegExp(`^\\s{4}${field}[,:]`, 'm'), `writeStatus must keep the ${field} field`);
+  }
   assert.match(source, /function writeStatus\(status, \{ failedStep = null, detail = null \} = \{\}\)/);
 
   const statuses = [...source.matchAll(/writeStatus\('([a-z-]+)'/g)].map((match) => match[1]);
@@ -140,4 +146,70 @@ test('every terminal path of the unattended refresh records a machine-readable s
   // verdict on disk and the health check would report a stale outcome.
   const exits = source.match(/process\.exit\([01]\)/g) ?? [];
   assert.equal(exits.length, statuses.length, 'every process.exit must be preceded by a writeStatus');
+});
+
+test('a malformed drift record degrades to unmeasured instead of throwing', () => {
+  // These run while Astro renders /status/ and /catalog/, so a TypeError here
+  // fails the whole build rather than reporting "not measured".
+  const now = new Date();
+  const fresh = now.toISOString();
+  const malformed = [
+    { generatedAt: fresh, complete: true, uncataloged: 'Widget', staleRefs: [] },
+    { generatedAt: fresh, complete: true, uncataloged: null, staleRefs: null },
+    { generatedAt: fresh, complete: true },
+    { generatedAt: fresh, complete: 'true', uncataloged: [] },
+    { generatedAt: 'not-a-date', complete: false, uncataloged: ['A'] },
+    {},
+    null,
+  ];
+
+  for (const drift of malformed) {
+    const result = buildCatalogCompleteness(drift, { now });
+    assert.ok(Array.isArray(result.uncataloged), `uncataloged must be an array for ${JSON.stringify(drift)}`);
+    assert.ok(Array.isArray(result.staleRefs));
+    const trust = buildGeneratedDataTrust(freshInput({ catalogDrift: drift }));
+    assert.ok(Array.isArray(trust.catalogCompleteness.uncataloged));
+  }
+
+  // A non-boolean `complete` is not a verdict.
+  assert.equal(buildCatalogCompleteness({ generatedAt: fresh, complete: 'true' }, { now }).measured, false);
+  // A string that slipped into the list is dropped rather than rendered.
+  assert.deepEqual(
+    buildCatalogCompleteness({ generatedAt: fresh, complete: false, uncataloged: ['A', 3, null, 'B'] }, { now }).uncataloged,
+    ['A', 'B'],
+  );
+});
+
+test('a drift record older than the freshness window cannot assert completeness', () => {
+  const now = new Date();
+  const old = new Date(now.getTime() - 40 * 3_600_000).toISOString();
+
+  // catalog:audit runs in deploy:preflight, not in `npm run build`, and
+  // deploy:vps builds again on its own, so a leftover record is what a plain
+  // build reads. Age is the only thing stopping it asserting completeness.
+  const stale = buildCatalogCompleteness({ generatedAt: old, complete: true, uncataloged: [], staleRefs: [] }, { now });
+  assert.equal(stale.measured, false);
+  assert.equal(stale.complete, null);
+  assert.equal(stale.staleRecord, true);
+
+  const trust = buildGeneratedDataTrust(
+    freshInput({ catalogDrift: { generatedAt: old, complete: true, uncataloged: [], staleRefs: [] } }),
+  );
+  assert.equal(trust.catalogCompleteness.complete, null);
+  assert.ok(trust.warnings.some((entry) => /last measured over 36h ago/.test(entry)));
+});
+
+test('the catalog page derives its completeness claim from the same record', async () => {
+  const source = await fs.readFile(path.join(root, 'src', 'pages', 'catalog.astro'), 'utf8');
+
+  // The page states the archive is complete. That sentence has to be gated on
+  // the drift record, or /catalog/ contradicts /status/.
+  assert.match(source, /buildCatalogCompleteness/);
+  assert.match(source, /_catalog-drift\.json/);
+  assert.doesNotMatch(
+    source,
+    /summary="The catalog is the complete public archive\./,
+    'the completeness claim must not be an unconditional string literal',
+  );
+  assert.match(source, /completeness\.complete === true/);
 });
