@@ -42,6 +42,21 @@ type TrustCatalogDrift = {
 
 export const RELEASE_PROVENANCE_LEVELS = ['no-assets', 'unsigned', 'checksum', 'attested'] as const;
 
+/**
+ * The highest tier a release from this workspace can actually reach.
+ *
+ * `attested` needs a Sigstore bundle, and GitHub only issues those from a
+ * workflow (`actions/attest-build-provenance`). This project builds and
+ * publishes locally by policy, so that tier is out of reach by construction, not
+ * because releases are neglected. Saying so keeps a permanent 0 from reading as
+ * a failure — and stops it being quietly "fixed" by classifying a release note
+ * that merely mentions attestation, which is how RcloneBrowserNG v2.0.2 came to
+ * be reported as attested while its own notes said it had no attestations.
+ */
+export const RELEASE_PROVENANCE_CEILING = 'checksum' satisfies ReleaseProvenanceLevel;
+export const RELEASE_PROVENANCE_CEILING_REASON =
+  'Attested needs a Sigstore bundle from actions/attest-build-provenance; releases here are built and published locally, so checksum is the reachable ceiling.';
+
 export type ReleaseProvenanceLevel = (typeof RELEASE_PROVENANCE_LEVELS)[number];
 
 export type ReleaseProvenanceDistribution = Record<ReleaseProvenanceLevel | 'unknown', number> & {

@@ -12,7 +12,7 @@
 // but full README refreshes are intentionally skipped unless a token is present.
 
 import { mkdirSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getUtcDayKey, computeStreak } from './lib/streak.mjs';
 import { summarizeReleaseBody } from '../src/data/release-summary.mjs';
@@ -98,6 +98,10 @@ async function fetchText(url, options, context) {
 
 const ETAG_NOT_MODIFIED = Symbol('etag-304');
 
+// Version of the release-provenance classifier. See the note at the release ETag
+// invalidation below for why a derived value cached with fetched data needs one.
+const PROVENANCE_SCHEMA = 2;
+
 async function fetchJsonConditional(url, options, context, savedEtags) {
   const conditionalHeaders = { ...options.headers };
   const etag = savedEtags[url];
@@ -153,10 +157,16 @@ function computeProvenance(assets, body) {
 
   const names = assets.map((a) => (typeof a.name === 'string' ? a.name.toLowerCase() : ''));
 
-  // Sigstore / attestation: .sigstore, .sigstore.json, or release body mentions attestation
+  // Sigstore / attestation: an actual bundle shipped alongside the artifacts.
+  //
+  // This used to also promote a release whose BODY mentioned "attestation" or
+  // "sigstore". Prose is not evidence, and the failure was not hypothetical:
+  // RcloneBrowserNG v2.0.2 was published in the attested tier on the strength of
+  // a release note reading "This repository has no CI, so there are no build
+  // attestations." The trust surface reported the exact opposite of what the
+  // release said about itself.
   const hasSigstore = names.some((n) => n.endsWith('.sigstore') || n.endsWith('.sigstore.json'));
-  const bodyMentionsAttestation = /\battestati(?:on|ons)\b/i.test(body) || /\bsigstore\b/i.test(body);
-  if (hasSigstore || bodyMentionsAttestation) return 'attested';
+  if (hasSigstore) return 'attested';
 
   // Checksum files: .sha256, .sha512, .md5, checksums, sha256sums, sha512sums, etc.
   const hasChecksum = names.some(
@@ -192,6 +202,9 @@ async function main() {
   const existingReleases = readJson(releasesPath, []);
   const existingReadmes = readJson(readmesPath, {});
   const savedEtags = readJson(etagsPath, {});
+  // Bump when computeProvenance changes so cached release rows get reclassified.
+  const provenanceSchemaChanged = savedEtags.__provenanceSchema !== PROVENANCE_SCHEMA;
+  savedEtags.__provenanceSchema = PROVENANCE_SCHEMA;
 
   let repos;
   try {
@@ -344,6 +357,13 @@ async function main() {
     if (!existingReleasesByRepo.has(repo.name) && savedEtags[releaseUrl]) {
       delete savedEtags[releaseUrl];
       releasesRecovered += 1;
+    }
+    // provenance is DERIVED from asset names, and the cached rows do not keep
+    // those, so a 304 replays whatever tier the old classifier assigned and a fix
+    // never reaches releases that have not changed. Bumping PROVENANCE_SCHEMA
+    // drops the release ETags once so every row is reclassified.
+    if (provenanceSchemaChanged && savedEtags[releaseUrl]) {
+      delete savedEtags[releaseUrl];
     }
     try {
       const list = await fetchJsonConditional(
@@ -536,7 +556,14 @@ async function main() {
   writeJson(etagsPath, savedEtags);
 }
 
-main().catch((error) => {
-  console.error(`fetch-stars failed: ${error.message}`);
-  process.exitCode = 1;
-});
+// Only fetch when run as a script. computeProvenance decides which trust tier a
+// release is published in, so it needs to be importable and directly testable
+// rather than reachable only through a network fetch.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(`fetch-stars failed: ${error.message}`);
+    process.exitCode = 1;
+  });
+}
+
+export { computeProvenance };

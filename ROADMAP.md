@@ -34,13 +34,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
   Acceptance: a deploy leaves the previous days' log entries intact and the GoAccess report spans more than one deploy cycle, verified by comparing the report's date range before and after a deploy.
   Complexity: S
 
-- [ ] P2 — Close the release-provenance gap or retire the unreachable attested tier
-  Why: live `/status.json` reports 60 releases as 31 checksum, 29 unsigned, 0 attested. GitHub Artifact Attestations are produced by `actions/attest-build-provenance` inside a GitHub Actions workflow, which repo policy forbids, so the `attested` tier the trust surface publishes cannot ever be non-zero. Publishing a tier that is unreachable by construction weakens the surface's credibility.
-  Evidence: https://portfolio.getparkerai.com/status.json ; https://docs.github.com/en/actions/concepts/security/artifact-attestations ; `src/data/generated-trust.ts`. Distinct from the `Roadmap_Blocked.md` P0 provenance item, which is scoped to enabling `--fail-on-unsigned-featured-releases` for *featured* repos and is blocked on ClearCut; this item is about the whole 60-release distribution and the reachability of the tier itself, and is not blocked.
-  Touches: `src/data/generated-trust.ts`, `src/pages/status.astro`, `scripts/summarize-generated-data.mjs`, `test/generated-data-trust.test.mjs`.
-  Acceptance: either the 29 unsigned releases carry SHA-256 checksums and the distribution reflects it, or the provenance model documents that `attested` is out of reach under local-build policy and stops reporting it as an achievable tier.
-  Complexity: M
-
 - [ ] P2 — Prove each audit gate can fail by planting a real violation
   Why: three separate mechanisms were found measuring nothing while their own tests stayed green, because those tests exercise helper functions against synthetic fixtures rather than the production path. `test/html-structure.test.mjs` passes `main.js` into `inspectHtml` directly, so the guard looks healthy while being unreachable on every real page.
   Evidence: `scripts/fix-html-structure.mjs:75-88` vs `test/html-structure.test.mjs:22`; `astro.config.mjs:17` vs the absent `cacheKey`; `scripts/audit-dependencies.mjs` strict PASS on a drifted tree.

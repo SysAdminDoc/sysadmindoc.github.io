@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import Footer from '../components/Footer.astro';
-import { buildGeneratedDataTrust } from '../data/generated-trust';
+import { buildGeneratedDataTrust, RELEASE_PROVENANCE_CEILING_REASON } from '../data/generated-trust';
 import type { GeneratedCatalogDrift, GeneratedReadmeRefresh, GeneratedRelease, GeneratedStats } from '../data/generated';
 import { catalog, liveApps, profileFeedInfo } from '../data/portfolio';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
@@ -183,7 +183,7 @@ const cmdkSections = [
       <div class="status-provenance-panel rv" aria-label="Release provenance distribution">
         <div>
           <div class="status-warning-title">Release provenance</div>
-          <p class="status-provenance-copy">Trust tiers from the cached GitHub release feed.</p>
+          <p class="status-provenance-copy">Trust tiers from the cached GitHub release feed. {RELEASE_PROVENANCE_CEILING_REASON}</p>
         </div>
         <div class="status-provenance-grid">
           {releaseProvenanceRows.map((row) => (
