@@ -293,10 +293,22 @@ async function checkSecurityHeaders(baseUrl, summary) {
         'deploy/vps/Caddyfile sets it on HTML responses.',
     );
   }
+  // siteUrl() only strips leading slashes, so an absolute URL would be pasted
+  // onto the base path and fetched as a bogus same-origin route. The Caddyfile
+  // only ever emits a relative path; refuse anything else rather than silently
+  // checking the wrong document.
+  if (!speculationMatch[1].startsWith('/')) {
+    throw new Error(
+      `Speculation-Rules names "${speculationMatch[1]}", which is not a same-origin path. ` +
+        'deploy/vps/Caddyfile emits a relative path.',
+    );
+  }
   const rulesResponse = await fetchText(baseUrl, speculationMatch[1], 'application/speculationrules+json');
   requireHeader(rulesResponse, speculationMatch[1], {
     contentTypes: ['application/speculationrules+json'],
-    cacheControl: '',
+    // deploy/vps/Caddyfile sets this alongside the Content-Type; an empty string
+    // here would be a silent no-op, since requireHeader skips a falsy value.
+    cacheControl: 'max-age=600',
   });
   const rules = parseJson(rulesResponse.body, speculationMatch[1]);
   if (!Array.isArray(rules.prerender) || rules.prerender.length === 0) {
