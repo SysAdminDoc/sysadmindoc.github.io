@@ -19,6 +19,10 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'CollectionPage', 'BreadcrumbList'],
     checks: checkLanguageRoute,
   }],
+  ['/data/', {
+    types: ['WebSite', 'Person', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
   ['/uses/', {
     types: ['WebSite', 'Person', 'WebPage'],
     checks: checkReviewedInteriorRoute,
