@@ -48,7 +48,13 @@ if (!headManifest) {
   console.error('verify-release-tag: could not read package.json from HEAD.');
   process.exit(1);
 }
-const headVersion = JSON.parse(headManifest).version;
+let headVersion;
+try {
+  ({ version: headVersion } = JSON.parse(headManifest));
+} catch (error) {
+  console.error(`verify-release-tag: package.json at HEAD is not valid JSON: ${error.message}`);
+  process.exit(1);
+}
 if (headVersion !== version) {
   console.error(
     `verify-release-tag: the working tree declares ${version} but HEAD declares ${headVersion}.`,

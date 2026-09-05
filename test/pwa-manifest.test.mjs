@@ -96,7 +96,7 @@ test('every PWA shortcut resolves to a real route', async () => {
     .filter((entry) => entry.isFile() && entry.name.endsWith('.astro') && !entry.name.startsWith('_'))
     .map((entry) => {
       const relative = path
-        .relative(path.join(root, 'src', 'pages'), path.join(entry.parentPath ?? entry.path, entry.name))
+        .relative(path.join(root, 'src', 'pages'), path.join(entry.parentPath, entry.name))
         .split(path.sep)
         .join('/');
       const withoutExtension = relative.replace(/\.astro$/, '');
