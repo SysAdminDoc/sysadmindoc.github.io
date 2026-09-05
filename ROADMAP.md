@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Wire the accessibility audits into a chain that actually runs
-  Why: `a11y:audit` is invoked by no npm chain. `deploy:preflight` runs `data:summary:deploy`, `catalog:audit`, `liveapps:audit`, `verify:signatures`, `deps:audit --strict`, `test`, `check` and `build`, and none of them reach it. Neither does anything reach `audit:playwright` (the real axe-core run), `audit:interactions`, `audit:cross-engine`, `forced-colors:audit`, `audit:perf` or `audit:sw`. `test/a11y-gate.test.mjs:9` is named "a11y audit npm script is blocking by default" but only asserts the script string exists in `package.json`, so the gate reads green while blocking nothing.
-  Evidence: `package.json` script chains; `test/a11y-gate.test.mjs:9-20`; `npm run a11y:audit` run by hand 2026-09-04 passes six static checks over 22 pages.
-  Touches: `package.json` (`build:ci` or `deploy:preflight`), `test/a11y-gate.test.mjs`, `playwright.audits.config.mjs`.
-  Acceptance: `a11y:audit --strict` runs inside `build:ci`, the axe-core browser suite runs inside `deploy:preflight` against built `dist/`, and `test/a11y-gate.test.mjs` asserts the audit is *reachable from a chain* rather than merely present. Planting a violation (an image with no `alt`) reds the deploy.
-  Complexity: M
-
 - [ ] P1 — Run the full live smoke on unattended deploys, not --status-only
   Why: `scripts/deploy-vps.mjs:157` calls `smoke:live --status-only`, and `scripts/smoke-live-site.mjs:616` returns straight after `checkDeployStatus()` in that mode. Every security-header assertion (lines 214-275), the `Reporting-Endpoints` and `report-to`/`report-uri` checks, the synthetic CSP-report POST, and the artifact count checks live in `checkLiveArtifacts()` at line 387 and never execute on a nightly deploy. The documented claim that `smoke:live` gates the edge security headers is only true when run by hand.
   Evidence: `scripts/deploy-vps.mjs:157`; `scripts/smoke-live-site.mjs:606,616,387`; `CLAUDE.md` deploy section.
