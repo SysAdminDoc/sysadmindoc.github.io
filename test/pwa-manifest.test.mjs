@@ -70,7 +70,41 @@ test('PWA manifest exposes bounded install shortcuts with descriptions', async (
     assert.equal(typeof shortcut.short_name, 'string');
     assert.equal(typeof shortcut.description, 'string');
     assert.ok(shortcut.description.length >= 20, `${shortcut.name} shortcut needs useful description copy`);
-    assert.match(shortcut.url, /^\/(search\/|releases\/|now\/|\?source=pwa)/);
-    assert.match(shortcut.url, /source=pwa/);
+    // Was: /^\/(search\/|releases\/|now\/|\?source=pwa)/. That allowlist accepted
+    // the bare `/?source=pwa#catalog` the Catalog shortcut used, which since the
+    // v0.26.0 catalog split lands on the homepage's top-84 preview slice rather
+    // than the full archive its description promises. Require a real route path.
+    assert.match(shortcut.url, /^\/[a-z-]+\/\?source=pwa$/, `${shortcut.name} shortcut must target a route path`);
   }
+});
+
+test('every PWA shortcut resolves to a built route', async (t) => {
+  const manifest = JSON.parse(await fs.readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
+  const dist = path.join(root, 'dist');
+  const built = await fs.access(dist).then(() => true, () => false);
+  if (!built) {
+    t.skip('dist/ not built — run npm run build to verify shortcut targets');
+    return;
+  }
+
+  for (const shortcut of manifest.shortcuts) {
+    const route = new URL(shortcut.url, 'https://example.invalid').pathname;
+    const file = path.join(dist, route.replace(/^\/+/, ''), 'index.html');
+    const exists = await fs.access(file).then(() => true, () => false);
+    assert.ok(exists, `${shortcut.name} shortcut points at ${route}, which the build does not produce`);
+  }
+
+  // The Catalog shortcut says "full project catalog", so it has to land on the
+  // route that renders every project, not the homepage preview slice.
+  const catalog = manifest.shortcuts.find((shortcut) => shortcut.name === 'Catalog');
+  assert.match(catalog.description, /full project catalog/i);
+  assert.equal(new URL(catalog.url, 'https://example.invalid').pathname, '/catalog/');
+
+  const homepage = await fs.readFile(path.join(dist, 'index.html'), 'utf8');
+  const full = await fs.readFile(path.join(dist, 'catalog', 'index.html'), 'utf8');
+  const countEntries = (html) => (html.match(/data-f="/g) ?? []).length;
+  assert.ok(
+    countEntries(full) > countEntries(homepage),
+    'the catalog route must render more projects than the homepage preview, or the shortcut is pointing at the wrong one',
+  );
 });
