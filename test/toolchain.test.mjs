@@ -160,3 +160,25 @@ test('the deploy preflight refuses an untagged release', async () => {
   assert.match(script, /merge-base', '--is-ancestor'/);
   assert.match(script, /is not on origin/);
 });
+
+test('the build removes dist/ first so stale artifacts cannot ship', async () => {
+  const pkg = await readPackage();
+  const script = await fs.readFile(path.join(root, 'scripts', 'clean-dist.mjs'), 'utf8');
+
+  // deploy-vps tars the whole dist/ directory, so anything a previous build left
+  // behind ships. A leftover dist/.prerender/chunks/server_*.mjs from an
+  // interrupted build was caught by the CSP audit on 2026-09-05; a stale file
+  // with no sink would have deployed silently.
+  assert.equal(pkg.scripts['build:clean'], 'node scripts/clean-dist.mjs');
+  const ci = pkg.scripts['build:ci'];
+  assert.ok(
+    ci.indexOf('npm run build:clean') < ci.indexOf('astro build'),
+    'dist/ must be removed before astro build writes into it',
+  );
+  assert.ok(ci.startsWith('npm run build:clean'), 'the clean must be the first step of build:ci');
+
+  // Deleting a directory from a script deserves a guard against being pointed
+  // somewhere else by a stray cwd.
+  assert.match(script, /refusing to remove/);
+  assert.match(script, /path\.basename\(distDir\) !== 'dist'/);
+});
