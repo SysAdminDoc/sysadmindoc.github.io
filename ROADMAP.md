@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Tag v0.42.1, v0.42.2 and v0.42.3, and gate future releases on a tag
-  Why: `git tag` stops at v0.42.0 while three versions have shipped since. This is the second lapse; v0.31.0 through v0.38.0 were backfilled on 2026-08-20 by locating each version-bump commit.
-  Evidence: `git tag` output 2026-09-04; `CLAUDE.md` release-tagging section.
-  Touches: git tags, `scripts/refresh-and-deploy.mjs` or `scripts/publish-pages.mjs`.
-  Acceptance: each shipped version has an annotated tag on its version-bump commit, tags are pushed, and a deploy of a `package.json` version with no matching tag fails a gate.
-  Complexity: S
-
 - [ ] P1 — Clean dist/ before a build so stale artifacts cannot ship
   Why: `astro build` writes into an existing dist/ without removing files a previous build left behind, and `scripts/deploy-vps.mjs:155` tars the whole directory (`tar -czf ... -C distDir .`), so anything stale ships. Observed 2026-09-05: a leftover `dist/.prerender/chunks/server_*.mjs` from an interrupted build failed `csp:audit:dist:style:elem` on a `createContextualFragment` sink; a clean rebuild has no such directory. The audit caught it, but a stale file that happens to contain no sink would deploy silently.
   Evidence: `.tmp/b11.log` CSP preflight failure naming `dist/.prerender/chunks/server_BLci6zst.mjs`; `ls -a dist/` after a clean `npx astro build` shows no `.prerender`; `scripts/deploy-vps.mjs:155`.
