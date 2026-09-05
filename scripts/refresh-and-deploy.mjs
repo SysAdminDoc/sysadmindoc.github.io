@@ -13,22 +13,31 @@
 // .tmp/refresh-and-deploy.log and exits non-zero on failure, which is what the
 // scheduled task surfaces.
 //
+// Each step's full stdout and stderr also lands in
+// .tmp/refresh-and-deploy-step-<label>.log (rewritten every run), and on failure
+// the last lines of it are copied into the main log. The scheduled task runs
+// with no console, so before this a failed nightly left "result 0x1" and the
+// step name with nothing to say which of the ten preflight gates stopped it;
+// the 2026-09-05 03:00 run failed after 25 minutes with exactly that.
+//
 //   --dry-run    run the refresh and preflight, skip the deploy
 //   --skip-deploy  alias for --dry-run
 //
 // Credentials:
 //   GITHUB_TOKEN         falls back to `gh auth token` when unset
 //   PORTFOLIO_VPS_SSH    required to deploy (see scripts/deploy-vps.mjs)
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
-const logFile = path.join(root, '.tmp', 'refresh-and-deploy.log');
-const statusFile = path.join(root, '.tmp', 'refresh-and-deploy-status.json');
+const tmpDir = path.join(root, '.tmp');
+const logFile = path.join(tmpDir, 'refresh-and-deploy.log');
+const statusFile = path.join(tmpDir, 'refresh-and-deploy-status.json');
 const dryRun = process.argv.includes('--dry-run') || process.argv.includes('--skip-deploy');
 const startedAt = new Date();
+const FAIL_TAIL_LINES = 40;
 
 function log(line) {
   const stamped = `${new Date().toISOString()} ${line}`;
@@ -46,7 +55,7 @@ function resolveGithubToken() {
   // The build box authenticates the GitHub CLI rather than exporting a token,
   // and fetch-stars needs one for token-backed README telemetry (the deploy
   // gate requires it).
-  const result = spawnSync('gh', ['auth', 'token'], { encoding: 'utf8', shell: process.platform === 'win32' });
+  const result = spawnSync('gh auth token', { encoding: 'utf8', shell: true, windowsHide: true });
   const token = result.status === 0 ? result.stdout.trim() : '';
   return token || '';
 }
@@ -65,15 +74,73 @@ const env = {
   CATALOG_AUDIT_REPORT_ONLY: '1',
 };
 
+function stepLogPath(label) {
+  return path.join(tmpDir, `refresh-and-deploy-step-${label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.log`);
+}
+
+// Runs one npm step, streaming its output to the console and to the step's own
+// log file while keeping the last FAIL_TAIL_LINES lines in memory. A non-zero
+// exit writes that tail into the main log so the failure reads back without a
+// rerun, then rejects with the step label (which the caller records as the
+// failed step).
 function step(label, command, args) {
-  log(`START ${label}`);
-  try {
-    execFileSync(command, args, { stdio: 'inherit', env, shell: process.platform === 'win32' });
-    log(`OK    ${label}`);
-  } catch (error) {
-    log(`FAIL  ${label}: ${error.message}`);
-    throw new Error(label);
-  }
+  return new Promise((resolve, reject) => {
+    log(`START ${label}`);
+    const stepLog = stepLogPath(label);
+    let out = null;
+    try {
+      fs.mkdirSync(tmpDir, { recursive: true });
+      out = fs.createWriteStream(stepLog, { flags: 'w' });
+    } catch {
+      out = null;
+    }
+
+    const tail = [];
+    let pending = '';
+    const capture = (chunk, sink) => {
+      sink.write(chunk);
+      if (out) out.write(chunk);
+      pending += chunk.toString('utf8');
+      const lines = pending.split(/\r?\n/);
+      pending = lines.pop() ?? '';
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        tail.push(line);
+        if (tail.length > FAIL_TAIL_LINES) tail.shift();
+      }
+    };
+
+    let settled = false;
+    const finish = (code, signal, spawnError) => {
+      if (settled) return;
+      settled = true;
+      if (pending.trim()) tail.push(pending);
+      if (out) out.end();
+      if (code === 0 && !spawnError) {
+        log(`OK    ${label}`);
+        resolve();
+        return;
+      }
+      const why = spawnError ? spawnError.message : signal ? `killed by ${signal}` : `exit code ${code}`;
+      log(`FAIL  ${label}: ${why}; full output in ${path.relative(root, stepLog)}`);
+      for (const line of tail.slice(-FAIL_TAIL_LINES)) log(`  | ${line}`);
+      reject(new Error(label));
+    };
+
+    // One command string through the shell: npm is npm.cmd on Windows, which
+    // spawn refuses without a shell, and passing an args array alongside
+    // shell:true trips DEP0190. Every argument here is a literal from this file.
+    const child = spawn([command, ...args].join(' '), {
+      env,
+      shell: true,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      windowsHide: true,
+    });
+    child.stdout.on('data', (chunk) => capture(chunk, process.stdout));
+    child.stderr.on('data', (chunk) => capture(chunk, process.stderr));
+    child.on('error', (error) => finish(null, null, error));
+    child.on('close', (code, signal) => finish(code, signal, null));
+  });
 }
 
 // The scheduled task only exposes an exit code, so a failed nightly reads as
@@ -118,60 +185,67 @@ function readFreshness() {
   }
 }
 
-try {
-  log(`RUN   refresh-and-deploy${dryRun ? ' (dry run)' : ''}`);
-  if (!githubToken) {
-    // Not fatal on its own: the preflight's own gate decides. Surfacing it here
-    // makes the eventual preflight failure self-explanatory in the log.
-    log('WARN  no GITHUB_TOKEN and `gh auth token` returned nothing; README telemetry will not be token-backed');
-  }
+async function main() {
+  try {
+    log(`RUN   refresh-and-deploy${dryRun ? ' (dry run)' : ''}`);
+    if (!githubToken) {
+      // Not fatal on its own: the preflight's own gate decides. Surfacing it here
+      // makes the eventual preflight failure self-explanatory in the log.
+      log('WARN  no GITHUB_TOKEN and `gh auth token` returned nothing; README telemetry will not be token-backed');
+    }
 
-  step('fetch-stars', 'npm', ['run', 'fetch-stars']);
-  step('profile-feed:sync', 'npm', ['run', 'profile-feed:sync']);
-  log(`DATA  generated caches are now ${readFreshness()}`);
+    await step('fetch-stars', 'npm', ['run', 'fetch-stars']);
+    await step('profile-feed:sync', 'npm', ['run', 'profile-feed:sync']);
+    log(`DATA  generated caches are now ${readFreshness()}`);
 
-  // deploy:preflight is the gate: strict generated-data freshness, catalog and
-  // live-app audits, signature verification, dependency audit, tests, check,
-  // and a full build. Nothing ships unless it passes.
-  step('deploy:preflight', 'npm', ['run', 'deploy:preflight']);
+    // deploy:preflight is the gate: strict generated-data freshness, catalog and
+    // live-app audits, signature verification, dependency audit, tests, check,
+    // and a full build. Nothing ships unless it passes.
+    await step('deploy:preflight', 'npm', ['run', 'deploy:preflight']);
 
-  if (dryRun) {
+    if (dryRun) {
+      const uncataloged = readCatalogDrift();
+      log('DONE  dry run complete; preflight passed and nothing was deployed');
+      if (uncataloged.length > 0) {
+        log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+        writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
+        process.exit(1);
+      }
+      writeStatus('dry-run');
+      process.exit(0);
+    }
+
+    if (!process.env.PORTFOLIO_VPS_SSH) {
+      log('FAIL  PORTFOLIO_VPS_SSH is not set; refusing to deploy');
+      writeStatus('aborted', { failedStep: 'deploy:vps', detail: 'PORTFOLIO_VPS_SSH is not set' });
+      process.exit(1);
+    }
+
+    // The build already ran inside preflight; reuse it rather than rebuilding.
+    await step('deploy:vps', 'npm', ['run', 'deploy:vps']);
+
+    const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
     const uncataloged = readCatalogDrift();
-    log('DONE  dry run complete; preflight passed and nothing was deployed');
     if (uncataloged.length > 0) {
+      // The site is fresh and honest about the gap, but somebody still has to
+      // catalog these, so the run reports failure rather than passing quietly.
+      log(`DONE  deployed in ${elapsed}s`);
       log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
       writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
       process.exit(1);
     }
-    writeStatus('dry-run');
-    process.exit(0);
-  }
-
-  if (!process.env.PORTFOLIO_VPS_SSH) {
-    log('FAIL  PORTFOLIO_VPS_SSH is not set; refusing to deploy');
-    writeStatus('aborted', { failedStep: 'deploy:vps', detail: 'PORTFOLIO_VPS_SSH is not set' });
-    process.exit(1);
-  }
-
-  // The build already ran inside preflight; reuse it rather than rebuilding.
-  step('deploy:vps', 'npm', ['run', 'deploy:vps']);
-
-  const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
-  const uncataloged = readCatalogDrift();
-  if (uncataloged.length > 0) {
-    // The site is fresh and honest about the gap, but somebody still has to
-    // catalog these, so the run reports failure rather than passing quietly.
     log(`DONE  deployed in ${elapsed}s`);
-    log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
-    writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
+    writeStatus('deployed');
+    process.exit(0);
+  } catch (error) {
+    const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
+    const failedStep = error.message;
+    const stepLog = stepLogPath(failedStep);
+    const where = fs.existsSync(stepLog) ? `; see ${path.relative(root, stepLog)}` : '';
+    log(`ABORT after ${elapsed}s at step "${failedStep}"; the previous deployment is still live${where}`);
+    writeStatus('aborted', { failedStep, detail: `the previous deployment is still live${where}` });
     process.exit(1);
   }
-  log(`DONE  deployed in ${elapsed}s`);
-  writeStatus('deployed');
-  process.exit(0);
-} catch (error) {
-  const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
-  log(`ABORT after ${elapsed}s at step "${error.message}"; the previous deployment is still live`);
-  writeStatus('aborted', { failedStep: error.message, detail: 'the previous deployment is still live' });
-  process.exit(1);
 }
+
+main();
