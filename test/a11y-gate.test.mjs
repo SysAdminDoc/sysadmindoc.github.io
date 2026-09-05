@@ -109,7 +109,34 @@ test('the audits config manages the preview itself because Astro 7 daemonizes it
   const teardown = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server-teardown.mjs'), 'utf8');
   assert.match(setup, /export default async function globalSetup/);
   assert.match(teardown, /export default async function globalTeardown/);
-  // Ownership crosses a process boundary, so it cannot ride on an env var.
-  assert.match(setup, /ownedMarkerPath/);
-  assert.match(teardown, /ownedMarkerPath/);
+  // Ownership crosses a module boundary, so it cannot ride on an env var. The
+  // marker path itself now lives in preview-server-control.mjs, so these assert
+  // the accessors rather than the constant.
+  assert.match(setup, /writeMarker\(\{ pid: process\.pid/);
+  assert.match(teardown, /readMarker\(\)/);
+  assert.doesNotMatch(setup, /process\.env\.PLAYWRIGHT_OWNS_PREVIEW/);
+});
+
+test('the preview hooks refuse a concurrent run instead of stopping another run server', async () => {
+  const setup = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server.mjs'), 'utf8');
+  const teardown = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server-teardown.mjs'), 'utf8');
+  const control = await fs.readFile(path.join(root, 'tests', 'playwright', 'preview-server-control.mjs'), 'utf8');
+
+  // Astro keys its preview lock on the project root, not the port, so only one
+  // preview daemon exists per checkout however many ports the configs declare.
+  // A second run used to stop the first run's server mid-test, and the first
+  // run's teardown then stopped the second run's.
+  assert.match(setup, /markerOwnerAlive\(existing\)/);
+  assert.match(setup, /already owns the preview server/);
+  assert.match(control, /process\.kill\(marker\.pid, 0\)/);
+
+  // Only the process that wrote the marker may stop the server.
+  assert.match(teardown, /marker\.pid !== process\.pid/);
+
+  // A killed run must not block every later run with a stale marker.
+  const { markerOwnerAlive } = await import('../tests/playwright/preview-server-control.mjs');
+  assert.equal(markerOwnerAlive({ pid: 0x7ffffffe }), false, 'a dead owner must not look alive');
+  assert.equal(markerOwnerAlive(null), false);
+  assert.equal(markerOwnerAlive({}), false);
+  assert.equal(markerOwnerAlive({ pid: process.pid }), true);
 });
