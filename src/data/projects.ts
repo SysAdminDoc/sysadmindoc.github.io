@@ -145,6 +145,8 @@ export const catalog: CatalogEntry[] = [
   { repo: "Keepr", name: "Keepr", url: "https://github.com/SysAdminDoc/Keepr", category: "web", desc: "Pixel-close offline-first Google Keep clone &mdash; Tauri 2 + React + Rust + SQLite" },
   { repo: "BetterTTS", name: "BetterTTS", url: "https://sysadmindoc.github.io/BetterTTS/", category: "web", desc: "Private, in-browser text-to-speech studio with 28 voices and WAV/MP3 export", live: true },
   { repo: "ColumnKit", name: "ColumnKit", url: "https://github.com/SysAdminDoc/ColumnKit", category: "ext", desc: "VS Code status bar buttons that snap editor columns to even widths" },
+  { repo: "GLP-Ultra", name: "GLP-Ultra", url: "https://github.com/SysAdminDoc/GLP-Ultra", category: "ext", desc: "Godlike Productions forum userscript with dark themes, thread cleanup, filtering, moderation tools, and exports" },
+  { repo: "HubSpot-Ticket-Refined", name: "HubSpot-Ticket-Refined", url: "https://github.com/SysAdminDoc/HubSpot-Ticket-Refined", category: "ext", desc: "Compact userscript theme for HubSpot ticket lists and records" },
   { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
   { repo: "NDNS", name: "NDNS", url: "https://github.com/SysAdminDoc/NDNS", category: "ext", desc: "NextDNS floating panel & analytics" },
   { repo: "BackgroundSearch", name: "BackgroundSearch", url: "https://github.com/SysAdminDoc/BackgroundSearch", category: "ext", desc: "Background tab opener extension" },

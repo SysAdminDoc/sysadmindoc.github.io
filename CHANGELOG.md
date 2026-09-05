@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Cataloged GLP-Ultra and HubSpot-Ticket-Refined, two new public userscript repos. Local fallback catalog grows from 202 to 204 entries.
+
+### Fixed
+- Restored the nightly deploy. `catalog:audit` had been failing since 2026-09-04, so v0.42.3 never shipped and the live site stayed on v0.42.2.
+- Updated the counts the catalog tests assert: the README content-collections line (198 feed-backed / 204 local fallback) and the `smoke:live` `--expected-projects` / `--expected-feed-items` arguments (202 to 204).
+
 ## [v0.42.3] - 2026-09-03
 
 ### Added
