@@ -10,14 +10,15 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Fix the focus-obscured failure on /search/ in the light theme with fixture data
-  Why: WCAG 2.2 AA 2.4.11 Focus Not Obscured. `tests/playwright/interaction-smoke.spec.mjs:887` fails with "A element obscured by sticky nav" on the brand link at the top of /search/. It fails only in the `chromium-light` project and only against fixture-backed data; the same suite passes on live data (46 passed, 2026-09-05), so it is data- or layout-dependent rather than a flat regression. `elementFromPoint` at the focused link centre returns a node that is neither the link nor a descendant, which points at a sticky-nav backdrop or pseudo-element painting over it in the light palette.
-  Evidence: `.tmp/playwright-results/interaction-smoke-focus-no-9e8a4-isible-above-the-sticky-nav-chromium-light/test-failed-1.png` shows the brand link focused with its ring visible while the assertion reports it obscured; `tests/playwright/interaction-smoke.spec.mjs:854-889`.
-  Touches: `src/styles/critical.css` and `src/styles/layers/unlayered.css` (`.ni` sticky header stacking), `tests/playwright/interaction-smoke.spec.mjs`.
-  Acceptance: `npm run audit:interactions` passes in both `chromium` and `chromium-light` against fixture-backed data, and the assertion still fails when the nav is deliberately given a higher stacking context over the focused element.
-  Complexity: M
-
 ### P2
+
+- [ ] P2 — Stabilise the flaky Pagefind degraded-state interaction test
+  Why: tests/playwright/interaction-smoke.spec.mjs:276 waits 6s for [data-pagefind-shell] to reach data-pagefind-state="degraded" after a simulated missing bundle. Under a loaded machine it stayed "loading" and failed; the same test passes in isolation (2 passed, 2026-09-05). A fixed timeout on a machine-speed-dependent transition is the wrong shape of assertion.
+  Evidence: a full `npm run audit:interactions` run on 2026-09-05 failed this test in the chromium project while 45 others passed; re-running it alone with `playwright test --config=playwright.interactions.config.mjs -g "search missing bundle exposes fallback recovery"` passed both projects.
+  Touches: tests/playwright/interaction-smoke.spec.mjs, public/scripts/search-page.js.
+  Acceptance: the test asserts the degraded state is reached without a hand-tuned millisecond budget (poll on the state the page reports, or drive the failure deterministically), and ten consecutive full audit:interactions runs show no flake.
+  Complexity: S
+
 
 - [ ] P2 — Ship Speculation Rules through the response header instead of an inline script
   Why: the 2026-07-28 revert (`57b9be1`) happened because `'inline-speculation-rules'` in a meta CSP made WebKit log console errors, breaking the zero-console-error contract. The `Speculation-Rules` response header points at an external JSON file, so the inline keyword is never needed and no CSP-delivery redesign is required. The internal Caddy already stamps headers. This supersedes the "Prerender same-origin navigations via Speculation Rules" item in `Roadmap_Blocked.md`, whose stated blocker no longer applies.

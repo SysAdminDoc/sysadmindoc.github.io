@@ -24,6 +24,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - A newly published public repo no longer freezes the nightly deploy. `catalog:audit` gained a report-only mode (`CATALOG_AUDIT_REPORT_ONLY`, set by `refresh:deploy`) that records drift in `src/data/_catalog-drift.json` and lets refreshed data ship, then exits non-zero so the run still reports failure. Stale catalog refs and privacy-review violations stay fatal in every mode.
 
 ### Fixed
+- The focus-not-obscured interaction check no longer reports obstructions that are not there. It hit-tested immediately after a Tab press, catching the skip link mid-way through animating back off screen, and clamped its probe point into the viewport so an element below the fold was measured at the wrong coordinates.
 - `build:ci` removes `dist/` before building. Astro writes into an existing output directory and the deploy tars the whole thing, so a file left by an interrupted build shipped; a leftover `dist/.prerender/` server chunk was caught by the CSP audit on 2026-09-05, and one without a sink would have gone out silently.
 - The PWA Catalog shortcut opens `/catalog/`. It was described as "Open the full project catalog" but pointed at `/?source=pwa#catalog`, which since the v0.26.0 catalog split renders only the homepage preview slice.
 - Deployed the site again. The nightly had been failing since 2026-09-04 and the live origin was still serving v0.42.2 from 2026-09-03, two days past its own 36h data-freshness contract.
