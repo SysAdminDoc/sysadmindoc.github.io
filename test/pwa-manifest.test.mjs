@@ -78,33 +78,42 @@ test('PWA manifest exposes bounded install shortcuts with descriptions', async (
   }
 });
 
-test('every PWA shortcut resolves to a built route', async (t) => {
+test('every PWA shortcut resolves to a real route', async () => {
   const manifest = JSON.parse(await fs.readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
-  const dist = path.join(root, 'dist');
-  const built = await fs.access(dist).then(() => true, () => false);
-  if (!built) {
-    t.skip('dist/ not built — run npm run build to verify shortcut targets');
-    return;
-  }
+
+  // This checked dist/ and skipped when it was absent. Two problems: `npm test`
+  // runs BEFORE `npm run build` inside deploy:preflight and dist/ is gitignored,
+  // so on a clean checkout the gate silently skipped exactly where it mattered;
+  // and the fixture build used for visual baselines
+  // (PROFILE_PROJECTS_OFFLINE=1 npm run build:ci) does not emit /search/ or
+  // /releases/, so it failed the documented re-baseline workflow. src/pages/ is
+  // always present and is what decides which routes exist.
+  const pages = new Set(
+    (await fs.readdir(path.join(root, 'src', 'pages'), { withFileTypes: true }))
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.astro'))
+      .map((entry) => entry.name.replace(/\.astro$/, '')),
+  );
 
   for (const shortcut of manifest.shortcuts) {
     const route = new URL(shortcut.url, 'https://example.invalid').pathname;
-    const file = path.join(dist, route.replace(/^\/+/, ''), 'index.html');
-    const exists = await fs.access(file).then(() => true, () => false);
-    assert.ok(exists, `${shortcut.name} shortcut points at ${route}, which the build does not produce`);
+    const slug = route.replace(/^\/+|\/+$/g, '');
+    assert.ok(pages.has(slug), `${shortcut.name} shortcut points at ${route}, which src/pages/ does not define`);
   }
+});
 
-  // The Catalog shortcut says "full project catalog", so it has to land on the
-  // route that renders every project, not the homepage preview slice.
+test('the Catalog shortcut targets the route that renders every project', async () => {
+  const manifest = JSON.parse(await fs.readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
+  const catalogPage = await fs.readFile(path.join(root, 'src', 'pages', 'catalog.astro'), 'utf8');
+  const homepage = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
+
   const catalog = manifest.shortcuts.find((shortcut) => shortcut.name === 'Catalog');
   assert.match(catalog.description, /full project catalog/i);
   assert.equal(new URL(catalog.url, 'https://example.invalid').pathname, '/catalog/');
 
-  const homepage = await fs.readFile(path.join(dist, 'index.html'), 'utf8');
-  const full = await fs.readFile(path.join(dist, 'catalog', 'index.html'), 'utf8');
-  const countEntries = (html) => (html.match(/data-f="/g) ?? []).length;
-  assert.ok(
-    countEntries(full) > countEntries(homepage),
-    'the catalog route must render more projects than the homepage preview, or the shortcut is pointing at the wrong one',
-  );
+  // /catalog/ is the full archive: it renders the ranked catalog with the full
+  // variant. The homepage only hands off to it. The shortcut promises the full
+  // catalog, so it has to point at the page that actually renders one.
+  assert.match(catalogPage, /<CatalogSection entries=\{rankedCatalog\} variant="full"/);
+  assert.doesNotMatch(homepage, /<CatalogSection/, 'the homepage hands off to /catalog/ rather than rendering its own list');
+  assert.match(homepage, /href="\/catalog\/"/);
 });
