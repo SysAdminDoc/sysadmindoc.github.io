@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Point the PWA Catalog shortcut at /catalog/
-  Why: `public/manifest.json` describes the shortcut as "Open the full project catalog" but targets `/?source=pwa#catalog`, which since the v0.26.0 split renders only the top-84 preview slice. The full list is the static `/catalog/` route.
-  Evidence: `public/manifest.json` shortcuts entry; `CLAUDE.md` catalog-split architecture note; `src/pages/catalog.astro`.
-  Touches: `public/manifest.json`, `test/pwa-manifest.test.mjs`.
-  Acceptance: every manifest shortcut URL resolves to a built route whose content matches the shortcut description, asserted by a test against `dist/`.
-  Complexity: S
-
 - [ ] P1 — Tag v0.42.1, v0.42.2 and v0.42.3, and gate future releases on a tag
   Why: `git tag` stops at v0.42.0 while three versions have shipped since. This is the second lapse; v0.31.0 through v0.38.0 were backfilled on 2026-08-20 by locating each version-bump commit.
   Evidence: `git tag` output 2026-09-04; `CLAUDE.md` release-tagging section.
