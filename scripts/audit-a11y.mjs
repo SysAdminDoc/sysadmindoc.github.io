@@ -17,11 +17,14 @@
 // fail on this conservative static subset. Use `npm run a11y:audit:advisory`
 // for inventory-only runs while expanding the rule set.
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const distDir = join(root, 'dist');
+// --dist lets the gate self-test point this at a throwaway copy of the build
+// rather than mutating the tree that is about to ship.
+const distArg = process.argv.indexOf('--dist');
+const distDir = distArg === -1 ? join(root, 'dist') : resolve(root, process.argv[distArg + 1]);
 const strict = process.argv.includes('--strict');
 
 if (!existsSync(distDir)) {

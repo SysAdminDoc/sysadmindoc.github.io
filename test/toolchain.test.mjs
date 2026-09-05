@@ -273,3 +273,43 @@ test('the build removes dist/ first so stale artifacts cannot ship', async () =>
     await fs.rm(sandbox, { recursive: true, force: true });
   }
 });
+
+test('every dist-reading audit is proven able to reject a planted violation', async () => {
+  const pkg = await readPackage();
+  const script = await fs.readFile(path.join(root, 'scripts', 'audit-gate-selftest.mjs'), 'utf8');
+
+  // Three gates were found measuring nothing while their own tests stayed
+  // green, because those tests fed a helper a synthetic fixture instead of the
+  // artifact the gate inspects in production.
+  assert.equal(pkg.scripts['gates:selftest'], 'node scripts/audit-gate-selftest.mjs');
+  assert.match(pkg.scripts['build:ci'], /npm run gates:selftest\b/, 'the self-test must run in the build chain');
+
+  // It needs a complete dist, so it has to come after the build and after the
+  // Pagefind index it plants against.
+  const ci = pkg.scripts['build:ci'];
+  assert.ok(ci.indexOf('npm run search:index') < ci.indexOf('npm run gates:selftest'));
+
+  // A planted-violation result means nothing unless the clean copy passed first.
+  assert.match(script, /refused the unmodified build/);
+  // And it must never mutate the tree that is about to ship.
+  assert.match(script, /fs\.cpSync\(sourceDist, scratch, \{ recursive: true \}\)/);
+
+  // Every audit the chain runs against dist/ should be covered. A new one added
+  // to build:ci without a planted violation here is a gate nobody has proven.
+  const covered = new Set([...script.matchAll(/name: '([^']+)'/g)].map((match) => match[1]));
+  for (const gate of [
+    'a11y:audit',
+    'dom:audit',
+    'endpoints:audit',
+    'feed:audit',
+    'links:audit',
+    'og-cards:audit',
+    'resume:audit',
+    'schema:audit',
+    'search:audit',
+    'sitemap:audit',
+    'fix-html-structure',
+  ]) {
+    assert.ok(covered.has(gate), `${gate} has no planted-violation case in the gate self-test`);
+  }
+});

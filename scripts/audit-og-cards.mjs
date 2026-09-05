@@ -14,7 +14,10 @@ import process from 'node:process';
 import sharp from 'sharp';
 
 const root = process.cwd();
-const distDir = path.join(root, 'dist');
+// --dist lets the gate self-test point this at a throwaway copy of the build
+// rather than mutating the tree that is about to ship.
+const distArg = process.argv.indexOf('--dist');
+const distDir = distArg === -1 ? path.join(root, 'dist') : path.resolve(root, process.argv[distArg + 1]);
 const reportOnly = process.argv.includes('--report');
 
 const OG_WIDTH = 1200;

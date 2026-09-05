@@ -16,7 +16,7 @@
     "dev:stop": "astro dev stop",
     "start": "astro dev --host 127.0.0.1",
     "build": "npm run profile-feed:sync && npm run data:validate && npm run assets:audit && npm run css:audit && npm run images:audit && npm run build:ci",
-    "build:ci": "npm run build:clean && npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run resume:pdf && npm run bundle:audit && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run og-cards:audit && npm run search:index && npm run search:audit && npm run sw:stamp && npm run schema:audit && npm run a11y:audit && npm run resume:audit && npm run sitemap:audit && npm run links:audit",
+    "build:ci": "npm run build:clean && npm run public-source:audit && astro build && node scripts/fix-html-structure.mjs && npm run scripts:minify && npm run resume:pdf && npm run bundle:audit && npm run csp:audit:dist:style:elem && npm run endpoints:audit && npm run feed:audit && npm run dom:audit && npm run og-cards:audit && npm run search:index && npm run search:audit && npm run sw:stamp && npm run schema:audit && npm run a11y:audit && npm run resume:audit && npm run gates:selftest && npm run sitemap:audit && npm run links:audit",
     "build:clean": "node scripts/clean-dist.mjs",
     "og-cards:audit": "node scripts/audit-og-cards.mjs",
     "sw:stamp": "node scripts/stamp-sw.mjs",
@@ -87,6 +87,7 @@
     "liveapps:audit": "node scripts/audit-live-apps.mjs",
     "audit:sw": "playwright test --config=playwright.interactions.config.mjs tests/playwright/sw-lifecycle.spec.mjs",
     "resume:audit": "node scripts/audit-resume-schema.mjs",
+    "gates:selftest": "node scripts/audit-gate-selftest.mjs",
     "resume:pdf": "node scripts/generate-resume-pdf.mjs"
   },
   "dependencies": {
