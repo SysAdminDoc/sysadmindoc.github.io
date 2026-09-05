@@ -144,3 +144,19 @@ test('no experimental Astro flag is declared whose precondition the routes do no
     'a new dynamic route needs adding to this check',
   );
 });
+
+test('the deploy preflight refuses an untagged release', async () => {
+  const pkg = await readPackage();
+  const script = await fs.readFile(path.join(root, 'scripts', 'verify-release-tag.mjs'), 'utf8');
+
+  // Tagging lapsed twice: v0.31.0-v0.38.0 were backfilled on 2026-08-20 and
+  // v0.42.1-v0.42.3 on 2026-09-05. A convention nothing enforces lapses.
+  assert.equal(pkg.scripts['verify:release-tag'], 'node scripts/verify-release-tag.mjs');
+  assert.match(pkg.scripts['deploy:preflight'], /npm run verify:release-tag\b/);
+
+  // A tag that merely exists is not enough. It has to be annotated, so it
+  // carries an author and date, and it has to describe the code being shipped.
+  assert.match(script, /objectType !== 'tag'/);
+  assert.match(script, /merge-base', '--is-ancestor'/);
+  assert.match(script, /is not on origin/);
+});
