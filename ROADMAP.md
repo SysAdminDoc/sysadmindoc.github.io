@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Fail deps:audit --strict on stale first-party production dependencies
-  Why: the strict run on 2026-09-04 reported PASS while listing astro 7.2.4→7.3.1, satori 0.29.1→0.33.4, esbuild 0.28.1→0.28.2, sharp 0.35.3→0.35.4, postcss 8.5.23→8.5.28, svgo 4.0.2→4.1.0, `@playwright/test` 1.62.0→1.63.0 and `@axe-core/playwright` 4.12.1→4.13.0. Strict mode only fails on stale exact override pins, so the packages that carry the most risk drift without ever reddening a gate.
-  Evidence: `scripts/audit-dependencies.mjs`; `npm run deps:audit -- --strict` output 2026-09-04.
-  Touches: `scripts/audit-dependencies.mjs`, `test/dependency-audit.test.mjs`, `package.json`.
-  Acceptance: a fixture declaring a production dependency two minors behind registry latest fails `--strict` with a named reason, and known holds (`typescript`, `fast-uri`) still pass through the documented blocked-majors path.
-  Complexity: S
-
 - [ ] P1 — Upgrade the drifted dependencies and re-baseline the visual suite
   Why: the individual gaps are small but two matter. esbuild 0.28.2 exists specifically to rebuild binaries against a patched Go toolchain, and `@axe-core/playwright` 4.13.0 changes rule behaviour (Element Internals support, ten false-positive fixes), so the a11y gate result can move.
   Evidence: `npm run deps:audit -- --strict` output 2026-09-04; https://github.com/dequelabs/axe-core/releases ; https://github.com/withastro/astro/blob/main/packages/astro/CHANGELOG.md (7.3.0 adds concurrent rendering under `incrementalBuild`).
