@@ -4,6 +4,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.43.0] - 2026-09-05
+
 ### Added
 - A `/data/` route publishing the archive's measurements: project counts by category, primary language, declared licence, release-artifact provenance and the cache coverage behind each figure. Every number is computed at build time from the generated GitHub caches, so the page states what the archive is rather than claiming anything about it. `/ai/` cites it from the proof section.
 - `npm run gates:selftest`, wired into `build:ci`. It copies the build, plants a real violation for each of the eleven audits that read `dist/`, and fails if any of them still passes. Every gate also has to accept the unmodified copy first, so a "rejected" result cannot come from an audit that refuses everything.
