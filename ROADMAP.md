@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Add frame-ancestors 'none' to the Caddy-delivered CSP header
-  Why: the live response on 2026-09-04 carries `X-Frame-Options: DENY` and no `frame-ancestors`. `deploy/vps/caddy-block.txt:20` explains the omission as a meta-CSP limitation, which is true of the meta form only — `deploy/vps/Caddyfile:37` already stamps a CSP *header*, and the header form can carry the directive that supersedes XFO.
-  Evidence: live headers captured 2026-09-04; `deploy/vps/Caddyfile:37`; `deploy/vps/caddy-block.txt:7-11`.
-  Touches: `deploy/vps/Caddyfile`, `scripts/deploy-vps.mjs` (csp.env stamping), `scripts/audit-csp.mjs`, `scripts/smoke-live-site.mjs`, `test/csp-audit.test.mjs`.
-  Acceptance: `smoke:live` asserts the deployed header contains `frame-ancestors 'none'`, the meta policy stays unchanged, and `csp:audit:dist:style:elem` still passes.
-  Complexity: S
-
 - [ ] P1 — Pull a pinned Caddy digest on deploy instead of a floating minor tag
   Why: `deploy/vps/docker-compose.yml:11` pins `caddy:2.11-alpine` and `scripts/deploy-vps.mjs` force-recreates the container without pulling, so the running image can be arbitrarily old. Caddy 2.11.3 adds fixes beyond the 2.11.1 CVE set already adopted (rewrite placeholder re-expansion, unbounded body-buffer DoS, `fileHidden` case-sensitivity bypass).
   Evidence: `deploy/vps/docker-compose.yml:11`; `scripts/deploy-vps.mjs`; https://github.com/caddyserver/caddy/security/advisories
