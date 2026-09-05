@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- `npm run gates:selftest`, wired into `build:ci`. It copies the build, plants a real violation for each of the eleven audits that read `dist/`, and fails if any of them still passes. Every gate also has to accept the unmodified copy first, so a "rejected" result cannot come from an audit that refuses everything.
 - Speculation Rules, delivered by a `Speculation-Rules` response header pointing at `/speculation-rules.json` rather than an inline script. The inline form needs the `'inline-speculation-rules'` source in `script-src`, which WebKit rejects and logs on every page; the header form needs no CSP change at all, so the hash-pinned meta policy is untouched. Same-origin documents prerender at moderate eagerness.
 - `npm run resume:audit`, wired into `build:ci`. It validates the built `/resume.json` against the published `@jsonresume/schema` and reports fields the schema permits but no spec-following consumer reads (`work[].keywords`, `education[].location`). The endpoint advertised v1.0.0 while nothing checked it satisfied it.
 - `npm run verify:release-tag`, wired into `deploy:preflight`. It refuses to ship a `package.json` version with no annotated tag on an ancestor of HEAD that is also pushed to origin. Backfilled the missing v0.42.1, v0.42.2 and v0.42.3 tags.

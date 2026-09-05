@@ -12,13 +12,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P2
 
-- [ ] P2 — Prove each audit gate can fail by planting a real violation
-  Why: three separate mechanisms were found measuring nothing while their own tests stayed green, because those tests exercise helper functions against synthetic fixtures rather than the production path. `test/html-structure.test.mjs` passes `main.js` into `inspectHtml` directly, so the guard looks healthy while being unreachable on every real page.
-  Evidence: `scripts/fix-html-structure.mjs:75-88` vs `test/html-structure.test.mjs:22`; `astro.config.mjs:17` vs the absent `cacheKey`; `scripts/audit-dependencies.mjs` strict PASS on a drifted tree.
-  Touches: `test/` (new self-test coverage), `scripts/` audits that currently lack a negative control.
-  Acceptance: for each build-time audit, a test injects a violation into the real artifact the audit inspects and asserts a non-zero exit; a gate that cannot be made to fail is either fixed or removed.
-  Complexity: M
-
 ### P3
 
 - [ ] P3 — Publish a single derived data page and cite it from /ai/
