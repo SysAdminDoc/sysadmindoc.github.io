@@ -22,6 +22,22 @@
 	@ogimages path /og.png /og/*
 	header @ogimages Cache-Control "public, max-age=86400"
 
+	# Speculation Rules, delivered by header rather than an inline
+	# <script type="speculationrules">.
+	#
+	# The inline form needs 'inline-speculation-rules' in script-src, and WebKit
+	# rejects that keyword as an invalid source and logs a console error on every
+	# page — which is why the 2026-07-28 attempt was reverted. The header points
+	# at a same-origin file instead, so the keyword is never needed and the
+	# hash-pinned meta CSP stays exactly as it is.
+	#
+	# The rules file must be served as application/speculationrules+json or the
+	# browser ignores it; Caddy would otherwise infer application/json from the
+	# extension.
+	@speculationrules path /speculation-rules.json
+	header @speculationrules Content-Type "application/speculationrules+json"
+	header @speculationrules Cache-Control "public, max-age=600"
+
 	# Reporting API sink. The edge publishes Reporting-Endpoints, and this
 	# private sidecar accepts only the bounded POST body on the named route.
 	@csp_report path /csp-report
@@ -40,6 +56,9 @@
 	# pin a visitor to an old build. The service worker owns offline behavior.
 	@html path / */ *.html
 	header @html Cache-Control "public, max-age=0, must-revalidate"
+	# The value is a quoted URL per the Speculation-Rules grammar; backticks let
+	# the inner quotes survive the Caddyfile parser.
+	header @html Speculation-Rules `"/speculation-rules.json"`
 
 	file_server
 	# handle_errors runs a fresh handler chain, so file_server would otherwise

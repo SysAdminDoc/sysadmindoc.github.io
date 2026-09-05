@@ -12,13 +12,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P2
 
-- [ ] P2 — Ship Speculation Rules through the response header instead of an inline script
-  Why: the 2026-07-28 revert (`57b9be1`) happened because `'inline-speculation-rules'` in a meta CSP made WebKit log console errors, breaking the zero-console-error contract. The `Speculation-Rules` response header points at an external JSON file, so the inline keyword is never needed and no CSP-delivery redesign is required. The internal Caddy already stamps headers. This supersedes the "Prerender same-origin navigations via Speculation Rules" item in `Roadmap_Blocked.md`, whose stated blocker no longer applies.
-  Evidence: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Speculation-Rules (external rules must be served as `application/speculationrules+json`); https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API (the `'inline-speculation-rules'` requirement is documented against the `<script>` form only); `deploy/vps/Caddyfile:37`; the 2026-07-28 revert `57b9be1`. Needs live validation: MDN does not state which directive governs the external rules fetch, so confirm under the shipped `script-src 'self'` before relying on it.
-  Touches: new `public/speculation-rules.json`, `deploy/vps/Caddyfile` (header plus MIME type), `scripts/smoke-live-site.mjs`, `scripts/audit-public-endpoints.mjs`.
-  Acceptance: the live response carries a `Speculation-Rules` header, the referenced file serves `application/speculationrules+json`, Chromium prerenders a same-origin navigation, and a WebKit run through `audit:cross-engine` logs zero console errors. Confirm via the existing `/csp-report` sink that the external fetch raises no violation under `script-src 'self'`.
-  Complexity: M
-
 - [ ] P2 — Persist the edge access log outside the container
   Why: `deploy/vps/caddy-block.txt` writes to `/var/log/caddy/portfolio.log` inside the edge container, and `deploy:vps` recreates containers on every deploy, so the GoAccess report loses its history each time the site ships. The report itself is correct and correctly kept outside `dist/`.
   Evidence: `deploy/vps/caddy-block.txt` log block; `scripts/deploy-vps.mjs` force-recreate; `CLAUDE.md` traffic-reporting caveat.
