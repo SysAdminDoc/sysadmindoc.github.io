@@ -36,16 +36,18 @@
   const cmdkTitleClass = 'cmdk-title';
   const cmdkSubtitleClass = 'cmdk-subtitle';
   /* isTextEntryTarget, SafeDOM — loaded from shared.js */
-  const dom = window.SafeDOM || {};
-  const replaceChildren = dom.replaceChildren || function (node) {
-    while (node.firstChild) node.removeChild(node.firstChild);
-    for (let i = 1; i < arguments.length; i++) {
-      if (arguments[i]) node.appendChild(arguments[i]);
-    }
-  };
-  const appendHighlightedTextSafe = dom.appendHighlightedText || function (node, text) {
-    node.textContent = String(text == null ? '' : text);
-  };
+  // `window.SafeDOM || {}` used to swallow a missing shared.js: the local
+  // fallbacks below took over and the command palette rendered without the
+  // Trusted-Types-safe helpers, which is a silent downgrade of the DOM policy
+  // rather than a visible failure. The load order is enforced at build time by
+  // scripts/fix-html-structure.mjs, so reaching this line without SafeDOM means
+  // that guard was bypassed and the page should say so.
+  if (!window.SafeDOM || typeof window.SafeDOM.replaceChildren !== 'function') {
+    throw new Error('cmdk.js: window.SafeDOM is missing; /scripts/shared.js must load first.');
+  }
+  const dom = window.SafeDOM;
+  const replaceChildren = dom.replaceChildren;
+  const appendHighlightedTextSafe = dom.appendHighlightedText;
 
   function highlightedSpan(className, text, query) {
     const span = document.createElement('span');
