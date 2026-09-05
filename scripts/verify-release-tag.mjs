@@ -36,11 +36,31 @@ function git(args, { allowFailure = false } = {}) {
   }
 }
 
+// Two versions matter and they are not the same thing. The deploy builds and
+// ships the WORKING TREE, but a tag can only ever point at a commit. Reading
+// only the working tree let a dirty checkout satisfy the gate: commit an
+// untagged 0.43.0, edit package.json back down to the already-tagged 0.42.3,
+// and the tag check passed while the commit being certified declared something
+// else. Requiring the two to agree removes the ambiguity entirely.
 const { version } = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const headManifest = git(['show', 'HEAD:package.json'], { allowFailure: true });
+if (!headManifest) {
+  console.error('verify-release-tag: could not read package.json from HEAD.');
+  process.exit(1);
+}
+const headVersion = JSON.parse(headManifest).version;
+if (headVersion !== version) {
+  console.error(
+    `verify-release-tag: the working tree declares ${version} but HEAD declares ${headVersion}.`,
+  );
+  console.error('  The deploy ships the working tree; commit the version bump before tagging and deploying.');
+  process.exit(1);
+}
+
 const tag = `v${version}`;
 
 console.log('Release tag verification');
-console.log(`  package version: ${version}`);
+console.log(`  package version: ${version} (matches HEAD)`);
 
 const objectType = git(['cat-file', '-t', tag], { allowFailure: true });
 if (!objectType) {

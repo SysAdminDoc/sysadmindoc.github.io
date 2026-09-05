@@ -159,6 +159,12 @@ test('the deploy preflight refuses an untagged release', async () => {
   assert.match(script, /objectType !== 'tag'/);
   assert.match(script, /merge-base', '--is-ancestor'/);
   assert.match(script, /is not on origin/);
+
+  // The deploy builds the working tree but a tag points at a commit. Checking
+  // only the working tree let a dirty checkout pass: commit an untagged bump,
+  // edit package.json back to an already-tagged version, and the gate agreed.
+  assert.match(script, /git\(\['show', 'HEAD:package\.json'\]/);
+  assert.match(script, /headVersion !== version/);
 });
 
 test('the build removes dist/ first so stale artifacts cannot ship', async () => {
