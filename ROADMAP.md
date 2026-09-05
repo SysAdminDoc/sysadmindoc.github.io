@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Upgrade the drifted dependencies and re-baseline the visual suite
-  Why: the individual gaps are small but two matter. esbuild 0.28.2 exists specifically to rebuild binaries against a patched Go toolchain, and `@axe-core/playwright` 4.13.0 changes rule behaviour (Element Internals support, ten false-positive fixes), so the a11y gate result can move.
-  Evidence: `npm run deps:audit -- --strict` output 2026-09-04; https://github.com/dequelabs/axe-core/releases ; https://github.com/withastro/astro/blob/main/packages/astro/CHANGELOG.md (7.3.0 adds concurrent rendering under `incrementalBuild`).
-  Touches: `package.json`, `package-lock.json`, `test/toolchain.test.mjs` (the `esbuild@` allowScripts pin), `tests/playwright/__screenshots__/`.
-  Acceptance: `npm run check`, `npm test`, `npm run build`, `npm run a11y:audit` and `npm run audit:playwright` all pass on the upgraded tree, and any a11y result change is recorded rather than baselined away.
-  Complexity: M
-
 - [ ] P1 — Add frame-ancestors 'none' to the Caddy-delivered CSP header
   Why: the live response on 2026-09-04 carries `X-Frame-Options: DENY` and no `frame-ancestors`. `deploy/vps/caddy-block.txt:20` explains the omission as a meta-CSP limitation, which is true of the meta form only — `deploy/vps/Caddyfile:37` already stamps a CSP *header*, and the header form can carry the directive that supersedes XFO.
   Evidence: live headers captured 2026-09-04; `deploy/vps/Caddyfile:37`; `deploy/vps/caddy-block.txt:7-11`.
