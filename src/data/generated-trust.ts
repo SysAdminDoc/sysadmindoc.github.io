@@ -183,6 +183,51 @@ export function buildReleaseProvenanceDistribution(
   };
 }
 
+export type CatalogCompleteness = {
+  measured: boolean;
+  complete: boolean | null;
+  checkedAt: string | null;
+  uncataloged: string[];
+  staleRefs: string[];
+  /** A record exists but is older than the freshness window. */
+  staleRecord: boolean;
+};
+
+/**
+ * Decide what a catalog drift record is allowed to claim.
+ *
+ * Every surface that states the archive is complete has to agree on this, so the
+ * rule lives here rather than being re-derived per page. Two things it must never
+ * do: report `complete` from a record that is merely present (`catalog:audit`
+ * runs in `deploy:preflight`, not in `npm run build`, and `deploy:vps` builds
+ * again on its own, so a leftover file from an unrelated run is exactly what a
+ * plain build reads), and throw on a malformed record (this runs while Astro
+ * renders, so a TypeError fails the whole build instead of degrading).
+ */
+export function buildCatalogCompleteness(
+  drift: TrustCatalogDrift | null | undefined,
+  options: { now?: Date; maxAgeHours?: number } = {},
+): CatalogCompleteness {
+  const now = options.now ?? new Date();
+  const maxAgeHours = options.maxAgeHours ?? GENERATED_DATA_MAX_AGE_HOURS;
+  const checkedAt = isoOrNull(drift?.generatedAt);
+  const age = ageHours(drift?.generatedAt, now);
+  const fresh = age != null && age <= maxAgeHours;
+  const hasVerdict = drift?.complete === true || drift?.complete === false;
+  const measured = hasVerdict && fresh;
+  const stringList = (value: unknown) =>
+    Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0) : [];
+
+  return {
+    measured,
+    complete: measured ? drift?.complete === true : null,
+    checkedAt,
+    uncataloged: measured ? stringList(drift?.uncataloged) : [],
+    staleRefs: measured ? stringList(drift?.staleRefs) : [],
+    staleRecord: hasVerdict && !fresh,
+  };
+}
+
 export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): GeneratedDataTrust {
   const now = input.now ?? new Date();
   const maxAgeHours = input.maxAgeHours ?? GENERATED_DATA_MAX_AGE_HOURS;
@@ -211,10 +256,10 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
   // An absent drift record means the catalog was never checked for this build,
   // which is not the same as a complete catalog. Report it as unmeasured so the
   // page cannot imply a completeness it has no evidence for.
-  const catalogDrift = input.catalogDrift ?? null;
-  const catalogMeasured = catalogDrift?.complete === true || catalogDrift?.complete === false;
-  const catalogUncataloged = catalogMeasured ? (catalogDrift?.uncataloged ?? []).filter(Boolean) : [];
-  const catalogStaleRefs = catalogMeasured ? (catalogDrift?.staleRefs ?? []).filter(Boolean) : [];
+  const catalogCompleteness = buildCatalogCompleteness(input.catalogDrift, { now, maxAgeHours });
+  const { measured: catalogMeasured, staleRecord: catalogStaleRecord } = catalogCompleteness;
+  const catalogUncataloged = catalogCompleteness.uncataloged;
+  const catalogStaleRefs = catalogCompleteness.staleRefs;
   const warnings: string[] = [];
 
   if (dataStale) warnings.push(`Generated GitHub data is stale or unavailable; refresh within ${maxAgeHours}h before deploy.`);
@@ -225,7 +270,13 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
   if (!fixtureMode && coverageBelowThreshold(starsCoverage)) warnings.push('Star cache coverage is below 80% of profile-feed projects.');
   if (!fixtureMode && coverageBelowThreshold(metadataCoverage)) warnings.push('Metadata cache coverage is below 80% of profile-feed projects.');
   if (!fixtureMode && coverageBelowThreshold(readmesCoverage)) warnings.push('README cache coverage is below 80% of profile-feed projects.');
-  if (!fixtureMode && !catalogMeasured) warnings.push('Catalog completeness was not measured for this build; run npm run catalog:audit.');
+  if (!fixtureMode && !catalogMeasured) {
+    warnings.push(
+      catalogStaleRecord
+        ? `Catalog completeness was last measured over ${maxAgeHours}h ago; re-run npm run catalog:audit.`
+        : 'Catalog completeness was not measured for this build; run npm run catalog:audit.',
+    );
+  }
   if (catalogUncataloged.length > 0) {
     warnings.push(
       `Catalog is incomplete: ${catalogUncataloged.length} public repo(s) are not cataloged (${catalogUncataloged.join(', ')}).`,
@@ -288,9 +339,9 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
     },
     releaseProvenance,
     catalogCompleteness: {
-      measured: catalogMeasured,
-      complete: catalogMeasured ? catalogDrift?.complete === true : null,
-      checkedAt: isoOrNull(catalogDrift?.generatedAt),
+      measured: catalogCompleteness.measured,
+      complete: catalogCompleteness.complete,
+      checkedAt: catalogCompleteness.checkedAt,
       uncataloged: catalogUncataloged,
       staleRefs: catalogStaleRefs,
     },

@@ -8,7 +8,24 @@ import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { rankedCatalog, catalogTotal } from '../data/catalog-render';
 import { liveApps } from '../data/portfolio';
+import { buildCatalogCompleteness } from '../data/generated-trust';
+import type { GeneratedCatalogDrift } from '../data/generated';
 
+
+// This page tells visitors the archive is complete, so it has to read the same
+// drift record /status/ does. Without this the claim held even while /status/
+// was reporting uncataloged repos.
+let catalogDrift: Partial<GeneratedCatalogDrift> | null = null;
+try {
+  const mod = await import('../data/_catalog-drift.json');
+  catalogDrift = (mod.default ?? mod) as Partial<GeneratedCatalogDrift>;
+} catch {}
+const completeness = buildCatalogCompleteness(catalogDrift);
+const archiveClaim = completeness.complete === true
+  ? 'The catalog is the complete public archive.'
+  : completeness.complete === false
+    ? `The catalog is the reviewed public archive; ${completeness.uncataloged.length} recently published repo(s) are not in it yet.`
+    : 'The catalog is the reviewed public archive.';
 const title = 'Project Catalog | Matt Parker';
 const pageOg = interiorOgPageBySlug['catalog'];
 const pageFreshness = pageFreshnessBySlug['catalog'];
@@ -61,7 +78,7 @@ const cmdkSections = [
   </main>
 
   <Footer
-    summary="The catalog is the complete public archive. The homepage highlights the strongest work; the timeline shows momentum over time."
+    summary={`${archiveClaim} The homepage highlights the strongest work; the timeline shows momentum over time.`}
     links={[
       { href: '/#greatest-hits', label: 'Highlights' },
       { href: '/timeline/', label: 'Timeline' },
