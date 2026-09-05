@@ -868,23 +868,72 @@ test.describe('focus-not-obscured by sticky navigation', () => {
 
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press('Tab');
-      const focusInfo = await page.evaluate(() => {
-        const el = document.activeElement;
-        if (!el || el === document.body) return null;
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 && rect.height === 0) return null;
-        const x = Math.min(Math.max(rect.left + rect.width / 2, 0), window.innerWidth - 1);
-        const y = Math.min(Math.max(rect.top + rect.height / 2, 0), window.innerHeight - 1);
+
+      // Two things used to make this report obstructions that are not there.
+      //
+      // It hit-tested immediately after Tab. The skip link is fixed at
+      // z-index 100000 and animates from top:0 back to top:-120px when it loses
+      // focus, so the very next read found it still covering the brand link.
+      // Measured 2026-09-05: computed top reads 0px immediately after the blur
+      // and -120px once it settles, so waiting for a stable rect is the fix.
+      //
+      // And it clamped the probe point into the viewport, so a focused element
+      // below the fold was hit-tested at coordinates that belong to whatever is
+      // at the bottom edge. An off-screen element is not obscured by the sticky
+      // nav; it is a different condition, and this test is not about it.
+      const focusInfo = await page.evaluate(async () => {
+        const settle = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const geometry = () => {
+          const el = document.activeElement;
+          if (!el || el === document.body) return null;
+          const rect = el.getBoundingClientRect();
+          return { el, top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+        };
+
+        let previous = geometry();
+        for (let attempt = 0; attempt < 20; attempt += 1) {
+          await settle();
+          const current = geometry();
+          if (!current || !previous) return null;
+          if (
+            current.el === previous.el &&
+            current.top === previous.top &&
+            current.left === previous.left &&
+            current.width === previous.width &&
+            current.height === previous.height
+          ) {
+            break;
+          }
+          previous = current;
+        }
+
+        const settled = geometry();
+        if (!settled) return null;
+        const { el, top, left, width, height } = settled;
+        if (width === 0 && height === 0) return null;
+
+        // Only judge what is actually on screen.
+        const bottom = top + height;
+        if (bottom <= 0 || top >= window.innerHeight) return null;
+
+        const x = Math.min(Math.max(left + width / 2, 0), window.innerWidth - 1);
+        const y = Math.min(Math.max(top + height / 2, 0), window.innerHeight - 1);
         const topElement = document.elementFromPoint(x, y);
         const reachable = Boolean(topElement && (el === topElement || el.contains(topElement) || topElement.contains(el)));
+        const describe = (node) =>
+          node ? `${node.tagName.toLowerCase()}${node.id ? `#${node.id}` : ''}` : 'nothing';
         return {
           tag: el.tagName,
+          obscuredBy: describe(topElement),
           obscured: !reachable,
         };
       });
 
       if (focusInfo) {
-        expect(focusInfo.obscured, `${focusInfo.tag} element obscured by sticky nav`).toBe(false);
+        expect(
+          focusInfo.obscured,
+          `${focusInfo.tag} element obscured by ${focusInfo.obscuredBy}`,
+        ).toBe(false);
       }
     }
 
