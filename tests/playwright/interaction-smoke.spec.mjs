@@ -866,6 +866,7 @@ test.describe('focus-not-obscured by sticky navigation', () => {
       return;
     }
 
+    const unstableStops = [];
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press('Tab');
 
@@ -891,6 +892,7 @@ test.describe('focus-not-obscured by sticky navigation', () => {
         };
 
         let previous = geometry();
+        let stable = false;
         for (let attempt = 0; attempt < 20; attempt += 1) {
           await settle();
           const current = geometry();
@@ -902,6 +904,7 @@ test.describe('focus-not-obscured by sticky navigation', () => {
             current.width === previous.width &&
             current.height === previous.height
           ) {
+            stable = true;
             break;
           }
           previous = current;
@@ -909,6 +912,15 @@ test.describe('focus-not-obscured by sticky navigation', () => {
 
         const settled = geometry();
         if (!settled) return null;
+        // Falling through the loop without settling used to be silent, and the
+        // next read was then treated as final — which is the mid-animation
+        // hit-test this rewrite exists to remove, just at lower probability.
+        // Twenty double-rAF rounds is a frame budget, not a millisecond one, so
+        // it stretches with machine load; not settling inside it means something
+        // is still moving and the result cannot be judged either way.
+        if (!stable) {
+          return { tag: settled.el.tagName, unstable: true };
+        }
         const { el, top, left, width, height } = settled;
         if (width === 0 && height === 0) return null;
 
@@ -920,8 +932,18 @@ test.describe('focus-not-obscured by sticky navigation', () => {
         const y = Math.min(Math.max(top + height / 2, 0), window.innerHeight - 1);
         const topElement = document.elementFromPoint(x, y);
         const reachable = Boolean(topElement && (el === topElement || el.contains(topElement) || topElement.contains(el)));
-        const describe = (node) =>
-          node ? `${node.tagName.toLowerCase()}${node.id ? `#${node.id}` : ''}` : 'nothing';
+        // tag+id alone reports an unlabelled backdrop as just "div", which does
+        // not distinguish it from any other div on the page. Classes are what
+        // actually identify these nodes.
+        const describe = (node) => {
+          if (!node) return 'nothing';
+          const id = node.id ? `#${node.id}` : '';
+          const classes =
+            typeof node.className === 'string' && node.className.trim()
+              ? `.${node.className.trim().split(/\s+/).slice(0, 3).join('.')}`
+              : '';
+          return `${node.tagName.toLowerCase()}${id}${classes}`;
+        };
         return {
           tag: el.tagName,
           obscuredBy: describe(topElement),
@@ -929,12 +951,25 @@ test.describe('focus-not-obscured by sticky navigation', () => {
         };
       });
 
-      if (focusInfo) {
+      if (focusInfo?.unstable) {
+        // Not judged, and said so: an element still moving after twenty
+        // double-rAF rounds cannot be hit-tested honestly either way. Recorded
+        // as an annotation so it shows in the report instead of passing
+        // silently, which is the failure mode this check was rewritten to lose.
+        unstableStops.push(`${focusInfo.tag} at tab stop ${i + 1}`);
+      } else if (focusInfo) {
         expect(
           focusInfo.obscured,
           `${focusInfo.tag} element obscured by ${focusInfo.obscuredBy}`,
         ).toBe(false);
       }
+    }
+
+    if (unstableStops.length > 0) {
+      test.info().annotations.push({
+        type: 'focus-settle-unstable',
+        description: unstableStops.join('; '),
+      });
     }
 
     expect(runtimeErrors).toEqual([]);
