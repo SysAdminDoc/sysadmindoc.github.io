@@ -52,7 +52,12 @@ if (!fs.existsSync(distDir)) {
 }
 
 const before = fs.readdirSync(distDir).length;
-fs.rmSync(distDir, { recursive: true, force: true });
+// Retries are not optional on Windows. A plain recursive rmSync failed with
+// ENOTEMPTY on 2026-09-05 immediately after a build, part-deleting dist/ and
+// leaving dist/og behind: the OS still held handles on the files the build had
+// just written. Node documents maxRetries/retryDelay for exactly this class
+// (EBUSY, EMFILE, ENFILE, ENOTEMPTY, EPERM).
+fs.rmSync(distDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 if (fs.existsSync(distDir)) {
   console.error('clean-dist: dist/ still exists after removal.');
   process.exit(1);
