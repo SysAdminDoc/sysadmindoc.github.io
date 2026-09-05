@@ -109,3 +109,23 @@ test('the deployed CSP header carries frame-ancestors, which a meta policy canno
     'the live smoke must fail when the deployed header drops frame-ancestors',
   );
 });
+
+test('the Caddy image is pinned to an exact patch and the deploy verifies it', async () => {
+  const compose = await fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8');
+  const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+
+  // A floating minor tag reports "2.11" while the box sits on whatever patch was
+  // last pulled, because `up --force-recreate` reuses the local image.
+  const image = compose.match(/image:\s*(caddy:[^\s]+)/)?.[1];
+  assert.ok(image, 'the compose file must declare a caddy image');
+  assert.match(image, /^caddy:\d+\.\d+\.\d+-alpine$/, 'the Caddy image must pin an exact patch');
+
+  const pinned = image.match(/caddy:(\d+\.\d+\.\d+)/)[1];
+  const declared = deploy.match(/PORTFOLIO_CADDY_VERSION = '([^']+)'/)?.[1];
+  assert.equal(declared, pinned, 'the deploy assertion must track the compose pin');
+
+  // Pull is separate from up: without it the recreate keeps the old image.
+  assert.match(deploy, /docker compose --env-file csp\.env pull --quiet/);
+  assert.match(deploy, /function verifyCaddyVersion\(\)/);
+  assert.match(deploy, /is running Caddy \$\{running\} but the compose file pins/);
+});

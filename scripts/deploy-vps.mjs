@@ -83,6 +83,32 @@ function runRemote(script) {
   run('ssh', [...sshOptions, ssh, script]);
 }
 
+function captureRemote(script) {
+  return execFileSync('ssh', [...sshOptions, ssh, script], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'inherit'],
+    windowsHide: true,
+  }).trim();
+}
+
+// Keep in step with the image pin in deploy/vps/docker-compose.yml.
+const PORTFOLIO_CADDY_VERSION = '2.11.4';
+
+function verifyCaddyVersion() {
+  const output = captureRemote('docker exec portfolio-app caddy version 2>/dev/null | head -1');
+  const running = output.match(/v?(\d+\.\d+\.\d+)/)?.[1];
+  if (!running) {
+    throw new Error(`deploy-vps: could not read the running Caddy version (got "${output || '(empty)'}").`);
+  }
+  if (running !== PORTFOLIO_CADDY_VERSION) {
+    throw new Error(
+      `deploy-vps: portfolio-app is running Caddy ${running} but the compose file pins ${PORTFOLIO_CADDY_VERSION}. ` +
+        'The image on the box drifted from the pin; check `docker compose pull` output.',
+    );
+  }
+  console.log(`deploy-vps: portfolio-app is running the pinned Caddy ${running}.`);
+}
+
 function decodeHtmlAttribute(value) {
   return value
     .replaceAll('&amp;', '&')
@@ -180,7 +206,19 @@ fs.rmSync(tarball, { force: true });
 // 4. Recreate the container from the shipped compose file. The bind mount
 // resolves at container start, so swapping the dist/ directory above requires a
 // recreate for the container to serve the new tree rather than the moved one.
+//
+// `pull` is separate and deliberate: `up --force-recreate` reuses the image
+// already on the box, so before the compose file was pinned to an exact patch a
+// "2.11-alpine" container could sit on an old patch indefinitely while every
+// deploy reported success.
+runRemote(`cd ${remoteDir} && docker compose --env-file csp.env pull --quiet`);
 runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-recreate --remove-orphans`);
+
+// 4b. Assert the running server is the pinned version. Caddy does not disclose
+// its version over HTTP (and should not), so the live smoke cannot see this;
+// checking it here is the only place a drifted image becomes visible instead of
+// assumed.
+verifyCaddyVersion();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //
