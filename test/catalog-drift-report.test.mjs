@@ -120,3 +120,24 @@ test('the drift artifact is gitignored so a local check never becomes tracked da
   const gitignore = await fs.readFile(path.join(root, '.gitignore'), 'utf8');
   assert.match(gitignore, /^src\/data\/_catalog-drift\.json$/m);
 });
+
+test('every terminal path of the unattended refresh records a machine-readable status', async () => {
+  const source = await fs.readFile(path.join(root, 'scripts', 'refresh-and-deploy.mjs'), 'utf8');
+
+  // The scheduled task only exposes an exit code, so the failing step has to be
+  // written down somewhere the health check can quote it.
+  assert.match(source, /sysadmindoc\.refresh-deploy-status\.v1/);
+  assert.match(source, /refresh-and-deploy-status\.json/);
+  assert.match(source, /function writeStatus\(status, \{ failedStep = null, detail = null \} = \{\}\)/);
+
+  const statuses = [...source.matchAll(/writeStatus\('([a-z-]+)'/g)].map((match) => match[1]);
+  assert.deepEqual(
+    [...new Set(statuses)].sort(),
+    ['aborted', 'deployed', 'drift', 'dry-run'],
+    'each terminal outcome needs its own recorded status',
+  );
+  // A run that exits without writing status would leave the previous run's
+  // verdict on disk and the health check would report a stale outcome.
+  const exits = source.match(/process\.exit\([01]\)/g) ?? [];
+  assert.equal(exits.length, statuses.length, 'every process.exit must be preceded by a writeStatus');
+});
