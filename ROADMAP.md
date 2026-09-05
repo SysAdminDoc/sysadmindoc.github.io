@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Pull a pinned Caddy digest on deploy instead of a floating minor tag
-  Why: `deploy/vps/docker-compose.yml:11` pins `caddy:2.11-alpine` and `scripts/deploy-vps.mjs` force-recreates the container without pulling, so the running image can be arbitrarily old. Caddy 2.11.3 adds fixes beyond the 2.11.1 CVE set already adopted (rewrite placeholder re-expansion, unbounded body-buffer DoS, `fileHidden` case-sensitivity bypass).
-  Evidence: `deploy/vps/docker-compose.yml:11`; `scripts/deploy-vps.mjs`; https://github.com/caddyserver/caddy/security/advisories
-  Touches: `deploy/vps/docker-compose.yml`, `scripts/deploy-vps.mjs`, `scripts/smoke-live-site.mjs`.
-  Acceptance: the compose file pins an explicit patch version or image digest, the deploy pulls it, and the smoke records the deployed Caddy version so a drifted image is visible rather than assumed.
-  Complexity: S
-
 - [ ] P1 — Enable npm min-release-age via a committed .npmrc
   Why: the repo has no `.npmrc`, so freshly published versions install immediately. npm 11.10+ supports `min-release-age` but leaves it off, and `packageManager` pins npm 11.13.0. Shai-Hulud V2 moved to the `preinstall` hook, so even a failed install executes the payload, and the "Mini Shai-Hulud" waves continued from 2026-04-29 into May 2026.
   Evidence: no `.npmrc` in the tree; `package.json` `packageManager: npm@11.13.0`; https://www.nodejs-security.com/blog/hardening-your-npm-pnpm-config-for-shai-hulud
