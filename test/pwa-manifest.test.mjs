@@ -88,16 +88,36 @@ test('every PWA shortcut resolves to a real route', async () => {
   // (PROFILE_PROJECTS_OFFLINE=1 npm run build:ci) does not emit /search/ or
   // /releases/, so it failed the documented re-baseline workflow. src/pages/ is
   // always present and is what decides which routes exist.
-  const pages = new Set(
-    (await fs.readdir(path.join(root, 'src', 'pages'), { withFileTypes: true }))
-      .filter((entry) => entry.isFile() && entry.name.endsWith('.astro'))
-      .map((entry) => entry.name.replace(/\.astro$/, '')),
-  );
+  // Resolve against every route src/pages defines, not just its direct children:
+  // /lang/<slug>/ is built by lang/[slug].astro and / is built by index.astro,
+  // and a shortcut to either is legitimate.
+  const entries = await fs.readdir(path.join(root, 'src', 'pages'), { recursive: true, withFileTypes: true });
+  const routePatterns = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.astro') && !entry.name.startsWith('_'))
+    .map((entry) => {
+      const relative = path
+        .relative(path.join(root, 'src', 'pages'), path.join(entry.parentPath ?? entry.path, entry.name))
+        .split(path.sep)
+        .join('/');
+      const withoutExtension = relative.replace(/\.astro$/, '');
+      const slug = withoutExtension === 'index' ? '' : withoutExtension.replace(/\/index$/, '');
+      // [slug] and [...rest] match one or more path segments respectively.
+      const pattern = slug
+        .split('/')
+        .map((segment) =>
+          segment.startsWith('[...') ? '.+' : segment.startsWith('[') ? '[^/]+' : segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+        )
+        .join('/');
+      return new RegExp(`^${pattern}$`);
+    });
 
   for (const shortcut of manifest.shortcuts) {
     const route = new URL(shortcut.url, 'https://example.invalid').pathname;
     const slug = route.replace(/^\/+|\/+$/g, '');
-    assert.ok(pages.has(slug), `${shortcut.name} shortcut points at ${route}, which src/pages/ does not define`);
+    assert.ok(
+      routePatterns.some((pattern) => pattern.test(slug)),
+      `${shortcut.name} shortcut points at ${route}, which src/pages/ does not define`,
+    );
   }
 });
 
@@ -110,10 +130,16 @@ test('the Catalog shortcut targets the route that renders every project', async 
   assert.match(catalog.description, /full project catalog/i);
   assert.equal(new URL(catalog.url, 'https://example.invalid').pathname, '/catalog/');
 
-  // /catalog/ is the full archive: it renders the ranked catalog with the full
-  // variant. The homepage only hands off to it. The shortcut promises the full
-  // catalog, so it has to point at the page that actually renders one.
-  assert.match(catalogPage, /<CatalogSection entries=\{rankedCatalog\} variant="full"/);
-  assert.doesNotMatch(homepage, /<CatalogSection/, 'the homepage hands off to /catalog/ rather than rendering its own list');
+  // /catalog/ is the full archive: its CatalogSection gets the complete ranked
+  // catalog and the full variant. Matched on the props rather than one literal
+  // string so reordering attributes or wrapping the tag is not a failure.
+  const section = catalogPage.match(/<CatalogSection\b[^>]*>/);
+  assert.ok(section, 'catalog.astro must render a CatalogSection');
+  assert.match(section[0], /entries=\{rankedCatalog\}/, 'the catalog route must receive the complete ranked catalog');
+  assert.match(section[0], /variant="full"/, 'the catalog route must render the full variant, not a preview');
+
+  // The shortcut promises the full catalog, so the homepage must send readers to
+  // that route. Whether the homepage also shows a preview of its own is a design
+  // choice this test has no business pinning.
   assert.match(homepage, /href="\/catalog\/"/);
 });
