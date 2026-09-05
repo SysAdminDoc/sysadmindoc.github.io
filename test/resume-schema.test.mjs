@@ -70,3 +70,33 @@ test('resume document renders the experience heading before the roles', async ()
   assert.ok(rolesIndex !== -1, 'expected the roles to be rendered from careerRoles');
   assert.ok(headingIndex < rolesIndex, 'the experience heading must precede the roles in reading order');
 });
+
+test('the built resume is validated against the published JSON Resume schema', async () => {
+  const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+  const script = await fs.readFile(path.join(root, 'scripts', 'audit-resume-schema.mjs'), 'utf8');
+
+  // The endpoint advertises v1.0.0 in its $schema field but nothing checked the
+  // export satisfied it; the assertions above only cover the career source data.
+  assert.equal(pkg.scripts['resume:audit'], 'node scripts/audit-resume-schema.mjs');
+  assert.match(pkg.scripts['build:ci'], /npm run resume:audit\b/, 'the schema audit must run in the build chain');
+
+  // It reads dist/, so it belongs in build:ci and not in this suite: `npm test`
+  // runs before `npm run build` in deploy:preflight, and a test needing a built
+  // artifact would skip in exactly the gate that matters.
+  const ci = pkg.scripts['build:ci'];
+  assert.ok(ci.indexOf('astro build') < ci.indexOf('npm run resume:audit'));
+  assert.equal(pkg.devDependencies['@jsonresume/schema'], '^1.3.1');
+
+  // A missing $schema means the document claims nothing, which must not pass.
+  assert.match(script, /the export must declare the \$schema it claims to satisfy/);
+});
+
+test('non-standard resume fields are reported rather than silently accepted', async () => {
+  const script = await fs.readFile(path.join(root, 'scripts', 'audit-resume-schema.mjs'), 'utf8');
+
+  // JSON Resume sets additionalProperties: true, so work[].keywords is valid but
+  // no spec-following consumer reads it. That is worth saying out loud without
+  // failing a build over a field the schema explicitly permits.
+  assert.match(script, /function unknownFields\(/);
+  assert.match(script, /non-standard fields/);
+});
