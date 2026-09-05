@@ -26,6 +26,7 @@ import process from 'node:process';
 
 const root = process.cwd();
 const logFile = path.join(root, '.tmp', 'refresh-and-deploy.log');
+const statusFile = path.join(root, '.tmp', 'refresh-and-deploy-status.json');
 const dryRun = process.argv.includes('--dry-run') || process.argv.includes('--skip-deploy');
 const startedAt = new Date();
 
@@ -75,6 +76,28 @@ function step(label, command, args) {
   }
 }
 
+// The scheduled task only exposes an exit code, so a failed nightly reads as
+// "result 0x1" with no clue which gate stopped it. This records the step by
+// name for the daily health check to quote, and is rewritten on every terminal
+// path so a stale failure cannot outlive the deploy that fixed it.
+function writeStatus(status, { failedStep = null, detail = null } = {}) {
+  const payload = {
+    schema: 'sysadmindoc.refresh-deploy-status.v1',
+    status,
+    step: failedStep,
+    detail,
+    at: new Date().toISOString(),
+    elapsedSeconds: Number(((Date.now() - startedAt.getTime()) / 1000).toFixed(0)),
+    dryRun,
+  };
+  try {
+    fs.mkdirSync(path.dirname(statusFile), { recursive: true });
+    fs.writeFileSync(statusFile, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  } catch {
+    /* status reporting must never mask the real failure */
+  }
+}
+
 function readCatalogDrift() {
   try {
     const drift = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_catalog-drift.json'), 'utf8'));
@@ -117,13 +140,16 @@ try {
     log('DONE  dry run complete; preflight passed and nothing was deployed');
     if (uncataloged.length > 0) {
       log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+      writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
       process.exit(1);
     }
+    writeStatus('dry-run');
     process.exit(0);
   }
 
   if (!process.env.PORTFOLIO_VPS_SSH) {
     log('FAIL  PORTFOLIO_VPS_SSH is not set; refusing to deploy');
+    writeStatus('aborted', { failedStep: 'deploy:vps', detail: 'PORTFOLIO_VPS_SSH is not set' });
     process.exit(1);
   }
 
@@ -137,12 +163,15 @@ try {
     // catalog these, so the run reports failure rather than passing quietly.
     log(`DONE  deployed in ${elapsed}s`);
     log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+    writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
     process.exit(1);
   }
   log(`DONE  deployed in ${elapsed}s`);
+  writeStatus('deployed');
   process.exit(0);
 } catch (error) {
   const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
   log(`ABORT after ${elapsed}s at step "${error.message}"; the previous deployment is still live`);
+  writeStatus('aborted', { failedStep: error.message, detail: 'the previous deployment is still live' });
   process.exit(1);
 }
