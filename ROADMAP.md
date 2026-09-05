@@ -10,13 +10,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P1
 
-- [ ] P1 — Enable npm min-release-age via a committed .npmrc
-  Why: the repo has no `.npmrc`, so freshly published versions install immediately. npm 11.10+ supports `min-release-age` but leaves it off, and `packageManager` pins npm 11.13.0. Shai-Hulud V2 moved to the `preinstall` hook, so even a failed install executes the payload, and the "Mini Shai-Hulud" waves continued from 2026-04-29 into May 2026.
-  Evidence: no `.npmrc` in the tree; `package.json` `packageManager: npm@11.13.0`; https://www.nodejs-security.com/blog/hardening-your-npm-pnpm-config-for-shai-hulud
-  Touches: new `.npmrc`, `test/toolchain.test.mjs`, `README.md` setup notes.
-  Acceptance: `.npmrc` sets a documented `min-release-age`, a test pins the value alongside the existing `packageManager` assertion, and `npm ci` still resolves the current lockfile.
-  Complexity: S
-
 - [ ] P1 — Point the PWA Catalog shortcut at /catalog/
   Why: `public/manifest.json` describes the shortcut as "Open the full project catalog" but targets `/?source=pwa#catalog`, which since the v0.26.0 split renders only the top-84 preview slice. The full list is the static `/catalog/` route.
   Evidence: `public/manifest.json` shortcuts entry; `CLAUDE.md` catalog-split architecture note; `src/pages/catalog.astro`.
