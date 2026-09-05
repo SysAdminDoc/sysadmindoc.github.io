@@ -253,7 +253,7 @@ test('deploy preflight script runs strict generated-data gate before tests and b
     pkg.scripts['deploy:preflight'],
     // a11y:audit:browser is last on purpose: it is the only step that needs a
     // built dist/ served to a real browser, so it runs after `npm run build`.
-    /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run deps:audit -- --strict && npm test && npm run check && npm run build && npm run a11y:audit:browser$/,
+    /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run verify:release-tag && npm run deps:audit -- --strict && npm test && npm run check && npm run build && npm run a11y:audit:browser$/,
   );
   assert.equal(pkg.scripts['publish:pages'], 'node scripts/publish-pages.mjs');
 });

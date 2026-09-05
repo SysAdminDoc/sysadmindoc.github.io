@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- `npm run verify:release-tag`, wired into `deploy:preflight`. It refuses to ship a `package.json` version with no annotated tag on an ancestor of HEAD that is also pushed to origin. Backfilled the missing v0.42.1, v0.42.2 and v0.42.3 tags.
 - A committed `.npmrc` setting `min-release-age=3`, so the dependency tree is built only from versions published more than three days ago. npm supports this from 11.10 but leaves it off.
 - `/catalog/` now derives its "complete public archive" sentence from the same drift record `/status/` reads, so the two surfaces cannot contradict each other.
 - `/status/` and `/status.json` now publish catalog completeness (`generatedData.catalogCompleteness`). An unchecked catalog reports `measured: false` rather than implying it is complete, and uncataloged repos are named in the published warnings.
