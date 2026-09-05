@@ -108,7 +108,15 @@ function buildCspHeaderValue(distDir) {
   if (policy.includes('"') || policy.includes('`') || policy.includes('\n')) {
     throw new Error('deploy-vps: built CSP policy contains unsupported env-file characters.');
   }
-  return `${policy}; report-uri /csp-report`;
+  // frame-ancestors and report-uri are header-only directives: a <meta> policy
+  // ignores both, which is why the meta source policy carries neither and the
+  // edge has been relying on X-Frame-Options alone for clickjacking. The header
+  // form can carry frame-ancestors, which supersedes X-Frame-Options in every
+  // browser that supports CSP, so it is added here rather than to the meta tag.
+  if (policy.includes('frame-ancestors')) {
+    throw new Error('deploy-vps: the meta policy already declares frame-ancestors, which browsers ignore there.');
+  }
+  return `${policy}; frame-ancestors 'none'; report-uri /csp-report`;
 }
 
 function writeComposeEnvFile(distDir) {

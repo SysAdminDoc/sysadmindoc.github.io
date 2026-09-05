@@ -272,8 +272,17 @@ async function checkSecurityHeaders(baseUrl, summary) {
         'The internal Caddy header must be stamped from the built policy.',
     );
   }
+  // frame-ancestors supersedes X-Frame-Options and cannot be delivered by the
+  // <meta> policy, so it exists only on the stamped header. Without this check
+  // clickjacking defence silently falls back to XFO alone.
+  if (!/\bframe-ancestors\s+'none'/i.test(csp)) {
+    throw new Error(
+      `The deployed CSP header is missing frame-ancestors 'none': "${csp || '(missing)'}". ` +
+        'scripts/deploy-vps.mjs appends it to the stamped policy; a header without it means an older csp.env is live.',
+    );
+  }
   summary.push('edge security headers: HSTS, X-Frame-Options, Permissions-Policy, COOP, Referrer-Policy, X-Content-Type-Options');
-  summary.push('CSP reporting: Reporting-Endpoints + report-to + report-uri');
+  summary.push("CSP reporting: Reporting-Endpoints + report-to + report-uri; framing: frame-ancestors 'none'");
 }
 
 async function checkNotFoundStatus(baseUrl, summary) {
