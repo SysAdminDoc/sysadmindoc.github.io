@@ -1,12 +1,17 @@
 // Playwright's managed `webServer` cannot drive Astro 7's preview.
 //
-// With a non-TTY stdout — which is always the case under Playwright — `astro
-// preview` self-daemonizes: it spawns the real server as a detached background
-// process and the foreground command exits immediately. Playwright sees that
-// exit and reports "Process from config.webServer exited early", or times out
-// waiting for a process that is never coming back, even though the server is up
-// and serving. Confirmed 2026-09-05 by running the command with piped stdout and
-// watching `astro preview status` report a background pid.
+// `astro preview` daemonizes itself when it detects an AI agent environment
+// (astro/dist/cli/agent.js via am-i-vibing) or when passed `--background`: it
+// spawns the real server detached and the foreground command exits at once.
+// Playwright sees that exit and reports "Process from config.webServer exited
+// early", even though the server is up and serving.
+//
+// The auto-detection is what made this look TTY-related. Inside an agent
+// session the command returned immediately; under Task Scheduler no agent is
+// detected, so the very same command served in the foreground and the nightly
+// deploy preflight timed out on it every night from 2026-09-05. `--background`
+// is passed explicitly below so the behaviour does not depend on who launched
+// the run.
 //
 // So the server is managed here instead: start the background preview, wait for
 // it to answer, and let preview-server-teardown.mjs stop it. Setting
@@ -46,7 +51,7 @@ export default async function globalSetup(config) {
   // A leftover daemon from an earlier run serves an older dist/, so a stale
   // server would quietly audit the wrong build. Always replace it.
   astroPreview(['stop'], { ignoreErrors: true });
-  astroPreview(['--host', hostname, '--port', port]);
+  astroPreview(['--background', '--host', hostname, '--port', port]);
 
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
