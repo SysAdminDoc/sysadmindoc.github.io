@@ -25,7 +25,7 @@ export interface CareerRole {
 export const careerProfile = {
   name: 'Matt Parker',
   headline: 'AI Implementation Consultant · Healthcare IT · Systems & Automation',
-  currentTitle: 'Technical Support Manager',
+  currentTitle: 'Sr. Technical Support Manager',
   currentCompany: 'Maven Imaging',
   location: 'Sarasota, FL',
   summary: `AI implementation consultant and technical operations leader with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, and customer support. I help businesses select and safely roll out AI tools, automate repetitive workflows, train teams, and maintain deployed solutions.`,
@@ -94,7 +94,7 @@ export const careerSkills = [
 
 export const careerRoles: readonly CareerRole[] = [
   {
-    role: 'Technical Support Manager',
+    role: 'Sr. Technical Support Manager',
     company: 'Maven Imaging',
     location: 'Sarasota, FL',
     period: 'Feb 2021 to Present',
