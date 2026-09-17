@@ -7,7 +7,7 @@
 
 /* Global focus indicators — WCAG 2.4.7. Unified system: 2px outline + 3px offset + soft halo for cards. */
 :focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px;border-radius:4px;transition:outline-offset var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-.lc2:focus-visible,.ca:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+.lc2:focus-visible,.ca:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
 button:focus-visible,.fb:focus-visible,.btn:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
 
 /* Search highlighting */
@@ -59,7 +59,7 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
   width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid var(--glass-border);border-radius:8px;background:rgba(255,255,255,.025);color:var(--t2);cursor:pointer;transition:background .12s ease,color .12s ease,border-color .12s ease,transform .12s ease;
   &:hover{background:var(--glass-hover);border-color:rgba(124,184,255,.28);color:var(--t1)}
   &:active{transform:translateY(1px)}
-  &:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+  &:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
   & svg{width:16px;height:16px;color:currentColor;stroke-width:2.2;stroke-linecap:round}
 }
 .cmdk-meta{padding:10px 18px 0;color:var(--t3);font-size:12px;line-height:1.6}
@@ -128,7 +128,7 @@ a,button,[role="button"],summary{touch-action:manipulation}
 .hsn,.footer-year,.ca-age,.lang-stat-num,.lang-card-stars,.now-pulse-value,.rel-date,time[data-rel]{font-variant-numeric:tabular-nums}
 .footer-year{font-family:var(--mono);font-size:12px;color:var(--t2)}
 .cna,.cds,.cmdk-item .cmdk-title{min-width:0}
-.cmdk-item:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+.cmdk-item:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
 .cmdk-item:focus-visible{background:var(--glass-hover)}
 .search-input,.sort-select{outline:2px solid transparent;outline-offset:3px}
 .search-input:focus-visible,.sort-select:focus-visible{outline-color:var(--focus-outline);box-shadow:var(--focus-ring)}
