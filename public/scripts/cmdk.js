@@ -103,7 +103,7 @@
       homepage.cancelHomepageHashRestore();
     }
     const jump = forceAuto => {
-      target.scrollIntoView({ behavior: forceAuto || prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      target.scrollIntoView({ behavior: (forceAuto || prefersReducedMotion) ? 'auto' : 'smooth', block: 'start' });
       if (hash) {
         try {
           window.history.replaceState(null, '', hash);

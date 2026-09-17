@@ -59,7 +59,13 @@ const pushedDateLabel = pushedAt
   ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(pushedAt))
   : '';
 const categoryLabel = categoryLabels[entry.category] ?? entry.category;
-const descText = String(entry.desc ?? '').replace(/<[^>]+>/g, '').trim();
+const descText = String(entry.desc ?? '')
+  .replace(/<[^>]+>/g, '')
+  .replace(/&amp;/g, '&')
+  .replace(/&mdash;|&ndash;/g, '-')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
 const rankDescriptionId = rankDisplayLabel
   ? `rank-${entry.repo.replace(/[^A-Za-z0-9_-]/g, '-')}`
   : undefined;

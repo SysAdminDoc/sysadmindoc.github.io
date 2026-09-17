@@ -3,6 +3,8 @@ import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
 import { githubRepoUrl } from '../data/github';
+import sanitizeHtml from 'sanitize-html';
+import { TEXT_ONLY_SANITIZE } from '../data/feed-sanitize';
 
 // JSON Feed 1.1 (jsonfeed.org) mirror of the project feed for modern feed
 // clients/automation. RSS (/rss.xml) remains the primary advertised feed.
@@ -11,7 +13,7 @@ try { const m = await import('../data/_stats.json'); stats = (m.default ?? m) as
 let meta: Record<string, { pushedAt?: string | null; updatedAt?: string | null }> = {};
 try { const m = await import('../data/_meta.json'); meta = (m.default ?? m) as typeof meta; } catch {}
 
-const clean = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
 const dateFor = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
 

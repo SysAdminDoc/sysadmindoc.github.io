@@ -1,6 +1,8 @@
 import type { APIContext } from 'astro';
 import { interiorOgPages } from '../data/interior-og-pages';
 import { endpointHeaders } from '../data/endpoint-headers';
+import sanitizeHtml from 'sanitize-html';
+import { TEXT_ONLY_SANITIZE } from '../data/feed-sanitize';
 import { experienceLabel } from '../data/identity';
 import { careerProfile } from '../data/career';
 import { featured, liveApps, catalog } from '../data/portfolio';
@@ -13,7 +15,7 @@ import { githubRepoUrl } from '../data/github';
 // feeds the command palette and RSS so it never drifts.
 export async function GET(context: APIContext) {
   const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
-  const clean = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
   const firstSentence = (s: string) => {
     const text = clean(s);
     const [first] = text.split('. ');

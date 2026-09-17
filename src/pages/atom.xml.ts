@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
 import sanitizeHtml from 'sanitize-html';
-import { FEED_CONTENT_SANITIZE } from '../data/feed-sanitize';
+import { FEED_CONTENT_SANITIZE, TEXT_ONLY_SANITIZE } from '../data/feed-sanitize';
 import { featured, liveApps, catalog } from '../data/portfolio';
 import { categoryLabels } from '../data/categories';
 import { endpointHeaders } from '../data/endpoint-headers';
@@ -19,7 +19,7 @@ try {
 
 const getItemDate = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
-const cleanDesc = (s: string) => s.replace(/&[a-z]+;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const cleanDesc = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
 const escapeXml = (s: string) =>
   s.replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!);
 
