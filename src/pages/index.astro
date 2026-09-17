@@ -13,7 +13,7 @@ try {
   avatarUrl = (mod.default ?? mod).avatarUrl || avatarUrl;
 } catch {}
 
-const livePreview = liveApps.slice(0, 2);
+const livePreview = liveApps.slice(0, 6);
 const publicProjectCount = catalog.length;
 const contactPaths = [
   {
@@ -131,11 +131,11 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">02 / Live</span>
-            <h2 id="live-title">Working, not hypothetical.</h2>
+            <h2 id="live-title">Try before you hire.</h2>
           </div>
           <div class="home-section-intro">
-            <p>A small sample of browser-ready products. The full visual archive stays one click away.</p>
-            <a href="/screenshots/" class="text-link">View all live evidence <span aria-hidden="true">→</span></a>
+            <p>{liveApps.length} browser-ready apps you can open right now. No pitch deck, no demo request.</p>
+            <a href="/screenshots/" class="text-link">View all screenshots <span aria-hidden="true">→</span></a>
           </div>
         </header>
         <div class="home-live-grid">
@@ -149,9 +149,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">03 / Practice</span>
-            <h2 id="practice-title">One operator. Three connected lanes.</h2>
+            <h2 id="practice-title">Where I can help.</h2>
           </div>
-          <p class="home-section-intro">The work spans implementation, operations, and the practical software between them.</p>
+          <p class="home-section-intro">AI implementation, healthcare systems support, and the infrastructure and automation that connects them.</p>
         </header>
         <div class="hero-evidence hero-operating-index practice-list">
           {careerLanes.map((lane, index) => (
@@ -174,9 +174,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">04 / Explore</span>
-            <h2 id="catalog-title">The complete record, when you need it.</h2>
+            <h2 id="catalog-title">Dig into the full archive.</h2>
           </div>
-          <p class="home-section-intro">{publicProjectCount} public projects remain available without turning the homepage into a database.</p>
+          <p class="home-section-intro">{publicProjectCount} public projects, searchable and filterable. Every one links straight to its source.</p>
         </header>
         <nav class="handoff-links" aria-label="Project discovery">
           <a href="/catalog/"><span>Browse every project</span><strong>Catalog</strong><i aria-hidden="true">→</i></a>
@@ -191,9 +191,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">05 / Contact</span>
-            <h2 id="contact-title">Start with a useful conversation.</h2>
+            <h2 id="contact-title">Let's talk about your problem.</h2>
           </div>
-          <p class="home-section-intro">For implementation work, technical collaboration, or a role where operating discipline matters.</p>
+          <p class="home-section-intro">Bring the workflow, the system, or the role. I'll tell you if I can help.</p>
         </header>
         <div class="contact-list">
           {contactPaths.map((path) => (
