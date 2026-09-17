@@ -24,12 +24,12 @@ export interface CareerRole {
 
 export const careerProfile = {
   name: 'Matt Parker',
-  headline: 'AI Implementation Consultant · Healthcare IT · Systems & Automation',
+  headline: 'I build tools, automate the tedious stuff, and keep healthcare systems running.',
   currentTitle: 'Sr. Technical Support Manager',
   currentCompany: 'Maven Imaging',
   location: 'Sarasota, FL',
-  summary: `AI implementation consultant and technical operations leader with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, and customer support. I help businesses select and safely roll out AI tools, automate repetitive workflows, train teams, and maintain deployed solutions.`,
-  operatingNote: 'I build the systems, document the work, and train the teams that run them.',
+  summary: `${experienceLabel} in enterprise IT and healthcare systems. I help businesses pick the right AI tools, automate the work nobody wants to do manually, train the team, and stick around to make sure it actually works.`,
+  operatingNote: 'I build it, I document it, I teach your people how to run it. Then I go fix the next thing.',
 } as const;
 
 // The experience proof point is a stable, non-count claim.
@@ -54,7 +54,7 @@ export const careerLanes = [
     id: 'ai',
     name: 'AI implementation',
     short: 'AI tools · automation · enablement',
-    focus: 'Evaluate and roll out AI tools, build automation for system gaps, and train teams to adopt the work safely.',
+    focus: 'I help you pick the right AI tools, wire them into your actual workflows, and train your team so the tools get used instead of forgotten.',
     expertise: ['AI implementation', 'LLM tooling', 'Workflow automation', 'Prompt engineering', 'AI training', 'Process automation'],
     href: '/ai/',
   },
@@ -62,7 +62,7 @@ export const careerLanes = [
     id: 'healthcare',
     name: 'Healthcare systems',
     short: 'PACS/DICOM · healthcare IT · support',
-    focus: 'Support healthcare technology environments, PACS/DICOM workflows, hosted-service migrations, and customer escalation.',
+    focus: 'PACS, DICOM, hosted-service migrations, and the customer calls when something breaks. I own the problem until it stays fixed.',
     expertise: ['PACS', 'DICOM', 'Healthcare IT', 'Hosted services', 'Migrations', 'Customer support'],
     href: '/healthcare-it/',
   },
@@ -70,17 +70,17 @@ export const careerLanes = [
     id: 'systems',
     name: 'Infrastructure & automation',
     short: 'Windows · networks · software delivery',
-    focus: 'Operate Windows infrastructure and build practical software that closes recurring gaps between people and systems.',
+    focus: 'Windows infrastructure, networking, and the scripts and tools I build when the vendor solution doesn\'t exist or costs too much.',
     expertise: ['Windows Server', 'Active Directory', 'Group Policy', 'SCCM', 'Hyper-V', 'Cisco networking'],
     href: '/#skills',
   },
 ] as const;
 
 export const consultingHighlights = [
-  'Evaluate and roll out AI tools for a business, including Claude, ChatGPT, Copilot, and local models when data should remain in-house.',
-  'Build automation for the gaps between existing systems, then document, deploy, maintain, and hand over the work.',
-  'Deliver hands-on team training around real daily workflows so tools are adopted, not merely licensed.',
-  'Personally research, build, test, document, and release public software projects with live, inspectable output.',
+  'Help you pick AI tools that fit (Claude, ChatGPT, Copilot, local models when your data needs to stay put).',
+  'Build the automation that fills the gaps between your existing systems, then hand over everything.',
+  'Train your team on their actual daily work so the tools get adopted, not just purchased.',
+  'Ship my own public software so you can see exactly how I work before we talk.',
 ] as const;
 
 export const careerSkills = [

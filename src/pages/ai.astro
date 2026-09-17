@@ -26,20 +26,20 @@ const services = [
   {
     tag: 'Workflow',
     name: 'Workflow automation',
-    title: 'Remove the manual handoffs.',
-    desc: 'Automate the reports, documents, data entry, monitoring, and system-to-system steps that keep consuming attention.',
+    title: 'Stop copy-pasting between systems.',
+    desc: 'Reports, data entry, monitoring, document handoffs. If your team does it every day and hates it, that\'s probably where we start.',
   },
   {
     tag: 'Software',
     name: 'AI-assisted internal tools',
-    title: 'Build the missing internal tool.',
-    desc: 'Turn a recurring operational problem into focused software your team can use, understand, and maintain.',
+    title: 'Build the tool nobody sells.',
+    desc: 'You know that thing your team does with a spreadsheet and three browser tabs? I turn that into software they actually want to use.',
   },
   {
     tag: 'Adoption',
     name: 'AI rollout & enablement',
-    title: 'Adopt AI without losing control.',
-    desc: 'Choose the right tools, define data boundaries, train the team on real work, and keep human review where mistakes carry a cost.',
+    title: 'Roll out AI without the chaos.',
+    desc: 'Pick the right tools, draw clear lines around your data, train people on their actual work, and keep a human in the loop where mistakes are expensive.',
   },
 ] as const;
 
@@ -48,19 +48,19 @@ const services = [
 const faqs = [
   {
     q: 'What does an AI implementation engagement actually deliver?',
-    a: 'A working, documented system your team owns, not a slide deck. I map one high-friction workflow, ship a fixed-scope pilot with a clear success measure, harden it with data boundaries and human review, then hand over the source, accounts, and runbooks.',
+    a: 'A working system your team owns, not a slide deck. I find one painful workflow, build a working version, make sure it handles failures safely, then hand you the source, the accounts, and the docs. You keep everything.',
   },
   {
     q: 'Where does my data go when you add AI?',
-    a: 'Wherever you decide. Defining data boundaries is part of the first step. We decide which tools may see each kind of data, and when a local or in-house model is the right call so sensitive information never leaves your environment.',
+    a: 'Wherever you want it to. We figure that out first. Some data can go to a cloud model, some should stay on your machines. I\'ll tell you which is which and set it up accordingly.',
   },
   {
     q: 'How do you keep AI from making costly mistakes?',
-    a: 'By designing for the failure path, not just the demo. Each workflow keeps human review where an error carries a cost, plus logging, recovery, and a safe re-run path, so the system degrades predictably instead of failing silently.',
+    a: 'By planning for what goes wrong, not just what goes right. Every workflow I build has a human check where it matters, logging so you can see what happened, and a way to re-run it safely if something breaks.',
   },
   {
     q: 'How small can a first project be?',
-    a: 'Deliberately small. The best first engagement is one recurring, well-owned task, such as a report, document flow, or data-entry step. We prove it end to end before anything expands. Bring the workflow that keeps getting postponed.',
+    a: 'Really small. One report, one document flow, one data-entry step that someone does every week and wishes they didn\'t. We get that working first. If it goes well, we talk about what\'s next.',
   },
 ] as const;
 
@@ -88,26 +88,26 @@ const engagementSteps = [
   {
     step: '01',
     name: 'Map',
-    title: 'Find the smallest useful problem.',
-    desc: 'Identify the slow work, its inputs, its owner, and the cost of getting it wrong.',
+    title: 'Find the one thing that hurts.',
+    desc: 'What takes too long, who does it, and what goes wrong when they rush it.',
   },
   {
     step: '02',
     name: 'Pilot',
-    title: 'Ship a working slice.',
-    desc: 'Build one fixed-scope workflow with a clear success measure before expanding.',
+    title: 'Build a version that works.',
+    desc: 'One workflow, one clear way to tell if it worked. No scope creep until this part is solid.',
   },
   {
     step: '03',
     name: 'Harden',
-    title: 'Design for the failure path.',
-    desc: 'Add data boundaries, human review, logging, recovery, and a safe re-run path.',
+    title: 'Make it safe to run unsupervised.',
+    desc: 'Human review where it matters, logs, recovery, and a way to re-run without breaking anything.',
   },
   {
     step: '04',
     name: 'Hand off',
-    title: 'Leave the team in control.',
-    desc: 'Transfer source and accounts, document the system, and train the people who own it.',
+    title: 'Hand it over and get out of the way.',
+    desc: 'You get the source, the accounts, and the documentation. I train your people, then it\'s theirs.',
   },
 ] as const;
 
@@ -157,8 +157,8 @@ const cmdkSections = [
     <div class="si page-shell aisvc-hero" id="track-overview">
       <div class="sh">
         <div class="sl">// AI implementation</div>
-        <h1 class="st aisvc-title">Turn repetitive work into reliable systems.</h1>
-        <p class="sd aisvc-intro">I design and ship AI-assisted tools for document workflows, internal operations, and team adoption. Then I secure, document, and hand them over. The work is grounded in {experienceLabel} of enterprise IT and healthcare operations.</p>
+        <h1 class="st aisvc-title">I'll automate the work your team keeps doing by hand.</h1>
+        <p class="sd aisvc-intro">I build AI tools for real workflows, not demos. Pick the right model, wire it into your systems, train your people, and hand the whole thing over. {experienceLabel} in IT and healthcare means I've seen what breaks when you skip the boring parts.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
       <div class="aisvc-actions page-actions">
@@ -176,8 +176,8 @@ const cmdkSections = [
       <div class="si">
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">01 / Work</div>
-          <h2 class="aisvc-h2">From operational friction to working software.</h2>
-          <p>AI earns its place when it shortens a real process, removes a real risk, or hands a team a tool it keeps using. These three offers cover the work I take on: automating handoffs, building the missing internal tool, and rolling AI out under control.</p>
+          <h2 class="aisvc-h2">Three things I do well.</h2>
+          <p>I don't take on everything. These are the problems I'm good at solving, and the ones where my background actually matters.</p>
         </header>
         <div class="aisvc-offer-list">
           {services.map((service, index) => (
@@ -201,8 +201,8 @@ const cmdkSections = [
       <div class="si">
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">02 / Delivery</div>
-          <h2 class="aisvc-h2">Start with one workflow. Leave with a system.</h2>
-          <p>Every engagement starts with one workflow and ends with a system your team runs without me. The pilot proves the value in a fixed scope; the hardening and hand-off work make it safe to operate long after the demo is over.</p>
+          <h2 class="aisvc-h2">How an engagement works.</h2>
+          <p>We start small. One workflow, one problem. I build it, make it safe, document it, and hand it over. You run it from there.</p>
         </header>
         <ol class="aisvc-process-list" role="list">
           {engagementSteps.map((item) => (
@@ -221,8 +221,8 @@ const cmdkSections = [
       <div class="si">
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">03 / Proof</div>
-          <h2 class="aisvc-h2">Judge the offer by what is already operating.</h2>
-          <p>Judge the offer by what is already running, not by promises. The public projects show the delivery range across Windows, web, Android, and browser platforms. Parker AI runs the consulting offer, intake, and security posture as a live production system.</p>
+          <h2 class="aisvc-h2">Don't take my word for it.</h2>
+          <p>I ship in public. The projects are on GitHub, the apps are running live, and the whole pipeline that builds this site is something you can read. Here's what that looks like.</p>
         </header>
         <div class="aisvc-proof-grid">
           <article class="aisvc-case">
@@ -252,8 +252,8 @@ const cmdkSections = [
       <div class="si">
         <header class="aisvc-section-head">
           <div class="aisvc-eyebrow">04 / Questions</div>
-          <h2 class="aisvc-h2">The questions clients ask before starting.</h2>
-          <p>Straight answers on what you get, where your data goes, how mistakes are contained, and how small a first project can be. Those answers decide whether AI belongs in the work at all.</p>
+          <h2 class="aisvc-h2">Questions I get asked a lot.</h2>
+          <p>Honest answers. If any of these don't cover what you're wondering about, just ask.</p>
         </header>
         <dl class="aisvc-faq-list">
           {faqs.map((faq) => (
@@ -270,8 +270,8 @@ const cmdkSections = [
       <div class="si aisvc-contact-grid">
         <div class="aisvc-eyebrow">Start small</div>
         <div>
-          <h2>Bring the workflow that keeps getting postponed.</h2>
-          <p>Send a few lines about the work, who owns it, and where it breaks down. I will tell you plainly whether AI belongs in the solution.</p>
+          <h2>Got a workflow that's driving you nuts?</h2>
+          <p>Tell me what it is, who does it, and where it breaks. I'll be honest about whether I can help.</p>
           <ContactForm subject="AI workflow" />
           <div class="aisvc-actions page-actions aisvc-actions-below">
             <a href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener" class="aisvc-text-link">LinkedIn <span aria-hidden="true">↗</span></a>

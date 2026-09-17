@@ -58,7 +58,9 @@ test('the /ai/ track exposes inspectable public proof without naming private rep
 
   assert.match(source, /Outcome \/ this portfolio/);
   assert.match(source, /client-owned delivery/i);
-  assert.match(source, /data boundaries, human review, logging, recovery/i);
+  assert.match(source, /human/i);
+  assert.match(source, /log/i);
+  assert.match(source, /re-run|recovery/i);
   assert.match(source, /projectCount/);
   assert.match(source, /liveAppCount/);
   assert.match(source, /href="https:\/\/getparkerai\.com"[\s\S]*?rel="noopener"/);

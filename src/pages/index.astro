@@ -91,7 +91,7 @@ const cmdkSections = [
     <section class="hero minimal-hero" id="hero">
       <div class="hi">
         <div class="ht">
-          <p class="hero-eyebrow">Independent technical practice</p>
+          <p class="hero-eyebrow">Matt Parker, Sarasota FL</p>
           <div class="hero-identity h-card">
             <img class="hero-avatar loaded u-photo" id="heroAvatar" src={avatarUrl} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
             <h1 class="hn p-name">Matt <span class="a">Parker</span></h1>
@@ -100,8 +100,8 @@ const cmdkSections = [
           <p class="hr">{careerProfile.headline}</p>
           <p class="hero-summary">{careerProfile.operatingNote}</p>
           <div class="ha">
-            <a href="#greatest-hits" class="btn bp">View selected work <span aria-hidden="true">↓</span></a>
-            <a href="/ai/" class="btn bg2">Explore AI services <span aria-hidden="true">→</span></a>
+            <a href="#greatest-hits" class="btn bp">See my work <span aria-hidden="true">↓</span></a>
+            <a href="/ai/" class="btn bg2">AI services <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
@@ -112,14 +112,14 @@ const cmdkSections = [
             <span class="hero-proof-copy">{careerProofExperience.detail}</span>
           </div>
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">Public execution</span>
+            <span class="hero-proof-label hsl">Shipped</span>
             <strong class="hero-proof-value hsn"><span id="statRepos">{publicProjectCount}</span><sup>+</sup> projects</strong>
-            <span class="hero-proof-copy">Software delivered in public</span>
+            <span class="hero-proof-copy">All public, all on GitHub</span>
           </div>
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">Live proof</span>
+            <span class="hero-proof-label hsl">Running now</span>
             <strong class="hero-proof-value hsn"><span id="statLive">{liveApps.length}</span> live apps</strong>
-            <span class="hero-proof-copy">Working output available online</span>
+            <span class="hero-proof-copy">Open them and see</span>
           </div>
         </div>
       </div>
@@ -132,10 +132,10 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">02 / Live</span>
-            <h2 id="live-title">Try before you hire.</h2>
+            <h2 id="live-title">These are running right now.</h2>
           </div>
           <div class="home-section-intro">
-            <p>{liveApps.length} browser-ready apps you can open right now. No pitch deck, no demo request.</p>
+            <p>{liveApps.length} apps you can open in your browser. No signup, no demo call.</p>
             <a href="/screenshots/" class="text-link">View all screenshots <span aria-hidden="true">→</span></a>
           </div>
         </header>
@@ -150,9 +150,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">03 / Practice</span>
-            <h2 id="practice-title">Where I can help.</h2>
+            <h2 id="practice-title">What I actually do.</h2>
           </div>
-          <p class="home-section-intro">AI implementation, healthcare systems support, and the infrastructure and automation that connects them.</p>
+          <p class="home-section-intro">Three areas, one person. I go deep in each of these instead of spreading thin across everything.</p>
         </header>
         <div class="hero-evidence hero-operating-index practice-list">
           {careerLanes.map((lane, index) => (
@@ -175,9 +175,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">04 / Explore</span>
-            <h2 id="catalog-title">Dig into the full archive.</h2>
+            <h2 id="catalog-title">Everything I've shipped.</h2>
           </div>
-          <p class="home-section-intro">{publicProjectCount} public projects, searchable and filterable. Every one links straight to its source.</p>
+          <p class="home-section-intro">{publicProjectCount} public projects. Search them, filter by stack, or just browse. Every one links to its source code.</p>
         </header>
         <nav class="handoff-links" aria-label="Project discovery">
           <a href="/catalog/"><span>Browse every project</span><strong>Catalog</strong><i aria-hidden="true">→</i></a>
@@ -192,9 +192,9 @@ const cmdkSections = [
         <header class="home-section-head rv">
           <div>
             <span class="home-section-index">05 / Contact</span>
-            <h2 id="contact-title">Let's talk about your problem.</h2>
+            <h2 id="contact-title">Want to work together?</h2>
           </div>
-          <p class="home-section-intro">Bring the workflow, the system, or the role. I'll tell you if I can help.</p>
+          <p class="home-section-intro">Tell me what you're dealing with. If I can help, I'll say so. If I can't, I'll say that too.</p>
         </header>
         <ContactForm />
         <div class="contact-list contact-list-below">
@@ -212,7 +212,7 @@ const cmdkSections = [
 
   <Footer
     variant="home"
-    summary="AI implementation, healthcare systems, and practical software. Built, documented, and operated by Matt Parker."
+    summary="I build things, write them up, and keep them running. Thanks for taking a look."
     links={[
       { href: '/catalog/', label: 'Projects' },
       { href: '/ai/', label: 'AI services' },

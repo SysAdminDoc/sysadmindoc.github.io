@@ -95,7 +95,7 @@ export const now = {
     'Whether a first-party intake form on the VPS replaces mailto CTAs or just adds friction',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
-  listening: 'Whatever keeps the focus session going.',
+  listening: 'Whatever keeps the focus going. Lately it\'s been a lot of ambient stuff and lo-fi.',
   notWorkingOn:
-    "Anything that requires a cloud login, a monthly subscription, or a \"trial period\". If a tool can't just run, I'm not shipping it.",
+    "Anything with a cloud login, a subscription, or a \"free trial\" that asks for a credit card. If the tool can't just run on your machine, I'm not interested.",
 };
