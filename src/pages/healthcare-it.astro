@@ -1,12 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import Divider from '../components/Divider.astro';
 import InteriorNav from '../components/InteriorNav.astro';
-import SectionJumpNav from '../components/SectionJumpNav.astro';
+import ContactForm from '../components/ContactForm.astro';
 import Footer from '../components/Footer.astro';
-import { healthcareIT } from '../data/curated';
-import { contactMailto } from '../data/identity';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { contactMailto, experienceLabel } from '../data/identity';
 import { faqPageNodes, formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
 const title = 'Healthcare IT | Matt Parker';
@@ -15,9 +13,6 @@ const pageFreshness = pageFreshnessBySlug['healthcare-it'];
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
 
-// Answer-first questions, rendered visibly below and published as FAQPage
-// structured data from this same array so an answer engine reads what a
-// visitor reads.
 const faqs = [
   {
     q: 'What healthcare IT work do you actually do?',
@@ -28,8 +23,12 @@ const faqs = [
     a: 'Yes. Migration work covers archive transfers, cutovers, validation, and workstation troubleshooting, with follow-up after the switch. The goal is a move that preserves access and imaging workflows rather than a risky one-shot cutover.',
   },
   {
-    q: 'Why aren’t individual customer projects listed here?',
-    a: 'Most healthcare support work is operational and customer-specific. It includes migration notes, account recovery, workflow validation, and communication during service-impacting issues. The useful public summary is the role context and résumé, not customer-specific implementation detail.',
+    q: "Why aren't individual customer projects listed here?",
+    a: "Most healthcare support work is operational and customer-specific. It includes migration notes, account recovery, workflow validation, and communication during service-impacting issues. The useful public summary is the role context and resume, not customer-specific implementation detail.",
+  },
+  {
+    q: 'What does "I own the problem" mean?',
+    a: "It means I don't hand it off. From the first call to the vendor follow-up to the documentation that keeps it from happening again, one person stays on it. The customer talks to the same person the whole way through.",
   },
 ] as const;
 
@@ -43,14 +42,42 @@ const pageJsonLd = reviewedWebPageJsonLd({
   extraNodes: faqPageNodes({ siteUrl, route: pageFreshness.route, faqs }),
 });
 
-// Public showcases for this track live as private internal tooling, so the lane
-// is a narrative track with no project cards.
+const workAreas = [
+  {
+    tag: 'Imaging',
+    name: 'PACS & DICOM',
+    title: 'Keep the images flowing.',
+    desc: "Deployments, DR panel configuration, DICOM routing, and the troubleshooting when a study doesn't arrive where it should. This is the core of what I do every day.",
+  },
+  {
+    tag: 'Migrations',
+    name: 'Hosted-service moves',
+    title: 'Move systems without losing data or sleep.',
+    desc: "Archive transfers, cutovers, validation, and post-switch follow-up. The goal is a migration that preserves access and workflows, not a weekend prayer.",
+  },
+  {
+    tag: 'Support',
+    name: 'Escalation & recovery',
+    title: 'One person, start to finish.',
+    desc: "I take the call, diagnose it, coordinate the vendor, document the fix, and follow up until it sticks. No handoffs, no ticket ping-pong.",
+  },
+] as const;
+
+const dayInLife = [
+  { time: 'Morning', task: 'Triage tickets, check overnight alerts, verify hosted services are clean.' },
+  { time: 'Midday', task: 'DICOM routing changes, workstation imaging, vendor calls, migration prep.' },
+  { time: 'Afternoon', task: 'Customer follow-ups, documentation, tooling for anything I did twice.' },
+  { time: 'After hours', task: 'Cutovers and migrations that can only run when clinics close.' },
+] as const;
+
 const cmdkSections = [
-      { label: 'Overview', href: '#track-overview', desc: 'Healthcare support summary, headline metrics, and route actions.', badge: 'TRACK' },
-      { label: 'Data boundaries', href: '#data-boundaries', desc: 'PHI handling, data isolation, and what stays on your systems.', badge: 'TRUST' },
-      { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
-      { label: 'Questions', href: '#hcit-faq', desc: 'Scope of work, migrations, and why customer projects stay private.', badge: 'FAQ' },
-    ];
+  { label: 'Overview', href: '#track-overview', desc: 'What I do and why it matters.', badge: 'TRACK' },
+  { label: 'Work', href: '#work-areas', desc: 'PACS/DICOM, migrations, and escalation support.', badge: 'WORK' },
+  { label: 'A typical day', href: '#typical-day', desc: 'What the work actually looks like.', badge: 'DAY' },
+  { label: 'Data boundaries', href: '#data-boundaries', desc: 'PHI handling and what stays on your systems.', badge: 'TRUST' },
+  { label: 'Questions', href: '#hcit-faq', desc: 'Scope, migrations, and why projects stay private.', badge: 'FAQ' },
+  { label: 'Contact', href: '#hcit-contact', desc: 'Reach out about healthcare IT work.', badge: 'CONTACT' },
+];
 ---
 <Base
   title={title}
@@ -67,103 +94,128 @@ const cmdkSections = [
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Healthcare IT"></span>
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Healthcare IT"></span>
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
-    <div class="si page-shell" id="track-overview">
-      <div class="sh rv">
-        <div class="sl">// Track</div>
-        <h1 class="st hcit-title">Healthcare IT</h1>
-        <p class="sd hcit-intro">{healthcareIT.intro}</p>
+
+    <div class="si page-shell hcit-hero" id="track-overview">
+      <div class="sh">
+        <div class="sl">// Healthcare IT</div>
+        <h1 class="st hcit-title">When the imaging system goes down, I'm the one who picks up the phone.</h1>
+        <p class="sd hcit-intro">I support healthcare technology environments for a medical imaging integrator. PACS, DICOM, hosted-service migrations, and the 2 AM calls when something breaks and a clinic needs it fixed before doors open. {experienceLabel} of IT means I've seen most of what can go wrong, and I've built tools for the problems that kept coming back.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
-
-      <div class="hcit-stats page-stat-grid rv">
-        <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">PACS / DICOM</div>
-          <div class="hcit-stat-label page-stat-label">Healthcare systems</div>
-          <div class="page-stat-copy">PACS deployments, DR panel configuration, DICOM routing, and workflow support.</div>
-        </div>
-        <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">Migrations</div>
-          <div class="hcit-stat-label page-stat-label">Hosted services</div>
-          <div class="page-stat-copy">Archive transfers, cutovers, validation, workstation troubleshooting, and follow-up.</div>
-        </div>
-        <div class="hcit-stat page-stat">
-          <div class="hcit-stat-num page-stat-value">Escalation</div>
-          <div class="hcit-stat-label page-stat-label">Customer operations</div>
-          <div class="page-stat-copy">Issue ownership from diagnosis through vendor coordination, recovery, documentation, and follow-up.</div>
-        </div>
+      <div class="hcit-actions page-actions">
+        <a href={contactMailto('Healthcare IT')} class="btn bp">Get in touch</a>
+        <a href="/resume/" class="hcit-text-link">Resume <span aria-hidden="true">&#8594;</span></a>
       </div>
-      {/* Parity with /ai/: both track pages exist to start a conversation, so
-          the primary action is a subject-prefilled email rather than a
-          secondary jump to the homepage contact block. */}
-      <div class="hcit-actions page-actions rv">
-        <a href={contactMailto('Healthcare IT')} class="btn bp">Discuss a project</a>
-        <a href="/resume/" class="btn bg2">Open resume</a>
-      </div>
-      <SectionJumpNav items={cmdkSections} />
+      <ul class="hcit-assurances" aria-label="Operating principles">
+        <li>One person, start to finish</li>
+        <li>No patient data leaves your systems</li>
+        <li>Document everything, fix it once</li>
+      </ul>
     </div>
-    <Divider />
 
-    <div class="si" id="support-projects">
-      <h2 class="hcit-h2">Projects in this track</h2>
-      <div class="hcit-why rv">
-        <p>Most healthcare support work is <strong>operational and customer-specific</strong>: migration notes, workstation troubleshooting, account recovery, workflow validation, and communication during service-impacting issues.</p>
-        <p>The useful public summary is the role context above and the <a href="/resume/" class="page-inline-link">resume</a>, not customer-specific implementation detail.</p>
+    <section class="hcit-section" id="work-areas">
+      <div class="si">
+        <header class="hcit-section-head">
+          <div class="hcit-eyebrow">01 / Work</div>
+          <h2 class="hcit-h2">The three things I spend my days on.</h2>
+          <p>Most of my time goes to keeping imaging systems running, moving customers between platforms without losing data, and owning problems until they're actually solved.</p>
+        </header>
+        <div class="hcit-offer-list">
+          {workAreas.map((area, index) => (
+            <article class="hcit-offer">
+              <div class="hcit-offer-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+              <div class="hcit-offer-meta">
+                <span>{area.tag}</span>
+                <strong>{area.name}</strong>
+              </div>
+              <div class="hcit-offer-body">
+                <h3>{area.title}</h3>
+                <p>{area.desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
-    </div>
-    <Divider />
+    </section>
 
-    <div class="si" id="data-boundaries">
-      <h2 class="hcit-h2">Data boundaries</h2>
-      <div class="hcit-why rv">
-        <p>Healthcare environments handle sensitive data. Here is how I draw the lines.</p>
+    <section class="hcit-section hcit-section-alt" id="typical-day">
+      <div class="si">
+        <header class="hcit-section-head">
+          <div class="hcit-eyebrow">02 / A typical day</div>
+          <h2 class="hcit-h2">What the work actually looks like.</h2>
+          <p>Healthcare IT doesn't have a lot of glamorous demos. It's operational, it's steady, and it matters because people depend on these systems every day.</p>
+        </header>
+        <ol class="hcit-timeline" role="list">
+          {dayInLife.map((item) => (
+            <li role="listitem">
+              <div class="hcit-timeline-label">{item.time}</div>
+              <p>{item.task}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-      <dl class="hcit-faq rv">
-        <div class="hcit-faq-item">
-          <dt>Does this work touch PHI?</dt>
-          <dd>Support and migration work may involve systems that contain PHI. I follow the data-handling requirements of the organization I'm supporting. I do not store, copy, or transfer patient data to personal devices or outside systems.</dd>
-        </div>
-        <div class="hcit-faq-item">
-          <dt>Is client data used for AI model training?</dt>
-          <dd>No. Client data, customer data, and operational data from support work are never used to train, fine-tune, or evaluate any AI model. AI tools I use for my own workflow (documentation drafting, code assistance) run on my own content, not yours.</dd>
-        </div>
-        <div class="hcit-faq-item">
-          <dt>What stays on your systems?</dt>
-          <dd>Operational notes, internal documentation, and troubleshooting context stay in my secured local environment and are not shared, published, or uploaded to third-party services. Customer-specific detail never appears in the public portfolio.</dd>
-        </div>
-        <div class="hcit-faq-item">
-          <dt>Who else is in the supply chain?</dt>
-          <dd>I work directly. There is no subcontractor, offshore team, or third-party vendor between you and the person doing the work. If an engagement requires bringing in a specialist (network, vendor-specific), I'll say so up front.</dd>
-        </div>
-      </dl>
-    </div>
-    <Divider />
+    </section>
 
-    <div class="si" id="track-context">
-      <h2 class="hcit-h2">Why this track exists</h2>
-      <div class="hcit-why rv">
-        <p>Healthcare IT rewards steady operations more than novelty. Customer access, workstation reliability, hosted services, vendor coordination, and recovery communication all matter because they sit close to daily operations.</p>
-        <p>The practical work is diagnosis, documentation, recovery planning, vendor coordination, and clear communication when support workflows are interrupted.</p>
-        <p>For healthcare IT support or systems work, <a href="/#connect" class="page-inline-link">use the contact links</a>.</p>
-      </div>
-    </div>
-    <Divider />
-
-    <div class="si" id="hcit-faq">
-      <h2 class="hcit-h2">Common questions</h2>
-      <p class="hcit-faq-lead rv">Plain answers on the work, how migrations are handled, and why individual customer projects stay private. It’s context that a role summary or résumé line can’t carry on its own.</p>
-      <dl class="hcit-faq rv">
-        {faqs.map((faq) => (
-          <div class="hcit-faq-item">
-            <dt>{faq.q}</dt>
-            <dd>{faq.a}</dd>
+    <section class="hcit-section" id="data-boundaries">
+      <div class="si">
+        <header class="hcit-section-head">
+          <div class="hcit-eyebrow">03 / Trust</div>
+          <h2 class="hcit-h2">Your data stays yours.</h2>
+          <p>Healthcare means sensitive data. Here's how I handle it, plainly.</p>
+        </header>
+        <dl class="hcit-trust-list">
+          <div class="hcit-trust-item">
+            <dt>Does this work touch PHI?</dt>
+            <dd>Support and migration work may involve systems that contain PHI. I follow the data-handling requirements of the organization I'm supporting. I don't store, copy, or transfer patient data to personal devices or outside systems.</dd>
           </div>
-        ))}
-      </dl>
-    </div>
+          <div class="hcit-trust-item">
+            <dt>Is client data used for AI?</dt>
+            <dd>No. Client data, customer data, and operational data from support work are never used to train, fine-tune, or evaluate any AI model. AI tools I use for my own workflow run on my own content, not yours.</dd>
+          </div>
+          <div class="hcit-trust-item">
+            <dt>What stays on your systems?</dt>
+            <dd>Operational notes, internal docs, and troubleshooting context stay in my secured local environment. Customer-specific detail never appears in the public portfolio.</dd>
+          </div>
+          <div class="hcit-trust-item">
+            <dt>Who else is in the chain?</dt>
+            <dd>I work directly. No subcontractors, no offshore teams. If an engagement needs a specialist, I'll say so up front.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="hcit-section hcit-section-alt" id="hcit-faq">
+      <div class="si">
+        <header class="hcit-section-head">
+          <div class="hcit-eyebrow">04 / Questions</div>
+          <h2 class="hcit-h2">Things people ask.</h2>
+          <p>Straight answers about the work, how I handle migrations, and why you won't find customer project details here.</p>
+        </header>
+        <dl class="hcit-trust-list">
+          {faqs.map((faq) => (
+            <div class="hcit-trust-item">
+              <dt>{faq.q}</dt>
+              <dd>{faq.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="hcit-contact" id="hcit-contact">
+      <div class="si hcit-contact-grid">
+        <div class="hcit-eyebrow">Get in touch</div>
+        <div>
+          <h2>Need help with healthcare IT?</h2>
+          <p>Whether it's a PACS deployment, a hosted-service migration, or a system that's been giving you trouble, tell me what's going on and I'll let you know if I can help.</p>
+          <ContactForm subject="Healthcare IT" />
+        </div>
+      </div>
+    </section>
   </main>
 
   <Footer
-    summary="Healthcare IT support, PACS/DICOM operations, and the data boundaries that define how the work is done."
+    summary="Healthcare IT support, PACS/DICOM operations, and the steady work that keeps imaging systems running."
     links={[
       { href: '/rss.xml', label: 'RSS' },
       { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
@@ -173,22 +225,61 @@ const cmdkSections = [
 
 <style is:global>
   .hcit-page{min-height:calc(100vh - 200px)}
-  .hcit-title{font-size:clamp(44px,6vw,72px)!important}
-  .hcit-intro{font-size:18px!important;max-width:720px}
-  .hcit-stats{margin-top:32px;max-width:1080px}
-  .hcit-stat{min-height:100%}
-  .hcit-stat-num{color:var(--grn);text-shadow:0 0 20px var(--grn-glow)}
-  .hcit-actions{margin-top:22px}
-  .hcit-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
-  .hcit-why{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
-  .hcit-why p{margin-bottom:18px}
-  .hcit-why strong{color:var(--t1);font-weight:600}
-  .hcit-faq-lead{max-width:760px;margin:0 auto 26px;color:var(--t2);font-size:17px;line-height:1.7}
-  .hcit-faq{max-width:820px;margin:0 auto;border-top:1px solid var(--border-strong)}
-  .hcit-faq-item{display:grid;grid-template-columns:minmax(200px,.85fr) minmax(0,1.15fr);gap:26px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
-  .hcit-faq-item dt{margin:0;color:var(--t1);font-size:17px;font-weight:600;line-height:1.35}
-  .hcit-faq-item dd{margin:0;color:var(--t2);font-size:15px;line-height:1.7}
+  .hcit-hero{padding-bottom:clamp(50px,7vw,84px)!important}
+  .hcit-title{max-width:18ch!important;font-size:clamp(44px,6vw,72px)!important;line-height:.96!important;color:var(--t1)}
+  .hcit-intro{max-width:700px!important;font-size:18px!important;line-height:1.6!important}
+  .hcit-actions{margin-top:24px}
+  .hcit-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--t1);font-family:var(--mono);font-size:11px;font-weight:650;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--grn)}
+  .hcit-assurances{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:900px;margin:34px 0 0;padding:0;border-block:1px solid var(--border-soft);list-style:none}
+  .hcit-assurances li{padding:14px 18px 14px 0;border-right:1px solid var(--border-soft);color:var(--t2);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .hcit-assurances li:not(:first-child){padding-left:18px}
+  .hcit-assurances li:last-child{border-right:0}
+
+  .hcit-section{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px)}
+  .hcit-section-alt{border-block:1px solid var(--border-soft);background:var(--surface-1)}
+  .hcit-section-head{display:grid;grid-template-columns:140px minmax(300px,1.05fr) minmax(260px,.75fr);gap:30px;align-items:start;max-width:1100px;margin:0 auto}
+  .hcit-eyebrow,.hcit-offer-index,.hcit-timeline-label{font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase}
+  .hcit-eyebrow,.hcit-offer-index{color:var(--grn)}
+  .hcit-h2{max-width:14ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.06;letter-spacing:-.04em}
+  .hcit-section-head>p{max-width:42ch;margin:2px 0 0;color:var(--t2);font-size:15px;line-height:1.65}
+
+  .hcit-offer-list{max-width:1100px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
+  .hcit-offer{display:grid;grid-template-columns:44px 210px minmax(0,1fr);gap:24px;align-items:start;padding:27px 0;border-bottom:1px solid var(--border-soft)}
+  .hcit-offer-meta{display:grid;gap:5px}
+  .hcit-offer-meta span{color:var(--grn);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .hcit-offer-meta strong{color:var(--t3);font-size:13px;font-weight:500}
+  .hcit-offer-body{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.2fr);gap:28px}
+  .hcit-offer-body h3{margin:0;color:var(--t1);font-size:clamp(20px,2.2vw,28px);line-height:1.15;letter-spacing:-.03em}
+  .hcit-offer-body p{margin:0;color:var(--t2);font-size:15px;line-height:1.65}
+
+  .hcit-timeline{max-width:820px;margin:44px auto 0;padding:0;border-top:1px solid var(--border-strong);list-style:none}
+  .hcit-timeline li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
+  .hcit-timeline-label{color:var(--grn);padding-top:2px}
+  .hcit-timeline p{margin:0;color:var(--t2);font-size:15px;line-height:1.65}
+
+  .hcit-trust-list{max-width:820px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
+  .hcit-trust-item{display:grid;grid-template-columns:minmax(200px,.85fr) minmax(0,1.15fr);gap:26px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
+  .hcit-trust-item dt{margin:0;color:var(--t1);font-size:17px;font-weight:600;line-height:1.35}
+  .hcit-trust-item dd{margin:0;color:var(--t2);font-size:15px;line-height:1.7}
+
+  .hcit-contact{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px);border-top:1px solid var(--border-soft)}
+  .hcit-contact-grid{display:grid;grid-template-columns:140px minmax(0,1fr);gap:30px;max-width:760px}
+  .hcit-contact h2{margin:0 0 10px;color:var(--t1);font-size:clamp(26px,3vw,36px);line-height:1.12;letter-spacing:-.03em}
+  .hcit-contact p{margin:0 0 28px;max-width:48ch;color:var(--t2);font-size:15px;line-height:1.65}
+
+  @media(max-width:860px){
+    .hcit-section-head{grid-template-columns:1fr;gap:12px}
+    .hcit-offer{grid-template-columns:1fr;gap:12px}
+    .hcit-offer-index{display:none}
+    .hcit-offer-body{grid-template-columns:1fr;gap:10px}
+    .hcit-contact-grid{grid-template-columns:1fr;gap:16px}
+  }
   @media(max-width:720px){
-    .hcit-faq-item{grid-template-columns:1fr;gap:8px;padding:18px 0}
+    .hcit-assurances{grid-template-columns:1fr}
+    .hcit-assurances li{border-right:0;border-bottom:1px solid var(--border-soft);padding:12px 0}
+    .hcit-assurances li:last-child{border-bottom:0}
+    .hcit-trust-item{grid-template-columns:1fr;gap:8px;padding:18px 0}
+    .hcit-timeline li{grid-template-columns:1fr;gap:6px}
   }
 </style>

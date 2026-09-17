@@ -71,9 +71,7 @@ export const greatestHits: GreatestHit[] = [
  */
 export const healthcareIT = {
   intro:
-    `I'm the ${careerProfile.currentTitle} at ${careerProfile.currentCompany}, supporting healthcare technology environments. The work is customer-facing and operational: PACS/DICOM workflows, hosted-service migrations, workstation and network troubleshooting, customer escalation, documentation, and vendor coordination.`,
-  // Public showcases for this track currently live as private internal tooling,
-  // so this lane is a narrative track with no project cards.
+    `I support healthcare technology environments for ${careerProfile.currentCompany}. PACS, DICOM, hosted-service migrations, and the calls when something breaks and a clinic needs it fixed before doors open.`,
 };
 
 /**

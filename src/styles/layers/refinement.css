@@ -225,13 +225,6 @@
   font-size:14px;
   line-height:var(--lh-relaxed);
 }
-.hcit-why{
-  padding:32px 34px;
-  border:1px solid var(--border-soft);
-  border-radius:12px;
-  background:var(--surface-strong);
-  box-shadow:var(--shadow-strong);
-}
 @media(max-width:900px){
   .route-interior .page-shell > .sh{
     padding:26px 24px 24px;
@@ -259,14 +252,12 @@
   .page-panel,
   .page-empty,
   .rel-month-shell,
-  .now-section,
-  .hcit-why{
+  .now-section{
     border-radius:12px;
   }
   .page-panel,
   .page-empty,
-  .rel-month-shell,
-  .hcit-why{
+  .rel-month-shell{
     padding:26px 22px;
   }
   .now-pulse{
@@ -367,7 +358,7 @@ html[data-theme="light"] .lc2:hover{
 }
 
 /* Light theme — page panels and stat cards */
-html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .hcit-why,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
+html[data-theme="light"] .page-stat,html[data-theme="light"] .page-panel,html[data-theme="light"] .page-jump-nav,html[data-theme="light"] .now-section,html[data-theme="light"] .now-pulse-item,html[data-theme="light"] .rel-month-shell,html[data-theme="light"] .lang-card,html[data-theme="light"] .lang-hero-surface,html[data-theme="light"] .lang-hero-signal,html[data-theme="light"] .catalog-feedback,html[data-theme="light"] .no-results{
   background:rgba(255,255,255,.72);
   box-shadow:0 14px 32px rgba(29,42,70,.08);
 }

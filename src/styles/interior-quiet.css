@@ -99,7 +99,7 @@ body.route-interior .screenshots-grid{gap:24px}
 body.route-interior .screenshots-card{border:0;border-radius:0;background:transparent;box-shadow:none}
 body.route-interior .screenshots-card img{border-radius:5px}
 body.route-interior .screenshots-card-info{padding:10px 0}
-body.route-interior .lang-hero-surface,body.route-interior .lang-hero-signal,body.route-interior .lang-card,body.route-interior .hcit-why{border-radius:0;background:transparent;box-shadow:none}
+body.route-interior .lang-hero-surface,body.route-interior .lang-hero-signal,body.route-interior .lang-card{border-radius:0;background:transparent;box-shadow:none}
 body.route-interior .lang-hero-surface{padding:0;border:0}
 body.route-interior .lang-hero-item{padding:13px 0;border:0;border-bottom:1px solid var(--border-soft);border-radius:0;background:transparent}
 body.route-interior .lang-hero-item-live,body.route-interior .lang-card-live{padding:0;border:0;background:transparent}
