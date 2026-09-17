@@ -47,6 +47,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
 // is a narrative track with no project cards.
 const cmdkSections = [
       { label: 'Overview', href: '#track-overview', desc: 'Healthcare support summary, headline metrics, and route actions.', badge: 'TRACK' },
+      { label: 'Data boundaries', href: '#data-boundaries', desc: 'PHI handling, data isolation, and what stays on your systems.', badge: 'TRUST' },
       { label: 'Why This Track Exists', href: '#track-context', desc: 'The operating context and product philosophy behind this lane.', badge: 'CONTEXT' },
       { label: 'Questions', href: '#hcit-faq', desc: 'Scope of work, migrations, and why customer projects stay private.', badge: 'FAQ' },
     ];
@@ -108,6 +109,32 @@ const cmdkSections = [
         <p>Most healthcare support work is <strong>operational and customer-specific</strong>: migration notes, workstation troubleshooting, account recovery, workflow validation, and communication during service-impacting issues.</p>
         <p>The useful public summary is the role context above and the <a href="/resume/" class="page-inline-link">resume</a>, not customer-specific implementation detail.</p>
       </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="data-boundaries">
+      <h2 class="hcit-h2">Data boundaries</h2>
+      <div class="hcit-why rv">
+        <p>Healthcare environments handle sensitive data. Here is how I draw the lines.</p>
+      </div>
+      <dl class="hcit-faq rv">
+        <div class="hcit-faq-item">
+          <dt>Does this work touch PHI?</dt>
+          <dd>Support and migration work may involve systems that contain PHI. I follow the data-handling requirements of the organization I'm supporting. I do not store, copy, or transfer patient data to personal devices or outside systems.</dd>
+        </div>
+        <div class="hcit-faq-item">
+          <dt>Is client data used for AI model training?</dt>
+          <dd>No. Client data, customer data, and operational data from support work are never used to train, fine-tune, or evaluate any AI model. AI tools I use for my own workflow (documentation drafting, code assistance) run on my own content, not yours.</dd>
+        </div>
+        <div class="hcit-faq-item">
+          <dt>What stays on your systems?</dt>
+          <dd>Operational notes, internal documentation, and troubleshooting context stay in my secured local environment and are not shared, published, or uploaded to third-party services. Customer-specific detail never appears in the public portfolio.</dd>
+        </div>
+        <div class="hcit-faq-item">
+          <dt>Who else is in the supply chain?</dt>
+          <dd>I work directly. There is no subcontractor, offshore team, or third-party vendor between you and the person doing the work. If an engagement requires bringing in a specialist (network, vendor-specific), I'll say so up front.</dd>
+        </div>
+      </dl>
     </div>
     <Divider />
 

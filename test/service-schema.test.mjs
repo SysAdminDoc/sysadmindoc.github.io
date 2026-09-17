@@ -56,7 +56,7 @@ test('the /ai/ page avoids a redundant jump band and reveal-hidden card wall', a
 test('the /ai/ track exposes inspectable public proof without naming private repositories', async () => {
   const source = await fs.readFile(aiPagePath, 'utf8');
 
-  assert.match(source, /Public system \/ Parker AI/);
+  assert.match(source, /Outcome \/ this portfolio/);
   assert.match(source, /client-owned delivery/i);
   assert.match(source, /data boundaries, human review, logging, recovery/i);
   assert.match(source, /projectCount/);
