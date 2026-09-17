@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.43.1-blue)
+![Version](https://img.shields.io/badge/version-0.44.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)

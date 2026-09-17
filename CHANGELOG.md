@@ -2,6 +2,19 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.44.0] - 2026-09-17
+
+### Added
+- `/colophon/` page showing provenance for every live app: language, stars, release count, latest tag, and last push date derived from build-time GitHub caches. Includes an AI disclosure section stating where AI tools assist and what stays human.
+- Healthcare data-boundary section on `/healthcare-it/` answering PHI handling, AI training data, data isolation, and supply chain questions.
+
+### Changed
+- Homepage section headings rewritten to be benefit-oriented: "What I build" instead of "Selected work", "Try before you hire" instead of "Working, not hypothetical", "Where I can help" instead of "One operator. Three connected lanes."
+- Live apps section shows 6 of 22 instead of 2, giving a meaningful sample.
+- Greatest Hits intro now frames the collection as a through-line (ships complete, runs locally, stays maintained).
+- /ai/ proof section leads with the portfolio build pipeline as a concrete outcome story instead of just project counts.
+- /now page updated from July to September 2026 with current work items.
+
 ## [v0.43.1] - 2026-09-17
 
 ### Fixed
