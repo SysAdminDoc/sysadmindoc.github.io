@@ -70,13 +70,19 @@ const rules = {
   },
 
   'no-aria-hidden-focusable': (html) => {
-    // Elements that are both aria-hidden and natively focusable confuse AT.
     const issues = [];
     const re = /<(a|button|input|select|textarea)\b[^>]*aria-hidden=["']?true[^>]*>/gi;
     let m;
     while ((m = re.exec(html))) {
       if (!/\btabindex=["']?-1/.test(m[0])) {
         issues.push(`focusable <${m[1]}> with aria-hidden="true" and no tabindex="-1"`);
+      }
+    }
+    const tabRe = /<(\w+)\b[^>]*\btabindex=["']?(\d+)[^>]*aria-hidden=["']?true[^>]*>|<(\w+)\b[^>]*aria-hidden=["']?true[^>]*\btabindex=["']?(\d+)[^>]*>/gi;
+    while ((m = tabRe.exec(html))) {
+      const tag = m[1] || m[3];
+      if (!['a', 'button', 'input', 'select', 'textarea'].includes(tag.toLowerCase())) {
+        issues.push(`<${tag}> with tabindex and aria-hidden="true" creates an invisible keyboard trap`);
       }
     }
     return issues;
