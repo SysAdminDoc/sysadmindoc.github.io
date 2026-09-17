@@ -12,6 +12,17 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Operator precedence in the command palette's scroll behavior: the ternary bound tighter than `||`, passing boolean `true` as the scroll behavior value instead of the string `'auto'`.
 - Feed plain-text descriptions preserved `&amp;` literally because `sanitize-html` keeps it as valid HTML even with no allowed tags. An explicit decode step now produces "Chrome & Firefox" instead of "Chrome &amp; Firefox" (or double-encoded `&amp;amp;` in the Atom feed).
 - Stale CLAUDE.md: version (v0.42.0 to v0.43.0), homepage section order (Stack and Beyond Code sections no longer exist), and `HOMEPAGE_CATALOG_LIMIT` (84 to 12).
+- The live smoke script had no fetch timeout, so a hung VPS could stall the deploy pipeline for 16+ minutes. All fetch calls now go through a 30-second AbortController timeout.
+- Focus ring color was split between cards (olive in light mode) and controls (blue). Unified on `--focus-outline` so every focus ring matches in both themes.
+- `prefersReducedMotion` was a one-time snapshot at page load. Now tracks the OS setting with a matchMedia change listener so mid-session toggles take effect immediately.
+- The bundle-size audit scanned only immediate children of each directory. Now recurses into subdirectories so nested chunks are included in the budget.
+- The a11y audit missed `tabindex`-based keyboard traps: a `<div tabindex="0" aria-hidden="true">` passed undetected. Now catches any non-native element with a non-negative tabindex and `aria-hidden="true"`.
+- The content-visibility print test matched declarations across `}` block boundaries. The regex now stays within a single nested selector rule.
+- The v0.33 design system made every `forced-colors:active` border fix cascade-dead. Windows High Contrast Mode users now get visible borders on buttons, inputs, and toggles.
+- Removed dead `HOMEPAGE_CATALOG_LIMIT` constant, a test tautology in the release summary test, and a no-op string replace in the content-visibility test.
+- The bundle-size audit error message doubled the directory prefix (`dist/scripts/scripts/shared.js`). Fixed to report the correct path.
+- The dependency audit `allowOutdatedExit` parameter had identical branches (both allowed exit 0 and 1). The non-outdated path now only accepts exit 0.
+- The scaffold-route generator interpolated CLI arguments into JS string literals without escaping quotes or backslashes.
 
 ## [v0.43.0] - 2026-09-05
 
