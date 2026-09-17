@@ -13,7 +13,7 @@ const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
 const baseLayoutPath = path.join(repoRoot, 'src', 'layouts', 'Base.astro');
 const criticalCssPath = path.join(repoRoot, 'src', 'styles', 'critical.css');
 const inlineStyleSurfaceCount = 2;
-const astroExtractedStyleBlockCount = 16;
+const astroExtractedStyleBlockCount = 17;
 
 function countJavaScriptFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).reduce((count, entry) => {

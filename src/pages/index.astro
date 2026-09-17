@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import LiveCard from '../components/LiveCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
+import ContactForm from '../components/ContactForm.astro';
 import Footer from '../components/Footer.astro';
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto } from '../data/identity';
@@ -195,7 +196,8 @@ const cmdkSections = [
           </div>
           <p class="home-section-intro">Bring the workflow, the system, or the role. I'll tell you if I can help.</p>
         </header>
-        <div class="contact-list">
+        <ContactForm />
+        <div class="contact-list contact-list-below">
           {contactPaths.map((path) => (
             <a href={path.href} target={path.external ? '_blank' : undefined} rel={path.external ? 'noopener' : undefined}>
               <span>{path.label}</span>
@@ -559,6 +561,7 @@ const cmdkSections = [
   }
   :global(body.route-home) .contact-list a:hover i,
   :global(body.route-home) .contact-list a:focus-visible i{transform:translate(3px,-3px)}
+  :global(body.route-home) .contact-list-below{margin-top:32px}
   @media(max-width:860px){
     :global(body.route-home) .home-section-head{grid-template-columns:1fr;gap:24px}
     :global(body.route-home) .home-live-grid{gap:42px 22px}

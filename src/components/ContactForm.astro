@@ -1,0 +1,56 @@
+---
+import { contactEmail, contactMailto } from '../data/identity';
+
+export interface Props {
+  subject?: string;
+}
+const { subject = '' } = Astro.props;
+---
+<form class="contact-form" action="/api/contact" method="POST" data-subject={subject}>
+  <div class="contact-form-fields">
+    <div class="contact-field">
+      <label for="contact-name">Name</label>
+      <input type="text" id="contact-name" name="name" required autocomplete="name" placeholder="Your name" />
+    </div>
+    <div class="contact-field">
+      <label for="contact-email">Email</label>
+      <input type="email" id="contact-email" name="email" required autocomplete="email" placeholder="you@company.com" />
+    </div>
+    <div class="contact-field contact-field-wide">
+      <label for="contact-message">What are you working on?</label>
+      <textarea id="contact-message" name="message" required rows="4" minlength="10" placeholder="Describe the workflow, role, or problem. A few lines is enough to start."></textarea>
+    </div>
+    {/* Honeypot: hidden from humans, filled by bots */}
+    <div class="contact-hp" aria-hidden="true" tabindex="-1">
+      <label for="contact-website">Website</label>
+      <input type="text" id="contact-website" name="website" autocomplete="off" tabindex="-1" />
+    </div>
+    <input type="hidden" name="_t" value="" />
+  </div>
+  <div class="contact-form-actions">
+    <button type="submit" class="btn bp">Send message</button>
+    <span class="contact-form-alt">or email <a href={contactMailto(subject)}>{contactEmail}</a> directly</span>
+  </div>
+  <div class="contact-form-status" role="status" aria-live="polite"></div>
+</form>
+
+<style>
+  .contact-form{max-width:620px}
+  .contact-form-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .contact-field{display:grid;gap:6px}
+  .contact-field-wide{grid-column:1/-1}
+  .contact-field label{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+  .contact-field input,.contact-field textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-1);color:var(--t1);font:inherit;font-size:15px;line-height:1.5;resize:vertical}
+  .contact-field input:focus,.contact-field textarea:focus{outline:2px solid var(--focus-outline);outline-offset:2px;border-color:var(--border-strong)}
+  .contact-field input::placeholder,.contact-field textarea::placeholder{color:var(--t3);opacity:.7}
+  .contact-hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
+  .contact-form-actions{display:flex;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}
+  .contact-form-alt{color:var(--t3);font-size:13px}
+  .contact-form-alt a{color:var(--t2);text-decoration:underline}
+  .contact-form-status{margin-top:12px;font-size:14px;min-height:20px}
+  .contact-form-success{color:var(--grn)}
+  .contact-form-error{color:var(--red)}
+  @media(max-width:640px){
+    .contact-form-fields{grid-template-columns:1fr}
+  }
+</style>

@@ -51,6 +51,7 @@ const isCatalog = Astro.url.pathname === '/catalog/';
 // deployment that stops being rebuilt reports its real age, not the age it had
 // when it was published.
 const isStatus = Astro.url.pathname === '/status/';
+const hasContactForm = isHome || Astro.url.pathname === '/ai/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
 
@@ -220,5 +221,6 @@ if (isHome) {
   {isHome && <script src="/scripts/home-nav.js" is:inline></script>}
   {isCatalog && <script src="/scripts/home-catalog.js" is:inline></script>}
   {isStatus && <script src="/scripts/status-freshness.js" is:inline></script>}
+  {hasContactForm && <script src="/scripts/contact-form.js" is:inline></script>}
 </body>
 </html>

@@ -165,7 +165,7 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
 const cspEnvFile = writeComposeEnvFile(distDir);
 
 // 2. Ensure the remote site dir exists.
-runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports`);
+runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache`);
 
 // 3. Ship the server config, reporter, CSP environment, then the site itself.
 run('scp', [
@@ -173,6 +173,7 @@ run('scp', [
   path.join(root, 'deploy', 'vps', 'docker-compose.yml'),
   path.join(root, 'deploy', 'vps', 'Caddyfile'),
   path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'),
+  path.join(root, 'deploy', 'vps', 'contact-handler.mjs'),
   cspEnvFile,
   `${ssh}:${remoteDir}/`,
 ]);

@@ -46,6 +46,18 @@
 		reverse_proxy csp-reporter:8080
 	}
 
+	# First-party contact form handler. Accepts POST only; the handler
+	# validates honeypot, minimum-time, and field content before forwarding
+	# to the local ntfy instance. No third-party service in the flow.
+	@contact path /api/contact
+	handle @contact {
+		header Cache-Control "no-store"
+		header Access-Control-Allow-Origin "https://portfolio.getparkerai.com"
+		header Access-Control-Allow-Methods "POST"
+		header Access-Control-Allow-Headers "Content-Type"
+		reverse_proxy contact-handler:8090
+	}
+
 	# The deploy script stamps CSP_POLICY from the built index.html so the
 	# response header matches the hash-pinned meta policy and can report real
 	# violations. A missing value makes compose fail before an incomplete policy

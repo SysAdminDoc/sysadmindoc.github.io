@@ -73,6 +73,58 @@ services:
     networks:
       - web
 
+  ntfy:
+    image: binwiederhier/ntfy:v2.11.0
+    container_name: portfolio-ntfy
+    restart: unless-stopped
+    stop_grace_period: 10s
+    mem_limit: 64m
+    cpus: "0.10"
+    pids_limit: 32
+    security_opt:
+      - no-new-privileges:true
+    command: ["serve", "--listen-http=:80", "--base-url=http://ntfy"]
+    volumes:
+      - ./ntfy-cache:/var/cache/ntfy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:80/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - web
+
+  contact-handler:
+    image: node:24-alpine
+    container_name: portfolio-contact-handler
+    restart: unless-stopped
+    stop_grace_period: 10s
+    mem_limit: 64m
+    cpus: "0.10"
+    pids_limit: 32
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    command: ["node", "/app/contact-handler.mjs"]
+    environment:
+      NTFY_URL: http://ntfy:80/portfolio-leads
+      CONTACT_LOG: /var/lib/contact/submissions.ndjson
+    volumes:
+      - ./contact-handler.mjs:/app/contact-handler.mjs:ro
+      - ./contact-data:/var/lib/contact
+    depends_on:
+      ntfy:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8090/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - web
+
 networks:
   web:
     external: true
