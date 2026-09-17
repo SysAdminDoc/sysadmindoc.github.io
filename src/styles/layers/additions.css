@@ -401,6 +401,7 @@ html[data-theme="light"] .lc2:hover::before{
 }
 
 /* ---------- X. 404 page — premium empty state ---------- */
+.error-page{min-height:calc(100vh - 200px)}
 .error-recovery{
   max-width:32rem;
   margin:3rem auto 0;
