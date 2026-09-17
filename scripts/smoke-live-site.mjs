@@ -128,9 +128,21 @@ function siteUrl(pathname, baseUrl) {
   return target;
 }
 
+const SMOKE_FETCH_TIMEOUT_MS = 30_000;
+
+async function timedFetch(url, options = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), SMOKE_FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchText(baseUrl, pathname, accept) {
   const target = siteUrl(pathname, baseUrl);
-  const response = await fetch(target, {
+  const response = await timedFetch(target, {
     headers: {
       Accept: accept,
       'User-Agent': `sysadmindoc-live-smoke/${runId}`,
@@ -151,7 +163,7 @@ async function fetchText(baseUrl, pathname, accept) {
 
 async function fetchBinary(baseUrl, pathname, accept) {
   const target = siteUrl(pathname, baseUrl);
-  const response = await fetch(target, {
+  const response = await timedFetch(target, {
     headers: {
       Accept: accept,
       'User-Agent': `sysadmindoc-live-smoke/${runId}`,
@@ -236,7 +248,7 @@ async function checkSecurityHeaders(baseUrl, summary) {
     return;
   }
   const target = siteUrl('/', baseUrl);
-  const response = await fetch(target, {
+  const response = await timedFetch(target, {
     headers: { Accept: 'text/html,*/*', 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
     redirect: 'follow',
   });
@@ -328,7 +340,7 @@ async function checkNotFoundStatus(baseUrl, summary) {
   // collide with a real route.
   const pathname = `/__live-smoke-missing-${runId}/`;
   const target = siteUrl(pathname, baseUrl);
-  const response = await fetch(target, {
+  const response = await timedFetch(target, {
     headers: { Accept: 'text/html,*/*', 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
     redirect: 'follow',
   });
@@ -354,7 +366,7 @@ async function checkCspReportEndpoint(baseUrl, summary) {
   }
 
   const target = siteUrl('/csp-report', baseUrl);
-  const response = await fetch(target, {
+  const response = await timedFetch(target, {
     method: 'POST',
     headers: {
       Accept: '*/*',
@@ -401,7 +413,7 @@ async function checkCachePolicy(baseUrl, summary, homepageHtml) {
 
   const problems = [];
   for (const expectation of expectations) {
-    const response = await fetch(siteUrl(expectation.pathname, baseUrl), {
+    const response = await timedFetch(siteUrl(expectation.pathname, baseUrl), {
       headers: { Accept: expectation.accept, 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
       redirect: 'follow',
     });
