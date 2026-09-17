@@ -81,19 +81,18 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-07-23',
+  updated: '2026-09-17',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site ${siteVersion}. Includes ${fallbackRepoCount} repos, resume PDF generation, Pagefind search, and browser visual baselines`,
-    'AI services track: fractional AI implementation, automation, and training engagements for businesses on a monthly retainer',
-    'Healthcare support workflows: migration coordination, customer cutover validation, and documentation cleanup',
-    'Customer support operations: hosted account transitions, workstation support, and vendor handoffs',
-    'Customer-facing documentation and tutorial updates for support workflows',
-    'Portfolio copy cleanup so career claims stay conservative, field-accurate, and easy to verify',
+    `Portfolio site ${siteVersion}. ${fallbackRepoCount} repos, Astro 7 on a Contabo VPS, 295 automated tests, and a colophon page in progress`,
+    'AI services: shipping fractional implementation engagements through Parker AI, including workflow automation and team training',
+    'OpenRadar: open weather workstation with Tauri 2, React 19, and raw radar data. Twelve research passes in, draining the last 20 items',
+    'Healthcare support: PACS/DICOM migrations, hosted-service cutovers, and the documentation that makes them repeatable',
+    'Hushfeed: TikTok content patches extension, actively maintaining against upstream changes',
   ],
   thinking: [
-    'Preparing for npm v12 install-script changes hitting native deps in July 2026',
-    'How small healthcare environments balance vendor support, local IT constraints, and reliable recovery plans',
+    'How to show AI-assisted work honestly without either hiding or overclaiming it',
+    'Whether a first-party intake form on the VPS replaces mailto CTAs or just adds friction',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Whatever keeps the focus session going.',
