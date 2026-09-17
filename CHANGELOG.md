@@ -2,7 +2,7 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
-## [Unreleased]
+## [v0.43.1] - 2026-09-17
 
 ### Fixed
 - Feed plain-text descriptions (RSS, Atom, JSON Feed, llms.txt) replaced HTML entities with spaces instead of decoding them. "ATT&CK" read as "ATT CK" and em dashes disappeared. Use sanitize-html's text-only mode instead of a naive regex strip.
@@ -23,6 +23,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The bundle-size audit error message doubled the directory prefix (`dist/scripts/scripts/shared.js`). Fixed to report the correct path.
 - The dependency audit `allowOutdatedExit` parameter had identical branches (both allowed exit 0 and 1). The non-outdated path now only accepts exit 0.
 - The scaffold-route generator interpolated CLI arguments into JS string literals without escaping quotes or backslashes.
+
+### Changed
+- Removed 285 lines of dead CSS from three layer files (homepage.css, polish.css, additions.css). Body, nav, hero, section, button, live-card, and light-theme override declarations that were fully superseded by the v0.33 unlayered design system. Global CSS drops from 119.6 KB to 113.6 KB minified. The `:root` light-dark() token fallbacks and catalog card component base styles are retained.
 
 ## [v0.43.0] - 2026-09-05
 
