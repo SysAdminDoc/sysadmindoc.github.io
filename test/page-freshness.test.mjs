@@ -9,8 +9,8 @@ const FRESHNESS_FAIL_DAYS = 365;  // 1 year — fail the test
 
 const root = process.cwd();
 const pageFreshnessPath = path.join(root, 'src', 'data', 'page-freshness.ts');
-const expectedSchemaSlugs = ['uses', 'resume', 'search', 'timeline', 'status', 'screenshots', 'archive', 'now', 'healthcare-it', 'ai', 'releases', 'catalog', 'data'];
-const expectedVisibleSlugs = ['uses', 'resume', 'healthcare-it', 'ai'];
+const expectedSchemaSlugs = ['uses', 'resume', 'search', 'timeline', 'status', 'screenshots', 'archive', 'now', 'healthcare-it', 'ai', 'releases', 'catalog', 'data', 'colophon'];
+const expectedVisibleSlugs = ['uses', 'resume', 'healthcare-it', 'ai', 'colophon'];
 
 async function loadReviewedPages() {
   const text = await fs.readFile(pageFreshnessPath, 'utf8');

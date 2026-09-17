@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+import Divider from '../components/Divider.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import Footer from '../components/Footer.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import { liveApps, catalog } from '../data/portfolio';
+import { githubRepoUrl } from '../data/github';
+
+const title = 'Colophon — Matt Parker';
+const pageOg = interiorOgPageBySlug['colophon'];
+const pageFreshness = pageFreshnessBySlug['colophon'];
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+
+type MetaRecord = Record<string, { stars: number; pushedAt: string; updatedAt: string; language: string | null }>;
+let meta: MetaRecord = {};
+try {
+  const mod = await import('../data/_meta.json');
+  meta = (mod.default ?? mod) as MetaRecord;
+} catch {}
+
+type ReleaseRecord = { repo: string; tag: string; publishedAt: string };
+let releases: ReleaseRecord[] = [];
+try {
+  const mod = await import('../data/_releases.json');
+  releases = (mod.default ?? mod) as ReleaseRecord[];
+} catch {}
+
+const catalogByRepo = new Map(catalog.map((entry) => [entry.repo, entry]));
+const releasesByRepo = new Map<string, ReleaseRecord[]>();
+for (const r of releases) {
+  const list = releasesByRepo.get(r.repo) ?? [];
+  list.push(r);
+  releasesByRepo.set(r.repo, list);
+}
+
+const utcDate = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+const appRecords = liveApps.map((app) => {
+  const repoMeta = meta[app.slug];
+  const catalogEntry = catalogByRepo.get(app.slug);
+  const appReleases = releasesByRepo.get(app.slug) ?? [];
+  const latestRelease = appReleases.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0];
+  return {
+    name: app.name,
+    slug: app.slug,
+    url: app.url,
+    repoUrl: githubRepoUrl(app.slug),
+    language: repoMeta?.language ?? catalogEntry?.category ?? 'web',
+    stars: repoMeta?.stars ?? 0,
+    lastPush: repoMeta?.pushedAt ? utcDate.format(new Date(repoMeta.pushedAt)) : null,
+    releaseCount: appReleases.length,
+    latestTag: latestRelease?.tag ?? null,
+  };
+});
+
+const cmdkSections = [
+  { label: 'Overview', href: '#colophon-overview', desc: 'What this page is and why it exists.', badge: 'PAGE' },
+  { label: 'Live apps', href: '#colophon-apps', desc: `How each of the ${liveApps.length} live apps was built.`, badge: `${liveApps.length} APPS` },
+  { label: 'AI disclosure', href: '#colophon-ai', desc: 'Where AI tools assisted and where they did not.', badge: 'TRUST' },
+];
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="colophon" contextLabel="Colophon" contextTone="slate" />
+
+  <main id="main" class="colophon-page" data-pagefind-body data-pagefind-filter="Scope:Colophon">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Colophon"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="si page-shell" id="colophon-overview">
+      <div class="sh rv">
+        <div class="sl">// Colophon</div>
+        <h1 class="st">How this was built.</h1>
+        <p class="sd">Every live app in the portfolio has a public repository, a commit history, and a stack you can verify. This page collects that provenance in one place, including where AI tools assisted the work.</p>
+        <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="colophon-apps">
+      <h2 class="colophon-h2 rv">Live apps ({liveApps.length})</h2>
+      <p class="colophon-lead rv">Each row links to the source repository. Stars, language, and last-push date come from the same GitHub API caches the portfolio reads at build time.</p>
+      <div class="colophon-grid">
+        {appRecords.map((app) => (
+          <a href={app.repoUrl} target="_blank" rel="noopener" class="colophon-row rv">
+            <span class="colophon-name">{app.name}</span>
+            <span class="colophon-meta">
+              {app.language && <span class="colophon-lang">{app.language}</span>}
+              {app.stars > 0 && <span class="colophon-stars">{app.stars} stars</span>}
+              {app.releaseCount > 0 && <span class="colophon-releases">{app.releaseCount} releases</span>}
+              {app.latestTag && <span class="colophon-tag">{app.latestTag}</span>}
+            </span>
+            <span class="colophon-push">{app.lastPush ?? ''}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+    <Divider />
+
+    <div class="si" id="colophon-ai">
+      <h2 class="colophon-h2 rv">AI disclosure</h2>
+      <div class="colophon-disclosure rv">
+        <p>Every project in the portfolio uses AI-assisted development tools. Claude Code and GitHub Copilot run in most sessions for code generation, refactoring, test writing, and documentation drafting. The architectural decisions, product direction, UX design, and final quality judgment are mine.</p>
+        <p>The commit history is the real record. AI contributions are visible in the commit patterns, and nothing about the process is hidden from someone who reads the git log. I chose to use these tools because they make me faster at the work I already know how to do, not because I need them to start.</p>
+        <p>For client work, AI tool usage follows the same boundaries described on the <a href="/healthcare-it/#data-boundaries" class="page-inline-link">healthcare data boundaries</a> page: your data stays on your systems, AI tools run on my content, and I'll say up front where automation is involved.</p>
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    summary="Provenance for every live app in the portfolio, including the tools that built them."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/ai/', label: 'AI services' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
+</Base>
+
+<style is:global>
+  .colophon-page{min-height:calc(100vh - 200px)}
+  .colophon-h2{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:var(--t3);margin-bottom:28px;max-width:900px;margin-left:auto;margin-right:auto}
+  .colophon-lead{max-width:760px;margin:0 auto 32px;color:var(--t2);font-size:16px;line-height:1.7}
+  .colophon-grid{max-width:900px;margin:0 auto;border-top:1px solid var(--border-strong)}
+  .colophon-row{display:grid;grid-template-columns:minmax(160px,.6fr) minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--border-soft);color:inherit;text-decoration:none}
+  .colophon-row:hover{border-bottom-color:var(--border-strong)}
+  .colophon-row:focus-visible{outline:2px solid var(--focus-outline);outline-offset:6px}
+  .colophon-name{color:var(--t1);font-size:16px;font-weight:600}
+  .colophon-meta{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+  .colophon-lang,.colophon-stars,.colophon-releases,.colophon-tag{font-family:var(--mono);font-size:11px;color:var(--t3);padding:3px 8px;border:1px solid var(--border-soft);border-radius:4px}
+  .colophon-push{font-family:var(--mono);font-size:11px;color:var(--t3);white-space:nowrap;text-align:right}
+  .colophon-disclosure{max-width:760px;margin:0 auto;color:var(--t2);font-size:17px;line-height:1.75}
+  .colophon-disclosure p{margin-bottom:18px}
+  @media(max-width:640px){
+    .colophon-row{grid-template-columns:1fr;gap:8px}
+    .colophon-push{text-align:left}
+  }
+</style>

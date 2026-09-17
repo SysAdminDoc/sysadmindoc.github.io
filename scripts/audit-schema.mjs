@@ -23,6 +23,10 @@ const representativeRoutes = new Map([
     types: ['WebSite', 'Person', 'WebPage'],
     checks: checkReviewedInteriorRoute,
   }],
+  ['/colophon/', {
+    types: ['WebSite', 'Person', 'WebPage'],
+    checks: checkReviewedInteriorRoute,
+  }],
   ['/uses/', {
     types: ['WebSite', 'Person', 'WebPage'],
     checks: checkReviewedInteriorRoute,

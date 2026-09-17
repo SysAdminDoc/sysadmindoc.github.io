@@ -11,6 +11,16 @@ export interface InteriorOgPage {
 
 export const interiorOgPages: InteriorOgPage[] = [
   {
+    slug: 'colophon',
+    route: '/colophon/',
+    title: 'Colophon',
+    description: 'Provenance for every live app in the portfolio, including stack, commit history, and AI tool disclosure.',
+    label: 'Colophon',
+    accent: '#1f5fcc',
+    ogImage: '/og/colophon.png',
+    ogImageAlt: 'How this was built page social preview card',
+  },
+  {
     slug: 'data',
     route: '/data/',
     title: 'Portfolio data',
