@@ -383,4 +383,16 @@ const cmdkSections = [
     .aisvc-contact-grid{grid-template-columns:1fr;gap:14px}
     .aisvc-contact h2{font-size:38px}
   }
+  /* v0.45 composition pass: one structural accent, one left edge, tighter rhythm. */
+  .aisvc-eyebrow,.aisvc-offer-index,.aisvc-process-step,.aisvc-case-meta,.aisvc-offer-meta span,.aisvc-text-link span{color:var(--org)}
+  .aisvc-eyebrow{font-size:11px;grid-column:1/-1}
+  .aisvc-text-link:hover,.aisvc-text-link:focus-visible{color:var(--blue)}
+  .aisvc-hero{padding-bottom:clamp(36px,4vw,52px)!important}
+  .aisvc-section{padding-block:clamp(56px,6vw,76px)}
+  .aisvc-section-head{grid-template-columns:minmax(0,1.05fr) minmax(260px,.75fr);gap:14px 48px}
+  .aisvc-contact-grid{grid-template-columns:1fr;gap:14px}
+  /* Sections share the hero's left edge instead of centering a narrower block. */
+  .aisvc-section,.aisvc-contact{padding-inline:clamp(20px,3.2vw,32px)}
+  .aisvc-section .si,.aisvc-contact .si{max-width:calc(var(--content-max,1320px) - 64px)}
+  .aisvc-section-head,.aisvc-offer-list,.aisvc-process-list,.aisvc-proof-grid,.aisvc-faq-list,.aisvc-contact-grid{margin-left:0;margin-right:0}
 </style>

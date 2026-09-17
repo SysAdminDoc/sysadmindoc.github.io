@@ -52,7 +52,7 @@ const cmdkSections = [
         <div class="resume-file-mark" aria-hidden="true">
           <strong>MP-01</strong>
           <span>Career record</span>
-          <small>Verified · {pageFreshness.lastReviewed}</small>
+          <small>Reviewed · {pageFreshness.lastReviewed}</small>
         </div>
         <div class="resume-header-main">
           <div class="resume-name-block">
@@ -66,8 +66,6 @@ const cmdkSections = [
           <div class="resume-actions no-print">
             <a href="/resume.pdf" class="btn bp" download="matt-parker-resume.pdf">Download PDF</a>
             <button type="button" class="btn bg2" id="resumePrint" aria-label="Print this page">Print</button>
-            <a href="/resume.json" class="btn bg2" download="matt-parker-resume.json">JSON Resume</a>
-            <a href="/" class="btn bg2">Portfolio</a>
           </div>
         </div>
         <div class="resume-proof" aria-label="Career proof">
@@ -189,6 +187,7 @@ const cmdkSections = [
           <a class="resume-visible-url" href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener">linkedin.com/in/matthewryanparker</a>
           <a class="resume-visible-url" href="https://github.com/SysAdminDoc" target="_blank" rel="noopener">github.com/SysAdminDoc</a>
           <a class="resume-visible-url" href="https://portfolio.getparkerai.com" target="_blank" rel="noopener">portfolio.getparkerai.com</a>
+          <a href="/resume.json" download="matt-parker-resume.json">JSON Resume export</a>
         </div>
       </section>
     </div>
@@ -313,5 +312,15 @@ const cmdkSections = [
     body.route-interior main.resume-page .resume-link-list a{color:#111;font-size:8pt}
     body.route-interior main.resume-page a.resume-visible-url[href^="http"]::after{content:none}
     a{color:#111!important;text-decoration:none!important}
+  }
+  /* v0.45 composition pass: sans title line, no nested numbering, arrow with its row. */
+  .resume-title-line{font-family:var(--sans);font-size:clamp(18px,1.8vw,24px);font-weight:600;letter-spacing:-.02em;color:var(--t1)}
+  .resume-file-mark small,.resume-proof-item span,.resume-proof-item small,.resume-lane small{font-size:10px}
+  .resume-lane{grid-template-columns:minmax(190px,.72fr) minmax(280px,1.28fr)}
+  .resume-lane-index,.resume-lane-action{display:none}
+  .resume-lane strong::after{content:' \2192';color:var(--blue)}
+  @media(max-width:760px){
+    .resume-lane{grid-template-columns:1fr}
+    .resume-lane p{grid-column:auto}
   }
 </style>

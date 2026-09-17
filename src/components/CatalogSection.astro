@@ -56,10 +56,8 @@ const statusLead = isPreview
   <div class="sh rv">
     <div class="sl">{isPreview ? '05 / Catalog' : '// All projects'}</div>
     <h2 class="st">{isPreview ? 'Project catalog' : 'Browse the archive'}</h2>
-    {isPreview ? (
+    {isPreview && (
       <p class="sd">A recommended slice of the archive. Browse, search, and filter all {total} public projects in the <a href={browseAllHref} class="page-inline-link">full catalog</a>.</p>
-    ) : (
-      <p class="sd">Search and filter all {total} public projects. Every entry links straight to its GitHub repository.</p>
     )}
   </div>
   {isPreview && (

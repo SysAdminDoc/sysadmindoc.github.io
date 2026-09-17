@@ -2,6 +2,21 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.45.0] - 2026-09-17
+
+### Changed
+- Home hero rebuilt as a two-column composition. The proof stack (experience, shipped, live apps) fills the right column beside the name instead of sitting in a row underneath it. The empty band above the eyebrow is gone and the tagline is set in the sans face.
+- One left edge per page. Home sections, the AI and Healthcare IT tracks, and the interior heroes all start on the same x as their hero instead of centering a narrower block inside the shell.
+- Navigation: the pill behind the theme and search buttons is gone, the brand tagline is smaller, and the links read Work, Projects, AI, Resume, Contact.
+- Catalog: the active filter chip is dark navy with light text (it was unreadable before), the view and category rows carry Show and Category labels, and every control is squared to match the rest of the site.
+- Resume: actions reduced to Download PDF and Print. The JSON export moved into the public record list, "Verified" became "Reviewed", and the lane index and action columns were dropped.
+- AI and Healthcare IT tracks: eyebrows and indices use the vermilion accent, section spacing tightened, contact grid collapsed to one column.
+- Colour tokens, radius (0) and shadow (none) now live in one authoritative block at the end of the unlayered sheet.
+
+### Fixed
+- Duplicate summary paragraph on the full catalog page removed.
+- Healthcare IT and resume freshness dates updated to 2026-09-17.
+
 ## [v0.44.2] - 2026-09-17
 
 ### Changed

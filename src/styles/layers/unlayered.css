@@ -1683,3 +1683,51 @@ html[data-theme="light"] .hero-proof-strip .hero-proof{background:transparent;bo
   .hero-proof-value{font-size:33px}
   .sh{grid-template-columns:1fr}
 }
+
+/* ===== v0.45 Composition pass =====
+   One authoritative token set so nothing above depends on cascade order, one
+   left edge per page, sans for sentences and mono for labels only, a single
+   structural accent (vermilion), and squared controls throughout. */
+:root,html[data-theme="light"]{
+  --bg:#f4f0e7;--bg2:#e9e3d8;--bg3:#dcd3c4;--t1:#071a32;--t2:#34465c;--t3:#667386;
+  --blue:#1648dc;--grn:#587400;--teal:#08786a;--org:#d84b2d;
+  --surface-1:#faf7f0;--surface-2:#eee8dd;--surface-strong:#fffdf8;
+  --border-soft:rgba(7,26,50,.2);--border-strong:rgba(22,72,220,.5);
+  --focus-outline:#1648dc;--focus-ring:0 0 0 4px rgba(22,72,220,.15);
+  --radius-xs:0;--radius-sm:0;--radius-md:0;--radius-lg:0;--radius-xl:0;--radius-2xl:0;--radius-control:0;
+  --shadow-xs:none;--shadow-sm:none;--shadow-md:none;--shadow-lg:none;--shadow-xl:none;--shadow-soft:none;
+  --shadow-strong:0 24px 64px rgba(7,26,50,.14);
+  --nav-h:70px;--content-max:1320px;
+}
+html[data-theme="dark"]{
+  --bg:#071421;--bg2:#0c1c2e;--bg3:#14263b;--t1:#f2f5fa;--t2:#b8c4d2;--t3:#8494a8;
+  --blue:#7ea2ff;--grn:#c6ed61;--teal:#72ddc8;--org:#ef7452;
+  --surface-1:#0b1a2b;--surface-2:#102136;--surface-strong:#071829;
+  --border-soft:rgba(177,198,224,.2);--border-strong:rgba(126,162,255,.5);
+  --focus-outline:#c6ed61;--focus-ring:0 0 0 4px rgba(198,237,97,.18);
+  --shadow-strong:0 24px 64px rgba(0,0,0,.4);
+}
+
+/* Header: no leftover container around the icon buttons; legible brand line. */
+.nav-actions,html[data-theme="light"] .nav-actions{padding:0;border:0;background:transparent;box-shadow:none}
+.nl .brand-copy small{font-size:10px;letter-spacing:.1em}
+
+/* Squared geometry everywhere the v0.33 system left rounded remnants. */
+.fb,.fc,.search-input,.sort-select,.catalog-reset,.catalog-feedback,.no-results,.page-jump-link,.lc2,.lc2 .lc2-thumb,.ca,.page-panel,.page-stat,.cmdk,.sw-update-toast,.page-empty{border-radius:0}
+
+/* Home hero layout lives in index.astro (its page-level rules outrank this sheet); only type sizes here. */
+.hero-proof-label,.hsl{font-size:10px}
+.hero-proof-copy{align-self:start;max-width:28ch}
+
+/* Interior heroes: actions sit on the same left edge as the title. */
+.route-interior .page-actions{margin-top:26px}
+.page-action-link{color:var(--t1);font-family:var(--mono);font-size:11px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.page-action-link:hover,.page-action-link:focus-visible{color:var(--blue)}
+
+/* Catalog chips: the active state was cream text on a white chip in light mode. */
+.fb::before{display:none}
+html[data-theme="light"] .fb.act{border-color:var(--t1);background:var(--t1);color:var(--bg)}
+.fb.act .fc,html[data-theme="light"] .fb.act .fc{background:rgba(255,255,255,.18);color:inherit}
+.catalog-views,#filterBtns{align-items:center}
+.catalog-views::before,#filterBtns::before{content:'Show';flex:0 0 auto;margin-right:6px;color:var(--t3);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+#filterBtns::before{content:'Category'}

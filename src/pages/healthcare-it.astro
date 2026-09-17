@@ -275,6 +275,19 @@ const cmdkSections = [
     .hcit-offer-body{grid-template-columns:1fr;gap:10px}
     .hcit-contact-grid{grid-template-columns:1fr;gap:16px}
   }
+  /* v0.45 composition pass: one structural accent, one left edge, tighter rhythm. */
+  .hcit-eyebrow,.hcit-offer-index,.hcit-offer-meta span,.hcit-timeline-label{color:var(--org)}
+  .hcit-eyebrow{font-size:11px;grid-column:1/-1}
+  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--blue)}
+  .hcit-hero{padding-bottom:clamp(36px,4vw,52px)!important}
+  .hcit-section{padding-block:clamp(56px,6vw,76px)}
+  .hcit-section-head{grid-template-columns:minmax(0,1.05fr) minmax(260px,.75fr);gap:14px 48px}
+  .hcit-contact-grid{grid-template-columns:1fr;gap:14px}
+  /* Sections share the hero's left edge instead of centering a narrower block. */
+  .hcit-section,.hcit-contact{padding-inline:clamp(20px,3.2vw,32px)}
+  .hcit-section .si,.hcit-contact .si{max-width:calc(var(--content-max,1320px) - 64px)}
+  .hcit-section-head,.hcit-offer-list,.hcit-timeline,.hcit-trust-list,.hcit-contact-grid{margin-left:0;margin-right:0}
+
   @media(max-width:720px){
     .hcit-assurances{grid-template-columns:1fr}
     .hcit-assurances li{border-right:0;border-bottom:1px solid var(--border-soft);padding:12px 0}

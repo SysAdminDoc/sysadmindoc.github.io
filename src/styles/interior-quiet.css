@@ -1,11 +1,11 @@
 /* Interior routes share this focused layer so the homepage bundle stays lean. */
 body.route-interior main{min-height:calc(100vh - 160px)}
 body.route-interior .page-shell{max-width:var(--content-max);display:block;padding-top:104px;padding-bottom:30px}
-body.route-interior .page-shell > .sh{display:grid;grid-template-columns:minmax(150px,190px) minmax(0,1fr);gap:6px 40px;align-items:start;margin:0 0 26px;padding:0;border:0}
-body.route-interior .page-shell > .sh .sl{grid-row:1 / span 3;padding-top:8px}
-body.route-interior .page-shell > .sh .st,body.route-interior .page-shell > .sh .sd,body.route-interior .page-shell > .sh .page-updated{grid-column:2}
-body.route-interior .page-shell > .sh .st{max-width:20ch;font-size:clamp(42px,4.4vw,62px)!important;line-height:.98}
-body.route-interior .page-shell > .sh .sd{max-width:64ch;margin-top:6px;font-size:17px;line-height:1.55}
+body.route-interior .page-shell > .sh{display:grid;grid-template-columns:1fr;gap:10px;align-items:start;margin:0 0 26px;padding:0;border:0}
+body.route-interior .page-shell > .sh .sl{grid-row:auto;padding-top:0;margin-bottom:4px}
+body.route-interior .page-shell > .sh .st,body.route-interior .page-shell > .sh .sd,body.route-interior .page-shell > .sh .page-updated{grid-column:1}
+body.route-interior .page-shell > .sh .st{max-width:16ch;font-size:clamp(42px,4.4vw,62px)!important;line-height:.98}
+body.route-interior .page-shell > .sh .sd{max-width:62ch;margin-top:6px;font-size:17px;line-height:1.55}
 body.route-interior .page-updated{margin-top:6px}
 body.route-interior .page-stat-grid{display:grid;gap:0;margin-top:22px;border-block:1px solid var(--border-soft)}
 body.route-interior .page-stat{min-height:0;padding:14px 18px 14px 0;border:0;border-right:1px solid var(--border-soft);border-radius:0;background:transparent;box-shadow:none}
