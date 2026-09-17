@@ -14,10 +14,6 @@ Added 2026-09-04 from the research pass recorded in RESEARCH.md. The 2026-08-20 
 
 ### P3
 
-- [ ] P3 — Cross-origin SW handler has no behavioral test coverage
-  Why: `putTimestamped` and `freshCachedOrOffline` in `sw.js` are verified only by source-pattern regex. A bug in the TTL boundary or header-copy path would pass all existing tests.
-  Where: `test/offline-fallback.test.mjs`, `public/sw.js` lines 35-53, 148-159
-
 - [ ] P3 — Dead CSS from iterative redesigns (~40KB)
   Why: At least 6 design iterations progressively redefine tokens and styles. v0.33 is unlayered so every layered property it touches is dead code. Increases load time.
   Where: All layer CSS files
