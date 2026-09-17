@@ -1,24 +1,6 @@
 /* ===== R38: Light theme completion ===== */
 @layer site.additions {
 
-/* Nav link hovers — rgba(255,255,255,.05) invisible on light bg */
-html[data-theme="light"] .nk a:hover,
-html[data-theme="light"] .nk a.active{
-  background:rgba(70,83,112,.08);
-}
-html[data-theme="light"] .theme-toggle{
-  border-color:var(--border-soft);
-}
-html[data-theme="light"] #nav{
-  border-bottom-color:var(--border-soft);
-  box-shadow:0 8px 28px rgba(29,42,70,.1);
-}
-@media(prefers-contrast:more){
-  #nav{
-    border-bottom-color:var(--border-strong);
-  }
-}
-
 /* Hero stat borders — rgba(255,255,255,.08) invisible */
 html[data-theme="light"] .hs{
   border-top-color:var(--border-soft);
@@ -113,26 +95,6 @@ html[data-theme="light"] .dv{
 /* Starred catalog items */
 html[data-theme="light"] .ca.starred{
   background:rgba(250,204,21,.06);
-}
-
-/* Primary button */
-html[data-theme="light"] .bp{
-  color:#fff;
-  box-shadow:0 8px 22px rgba(53,107,191,.22);
-}
-html[data-theme="light"] .bp:hover{
-  box-shadow:0 14px 36px rgba(53,107,191,.3);
-}
-
-/* Secondary button */
-html[data-theme="light"] .bg2{
-  background:rgba(255,255,255,.6);
-  border-color:var(--border-soft);
-}
-html[data-theme="light"] .bg2:hover{
-  background:rgba(255,255,255,.82);
-  border-color:var(--border-strong);
-  box-shadow:0 10px 24px rgba(29,42,70,.1);
 }
 
 html[data-theme="light"] .lc2:hover{

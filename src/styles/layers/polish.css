@@ -1,27 +1,6 @@
 /* ===== v1.0 premium polish pass ===== */
 @layer site.polish {
-:root{
-  --surface-1:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
-  --surface-1:light-dark(linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.58)), linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)));
-  --surface-2:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
-  --surface-2:light-dark(linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48)), linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)));
-  --surface-strong:linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74));
-  --surface-strong:light-dark(linear-gradient(180deg, rgba(255,255,255,.88), rgba(247,241,231,.82)), linear-gradient(180deg, rgba(11,18,32,.88), rgba(7,12,24,.74)));
-  --border-soft:rgba(255,255,255,.08);
-  --border-soft:light-dark(rgba(70,83,112,.11), rgba(255,255,255,.08));
-  --border-strong:rgba(124,184,255,.18);
-  --border-strong:light-dark(rgba(53,107,191,.18), rgba(124,184,255,.18));
-  --shadow-soft:0 22px 52px rgba(0,0,0,.18);
-  --shadow-soft:light-dark(0 20px 44px rgba(29,42,70,.12), 0 22px 52px rgba(0,0,0,.18));
-  --shadow-strong:0 34px 84px rgba(0,0,0,.34);
-  --shadow-strong:light-dark(0 28px 66px rgba(29,42,70,.16), 0 34px 84px rgba(0,0,0,.34));
-  --radius-sm:8px;
-  --radius-md:10px;
-  --radius-lg:12px;
-  --radius-xl:12px;
-  --content-max:1280px;
-  --content-reading:68ch;
-}
+/* :root token block removed: all tokens superseded by v0.33 unlayered. */
 @media(prefers-contrast:more){
   :root{
     --glass-border:rgba(255,255,255,.24);
@@ -62,22 +41,8 @@ body{
   text-rendering:optimizeLegibility;
   line-height:1.65;
 }
-body::before{
-  opacity:.12;
-}
-#nav{
-  background:rgba(6,10,18,.68);
-  border-bottom:1px solid rgba(255,255,255,.07);
-  box-shadow:0 16px 46px rgba(0,0,0,.2);
-}
-html[data-theme="light"] #nav{
-  background:rgba(248,244,234,.76);
-}
-@media(prefers-contrast:more){
-  #nav{
-    border-bottom-color:var(--border-strong);
-  }
-}
+
+
 .ni{
   width:100%;
   max-width:none;
