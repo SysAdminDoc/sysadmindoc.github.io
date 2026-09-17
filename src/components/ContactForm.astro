@@ -40,8 +40,8 @@ const { subject = '' } = Astro.props;
   .contact-field{display:grid;gap:6px}
   .contact-field-wide{grid-column:1/-1}
   .contact-field label{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
-  .contact-field input,.contact-field textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface-1);color:var(--t1);font:inherit;font-size:15px;line-height:1.5;resize:vertical}
-  .contact-field input:focus,.contact-field textarea:focus{outline:2px solid var(--focus-outline);outline-offset:2px;border-color:var(--border-strong)}
+  .contact-field input,.contact-field textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--border-soft);border-radius:0;background:var(--surface-1);color:var(--t1);font:inherit;font-size:15px;line-height:1.5;resize:vertical;transition:border-color var(--dur-fast) var(--ease-out)}
+  .contact-field input:focus,.contact-field textarea:focus{outline:2px solid var(--focus-outline);outline-offset:3px;border-color:var(--border-strong);box-shadow:var(--focus-ring)}
   .contact-field input::placeholder,.contact-field textarea::placeholder{color:var(--t3);opacity:.7}
   .contact-hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
   .contact-form-actions{display:flex;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}
