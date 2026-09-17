@@ -65,5 +65,7 @@ function isTextEntryTarget(el) {
   );
 }
 
-var prefersReducedMotion = typeof window.matchMedia === 'function'
-  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var _rmq = typeof window.matchMedia === 'function'
+  ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+var prefersReducedMotion = _rmq ? _rmq.matches : false;
+if (_rmq) _rmq.addEventListener('change', function (e) { prefersReducedMotion = e.matches; });

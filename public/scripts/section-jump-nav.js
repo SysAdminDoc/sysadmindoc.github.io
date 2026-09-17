@@ -6,8 +6,6 @@
     var navs = Array.from(document.querySelectorAll('[data-page-jump-nav]'));
     if (navs.length === 0) return;
 
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     navs.forEach(function (nav) {
       var links = Array.from(nav.querySelectorAll('[data-page-jump-link]'));
       var targets = links
@@ -47,7 +45,7 @@
           }
           history.pushState(null, '', '#' + id);
           target.focus({ preventScroll: true });
-          target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+          target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
           setActive(id);
         });
       });
