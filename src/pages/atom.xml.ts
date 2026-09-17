@@ -19,7 +19,7 @@ try {
 
 const getItemDate = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
-const cleanDesc = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
+const cleanDesc = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 const escapeXml = (s: string) =>
   s.replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!);
 

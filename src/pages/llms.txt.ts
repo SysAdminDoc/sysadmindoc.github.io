@@ -15,7 +15,7 @@ import { githubRepoUrl } from '../data/github';
 // feeds the command palette and RSS so it never drifts.
 export async function GET(context: APIContext) {
   const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
-  const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
+  const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
   const firstSentence = (s: string) => {
     const text = clean(s);
     const [first] = text.split('. ');

@@ -20,7 +20,7 @@ try {
 
 const getItemDate = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
-const cleanDesc = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
+const cleanDesc = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
 export async function GET(context: APIContext) {
   const site = context.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';

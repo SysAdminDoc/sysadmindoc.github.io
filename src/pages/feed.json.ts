@@ -13,7 +13,7 @@ try { const m = await import('../data/_stats.json'); stats = (m.default ?? m) as
 let meta: Record<string, { pushedAt?: string | null; updatedAt?: string | null }> = {};
 try { const m = await import('../data/_meta.json'); meta = (m.default ?? m) as typeof meta; } catch {}
 
-const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/\s+/g, ' ').trim();
+const clean = (s: string) => sanitizeHtml(s, TEXT_ONLY_SANITIZE).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 const dateFor = (slug: string) =>
   meta[slug]?.pushedAt || meta[slug]?.updatedAt || stats.lastPushedAt || stats.fetchedAt || new Date().toISOString();
 
