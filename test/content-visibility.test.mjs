@@ -35,5 +35,5 @@ test('homepage below-fold sections opt into content-visibility with stable intri
 test('print output disables homepage render containment', async () => {
   const css = await loadGlobalCss();
 
-  assert.match(css, /@media print\{[\s\S]*content-visibility:visible;[\s\S]*contain-intrinsic-size:none;[\s\S]*\}/, 'print should render deferred sections normally');
+  assert.match(css, /@media print\{[^}]*\{[^}]*content-visibility:visible;[^}]*contain-intrinsic-size:none;[^}]*\}/, 'print should render deferred sections normally');
 });
