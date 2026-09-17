@@ -116,7 +116,7 @@ for (const file of jsFiles) {
   jsTotalBytes += file.bytes;
   if (file.bytes > budgets.jsFileLimitBytes) {
     fail(
-      `dist/scripts/${file.name} is ${formatBytes(file.bytes)}; per-file JS budget is ${formatBytes(budgets.jsFileLimitBytes)}.`,
+      `dist/${file.name} is ${formatBytes(file.bytes)}; per-file JS budget is ${formatBytes(budgets.jsFileLimitBytes)}.`,
     );
   }
 }

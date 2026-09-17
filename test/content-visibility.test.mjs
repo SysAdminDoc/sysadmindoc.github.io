@@ -25,7 +25,7 @@ test('homepage below-fold sections opt into content-visibility with stable intri
   assert.match(css, /contain-intrinsic-size:auto var\(--cv-intrinsic-size,700px\)/, 'deferred sections need an intrinsic-size fallback');
 
   for (const section of deferredSections) {
-    assert.match(css, new RegExp(`${section.replace('#', '#')}\\{--cv-intrinsic-size:\\d+px\\}`), `${section} needs an explicit intrinsic size`);
+    assert.match(css, new RegExp(`${section}\\{--cv-intrinsic-size:\\d+px\\}`), `${section} needs an explicit intrinsic size`);
   }
 
   assert.doesNotMatch(css, /#hero\{--cv-intrinsic-size:/, 'hero must stay eager for first paint');

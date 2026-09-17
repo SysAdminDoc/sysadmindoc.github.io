@@ -30,6 +30,10 @@ function parseArgs(argv) {
   return args;
 }
 
+function escapeJsString(s) {
+  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 function titleCase(slug) {
   return slug
     .split('-')
@@ -48,7 +52,10 @@ function today() {
  * no-op.
  */
 function registrations(ctx) {
-  const { slug, title, label, description, route, date } = ctx;
+  const { slug, route, date } = ctx;
+  const title = escapeJsString(ctx.title);
+  const label = escapeJsString(ctx.label);
+  const description = escapeJsString(ctx.description);
   return [
     {
       name: 'page stub',

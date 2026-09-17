@@ -63,7 +63,7 @@ function runNpmJson(args, { allowOutdatedExit = false } = {}) {
   if (result.error) {
     throw new Error(`npm ${args.join(' ')} failed to start: ${result.error.message}`);
   }
-  const allowedStatuses = allowOutdatedExit ? new Set([0, 1]) : new Set([0, 1]);
+  const allowedStatuses = allowOutdatedExit ? new Set([0, 1]) : new Set([0]);
   if (!allowedStatuses.has(result.status ?? 1) && !result.stdout.trim()) {
     throw new Error(`npm ${args.join(' ')} failed: ${result.stderr.trim() || `exit ${result.status}`}`);
   }

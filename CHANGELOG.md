@@ -4,6 +4,14 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Feed plain-text descriptions (RSS, Atom, JSON Feed, llms.txt) replaced HTML entities with spaces instead of decoding them. "ATT&CK" read as "ATT CK" and em dashes disappeared. Use sanitize-html's text-only mode instead of a naive regex strip.
+- CatalogEntry aria-labels carried raw HTML entities that screen readers spoke literally. Decode them before building the accessible name.
+- The homepage catalog handoff section used an undefined CSS variable (`--surface-0`), falling through to transparent instead of a deliberate surface tone.
+- The v0.33 design system made every `prefers-contrast:more` token override cascade-dead because the overrides sat in CSS layers while the design system is unlayered. Users who need higher contrast from their OS now get enhanced borders, text, and focus rings.
+- Operator precedence in the command palette's scroll behavior: the ternary bound tighter than `||`, passing boolean `true` as the scroll behavior value instead of the string `'auto'`.
+- Stale CLAUDE.md: version (v0.42.0 to v0.43.0), homepage section order (Stack and Beyond Code sections no longer exist), and `HOMEPAGE_CATALOG_LIMIT` (84 to 12).
+
 ## [v0.43.0] - 2026-09-05
 
 ### Added

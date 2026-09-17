@@ -97,7 +97,7 @@ test('summarizeReleaseBody repairs a legacy hard-cut summary', () => {
   assert.equal(legacy.length, 220);
   const summary = summarizeReleaseBody(legacy);
   assert.ok(summary.endsWith('…'), `expected an ellipsis, got: ${summary}`);
-  assert.ok(!/\s\S{1,3}…$/.test(summary) || summary.endsWith(' …') === false);
+  assert.ok(!/\s\S{1,3}…$/.test(summary), `should not orphan a short word before the ellipsis: ${summary}`);
   assert.ok(legacy.startsWith(summary.slice(0, -1)), 'repair must not invent text');
 });
 
