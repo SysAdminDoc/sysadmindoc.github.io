@@ -2,6 +2,14 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.44.1] - 2026-09-17
+
+### Added
+- First-party contact form on the homepage and `/ai/`. A Node.js sidecar validates honeypot, minimum-time, and field content, then forwards to a local ntfy instance. No third-party service in the flow. Progressive enhancement: the native POST degrades to mailto without JS.
+
+### Infrastructure
+- Edge Caddy access logs mounted on a host volume so access history survives container recreation.
+
 ## [v0.44.0] - 2026-09-17
 
 ### Added
