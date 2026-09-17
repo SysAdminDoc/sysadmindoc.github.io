@@ -2,6 +2,17 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.44.2] - 2026-09-17
+
+### Changed
+- Premium polish pass across all 16 user-facing routes. Systematic alignment with the v0.33 editorial design system: every `border-radius` on page-level components flattened to 0 (from 4-12px holdovers), hardcoded rgba green values replaced with `color-mix(var(--grn))`, undefined `--rule` CSS variable fixed to `--border-soft`, card shadows removed where the editorial system is intentionally flat.
+- Contact form inputs aligned with the design system focus recipe (outline-offset 3px + box-shadow halo, sharp corners).
+- Colophon metadata badges and row hover state improved. Project names highlight blue on hover with transition.
+- Healthcare IT gradient text effect removed (was the only instance on the site). Footer summary rewritten to reference the track content.
+- Data page section headings switched to the mono/uppercase/spaced editorial pattern.
+- GreatestHits h2 scale aligned with other homepage section h2s.
+- 404 page given its own `.error-page` class instead of borrowing `.search-page`.
+
 ## [v0.44.1] - 2026-09-17
 
 ### Added
