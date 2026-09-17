@@ -40,7 +40,8 @@ function formatBytes(bytes) {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-async function collectFiles(dir, ext) {
+async function collectFiles(dir, ext, baseDir) {
+  const root = baseDir ?? dir;
   let entries;
   try {
     entries = await fs.readdir(dir, { withFileTypes: true });
@@ -49,10 +50,13 @@ async function collectFiles(dir, ext) {
   }
   const results = [];
   for (const entry of entries) {
-    if (entry.isFile() && entry.name.endsWith(ext)) {
-      const filePath = path.join(dir, entry.name);
-      const stat = await fs.stat(filePath);
-      results.push({ name: entry.name, filePath, bytes: stat.size });
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...await collectFiles(fullPath, ext, root));
+    } else if (entry.isFile() && entry.name.endsWith(ext)) {
+      const stat = await fs.stat(fullPath);
+      const relName = path.relative(root, fullPath).replace(/\\\\/g, '/');
+      results.push({ name: relName, filePath: fullPath, bytes: stat.size });
     }
   }
   results.sort((a, b) => a.name.localeCompare(b.name));
