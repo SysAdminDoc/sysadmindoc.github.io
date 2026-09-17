@@ -1621,6 +1621,11 @@ html[data-theme="dark"]{
   #nav{border-bottom-color:var(--border-strong)}
   .btn,.theme-toggle,.nav-search{border-color:var(--border-strong)}
 }
+@media(forced-colors:active){
+  :focus-visible{outline:2px solid Highlight;outline-offset:3px}
+  body::before{display:none!important}
+  .btn,button,.lb2,.theme-toggle,.nav-search,.mt,input,select,textarea{border:1px solid ButtonText}
+}
 body{background:var(--bg)}
 body::before{display:none}
 #nav{border-bottom:1px solid var(--border-soft);background:color-mix(in srgb,var(--bg) 96%,transparent);box-shadow:none}
