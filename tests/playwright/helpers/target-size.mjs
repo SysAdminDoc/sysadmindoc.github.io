@@ -48,6 +48,8 @@ export async function collectTargetSizeViolations(page, minimum) {
         const label = element.closest('label')
           ?? (element.id ? document.querySelector(`label[for="${CSS.escape(element.id)}"]`) : null);
         const labelRect = label?.getBoundingClientRect();
+        const labeledControl = element instanceof HTMLLabelElement ? element.control : null;
+        const labeledControlRect = labeledControl?.getBoundingClientRect();
         return {
           element,
           rect: {
@@ -66,6 +68,9 @@ export async function collectTargetSizeViolations(page, minimum) {
             && after.bottom === '0px'
             && after.left === '0px',
           labeledTarget: Boolean(labelRect && labelRect.width >= minimum && labelRect.height >= minimum),
+          equivalentControl: Boolean(
+            labeledControlRect && labeledControlRect.width >= minimum && labeledControlRect.height >= minimum,
+          ),
         };
       })
       .filter((target) => target.rect.width > 0 && target.rect.height > 0);
@@ -121,6 +126,7 @@ export async function collectTargetSizeViolations(page, minimum) {
       if (target.rect.width >= minimum && target.rect.height >= minimum) return [];
       if (target.stretched) return [];
       if (target.labeledTarget) return [];
+      if (target.equivalentControl) return [];
       if (isInlineException(target)) return [];
       if (passesSpacingException(target, index)) return [];
       return [{

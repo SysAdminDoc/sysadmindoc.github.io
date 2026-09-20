@@ -26,6 +26,10 @@
     {
       "repo": ".github",
       "reason": "Default community health files shared across public repos; not a portfolio project."
+    },
+    {
+      "repo": "MavenBranding",
+      "reason": "Employer branding assets hosted for the Maven Imaging provisioning script to fetch; an asset host rather than a portfolio project."
     }
   ],
   "privacyReviewRequired": [

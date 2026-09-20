@@ -557,6 +557,7 @@ test('cross-origin API fetch caches a timestamped response on success', async ()
   listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
   await activatePromise;
 
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   const waitUntilPromises = [];
   const request = new Request('https://api.github.com/repos/test/test');
@@ -567,6 +568,7 @@ test('cross-origin API fetch caches a timestamped response on success', async ()
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(response.status, 200);
   assert.equal(await response.text(), '{"stars":42}');
   await Promise.all(waitUntilPromises);
@@ -623,6 +625,7 @@ test('cross-origin API fetch serves a fresh cached response when network fails',
   listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
   await activatePromise;
 
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   listeners.get('fetch')({
     request: new Request('https://api.github.com/repos/test/test'),
@@ -631,6 +634,7 @@ test('cross-origin API fetch serves a fresh cached response when network fails',
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(response.status, 200);
   assert.equal(await response.text(), '{"cached":true}');
 });
@@ -680,6 +684,7 @@ test('cross-origin API fetch returns offline when cache is stale and network fai
   listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
   await activatePromise;
 
+  /** @type {Promise<Response> | undefined} */
   let responsePromise;
   listeners.get('fetch')({
     request: new Request('https://api.github.com/repos/test/test'),
@@ -688,6 +693,7 @@ test('cross-origin API fetch returns offline when cache is stale and network fai
   });
 
   const response = await responsePromise;
+  assert.ok(response);
   assert.equal(response.status, 503);
   assert.equal(await response.text(), 'Offline');
 });

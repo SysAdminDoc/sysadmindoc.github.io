@@ -2,6 +2,18 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.45.1] - 2026-09-20
+
+### Fixed
+- The nightly deploy had been aborting in preflight since 2026-09-14. Three separate gates were failing behind each other, so fixing one only revealed the next.
+- Dependency audit: the pinned `vite` and `yaml` overrides had gone stale (8.2.2 and 2.9.0). They now sit at 8.3.0 and 2.9.1, which is what the strict exact-pin rule asks for.
+- Catalog audit: MavenBranding is a public repo that hosts Maven Imaging desktop branding for the provisioning script to fetch. It's an asset host, not a portfolio project, so it's recorded under `intentionallySkippedPublicRepos`.
+- Script typecheck: three service worker tests added on 2026-09-17 skipped the `@type` annotation and the `assert.ok(response)` guard that the other four tests in the file use, so `tsc` flagged the awaited response as possibly undefined.
+- Target-size audit: the contact form's field labels were reported as undersized tap targets on mobile. A `label[for]` whose control already meets the minimum is covered by the WCAG 2.2 Equivalent exception, so the audit helper now skips it the same way it already skips an input wrapped in a large enough label.
+
+### Security
+- `fast-uri` moved from 3.1.4 to 3.1.8, clearing four advisories (two SSRF, two host confusion). This stays inside the v3 line the AJV compatibility hold requires.
+
 ## [v0.45.0] - 2026-09-17
 
 ### Changed
