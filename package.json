@@ -1,7 +1,7 @@
 {
   "name": "sysadmindoc-portfolio",
   "type": "module",
-  "version": "0.45.1",
+  "version": "0.45.2",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -113,9 +113,9 @@
   },
   "overrides": {
     "esbuild": "$esbuild",
-    "vite": "8.3.0",
+    "vite": "^8.3.0",
     "yaml-language-server": {
-      "yaml": "2.9.1"
+      "yaml": "^2.9.1"
     },
     "svgo": "^4.1.0",
     "postcss": "^8.5.28",

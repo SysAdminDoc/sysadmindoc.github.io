@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.45.2] - 2026-09-20
+
+### Fixed
+- The `vite` and `yaml` overrides are caret floors again (`^8.3.0`, `^2.9.1`) instead of exact pins. Both started life as security floors, and an exact pin made `deps:audit --strict` fail on a timer: the nightly never runs `npm install`, so the installed version is frozen while registry latest moves, and vite ships about every nine days. That is why the deploy kept going red without anyone touching the repo. Resolved versions are unchanged, so the floor and the build are the same.
+
 ## [v0.45.1] - 2026-09-20
 
 ### Fixed
