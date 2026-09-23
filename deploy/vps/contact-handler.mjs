@@ -13,7 +13,8 @@
 //   NTFY_TOKEN            optional  write-only ntfy access token (tk_...), sent as a Bearer header
 //   CONTACT_SMOKE_SECRET  optional  shared secret the live smoke sends in X-Contact-Smoke; such
 //                                   leads are stored as synthetic and published to <topic>-smoke,
-//                                   which the owner's phone does not subscribe to
+//                                   which the owner's phone does not subscribe to. A request that
+//                                   sends the header with any other value is refused with 403.
 //   CONTACT_STORE         optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
 //   CONTACT_MIN_TIME      optional  minimum seconds between page load and submit (default 3)
 import http from 'node:http';
@@ -82,8 +83,24 @@ export function loadConfig(env = process.env) {
   } catch {
     throw new Error('NTFY_URL must be an absolute topic URL, e.g. http://ntfy:80/portfolio-leads.');
   }
-  if (!topicUrl.pathname.replace(/\//g, '')) {
+  if (topicUrl.protocol !== 'http:' && topicUrl.protocol !== 'https:') {
+    throw new Error('NTFY_URL must be an http or https URL.');
+  }
+  // fetch() quotes a URL with credentials in its error, which would put them in
+  // the container log on every failed publish.
+  if (topicUrl.username || topicUrl.password) {
+    throw new Error('NTFY_URL must not carry credentials; put the access token in NTFY_TOKEN.');
+  }
+  const segments = topicUrl.pathname.split('/').filter(Boolean);
+  if (segments.length === 0) {
     throw new Error('NTFY_URL must name a topic, e.g. http://ntfy:80/portfolio-leads.');
+  }
+  // Publishing goes to the server root, so a path prefix would be dropped, and
+  // the smoke topic appends "-smoke" within ntfy's 64-character topic limit.
+  if (segments.length !== 1 || !/^[-_A-Za-z0-9]{1,58}$/.test(segments[0]) || topicUrl.search || topicUrl.hash) {
+    throw new Error(
+      'NTFY_URL must be the ntfy server URL plus one topic of at most 58 letters, digits, - or _, e.g. http://ntfy:80/portfolio-leads.',
+    );
   }
   const storePath = String(env.CONTACT_STORE ?? DEFAULT_CONFIG.storePath).trim();
   if (!storePath || !path.isAbsolute(storePath)) {
@@ -138,7 +155,9 @@ async function readBody(request, maxBytes) {
 
 export function parseSubmission(body) {
   const params = new URLSearchParams(body);
-  const field = (key, max) => (params.get(key) || '').trim().slice(0, max);
+  // Cut by code point, not UTF-16 unit, so an emoji at the limit is kept or
+  // dropped whole instead of leaving half a surrogate pair in the store.
+  const field = (key, max) => Array.from((params.get(key) || '').trim()).slice(0, max).join('');
   return {
     name: field('name', 200),
     email: field('email', 200),
@@ -159,7 +178,10 @@ export function validateSubmission(form, now, config = DEFAULT_CONFIG) {
   }
   if (form.loadedAt > 0) {
     const elapsed = now.getTime() / 1000 - form.loadedAt;
-    if (elapsed < config.minTimeSeconds) return 'submitted too quickly';
+    // _t comes from the visitor's clock. On a device running fast the elapsed
+    // time comes out negative, which says nothing about how long they spent on
+    // the page, so only a real short stay is refused.
+    if (elapsed >= 0 && elapsed < config.minTimeSeconds) return 'submitted too quickly';
   }
   return null;
 }
@@ -206,49 +228,99 @@ export function notificationFor(lead) {
   };
 }
 
+// Every record is serialized with "type" as its first key, and a quote inside a
+// JSON string is always escaped, so this text only ever occurs where a record
+// begins. That lets a whole record be recovered from a line it shares with a
+// torn fragment.
+const RECORD_START = '{"type":"';
+
+function parseRecords(line) {
+  try {
+    return [JSON.parse(line)];
+  } catch {
+    return line
+      .split(RECORD_START)
+      .slice(1)
+      .flatMap((piece) => {
+        try {
+          return [JSON.parse(RECORD_START + piece)];
+        } catch {
+          return [];
+        }
+      });
+  }
+}
+
 /** Append-only lead store: one `lead` entry per submission, then `status` entries. */
 export function createLeadStore(storePath, fileSystem = fs) {
   let queue = Promise.resolve();
+  // Set when the file may end partway through a line: an append failed after
+  // some of its bytes reached the disk, or the host died mid-write and the
+  // store was found that way at startup. The next record then starts on a line
+  // of its own instead of being glued onto the fragment.
+  let startOnFreshLine = false;
 
   function append(entry) {
-    const line = `${JSON.stringify(entry)}\n`;
     const task = queue.catch(() => undefined).then(async () => {
+      const line = `${startOnFreshLine ? '\n' : ''}${JSON.stringify(entry)}\n`;
       await fileSystem.mkdir(path.dirname(storePath), { recursive: true });
-      await fileSystem.appendFile(storePath, line, { encoding: 'utf8', mode: 0o600, flush: true });
+      try {
+        await fileSystem.appendFile(storePath, line, { encoding: 'utf8', mode: 0o600, flush: true });
+      } catch (error) {
+        startOnFreshLine = true;
+        throw error;
+      }
+      startOnFreshLine = false;
     });
     queue = task;
     return task;
   }
 
-  async function load() {
-    let text = '';
+  /**
+   * The leads not yet delivered. The store is read a line at a time and a lead
+   * is dropped as soon as its `sent` status turns up, so memory follows the
+   * undelivered backlog rather than the size of the file.
+   */
+  async function loadUndelivered() {
+    let handle;
     try {
-      text = await fileSystem.readFile(storePath, 'utf8');
+      handle = await fileSystem.open(storePath, 'r');
     } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
+      if (error.code === 'ENOENT') return new Map();
+      throw error;
     }
     const leads = new Map();
-    for (const line of text.split('\n')) {
-      if (!line.trim()) continue;
-      let entry;
-      try {
-        entry = JSON.parse(line);
-      } catch {
-        continue;
+    try {
+      const { size } = await handle.stat();
+      if (size > 0) {
+        const last = Buffer.alloc(1);
+        await handle.read(last, 0, 1, size - 1);
+        if (last[0] !== 0x0a) startOnFreshLine = true;
       }
-      if (entry?.type === 'lead' && typeof entry.id === 'string') {
-        leads.set(entry.id, { ...entry, attempts: 0 });
-      } else if (entry?.type === 'status' && leads.has(entry.id)) {
-        const lead = leads.get(entry.id);
-        lead.status = entry.status;
-        lead.attempts = Number(entry.attempts) || lead.attempts;
-        lead.lastAttemptAt = entry.at;
+      for await (const line of handle.readLines({ encoding: 'utf8', autoClose: false, start: 0 })) {
+        if (!line.trim()) continue;
+        for (const entry of parseRecords(line)) {
+          if (entry?.type === 'lead' && typeof entry.id === 'string') {
+            leads.set(entry.id, { ...entry, attempts: 0 });
+          } else if (entry?.type === 'status' && leads.has(entry.id)) {
+            if (entry.status === 'sent') {
+              leads.delete(entry.id);
+              continue;
+            }
+            const lead = leads.get(entry.id);
+            lead.status = entry.status;
+            lead.attempts = Number(entry.attempts) || lead.attempts;
+            lead.lastAttemptAt = entry.at;
+          }
+        }
       }
+    } finally {
+      await handle.close();
     }
     return leads;
   }
 
-  return { append, load };
+  return { append, loadUndelivered };
 }
 
 function sendJson(response, status, body) {
@@ -306,6 +378,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   async function deliver(lead) {
     const attempts = (lead.attempts ?? 0) + 1;
     lead.attempts = attempts;
+    lead.runAttempts = (lead.runAttempts ?? 0) + 1;
     lead.lastAttemptAt = now().toISOString();
     let delivered = false;
     try {
@@ -336,20 +409,42 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     return settled;
   }
 
-  async function restorePending() {
-    const leads = await store.load();
-    for (const lead of leads.values()) {
-      if (lead.status !== 'sent') pending.set(lead.id, lead);
-    }
-    return pending.size;
+  // A lead accepted while the store is being read could be restored as pending
+  // after it had already been delivered, and then sent twice. New leads wait
+  // for the read to finish.
+  let restoring = Promise.resolve();
+
+  /** Queues every undelivered lead in the store. Run it before accepting requests. */
+  function restorePending() {
+    const run = (async () => {
+      const leads = await store.loadUndelivered();
+      for (const lead of leads.values()) {
+        if (pending.has(lead.id)) continue;
+        // Each start gets a fresh round of attempts, retried at once, so a lead
+        // that used up its attempts during a long ntfy outage isn't silenced for
+        // good. The nightly deploy recreates this container.
+        pending.set(lead.id, { ...lead, runAttempts: 0, lastAttemptAt: undefined });
+      }
+      return pending.size;
+    })();
+    restoring = run.catch(() => undefined);
+    return run;
   }
 
   async function retryPending() {
     const current = now().getTime();
     const due = [...pending.values()].filter((lead) => {
-      if ((lead.attempts ?? 0) >= config.maxNotifyAttempts) return false;
+      if ((lead.runAttempts ?? 0) >= config.maxNotifyAttempts) {
+        if (!lead.parked) {
+          lead.parked = true;
+          logger.error(
+            `contact: lead ${lead.id} is still undelivered after ${lead.attempts} attempts; it stays in the store and gets another round when the handler restarts`,
+          );
+        }
+        return false;
+      }
       if (!lead.lastAttemptAt) return true;
-      return current - Date.parse(lead.lastAttemptAt) >= retryDelayMs(lead.attempts ?? 0);
+      return current - Date.parse(lead.lastAttemptAt) >= retryDelayMs(lead.runAttempts ?? 0);
     });
     await Promise.all(due.map((lead) => track(deliver(lead))));
     return due.length;
@@ -376,6 +471,18 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       return;
     }
 
+    // The live smoke proves the whole path on every deploy, and its leads are
+    // kept apart so they never reach the owner's phone. Visitors never send this
+    // header, so a wrong secret (say, after a rotation the deploy machine missed)
+    // is refused outright rather than filed and announced as a real inquiry.
+    const smokeHeader = request.headers['x-contact-smoke'];
+    const synthetic = smokeHeader !== undefined;
+    if (synthetic && !secretMatches(smokeHeader, config.smokeSecret)) {
+      logger.log('contact: refused a smoke submission with the wrong secret');
+      sendJson(response, 403, { error: 'forbidden' });
+      return;
+    }
+
     const received = now();
     const form = parseSubmission(body);
     const problem = validateSubmission(form, received, config);
@@ -396,9 +503,8 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       page: refererPath(request.headers.referer),
       status: 'pending',
     };
-    // The live smoke proves the whole path on every deploy. Its leads are kept
-    // apart so they never reach the owner's phone or read as real inquiries.
-    if (secretMatches(request.headers['x-contact-smoke'], config.smokeSecret)) lead.synthetic = true;
+    if (synthetic) lead.synthetic = true;
+    await restoring;
     try {
       await store.append(lead);
     } catch (error) {
@@ -422,8 +528,15 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   return { handleRequest, retryPending, restorePending, idle, store };
 }
 
-export function startServer(config = loadConfig()) {
+export async function startServer(config = loadConfig()) {
   const handler = createContactHandler(config);
+  // The store is read before the port opens, so no request can race it.
+  try {
+    const count = await handler.restorePending();
+    if (count) console.log(`contact: ${count} undelivered lead(s) queued for notification`);
+  } catch (error) {
+    console.error(`contact: could not read the lead store: ${error.message}`);
+  }
   const server = http.createServer((request, response) => {
     handler.handleRequest(request, response).catch((error) => {
       console.error(`contact: unhandled request error: ${error.message}`);
@@ -433,21 +546,22 @@ export function startServer(config = loadConfig()) {
   });
   server.requestTimeout = 15_000;
   server.headersTimeout = 17_000;
-  handler
-    .restorePending()
-    .then((count) => {
-      if (count) console.log(`contact: ${count} pending lead(s) queued for notification`);
-    })
-    .catch((error) => console.error(`contact: could not read the lead store: ${error.message}`));
   const retryTimer = setInterval(() => {
     handler.retryPending().catch((error) => console.error(`contact: retry pass failed: ${error.message}`));
   }, config.retryIntervalMs);
   retryTimer.unref();
-  server.listen(config.port, config.host, () => {
-    console.log(`contact: listening on ${config.host}:${config.port}`);
+  await new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(config.port, config.host, () => resolve(undefined));
   });
+  console.log(`contact: listening on ${config.host}:${config.port}`);
   return server;
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) startServer();
+if (isMain) {
+  startServer().catch((error) => {
+    console.error(`contact: could not start: ${error.message}`);
+    process.exit(1);
+  });
+}

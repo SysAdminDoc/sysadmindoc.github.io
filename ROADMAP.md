@@ -28,11 +28,11 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: The policy ends up as `img-src 'self' data:`, `connect-src 'self'` and no `frame-src`, with no third-party preconnect or dns-prefetch. `csp:audit:dist` fails when an allowed host is referenced by no built file, proven by a planted case in `gates:selftest`. A Playwright request log shows zero third-party requests on `/`.
   Complexity: M
 
-- [ ] P1: Harden `/api/contact` and put its first tests around it
-  Why: The minimum-time check is skipped whenever `_t` is missing, and nothing limits volume. The log never rotates, rejections store names and emails, and the handler can't see client IPs behind two Caddy hops.
-  Evidence: `deploy/vps/contact-handler.mjs:58`, `:89`, `:116`; Caddy v2.11.4 replaces `X-Forwarded-For` for untrusted peers (`reverseproxy.go`); `deploy/vps/csp-report-server.mjs` already bounds and rotates its log; MailForm's per-target `rateLimit`.
-  Touches: `deploy/vps/contact-handler.mjs` (export a `createServer` for tests; issue an HMAC-signed timestamp token that `contact-form.js` fetches), `deploy/vps/Caddyfile` (`trusted_proxies` for the edge, `header_up X-Real-IP {client_ip}`), `public/scripts/contact-form.js`, new `test/contact-handler.test.mjs`.
-  Acceptance: Tests cover the honeypot, a missing, forged, replayed or expired token, a per-client limit, a global hourly cap, and log rotation. The 422 text is generic ("Please check the form and try again") and doesn't name the honeypot. Rejections store no name or email. A request with no token is accepted only on the plain-POST path, under a stricter limit.
+- [ ] P1: Harden `/api/contact` against volume and replace the browser-clock timing check
+  Why: The minimum-time check is skipped whenever `_t` is missing, and it trusts the visitor's clock: a device running a minute or two fast can still land in the "submitted too quickly" window. Nothing limits volume, so spam grows the lead store without bound, and the handler streams that store at every start inside a 64 MB container.
+  Evidence: `validateSubmission` and `handleRequest` in `deploy/vps/contact-handler.mjs`; the 2026-09-23 review measured about 39 MB of extra peak memory restoring 1,000 maximum-size leads before the store was streamed; the inner Caddy now trusts the edge, so `X-Forwarded-For` reaches the handler as "client, edge"; MailForm's per-target `rateLimit`.
+  Touches: `deploy/vps/contact-handler.mjs` (issue an HMAC-signed server timestamp token that `contact-form.js` fetches; take the client from the right-most untrusted `X-Forwarded-For` address), `public/scripts/contact-form.js`, `test/contact-handler.test.mjs`.
+  Acceptance: Tests cover a missing, forged, replayed or expired token, a device clock ten minutes fast, a per-client limit and a global hourly cap. The 422 text is generic ("Please check the form and try again") and doesn't name the honeypot. A request with no token is accepted only on the plain-POST path, under a stricter limit.
   Complexity: M
 
 - [ ] P1: Fix the three contact-form surface defects

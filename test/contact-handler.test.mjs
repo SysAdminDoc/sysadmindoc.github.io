@@ -230,6 +230,187 @@ test('a store that cannot write answers 503 instead of claiming receipt', async 
   });
 });
 
+function pendingLeadLine(id, name) {
+  return JSON.stringify({
+    type: 'lead', id, receivedAt: NOW.toISOString(), name, email: 'pat@example.test',
+    message: 'Is this still available?', subject: '', page: '/ai/', status: 'pending',
+  });
+}
+
+function restartedHandler(storePath, ntfy, extra = {}) {
+  return createContactHandler(
+    { ...DEFAULT_CONFIG, ntfyUrl: 'http://ntfy:80/portfolio-leads', storePath, ...(extra.config ?? {}) },
+    { fetch: ntfy.fetch, now: () => new Date(NOW.getTime() + 120_000), logger: extra.logger ?? captureLogger(), ...(extra.dependencies ?? {}) },
+  );
+}
+
+test('a write that fails partway does not cost the next accepted lead', async () => {
+  let firstWrite = true;
+  const tearingFileSystem = {
+    ...fs,
+    appendFile: async (file, data, options) => {
+      if (firstWrite) {
+        firstWrite = false;
+        await fs.appendFile(file, String(data).slice(0, 40), options);
+        throw Object.assign(new Error('no space left on device'), { code: 'ENOSPC' });
+      }
+      return fs.appendFile(file, data, options);
+    },
+  };
+  await withHandler({ ntfyState: { fail: true }, dependencies: { fileSystem: tearingFileSystem } }, async ({ handler, storePath }) => {
+    const refused = responseMock();
+    await handler.handleRequest(requestMock({ body: formBody({ name: 'First Visitor', email: 'a@example.test', message: 'first message, disk hiccup' }) }), refused);
+    const accepted = responseMock();
+    await handler.handleRequest(requestMock({ body: formBody({ name: 'Second Visitor', email: 'b@example.test', message: 'second message, accepted' }) }), accepted);
+    await handler.idle();
+    assert.equal(refused.status, 503);
+    assert.equal(accepted.status, 200);
+
+    const lines = (await fs.readFile(storePath, 'utf8')).split('\n').filter(Boolean);
+    assert.throws(() => JSON.parse(lines[0]), SyntaxError, 'the torn fragment stays on a line of its own');
+    assert.equal(JSON.parse(lines[1]).name, 'Second Visitor', 'the next record starts on a fresh line');
+    for (const line of lines.slice(1)) JSON.parse(line);
+
+    const ntfy = fakeNtfy();
+    const restarted = restartedHandler(storePath, ntfy);
+    assert.equal(await restarted.restorePending(), 1, 'the accepted lead is restored');
+    await restarted.retryPending();
+    await restarted.idle();
+    assert.equal(ntfy.calls.length, 1);
+    assert.match(ntfy.calls[0].body.title, /Second Visitor/);
+  });
+});
+
+test('a store left torn by a crash still restores the leads written after it', async () => {
+  await withHandler({ ntfyState: { fail: true } }, async ({ storePath }) => {
+    // Written by a version that could glue a record onto a torn fragment.
+    await fs.writeFile(
+      storePath,
+      `${pendingLeadLine('20260921-aaaaaa', 'Before')}\n{"type":"lead","id":"20260921-bbbbbb","receivedAt":"2026-09-${pendingLeadLine('20260921-cccccc', 'Glued')}\n{"type":"status","id":"20260921-aaaaaa","status":"sent"`,
+    );
+    const ntfy = fakeNtfy();
+    const restarted = restartedHandler(storePath, ntfy);
+    assert.equal(await restarted.restorePending(), 2, 'the glued lead is recovered and the torn one is skipped');
+
+    // The store ended mid-line, so the next record starts on a fresh one.
+    await restarted.handleRequest(requestMock({ body: formBody({ name: 'After Crash', email: 'c@example.test', message: 'lead accepted after a torn write' }) }), responseMock());
+    await restarted.idle();
+    const lines = (await fs.readFile(storePath, 'utf8')).split('\n');
+    assert.match(lines.at(-2), /"status":"sent"/, 'the new lead is announced and marked sent on lines of their own');
+    assert.equal(JSON.parse(lines.find((line) => line.includes('After Crash'))).name, 'After Crash');
+  });
+});
+
+test('restoring reads the store as a stream and keeps only undelivered leads', async () => {
+  await withHandler({}, async ({ storePath }) => {
+    const sent = (id) => JSON.stringify({ type: 'status', id, status: 'sent', at: NOW.toISOString(), attempts: 1 });
+    await fs.writeFile(
+      storePath,
+      [pendingLeadLine('20260922-000001', 'One'), sent('20260922-000001'), pendingLeadLine('20260922-000002', 'Two'),
+        pendingLeadLine('20260922-000003', 'Three'), sent('20260922-000003'), ''].join('\n'),
+    );
+    const noWholeFileReads = {
+      ...fs,
+      readFile: async () => {
+        throw new Error('the store must not be read whole');
+      },
+    };
+    const ntfy = fakeNtfy();
+    const restarted = restartedHandler(storePath, ntfy, { dependencies: { fileSystem: noWholeFileReads } });
+    assert.equal(await restarted.restorePending(), 1);
+    await restarted.retryPending();
+    await restarted.idle();
+    assert.deepEqual(ntfy.calls.map((call) => call.body.title), ['Portfolio lead 20260922-000002: Two']);
+  });
+});
+
+test('a request that arrives while the store is being read waits for the read', async () => {
+  let openGate;
+  const gate = new Promise((resolve) => { openGate = resolve; });
+  const gatedFileSystem = {
+    ...fs,
+    open: async (/** @type {string} */ file, /** @type {string} */ flags) => {
+      await gate;
+      return fs.open(file, flags);
+    },
+  };
+  await withHandler({ dependencies: { fileSystem: gatedFileSystem } }, async ({ handler, storePath, ntfy }) => {
+    await fs.writeFile(storePath, `${pendingLeadLine('20260921-aaaaaa', 'Earlier')}\n`);
+    const restoring = handler.restorePending();
+    const response = responseMock();
+    const request = handler.handleRequest(requestMock({ body: formBody({ name: 'During Restore', email: 'd@example.test', message: 'sent while the store is read' }) }), response);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    assert.doesNotMatch(await fs.readFile(storePath, 'utf8'), /During Restore/, 'nothing is appended mid-read');
+    assert.equal(ntfy.calls.length, 0);
+
+    openGate();
+    assert.equal(await restoring, 1);
+    await request;
+    await handler.idle();
+    await handler.retryPending();
+    await handler.idle();
+    assert.equal(response.status, 200);
+    assert.deepEqual(ntfy.calls.map((call) => call.body.title.split(': ').at(-1)).sort(), ['During Restore', 'Earlier'], 'each lead is sent once');
+  });
+});
+
+test('a lead that runs out of attempts says so once and gets a fresh round after a restart', async () => {
+  await withHandler({ ntfyState: { fail: true }, config: { maxNotifyAttempts: 2 } }, async ({ handler, storePath, logger, setClock }) => {
+    await handler.handleRequest(requestMock({ body: formBody({ name: 'Pat Lee', email: 'pat@example.test', message: 'Is this still available?' }) }), responseMock());
+    await handler.idle();
+    setClock(new Date(NOW.getTime() + 61_000));
+    assert.equal(await handler.retryPending(), 1);
+    setClock(new Date(NOW.getTime() + 10 * 60_000));
+    assert.equal(await handler.retryPending(), 0, 'the round is used up');
+    assert.equal(await handler.retryPending(), 0);
+    const parked = logger.lines.filter((line) => /lead \S+ is still undelivered after 2 attempts; it stays in the store/.test(line));
+    assert.equal(parked.length, 1, 'said once, not on every pass');
+
+    // The attempt count persisted in the store must not silence it after a restart.
+    const ntfy = fakeNtfy();
+    const restarted = restartedHandler(storePath, ntfy, { config: { maxNotifyAttempts: 2 } });
+    assert.equal(await restarted.restorePending(), 1);
+    assert.equal(await restarted.retryPending(), 1, 'a restart starts a fresh round at once');
+    await restarted.idle();
+    assert.equal(ntfy.calls.length, 1);
+    assert.equal((await readEntries(storePath)).at(-1).attempts, 3, 'the stored count keeps the full history');
+  });
+});
+
+test('names are cut by character and a fast device clock does not block a real visitor', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    const emojiName = `A${'😀'.repeat(150)}`;
+    const longName = '😀'.repeat(250);
+    for (const name of [emojiName, longName]) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody({ name, email: 'e@example.test', message: 'a message long enough' }) }), response);
+      assert.equal(response.status, 200);
+    }
+    // A device running two minutes fast, with a minute spent on the page.
+    const fastClock = responseMock();
+    const loadedAt = String(Math.floor(NOW.getTime() / 1000) + 120 - 60);
+    await handler.handleRequest(
+      requestMock({ body: new URLSearchParams({ _t: loadedAt, website: '', name: 'Real Person', email: 'p@example.test', message: 'Please call me about our PACS.' }).toString() }),
+      fastClock,
+    );
+    assert.equal(fastClock.status, 200);
+    // A genuine one-second stay is still refused.
+    const tooQuick = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: new URLSearchParams({ _t: String(Math.floor(NOW.getTime() / 1000) - 1), website: '', name: 'Bot', email: 'b@example.test', message: 'buy now please now' }).toString() }),
+      tooQuick,
+    );
+    assert.equal(tooQuick.status, 422);
+    await handler.idle();
+
+    const names = (await readEntries(storePath)).filter((entry) => entry.type === 'lead').map((lead) => lead.name);
+    assert.equal(names[0], emojiName, 'a name within 200 characters is kept whole');
+    assert.equal(names[1], '😀'.repeat(200));
+    for (const name of names) assert.doesNotMatch(name, /[\ud800-\udbff](?![\udc00-\udfff])/, 'no half emoji');
+    assert.equal(names[2], 'Real Person');
+  });
+});
+
 test('visitor text never reaches the container log', async () => {
   await withHandler({ ntfyState: { fail: true } }, async ({ handler, logger }) => {
     await handler.handleRequest(
@@ -301,17 +482,35 @@ test('the write token is sent as a bearer header and smoke leads go to their own
   await withHandler({ config: { ntfyToken, smokeSecret } }, async ({ handler, storePath, ntfy }) => {
     const body = formBody({ name: 'Live Smoke', email: 'smoke@example.invalid', message: 'synthetic lead for the deploy smoke' });
     await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': smokeSecret } }), responseMock());
-    await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': 'wrong'.repeat(8) } }), responseMock());
     await handler.handleRequest(requestMock({ body }), responseMock());
     await handler.idle();
 
-    assert.deepEqual(ntfy.calls.map((call) => call.body.topic), ['portfolio-leads-smoke', 'portfolio-leads', 'portfolio-leads']);
+    assert.deepEqual(ntfy.calls.map((call) => call.body.topic), ['portfolio-leads-smoke', 'portfolio-leads']);
     assert.equal(ntfy.calls[0].body.priority, 1, 'smoke leads never buzz a phone');
     for (const call of ntfy.calls) assert.equal(call.headers.get('authorization'), `Bearer ${ntfyToken}`);
 
     const leads = (await readEntries(storePath)).filter((entry) => entry.type === 'lead');
-    assert.deepEqual(leads.map((lead) => lead.synthetic === true), [true, false, false]);
+    assert.deepEqual(leads.map((lead) => lead.synthetic === true), [true, false]);
   });
+});
+
+// This used to assert that a wrong secret is filed as a real lead. That was the
+// defect: after a secret rotation the deploy machine missed, every smoke retry
+// became a real inquiry and a priority-4 alert on the owner's phone.
+test('a smoke submission with the wrong secret, or with none configured, is refused and stores nothing', async () => {
+  const body = formBody({ name: 'Live Smoke', email: 'smoke@example.invalid', message: 'synthetic lead for the deploy smoke' });
+  for (const config of [{ smokeSecret: 's'.repeat(32) }, { smokeSecret: '' }]) {
+    await withHandler({ config }, async ({ handler, storePath, ntfy }) => {
+      for (const provided of ['wrong'.repeat(8), '', 's'.repeat(31)]) {
+        const response = responseMock();
+        await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': provided } }), response);
+        assert.equal(response.status, 403, `secret "${provided}" must be refused`);
+      }
+      await handler.idle();
+      assert.equal(ntfy.calls.length, 0, 'nothing is announced');
+      assert.deepEqual(await readEntries(storePath), [], 'nothing is filed');
+    });
+  }
 });
 
 test('loadConfig rejects a malformed token or a short smoke secret', () => {
@@ -320,6 +519,26 @@ test('loadConfig rejects a malformed token or a short smoke secret', () => {
   assert.throws(() => loadConfig({ ...base, CONTACT_SMOKE_SECRET: 'short' }), /CONTACT_SMOKE_SECRET/);
   const config = loadConfig({ ...base, NTFY_TOKEN: `tk_${'0'.repeat(29)}`, CONTACT_SMOKE_SECRET: 'x'.repeat(24) });
   assert.equal(config.ntfyToken, `tk_${'0'.repeat(29)}`);
+});
+
+test('loadConfig refuses an NTFY_URL that would publish somewhere else or log credentials', () => {
+  /** @type {Array<[string, RegExp]>} */
+  const refused = [
+    ['http://ntfy:80/a/b', /one topic/],
+    ['http://ntfy:80/prefix/portfolio-leads', /one topic/],
+    ['http://ntfy:80/portfolio-leads?x=1', /one topic/],
+    ['http://ntfy:80/portfolio leads', /one topic/],
+    [`http://ntfy:80/${'t'.repeat(59)}`, /one topic/],
+    ['ftp://ntfy/portfolio-leads', /http or https/],
+  ];
+  for (const [url, expected] of refused) {
+    assert.throws(() => loadConfig({ NTFY_URL: url }), expected, url);
+  }
+  assert.throws(
+    () => loadConfig({ NTFY_URL: 'http://writer:hunter2@ntfy:80/portfolio-leads' }),
+    (error) => error instanceof Error && /must not carry credentials/.test(error.message) && !error.message.includes('hunter2'),
+  );
+  assert.equal(loadConfig({ NTFY_URL: `https://ntfy.example/${'t'.repeat(58)}` }).ntfyUrl, `https://ntfy.example/${'t'.repeat(58)}`);
 });
 
 test('loadConfig requires a topic URL and an absolute store path', () => {
