@@ -137,6 +137,15 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
     'the global block comes first and trusts the edge alone',
   );
   assert.equal(code.split('trusted_proxies').length - 1, 1, 'nothing else widens the trust');
+  // The seventh drain review reopened the forgery for any internet client in
+  // two lines that passed every test: an upstream header copying the incoming
+  // X-Forwarded-For, and ntfy told to read X-Real-IP, which neither Caddy
+  // strips. Nothing may set a client-address header on the way to ntfy or the
+  // handler, or take the address from anywhere but X-Forwarded-For.
+  assert.doesNotMatch(code, /header_up\s+[+-]?(?:X-Forwarded-For|X-Real-IP|Forwarded|True-Client-IP|X-Client-IP|CF-Connecting-IP)\b/i);
+  assert.doesNotMatch(code, /\bclient_ip_headers\b/);
+  const forwardedHeader = compose.match(/NTFY_PROXY_FORWARDED_HEADER:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
+  assert.ok(forwardedHeader === undefined || /^x-forwarded-for$/i.test(forwardedHeader), `ntfy reads the address from ${forwardedHeader}`);
   assert.match(compose, /NTFY_BEHIND_PROXY: "true"/);
   const trusted = compose.match(/NTFY_PROXY_TRUSTED_HOSTS: "([^"]+)"/)?.[1].split(',');
   assert.deepEqual(trusted, [edge], 'ntfy strips the edge address and nothing else');
