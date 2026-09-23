@@ -102,3 +102,71 @@ test('a hung step is killed at its timeout and recorded as aborted, after a runn
   assert.match(log, /STOP {2}fetch-stars: no result after 8s/);
   assert.match(log, /ABORT after \d+s at step "fetch-stars"/);
 });
+
+// A step whose shell exits while something it started keeps the output pipes
+// open used to hold the runner until that process ended: the timeout's
+// `taskkill /T` aimed at a shell that was already gone and killed nothing.
+test('a step that leaves a process holding its output does not hold the run', { timeout: 45_000 }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  /** @type {import('node:child_process').ChildProcess | null} */
+  let runnerChild = null;
+  t.after(async () => {
+    if (runnerChild && runnerChild.exitCode === null && runnerChild.pid) killTree(runnerChild.pid);
+    const holder = Number(await fs.readFile(path.join(dir, '.tmp', 'holder.pid'), 'utf8').catch(() => '0'));
+    if (holder && isAlive(holder)) killTree(holder);
+    await fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
+  });
+
+  // fetch-stars backgrounds a holder on the inherited stdout and exits 0 at once.
+  // It has to come from the shell: a child that node spawns sits in node's
+  // kill-on-close job on Windows and dies with it. The next step fails on
+  // purpose, which proves the run moved past the first.
+  await fs.mkdir(path.join(dir, '.tmp'), { recursive: true });
+  await fs.writeFile(
+    path.join(dir, 'hold.cjs'),
+    "require('fs').writeFileSync('.tmp/holder.pid', String(process.pid)); setTimeout(() => {}, 30000);",
+  );
+  const background = process.platform === 'win32' ? 'start /b node hold.cjs' : 'node hold.cjs &';
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: { 'fetch-stars': background, 'profile-feed:sync': 'node -e "process.exit(3)"' },
+    }),
+  );
+
+  const started = Date.now();
+  const { child, exited } = runRunner(dir, {
+    ...process.env,
+    GITHUB_TOKEN: 'test-token',
+    REFRESH_STEP_TIMEOUT_MS: '20000',
+    REFRESH_OUTPUT_GRACE_MS: '2000',
+    npm_config_update_notifier: 'false',
+  });
+  runnerChild = child;
+  assert.equal(await exited, 1);
+  const seconds = (Date.now() - started) / 1000;
+
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.step, 'profile-feed:sync', 'fetch-stars counted as passed and the run went on');
+  assert.match(status.detail, /exit code 3/);
+  assert.ok(seconds < 20, `the run finished in ${seconds.toFixed(1)}s instead of waiting on the holder`);
+
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  assert.match(log, /WARN {2}fetch-stars: finished, but something it started still held its output after 2s/);
+  assert.match(log, /OK {4}fetch-stars/);
+  assert.doesNotMatch(log, /STOP/);
+});
+
+test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {
+  const source = await fs.readFile(runner, 'utf8');
+  // A gh waiting on a credential store used to hold the run before the running
+  // record existed, so the status file kept the previous day's verdict.
+  assert.ok(
+    source.indexOf("writeStatus('running');") < source.indexOf('const githubToken = resolveGithubToken();'),
+    'the running record comes first',
+  );
+  assert.match(source, /spawnSync\('gh', \['auth', 'token'\], \{ encoding: 'utf8', windowsHide: true, timeout: GH_TOKEN_TIMEOUT_MS \}\)/);
+  assert.doesNotMatch(source, /spawnSync\('gh auth token'/, 'no shell between the runner and gh, so the timeout reaches gh itself');
+});

@@ -52,6 +52,16 @@ function stepTimeoutMs(label) {
   return (STEP_TIMEOUT_MINUTES[label] ?? 30) * 60_000;
 }
 
+// How long a step's output may stay open after its shell has exited. Something
+// the step started in the background can hold the pipes for as long as it
+// lives, and once the shell is gone `taskkill /T` can no longer find it.
+function outputGraceMs() {
+  const override = Number(process.env.REFRESH_OUTPUT_GRACE_MS);
+  return Number.isFinite(override) && override > 0 ? override : 10_000;
+}
+
+const GH_TOKEN_TIMEOUT_MS = 30_000;
+
 // The step runs through a shell, so killing the shell alone would orphan npm,
 // node, ssh and whatever else it started. Take the whole tree down.
 function killTree(pid) {
@@ -82,25 +92,24 @@ function resolveGithubToken() {
   if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
   // The build box authenticates the GitHub CLI rather than exporting a token,
   // and fetch-stars needs one for token-backed README telemetry (the deploy
-  // gate requires it).
-  const result = spawnSync('gh auth token', { encoding: 'utf8', shell: true, windowsHide: true });
-  const token = result.status === 0 ? result.stdout.trim() : '';
-  return token || '';
+  // gate requires it). gh.exe runs directly, without a shell, so the timeout
+  // ends gh itself if a credential store never answers.
+  const result = spawnSync('gh', ['auth', 'token'], { encoding: 'utf8', windowsHide: true, timeout: GH_TOKEN_TIMEOUT_MS });
+  if (/** @type {NodeJS.ErrnoException | undefined} */ (result.error)?.code === 'ETIMEDOUT') {
+    log(`WARN  \`gh auth token\` gave no answer within ${GH_TOKEN_TIMEOUT_MS / 1000}s`);
+    return '';
+  }
+  return result.status === 0 ? result.stdout.trim() : '';
 }
 
-const githubToken = resolveGithubToken();
-// Unattended runs report catalog drift instead of aborting on it. A newly
-// published public repo used to freeze the whole deploy, so the live site kept
-// serving data that aged past its own 36h contract while waiting on a curation
-// decision. The build now records the gap in _catalog-drift.json and /status/
-// reports an incomplete catalog, so the claim stays honest while the data ships.
-// This run still exits non-zero at the end, which is what the scheduled task and
-// the daily health check surface.
-const env = {
-  ...process.env,
-  ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}),
-  CATALOG_AUDIT_REPORT_ONLY: '1',
-};
+// Set in main() once the token is known. Unattended runs report catalog drift
+// instead of aborting on it. A newly published public repo used to freeze the
+// whole deploy, so the live site kept serving data that aged past its own 36h
+// contract while waiting on a curation decision. The build now records the gap
+// in _catalog-drift.json and /status/ reports an incomplete catalog, so the
+// claim stays honest while the data ships. This run still exits non-zero at the
+// end, which is what the scheduled task and the daily health check surface.
+let env = process.env;
 
 function stepLogPath(label) {
   return path.join(tmpDir, `refresh-and-deploy-step-${label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.log`);
@@ -140,12 +149,15 @@ function step(label, command, args) {
 
     let settled = false;
     let timedOut = false;
+    let exited = false;
     const timeoutMs = stepTimeoutMs(label);
     let timer = null;
+    let graceTimer = null;
     const finish = (code, signal, spawnError) => {
       if (settled) return;
       settled = true;
       if (timer) clearTimeout(timer);
+      if (graceTimer) clearTimeout(graceTimer);
       if (pending.trim()) tail.push(pending);
       if (out) out.end();
       if (code === 0 && !spawnError && !timedOut) {
@@ -180,6 +192,9 @@ function step(label, command, args) {
       detached: process.platform !== 'win32',
     });
     timer = setTimeout(() => {
+      // Once the shell has exited its pid may already belong to something else,
+      // and the output grace below decides the step.
+      if (exited) return;
       timedOut = true;
       log(`STOP  ${label}: no result after ${Math.round(timeoutMs / 1000)}s; killing the step's process tree`);
       killTree(child.pid);
@@ -187,6 +202,20 @@ function step(label, command, args) {
     child.stdout.on('data', (chunk) => capture(chunk, process.stdout));
     child.stderr.on('data', (chunk) => capture(chunk, process.stderr));
     child.on('error', (error) => finish(null, null, error));
+    // 'close' waits for the output pipes as well as the shell. When the shell
+    // has exited but a background process it started still holds them, give the
+    // output a moment to drain, then let go of the pipes and judge the step by
+    // its exit code instead of waiting on a process nothing can reach.
+    child.on('exit', (code, signal) => {
+      exited = true;
+      const graceMs = outputGraceMs();
+      graceTimer = setTimeout(() => {
+        log(`WARN  ${label}: finished, but something it started still held its output after ${Math.round(graceMs / 1000)}s; continuing without it`);
+        child.stdout.destroy();
+        child.stderr.destroy();
+        finish(code, signal, null);
+      }, graceMs);
+    });
     child.on('close', (code, signal) => finish(code, signal, null));
   });
 }
@@ -242,6 +271,12 @@ async function main() {
     // "running" record older than the task's two-hour limit means it died.
     writeStatus('running');
     log(`RUN   refresh-and-deploy${dryRun ? ' (dry run)' : ''}`);
+    const githubToken = resolveGithubToken();
+    env = {
+      ...process.env,
+      ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}),
+      CATALOG_AUDIT_REPORT_ONLY: '1',
+    };
     if (!githubToken) {
       // Not fatal on its own: the preflight's own gate decides. Surfacing it here
       // makes the eventual preflight failure self-explanatory in the log.
