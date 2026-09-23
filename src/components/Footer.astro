@@ -29,6 +29,19 @@ const contactLink: FooterLink = { href: contactMailto(), label: 'Contact' };
 const privacyLink: FooterLink = { href: '/privacy/', label: 'Privacy' };
 const navLinks: FooterLink[] = [contactLink, ...links];
 if (Astro.url.pathname !== '/privacy/') navLinks.push(privacyLink);
+// The secondary pages, on every page. Several had no link from anywhere and
+// were reachable only through search or the sitemap (links:audit now fails on
+// that). The current page, and anything the row above already links, is left out.
+const moreLinks: FooterLink[] = [
+  { href: '/now/', label: 'Now' },
+  { href: '/uses/', label: 'Uses' },
+  { href: '/timeline/', label: 'Timeline' },
+  { href: '/releases/', label: 'Releases' },
+  { href: '/archive/', label: 'Archive' },
+  { href: '/status/', label: 'Status' },
+  { href: '/data/', label: 'Data' },
+  { href: '/colophon/', label: 'How this was built' },
+].filter((link) => link.href !== Astro.url.pathname && !navLinks.some((nav) => nav.href === link.href));
 ---
 <footer class={className}>
   <div class:list={['fi', !isHome && 'page-footer-shell']}>
@@ -48,6 +61,11 @@ if (Astro.url.pathname !== '/privacy/') navLinks.push(privacyLink);
           ? <a href={link.href} target="_blank" rel="noopener">{link.label}</a>
           : <a href={link.href}>{link.label}</a>
       ))}
+    </nav>
+  </div>
+  <div class:list={['fi', !isHome && 'page-footer-shell', 'footer-more-row']}>
+    <nav class="fl footer-more" aria-label="More pages">
+      {moreLinks.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
   </div>
 </footer>

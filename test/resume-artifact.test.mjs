@@ -47,6 +47,9 @@ test('internal link audit accepts generated resume PDF artifacts', async () => {
     await fs.mkdir(path.join(tmp, 'resume'), { recursive: true });
     await fs.writeFile(path.join(tmp, 'resume.pdf'), '%PDF-1.4\n');
     await fs.writeFile(path.join(tmp, 'resume', 'index.html'), '<a href="/resume.pdf">PDF</a>');
+    // Every build has a sitemap, and the audit reads it to find orphaned pages.
+    await fs.writeFile(path.join(tmp, 'sitemap-0.xml'), sitemapFor(['/resume/']));
+    await fs.writeFile(path.join(tmp, 'index.html'), '<a href="/resume/">Resume</a>');
 
     const result = spawnSync(process.execPath, ['scripts/audit-built-links.mjs', '--dist', tmp], {
       cwd: root,
@@ -55,6 +58,37 @@ test('internal link audit accepts generated resume PDF artifacts', async () => {
 
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /Internal link audit passed/);
+  } finally {
+    await fs.rm(tmp, { recursive: true, force: true });
+  }
+});
+
+function sitemapFor(routes) {
+  const urls = routes.map((route) => `<url><loc>https://portfolio.getparkerai.com${route}</loc></url>`).join('');
+  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
+}
+
+test('internal link audit fails a sitemap page that no other page links to, and a build with no sitemap', async () => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-links-'));
+  try {
+    await fs.mkdir(path.join(tmp, 'linked'), { recursive: true });
+    await fs.mkdir(path.join(tmp, 'orphan'), { recursive: true });
+    await fs.writeFile(path.join(tmp, 'index.html'), '<a href="/linked/">Linked</a>');
+    await fs.writeFile(path.join(tmp, 'linked', 'index.html'), '<a href="/linked/">itself</a>');
+    // A page that links only to itself is still an orphan.
+    await fs.writeFile(path.join(tmp, 'orphan', 'index.html'), '<a href="/orphan/">itself</a>');
+    const audit = () => spawnSync(process.execPath, ['scripts/audit-built-links.mjs', '--dist', tmp], { cwd: root, encoding: 'utf8' });
+
+    await fs.writeFile(path.join(tmp, 'sitemap-0.xml'), sitemapFor(['/linked/', '/orphan/']));
+    const orphaned = audit();
+    assert.equal(orphaned.status, 1);
+    assert.match(orphaned.stderr, /no page links to \/orphan\/, which is in the sitemap/);
+    assert.doesNotMatch(orphaned.stderr, /\/linked\/, which/);
+
+    await fs.rm(path.join(tmp, 'sitemap-0.xml'));
+    const unmapped = audit();
+    assert.equal(unmapped.status, 1, 'no sitemap means no orphan check, which must not pass quietly');
+    assert.match(unmapped.stderr, /no sitemap-<n>\.xml routes found/);
   } finally {
     await fs.rm(tmp, { recursive: true, force: true });
   }

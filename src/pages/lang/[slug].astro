@@ -218,9 +218,9 @@ const langJsonLd = JSON.stringify({
   <Footer
     summary={`${lang.label} is one lane inside a broader archive of automation, desktop software, browser products, and systems-focused tooling.`}
     links={[
+      // Every other lane: the first three alone left the last lanes linked from nowhere.
       ...Object.entries(LANGS)
         .filter(([s]) => s !== slug)
-        .slice(0, 3)
         .map(([s, l]) => ({ href: `/lang/${s}/`, label: l.label })),
       { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
     ]}

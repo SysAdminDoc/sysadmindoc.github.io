@@ -177,6 +177,24 @@ const cases = [
     },
   },
   {
+    name: 'links:audit (orphan)',
+    args: ['scripts/audit-built-links.mjs', '--dist', scratch],
+    violation: 'a sitemap route that no page links to',
+    expect: /no page links to \/uses\/, which is in the sitemap/,
+    plant() {
+      let planted = 0;
+      for (const file of scratchHtmlFiles()) {
+        const html = fs.readFileSync(file, 'utf8');
+        const next = html.replaceAll('href="/uses/"', 'href="/"');
+        if (next !== html) {
+          fs.writeFileSync(file, next, 'utf8');
+          planted += 1;
+        }
+      }
+      return planted > 0;
+    },
+  },
+  {
     name: 'dom:audit',
     args: ['scripts/audit-dom-size.mjs', '--dist', scratch],
     violation: 'thousands of extra homepage nodes',

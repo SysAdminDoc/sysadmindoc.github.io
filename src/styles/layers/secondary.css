@@ -135,6 +135,17 @@ footer{
   justify-content:flex-end;
   flex-wrap:wrap;
 }
+.footer-more-row{
+  margin-top:4px;
+}
+.footer-more{
+  justify-content:flex-start;
+}
+@media(min-width:901px){
+  .footer-more{
+    margin-left:-6px;
+  }
+}
 @media(max-width:900px){
   .page-footer-shell,.fl{
     justify-content:flex-start;

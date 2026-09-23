@@ -23,13 +23,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P2
 
-- [ ] P2: Give secondary routes a sitewide link and fail the build on orphaned pages
-  Why: Six of the 22 sitemap routes, including the AI disclosure, have no inbound link from any other page.
-  Evidence: link count over `dist/` on 2026-09-22 (`/colophon/`, `/data/`, `/uses/`, `/lang/cs/`, `/lang/kotlin/`, `/lang/security/`); `src/components/Footer.astro` renders only per-route links; `a344b6f1` removed the last nav links to two of them.
-  Touches: `src/components/Footer.astro`, `src/pages/ai.astro` (link the colophon's disclosure), `scripts/audit-built-links.mjs`, `scripts/audit-gate-selftest.mjs`.
-  Acceptance: Every sitemap route has at least one inbound link from another built page. `links:audit` fails on an orphan, proven by a planted case in `gates:selftest`.
-  Complexity: S
-
 - [ ] P2: Minify the inlined critical CSS and load `cmdk-data.js` on demand, both under a budget
   Why: 42,121 bytes of unminified CSS make up 54% of the homepage HTML, and a 62,803-byte script blocks every page for a palette that loads lazily anyway. Neither counts against the bundle caps.
   Evidence: `dist/index.html` is 77,459 bytes; `src/layouts/Base.astro:159` and `:212`; `scripts/audit-bundle-size.mjs:104-111` scans only `scripts/` and `_assets/`.

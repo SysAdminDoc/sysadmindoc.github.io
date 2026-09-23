@@ -118,6 +118,14 @@ if (htmlFiles.length === 0) {
 const errors = [];
 let totalLinks = 0;
 let internalLinks = 0;
+/** route -> the routes of the other pages that link to it */
+const inbound = new Map();
+
+/** The route a built HTML file serves, e.g. dist/uses/index.html -> /uses/. */
+function routeOf(filePath) {
+  const relative = path.relative(distDir, filePath).replaceAll(path.sep, '/');
+  return `/${relative.replace(/(^|\/)index\.html$/, '$1')}`;
+}
 
 // Cache existence checks so we don't hit the filesystem repeatedly for common paths
 const existenceCache = new Map();
@@ -137,6 +145,7 @@ async function fileExists(fsPath) {
 
 for (const filePath of htmlFiles) {
   const rel = path.relative(root, filePath).replaceAll(path.sep, '/');
+  const source = routeOf(filePath);
   const html = await fs.readFile(filePath, 'utf8');
   const hrefs = extractHrefs(html);
 
@@ -161,6 +170,11 @@ for (const filePath of htmlFiles) {
     if (!isInternalLink(href)) continue;
 
     internalLinks += 1;
+    const target = href.split('#')[0].split('?')[0];
+    if (target && target !== source) {
+      if (!inbound.has(target)) inbound.set(target, new Set());
+      inbound.get(target).add(source);
+    }
 
     const fsPath = resolveToFsPath(href);
     if (!fsPath) {
@@ -175,14 +189,26 @@ for (const filePath of htmlFiles) {
   }
 }
 
+// A page nothing links to is reachable only through the sitemap or search.
+// Six routes were in that state on 2026-09-22, the AI disclosure among them.
+const sitemapRoutes = [];
+for (const name of (await fs.readdir(distDir)).filter((file) => /^sitemap-\d+\.xml$/.test(file))) {
+  const xml = await fs.readFile(path.join(distDir, name), 'utf8');
+  for (const match of xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)) sitemapRoutes.push(new URL(match[1]).pathname);
+}
+if (sitemapRoutes.length === 0) errors.push('  no sitemap-<n>.xml routes found, so orphaned pages cannot be checked');
+const orphans = sitemapRoutes.filter((route) => !inbound.has(route));
+for (const route of orphans) errors.push(`  no page links to ${route}, which is in the sitemap`);
+
 console.log('Internal link audit');
 console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
 console.log(`  HTML files scanned: ${htmlFiles.length}`);
 console.log(`  Total <a href> values: ${totalLinks}`);
 console.log(`  Internal links checked: ${internalLinks}`);
+console.log(`  sitemap routes with a link from another page: ${sitemapRoutes.length - orphans.length}/${sitemapRoutes.length}`);
 
 if (errors.length > 0) {
-  console.error(`Internal link audit failed — ${errors.length} broken link(s):`);
+  console.error(`Internal link audit failed: ${errors.length} broken link(s) or orphaned page(s):`);
   for (const error of errors) console.error(error);
   process.exit(1);
 }
