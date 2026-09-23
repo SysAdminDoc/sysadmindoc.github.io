@@ -212,6 +212,10 @@ const featuredReleaseProvenanceOk =
 // afterwards, but it must not stop the nightly from shipping fresh data. A
 // manual preflight still refuses it.
 const provenanceReportOnly = /^(1|true|yes)$/i.test(process.env.PROVENANCE_REPORT_ONLY ?? '');
+// Report-only covers unsigned releases, a gap in another repo. A featured list
+// that can't be read, or is empty, means the check itself didn't run, and that
+// still fails the run.
+const provenanceReportable = provenanceReportOnly && featuredRepos.size > 0 && !featuredRepoResult.error;
 const fetchedAgeHours = ageHours(stats.fetchedAt);
 const fresh = fetchedAgeHours <= options.maxAgeHours;
 const profileProjects = Array.isArray(profileFeed?.projects) ? profileFeed.projects : [];
@@ -420,7 +424,7 @@ const checks = [
   },
 ];
 const provenanceCheck = {
-  label: `featured downloadable releases have checksum or attestation${options.failOnUnsignedFeaturedReleases ? (provenanceReportOnly ? ' (strict, report-only)' : ' (strict)') : ''}`,
+  label: `featured downloadable releases have checksum or attestation${options.failOnUnsignedFeaturedReleases ? (provenanceReportable ? ' (strict, report-only)' : ' (strict)') : ''}`,
   ok: featuredReleaseProvenanceOk,
 };
 checks.push(provenanceCheck);
@@ -428,7 +432,7 @@ checks.push(provenanceCheck);
 const failedChecks = checks.filter((check) => !check.ok);
 // What decides the exit code: everything that failed, less a provenance
 // failure the unattended refresh only reports.
-const blockingChecks = failedChecks.filter((check) => !(provenanceReportOnly && check === provenanceCheck));
+const blockingChecks = failedChecks.filter((check) => !(provenanceReportable && check === provenanceCheck));
 const status = failedChecks.length === 0 ? 'fresh' : 'attention-required';
 const generatedDataMode = fixtureMode
   ? 'fixture'
@@ -704,12 +708,12 @@ console.log(markdown);
 
 if (
   (options.failOnStale && blockingChecks.length > 0) ||
-  (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && !provenanceReportOnly)
+  (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && !provenanceReportable)
 ) {
   console.error(`Generated data summary failed ${blockingChecks.length} check(s).`);
   process.exit(1);
 }
-if (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && provenanceReportOnly) {
+if (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && provenanceReportable) {
   console.warn(
     `Featured release provenance failed but PROVENANCE_REPORT_ONLY is set, so this run only reports it: ${unsignedFeaturedDownloadableReleases.length} release(s) lack a checksum or attestation.`,
   );

@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { REPORT_ONLY_FLAGS } from '../scripts/lib/report-only-flags.mjs';
 
 const root = process.cwd();
 const runner = path.join(root, 'scripts', 'refresh-and-deploy.mjs');
@@ -248,6 +249,14 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
   assert.match(status.warnings[0], new RegExp(`^security\\.txt expires ${expires.replace(/\./g, '\\.')}, 30 day\\(s\\) from now`));
   const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
   assert.match(log, /WARN {2}security\.txt expires /);
+});
+
+// npm test runs inside the preflight and inherits these flags. Tests strip the
+// shared list, so a flag the runner sets has to be on it.
+test('every report-only flag the nightly sets is one the tests know to strip', async () => {
+  const source = await fs.readFile(runner, 'utf8');
+  const set = [...source.matchAll(/\b([A-Z][A-Z_]*_REPORT_ONLY): '1'/g)].map((match) => match[1]).sort();
+  assert.deepEqual(set, [...REPORT_ONLY_FLAGS].sort());
 });
 
 test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {

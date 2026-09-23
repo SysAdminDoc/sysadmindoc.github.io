@@ -4,11 +4,17 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
+import { withoutReportOnlyFlags } from '../scripts/lib/report-only-flags.mjs';
 
 const root = process.cwd();
 const summaryScript = path.join(root, 'scripts', 'summarize-generated-data.mjs');
 const semanticScript = path.join(root, 'scripts', 'audit-semantic-index.mjs');
 const packageJsonPath = path.join(root, 'package.json');
+// deploy:preflight runs npm test, and the nightly runs deploy:preflight with its
+// report-only flags set. Every strict run here starts from that environment and
+// removes them, so a test means the same thing whoever starts it.
+const NIGHTLY_ENV = { ...process.env, CATALOG_AUDIT_REPORT_ONLY: '1', PROVENANCE_REPORT_ONLY: '1' };
+const strictEnv = () => withoutReportOnlyFlags(NIGHTLY_ENV);
 
 async function makeTempDataDir() {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-generated-data-'));
@@ -73,7 +79,7 @@ test('strict generated-data summary fails partial production coverage with actio
   const result = spawnSync(
     process.execPath,
     [summaryScript, '--out', 'summary', '--max-age-hours', '36', '--fail-on-stale'],
-    { cwd: tmp, encoding: 'utf8' },
+    { cwd: tmp, encoding: 'utf8', env: strictEnv() },
   );
 
   assert.equal(result.status, 1);
@@ -140,7 +146,7 @@ test('deploy generated-data summary requires token-backed README refresh telemet
   const result = spawnSync(
     process.execPath,
     [summaryScript, '--out', 'summary', '--max-age-hours', '36', '--fail-on-stale', '--require-token-backed-readmes'],
-    { cwd: tmp, encoding: 'utf8' },
+    { cwd: tmp, encoding: 'utf8', env: strictEnv() },
   );
 
   assert.equal(result.status, 1);
@@ -155,18 +161,9 @@ test('deploy generated-data summary requires token-backed README refresh telemet
   assert(summaryJson.checks.some((check) => check.label.includes('deploy preflight required') && check.ok === false));
 });
 
-test('strict generated-data summary fails featured downloadable releases without provenance', async () => {
-  const tmp = await makeTempDataDir();
-  const now = new Date().toISOString();
-
-  await fs.writeFile(
-    path.join(tmp, 'src', 'data', 'projects.ts'),
-    [
-      "export const featured = [{ repo: 'Alpha', name: 'Alpha' }];",
-      'export const liveApps = [];',
-      "export const catalog = [{ repo: 'Beta', name: 'Beta' }];",
-    ].join('\n'),
-  );
+/** Generated data for two repos, with an unsigned downloadable release in Alpha. */
+async function writeProvenanceFixture(tmp, now, projectsSource) {
+  await fs.writeFile(path.join(tmp, 'src', 'data', 'projects.ts'), projectsSource);
   await writeJson(tmp, '_stars.json', { Alpha: 8, Beta: 3 });
   await writeJson(tmp, '_stats.json', {
     totalRepos: 2,
@@ -223,11 +220,24 @@ test('strict generated-data summary fails featured downloadable releases without
     cacheEntries: 2,
     trimmed: 0,
   });
+}
+
+const FEATURED_ALPHA = [
+  "export const featured = [{ repo: 'Alpha', name: 'Alpha' }];",
+  'export const liveApps = [];',
+  "export const catalog = [{ repo: 'Beta', name: 'Beta' }];",
+].join('\n');
+
+test('strict generated-data summary fails featured downloadable releases without provenance', async () => {
+  const tmp = await makeTempDataDir();
+  const now = new Date().toISOString();
+
+  await writeProvenanceFixture(tmp, now, FEATURED_ALPHA);
 
   const result = spawnSync(
     process.execPath,
     [summaryScript, '--out', 'summary', '--fail-on-unsigned-featured-releases'],
-    { cwd: tmp, encoding: 'utf8' },
+    { cwd: tmp, encoding: 'utf8', env: strictEnv() },
   );
 
   assert.equal(result.status, 1);
@@ -246,13 +256,31 @@ test('strict generated-data summary fails featured downloadable releases without
   const reportOnly = spawnSync(
     process.execPath,
     [summaryScript, '--out', 'summary', '--fail-on-unsigned-featured-releases'],
-    { cwd: tmp, encoding: 'utf8', env: { ...process.env, PROVENANCE_REPORT_ONLY: '1' } },
+    { cwd: tmp, encoding: 'utf8', env: withoutReportOnlyFlags(process.env, { PROVENANCE_REPORT_ONLY: '1' }) },
   );
   assert.equal(reportOnly.status, 0, reportOnly.stderr);
   assert.match(reportOnly.stdout, /featured downloadable releases have checksum or attestation \(strict, report-only\)/);
   assert.match(reportOnly.stderr, /PROVENANCE_REPORT_ONLY is set, so this run only reports it: 1 release\(s\)/);
   const reported = JSON.parse(await fs.readFile(path.join(tmp, 'summary', 'summary.json'), 'utf8'));
   assert.equal(reported.releaseProvenancePolicy.unsignedFeaturedDownloadable[0].repo, 'Alpha');
+});
+
+// Report-only is for an unsigned release in another repo. A featured list that
+// can't be read, or is empty, means the check never ran, and the nightly used to
+// deploy past that with nothing reported.
+test('report-only mode still fails when there is no featured list to check', async () => {
+  const tmp = await makeTempDataDir();
+  const now = new Date().toISOString();
+  await writeProvenanceFixture(tmp, now, ["export const liveApps = [];", "export const catalog = [{ repo: 'Beta', name: 'Beta' }];"].join('\n'));
+
+  const result = spawnSync(process.execPath, [summaryScript, '--out', 'summary', '--fail-on-unsigned-featured-releases'], {
+    cwd: tmp,
+    encoding: 'utf8',
+    env: withoutReportOnlyFlags(process.env, { PROVENANCE_REPORT_ONLY: '1' }),
+  });
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stdout, /featured downloadable releases have checksum or attestation \(strict\)/);
+  assert.doesNotMatch(result.stderr, /only reports it/);
 });
 
 test('deploy preflight script runs strict generated-data gate before tests and build', async () => {
@@ -319,7 +347,7 @@ test('fixture generated-data summary labels reduced corpus without blocking advi
   const result = spawnSync(process.execPath, [summaryScript, '--out', 'summary'], {
     cwd: tmp,
     encoding: 'utf8',
-    env: { ...process.env, PROFILE_PROJECTS_OFFLINE: '1' },
+    env: withoutReportOnlyFlags(process.env, { PROFILE_PROJECTS_OFFLINE: '1' }),
   });
 
   assert.equal(result.status, 0);
