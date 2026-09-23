@@ -44,13 +44,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `portfolio-app` trusts and ntfy strips only the edge's fixed address. A request to `portfolio-app` from another container on `web` with a forged `X-Forwarded-For` is attributed to that container's own address, shown by one live probe from a throwaway container.
   Complexity: M
 
-- [ ] P2: Bound the edge container's error log, or say on /privacy/ what it keeps
-  Why: Caddy logs a 5xx at ERROR with the visitor's address and headers to the edge container's own log, which Docker keeps by size (3 files of 10 MB) rather than by age, so at this volume it can hold months.
-  Evidence: third drain review (Caddy 2.11.4 `server.go` logs 5xx at ERROR, the nightly recreate produces some); `/etc/docker/daemon.json` on the VPS sets `max-size 10m`, `max-file 3`; the `caddy` container log held 18,057 lines on 2026-09-23.
-  Touches: `deploy/vps/caddy-block.txt` (a `handle_errors` or log level for the portfolio sites), or `src/pages/privacy.astro`.
-  Acceptance: Either no portfolio request's address reaches the container log, or /privacy/ states how long it stays and a test ties the statement to the setting.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Send `'wasm-unsafe-eval'` only with the Pagefind worker

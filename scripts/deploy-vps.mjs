@@ -21,6 +21,7 @@ import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
+import { edgeLogExclusionProblem } from './lib/edge-log-check.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -122,6 +123,17 @@ function verifyCaddyVersion() {
     );
   }
   console.log(`deploy-vps: portfolio-app is running the pinned Caddy ${running}.`);
+}
+
+// /privacy/ says portfolio requests stay out of the edge container's own log.
+// That rests on the shared edge Caddyfile (Contabo-VPS-Ops), so each deploy
+// reads the running default logger's exclusions back through the admin API,
+// which listens on IPv4 loopback only.
+function verifyEdgeLogging() {
+  const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs/default/exclude 2>&1 || true');
+  const problem = edgeLogExclusionProblem(output);
+  if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  console.log('deploy-vps: the edge keeps portfolio requests out of its container log.');
 }
 
 function writeProjectRedirects(distDir) {
@@ -228,6 +240,7 @@ runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-re
 // assumed.
 verifyCaddyVersion();
 verifyNtfyVersion();
+verifyEdgeLogging();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //

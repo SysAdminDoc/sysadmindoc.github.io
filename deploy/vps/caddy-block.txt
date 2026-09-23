@@ -28,7 +28,11 @@ portfolio.getparkerai.com {
 	# Rolled at midnight and deleted after 30 days, the period /privacy/ states
 	# (src/data/retention.ts). Size-based rolling alone never rolled this
 	# low-traffic log, so it had kept every visitor address since the move.
-	log {
+	# The logger is named because the edge's global options exclude
+	# http.log.error.portfolio from the default logger: Caddy logs a 5xx there with
+	# the visitor's address and every header, and Docker keeps that log by size.
+	# deploy-vps reads the exclusion back from the running edge on every deploy.
+	log portfolio {
 		output file /var/log/caddy/portfolio.log {
 			roll_at 00:00
 			roll_keep 30
