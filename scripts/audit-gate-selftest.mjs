@@ -80,6 +80,73 @@ const cases = [
     },
   },
   {
+    name: 'csp:audit:dist:style:elem (policy drift)',
+    args: ['scripts/audit-csp.mjs', '--dist', scratch, '--active-style-src-elem', '--strict'],
+    violation: "one page whose CSP meta has drifted from the rest, as offline.html's hand-kept copy did twice",
+    expect: /1 built CSP meta tag\(s\) differ from the active policy/,
+    prepare() {
+      fs.rmSync(path.join(scratch, 'pagefind'), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+    },
+    plant() {
+      const html = readScratch('uses/index.html');
+      const drifted = html.replace(/(<meta http-equiv="Content-Security-Policy" content="[^"]*?)object-src 'none'/, "$1object-src 'self'");
+      if (drifted === html) return false;
+      writeScratch('uses/index.html', drifted);
+      return true;
+    },
+  },
+  {
+    name: 'csp:audit:dist:style:elem (missing policy)',
+    args: ['scripts/audit-csp.mjs', '--dist', scratch, '--active-style-src-elem', '--strict'],
+    violation: 'a page with no CSP meta at all',
+    expect: /1 built HTML file\(s\) are missing a CSP meta tag/,
+    prepare() {
+      fs.rmSync(path.join(scratch, 'pagefind'), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+    },
+    plant() {
+      const html = readScratch('uses/index.html');
+      const stripped = html.replace(/<meta http-equiv="Content-Security-Policy" content="[^"]*">/, '');
+      if (stripped === html) return false;
+      writeScratch('uses/index.html', stripped);
+      return true;
+    },
+  },
+  // The build stamps sw.js once, and a stamped worker has nothing left to
+  // stamp, so it would skip every check. Each run here starts from the
+  // unstamped template.
+  {
+    name: 'sw:stamp (search index)',
+    args: ['scripts/stamp-sw.mjs', '--dist', scratch],
+    violation: 'a search page whose Pagefind bundle is missing',
+    expect: /references Pagefind, but dist\/pagefind is empty/,
+    prepare() {
+      fs.copyFileSync(path.join(root, 'public', 'sw.js'), path.join(scratch, 'sw.js'));
+    },
+    plant() {
+      const pagefind = path.join(scratch, 'pagefind');
+      if (!fs.existsSync(pagefind)) return false;
+      fs.rmSync(pagefind, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+      fs.copyFileSync(path.join(root, 'public', 'sw.js'), path.join(scratch, 'sw.js'));
+      return true;
+    },
+  },
+  {
+    name: 'sw:stamp (palette data)',
+    args: ['scripts/stamp-sw.mjs', '--dist', scratch],
+    violation: 'the command palette dataset missing while its loader asks for it',
+    expect: /loads \/cmdk-data\.js, but dist\/cmdk-data\.js is missing/,
+    prepare() {
+      fs.copyFileSync(path.join(root, 'public', 'sw.js'), path.join(scratch, 'sw.js'));
+    },
+    plant() {
+      const dataset = path.join(scratch, 'cmdk-data.js');
+      if (!fs.existsSync(dataset)) return false;
+      fs.rmSync(dataset);
+      fs.copyFileSync(path.join(root, 'public', 'sw.js'), path.join(scratch, 'sw.js'));
+      return true;
+    },
+  },
+  {
     name: 'fix-html-structure',
     args: ['scripts/fix-html-structure.mjs', '--dist', scratch],
     violation: 'a SafeDOM consumer loading before shared.js',

@@ -58,13 +58,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Each minor version from v0.43.0 has a release with the static-site ZIP and its SHA-256, and `smoke:release` passes against the newest one.
   Complexity: S
 
-- [ ] P3: Plant violations for the two unguarded dist audits
-  Why: `gates:selftest` proves 11 audits can fail, but covers neither `csp:audit:dist` nor `sw:stamp`.
-  Evidence: `scripts/audit-gate-selftest.mjs` has no case for either (checked 2026-09-22).
-  Touches: `scripts/audit-gate-selftest.mjs`.
-  Acceptance: Each audit rejects a planted violation in the self-test copy and accepts the unmodified build.
-  Complexity: S
-
 - [ ] P3: Check the server's own contact settings and backups against /privacy/
   Why: `CONTACT_RETENTION_DAYS` set in the server-side `contact-secrets.env` would override the default the page is built from, and the privacy test can't see that file. A backup of the `contact-data` volume would outlive the 365-day purge.
   Evidence: third drain review; `test/privacy-retention.test.mjs` reads only the committed compose file.

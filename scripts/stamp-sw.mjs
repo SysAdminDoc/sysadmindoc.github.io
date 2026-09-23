@@ -178,16 +178,17 @@ export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES)
 /**
  * @param {{
  *   rootDir?: string,
+ *   distDir?: string,
  *   logger?: {
  *     log?: (...args: unknown[]) => void,
  *     warn?: (...args: unknown[]) => void
  *   }
  * }} [options]
  */
-export function stampServiceWorker({ rootDir = defaultRoot, logger = console } = {}) {
-  const swPath = join(rootDir, 'dist', 'sw.js');
+export function stampServiceWorker({ rootDir = defaultRoot, distDir, logger = console } = {}) {
+  const distRoot = distDir ?? join(rootDir, 'dist');
+  const swPath = join(distRoot, 'sw.js');
   const packagePath = join(rootDir, 'package.json');
-  const distRoot = join(rootDir, 'dist');
   const { version } = JSON.parse(readFileSync(packagePath, 'utf8'));
 
   let source;
@@ -225,8 +226,11 @@ export function stampServiceWorker({ rootDir = defaultRoot, logger = console } =
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === scriptPath) {
+  // --dist <dir> stamps another build, which is how gates:selftest points it at
+  // its planted copy.
+  const distIndex = process.argv.indexOf('--dist');
   try {
-    stampServiceWorker();
+    stampServiceWorker(distIndex === -1 ? {} : { distDir: resolve(process.argv[distIndex + 1]) });
   } catch (error) {
     console.error(`stamp-sw: ${error.message}`);
     process.exit(1);

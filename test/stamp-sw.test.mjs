@@ -134,6 +134,24 @@ test('the palette dataset is precached, since the palette fetches it only when o
   assert.throws(() => buildPrecacheList(dist), /cmdk-loader\.js loads \/cmdk-data\.js, but dist\/cmdk-data\.js is missing/);
 });
 
+// gates:selftest stamps a planted copy of the build, so the stamp takes a dist
+// directory of its own, and the self-test holds cases for both its checks.
+test('the stamp can be pointed at another build, and the gate self-test plants its failures', async () => {
+  const rootDir = await createFixtureRoot();
+  const elsewhere = path.join(rootDir, 'elsewhere');
+  await fs.cp(path.join(rootDir, 'dist'), elsewhere, { recursive: true });
+  await writeFixtureFile(path.join(elsewhere, 'pagefind', 'pagefind-entry.json'), '{}');
+  const result = stampServiceWorker({ rootDir, distDir: elsewhere, logger: noopLogger });
+  assert.equal(result.stamped, true);
+  assert.doesNotMatch(await fs.readFile(path.join(elsewhere, 'sw.js'), 'utf8'), /__PRECACHE_PLACEHOLDER__/);
+  assert.match(await fs.readFile(path.join(rootDir, 'dist', 'sw.js'), 'utf8'), /__PRECACHE_PLACEHOLDER__/, 'the default build is left alone');
+
+  const selftest = await fs.readFile(path.join(process.cwd(), 'scripts', 'audit-gate-selftest.mjs'), 'utf8');
+  assert.equal(selftest.split("args: ['scripts/stamp-sw.mjs', '--dist', scratch]").length - 1, 2, 'both stamp checks are planted');
+  assert.match(selftest, /differ from the active policy/);
+  assert.match(selftest, /are missing a CSP meta tag/);
+});
+
 test('service-worker stamping fails when the search page references Pagefind before indexing', async () => {
   const rootDir = await createFixtureRoot();
 
