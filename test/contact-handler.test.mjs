@@ -12,6 +12,7 @@ import {
   clientAddress,
   createContactHandler,
   isNavigation,
+  isSameSitePost,
   loadConfig,
   notificationFor,
   readToken,
@@ -707,7 +708,7 @@ test('each client gets a limited number of attempts, and the smoke is not counte
 
 test('a browser without JavaScript can send without a token, under a stricter limit', async () => {
   await withHandler({ config: { noTokenClientMax: 2 } }, async ({ handler, storePath }) => {
-    const navigate = { accept: 'text/html,*/*;q=0.8', 'sec-fetch-mode': 'navigate', referer: 'https://portfolio.getparkerai.com/', 'x-forwarded-for': '203.0.113.7, 172.18.0.2' };
+    const navigate = { accept: 'text/html,*/*;q=0.8', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-origin', referer: 'https://portfolio.getparkerai.com/', 'x-forwarded-for': '203.0.113.7, 172.18.0.2' };
     const locations = [];
     for (let attempt = 0; attempt < 3; attempt += 1) {
       const response = responseMock();
@@ -717,6 +718,42 @@ test('a browser without JavaScript can send without a token, under a stricter li
     assert.deepEqual(locations, ['/contact/sent/', '/contact/sent/', '/#contact-not-sent']);
     await handler.idle();
     assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 2);
+  });
+});
+
+// The review posted tokenless "navigations" from another site, one with a
+// foreign Referer and one with a foreign Origin, and both were stored.
+test('a tokenless post is taken only from a page on this site', async () => {
+  const host = 'portfolio.getparkerai.com';
+  assert.equal(isSameSitePost({ 'sec-fetch-site': 'same-origin' }), true);
+  assert.equal(isSameSitePost({ 'sec-fetch-site': 'same-site', origin: `https://${host}`, host }), false, 'Sec-Fetch-Site wins when present');
+  assert.equal(isSameSitePost({ origin: `https://${host}`, host }), true, 'an older browser sends Origin');
+  assert.equal(isSameSitePost({ origin: 'null', host }), false);
+  assert.equal(isSameSitePost({ host }), false);
+
+  await withHandler({}, async ({ handler, storePath }) => {
+    const base = { accept: 'text/html,*/*;q=0.8', host };
+    const foreign = [
+      { referer: 'https://evil.example/' },
+      { 'sec-fetch-mode': 'navigate', origin: 'https://evil.example' },
+      { 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'cross-site', origin: 'https://evil.example' },
+      { 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-site', origin: `https://notify.${host.split('.').slice(1).join('.')}` },
+      { origin: 'null' },
+    ];
+    for (const headers of foreign) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody({ ...lead, token: '' }), headers: { ...base, ...headers } }), response);
+      assert.equal(response.status, 303, JSON.stringify(headers));
+      assert.match(response.headers.Location, /#contact-not-sent$/, JSON.stringify(headers));
+    }
+    const own = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: formBody({ ...lead, token: '' }), headers: { ...base, 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-origin', origin: `https://${host}` } }),
+      own,
+    );
+    assert.equal(own.headers.Location, '/contact/sent/');
+    await handler.idle();
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1, 'only the post from this site is stored');
   });
 });
 

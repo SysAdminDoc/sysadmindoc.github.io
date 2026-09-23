@@ -223,8 +223,9 @@ refuses a token under three seconds old, over four hours old, or already used,
 so it times the form on its own clock instead of the visitor's. Each visitor
 gets five attempts per ten minutes and ten a day, which keeps one address from
 filling the hourly cap by itself. A browser without JavaScript can't fetch a
-token, so it gets two, and the site stores at most 30 messages an hour. That
-cap holds even when posts arrive at the same moment.
+token, so its post is taken only when the browser marks it as coming from a
+page on this site, and it gets two attempts. The site stores at most 30
+messages an hour, and that cap holds even when posts arrive at the same moment.
 Refusals all read "Please check the form and try again", and the handler's log
 keeps the reason.
 

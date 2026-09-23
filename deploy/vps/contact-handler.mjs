@@ -27,7 +27,7 @@
 // token must be at least CONTACT_MIN_TIME seconds old, at most four hours old,
 // and unused, so the timing check runs on this server's clock rather than the
 // visitor's. A POST with no token is accepted only as a no-JavaScript browser
-// navigation, under a stricter per-client limit. Every client also has a
+// navigation from a page on this site, under a stricter per-client limit. Every client also has a
 // per-ten-minutes and a daily limit, and stored leads have a global hourly cap. Refusals
 // say only "Please check the form and try again"; the reason goes to the log.
 import http from 'node:http';
@@ -303,6 +303,24 @@ function refererPath(value) {
 export function isNavigation(headers) {
   if (headers['sec-fetch-mode'] === 'navigate') return true;
   return /\btext\/html\b/i.test(String(headers.accept ?? ''));
+}
+
+/**
+ * Whether a post came from a page on this site. Browsers mark a form post with
+ * Sec-Fetch-Site, and older ones still send Origin. Without this, a page on any
+ * other site could post here through its visitors' browsers, with no token and
+ * each visitor's own address to spend.
+ */
+export function isSameSitePost(headers) {
+  const site = headers['sec-fetch-site'];
+  if (site) return site === 'same-origin';
+  const origin = headers.origin;
+  if (!origin || origin === 'null') return false;
+  try {
+    return new URL(origin).host === String(headers.host ?? '');
+  } catch {
+    return false;
+  }
 }
 
 /** The form's own page, as a path on this site; never another origin. */
@@ -801,6 +819,10 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       // not the form.
       logger.log('contact: rejected a submission (no token)');
       refuse(422, { error: CHECK_FORM_MESSAGE, code: 'token' });
+      return;
+    } else if (!isSameSitePost(request.headers)) {
+      logger.log('contact: rejected a submission (no token, posted from another site)');
+      refuse(422, { error: CHECK_FORM_MESSAGE });
       return;
     } else if (!synthetic) {
       if (noTokenAttempts.count(client, current) >= config.noTokenClientMax) {
