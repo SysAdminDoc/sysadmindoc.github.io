@@ -4,31 +4,35 @@
 // image CDNs, the GitHub API and YouTube frames in its policy for months after
 // the last reference to them was gone, so each was an opening kept for nothing.
 // This reads a built site and reports every host source that no built file
-// loads a matching resource from.
+// loads a resource of the matching kind from.
 //
 // References are matched by kind, so a plain link to github.com doesn't keep
-// `img-src https://github.com` alive. JavaScript can't be read that precisely:
-// an absolute URL in a script counts for the directives scripts use (connect,
-// script, worker and child sources), not for images or frames, so a host that
-// only script code turns into an <img> would read as unused here.
+// `img-src https://github.com` alive, and a CSS font doesn't keep an image host
+// alive. Scripts are read strictly: a host counts for connect, script, worker
+// or child sources only where a script passes it as a string literal to a
+// loading call (fetch, import, a Worker, an EventSource and so on). A host that
+// a script only reaches through a URL it builds at run time reads as unused;
+// name it in the call if the policy needs it. frame-ancestors can't be checked
+// from the build (it names who may embed the site) and is skipped.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const KINDS_BY_DIRECTIVE = {
-  'img-src': ['img', 'css-url'],
+  'img-src': ['img'],
   'media-src': ['media'],
-  'font-src': ['font', 'css-url'],
-  'style-src': ['style', 'css-url'],
-  'style-src-elem': ['style', 'css-url'],
-  'script-src': ['script', 'js-url'],
-  'script-src-elem': ['script', 'js-url'],
-  'connect-src': ['js-url'],
-  'worker-src': ['js-url'],
-  'child-src': ['frame', 'js-url'],
+  'font-src': ['font'],
+  'style-src': ['style'],
+  'style-src-elem': ['style'],
+  'script-src': ['script', 'script-call'],
+  'script-src-elem': ['script', 'script-call'],
+  'connect-src': ['connect'],
+  'worker-src': ['worker'],
+  'child-src': ['frame', 'worker'],
   'frame-src': ['frame'],
   'object-src': ['object'],
   'manifest-src': ['manifest'],
   'form-action': ['form'],
+  'base-uri': ['base'],
 };
 
 const TEXT_FILE = /\.(?:html?|css|m?js|json|webmanifest|svg|xml)$/i;
@@ -68,7 +72,20 @@ function srcsetUrls(value) {
     .filter(Boolean);
 }
 
-const LINK_KIND_BY_AS = { image: 'img', font: 'font', style: 'style', script: 'script', fetch: 'js-url' };
+// A preload's `as` decides what it loads; an unknown value is not guessed at.
+const PRELOAD_KIND = {
+  image: 'img',
+  font: 'font',
+  style: 'style',
+  script: 'script',
+  fetch: 'connect',
+  audio: 'media',
+  video: 'media',
+  track: 'media',
+  worker: 'worker',
+  sharedworker: 'worker',
+  document: 'frame',
+};
 
 function htmlReferences(html) {
   const found = [];
@@ -76,14 +93,18 @@ function htmlReferences(html) {
     const hostname = absoluteHostname(url);
     if (hostname) found.push({ kind, hostname });
   };
-  const body = html.replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
-  for (const match of body.matchAll(/<(img|source|input|video|audio|track|script|link|iframe|frame|embed|object|form)\b([^>]*)>/gi)) {
+  const body = html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
+  for (const match of body.matchAll(/<(img|source|input|button|video|audio|track|script|link|iframe|frame|embed|object|form|a|area|base)\b([^>]*)>/gi)) {
     const tag = match[1].toLowerCase();
     const attrs = attributes(match[2]);
     if (tag === 'img' || tag === 'input') {
       add('img', attrs.src);
       for (const url of srcsetUrls(attrs.srcset)) add('img', url);
-    } else if (tag === 'source') {
+    }
+    if (tag === 'input' || tag === 'button') add('form', attrs.formaction);
+    if (tag === 'source') {
       for (const url of srcsetUrls(attrs.srcset)) add('img', url);
       add('media', attrs.src);
     } else if (tag === 'video') {
@@ -98,8 +119,11 @@ function htmlReferences(html) {
       if (rel.includes('stylesheet')) add('style', attrs.href);
       if (rel.some((value) => value === 'icon' || value === 'apple-touch-icon' || value === 'mask-icon')) add('img', attrs.href);
       if (rel.includes('manifest')) add('manifest', attrs.href);
-      if (rel.includes('preload') || rel.includes('modulepreload')) {
-        add(rel.includes('modulepreload') ? 'script' : LINK_KIND_BY_AS[String(attrs.as ?? '').toLowerCase()] ?? 'js-url', attrs.href);
+      if (rel.includes('modulepreload')) add('script', attrs.href);
+      if (rel.includes('preload') || rel.includes('prefetch')) {
+        const kind = PRELOAD_KIND[String(attrs.as ?? '').toLowerCase()];
+        if (kind) add(kind, attrs.href);
+        if (kind === 'img') for (const url of srcsetUrls(attrs.imagesrcset)) add('img', url);
       }
     } else if (tag === 'iframe' || tag === 'frame') {
       add('frame', attrs.src);
@@ -107,6 +131,11 @@ function htmlReferences(html) {
       add('object', attrs.src ?? attrs.data);
     } else if (tag === 'form') {
       add('form', attrs.action);
+    } else if (tag === 'a' || tag === 'area') {
+      // A hyperlink loads nothing into the page, but its ping is a connection.
+      for (const url of String(attrs.ping ?? '').split(/\s+/)) add('connect', url);
+    } else if (tag === 'base') {
+      add('base', attrs.href);
     }
   }
   for (const match of body.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) found.push(...cssReferences(match[1]));
@@ -118,20 +147,51 @@ function htmlReferences(html) {
   return found;
 }
 
+const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
+
 function cssReferences(css) {
   const found = [];
-  for (const match of String(css).matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)|@import\s+(?:"([^"]*)"|'([^']*)')/gi)) {
-    const hostname = absoluteHostname(match[1] ?? match[2] ?? match[3] ?? match[4] ?? match[5]);
-    if (hostname) found.push({ kind: 'css-url', hostname });
+  const add = (kind, value) => {
+    const hostname = absoluteHostname(value);
+    if (hostname) found.push({ kind, hostname });
+  };
+  let rest = String(css).replace(/\/\*[\s\S]*?\*\//g, '');
+  // Fonts first, so a font's url() never counts as an image.
+  rest = rest.replace(/@font-face\s*\{[^}]*\}/gi, (block) => {
+    for (const match of block.matchAll(CSS_URL)) add('font', match[1] ?? match[2] ?? match[3]);
+    return '';
+  });
+  rest = rest.replace(/@import\s+(?:url\(\s*)?(?:"([^"]*)"|'([^']*)')/gi, (_all, double, single) => {
+    add('style', double ?? single);
+    return '';
+  });
+  for (const match of rest.matchAll(CSS_URL)) add('img', match[1] ?? match[2] ?? match[3]);
+  // image-set() also takes bare quoted URLs, without url().
+  for (const set of rest.matchAll(/image-set\(([^)]*(?:\([^)]*\)[^)]*)*)\)/gi)) {
+    for (const quoted of set[1].matchAll(/(?<!url\(\s*)["']([^"']+)["']/gi)) add('img', quoted[1]);
   }
   return found;
 }
 
+// A string literal passed straight to a call that loads something.
+/** @type {Array<[RegExp, string]>} */
+const LOADING_CALLS = [
+  [/\b(?:fetch|sendBeacon)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
+  [/\bnew\s+(?:EventSource|WebSocket)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
+  [/\.open\s*\(\s*(["'`])[A-Za-z]+\1\s*,\s*(["'`])([^"'`]+)\2/g, 'connect'],
+  [/\bimport\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
+  [/\bimportScripts\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
+  [/\bnew\s+(?:Shared)?Worker\s*\(\s*(["'`])([^"'`]+)\1/g, 'worker'],
+];
+
 function scriptReferences(js) {
   const found = [];
-  for (const match of String(js).matchAll(/(?:https?:)?\/\/(?:[a-z0-9-]+\.)+[a-z]{2,}(?![a-z0-9-])/gi)) {
-    const hostname = absoluteHostname(match[0]);
-    if (hostname) found.push({ kind: 'js-url', hostname });
+  const text = String(js);
+  for (const [pattern, kind] of LOADING_CALLS) {
+    for (const match of text.matchAll(pattern)) {
+      const hostname = absoluteHostname(match.at(-1));
+      if (hostname) found.push({ kind, hostname });
+    }
   }
   return found;
 }

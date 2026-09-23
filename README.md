@@ -187,7 +187,12 @@ so browsers can report real violations without a third-party service.
 The policy names no other host. Images, fonts, scripts, styles and connections
 all come from the site itself, the homepage photo included. The build's
 `csp:audit:dist:style:elem` step fails if the policy ever allows a host that no
-built file loads from, and `gates:selftest` plants one to prove it does.
+built file loads that kind of resource from: an image host needs an image, a
+font host a font, a frame host a frame. Script and connect hosts count only
+where a script names them in a loading call such as `fetch()` or `import()`, so
+a URL a script builds at run time reads as unused. `gates:selftest` plants an
+unused host to prove the step fails. (`npm run csp:audit:dist` on its own only
+reports.)
 
 The contact form posts to `/api/contact`, where a small Node sidecar
 (`deploy/vps/contact-handler.mjs`) writes each submission in full to an fsync'd

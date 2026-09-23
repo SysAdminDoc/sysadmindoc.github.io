@@ -55,6 +55,46 @@ test('a host counts only when something of its kind loads from it', async (t) =>
   ]);
 });
 
+// The second drain review's crafted inputs, 2026-09-23: some kept a host
+// alive that nothing loaded that way, others reported a host unused that was.
+test('each resource is matched to the directive that governs it', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-kinds-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const policy = [
+    "default-src 'self'",
+    "img-src 'self' https://srcset.example https://imageset.example https://font-only.example https://commented.example",
+    "font-src 'self' https://font-only.example",
+    "connect-src 'self' https://ping.example https://link-data.example https://api.example",
+    "script-src 'self' https://link-data.example",
+    "media-src 'self' https://video.example",
+    "form-action 'self' https://formaction.example",
+    "base-uri 'self' https://base.example",
+  ].join('; ');
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}">` +
+      '<base href="https://base.example/">' +
+      '<link rel="preload" as="image" imagesrcset="https://srcset.example/a.png 1x, https://srcset.example/a2.png 2x">' +
+      '<link rel="preload" as="video" href="https://video.example/clip.mp4">' +
+      '<style>.hero{background-image:image-set("https://imageset.example/bg.avif" type("image/avif") 1x)}' +
+      '@font-face{font-family:x;src:url(https://font-only.example/x.woff2)}</style></head><body>' +
+      '<!-- <img src="https://commented.example/old.png"> -->' +
+      '<a href="/" ping="https://ping.example/collect">home</a>' +
+      '<form><button formaction="https://formaction.example/submit">send</button></form></body></html>',
+  );
+  // Link data: the host appears in a script, but nothing loads from it.
+  await fs.writeFile(path.join(dist, '_assets', 'data.js'), "export const links = ['https://link-data.example/repo'];\nfetch('https://api.example/v1');\n");
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused, [
+    { directive: 'img-src', token: 'https://font-only.example' },
+    { directive: 'img-src', token: 'https://commented.example' },
+    { directive: 'connect-src', token: 'https://link-data.example' },
+    { directive: 'script-src', token: 'https://link-data.example' },
+  ]);
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));
