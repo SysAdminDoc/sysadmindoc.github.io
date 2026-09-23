@@ -45,14 +45,17 @@ services:
       retries: 3
       start_period: 10s
     # The only container on both networks: the edge reaches it on `web`, and it
-    # reaches the contact handler and ntfy on the private network.
+    # reaches the report sink, the contact handler and ntfy on the private
+    # network.
     networks:
       - web
       - portfolio-private
 
   csp-reporter:
     # The reporter has no third-party runtime dependency and is not published
-    # on a host port. It is reachable only from portfolio-app on the web net.
+    # on a host port. It sits on the private network, so only portfolio-app,
+    # which routes /csp-report to it, can reach it. On `web` any of the other
+    # containers there could post to it directly.
     image: node:24-alpine
     container_name: portfolio-csp-reporter
     restart: unless-stopped
@@ -76,7 +79,7 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - web
+      - portfolio-private
 
   ntfy:
     # Lead notifications. 2.28.0 is past the critical parseActions RCE
@@ -182,8 +185,8 @@ services:
 networks:
   web:
     external: true
-  # Only portfolio-app, the contact handler and ntfy. None of the other
-  # containers on the shared `web` network can reach the lead path, and the
-  # network has no route out.
+  # portfolio-app, the report sink, the contact handler and ntfy. None of the
+  # other containers on the shared `web` network can reach the last three, and
+  # the network has no route out.
   portfolio-private:
     internal: true

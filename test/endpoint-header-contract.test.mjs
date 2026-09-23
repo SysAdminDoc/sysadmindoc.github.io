@@ -148,6 +148,45 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
   assert.ok(checked < shipped, 'the edge address is checked before the trust settings ship');
 });
 
+/** Each compose service's `networks:` list, read from the file's own layout. */
+function composeServiceNetworks(compose) {
+  const services = compose.replace(/\r\n/g, '\n').split(/^services:\n/m)[1].split(/^\S/m)[0];
+  /** @type {Record<string, string[]>} */
+  const result = {};
+  let current = '';
+  let inNetworks = false;
+  for (const line of services.split('\n')) {
+    const service = /^ {2}([\w-]+):\s*$/.exec(line);
+    if (service) {
+      current = service[1];
+      result[current] = [];
+      inNetworks = false;
+    } else if (/^ {4}networks:\s*$/.test(line)) {
+      inNetworks = true;
+    } else if (inNetworks) {
+      const item = /^ {6}- ([\w-]+)\s*$/.exec(line);
+      if (item) result[current].push(item[1]);
+      else if (line.trim() !== '' && !/^\s*#/.test(line)) inNetworks = false;
+    }
+  }
+  return result;
+}
+
+test('only portfolio-app joins the shared web network, and everything it fronts sits on the internal one', async () => {
+  const compose = await fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8');
+
+  // About twenty other containers share `web`. Any service on it can be
+  // reached, and posted to, by every one of them without going through
+  // portfolio-app's routes and their limits.
+  const services = composeServiceNetworks(compose);
+  const names = Object.keys(services).sort();
+  assert.deepEqual(names, ['contact-handler', 'csp-reporter', 'ntfy', 'portfolio-app']);
+  const on = (/** @type {string} */ network) => names.filter((name) => services[name].includes(network));
+  assert.deepEqual(on('web'), ['portfolio-app'], 'portfolio-app is the only way in from the edge');
+  assert.deepEqual(on('portfolio-private'), names, 'portfolio-app reaches the rest on the private network');
+  assert.match(compose.replace(/\r\n/g, '\n'), /\n {2}portfolio-private:\n {4}internal: true\n/, 'the private network has no route out');
+});
+
 test('a fresh server receives the secrets script before the deploy checks for its output', async () => {
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
 

@@ -37,13 +37,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `script-src` and `style-src` carry `'report-sample'`. The sink stores the 40-character sample and tags each report as synthetic, extension or first-party. The nightly prints the counts, and exits non-zero when a first-party document reports a blocked host or directive it hasn't reported before.
   Complexity: M
 
-- [ ] P2: Take the CSP report sink off the shared `web` network
-  Why: `portfolio-csp-reporter` sits on `web` beside about twenty other containers, so any of them can post straight to it, skipping the inner Caddy's route, and fill the store with reports the planned nightly check would then act on. The compose comment says only `portfolio-app` can reach it, which isn't so.
-  Evidence: `deploy/vps/docker-compose.yml` puts `csp-reporter` on `web`; `docker network inspect web` on 2026-09-23 lists `portfolio-csp-reporter` at 172.18.0.18. Noticed while pinning the edge's address.
-  Touches: `deploy/vps/docker-compose.yml`, `test/endpoint-header-contract.test.mjs`.
-  Acceptance: the reporter joins only `portfolio-private`. The live smoke's synthetic report still lands, and a throwaway container on `web` can't reach `csp-reporter:8080`.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Send `'wasm-unsafe-eval'` only with the Pagefind worker
