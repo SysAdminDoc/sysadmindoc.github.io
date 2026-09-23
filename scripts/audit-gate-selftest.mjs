@@ -208,6 +208,19 @@ const cases = [
     },
   },
   {
+    name: 'links:audit (no footer)',
+    args: ['scripts/audit-built-links.mjs', '--dist', scratch],
+    violation: 'a page with its footer removed, which the audit once skipped',
+    expect: /uses\/index\.html: has no footer, so no link to \/privacy\//,
+    plant() {
+      const html = readScratch('uses/index.html');
+      const stripped = html.replace(/<footer\b[\s\S]*?<\/footer>/gi, '');
+      if (stripped === html) return false;
+      writeScratch('uses/index.html', stripped);
+      return true;
+    },
+  },
+  {
     name: 'dom:audit',
     args: ['scripts/audit-dom-size.mjs', '--dist', scratch],
     violation: 'thousands of extra homepage nodes',

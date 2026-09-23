@@ -115,6 +115,23 @@ h1 {
   color: var(--muted);
 }
 
+.offline-footer {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.offline-footer a {
+  display: inline-block;
+  padding: 12px 0;
+  color: var(--muted);
+}
+
+.offline-footer a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;

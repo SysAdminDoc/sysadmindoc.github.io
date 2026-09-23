@@ -35,6 +35,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The form script asks for a fresh token after any failed attempt, tries once more at send time if the first token fetch met a restart, and gives up on a request after 20 seconds. A restart or a hung handler could leave it stuck on "Sending...", failing without trying, or resending a token the handler had already seen.
 
 ### Removed
+- The offline page links to `/privacy/` like every other page. The build's footer check skipped any page without a footer, and that was the one.
 - `humans.txt` no longer says the site is hosted on GitHub Pages, and it and `llms.txt` now say "no client-side analytics" rather than "no analytics", since a server-side traffic report exists.
 - `npm run publish:pages`, its script and `public/.nojekyll`. The `gh-pages` branch has been a three-file redirect to this origin since 2026-07-28, and the documented command would have replaced it with a full copy of the site. The README now lists `refresh:deploy` and `deploy:vps` as the only ways to deploy.
 

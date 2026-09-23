@@ -46,10 +46,14 @@ test('internal link audit accepts generated resume PDF artifacts', async () => {
   try {
     await fs.mkdir(path.join(tmp, 'resume'), { recursive: true });
     await fs.writeFile(path.join(tmp, 'resume.pdf'), '%PDF-1.4\n');
-    await fs.writeFile(path.join(tmp, 'resume', 'index.html'), '<a href="/resume.pdf">PDF</a>');
+    // Every built page has a footer that links to /privacy/, which exists.
+    const footer = '<footer><a href="/privacy/">Privacy</a></footer>';
+    await fs.mkdir(path.join(tmp, 'privacy'), { recursive: true });
+    await fs.writeFile(path.join(tmp, 'privacy', 'index.html'), '<a href="/">Home</a>');
+    await fs.writeFile(path.join(tmp, 'resume', 'index.html'), `<a href="/resume.pdf">PDF</a>${footer}`);
     // Every build has a sitemap, and the audit reads it to find orphaned pages.
-    await fs.writeFile(path.join(tmp, 'sitemap-0.xml'), sitemapFor(['/resume/']));
-    await fs.writeFile(path.join(tmp, 'index.html'), '<a href="/resume/">Resume</a>');
+    await fs.writeFile(path.join(tmp, 'sitemap-0.xml'), sitemapFor(['/resume/', '/privacy/']));
+    await fs.writeFile(path.join(tmp, 'index.html'), `<a href="/resume/">Resume</a>${footer}`);
 
     const result = spawnSync(process.execPath, ['scripts/audit-built-links.mjs', '--dist', tmp], {
       cwd: root,
@@ -89,6 +93,32 @@ test('internal link audit fails a sitemap page that no other page links to, and 
     const unmapped = audit();
     assert.equal(unmapped.status, 1, 'no sitemap means no orphan check, which must not pass quietly');
     assert.match(unmapped.stderr, /no sitemap-<n>\.xml routes found/);
+  } finally {
+    await fs.rm(tmp, { recursive: true, force: true });
+  }
+});
+
+// The sixth drain review: a page without a <footer> was skipped, so
+// offline.html shipped with no way to /privacy/ and nothing noticed.
+test('internal link audit fails a page with no footer, except /privacy/ itself', async () => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'sysadmindoc-links-'));
+  try {
+    const footer = '<footer><a href="/privacy/">Privacy</a></footer>';
+    await fs.mkdir(path.join(tmp, 'privacy'), { recursive: true });
+    await fs.writeFile(path.join(tmp, 'privacy', 'index.html'), '<a href="/">Home</a>');
+    await fs.writeFile(path.join(tmp, 'index.html'), `<a href="/privacy/">Privacy</a>${footer}`);
+    await fs.writeFile(path.join(tmp, 'offline.html'), '<main><a href="/">Home</a></main>');
+    await fs.writeFile(path.join(tmp, 'sitemap-0.xml'), sitemapFor(['/privacy/']));
+    const audit = () => spawnSync(process.execPath, ['scripts/audit-built-links.mjs', '--dist', tmp], { cwd: root, encoding: 'utf8' });
+
+    const bare = audit();
+    assert.equal(bare.status, 1);
+    assert.match(bare.stderr, /offline\.html: has no footer, so no link to \/privacy\//);
+    assert.doesNotMatch(bare.stderr, /privacy\/index\.html/, '/privacy/ needs no link to itself');
+
+    await fs.writeFile(path.join(tmp, 'offline.html'), `<main><a href="/">Home</a></main>${footer}`);
+    const fixed = audit();
+    assert.equal(fixed.status, 0, fixed.stderr);
   } finally {
     await fs.rm(tmp, { recursive: true, force: true });
   }

@@ -150,10 +150,12 @@ for (const filePath of htmlFiles) {
   const hrefs = extractHrefs(html);
 
   // /privacy/ promises it is one click from every page. The build checks the
-  // pages it is about to ship; a unit test could only read the last build.
+  // pages it is about to ship; a unit test could only read the last build. A
+  // page with no footer at all fails too, instead of going unchecked.
   const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0];
-  if (footer && source !== '/privacy/' && !/\bhref=(["'])\/privacy\/\1/.test(footer)) {
-    errors.push(`  ${rel}: its footer has no link to /privacy/`);
+  if (source !== '/privacy/') {
+    if (!footer) errors.push(`  ${rel}: has no footer, so no link to /privacy/`);
+    else if (!/\bhref=(["'])\/privacy\/\1/.test(footer)) errors.push(`  ${rel}: its footer has no link to /privacy/`);
   }
 
   for (const href of hrefs) {
