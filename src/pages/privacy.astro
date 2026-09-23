@@ -59,13 +59,13 @@ const cmdkSections = [
     <section class="si privacy-section" id="privacy-contact-form" aria-labelledby="privacy-contact-form-title">
       <h2 class="privacy-h2" id="privacy-contact-form-title">The contact form</h2>
       <p>When you send the form, the server saves your name, your email address, your message, the page you sent it from and the time. It keeps them for {LEAD_RETENTION_DAYS} days and then deletes them. The deletion runs by itself every day.</p>
-      <p>A short notification with your name, email and the start of your message comes to me through a notification server I run myself, which holds it for {NOTIFICATION_CACHE_HOURS} hours. Nothing you send is shared, sold or put on a mailing list.</p>
-      <p>To slow down spam, the server counts how often each IP address sends the form in a ten-minute window. That count lives in memory only and is never written down.</p>
+      <p>A short notification with your name, email and the start of your message comes to me through a notification server I run myself, which holds it for {NOTIFICATION_CACHE_HOURS} hours. The copy on my phone stays until I delete it. Nothing you send is shared, sold or put on a mailing list.</p>
+      <p>To slow down spam, the server counts how often each IP address sends the form, over ten minutes and over a day. Those counts live in memory only and are never written down.</p>
     </section>
 
     <section class="si privacy-section" id="privacy-logs" aria-labelledby="privacy-logs-title">
       <h2 class="privacy-h2" id="privacy-logs-title">Server logs</h2>
-      <p>Like almost every web server, this one logs each request: your IP address, the page, the time, your browser's user agent and the page you came from. The log rolls over at midnight, and old logs are deleted after {ACCESS_LOG_RETENTION_DAYS} days.</p>
+      <p>Like almost every web server, this one logs each request: your IP address, the address you asked for (anything after a question mark included), the time, and the headers your browser sent with it, such as its user agent, its language and the page you came from. The log rolls over at midnight, and old logs are deleted after {ACCESS_LOG_RETENTION_DAYS} days.</p>
       <p>Once a day a script turns those logs into a traffic report with the last part of every IP address zeroed out. The report stays on the server, isn't published anywhere, and is replaced the next day.</p>
     </section>
 
@@ -76,7 +76,7 @@ const cmdkSections = [
 
     <section class="si privacy-section" id="privacy-browser" aria-labelledby="privacy-browser-title">
       <h2 class="privacy-h2" id="privacy-browser-title">In your browser</h2>
-      <p>The site sets no cookies and runs no analytics. It remembers two things in your own browser: whether you picked the light or dark theme, and, for the current tab only, that you dismissed an update notice. It also keeps copies of its pages so they work offline. You can clear all of that from your browser's settings for this site.</p>
+      <p>The site sets no cookies and runs no analytics in your browser. It remembers two things in your own browser: whether you picked the light or dark theme, and, for the current tab only, that you dismissed an update notice. It also keeps copies of its pages so they work offline. You can clear all of that from your browser's settings for this site.</p>
     </section>
 
     <section class="si privacy-section" id="privacy-deletion" aria-labelledby="privacy-deletion-title">

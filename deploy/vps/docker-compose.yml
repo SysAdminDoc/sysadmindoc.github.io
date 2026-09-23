@@ -149,7 +149,8 @@ services:
     environment:
       NTFY_URL: http://ntfy:80/portfolio-leads
       # Full submissions, fsync'd before the visitor gets an answer. The older
-      # submissions.ndjson beside it (name, email, length only) is kept as is.
+      # submissions.ndjson beside it (name, email, length only) follows the same
+      # retention and is removed once empty.
       CONTACT_STORE: /var/lib/contact/leads.ndjson
     # NTFY_TOKEN (write-only) and CONTACT_SMOKE_SECRET, from
     # deploy/vps/provision-notify-secrets.sh. Never committed.
