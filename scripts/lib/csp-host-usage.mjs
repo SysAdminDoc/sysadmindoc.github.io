@@ -37,21 +37,38 @@ const KINDS_BY_DIRECTIVE = {
 
 const TEXT_FILE = /\.(?:html?|css|m?js|json|webmanifest|svg|xml)$/i;
 
+// CSP Level 3 scheme-part matching, for a source that names its scheme: an
+// `https:` source does not allow a `wss:` URL, while a `wss:` source allows`n// `https:`. A source with no scheme keeps matching any, as it always has here.
+function schemeAllows(sourceScheme, urlScheme) {
+  if (!sourceScheme || sourceScheme === urlScheme) return true;
+  if (sourceScheme === 'http') return urlScheme === 'https';
+  if (sourceScheme === 'ws') return urlScheme === 'wss' || urlScheme === 'http' || urlScheme === 'https';
+  if (sourceScheme === 'wss') return urlScheme === 'https';
+  return false;
+}
+
 /** A host source such as `https://cdn.example.com` or `*.example.com`; null for keywords and schemes. */
 export function parseHostSource(token) {
   if (token.startsWith("'") || /^[a-z][a-z0-9+.-]*:$/i.test(token) || token === '*') return null;
-  const match = token.match(/^(?:[a-z][a-z0-9+.-]*:\/\/)?(\*\.)?([^/:*]+)(?::(?:\d+|\*))?(?:\/.*)?$/i);
+  const match = token.match(/^(?:([a-z][a-z0-9+.-]*):\/\/)?(\*\.)?([^/:*]+)(?::(?:\d+|\*))?(?:\/.*)?$/i);
   if (!match) return null;
-  const wildcard = Boolean(match[1]);
-  const host = match[2].toLowerCase();
-  return { token, matches: (hostname) => (wildcard ? hostname.endsWith(`.${host}`) : hostname === host) };
+  const scheme = match[1] ? match[1].toLowerCase() : null;
+  const wildcard = Boolean(match[2]);
+  const host = match[3].toLowerCase();
+  return {
+    token,
+    matches: (hostname, urlScheme = 'https') =>
+      schemeAllows(scheme, urlScheme) && (wildcard ? hostname.endsWith(`.${host}`) : hostname === host),
+  };
 }
 
-function absoluteHostname(value) {
+/** The host and scheme of an absolute or protocol-relative URL (which takes https), or null. */
+function absoluteTarget(value) {
   const url = String(value ?? '').trim();
   if (!/^(?:(?:https?|wss?):)?\/\//i.test(url)) return null;
   try {
-    return new URL(url, 'https://self.invalid/').hostname.toLowerCase();
+    const parsed = new URL(url, 'https://self.invalid/');
+    return { hostname: parsed.hostname.toLowerCase(), scheme: parsed.protocol.slice(0, -1).toLowerCase() };
   } catch {
     return null;
   }
@@ -90,11 +107,16 @@ const PRELOAD_KIND = {
 function htmlReferences(html) {
   const found = [];
   const add = (kind, url) => {
-    const hostname = absoluteHostname(url);
-    if (hostname) found.push({ kind, hostname });
+    const target = absoluteTarget(url);
+    if (target) found.push({ kind, ...target });
   };
-  const body = html
-    .replace(/<!--[\s\S]*?-->/g, '')
+  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, '');
+  // Text inside an inline script is JavaScript, not markup: its loading calls
+  // are read below, and a '<template' or a stray quote in it must not reach
+  // the markup rules.
+  const scripts = [...withoutComments.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+  const body = withoutComments
+    .replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>)/gi, '$1$2')
     // Markup inside these is text, or inert until a script clones it, so it
     // loads nothing where it stands.
     .replace(/<(template|textarea|title)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
@@ -145,7 +167,7 @@ function htmlReferences(html) {
   }
   for (const match of body.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) found.push(...cssReferences(match[1]));
   for (const match of body.matchAll(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) found.push(...cssReferences(match[1] ?? match[2]));
-  for (const match of body.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+  for (const match of scripts) {
     const type = String(attributes(match[1]).type ?? '').toLowerCase();
     if (!type.includes('json')) found.push(...scriptReferences(match[2]));
   }
@@ -157,8 +179,8 @@ const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
 function cssReferences(css) {
   const found = [];
   const add = (kind, value) => {
-    const hostname = absoluteHostname(value);
-    if (hostname) found.push({ kind, hostname });
+    const target = absoluteTarget(value);
+    if (target) found.push({ kind, ...target });
   };
   let rest = String(css).replace(/\/\*[\s\S]*?\*\//g, '');
   // Fonts first, so a font's url() never counts as an image.
@@ -180,7 +202,7 @@ function cssReferences(css) {
 }
 
 // A string literal passed straight to a call that loads something. WebSocket
-// URLs are ws: or wss:, which absoluteHostname accepts beside http(s).
+// URLs are ws: or wss:, which absoluteTarget accepts beside http(s).
 /** @type {Array<[RegExp, string]>} */
 const LOADING_CALLS = [
   [/\b(?:fetch|sendBeacon)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
@@ -196,8 +218,8 @@ function scriptReferences(js) {
   const text = String(js);
   for (const [pattern, kind] of LOADING_CALLS) {
     for (const match of text.matchAll(pattern)) {
-      const hostname = absoluteHostname(match.at(-1));
-      if (hostname) found.push({ kind, hostname });
+      const target = absoluteTarget(match.at(-1));
+      if (target) found.push({ kind, ...target });
     }
   }
   return found;
@@ -214,7 +236,7 @@ async function builtFiles(dir) {
   return files;
 }
 
-/** Every resource reference with an absolute host in the built site, as { kind, hostname }. */
+/** Every resource reference with an absolute host in the built site, as { kind, hostname, scheme }. */
 export async function collectHostReferences(distDir) {
   const references = [];
   for (const file of await builtFiles(distDir)) {
@@ -239,7 +261,9 @@ export function unusedHostSources(directives, references) {
     for (const token of tokens) {
       const source = parseHostSource(token);
       if (!source) continue;
-      const used = references.some((reference) => (!kinds || kinds.includes(reference.kind)) && source.matches(reference.hostname));
+      const used = references.some(
+        (reference) => (!kinds || kinds.includes(reference.kind)) && source.matches(reference.hostname, reference.scheme),
+      );
       if (!used) unused.push({ directive, token });
     }
   }

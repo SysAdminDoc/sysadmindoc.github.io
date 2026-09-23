@@ -95,6 +95,36 @@ test('each resource is matched to the directive that governs it', async (t) => {
   ]);
 });
 
+// The fifth drain review's inputs, 2026-09-23: an https: source was counted as
+// used by a wss:// socket, which CSP doesn't allow, and the markup rules ran
+// over inline script text, where a '<template' string could swallow the real
+// markup after it.
+test('a source that names its scheme matches only what CSP allows, and script text is not markup', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review5-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const policy = [
+    "default-src 'self'",
+    "connect-src 'self' https://sock.example wss://sock2.example",
+    "img-src 'self' https://inscript.example https://after.example",
+  ].join('; ');
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      `<script>const tpl = '<template><img src="https://inscript.example/a.png">'; const q = "it's";</script>` +
+      '<img src="https://after.example/b.png">' +
+      '<template><p>later</p></template>' +
+      '</body></html>',
+  );
+  await fs.writeFile(path.join(dist, '_assets', 'live.js'), "new WebSocket('wss://sock.example/feed');\nfetch('https://sock2.example/data');\n");
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused, [
+    { directive: 'connect-src', token: 'https://sock.example' },
+    { directive: 'img-src', token: 'https://inscript.example' },
+  ]);
+});
+
 // The third drain review's inputs, 2026-09-23: a wss:// socket never counted,
 // an unquoted @import url() counted as an image, markup inside <template> and
 // <textarea> counted, and a '>' in a quoted alt hid the src after it.
