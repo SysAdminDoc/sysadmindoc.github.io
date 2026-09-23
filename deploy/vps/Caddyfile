@@ -3,14 +3,17 @@
 # this instance serves the built site and replicates the machine-endpoint cache
 # policy the live smoke expects (GitHub Pages served max-age=600 globally).
 
-# The edge Caddy is this server's only client, over private docker networks.
-# Trusting those ranges keeps the visitor's address in X-Forwarded-For (with the
-# edge's appended) instead of replacing it with the edge's own, so ntfy can tell
-# visitors apart for its per-IP limits. See NTFY_PROXY_TRUSTED_HOSTS in
-# docker-compose.yml for the other half.
+# The edge Caddy is this server's only intended client, but about twenty other
+# containers share the `web` network with it. Trusting the edge's address alone
+# keeps the visitor's address in X-Forwarded-For (with the edge's appended), so
+# ntfy and the contact handler can tell visitors apart, while any other
+# container's header is replaced with that container's own address. The edge's
+# compose file (Contabo-VPS-Ops) pins the address, and deploy-vps stops before
+# shipping anything if the edge isn't on it (scripts/lib/edge-address.mjs). See
+# NTFY_PROXY_TRUSTED_HOSTS in docker-compose.yml for the other half.
 {
 	servers {
-		trusted_proxies static private_ranges
+		trusted_proxies static 172.18.255.254/32
 	}
 }
 

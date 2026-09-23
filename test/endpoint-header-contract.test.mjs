@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { EDGE_PROXY_ADDRESS } from '../scripts/lib/edge-address.mjs';
 
 const root = process.cwd();
 
@@ -115,23 +116,36 @@ test('the deployed CSP header carries frame-ancestors, which a meta policy canno
   );
 });
 
-test('ntfy sees each visitor\'s own address, not the edge proxy\'s', async () => {
-  const [caddyfile, compose] = await Promise.all([
+test('ntfy sees each visitor\'s own address, and only the edge can hand one on', async () => {
+  const [caddyfile, compose, deploy] = await Promise.all([
     fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
     fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8'),
+    fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8'),
   ]);
 
   // Without trusted_proxies the inner Caddy replaces the edge's X-Forwarded-For
   // with the edge's own address, and ntfy's per-IP limits (failed logins
   // included) then treat every visitor as one: 30 bad tokens from anyone would
-  // lock the owner's phone out.
+  // lock the owner's phone out. Trusting more than the edge fails the other
+  // way: about twenty other containers share the `web` network, and any of
+  // them could then pass on a forged address.
+  const edge = `${EDGE_PROXY_ADDRESS}/32`;
   const code = caddyfile.replace(/^\s*#.*$/gm, '').trim();
-  assert.match(code, /^\{\s*servers\s*\{\s*trusted_proxies static private_ranges\s*\}\s*\}/, 'the global block comes first and trusts the private ranges');
+  assert.match(
+    code,
+    new RegExp(`^\\{\\s*servers\\s*\\{\\s*trusted_proxies static ${edge.replaceAll('.', '\\.')}\\s*\\}\\s*\\}`),
+    'the global block comes first and trusts the edge alone',
+  );
   assert.match(compose, /NTFY_BEHIND_PROXY: "true"/);
   const trusted = compose.match(/NTFY_PROXY_TRUSTED_HOSTS: "([^"]+)"/)?.[1].split(',');
-  // What Caddy 2.11's private_ranges expands to (caddy adapt, 2026-09-23), so
-  // both hops strip the same addresses.
-  assert.deepEqual(trusted, ['127.0.0.0/8', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '::1/128', 'fd00::/8']);
+  assert.deepEqual(trusted, [edge], 'ntfy strips the edge address and nothing else');
+
+  // Both lists name the address the edge's compose file pins, so the deploy
+  // stops before shipping them if the edge is anywhere else.
+  const checked = deploy.indexOf('\nverifyEdgeAddress();');
+  const shipped = deploy.indexOf("path.join(root, 'deploy', 'vps', 'docker-compose.yml')");
+  assert.ok(checked > 0 && shipped > 0, 'both steps must exist');
+  assert.ok(checked < shipped, 'the edge address is checked before the trust settings ship');
 });
 
 test('a fresh server receives the secrets script before the deploy checks for its output', async () => {

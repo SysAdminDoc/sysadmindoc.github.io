@@ -22,6 +22,7 @@ import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { edgeLogExclusionProblem } from './lib/edge-log-check.mjs';
+import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -136,6 +137,20 @@ function verifyEdgeLogging() {
   console.log('deploy-vps: the edge keeps portfolio requests out of its container log.');
 }
 
+// The inner Caddy and ntfy trust only the edge's pinned address to hand on a
+// visitor's address. On any other address the edge is untrusted, and every
+// visitor would share one set of per-client limits and one ntfy lockout.
+function verifyEdgeAddress() {
+  const output = captureRemote("docker inspect caddy --format '{{json .NetworkSettings.Networks.web}}' 2>&1 || true");
+  const problem = edgeAddressProblem(output);
+  if (problem) {
+    throw new Error(
+      `deploy-vps: ${problem}. Pin it in /home/deploy/proxy/docker-compose.yml (Contabo-VPS-Ops) before deploying, or every visitor shares one set of limits.`,
+    );
+  }
+  console.log(`deploy-vps: the edge is on its pinned address, ${EDGE_PROXY_ADDRESS}.`);
+}
+
 function writeProjectRedirects(distDir) {
   const file = path.join(root, '.tmp', 'project-redirects.caddy');
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -179,6 +194,10 @@ runRemote(
   `cd ${remoteDir} && { test -s ntfy-auth.env && test -s contact-secrets.env; } || ` +
     `{ echo "deploy-vps: ntfy-auth.env or contact-secrets.env is missing in ${remoteDir}; run 'sh provision-notify-secrets.sh' there first (see README, Deploy)." >&2; exit 1; }`,
 );
+
+// 2c. The trust settings shipped below name the edge's pinned address, so stop
+// before anything ships if the edge isn't on it.
+verifyEdgeAddress();
 
 // 3. Ship the server config, reporter, CSP environment, then the site itself.
 run('scp', [

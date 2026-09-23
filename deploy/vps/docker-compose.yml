@@ -98,12 +98,14 @@ services:
       NTFY_BASE_URL: https://notify.getparkerai.com
       NTFY_LISTEN_HTTP: ":80"
       # ntfy rate-limits, and locks out failed logins, per visitor IP, taken as
-      # the right-most X-Forwarded-For address it doesn't trust. The two Caddy
-      # hops sit on private docker networks, so stripping those ranges leaves the
-      # visitor's own address. Without this every visitor shared the edge's IP,
-      # and 30 bad tokens from anyone locked the owner's phone out too.
+      # the right-most X-Forwarded-For address it doesn't trust. portfolio-app
+      # keeps the header only when the edge sent it, and appends the edge's
+      # pinned address, so stripping that one address leaves the visitor's own.
+      # Without this every visitor shared the edge's IP, and 30 bad tokens from
+      # anyone locked the owner's phone out too. Stripping every private range
+      # instead let any container on `web` choose the address ntfy saw.
       NTFY_BEHIND_PROXY: "true"
-      NTFY_PROXY_TRUSTED_HOSTS: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,::1/128,fd00::/8"
+      NTFY_PROXY_TRUSTED_HOSTS: "172.18.255.254/32"
       NTFY_AUTH_FILE: /var/lib/ntfy/user.db
       NTFY_AUTH_DEFAULT_ACCESS: deny-all
       NTFY_CACHE_FILE: /var/cache/ntfy/cache.db
