@@ -8,6 +8,7 @@ import {
   readSourceSurfaceTexts,
 } from './lib/source-surface-audit.mjs';
 import { loadCssEntry } from './lib/css-entry.mjs';
+import { overriddenDeclarations } from './lib/css-overrides.mjs';
 
 const root = process.cwd();
 const criticalPath = path.join(root, 'src', 'styles', 'critical.css');
@@ -183,6 +184,32 @@ if (selfTest) {
     process.exit(1);
   }
   console.log('CSS dead-selector self-test passed.');
+
+  const overrideMutation = overriddenDeclarations(`${criticalCss}\n.hero-proof{color:red}\n.hero-proof{color:blue}`);
+  if (!overrideMutation.some((finding) => finding.selector === '.hero-proof' && finding.prop === 'color')) {
+    console.error('');
+    console.error('CSS override self-test failed: a color set twice on .hero-proof was not reported.');
+    process.exit(1);
+  }
+  console.log('CSS override self-test passed.');
+}
+
+// Every declaration a later rule on the same selector replaces, in every
+// stylesheet under src/styles (scripts/lib/css-overrides.mjs).
+async function cssFilesUnder(dir) {
+  const files = [];
+  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...(await cssFilesUnder(full)));
+    else if (entry.name.endsWith('.css')) files.push(full);
+  }
+  return files.sort();
+}
+const styleFiles = await cssFilesUnder(path.join(root, 'src', 'styles'));
+const overrideFindings = [];
+for (const file of styleFiles) {
+  const rel = path.relative(root, file).replaceAll(path.sep, '/');
+  for (const finding of overriddenDeclarations(await fs.readFile(file, 'utf8'))) overrideFindings.push({ file: rel, ...finding });
 }
 
 const result = auditCss({ criticalCss, globalCss });
@@ -211,5 +238,16 @@ if (deadSelectorResult.findings.length > 0) {
   process.exit(1);
 }
 
+if (overrideFindings.length > 0) {
+  console.error('');
+  console.error('CSS override audit failed: a later rule on the same selector replaces each of these, so they never apply:');
+  for (const finding of overrideFindings.slice(0, 40)) {
+    console.error(`  - ${finding.file}:${finding.line} ${finding.selector} { ${finding.prop} }, replaced at line ${finding.overriddenAt}`);
+  }
+  if (overrideFindings.length > 40) console.error(`  ... and ${overrideFindings.length - 40} more`);
+  process.exit(1);
+}
+
 console.log('CSS first-viewport parity audit passed.');
 console.log('CSS dead-selector audit passed.');
+console.log(`CSS override audit passed: ${styleFiles.length} stylesheets, no declaration replaced by a later one on the same selector.`);

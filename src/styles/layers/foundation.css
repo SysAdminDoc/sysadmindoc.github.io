@@ -137,7 +137,7 @@
         /* Live Apps */
         .lc2{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:10px;background:rgba(17,24,39,.65);border:1px solid var(--glass-border);text-decoration:none;color:inherit;transition:border-color .4s cubic-bezier(.16,1,.3,1),background-color .4s cubic-bezier(.16,1,.3,1),box-shadow .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1),color .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
         .lc2::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--grn-glow),transparent);opacity:0;transition:opacity .3s}
-        .lc2:hover{border-color:rgba(74,222,128,.2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 30px rgba(74,222,128,.05)}.lc2:hover::before{opacity:1}
+        .lc2:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 30px rgba(74,222,128,.05)}
         .lct{display:flex;align-items:center;justify-content:space-between}.lcn{font-family:var(--mono);font-size:15px;font-weight:600}.lcd{font-size:13px;color:var(--t2);line-height:1.4}
         .lc2-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:8px;font-family:var(--mono);font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase}
         .lc2-origin{color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

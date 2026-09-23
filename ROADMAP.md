@@ -8,9 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- Collapse the seven stacked redesign blocks in src/styles/layers/unlayered.css (v0.18.4 through v0.45) into one sheet. Each block overrides the last, so any layout change today has to fight rules from six earlier passes. Keep the css-layer contract test and the dead-selector audit green throughout.
-  Research note (2026-09-22): the file holds ten labelled blocks, not seven, running from v0.18.4 at `:1` to the v0.45 composition pass at `:1687`, and it defines `:root` tokens in six separate blocks (`:706`, `:1259`, `:1393`, `:1595`, `:1611`, `:1691`). It's 54,702 bytes, and total built CSS has about 10% headroom under its cap (202,740 of 225,280 bytes), so the collapse buys budget as well as clarity.
-
 ### P3
 
 ## Research-Driven Additions
