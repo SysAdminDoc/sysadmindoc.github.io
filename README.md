@@ -226,6 +226,12 @@ token, so it gets two, and the site stores at most 30 messages an hour.
 Refusals all read "Please check the form and try again", and the handler's log
 keeps the reason.
 
+The removed `/projects/<Repo>/` pages still get visits from old links. At each
+deploy, `deploy-vps` writes a `redir` line per catalog repo from
+`dist/projects.json` into `project-redirects.caddy`, which the internal Caddyfile
+imports: a known repo answers 301 to its GitHub page, and any other name 302s to
+`/catalog/?q=<name>`.
+
 What the site keeps, and for how long, is on `/privacy/`. Every period there
 comes from `src/data/retention.ts`, and `test/privacy-retention.test.mjs` holds
 the things that enforce them to the same numbers: the handler's lead purge

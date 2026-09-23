@@ -61,6 +61,16 @@ http://notify.getparkerai.com {
 	header @speculationrules Content-Type "application/speculationrules+json"
 	header @speculationrules Cache-Control "public, max-age=600"
 
+	# The /projects/<Repo>/ pages were removed in 864d3451 and old links still
+	# arrive. A repo the catalog knows goes to its GitHub page for good (the
+	# redir list is generated from dist/projects.json at deploy time); any other
+	# safe name goes to a catalog search for it.
+	@retired_project path_regexp retired_project ^/projects/([A-Za-z0-9._-]+)/?$
+	handle @retired_project {
+		import project-redirects.caddy
+		redir * /catalog/?q={re.retired_project.1} 302
+	}
+
 	# Reporting API sink. The edge publishes Reporting-Endpoints, and this
 	# private sidecar accepts only the bounded POST body on the named route.
 	@csp_report path /csp-report

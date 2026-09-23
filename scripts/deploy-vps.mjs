@@ -20,6 +20,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
+import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -123,6 +124,18 @@ function verifyCaddyVersion() {
   console.log(`deploy-vps: portfolio-app is running the pinned Caddy ${running}.`);
 }
 
+function writeProjectRedirects(distDir) {
+  const file = path.join(root, '.tmp', 'project-redirects.caddy');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const projects = JSON.parse(fs.readFileSync(path.join(distDir, 'projects.json'), 'utf8'));
+  const text = projectRedirectsCaddy(projects);
+  if (!text.includes('redir /projects/')) {
+    throw new Error('deploy-vps: dist/projects.json produced no project redirects.');
+  }
+  fs.writeFileSync(file, text, 'utf8');
+  return file;
+}
+
 function writeComposeEnvFile(distDir) {
   const envFile = path.join(root, '.tmp', 'csp.env');
   fs.mkdirSync(path.dirname(envFile), { recursive: true });
@@ -141,6 +154,7 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
   process.exit(1);
 }
 const cspEnvFile = writeComposeEnvFile(distDir);
+const projectRedirectsFile = writeProjectRedirects(distDir);
 
 // 2. Ensure the remote site dir exists.
 runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache ${remoteDir}/ntfy-data ${remoteDir}/bin`);
@@ -162,6 +176,7 @@ run('scp', [
   path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'),
   path.join(root, 'deploy', 'vps', 'contact-handler.mjs'),
   cspEnvFile,
+  projectRedirectsFile,
   `${ssh}:${remoteDir}/`,
 ]);
 // The daily traffic-report cron (15 4 * * *) runs bin/analytics-report.sh, and
@@ -169,6 +184,7 @@ run('scp', [
 // repo is the one that runs.
 run('scp', [...sshOptions, path.join(root, 'deploy', 'vps', 'analytics-report.sh'), `${ssh}:${remoteDir}/bin/analytics-report.sh`]);
 fs.rmSync(cspEnvFile, { force: true });
+fs.rmSync(projectRedirectsFile, { force: true });
 
 // tar over ssh rather than rsync: rsync is not present on the Windows build
 // box, and this needs no extra remote tooling. The tree is unpacked into a

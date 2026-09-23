@@ -361,6 +361,43 @@ async function checkNotFoundStatus(baseUrl, summary) {
   summary.push('missing path: HTTP 404 with the 404 document');
 }
 
+async function checkRetiredUrls(baseUrl, summary) {
+  // Old links to the removed /projects/<Repo>/ pages, and plain /favicon.ico
+  // requests, were the site's commonest 404s. A known repo goes to its GitHub
+  // page for good, any other name to a catalog search, and the icon exists.
+  const request = async (pathname) => {
+    const response = await timedFetch(siteUrl(pathname, baseUrl), {
+      headers: { 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
+      redirect: 'manual',
+    });
+    await response.text().catch(() => '');
+    return { status: response.status, location: response.headers.get('location') };
+  };
+
+  const projects = parseJson((await fetchText(baseUrl, '/projects.json', 'application/json')).body, '/projects.json');
+  const repository = projects.projects
+    ?.map((project) => project?.urls?.repository)
+    .find((url) => /^https:\/\/github\.com\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(url ?? ''));
+  if (!repository) throw new Error('/projects.json has no GitHub repository to test the /projects/ redirect with.');
+  const repo = repository.split('/').pop();
+  const known = await request(`/projects/${repo}/`);
+  if (known.status !== 301 || known.location !== repository) {
+    throw new Error(`/projects/${repo}/ answered HTTP ${known.status} to "${known.location ?? '(none)'}"; expected 301 to ${repository}.`);
+  }
+  const unknownName = `live-smoke-${runId}`;
+  const unknown = await request(`/projects/${unknownName}/`);
+  if (unknown.status !== 302 || unknown.location !== `/catalog/?q=${unknownName}`) {
+    throw new Error(
+      `/projects/${unknownName}/ answered HTTP ${unknown.status} to "${unknown.location ?? '(none)'}"; expected 302 to /catalog/?q=${unknownName}.`,
+    );
+  }
+  const icon = await fetchBinary(baseUrl, '/favicon.ico', 'image/x-icon,image/*,*/*');
+  if (!icon.buffer.subarray(0, 4).equals(Buffer.from([0, 0, 1, 0]))) {
+    throw new Error('/favicon.ico answered 200 but is not an ICO file.');
+  }
+  summary.push('retired URLs: /projects/<repo>/ 301 to GitHub, other names 302 to the catalog, /favicon.ico is an ICO');
+}
+
 async function checkCspReportEndpoint(baseUrl, summary) {
   if (!isEdgeHost(baseUrl)) {
     summary.push(`CSP report endpoint: skipped (non-edge base ${new URL(baseUrl).host})`);
@@ -468,6 +505,7 @@ async function checkLiveArtifacts(baseUrl, expected) {
 
   await checkSecurityHeaders(baseUrl, summary);
   await checkNotFoundStatus(baseUrl, summary);
+  await checkRetiredUrls(baseUrl, summary);
   await checkCspReportEndpoint(baseUrl, summary);
   await checkLeadDeliveryOnEdge(baseUrl, summary);
 

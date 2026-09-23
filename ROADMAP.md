@@ -30,13 +30,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Every sitemap route has at least one inbound link from another built page. `links:audit` fails on an orphan, proven by a planted case in `gates:selftest`.
   Complexity: S
 
-- [ ] P2: Redirect retired `/projects/<Repo>/` URLs and answer `/favicon.ico`
-  Why: Old project URLs are the site's largest 404 class, with 92 hits since 2026-09-17 (36 from browser-like agents), and `/favicon.ico` returns 404 as well.
-  Evidence: edge access-log aggregate 2026-09-23 (92 `/projects/` and 9 `/favicon.ico` 404s since 2026-09-17T15:44Z); the removed route used the repo name as its slug (`864d3451`).
-  Touches: `deploy/vps/Caddyfile` (or a redirect map generated at build and shipped by `scripts/deploy-vps.mjs`), `public/favicon.ico`, `scripts/smoke-live-site.mjs`.
-  Acceptance: A known repo slug answers 301 to its GitHub URL, an unknown one answers 302 to `/catalog/?q=<slug>`, and `/favicon.ico` answers 200. `smoke:live` checks one of each.
-  Complexity: S
-
 - [ ] P2: Minify the inlined critical CSS and load `cmdk-data.js` on demand, both under a budget
   Why: 42,121 bytes of unminified CSS make up 54% of the homepage HTML, and a 62,803-byte script blocks every page for a palette that loads lazily anyway. Neither counts against the bundle caps.
   Evidence: `dist/index.html` is 77,459 bytes; `src/layouts/Base.astro:159` and `:212`; `scripts/audit-bundle-size.mjs:104-111` scans only `scripts/` and `_assets/`.
