@@ -256,7 +256,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added server-side traffic reporting (`deploy/vps/analytics-report.sh`), run
   daily on the VPS. It renders the access log the edge already writes into a
   static GoAccess report with anonymized IPs, so the site gains traffic
-  visibility while still shipping no analytics runtime — no script, no cookie,
+  visibility while still shipping no analytics runtime: no script, no cookie,
   no third party, and no change to any page. The report is stored outside the
   served directory and is not reachable over HTTP.
 - Covered the runtime scripts that had no tests: relative-time formatting,
@@ -280,7 +280,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   (`fetch-stars` → `profile-feed:sync` → `deploy:preflight` → `deploy:vps`)
   registered as a daily scheduled task. Every refresh step used to be manual, so
   the deployed site quietly aged past its own 36-hour freshness contract
-  whenever work paused — it had been serving 23-day-old data. The runner fails
+  whenever work paused. It had been serving 23-day-old data. The runner fails
   closed: a failing gate aborts before deploying, leaves the previous
   deployment live, records the reason in `.tmp/refresh-and-deploy.log`, and
   exits non-zero. `npm run refresh:deploy:dry` stops after the preflight.
@@ -318,7 +318,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   was publishing a coverage warning on `/status/`. The cause was a split-brain
   cache: `_etags.json` kept an ETag for every README while `_readmes.json` had
   lost the bodies, so each refresh sent a conditional request, got "not
-  modified", and skipped the repo — leaving 42 READMEs permanently
+  modified", and skipped the repo, leaving 42 READMEs permanently
   unrecoverable until someone edited them upstream. The fetcher now drops an
   ETag whose cached body is missing and refetches unconditionally, and reports a
   `recovered` count so a recurrence is visible. Coverage is back to 193/193.
@@ -339,13 +339,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
   and `Cross-Origin-Opener-Policy`). The check runs against the canonical origin
   and is skipped for non-edge base URLs, so a Caddy route regression that dropped
   a header fails the live smoke instead of going unnoticed. This closes the
-  long-blocked "Add Permissions-Policy restrictive defaults" item — unreachable
+  long-blocked "Add Permissions-Policy restrictive defaults" item, unreachable
   on GitHub Pages, delivered and now regression-gated on the VPS edge.
 
 ### Changed
 
 - Corrected the endpoint header-contract narrative (`src/data/endpoint-headers.ts`
-  and its test) to reflect that the VPS edge Caddy — not GitHub Pages — owns the
+  and its test) to reflect that the VPS edge Caddy, not GitHub Pages, owns the
   deployed header contract.
 
 ## [v0.38.0] - 2026-07-28
@@ -355,8 +355,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Moved hosting from GitHub Pages to the Contabo VPS: the canonical origin is now
   `https://portfolio.getparkerai.com`, served by a hardened static Caddy container
   behind the shared edge Caddy (`deploy/vps/`, `npm run deploy:vps`). This is what
-  finally delivers the response headers GitHub Pages could not — HSTS,
-  `X-Frame-Options: DENY`, `Permissions-Policy`, and COOP — verified live; the CSP
+  finally delivers the response headers GitHub Pages could not (HSTS,
+  `X-Frame-Options: DENY`, `Permissions-Policy`, and COOP), verified live; the CSP
   stays delivered by the site's own `<meta>` tag (no double-CSP). The origin flows
   from one `site.config.mjs` constant shared by Astro and the audit/smoke scripts,
   and the edge caches machine endpoints at `max-age=600` to preserve the prior
@@ -376,7 +376,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Added a post-build raster-integrity gate (`scripts/audit-og-cards.mjs`, wired
   into `build:ci`) that reads the rendered 1200×630 social cards from `dist/` and
   fails on wrong dimensions, blank/near-uniform paint, a missing brand palette,
-  or a missing ink/accent content layer — catching partial-paint regressions that
+  or a missing ink/accent content layer. It catches partial-paint regressions that
   source-token and dimension checks cannot.
 - Added deployed brand-fingerprint checks to the live smoke test: `/favicon.svg`,
   `/manifest.json`, and `/og.png` are verified after deploy for the current MP
@@ -559,7 +559,7 @@ in `Roadmap_Blocked.md`.
   capabilities, and contact instead of mixing stacked dashboard cards with a
   dark promotional panel. Navigation and evidence labels are also more direct.
 - Mobile live-app cards now constrain intrinsic image and title widths to their
-  grid tracks, so thumbnails and long names no longer clip at 320–390px.
+  grid tracks, so thumbnails and long names no longer clip at 320 to 390px.
   Playwright now checks every visible card descendant against all four edges.
 - Endpoint audits now distinguish source-level `Response` header intent from
   the GitHub Pages headers actually served in production; live smoke checks are
@@ -656,7 +656,7 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
 - Every route now renders a shared `Footer.astro` with a contact link pinned to
   the first position in the footer nav. Twelve routes previously hand-rolled the
   same footer markup with twelve different link sets, and `/screenshots/` and
-  `/status/` had no footer at all — so contact was reachable from 3 of 15 routes
+  `/status/` had no footer at all. So contact was reachable from 3 of 15 routes
   and a visitor arriving at `/catalog/` or `/releases/` from search had no path
   to it. Pinning the link to index 0 satisfies WCAG 2.2 SC 3.2.6 (Consistent
   Help) regardless of how many route-specific links follow.
@@ -675,13 +675,13 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
   word-boundary summaries, but `fetch-stars` reuses cached rows for repos that
   have published nothing new, so 18 of 60 entries kept a pre-v0.27.0 hard cut
   indefinitely rather than clearing on the next refresh. The render-time
-  summarizer now detects that shape — a single line, at the 220-character cap,
-  with no ellipsis — and drops the severed word. Mid-word endings on `/releases/`
+  summarizer now detects that shape (a single line, at the 220-character cap,
+  with no ellipsis) and drops the severed word. Mid-word endings on `/releases/`
   went from 23 to 0; the one remaining non-punctuated summary ends on a complete
   version string.
 - Timeline event descriptions carry `data-pagefind-weight="0.3"`. A live data
   refresh added AI-named projects to the timeline, and 232 machine-written event
-  summaries outweighed a topical page on raw term frequency — `/timeline/`
+  summaries outweighed a topical page on raw term frequency. `/timeline/`
   displaced `/ai/` as the top result for "AI services". Event titles and the page
   heading keep full weight; all 10 corpus queries pass.
 - Refreshed the stale `search-desktop` visual baseline. It was last captured 20
@@ -701,7 +701,7 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
   schema-audit route table, the `InteriorNav` union and link, and the Base
   command-palette section; it exits non-zero naming any anchor it could not find,
   and `--dry-run` reports without writing. It deliberately leaves the frozen
-  expectation sets in `test/` alone — widening those is a review decision — and
+  expectation sets in `test/` alone (widening those is a review decision) and
   prints exactly which to update.
 - A full-catalog handoff on the homepage catalog preview. Filtering the preview
   searches a ranked slice of 84, so a category with 14 preview matches and 28 in
@@ -714,7 +714,7 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
   already shipped for the command palette, so this adds no payload.
 - A Playwright skip reporter on both browser suites. Six specs skip themselves
   when the generated data cannot produce the state under test, and a summary
-  reading "44 passed, 2 skipped" hid which path had gone dormant — the v0.27.0
+  reading "44 passed, 2 skipped" hid which path had gone dormant. The v0.27.0
   audit found a real defect on exactly such a skipped path. Every skip is now
   printed with its reason, and the run exits non-zero if the skipped set drifts
   from the pinned list in either direction, so a newly dormant spec (or a stale
@@ -723,11 +723,11 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
   detached dev server. The server survives between commands, and `status` and
   `logs` emit newline-delimited JSON, so automated work no longer has to hold a
   foreground process open or scrape formatted console output. Note that the
-  detached server picks the next free port if 4321 is taken — read the port from
+  detached server picks the next free port if 4321 is taken. Read the port from
   `dev:status` rather than assuming it.
 - IndieWeb identity markup. Every route declares `rel="me"` links for GitHub,
-  LinkedIn, and the contact address — the signal Mastodon uses to verify a
-  profile link — and the homepage hero exposes a representative h-card
+  LinkedIn, and the contact address (the signal Mastodon uses to verify a
+  profile link), and the homepage hero exposes a representative h-card
   (`h-card`, `p-name`, `u-photo`, `u-url`). The site published four feeds and a
   schema.org `Person` graph but no microformats, so mf2 consumers such as Bridgy
   Fed could not build a profile from it. The classes are additive with no
@@ -735,7 +735,7 @@ Roadmap drain. The active roadmap is now empty; the one remaining item moved to
 - `/ai/` now publishes its offer list as structured data. The four service lines
   (rollout, automation, training, retainer) emit an `OfferCatalog` plus one
   `Service` node each, every one provided by the existing `#matt-parker` Person
-  `@id` — previously the page carried only `AboutPage` + `WebPage`, identical to
+  `@id`. Previously the page carried only `AboutPage` + `WebPage`, identical to
   `/healthcare-it/`, so nothing machine-readable described what was being sold.
   The nodes are derived from the same `services` array that renders the cards, so
   the published offers cannot drift from the visible copy, and they ride the
@@ -749,7 +749,7 @@ Deep audit pass. Most findings trace back to the v0.26.0 catalog split, which
 turned the homepage `#catalog` into a ranked preview slice without updating the
 surfaces that still pointed at it or counted from it.
 
-### Fixed — catalog split fallout
+### Fixed: catalog split fallout
 
 - **Catalog CTAs pointed at a preview slice.** 13 in-content links across ten
   interior routes still targeted `/#catalog`, which now renders 84 of 178
@@ -758,8 +758,8 @@ surfaces that still pointed at it or counted from it.
   `/catalog/`, the static route that exists to be the no-JS surface. All
   retargeted at `/catalog/`.
 - **Five projects were unreachable by any filter.** `filterButtons` omitted the
-  `other` and `fork` categories, so `/catalog/` — which promises "search and
-  filter all 178 public projects" — had chips summing to 173. Added both
+  `other` and `fork` categories, so `/catalog/`, which promises "search and
+  filter all 178 public projects", had chips summing to 173. Added both
   categories, plus a test asserting every `categoryLabels` key has a facet.
 - **Dead-end filter chips.** The homepage rendered chips for categories with no
   matches in the preview slice (Security 0, Guides 0, C++ 0). Security and
@@ -774,7 +774,7 @@ surfaces that still pointed at it or counted from it.
   to `/?cat=X#catalog`; pfSense → `?cat=sec` resolved to zero matches despite
   two in the archive. Now `/catalog/?cat=X`.
 
-### Fixed — rendering and content
+### Fixed: rendering and content
 
 - **Release notes rendered as raw Markdown.** `bodyFirst` joined the first three
   raw lines of a GitHub release body and hard-cut at 220 characters, so
@@ -788,7 +788,7 @@ surfaces that still pointed at it or counted from it.
 - **Screenshot filter could not hide anything.** `.screenshots-card{display:block}`
   outranks the UA `[hidden]{display:none}` sheet, so setting `.hidden` was a
   no-op. Latent today (a single live-app category gates the facet off), and the
-  Playwright cover skips in that case — pinned with a unit test instead.
+  Playwright cover skips in that case. Pinned with a unit test instead.
 - **`/status/` reported impossible coverage.** Generated caches can hold more
   repos than the rendered catalog, so three rows read "102.3%". Coverage is now
   clamped at 100%; the raw entry count is still shown.
@@ -798,12 +798,12 @@ surfaces that still pointed at it or counted from it.
   all 178 projects. The RSS channel claimed 12 categories by counting labels
   rather than categories actually in use (10).
 
-### Fixed — theming and accessibility
+### Fixed: theming and accessibility
 
 - Retired three Operational Clarity survivors: the screenshots gallery used
   `rgba(255,255,255,.06)` hover and terminal-green selected states (invisible or
   off-palette on the light default theme), and the `/ai/` and `/healthcare-it/`
-  card hovers used a hardcoded 22–30% black drop shadow on a system whose shadow
+  card hovers used a hardcoded 22 to 30% black drop shadow on a system whose shadow
   tokens are `none` in both themes. All now use the canonical card-hover recipe.
 - Screenshot cards gained an accessible name conveying that they open GitHub in
   a new tab, matching `LiveCard`.
@@ -812,7 +812,7 @@ surfaces that still pointed at it or counted from it.
 - `<meta name="color-scheme">` listed dark first while the served markup defaults
   to `data-theme="light"`.
 
-### Fixed — reliability and tooling
+### Fixed: reliability and tooling
 
 - The service-worker update toast could hang on "Refreshing" forever if the
   waiting worker never activated or `postMessage` threw. Added a bounded
@@ -839,7 +839,7 @@ surfaces that still pointed at it or counted from it.
 - Hero polish + design-tell cleanup: removed the animated multi-color gradient text and the perpetually spinning conic avatar ring from the hero source, making the restrained "Operational Clarity" hero (solid wordmark and metrics, static 1px avatar border) the single source of truth. Cleaned three dead gradient-text overrides (base, light-theme wordmark/metrics, and the large-screen wordmark) that the design detector flagged as AI tells but that were already overridden at runtime, so the source now matches what renders.
 - Added consistent, keyboard-accessible hover/focus feedback to both homepage indexes ("Selected work" and "Live apps"), which previously either fell flat or inherited a mismatched lift-and-glow: hovering or focusing a row now shifts its name (and rank) to the accent color and strengthens the divider, matching the filter-tab interaction language already used in the catalog. No default-state visual baselines changed (hover-only), and the 104-shot dark+light visual audit still passes.
 
-- Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads "AI-augmented software · Practical tools · Healthcare technology", the tagline leads with "I build practical software and put AI to work solving real problems", the summary opens on directing AI tooling end to end with the project/live-app counts as proof, and the hero proof strip leads with a "Builds — AI-augmented software" highlight. The factual "Technical Support Manager at Maven Imaging" role stays as supporting credibility in the hero signals, page schema, résumé, and healthcare track (no over-claim of an independent practice beyond what `/ai/` already publishes).
+- Repositioned the homepage hero to lead with the builder/AI-implementation story instead of the support-manager job title, so visitors arriving from the consulting site land on a consistent pitch. The eyebrow now reads "AI-augmented software · Practical tools · Healthcare technology", the tagline leads with "I build practical software and put AI to work solving real problems", the summary opens on directing AI tooling end to end with the project/live-app counts as proof, and the hero proof strip leads with a "Builds: AI-augmented software" highlight. The factual "Technical Support Manager at Maven Imaging" role stays as supporting credibility in the hero signals, page schema, résumé, and healthcare track (no over-claim of an independent practice beyond what `/ai/` already publishes).
 
 ## [v0.26.0] - 2026-07-24
 
@@ -849,17 +849,17 @@ surfaces that still pointed at it or counted from it.
 
 ## [v0.25.2] - 2026-07-24
 
-- Completed the high-risk-state audit matrix: `tests/playwright/state-coverage.spec.mjs` now also drives, from deterministic fixtures, the timeline "no events match these filters" empty state (found by searching live filter-pair intersections at runtime rather than hardcoding a combo) and the service-worker update toast (forced via a byte-different `/sw.js` variant so `registration.update()` parks a waiting worker) — each verified for axe cleanliness, no horizontal overflow, and ≥44px toast touch targets in both the dark and light audit projects. Fixed a sub-44px regression the coverage exposed: the shared control-height pass had folded the update-toast buttons into the 40px group (restored to 44px only under `max-width:640px`), leaving them below the touch-target minimum on desktop; they now honor their dedicated 44px rule at all widths.
+- Completed the high-risk-state audit matrix: `tests/playwright/state-coverage.spec.mjs` now also drives, from deterministic fixtures, the timeline "no events match these filters" empty state (found by searching live filter-pair intersections at runtime rather than hardcoding a combo) and the service-worker update toast (forced via a byte-different `/sw.js` variant so `registration.update()` parks a waiting worker). Each was verified for axe cleanliness, no horizontal overflow, and ≥44px toast touch targets in both the dark and light audit projects. Fixed a sub-44px regression the coverage exposed: the shared control-height pass had folded the update-toast buttons into the 40px group (restored to 44px only under `max-width:640px`), leaving them below the touch-target minimum on desktop; they now honor their dedicated 44px rule at all widths.
 
 ## [v0.25.1] - 2026-07-24
 
-- Added axe + horizontal-overflow coverage (`tests/playwright/state-coverage.spec.mjs`) for the error/recovery and interaction states the first-viewport route audits never reached: the 404 page, the offline shell, print media (home + resume), the open mobile navigation, and the empty catalog result set — verified clean in both the dark and light audit projects.
+- Added axe + horizontal-overflow coverage (`tests/playwright/state-coverage.spec.mjs`) for the error/recovery and interaction states the first-viewport route audits never reached: the 404 page, the offline shell, print media (home + resume), the open mobile navigation, and the empty catalog result set. All were verified clean in both the dark and light audit projects.
 
 ## [v0.25.0] - 2026-07-24
 
-- Added an honest AI-transparency statement to the `/ai/` proof section: AI drafts the fast part (scaffolding, boilerplate, tests, research) while architecture, security review, testing, and shipping judgment stay human-owned — reinforcing the fractional-implementation pitch with the maturity signal 2026 buyers look for.
+- Added an honest AI-transparency statement to the `/ai/` proof section: AI drafts the fast part (scaffolding, boilerplate, tests, research) while architecture, security review, testing, and shipping judgment stay human-owned. The statement reinforces the fractional-implementation pitch with the maturity signal 2026 buyers look for.
 - Enabled Trusted Types (`require-trusted-types-for 'script'`) in production for defense-in-depth against DOM XSS. A minimal same-origin default policy (`/scripts/trusted-types.js`, loaded first) backstops the service-worker registration, the command-palette loader, and Pagefind's own result HTML while blocking any injected cross-origin script URL; first-party code stays sink-free (enforced by `csp:audit`). Verified zero Trusted Types violations across pages plus command-palette, video, and search interactions, with service-worker registration and offline intact.
-- Added a versioned Pagefind relevance corpus (`tests/playwright/search-corpus.spec.mjs`): ten representative queries across platform, role, project, domain, and AI-services dimensions assert their expected top result, a non-empty route-type-tagged excerpt, direct internal links, distinct excerpts, and the Scope facet — a frozen gate so future search-ranking changes are judged against known-good expectations.
+- Added a versioned Pagefind relevance corpus (`tests/playwright/search-corpus.spec.mjs`): ten representative queries across platform, role, project, domain, and AI-services dimensions assert their expected top result, a non-empty route-type-tagged excerpt, direct internal links, distinct excerpts, and the Scope facet. The corpus is a frozen gate so future search-ranking changes are judged against known-good expectations.
 
 ## [v0.24.0] - 2026-07-24
 
@@ -881,7 +881,7 @@ surfaces that still pointed at it or counted from it.
 
 ## [v0.23.0] - 2026-07-23
 
-- Added the `/ai/` AI services track: a business-facing pitch for fractional AI implementation — tool selection and rollout, custom automation, employee training, and standing problem-solving on a monthly retainer — with a discovery → pilot → retainer engagement model and portfolio-as-proof framing.
+- Added the `/ai/` AI services track: a business-facing pitch for fractional AI implementation (tool selection and rollout, custom automation, employee training, and standing problem-solving on a monthly retainer) with a discovery → pilot → retainer engagement model and portfolio-as-proof framing.
 - Wired the AI track into the interior navigation, homepage navigation, journey milestones, contact cards, footer, command-palette quick links and default sections, and the `Person` schema `knowsAbout` list.
 - Registered `/ai/` across the sitemap, rendered JSON-LD, public-endpoint, search-index, image-pipeline, and page-freshness gates, plus Playwright axe/visual coverage, and added the missing purple nav-context tone styling.
 - Reimagined the portfolio as a light-first editorial system called Operational Clarity, with a professional identity mark, calmer typography, clearer hierarchy, and an evidence-led hero inspired by the generated design study.
@@ -1324,7 +1324,7 @@ surfaces that still pointed at it or counted from it.
 
 ## [v0.18.1] - 2026-06-02
 
-**Critical fix:** the homepage interactive layer was completely dead. `public/scripts/main.js` loaded from the page slot — i.e. *before* `public/scripts/shared.js` — so its top-level `if (prefersReducedMotion)` (a global defined in shared.js) threw a `ReferenceError` and halted everything below it: the interactive terminal, catalog search/filter/sort, live GitHub star refresh + ETag requests, scroll progress / nav-hide / back-to-top, the language-donut JS enhancement, live-status dots, the PWA install prompt, and service-worker registration. Server-rendered catalog + build-time baked stats masked the failure, so the page looked healthy.
+**Critical fix:** the homepage interactive layer was completely dead. `public/scripts/main.js` loaded from the page slot, i.e. *before* `public/scripts/shared.js`, so its top-level `if (prefersReducedMotion)` (a global defined in shared.js) threw a `ReferenceError` and halted everything below it: the interactive terminal, catalog search/filter/sort, live GitHub star refresh + ETag requests, scroll progress / nav-hide / back-to-top, the language-donut JS enhancement, live-status dots, the PWA install prompt, and service-worker registration. Server-rendered catalog + build-time baked stats masked the failure, so the page looked healthy.
 
 - Load `main.js` homepage-only from the end of the Base layout body, after `shared.js` + `cmdk-data.js`, so its dependencies are defined first.
 - Add a post-build guard in `scripts/fix-html-structure.mjs` that fails the build if `main.js` ever precedes `shared.js` in any page.
@@ -1357,7 +1357,7 @@ Roadmap-drain sprint. Open work is now consolidated in [TODO.md](TODO.md).
 
 ### Build / CI
 - PR build+test+a11y gate (`ci.yml`); deduplicated deploy validation via `build:ci`; ESM `sw:stamp`; `.nvmrc` + `engines`; Dependabot labels/grouping; `semantic:audit` in quality gates.
-- **Deploy fixes:** removed `VaultBox` from the catalog after it was made private on GitHub (the public-only catalog audit was failing the deploy); added `scripts/fix-html-structure.mjs` to repair an Astro 6 build quirk that placed the single `</html>` after `</head>` — invalid HTML that made Pagefind index 0 pages and fail the build. Search now indexes all pages again.
+- **Deploy fixes:** removed `VaultBox` from the catalog after it was made private on GitHub (the public-only catalog audit was failing the deploy); added `scripts/fix-html-structure.mjs` to repair an Astro 6 build quirk that placed the single `</html>` after `</head>` (invalid HTML that made Pagefind index 0 pages and fail the build). Search now indexes all pages again.
 
 ## [v0.17.0] - 2026-06-01
 
@@ -1515,7 +1515,7 @@ Catalog
 
 ## [v0.16.1] - 2026-05-11
 
-**Drop TeamStation — repo went PRIVATE on GitHub.**
+**Drop TeamStation (repo went PRIVATE on GitHub).**
 
 The catalog entry was 404'ing for visitors. Removed from [src/data/projects.ts](src/data/projects.ts) (catalog 156 → 155). Caught during the matching profile-README cleanup pass.
 
@@ -1530,7 +1530,7 @@ Removed
 - Spotify URL from the `Person.sameAs` array in [src/layouts/Base.astro](src/layouts/Base.astro) JSON-LD.
 - The lazy-load Spotify embed IIFE from [public/scripts/main.js](public/scripts/main.js).
 - All `.music-*`, `.album-*`, `.spotify-*` rules + joint-selector references in [src/styles/global.css](src/styles/global.css) (the `/* Music */` block plus the responsive + light-theme compounds).
-- Slunder/Suno reference in the `/now` `listening` line ([src/data/curated.ts](src/data/curated.ts)) — replaced with neutral copy.
+- Slunder/Suno reference in the `/now` `listening` line ([src/data/curated.ts](src/data/curated.ts)), replaced with neutral copy.
 
 Honesty pass
 - Hero title under "Matt Parker": no longer claims 15+ years in DICOM/PACS. Now: "15+ years in enterprise IT, the last six in medical imaging".
@@ -1539,18 +1539,18 @@ Honesty pass
 
 ## [v0.15.0] - 2026-05-11
 
-**Catalog refresh — add 9 new public repos shipped since v0.14.x.**
+**Catalog refresh: add 9 new public repos shipped since v0.14.x.**
 
 Added to [src/data/projects.ts](src/data/projects.ts):
-- `HurricaneMap` — live + catalog (web). Leaflet map of every U.S. hurricane landfall from NOAA HURDAT2.
-- `ApocalypseWatch` — live + catalog (web). Realtime business-jet tracker dashboard.
-- `Devicer` (cs) — Windows toolkit for rooted Android, .NET 10 WPF.
-- `Snapture` (cs) — all-in-one Windows screenshot utility, .NET 10 WPF.
-- `OrganizeContacts` (cs) — local-first contact deduper.
-- `OpenSwift` (kt) — SwiftKey-style Android keyboard.
-- `SwiftFloris` (kt) — SwiftKey-style FlorisBoard fork.
-- `OpenTasker` (kt) — FOSS Tasker alternative for Android.
-- `android-debloat-list` (guide) — curated Android debloat list with vulnerability notes.
+- `HurricaneMap`: live + catalog (web). Leaflet map of every U.S. hurricane landfall from NOAA HURDAT2.
+- `ApocalypseWatch`: live + catalog (web). Realtime business-jet tracker dashboard.
+- `Devicer` (cs): Windows toolkit for rooted Android, .NET 10 WPF.
+- `Snapture` (cs): all-in-one Windows screenshot utility, .NET 10 WPF.
+- `OrganizeContacts` (cs): local-first contact deduper.
+- `OpenSwift` (kt): SwiftKey-style Android keyboard.
+- `SwiftFloris` (kt): SwiftKey-style FlorisBoard fork.
+- `OpenTasker` (kt): FOSS Tasker alternative for Android.
+- `android-debloat-list` (guide): curated Android debloat list with vulnerability notes.
 
 Live apps 20 → 22. Catalog 147 → 156. `fallbackRepoCount` auto-updates.
 
@@ -1560,7 +1560,7 @@ Star cache also refreshed against current GitHub state.
 
 **Remove the last private-repo references from the site.**
 
-`DICOM-PACS-Migrator` and `XRayAcquisition` are private/non-public — visitors hitting their detail pages or following their cards from the catalog were getting dead links into GitHub. Stripped every reference so the site reflects only public, openable work.
+`DICOM-PACS-Migrator` and `XRayAcquisition` are private/non-public. Visitors hitting their detail pages or following their cards from the catalog were getting dead links into GitHub. Stripped every reference so the site reflects only public, openable work.
 
 Removed
 - `DICOM-PACS-Migrator` catalog entry from [src/data/projects.ts](src/data/projects.ts).
@@ -1568,7 +1568,7 @@ Removed
 - The `clinicalLane` lookup in [src/pages/healthcare-it.astro](src/pages/healthcare-it.astro) that hand-mapped both private slugs.
 
 Replaced
-- `DICOM-PACS-Migrator` in [Greatest Hits](src/data/curated.ts) → `UniversalConverterX` ("1000+ format desktop converter — WinUI 3 shell with sidecar engines for media, docs, archives, PDFs, subtitles, fonts, ebooks, OCR. The Wondershare alternative that doesn't phone home.").
+- `DICOM-PACS-Migrator` in [Greatest Hits](src/data/curated.ts) → `UniversalConverterX` ("1000+ format desktop converter. WinUI 3 shell with sidecar engines for media, docs, archives, PDFs, subtitles, fonts, ebooks, OCR. The Wondershare alternative that doesn't phone home.").
 
 Refined
 - Healthcare IT page now hides the entire "Projects in this track" section when no public showcases exist; "Why this track exists" still narrates the lane.
@@ -1581,15 +1581,15 @@ Refined
 **Removed RadAtlas and GeneratorSpecs from the portfolio.**
 
 - Removed from `liveApps` and `catalog` in [src/data/projects.ts](src/data/projects.ts).
-- Removed from `healthcareIT.repos` in [src/data/curated.ts](src/data/curated.ts) — Healthcare IT track now lists DICOM-PACS-Migrator + XRayAcquisition only.
+- Removed from `healthcareIT.repos` in [src/data/curated.ts](src/data/curated.ts). Healthcare IT track now lists DICOM-PACS-Migrator + XRayAcquisition only.
 - Removed `clinicalLane` mappings from [src/pages/healthcare-it.astro](src/pages/healthcare-it.astro) and updated the page description (no longer mentions technique charts / generator specs).
-- Updated narrative in [src/pages/index.astro](src/pages/index.astro) — "production tooling adopted company-wide" line and About paragraph no longer reference RadAtlas or Generator Specs.
+- Updated narrative in [src/pages/index.astro](src/pages/index.astro). The "production tooling adopted company-wide" line and About paragraph no longer reference RadAtlas or Generator Specs.
 - Removed both LIVE cards and the RadAtlas catalog entry from `legacy.html`.
 - README content-collection counts: live apps 22 → 20, catalog 150 → 148.
 
 ## [v0.14.0] - 2026-04-30
 
-**Catalog refresh — add 12 missing public repos and refine HEICShift description.**
+**Catalog refresh: add 12 missing public repos and refine HEICShift description.**
 
 Added to [src/data/projects.ts](src/data/projects.ts):
 - **PowerShell**: AdapterLock (per-adapter IP lockdown, registry-ACL TCP/IP freeze), LTSC-MicrosoftStore (add MS Store to Win11 24H2 LTSC).
@@ -1600,13 +1600,13 @@ Added to [src/data/projects.ts](src/data/projects.ts):
 - **Other**: improve-repo (automated repo improvement pipeline), project-nomad (the original NOMAD spec/concept repo, sibling to project-nomad-desktop).
 
 Refined
-- **HEICShift** description: "HEIC/HEIF batch converter" → "Universal image batch converter — HEIC/HEIF/AVIF/WEBP/JPG/PNG, PyQt6" (matches the v2.8.0 scope).
+- **HEICShift** description: "HEIC/HEIF batch converter" → "Universal image batch converter: HEIC/HEIF/AVIF/WEBP/JPG/PNG, PyQt6" (matches the v2.8.0 scope).
 
 `fallbackRepoCount` (used in `/now` and `derived.ts`) auto-recalculates from the new catalog size, so visible repo numbers update with no further edits. Build cache refreshed via `fetch-stars`.
 
 ## [v0.13.1] - 2026-04-25
 
-**Catalog refresh — add 12 missing public repos.**
+**Catalog refresh: add 12 missing public repos.**
 
 Added to [src/data/projects.ts](src/data/projects.ts):
 - **C# / Desktop**: MyPortfolio, LocalChromeStore, LocalDesktopStore, TeamStation, Images
@@ -1619,7 +1619,7 @@ Added to [src/data/projects.ts](src/data/projects.ts):
 
 ## [v0.13.0] - 2026-04-16
 
-**Remove the `#featured` section — it duplicated Greatest Hits.**
+**Remove the `#featured` section. It duplicated Greatest Hits.**
 
 Scrolling down the homepage showed the same story twice: Greatest Hits (8 curated repos with story-driven "why" descriptions) immediately followed by "Case studies worth opening first" (9 featured cards over the same repo slugs). Greatest Hits is the stronger frame.
 
@@ -1628,18 +1628,18 @@ Removed
 - `Featured` entry from the command-palette section list.
 - The `Projects` nav link (was pointing to `#featured`; Hits / Catalog / Live cover the same ground).
 - `FeaturedCard` import from index.astro.
-- [src/components/FeaturedCard.astro](src/components/FeaturedCard.astro) — fully orphaned, deleted.
-- `#featuredGrid .pc[data-repo]` freshness-badge block in [public/scripts/main.js](public/scripts/main.js) — had no target after removal.
+- [src/components/FeaturedCard.astro](src/components/FeaturedCard.astro) (fully orphaned, deleted).
+- `#featuredGrid .pc[data-repo]` freshness-badge block in [public/scripts/main.js](public/scripts/main.js) (had no target after removal).
 - `f:` → `/#featured` chord in [public/scripts/cmdk.js](public/scripts/cmdk.js).
 
 Preserved
-- The `featured` data array — still powers `heroSignatureProjects` (top-3 hero reel) and the global command-palette project index.
-- Every `/projects/<slug>/` detail page — still built via `getStaticPaths()`.
-- Greatest Hits section — untouched. It's the primary showcase now.
+- The `featured` data array, which still powers `heroSignatureProjects` (top-3 hero reel) and the global command-palette project index.
+- Every `/projects/<slug>/` detail page, still built via `getStaticPaths()`.
+- Greatest Hits section, untouched. It's the primary showcase now.
 
 ## [v0.12.2] - 2026-04-16
 
-**Fix Connect-section card layout — description text was wrapping 1–2 words per line.**
+**Fix Connect-section card layout. Description text was wrapping 1 to 2 words per line.**
 
 - Root cause: `.cnc` cards had `display:flex` from the original v0.4 ruleset at line 317 (horizontal row) and the v0.9.0 override tuned alignment/gap but never added `flex-direction: column`. So `.cnc-top`, `.cnc-desc`, and `.cnc-foot` were trying to sit side-by-side inside the narrow card.
 - Fix: added `flex-direction:column` to the v0.9.0 `.cnc` block and changed `justify-content:space-between` → `flex-start` (vertical content doesn't need the push-to-edges behavior). CTA row still sticks to the card base via `.cnc-foot { margin-top:auto }`.
@@ -1652,27 +1652,27 @@ Preserved
 - `ChanPrep` dropped from catalog (`web`, `live`) and from `liveApps`.
 - Dedicated `/projects/Scripts/` and `/projects/ChanPrep/` pages no longer built. Build: 153 → 151 pages.
 - `AmazonEnhanced` and `DuplicateFF` from the v0.12.0 pass stay.
-- Both repos are still public on GitHub — they just aren't surfaced in the portfolio.
+- Both repos are still public on GitHub. They just aren't surfaced in the portfolio.
 
 ## [v0.12.0] - 2026-04-16
 
-**Close the gap between GitHub repos and site catalog — every public project now has a dedicated page.**
+**Close the gap between GitHub repos and site catalog. Every public project now has a dedicated page.**
 
 Audit
 - Diffed `src/data/projects.ts` against `src/data/_meta.json` (the daily-cron GitHub snapshot). 143 public repos in the cache, 138 were in the catalog. 6 unreferenced: 4 real projects + 2 intentional skips.
 
 Added to catalog
-- `AmazonEnhanced` (ext) — Chrome MV3 Amazon cleanup, 20 locales.
-- `ChanPrep` (web, live) — in-browser file compressor + converter for 4chan boards, with Catbox upload.
-- `DuplicateFF` (guide) — archived reference architecture for a duplicate-file finder.
-- `Scripts` (ps) — grab-bag of PowerShell + userscripts.
+- `AmazonEnhanced` (ext): Chrome MV3 Amazon cleanup, 20 locales.
+- `ChanPrep` (web, live): in-browser file compressor + converter for 4chan boards, with Catbox upload.
+- `DuplicateFF` (guide): archived reference architecture for a duplicate-file finder.
+- `Scripts` (ps): grab-bag of PowerShell + userscripts.
 
 Added to liveApps
-- `ChanPrep` — live GitHub Pages build at `sysadmindoc.github.io/ChanPrep/` (200 OK).
+- `ChanPrep`: live GitHub Pages build at `sysadmindoc.github.io/ChanPrep/` (200 OK).
 
 Skipped (intentional)
-- `SysAdminDoc` — the profile-README repo (no product content).
-- `null` — empty placeholder repo, not a project.
+- `SysAdminDoc`: the profile-README repo (no product content).
+- `null`: empty placeholder repo, not a project.
 
 Note: `GeneratorSpecs` is now 404 on the GitHub API (repo private/removed) but the live page at `sysadmindoc.github.io/GeneratorSpecs/` still serves. Kept in the catalog + Healthcare IT track because the working live app is the actual artifact.
 
@@ -1686,7 +1686,7 @@ Result
 
 - Reverted the v0.11.1 `stripQuickStart()` markdown preprocessor. Quick Start sections are back in the rendered README where they belong.
 - Removed the entire README outline sidebar feature instead: `.project-outline`, `.project-outline-nav`, `.project-outline-link`, the outline-aside markup, the scroll-synced active-heading JS, and the hover-to-reveal `.project-heading-anchor` icons tied to it.
-- Simplified `.project-readme-layout` — no more `has-outline` grid variant or sticky sidebar at ≥1024px. The README article flows single-column at a comfortable reading width.
+- Simplified `.project-readme-layout`. No more `has-outline` grid variant or sticky sidebar at ≥1024px. The README article flows single-column at a comfortable reading width.
 - Heading IDs are still generated so in-page anchor links (e.g. `/projects/<slug>/#features`) continue to resolve. The `readmeOutline` build-time array and the `[data-outline-link]` hooks are gone.
 
 ## [v0.11.1] - 2026-04-16
@@ -1695,7 +1695,7 @@ Result
 
 - On 8 project pages the README's `## Quick Start` / `### Quick Start` block was dominating the top of the page and duplicating what the GitHub/Live CTAs and Preview section already communicate.
 - Added a `stripQuickStart()` markdown preprocessor in `src/pages/projects/[slug].astro` that removes any `Quick Start` heading + all content up to the next same-or-higher-level heading, before the markdown is passed to `marked`. Fence-aware so code blocks inside unrelated sections aren't affected.
-- Outline sidebar also cleaned up — Quick Start no longer appears in the auto-generated TOC.
+- Outline sidebar also cleaned up. Quick Start no longer appears in the auto-generated TOC.
 - Affected pages confirmed clean: StreamKeep, Aura, HostsFileGet, OpenCut, ZeusWatch, win11-nvme-driver-patcher, yt_livestream_downloader, npp-sc-scanner. Adjacent sections (Features, Installation, Requirements, etc.) all intact.
 
 ## [v0.11.0] - 2026-04-16
@@ -1708,15 +1708,15 @@ Hard numbers replace soft language
 - Period refined to `Feb 2021 — Present`.
 
 International scope surfaced
-- About signal "Reach" replaces generic "Experience" label — now calls out clinical support across the Caribbean, East Africa, and East Asia.
-- Hero signal reframed as "Scope — 10+ PACS migrations" instead of bare tenure.
+- About signal "Reach" replaces generic "Experience" label. It now calls out clinical support across the Caribbean, East Africa, and East Asia.
+- Hero signal reframed as "Scope: 10+ PACS migrations" instead of bare tenure.
 - Healthcare IT page swaps the `64k+ Studies` tile for three stronger tiles: `10+ PACS migrations led`, `54 Cloud accounts restored`, `3 continents clinical reach`.
 
 Healthcare track intro
 - `curated.ts` `healthcareIT.intro` now leads with concrete outcomes: 10+ PACS migrations, million-file Candelis transfer, 54-account cloud transition, 3-continent clinical support.
 
 Greatest Hits refinement
-- `DICOM-PACS-Migrator` why-line upgraded from "64k+ studies" to "1M+ DICOM files when the vendor tool gave up mid-job" — matches the highest-confidence number in the mining data.
+- `DICOM-PACS-Migrator` why-line upgraded from "64k+ studies" to "1M+ DICOM files when the vendor tool gave up mid-job" (matches the highest-confidence number in the mining data).
 
 About section rewrite
 - New "when a vendor tool fails, I write the replacement" framing.
@@ -1732,7 +1732,7 @@ Privacy
 
 ## [v0.10.0] - 2026-04-16
 
-**Premium-polish UX pass — design tokens, unified focus system, and cross-surface coherence.**
+**Premium-polish UX pass: design tokens, unified focus system, and cross-surface coherence.**
 
 Motion & design tokens
 - New `:root` tokens: `--ease-out`, `--ease-spring`, `--ease-in-out`, `--dur-fast/base/slow` for consistent motion. `--selection-bg/--selection-fg` for theme-aware selection. `--focus-ring/--focus-outline` for a unified focus system.
@@ -1763,7 +1763,7 @@ Button system
 - `.bg2` secondary: now uses surface tokens, adapts correctly across themes.
 
 Catalog controls
-- Search input + sort select + filter buttons: `min-height: 38–42px` to ensure tap targets. Focus state now includes halo ring. Active filter button has inset ring instead of hard outer glow. Count chip is pill-shaped and tabular.
+- Search input + sort select + filter buttons: `min-height` of 38 to 42px to ensure tap targets. Focus state now includes halo ring. Active filter button has inset ring instead of hard outer glow. Count chip is pill-shaped and tabular.
 - Empty state: added magnifying-glass icon, tightened title to "No matches in this slice", refined copy, CTA renamed to "Reset filters".
 
 Skip link
@@ -1771,7 +1771,7 @@ Skip link
 
 ## [v0.9.0] - 2026-04-16
 
-**Portfolio now reflects the real résumé — role, employer, tenure, career history.**
+**Portfolio now reflects the real résumé: role, employer, tenure, career history.**
 
 Career section (new)
 - New `#career` section between About and Philosophy: three cards (Maven Imaging, ThinkTV, Dayton Technology Group) with role, period, location, summary, highlights, and stack chips.
@@ -1786,7 +1786,7 @@ Bio refresh
 - `about.json` terminal panel adds `employer`, `location`, and `experience_years` keys.
 
 SEO / structured data
-- `Base.astro` default title → "Matt Parker — Senior Technical Support Manager & Builder".
+- `Base.astro` default title → "Matt Parker, Senior Technical Support Manager & Builder".
 - Description expanded with 15+ years + medical imaging (DICOM/PACS) context.
 - JSON-LD `Person` now carries `jobTitle: Senior Technical Support Manager`, `worksFor: Maven Imaging`, `address: Sarasota, FL`, expanded `knowsAbout` (DICOM, PACS, Active Directory, Hyper-V, Cisco, HIPAA), and `sameAs` now includes LinkedIn.
 
@@ -1805,17 +1805,17 @@ Housekeeping
 **Project pages get real content. ROADMAP priority #1.**
 
 README rendering
-- Every project detail page now renders the repo's actual `README.md` — fetched at build time, parsed with `marked` (GFM), sanitized with `sanitize-html`. Relative links and images rewritten to resolve against `raw.githubusercontent.com`.
+- Every project detail page now renders the repo's actual `README.md`, fetched at build time, parsed with `marked` (GFM), sanitized with `sanitize-html`. Relative links and images rewritten to resolve against `raw.githubusercontent.com`.
 - Graceful fallback: pages without a cached README drop the section cleanly (no empty shell).
-- Bundle bounded — any README >120KB is truncated to prevent pathological cases from inflating the build.
+- Bundle bounded: any README >120KB is truncated to prevent pathological cases from inflating the build.
 
 Per-project releases
-- Up to 5 recent releases rendered inline per page — tag, date, notes excerpt. Sourced from the existing `_releases.json` cache.
+- Up to 5 recent releases rendered inline per page: tag, date, notes excerpt. Sourced from the existing `_releases.json` cache.
 
 Tech stack chips
 - Header chip row now shows inferred stack: repo's primary language (from `_meta.json`) + human-readable category + existing tag list, deduped.
 
-Related projects — ranked
+Related projects, ranked
 - "Related" now sorts by stars → push freshness (not first-6-of-category). Clamped to 4, archived excluded via catalog curation.
 
 Data layer
@@ -1829,8 +1829,8 @@ Styles
 **Data depth. Tier B from ROADMAP.**
 
 New pages
-- **`/releases`** — chronological stream of 71 releases across 40 most-recently-pushed repos, grouped by month. Each entry shows tag, date, first 3 lines of release notes. Auto-refreshed on the daily cron.
-- **`/lang/<slug>`** — 7 per-language landing pages (PowerShell, Python, JavaScript, Web Apps, Kotlin/Android, C#/Desktop, Security). Intro copy explaining my *approach* in that ecosystem, stats, and every repo in that category sorted by featured → stars → freshness.
+- **`/releases`**: chronological stream of 71 releases across 40 most-recently-pushed repos, grouped by month. Each entry shows tag, date, first 3 lines of release notes. Auto-refreshed on the daily cron.
+- **`/lang/<slug>`**: 7 per-language landing pages (PowerShell, Python, JavaScript, Web Apps, Kotlin/Android, C#/Desktop, Security). Intro copy explaining my *approach* in that ecosystem, stats, and every repo in that category sorted by featured → stars → freshness.
 - Skill ring cards on the homepage now link to the matching `/lang/<slug>/` page.
 
 Hero pulse widget
@@ -1848,34 +1848,34 @@ Navigation
 **Narrative polish: shape the story, don't just list projects. Tier A + key Tier B from [ROADMAP.md](ROADMAP.md).**
 
 New content surfaces
-- **★ Greatest Hits** — 8 curated repos above Featured, each with a one-sentence *why* (impact/story), not *what* (features). Rank badges, category tags, optional star count. Inspired by jvns.ca and leerob.io.
-- **Manifesto block** — the 7 rules every project here follows (*Turnkey · Single-file · Dark by default · No confirms · Async · Versioned · Open*). Short, numbered, personality-forward. Inspired by rauno.me and paco.me.
-- **Tag cloud with weights** — "Where the work lives" section above Catalog with visual-weight sizes for each category. Clicking jumps to filtered catalog via URL-persisted state. Inspired by simonwillison.net.
-- **`/now` page** — current focus, what's shipping, what I'm thinking about, what I'm deliberately *not* working on. Includes live activity pulse (location, last push, streak, repos/stars). Inspired by paco.me and sivers.org.
-- **`/healthcare-it` track page** — named arc grouping PACS/DICOM/X-ray/medical-imaging work. The moat vs other sysadmin portfolios. Stats, toolkit grid, "why this track exists" narrative.
+- **★ Greatest Hits**: 8 curated repos above Featured, each with a one-sentence *why* (impact/story), not *what* (features). Rank badges, category tags, optional star count. Inspired by jvns.ca and leerob.io.
+- **Manifesto block**: the 7 rules every project here follows (*Turnkey · Single-file · Dark by default · No confirms · Async · Versioned · Open*). Short, numbered, personality-forward. Inspired by rauno.me and paco.me.
+- **Tag cloud with weights**: "Where the work lives" section above Catalog with visual-weight sizes for each category. Clicking jumps to filtered catalog via URL-persisted state. Inspired by simonwillison.net.
+- **`/now` page**: current focus, what's shipping, what I'm thinking about, what I'm deliberately *not* working on. Includes live activity pulse (location, last push, streak, repos/stars). Inspired by paco.me and sivers.org.
+- **`/healthcare-it` track page**: named arc grouping PACS/DICOM/X-ray/medical-imaging work. The moat vs other sysadmin portfolios. Stats, toolkit grid, "why this track exists" narrative.
 
 Catalog improvements
-- **Last-updated age badges** on every catalog card — color-coded: green (<2wk hot), blue (<3mo warm), gray (<1yr cool), dashed (>1yr stale). Hover shows exact date.
+- **Last-updated age badges** on every catalog card, color-coded: green (<2wk hot), blue (<3mo warm), gray (<1yr cool), dashed (>1yr stale). Hover shows exact date.
 - **Honest count** in catalog heading: "All 143 repositories" instead of "All Repositories".
 - Nav restructured: new Hits/Now entries, renamed Live/Beyond for density.
 
 Data layer
 - `scripts/fetch-stars.mjs` extended to capture `pushed_at`, `updated_at`, primary language per repo → `_meta.json`.
 - New aggregates in `_stats.json`: 90-day commit streak, latest release across all repos.
-- `src/data/curated.ts` — hand-curated content (greatestHits, manifesto, now, healthcareIT). Edit this file to reshape the story.
+- `src/data/curated.ts`: hand-curated content (greatestHits, manifesto, now, healthcareIT). Edit this file to reshape the story.
 
 ## [v0.5.0] - 2026-04-14
 
 **Rich media + power-user polish.**
 
-- **Per-project OG cards** — 139 unique 1200×630 PNGs generated at build via [satori](https://github.com/vercel/satori) + [@resvg/resvg-js](https://github.com/yisibl/resvg-js). Each card shows project name, description, category badge, FEATURED/LIVE flags, and a subtle category-themed gradient. Served at `/og/<slug>.png` and wired into `og:image` / `twitter:image` on every project page.
-- **Live app screenshots** — 23 real screenshots captured at 1280×800 via [scripts/capture-screenshots.mjs](scripts/capture-screenshots.mjs). Used as:
+- **Per-project OG cards**: 139 unique 1200×630 PNGs generated at build via [satori](https://github.com/vercel/satori) + [@resvg/resvg-js](https://github.com/yisibl/resvg-js). Each card shows project name, description, category badge, FEATURED/LIVE flags, and a subtle category-themed gradient. Served at `/og/<slug>.png` and wired into `og:image` / `twitter:image` on every project page.
+- **Live app screenshots**: 23 real screenshots captured at 1280×800 via [scripts/capture-screenshots.mjs](scripts/capture-screenshots.mjs). Used as:
   - The hero preview on each `/projects/<slug>/` page (with live-open hover badge)
   - The LIVE card thumbnail on the homepage (replaces rate-limited opengraph.githubassets.com)
-- **Vim-style keyboard nav** — press `g` followed by `f`/`l`/`c`/`s`/`a`/`p`/`j`/`b`/`n` to jump to Featured / Live / Catalog / Skills / About / Philosophy / Journey / Beyond / Connect. Live hint overlay. Existing `Ctrl+K` and `/` still work.
-- **Footer freshness badge** — "Stats refreshed N days ago" with pulsing green dot, derived from `_stats.fetchedAt` (auto-refreshed by the daily CI cron).
-- **Footer RSS link** — prominent link to `/rss.xml` added.
-- **Manifest.json** — icons now reference `/favicon.svg` instead of the old data-URI.
+- **Vim-style keyboard nav**: press `g` followed by `f`/`l`/`c`/`s`/`a`/`p`/`j`/`b`/`n` to jump to Featured / Live / Catalog / Skills / About / Philosophy / Journey / Beyond / Connect. Live hint overlay. Existing `Ctrl+K` and `/` still work.
+- **Footer freshness badge**: "Stats refreshed N days ago" with pulsing green dot, derived from `_stats.fetchedAt` (auto-refreshed by the daily CI cron).
+- **Footer RSS link**: prominent link to `/rss.xml` added.
+- **Manifest.json**: icons now reference `/favicon.svg` instead of the old data-URI.
 
 ## [v0.4.0] - 2026-04-14
 
@@ -1919,7 +1919,7 @@ Data layer
 
 ## [v0.3.1] - 2026-04-14
 
-- Auto-update all stats at build time — totalRepos, totalStars now injected from `_stats.json`
+- Auto-update all stats at build time (totalRepos, totalStars now injected from `_stats.json`)
 - Hero `statRepos`/`statStars`, about section, philosophy, journey all use live counts
 - Removed hardcoded `134` sentinels
 
@@ -1928,7 +1928,7 @@ Data layer
 **Major: Astro 5 migration**
 
 - Migrated single-file HTML (~1916 lines, 200KB) to Astro 5 static site
-- Data layer: all projects now live in `src/data/projects.ts` — single source of truth
+- Data layer: all projects now live in `src/data/projects.ts` (single source of truth)
 - Componentized: FeaturedCard, LiveCard, CatalogEntry, SkillCard, Divider, StarSvg
 - Build-time GitHub API: star counts baked into static HTML (no runtime rate limits)
 - GitHub Actions CI/CD: auto-deploy on push + daily cron to refresh stars
@@ -1967,7 +1967,7 @@ Data layer
 - Fixed: Fix stale fallback values missed in update
 - Changed: Update portfolio: 108 → 134+ repos, add 17 new projects, remove 5 deleted
 
-## Roadmap archive — 2026-08-10 — ROADMAP.md
+## Roadmap archive (2026-08-10, ROADMAP.md)
 
 <details>
 <summary>Original roadmap snapshot</summary>
