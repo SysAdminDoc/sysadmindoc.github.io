@@ -226,8 +226,10 @@ filling the hourly cap by itself. A browser without JavaScript can't fetch a
 token, so its post is taken only when the browser marks it as coming from a
 page on this site, and it gets two attempts. The site stores at most 30
 messages an hour, and that cap holds even when posts arrive at the same moment.
-Refusals all read "Please check the form and try again", and the handler's log
-keeps the reason.
+A form that fails a field check hears only "Please check the form and try
+again". The token is checked before the fields, and a filled honeypot gets the
+reply a sent message gets, so the replies don't give the honeypot away. The
+handler's log keeps the reason.
 
 The removed `/projects/<Repo>/` pages still get visits from old links. At each
 deploy, `deploy-vps` writes a `redir` line per catalog repo from

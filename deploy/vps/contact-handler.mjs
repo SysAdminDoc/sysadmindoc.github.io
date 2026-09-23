@@ -27,9 +27,11 @@
 // token must be at least CONTACT_MIN_TIME seconds old, at most four hours old,
 // and unused, so the timing check runs on this server's clock rather than the
 // visitor's. A POST with no token is accepted only as a no-JavaScript browser
-// navigation from a page on this site, under a stricter per-client limit. Every client also has a
-// per-ten-minutes and a daily limit, and stored leads have a global hourly cap. Refusals
-// say only "Please check the form and try again"; the reason goes to the log.
+// navigation from a page on this site, under a stricter per-client limit.
+// Every client also has a per-ten-minutes and a daily limit, and stored leads
+// have a global hourly cap. A form that fails a field check hears only "Please
+// check the form and try again", and a filled honeypot is answered like a sent
+// message; the reason goes to the log.
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -105,8 +107,9 @@ export const NOTIFY_MESSAGE_MAX_BYTES = 3000;
 export const NOTIFY_TITLE_MAX_BYTES = 250;
 
 const SUCCESS_MESSAGE = 'Message received. I will get back to you.';
-// Deliberately the same for every refused form, so a bot learns nothing about
-// which check it failed.
+// The same for every field check a form fails, so a refusal doesn't say which
+// one. The token is checked before the fields and a filled honeypot gets the
+// success reply, so neither can be told apart that way either.
 export const CHECK_FORM_MESSAGE = 'Please check the form and try again.';
 const BUSY_MESSAGE = 'Too many messages from here just now. Please try again later, or email directly.';
 
@@ -800,13 +803,8 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
 
     const received = now();
     const form = parseSubmission(body);
-    const problem = validateSubmission(form, config);
-    if (problem) {
-      logger.log(`contact: rejected a submission (${problem})`);
-      refuse(422, { error: CHECK_FORM_MESSAGE });
-      return;
-    }
-
+    // The token is checked first, so its answer doesn't depend on the other
+    // fields and can't be used to find the honeypot.
     if (form.token) {
       const tokenIssue = tokenProblem(form.token, current);
       if (tokenIssue) {
@@ -831,6 +829,21 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
         return;
       }
       noTokenAttempts.add(client, current);
+    }
+
+    // A filled honeypot gets the reply a sent message gets, and nothing is
+    // stored or passed on, so a bot can't tell it tripped anything.
+    if (form.honeypot) {
+      logger.log('contact: dropped a submission (honeypot filled)');
+      if (navigation) redirect(response, '/contact/sent/');
+      else sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
+      return;
+    }
+    const problem = validateSubmission(form, config);
+    if (problem) {
+      logger.log(`contact: rejected a submission (${problem})`);
+      refuse(422, { error: CHECK_FORM_MESSAGE });
+      return;
     }
 
     // The slot is taken here, before anything awaits, so simultaneous posts

@@ -486,7 +486,7 @@ test('rejected and oversized submissions store nothing', async () => {
       requestMock({ body: formBody({ name: 'Bot', email: 'bot@example.test', message: 'buy now please', website: 'x' }) }),
       honeypot,
     );
-    assert.equal(honeypot.status, 422);
+    assert.equal(honeypot.status, 200, 'answered like a sent message, and stored nowhere');
 
     const missing = responseMock();
     await handler.handleRequest(requestMock({ body: formBody({ name: '', email: 'a@example.test', message: 'long enough text' }) }), missing);
@@ -674,14 +674,36 @@ test('a scripted submission without a good token is refused, generically, and st
       assert.equal(response.status, 422, label);
       assert.deepEqual(JSON.parse(response.body), { error: CHECK_FORM_MESSAGE, code: 'token' }, label);
     }
+    // A filled honeypot is answered like a sent message, and nothing is stored.
     const honeypot = responseMock();
     await handler.handleRequest(jsonPost({ ...lead, website: 'http://spam.example' }), honeypot);
-    assert.deepEqual(JSON.parse(honeypot.body), { error: CHECK_FORM_MESSAGE }, 'the refusal never names the honeypot');
+    assert.equal(honeypot.status, 200);
+    assert.deepEqual(JSON.parse(honeypot.body), { ok: true, message: 'Message received. I will get back to you.' });
     assert.deepEqual(await readEntries(storePath), []);
     // The reasons still reach the log, for whoever reads it.
     for (const reason of ['no token', 'token forged or malformed', 'token expired', 'submitted too quickly', 'honeypot filled']) {
       assert.ok(logger.lines.some((line) => line.includes(reason)), reason);
     }
+  });
+});
+
+// The review found the honeypot by comparing replies: with the same junk token,
+// a filled honeypot came back without the token code and an empty one with it.
+test('the replies never give the honeypot away', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    const reply = async (fields, headers = {}) => {
+      const response = responseMock();
+      await handler.handleRequest(jsonPost(fields, headers), response);
+      return { status: response.status, body: response.body, location: response.headers.Location };
+    };
+    const junk = 'not-a-token';
+    assert.deepEqual(await reply({ ...lead, token: junk, website: 'http://spam.example' }), await reply({ ...lead, token: junk }), 'same junk token, same reply');
+    assert.deepEqual(await reply({ ...lead, name: '', website: 'http://spam.example' }), await reply(lead), 'a filled honeypot reads like a sent message');
+
+    const navigate = { accept: 'text/html,*/*;q=0.8', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-origin' };
+    assert.equal((await reply({ ...lead, website: 'x' }, navigate)).location, '/contact/sent/');
+    await handler.idle();
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1, 'only the real message is stored');
   });
 });
 
