@@ -3,18 +3,30 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { randomBytes } from 'node:crypto';
 import {
+  CHECK_FORM_MESSAGE,
   DEFAULT_CONFIG,
   NOTIFY_MESSAGE_MAX_BYTES,
   NOTIFY_TITLE_MAX_BYTES,
+  clientAddress,
   createContactHandler,
   loadConfig,
   notificationFor,
+  readToken,
+  signToken,
   truncateBytes,
 } from '../deploy/vps/contact-handler.mjs';
 
 const NOW = new Date('2026-09-22T12:00:00.000Z');
-const LOADED_AT = String(Math.floor(NOW.getTime() / 1000) - 30);
+const TOKEN_SECRET = 'test-token-secret-'.repeat(3);
+// Limits high enough that only the tests about limits ever meet them.
+const TEST_CONFIG = { ntfyUrl: 'http://ntfy:80/portfolio-leads', tokenSecret: TOKEN_SECRET, clientMax: 1000, noTokenClientMax: 1000, globalHourlyCap: 1000 };
+
+/** A valid form token issued `ageMs` before NOW, with its own nonce. */
+function tokenAged(ageMs = 30_000) {
+  return signToken(TOKEN_SECRET, NOW.getTime() - ageMs, randomBytes(8).toString('hex'));
+}
 
 /**
  * A fetch stand-in that validates headers the way Node's undici fetch does, so
@@ -54,7 +66,7 @@ async function withHandler(options, callback) {
   const logger = captureLogger();
   let clock = NOW;
   const handler = createContactHandler(
-    { ...DEFAULT_CONFIG, ntfyUrl: 'http://ntfy:80/portfolio-leads', storePath, ...(options.config ?? {}) },
+    { ...DEFAULT_CONFIG, ...TEST_CONFIG, storePath, ...(options.config ?? {}) },
     { fetch: ntfy.fetch, now: () => clock, logger, ...(options.dependencies ?? {}) },
   );
   try {
@@ -70,8 +82,9 @@ async function withHandler(options, callback) {
   }
 }
 
+/** A form as the page script sends it: a fresh token unless the test overrides it. */
 function formBody(fields) {
-  return new URLSearchParams({ _t: LOADED_AT, website: '', ...fields }).toString();
+  return new URLSearchParams({ website: '', token: tokenAged(), ...fields }).toString();
 }
 
 function requestMock({ method = 'POST', url = '/api/contact', body = '', headers = {} } = {}) {
@@ -201,7 +214,7 @@ test('pending leads survive a restart and are retried from the store', async () 
 
     const ntfy = fakeNtfy();
     const restarted = createContactHandler(
-      { ...DEFAULT_CONFIG, ntfyUrl: 'http://ntfy:80/portfolio-leads', storePath },
+      { ...DEFAULT_CONFIG, ...TEST_CONFIG, storePath },
       { fetch: ntfy.fetch, now: () => new Date(NOW.getTime() + 120_000), logger: captureLogger() },
     );
     assert.equal(await restarted.restorePending(), 1);
@@ -239,7 +252,7 @@ function pendingLeadLine(id, name) {
 
 function restartedHandler(storePath, ntfy, extra = {}) {
   return createContactHandler(
-    { ...DEFAULT_CONFIG, ntfyUrl: 'http://ntfy:80/portfolio-leads', storePath, ...(extra.config ?? {}) },
+    { ...DEFAULT_CONFIG, ...TEST_CONFIG, storePath, ...(extra.config ?? {}) },
     { fetch: ntfy.fetch, now: () => new Date(NOW.getTime() + 120_000), logger: extra.logger ?? captureLogger(), ...(extra.dependencies ?? {}) },
   );
 }
@@ -386,21 +399,23 @@ test('names are cut by character and a fast device clock does not block a real v
       await handler.handleRequest(requestMock({ body: formBody({ name, email: 'e@example.test', message: 'a message long enough' }) }), response);
       assert.equal(response.status, 200);
     }
-    // A device running two minutes fast, with a minute spent on the page.
+    // A device ten minutes fast: the old browser timestamp would have said the
+    // form was filled in before the page loaded. The server's own token decides.
     const fastClock = responseMock();
-    const loadedAt = String(Math.floor(NOW.getTime() / 1000) + 120 - 60);
+    const deviceSeconds = String(Math.floor(NOW.getTime() / 1000) + 600);
     await handler.handleRequest(
-      requestMock({ body: new URLSearchParams({ _t: loadedAt, website: '', name: 'Real Person', email: 'p@example.test', message: 'Please call me about our PACS.' }).toString() }),
+      requestMock({ body: formBody({ _t: deviceSeconds, name: 'Real Person', email: 'p@example.test', message: 'Please call me about our PACS.' }) }),
       fastClock,
     );
     assert.equal(fastClock.status, 200);
-    // A genuine one-second stay is still refused.
+    // A token fetched one second ago is still too quick.
     const tooQuick = responseMock();
     await handler.handleRequest(
-      requestMock({ body: new URLSearchParams({ _t: String(Math.floor(NOW.getTime() / 1000) - 1), website: '', name: 'Bot', email: 'b@example.test', message: 'buy now please now' }).toString() }),
+      requestMock({ body: formBody({ token: tokenAged(1_000), name: 'Bot', email: 'b@example.test', message: 'buy now please now' }) }),
       tooQuick,
     );
     assert.equal(tooQuick.status, 422);
+    assert.deepEqual(JSON.parse(tooQuick.body), { error: CHECK_FORM_MESSAGE, code: 'token' });
     await handler.idle();
 
     const names = (await readEntries(storePath)).filter((entry) => entry.type === 'lead').map((lead) => lead.name);
@@ -480,9 +495,10 @@ test('the write token is sent as a bearer header and smoke leads go to their own
   const smokeSecret = 's'.repeat(32);
   const ntfyToken = `tk_${'a1'.repeat(14)}b`;
   await withHandler({ config: { ntfyToken, smokeSecret } }, async ({ handler, storePath, ntfy }) => {
-    const body = formBody({ name: 'Live Smoke', email: 'smoke@example.invalid', message: 'synthetic lead for the deploy smoke' });
-    await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': smokeSecret } }), responseMock());
-    await handler.handleRequest(requestMock({ body }), responseMock());
+    // One form each: a token is good for a single submission.
+    const fields = { name: 'Live Smoke', email: 'smoke@example.invalid', message: 'synthetic lead for the deploy smoke' };
+    await handler.handleRequest(requestMock({ body: formBody(fields), headers: { 'x-contact-smoke': smokeSecret } }), responseMock());
+    await handler.handleRequest(requestMock({ body: formBody(fields) }), responseMock());
     await handler.idle();
 
     assert.deepEqual(ntfy.calls.map((call) => call.body.topic), ['portfolio-leads-smoke', 'portfolio-leads']);
@@ -559,10 +575,130 @@ test('the page script, which asks for JSON, still gets JSON', async () => {
   });
 });
 
+function jsonPost(fields, headers = {}) {
+  return requestMock({ body: formBody(fields), headers: { accept: 'application/json', ...headers } });
+}
+
+const lead = { name: 'Pat Lee', email: 'pat@example.test', message: 'Is this still available?' };
+
+test('the token endpoint issues a signed server timestamp that a later submission can use once', async () => {
+  await withHandler({}, async ({ handler, storePath, setClock }) => {
+    const issued = responseMock();
+    await handler.handleRequest(requestMock({ method: 'GET', url: '/api/contact/token' }), issued);
+    assert.equal(issued.status, 200);
+    assert.equal(issued.headers['Cache-Control'], 'no-store');
+    const { token } = JSON.parse(issued.body);
+    assert.deepEqual(readToken(TOKEN_SECRET, token)?.issuedAt, NOW.getTime());
+
+    setClock(new Date(NOW.getTime() + 5_000));
+    const first = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, token }), first);
+    assert.equal(first.status, 200);
+    const replay = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, token }), replay);
+    assert.equal(replay.status, 422, 'the same token twice is a replay');
+    await handler.idle();
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1);
+  });
+});
+
+test('a scripted submission without a good token is refused, generically, and stores nothing', async () => {
+  await withHandler({}, async ({ handler, storePath, logger }) => {
+    const cases = [
+      ['no token', ''],
+      ['malformed', 'not-a-token'],
+      ['forged', signToken('some-other-key-'.repeat(3), NOW.getTime() - 30_000, 'a'.repeat(16))],
+      ['expired', tokenAged(4 * 60 * 60_000 + 1_000)],
+      ['too new', tokenAged(2_000)],
+    ];
+    for (const [label, token] of cases) {
+      const response = responseMock();
+      await handler.handleRequest(jsonPost({ ...lead, token }), response);
+      assert.equal(response.status, 422, label);
+      assert.deepEqual(JSON.parse(response.body), { error: CHECK_FORM_MESSAGE, code: 'token' }, label);
+    }
+    const honeypot = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, website: 'http://spam.example' }), honeypot);
+    assert.deepEqual(JSON.parse(honeypot.body), { error: CHECK_FORM_MESSAGE }, 'the refusal never names the honeypot');
+    assert.deepEqual(await readEntries(storePath), []);
+    // The reasons still reach the log, for whoever reads it.
+    for (const reason of ['no token', 'token forged or malformed', 'token expired', 'submitted too quickly', 'honeypot filled']) {
+      assert.ok(logger.lines.some((line) => line.includes(reason)), reason);
+    }
+  });
+});
+
+test('each client gets a limited number of attempts, and the smoke is not counted', async () => {
+  const smokeSecret = 's'.repeat(32);
+  await withHandler({ config: { clientMax: 3, smokeSecret } }, async ({ handler }) => {
+    const statuses = [];
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const response = responseMock();
+      await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '203.0.113.7, 172.18.0.2' }), response);
+      statuses.push(response.status);
+    }
+    assert.deepEqual(statuses, [200, 200, 200, 429]);
+
+    const neighbour = responseMock();
+    await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '198.51.100.4, 172.18.0.2' }), neighbour);
+    assert.equal(neighbour.status, 200, 'another visitor is unaffected');
+    const smoke = responseMock();
+    await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '203.0.113.7, 172.18.0.2', 'x-contact-smoke': smokeSecret }), smoke);
+    assert.equal(smoke.status, 200, 'the authenticated smoke is exempt');
+    await handler.idle();
+  });
+});
+
+test('a browser without JavaScript can send without a token, under a stricter limit', async () => {
+  await withHandler({ config: { noTokenClientMax: 2 } }, async ({ handler, storePath }) => {
+    const navigate = { accept: 'text/html,*/*;q=0.8', 'sec-fetch-mode': 'navigate', referer: 'https://portfolio.getparkerai.com/', 'x-forwarded-for': '203.0.113.7, 172.18.0.2' };
+    const locations = [];
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody({ ...lead, token: '' }), headers: navigate }), response);
+      locations.push(response.headers.Location);
+    }
+    assert.deepEqual(locations, ['/contact/sent/', '/contact/sent/', '/#contact-not-sent']);
+    await handler.idle();
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 2);
+  });
+});
+
+test('stored leads have a global hourly cap that the smoke does not use up', async () => {
+  const smokeSecret = 's'.repeat(32);
+  await withHandler({ config: { globalHourlyCap: 2, smokeSecret } }, async ({ handler, setClock }) => {
+    const statuses = [];
+    for (const address of ['203.0.113.1', '203.0.113.2', '203.0.113.3']) {
+      const response = responseMock();
+      await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': address }), response);
+      statuses.push(response.status);
+    }
+    assert.deepEqual(statuses, [200, 200, 429]);
+    const smoke = responseMock();
+    await handler.handleRequest(jsonPost(lead, { 'x-contact-smoke': smokeSecret }), smoke);
+    assert.equal(smoke.status, 200);
+
+    setClock(new Date(NOW.getTime() + 61 * 60_000));
+    const later = responseMock();
+    await handler.handleRequest(requestMock({ body: new URLSearchParams({ website: '', ...lead, token: signToken(TOKEN_SECRET, NOW.getTime() + 60 * 60_000, 'b'.repeat(16)) }).toString(), headers: { accept: 'application/json', 'x-forwarded-for': '203.0.113.4' } }), later);
+    assert.equal(later.status, 200, 'the hour rolls on');
+    await handler.idle();
+  });
+});
+
+test('the client is the right-most address that is not on a private network', () => {
+  assert.equal(clientAddress({ 'x-forwarded-for': '203.0.113.7, 172.18.0.2' }), '203.0.113.7');
+  assert.equal(clientAddress({ 'x-forwarded-for': 'spoofed, 198.51.100.4, 172.18.0.2' }), '198.51.100.4');
+  assert.equal(clientAddress({ 'x-forwarded-for': '2001:db8::1, fd00::2' }), '2001:db8::1');
+  assert.equal(clientAddress({ 'x-forwarded-for': '::ffff:192.168.1.5, 10.0.0.2' }), '::ffff:192.168.1.5');
+  assert.equal(clientAddress({}, '127.0.0.1'), '127.0.0.1');
+});
+
 test('loadConfig rejects a malformed token or a short smoke secret', () => {
   const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
   assert.throws(() => loadConfig({ ...base, NTFY_TOKEN: 'not-a-token' }), /NTFY_TOKEN/);
   assert.throws(() => loadConfig({ ...base, CONTACT_SMOKE_SECRET: 'short' }), /CONTACT_SMOKE_SECRET/);
+  assert.throws(() => loadConfig({ ...base, CONTACT_TOKEN_SECRET: 'short' }), /CONTACT_TOKEN_SECRET/);
   const config = loadConfig({ ...base, NTFY_TOKEN: `tk_${'0'.repeat(29)}`, CONTACT_SMOKE_SECRET: 'x'.repeat(24) });
   assert.equal(config.ntfyToken, `tk_${'0'.repeat(29)}`);
 });

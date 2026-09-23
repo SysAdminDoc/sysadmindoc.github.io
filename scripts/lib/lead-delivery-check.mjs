@@ -11,10 +11,13 @@ export const NOTIFY_ORIGIN = 'https://notify.getparkerai.com';
 export const LEAD_TOPIC = 'portfolio-leads';
 export const LEAD_DELIVERY_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 3000;
+// The handler refuses a form token younger than three seconds.
+const TOKEN_MIN_AGE_MS = 3500;
 
 /**
  * @param {object} options
  * @param {string | URL} options.contactUrl absolute URL of the form endpoint under test
+ * @param {string | URL} options.tokenUrl absolute URL the page script fetches a form token from
  * @param {string} options.notifyOrigin origin of the ntfy host, no trailing slash
  * @param {string} options.secret the smoke secret the handler expects in X-Contact-Smoke
  * @param {string} options.token an ntfy token that can read the smoke topic
@@ -29,6 +32,7 @@ const POLL_INTERVAL_MS = 3000;
  */
 export async function checkLeadDelivery({
   contactUrl,
+  tokenUrl,
   notifyOrigin,
   secret,
   token,
@@ -65,12 +69,20 @@ export async function checkLeadDelivery({
   // A fresh marker per call: --retries reruns this check, and a lead from an
   // earlier attempt that arrived late must not pass for this one.
   const marker = `smoke-${runId}-${Math.random().toString(36).slice(2, 10)}`;
+  // The same steps as the page script: fetch a form token, let it age past the
+  // handler's minimum, then send the form with it.
+  const tokenResponse = await fetch(tokenUrl, { headers: { Accept: 'application/json', 'User-Agent': userAgent } });
+  const tokenBody = await tokenResponse.json().catch(() => null);
+  if (tokenResponse.status !== 200 || typeof tokenBody?.token !== 'string') {
+    throw new Error(`lead delivery: the form token endpoint returned HTTP ${tokenResponse.status} without a token.`);
+  }
+  await sleep(TOKEN_MIN_AGE_MS);
   const form = new URLSearchParams({
     name: 'Live Smoke',
     email: 'smoke@example.invalid',
     message: `Synthetic lead ${marker} from the deploy smoke. Safe to ignore.`,
     website: '',
-    _t: String(Math.floor(now() / 1000) - 60),
+    token: tokenBody.token,
   });
   const started = now();
   const post = await fetch(contactUrl, {

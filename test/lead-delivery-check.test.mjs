@@ -4,14 +4,16 @@ import { LEAD_DELIVERY_TIMEOUT_MS, checkLeadDelivery } from '../scripts/lib/lead
 
 const NOTIFY = 'https://notify.example';
 const CONTACT = 'https://site.example/api/contact';
+const TOKEN_URL = 'https://site.example/api/contact/token';
+const FORM_TOKEN = 'v1.fake-form-token';
 
 /**
  * The form endpoint and ntfy in one fake, on a virtual clock. ntfy stamps each
  * message with its own server time and filters `since` against that, which is
  * the behaviour a deploy-PC timestamp got wrong.
  */
-function fakeLeadPath({ serverOffsetMs = 0, publishDelayMs = 0, contactStatus = 200 } = {}) {
-  const state = { now: Date.parse('2026-09-23T03:00:00Z'), serverOffsetMs, publishDelayMs, contactStatus };
+function fakeLeadPath({ serverOffsetMs = 0, publishDelayMs = 0, contactStatus = 200, tokenStatus = 200 } = {}) {
+  const state = { now: Date.parse('2026-09-23T03:00:00Z'), serverOffsetMs, publishDelayMs, contactStatus, tokenStatus, tokenFetchedAt: null, postedToken: null };
   const messages = [];
   const scheduled = [];
   const serverSeconds = () => Math.floor((state.now + state.serverOffsetMs) / 1000);
@@ -26,8 +28,18 @@ function fakeLeadPath({ serverOffsetMs = 0, publishDelayMs = 0, contactStatus = 
   async function fetch(url, init = {}) {
     const target = new URL(url);
     const headers = new Headers(init.headers);
+    if (target.href === TOKEN_URL) {
+      state.tokenFetchedAt = state.now;
+      if (state.tokenStatus !== 200) return new Response('{}', { status: state.tokenStatus });
+      return new Response(JSON.stringify({ token: FORM_TOKEN }), { status: 200 });
+    }
     if (target.href === CONTACT) {
       if (state.contactStatus !== 200) return new Response('{"error":"forbidden"}', { status: state.contactStatus });
+      state.postedToken = new URLSearchParams(String(init.body)).get('token');
+      // The real handler refuses a token younger than three seconds.
+      if (state.postedToken !== FORM_TOKEN || state.now - state.tokenFetchedAt < 3000) {
+        return new Response('{"error":"Please check the form and try again.","code":"token"}', { status: 422 });
+      }
       scheduled.push({ at: state.now + state.publishDelayMs, text: new URLSearchParams(String(init.body)).get('message'), done: false });
       flush();
       return new Response('{"ok":true}', { status: 200 });
@@ -54,6 +66,7 @@ function run(lead, overrides = {}) {
   const summary = [];
   const promise = checkLeadDelivery({
     contactUrl: CONTACT,
+    tokenUrl: TOKEN_URL,
     notifyOrigin: NOTIFY,
     secret: 's'.repeat(40),
     token: `tk_${'a'.repeat(29)}`,
@@ -84,6 +97,15 @@ test('a retry does not pass on the late lead of an earlier attempt', async () =>
   // The first attempt's lead lands during the second attempt, whose own never does.
   lead.state.publishDelayMs = 10 * LEAD_DELIVERY_TIMEOUT_MS;
   await assert.rejects(run(lead).promise, /never reached the smoke topic/);
+});
+
+test('the smoke sends the form the way the page script does: token first, then a wait', async () => {
+  const lead = fakeLeadPath();
+  await run(lead).promise;
+  assert.equal(lead.state.postedToken, FORM_TOKEN);
+
+  const broken = fakeLeadPath({ tokenStatus: 502 });
+  await assert.rejects(run(broken).promise, /form token endpoint returned HTTP 502 without a token/);
 });
 
 test('a refused smoke secret fails at once with the fix named', async () => {

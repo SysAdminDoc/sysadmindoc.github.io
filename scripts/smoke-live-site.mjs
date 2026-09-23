@@ -404,6 +404,7 @@ async function checkLeadDeliveryOnEdge(baseUrl, summary) {
   }
   await checkLeadDelivery({
     contactUrl: siteUrl('/api/contact', baseUrl),
+    tokenUrl: siteUrl('/api/contact/token', baseUrl),
     notifyOrigin: (option('--notify-url') ?? process.env.PORTFOLIO_NOTIFY_URL ?? NOTIFY_ORIGIN).replace(/\/+$/, ''),
     secret: process.env.PORTFOLIO_CONTACT_SMOKE_SECRET ?? '',
     token: process.env.PORTFOLIO_NTFY_SMOKE_TOKEN ?? '',

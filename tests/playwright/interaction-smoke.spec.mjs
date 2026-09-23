@@ -1047,6 +1047,9 @@ test.describe('contact form with JavaScript', () => {
   for (const { path, subject } of contactFormPages) {
     test(`the form on ${path} sends through its script and stays on the page`, async ({ page }) => {
       const posted = [];
+      await page.route('**/api/contact/token', (route) =>
+        route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: 'stub-form-token' }) }),
+      );
       await page.route('**/api/contact', async (route) => {
         posted.push({ body: route.request().postData() ?? '', accept: route.request().headers().accept ?? '' });
         await route.fulfill({
@@ -1064,9 +1067,26 @@ test.describe('contact form with JavaScript', () => {
       expect(posted).toHaveLength(1);
       expect(posted[0].accept).toContain('application/json');
       expect(new URLSearchParams(posted[0].body).get('subject')).toBe(subject);
+      expect(new URLSearchParams(posted[0].body).get('token')).toBe('stub-form-token');
       await expect(page.locator('#contact-not-sent')).toBeHidden();
     });
   }
+
+  test('when no form token can be fetched, the browser posts the form itself', async ({ page }) => {
+    const posted = [];
+    await page.route('**/api/contact/token', (route) => route.fulfill({ status: 502, body: '' }));
+    await page.route('**/api/contact', async (route) => {
+      posted.push(route.request().postData() ?? '');
+      await route.fulfill({ status: 303, headers: { Location: '/contact/sent/' } });
+    });
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+
+    await page.waitForURL('**/contact/sent/');
+    expect(posted).toHaveLength(1);
+    expect(new URLSearchParams(posted[0]).get('token')).toBeNull();
+  });
 });
 
 test.describe('contact form without JavaScript', () => {

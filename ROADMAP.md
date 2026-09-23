@@ -21,13 +21,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P1
 
-- [ ] P1: Harden `/api/contact` against volume and replace the browser-clock timing check
-  Why: The minimum-time check is skipped whenever `_t` is missing, and it trusts the visitor's clock: a device running a minute or two fast can still land in the "submitted too quickly" window. Nothing limits volume, so spam grows the lead store without bound, and the handler streams that store at every start inside a 64 MB container.
-  Evidence: `validateSubmission` and `handleRequest` in `deploy/vps/contact-handler.mjs`; the 2026-09-23 review measured about 39 MB of extra peak memory restoring 1,000 maximum-size leads before the store was streamed; the inner Caddy now trusts the edge, so `X-Forwarded-For` reaches the handler as "client, edge"; MailForm's per-target `rateLimit`.
-  Touches: `deploy/vps/contact-handler.mjs` (issue an HMAC-signed server timestamp token that `contact-form.js` fetches; take the client from the right-most untrusted `X-Forwarded-For` address), `public/scripts/contact-form.js`, `test/contact-handler.test.mjs`.
-  Acceptance: Tests cover a missing, forged, replayed or expired token, a device clock ten minutes fast, a per-client limit and a global hourly cap. The 422 text is generic ("Please check the form and try again") and doesn't name the honeypot. A request with no token is accepted only on the plain-POST path, under a stricter limit.
-  Complexity: M
-
 - [ ] P1: Add a `/privacy/` page that says what the site actually stores
   Why: The form collects names and emails and the site has no privacy statement. California requires commercial sites that collect personal information from its residents to post a conspicuous policy.
   Evidence: `/privacy/` returned 404 on 2026-09-22 and no source file mentions a policy; Cal. Bus. & Prof. Code 22575; FTC guidance to keep personal data only as long as it's needed.

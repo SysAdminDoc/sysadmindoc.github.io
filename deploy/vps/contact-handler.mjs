@@ -16,12 +16,23 @@
 //                                   which the owner's phone does not subscribe to. A request that
 //                                   sends the header with any other value is refused with 403.
 //   CONTACT_STORE         optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
-//   CONTACT_MIN_TIME      optional  minimum seconds between page load and submit (default 3)
+//   CONTACT_MIN_TIME      optional  minimum seconds between fetching a form token and submitting (default 3)
+//   CONTACT_TOKEN_SECRET  optional  key for form tokens; derived from CONTACT_SMOKE_SECRET when unset,
+//                                   random per start when both are unset
+//
+// Form tokens: the page script fetches GET /api/contact/token, a server
+// timestamp and nonce signed with HMAC, and sends it back with the form. A
+// token must be at least CONTACT_MIN_TIME seconds old, at most four hours old,
+// and unused, so the timing check runs on this server's clock rather than the
+// visitor's. A POST with no token is accepted only as a no-JavaScript browser
+// navigation, under a stricter per-client limit. Every client also has a
+// per-ten-minutes limit, and stored leads have a global hourly cap. Refusals
+// say only "Please check the form and try again"; the reason goes to the log.
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -31,8 +42,14 @@ import { fileURLToPath } from 'node:url';
  * @property {string} ntfyUrl
  * @property {string} ntfyToken
  * @property {string} smokeSecret
+ * @property {string} tokenSecret
  * @property {string} storePath
  * @property {number} minTimeSeconds
+ * @property {number} tokenMaxAgeMs
+ * @property {number} clientWindowMs
+ * @property {number} clientMax
+ * @property {number} noTokenClientMax
+ * @property {number} globalHourlyCap
  * @property {number} maxBodyBytes
  * @property {number} maxMessageChars
  * @property {number} retryIntervalMs
@@ -47,8 +64,20 @@ export const DEFAULT_CONFIG = Object.freeze({
   ntfyUrl: '',
   ntfyToken: '',
   smokeSecret: '',
+  tokenSecret: '',
   storePath: '/var/lib/contact/leads.ndjson',
   minTimeSeconds: 3,
+  // Long enough to write a careful message, short enough that a harvested
+  // token is soon useless.
+  tokenMaxAgeMs: 4 * 60 * 60_000,
+  // Submission attempts per client per window: a person resending once or
+  // twice fits easily, a script does not.
+  clientWindowMs: 10 * 60_000,
+  clientMax: 5,
+  // A browser without JavaScript sends no token, so it gets fewer attempts.
+  noTokenClientMax: 2,
+  // Stored leads per rolling hour from everyone together, smoke leads aside.
+  globalHourlyCap: 30,
   // A 5,000-character message of CJK text is about 45 KB once URL-encoded.
   maxBodyBytes: 64 * 1024,
   maxMessageChars: 5000,
@@ -65,6 +94,10 @@ export const NOTIFY_MESSAGE_MAX_BYTES = 3000;
 export const NOTIFY_TITLE_MAX_BYTES = 250;
 
 const SUCCESS_MESSAGE = 'Message received. I will get back to you.';
+// Deliberately the same for every refused form, so a bot learns nothing about
+// which check it failed.
+export const CHECK_FORM_MESSAGE = 'Please check the form and try again.';
+const BUSY_MESSAGE = 'Too many messages from here just now. Please try again later, or email directly.';
 
 function positiveInteger(value, fallback, label) {
   if (value === undefined || value === '') return fallback;
@@ -114,6 +147,10 @@ export function loadConfig(env = process.env) {
   if (smokeSecret && smokeSecret.length < 24) {
     throw new Error('CONTACT_SMOKE_SECRET must be at least 24 characters.');
   }
+  const tokenSecret = String(env.CONTACT_TOKEN_SECRET ?? '').trim();
+  if (tokenSecret && tokenSecret.length < 24) {
+    throw new Error('CONTACT_TOKEN_SECRET must be at least 24 characters.');
+  }
 
   return {
     ...DEFAULT_CONFIG,
@@ -122,6 +159,7 @@ export function loadConfig(env = process.env) {
     ntfyUrl,
     ntfyToken,
     smokeSecret,
+    tokenSecret,
     storePath,
     minTimeSeconds: positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'),
   };
@@ -164,11 +202,12 @@ export function parseSubmission(body) {
     message: (params.get('message') || '').trim(),
     subject: field('subject', 100),
     honeypot: (params.get('website') || '').trim(),
-    loadedAt: Number(params.get('_t')) || 0,
+    token: field('token', 120),
   };
 }
 
-export function validateSubmission(form, now, config = DEFAULT_CONFIG) {
+/** The reason a form is refused, for the log only; visitors see CHECK_FORM_MESSAGE. */
+export function validateSubmission(form, config = DEFAULT_CONFIG) {
   if (form.honeypot) return 'honeypot filled';
   if (!form.name) return 'name is required';
   if (!form.email || !form.email.includes('@')) return 'a valid email is required';
@@ -176,14 +215,58 @@ export function validateSubmission(form, now, config = DEFAULT_CONFIG) {
   if (form.message.length > config.maxMessageChars) {
     return `message must be ${config.maxMessageChars} characters or fewer`;
   }
-  if (form.loadedAt > 0) {
-    const elapsed = now.getTime() / 1000 - form.loadedAt;
-    // _t comes from the visitor's clock. On a device running fast the elapsed
-    // time comes out negative, which says nothing about how long they spent on
-    // the page, so only a real short stay is refused.
-    if (elapsed >= 0 && elapsed < config.minTimeSeconds) return 'submitted too quickly';
-  }
   return null;
+}
+
+/** A form token: `v1.<issued ms>.<16 hex nonce>.<HMAC-SHA256, base64url>`. */
+export function signToken(key, issuedAtMs, nonce) {
+  const payload = `v1.${issuedAtMs}.${nonce}`;
+  return `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`;
+}
+
+/** The token's issue time and nonce if its signature holds, otherwise null. */
+export function readToken(key, token) {
+  const match = /^v1\.(\d{13})\.([0-9a-f]{16})\.[A-Za-z0-9_-]{43}$/.exec(String(token ?? ''));
+  if (!match) return null;
+  const expected = Buffer.from(signToken(key, Number(match[1]), match[2]));
+  const provided = Buffer.from(String(token));
+  if (provided.length !== expected.length || !timingSafeEqual(provided, expected)) return null;
+  return { issuedAt: Number(match[1]), nonce: match[2] };
+}
+
+// The inner Caddy trusts the edge and appends its address, so the visitor is
+// the right-most address that isn't on a private network.
+const PRIVATE_ADDRESS = /^(?:::ffff:)?(?:10\.|127\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)|^::1$|^f[cd][0-9a-f]{2}:/i;
+
+export function clientAddress(headers, fallback = 'unknown') {
+  const chain = String(headers['x-forwarded-for'] ?? '')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+  for (let index = chain.length - 1; index >= 0; index -= 1) {
+    if (!PRIVATE_ADDRESS.test(chain[index])) return chain[index];
+  }
+  return chain[0] ?? fallback;
+}
+
+/** Hits per key inside a sliding window, with the number of keys bounded. */
+function createWindowCounter(windowMs, maxKeys = 10_000) {
+  const hits = new Map();
+  function recent(key, current) {
+    const list = (hits.get(key) ?? []).filter((at) => current - at < windowMs);
+    if (list.length) hits.set(key, list);
+    else hits.delete(key);
+    return list;
+  }
+  return {
+    count: (key, current) => recent(key, current).length,
+    add(key, current) {
+      const list = recent(key, current);
+      list.push(current);
+      hits.set(key, list);
+      if (hits.size > maxKeys) hits.delete(hits.keys().next().value);
+    },
+  };
 }
 
 function refererPath(value) {
@@ -372,6 +455,36 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   const pending = new Map();
   const inFlight = new Set();
 
+  // A configured key keeps tokens valid across restarts (the nightly deploy
+  // recreates this container). Without one, tokens die with the process.
+  const tokenKey = config.tokenSecret
+    || (config.smokeSecret ? createHmac('sha256', config.smokeSecret).update('contact-form-token-v1').digest('hex') : '')
+    || randomBytes(32).toString('hex');
+  /** nonce -> when its token expires, so a used token can't be sent twice */
+  const usedNonces = new Map();
+  const clientAttempts = createWindowCounter(config.clientWindowMs);
+  const noTokenAttempts = createWindowCounter(config.clientWindowMs);
+  const storedLastHour = createWindowCounter(60 * 60_000, 1);
+
+  function issueToken() {
+    return signToken(tokenKey, now().getTime(), randomBytes(8).toString('hex'));
+  }
+
+  /** Why a token is refused (for the log), or null when it's good. Marks it used. */
+  function tokenProblem(token, current) {
+    const parsed = readToken(tokenKey, token);
+    if (!parsed) return 'token forged or malformed';
+    const age = current - parsed.issuedAt;
+    if (age < config.minTimeSeconds * 1000) return 'submitted too quickly';
+    if (age > config.tokenMaxAgeMs) return 'token expired';
+    for (const [nonce, expires] of usedNonces) {
+      if (expires < current) usedNonces.delete(nonce);
+    }
+    if (usedNonces.has(parsed.nonce)) return 'token replayed';
+    usedNonces.set(parsed.nonce, parsed.issuedAt + config.tokenMaxAgeMs);
+    return null;
+  }
+
   async function publish(lead) {
     const topicUrl = new URL(config.ntfyUrl);
     const baseTopic = topicUrl.pathname.replace(/^\/+|\/+$/g, '');
@@ -477,6 +590,15 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       response.end('ok');
       return;
     }
+    if (request.method === 'GET' && (pathname === '/contact/token' || pathname === '/api/contact/token')) {
+      response.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      response.end(JSON.stringify({ token: issueToken() }));
+      return;
+    }
     if (request.method !== 'POST' || (pathname !== '/contact' && pathname !== '/api/contact')) {
       sendJson(response, 404, { error: 'not found' });
       return;
@@ -491,6 +613,33 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       else sendJson(response, status, body);
     };
 
+    // The live smoke proves the whole path on every deploy, and its leads are
+    // kept apart so they never reach the owner's phone. Visitors never send this
+    // header, so a wrong secret (say, after a rotation the deploy machine missed)
+    // is refused outright rather than filed and announced as a real inquiry.
+    const smokeHeader = request.headers['x-contact-smoke'];
+    const synthetic = smokeHeader !== undefined;
+    if (synthetic && !secretMatches(smokeHeader, config.smokeSecret)) {
+      logger.log('contact: refused a smoke submission with the wrong secret');
+      request.resume();
+      refuse(403, { error: 'forbidden' });
+      return;
+    }
+
+    // Every attempt counts against its client, valid or not, so a script can't
+    // probe the checks faster than a person could type. The smoke is exempt.
+    const client = clientAddress(request.headers, request.socket?.remoteAddress);
+    const current = now().getTime();
+    if (!synthetic) {
+      if (clientAttempts.count(client, current) >= config.clientMax) {
+        logger.log('contact: refused a submission (per-client limit)');
+        request.resume();
+        refuse(429, { error: BUSY_MESSAGE });
+        return;
+      }
+      clientAttempts.add(client, current);
+    }
+
     let body;
     try {
       body = await readBody(request, config.maxBodyBytes);
@@ -500,24 +649,40 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       return;
     }
 
-    // The live smoke proves the whole path on every deploy, and its leads are
-    // kept apart so they never reach the owner's phone. Visitors never send this
-    // header, so a wrong secret (say, after a rotation the deploy machine missed)
-    // is refused outright rather than filed and announced as a real inquiry.
-    const smokeHeader = request.headers['x-contact-smoke'];
-    const synthetic = smokeHeader !== undefined;
-    if (synthetic && !secretMatches(smokeHeader, config.smokeSecret)) {
-      logger.log('contact: refused a smoke submission with the wrong secret');
-      refuse(403, { error: 'forbidden' });
+    const received = now();
+    const form = parseSubmission(body);
+    const problem = validateSubmission(form, config);
+    if (problem) {
+      logger.log(`contact: rejected a submission (${problem})`);
+      refuse(422, { error: CHECK_FORM_MESSAGE });
       return;
     }
 
-    const received = now();
-    const form = parseSubmission(body);
-    const problem = validateSubmission(form, received, config);
-    if (problem) {
-      logger.log(`contact: rejected a submission (${problem})`);
-      refuse(422, { error: problem });
+    if (form.token) {
+      const tokenIssue = tokenProblem(form.token, current);
+      if (tokenIssue) {
+        logger.log(`contact: rejected a submission (${tokenIssue})`);
+        refuse(422, { error: CHECK_FORM_MESSAGE, code: 'token' });
+        return;
+      }
+    } else if (!navigation) {
+      // The page script always sends a token; a scripted POST without one is
+      // not the form.
+      logger.log('contact: rejected a submission (no token)');
+      refuse(422, { error: CHECK_FORM_MESSAGE, code: 'token' });
+      return;
+    } else if (!synthetic) {
+      if (noTokenAttempts.count(client, current) >= config.noTokenClientMax) {
+        logger.log('contact: refused a submission (no-JavaScript limit)');
+        refuse(429, { error: BUSY_MESSAGE });
+        return;
+      }
+      noTokenAttempts.add(client, current);
+    }
+
+    if (!synthetic && storedLastHour.count('all', current) >= config.globalHourlyCap) {
+      logger.error('contact: refused a submission (global hourly cap reached)');
+      refuse(429, { error: BUSY_MESSAGE });
       return;
     }
 
@@ -543,6 +708,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     }
 
     logger.log(`contact: stored lead ${lead.id}`);
+    if (!synthetic) storedLastHour.add('all', current);
     if (navigation) redirect(response, '/contact/sent/');
     else sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
     const tracked = { ...lead, attempts: 0 };
@@ -555,7 +721,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     while (inFlight.size) await Promise.all([...inFlight]);
   }
 
-  return { handleRequest, retryPending, restorePending, idle, store };
+  return { handleRequest, retryPending, restorePending, idle, store, issueToken };
 }
 
 export async function startServer(config = loadConfig()) {

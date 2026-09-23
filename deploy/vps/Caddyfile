@@ -69,10 +69,12 @@ http://notify.getparkerai.com {
 		reverse_proxy csp-reporter:8080
 	}
 
-	# First-party contact form handler. Accepts POST only; the handler
-	# validates honeypot, minimum-time, and field content before forwarding
-	# to the local ntfy instance. No third-party service in the flow.
-	@contact path /api/contact
+	# First-party contact form handler. GET /api/contact/token hands the page
+	# script a signed timestamp to send back with the form, so submissions are
+	# timed on the server's clock; POST /api/contact checks the token, the
+	# honeypot, the fields and the rate limits, stores the lead, then notifies
+	# the local ntfy. No third-party service in the flow.
+	@contact path /api/contact /api/contact/token
 	handle @contact {
 		header Cache-Control "no-store"
 		header Access-Control-Allow-Origin "https://portfolio.getparkerai.com"
