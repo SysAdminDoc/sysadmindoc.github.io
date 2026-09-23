@@ -514,6 +514,26 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('the homepage requests nothing from another origin', async ({ page }) => {
+    // The policy allows only this origin for images and connections, so a
+    // third-party request here would be refused live, or means the policy was
+    // widened again. The request event also fires for routes preparePage stubs.
+    const requests = [];
+    page.on('request', (request) => requests.push(request.url()));
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#hero');
+    await page.evaluate(async () => {
+      for (const img of document.images) img.loading = 'eager';
+      await Promise.all(Array.from(document.images, (img) => img.decode().catch(() => {})));
+      window.scrollTo(0, document.documentElement.scrollHeight);
+    });
+    await page.waitForLoadState('networkidle');
+
+    const origin = new URL(page.url()).origin;
+    expect(requests.length).toBeGreaterThan(0);
+    expect(requests.filter((url) => /^https?:/i.test(url) && new URL(url).origin !== origin)).toEqual([]);
+  });
+
   test('mobile navigation clears backdrop and scroll lock through the shared close path', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     await page.setViewportSize({ width: 1000, height: 900 });

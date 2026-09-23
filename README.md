@@ -185,6 +185,11 @@ which stores redacted NDJSON reports in a rotated file outside the served site.
 `npm run deploy:vps` stamps the built hash-pinned policy into the response header
 so browsers can report real violations without a third-party service.
 
+The policy names no other host. Images, fonts, scripts, styles and connections
+all come from the site itself, the homepage photo included. The build's
+`csp:audit:dist:style:elem` step fails if the policy ever allows a host that no
+built file loads from, and `gates:selftest` plants one to prove it does.
+
 The contact form posts to `/api/contact`, where a small Node sidecar
 (`deploy/vps/contact-handler.mjs`) writes each submission in full to an fsync'd
 store and then notifies through a self-hosted ntfy at

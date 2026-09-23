@@ -148,13 +148,9 @@ test('no console errors during service worker lifecycle', async ({ page }) => {
 
 // The live /sw.js is served with the production CSP, and a worker's own fetch()
 // obeys only that header. When the worker answered cross-origin requests itself,
-// connect-src refused its fetch of the homepage avatar and every visit after the
-// first got a synthetic 503 in place of the photo.
-test('a returning visit under the worker loads every image with the production CSP header', async ({ page, context }) => {
-  await context.route('https://avatars.githubusercontent.com/**', (route) =>
-    route.fulfill({ path: 'public/icon-192.png', contentType: 'image/png' }),
-  );
-
+// connect-src refused its fetch of the homepage avatar (then still on GitHub's
+// CDN) and every visit after the first got a synthetic 503 in place of the photo.
+test('a returning visit under the worker loads every image with the production CSP header', async ({ page }) => {
   const worker = await page.request.get('/sw.js');
   expect(worker.headers()['content-security-policy'], 'the preview must send the production CSP header').toMatch(
     /connect-src [^;]+;.*frame-ancestors 'none'/,

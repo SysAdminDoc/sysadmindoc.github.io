@@ -5,6 +5,7 @@ import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
 import { parseMarkupAttributes, scanMarkup } from './lib/csp-markup-parser.mjs';
+import { collectHostReferences, unusedHostSources } from './lib/csp-host-usage.mjs';
 
 const root = process.cwd();
 const sourceDirs = ['src'];
@@ -548,6 +549,10 @@ const divergentCspMetas = options.distDir && activeCsp
   ? cspMetas.filter((meta) => meta.content !== activeCsp)
   : [];
 const directives = parseCsp(activeCsp);
+// Only a build shows what the site really loads, so this is a dist-mode check.
+const unusedHosts = options.distDir
+  ? unusedHostSources(directives, await collectHostReferences(path.resolve(root, options.distDir)))
+  : [];
 const scriptDirective = effectiveDirective(directives, 'script-src', ['default-src']);
 const styleDirective = effectiveDirective(directives, 'style-src', ['default-src']);
 const styleElemDirective = effectiveDirective(directives, 'style-src-elem', ['style-src', 'default-src']);
@@ -684,6 +689,10 @@ console.log(`  script unsafe-inline active: ${directiveAllowsUnsafeInline(script
 console.log(`  style unsafe-inline active: ${directiveAllowsUnsafeInline(styleSrc) ? 'yes' : 'no'}`);
 console.log(`  style element unsafe-inline active: ${directiveAllowsUnsafeInline(styleElemSrc) ? 'yes' : 'no'}`);
 console.log(`  style attribute unsafe-inline active: ${directiveAllowsUnsafeInline(styleAttrSrc) ? 'yes' : 'no'}`);
+if (options.distDir) {
+  console.log(`  allowed host sources no built file loads from: ${unusedHosts.length}`);
+  for (const { directive, token } of unusedHosts) console.log(`  - ${directive} ${token}`);
+}
 console.log('');
 console.log('Inline script inventory');
 console.log(`  executable inline scripts: ${executableInline.length}`);
@@ -798,6 +807,11 @@ if (options.strict && options.distDir && filesWithMultipleCsp.length > 0) {
 }
 if (options.strict && options.distDir && divergentCspMetas.length > 0) {
   failures.push(`${divergentCspMetas.length} built CSP meta tag(s) differ from the active policy: ${summarizePaths(divergentCspMetas)}.`);
+}
+if (options.strict && unusedHosts.length > 0) {
+  failures.push(
+    `${unusedHosts.length} allowed host source(s) are loaded by no built file: ${unusedHosts.map(({ directive, token }) => `${directive} ${token}`).join(', ')}. Remove them from the policy in src/layouts/Base.astro and public/offline.html.`,
+  );
 }
 if (options.strict && htmlSinkWrites.length > 0) {
   failures.push(`${htmlSinkWrites.length} runtime HTML sink write(s) block Trusted Types trial readiness: ${summarizePaths(htmlSinkWrites)}.`);

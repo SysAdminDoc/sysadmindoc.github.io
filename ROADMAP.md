@@ -21,13 +21,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P1
 
-- [ ] P1: Serve the avatar from this origin and cut the CSP to what the build uses
-  Why: The hero avatar is the site's last third-party request. The policy still allows five unused image hosts plus the GitHub API and YouTube frames, and every page preconnects to GitHub for nothing.
-  Evidence: `src/layouts/Base.astro:75` and `:175-177`; `src/pages/index.astro:11`, `:96`; on 2026-09-22 `dist/` referenced one third-party media host and had zero iframes, and no script called `api.github.com`.
-  Touches: `src/pages/index.astro` (commit a local copy of the avatar, or fetch it during `fetch-stars`), `src/layouts/Base.astro`, `scripts/audit-csp.mjs`, `scripts/audit-gate-selftest.mjs`, `test/csp-audit.test.mjs`.
-  Acceptance: The policy ends up as `img-src 'self' data:`, `connect-src 'self'` and no `frame-src`, with no third-party preconnect or dns-prefetch. `csp:audit:dist` fails when an allowed host is referenced by no built file, proven by a planted case in `gates:selftest`. A Playwright request log shows zero third-party requests on `/`.
-  Complexity: M
-
 - [ ] P1: Harden `/api/contact` against volume and replace the browser-clock timing check
   Why: The minimum-time check is skipped whenever `_t` is missing, and it trusts the visitor's clock: a device running a minute or two fast can still land in the "submitted too quickly" window. Nothing limits volume, so spam grows the lead store without bound, and the handler streams that store at every start inside a 64 MB container.
   Evidence: `validateSubmission` and `handleRequest` in `deploy/vps/contact-handler.mjs`; the 2026-09-23 review measured about 39 MB of extra peak memory restoring 1,000 maximum-size leads before the store was streamed; the inner Caddy now trusts the edge, so `X-Forwarded-For` reaches the handler as "client, edge"; MailForm's per-target `rateLimit`.

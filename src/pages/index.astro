@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import LiveCard from '../components/LiveCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
@@ -7,12 +8,9 @@ import Footer from '../components/Footer.astro';
 import { catalog, liveApps } from '../data/portfolio';
 import { contactEmail, contactMailto } from '../data/identity';
 import { careerLanes, careerProfile, careerProofExperience } from '../data/career';
-
-let avatarUrl = 'https://avatars.githubusercontent.com/u/55504284';
-try {
-  const mod = await import('../data/_stats.json');
-  avatarUrl = (mod.default ?? mod).avatarUrl || avatarUrl;
-} catch {}
+// Served from this origin: the GitHub-hosted copy was the site's last
+// third-party request and kept a CDN in img-src for one photo.
+import avatar from '../assets/avatar.jpg';
 
 const livePreview = liveApps.slice(0, 6);
 const publicProjectCount = catalog.length;
@@ -93,7 +91,7 @@ const cmdkSections = [
         <div class="ht">
           <p class="hero-eyebrow">Sarasota, FL</p>
           <div class="hero-identity h-card">
-            <img class="hero-avatar loaded u-photo" id="heroAvatar" src={avatarUrl} alt="Matt Parker" width="72" height="72" decoding="async" fetchpriority="high">
+            <Image class="hero-avatar loaded u-photo" id="heroAvatar" src={avatar} alt="Matt Parker" width={82} height={82} densities={[1, 2]} loading="eager" decoding="async" fetchpriority="high" />
             <h1 class="hn p-name">Matt <span class="a">Parker</span></h1>
             <a class="u-url" href="/" hidden>Matt Parker</a>
           </div>

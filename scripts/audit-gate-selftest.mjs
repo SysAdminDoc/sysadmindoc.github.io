@@ -40,9 +40,45 @@ function writeScratch(relative, contents) {
   fs.writeFileSync(path.join(scratch, relative), contents, 'utf8');
 }
 
+function scratchHtmlFiles(dir = scratch) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return scratchHtmlFiles(full);
+    return entry.name.endsWith('.html') ? [full] : [];
+  });
+}
+
 // Each case names the audit, the argv that points it at the scratch copy, and a
-// mutation that violates exactly what that audit exists to catch.
+// mutation that violates exactly what that audit exists to catch. A case with
+// `expect` must also fail for that reason, not for something the plant broke
+// on the way.
 const cases = [
+  {
+    name: 'csp:audit:dist:style:elem',
+    args: ['scripts/audit-csp.mjs', '--dist', scratch, '--active-style-src-elem', '--strict'],
+    violation: 'an img-src host that no built file loads from',
+    expect: /1 allowed host source\(s\) are loaded by no built file: img-src https:\/\/unused-host\.example/,
+    // The build runs this gate before search:index writes pagefind/, whose
+    // vendored UI assigns innerHTML under the Trusted Types default policy.
+    // Check the copy in the state the gate really sees.
+    prepare() {
+      fs.rmSync(path.join(scratch, 'pagefind'), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+    },
+    plant() {
+      // Every page carries the same policy, and a page that differed would fail
+      // for divergence instead, so the host goes into all of them.
+      let planted = 0;
+      for (const file of scratchHtmlFiles()) {
+        const html = fs.readFileSync(file, 'utf8');
+        const next = html.replace("img-src 'self' data:", "img-src 'self' data: https://unused-host.example");
+        if (next !== html) {
+          fs.writeFileSync(file, next, 'utf8');
+          planted += 1;
+        }
+      }
+      return planted > 0;
+    },
+  },
   {
     name: 'fix-html-structure',
     args: ['scripts/fix-html-structure.mjs', '--dist', scratch],
@@ -192,9 +228,9 @@ function resetScratch() {
 function runAudit(args) {
   try {
     execFileSync(process.execPath, args, { cwd: root, stdio: 'pipe', windowsHide: true });
-    return 0;
+    return { status: 0, stderr: '' };
   } catch (error) {
-    return typeof error.status === 'number' ? error.status : 1;
+    return { status: typeof error.status === 'number' ? error.status : 1, stderr: String(error.stderr ?? '') };
   }
 }
 
@@ -204,11 +240,12 @@ console.log(`  source build: ${path.relative(root, sourceDist).replace(/\\/g, '/
 const failures = [];
 for (const testCase of cases) {
   resetScratch();
+  testCase.prepare?.();
 
   // The clean copy must pass, or a "failure" below proves nothing.
   const clean = runAudit(testCase.args);
-  if (clean !== 0) {
-    failures.push(`${testCase.name}: refused the unmodified build (exit ${clean}), so its planted-violation result means nothing`);
+  if (clean.status !== 0) {
+    failures.push(`${testCase.name}: refused the unmodified build (exit ${clean.status}), so its planted-violation result means nothing`);
     continue;
   }
 
@@ -218,8 +255,12 @@ for (const testCase of cases) {
   }
 
   const planted = runAudit(testCase.args);
-  if (planted === 0) {
+  if (planted.status === 0) {
     failures.push(`${testCase.name}: passed with ${testCase.violation} planted, so the gate does not check what it claims`);
+    continue;
+  }
+  if (testCase.expect && !testCase.expect.test(planted.stderr)) {
+    failures.push(`${testCase.name}: failed with ${testCase.violation} planted, but not for that reason: ${planted.stderr.trim().slice(0, 300)}`);
     continue;
   }
   console.log(`  ${testCase.name}: rejects ${testCase.violation}`);
