@@ -11,8 +11,10 @@ test('a11y audit npm script is blocking by default', async () => {
 
   assert.equal(pkg.scripts['a11y:audit'], 'node scripts/audit-a11y.mjs --strict');
   assert.equal(pkg.scripts['a11y:audit:advisory'], 'node scripts/audit-a11y.mjs');
-  assert.equal(pkg.scripts['audit:playwright'], 'playwright test --config=playwright.audits.config.mjs');
-  assert.equal(pkg.scripts['audit:playwright:update'], 'playwright test --config=playwright.audits.config.mjs --update-snapshots');
+  // The audits suite runs on a fixture build, the data its screenshot
+  // baselines were rendered from (scripts/visual-gate.mjs).
+  assert.equal(pkg.scripts['audit:playwright'], 'node scripts/visual-gate.mjs --all');
+  assert.equal(pkg.scripts['audit:playwright:update'], 'node scripts/visual-gate.mjs --all --update');
   assert.equal(
     pkg.scripts['audit:interactions'],
     'playwright test --config=playwright.interactions.config.mjs tests/playwright/interaction-smoke.spec.mjs',
@@ -40,14 +42,17 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
     'utf8',
   );
 
-  assert.equal(pkg.scripts['audit:playwright'], 'playwright test --config=playwright.audits.config.mjs');
+  assert.equal(pkg.scripts['audit:playwright'], 'node scripts/visual-gate.mjs --all');
   assert.equal(
     pkg.scripts['audit:interactions'],
     'playwright test --config=playwright.interactions.config.mjs tests/playwright/interaction-smoke.spec.mjs',
   );
   assert.match(config, /snapshotPathTemplate: '\{testDir\}\/__screenshots__\/\{platform\}\/\{projectName\}\/\{arg\}\{ext\}'/);
-  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'linux', 'chromium')), true);
-  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'linux', 'chromium-light')), true);
+  // Baselines are win32 only: the audits run on this Windows build machine, and
+  // nothing ran the Linux set after July, so it had gone stale unnoticed.
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'win32', 'chromium')), true);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'win32', 'chromium-light')), true);
+  assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'linux')), false);
   assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium')), false);
   assert.equal(await pathExists(path.join(root, 'tests', 'playwright', '__screenshots__', 'chromium-light')), false);
   assert.match(config, /PLAYWRIGHT_AUDIT_PORT \?\? process\.env\.PLAYWRIGHT_PORT \?\? '4324'/);

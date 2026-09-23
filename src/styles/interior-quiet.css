@@ -74,6 +74,8 @@ body.route-interior .now-section-copy{font-size:15px}
 body.route-interior .now-li,body.route-interior .now-p{font-size:16px;line-height:1.65}
 
 body.route-interior .uses-content{margin-top:34px;padding:0 32px}
+/* An interior page's content block after its intro: the gutter .page-shell gives the intro. */
+body.route-interior .page-content{padding-inline:32px}
 body.route-interior .uses-section-head{margin-bottom:16px;padding-bottom:10px}
 body.route-interior .uses-section-head p{font-size:15px}
 body.route-interior .uses-grid{gap:0 40px}
@@ -123,7 +125,7 @@ body.route-interior .lang-card{padding:20px 0;border:0;border-top:1px solid var(
   body.route-interior .page-stat-value{font-size:19px}
   body.route-interior .rel-month{padding-inline:20px}
   body.route-interior .rel-month-shell{grid-template-columns:1fr;gap:14px;padding:22px 0}
-  body.route-interior .timeline-years,body.route-interior .timeline-events-wrap,body.route-interior .archive-content,body.route-interior .uses-content,body.route-interior .search-fallbacks{padding-inline:20px}
+  body.route-interior .timeline-years,body.route-interior .timeline-events-wrap,body.route-interior .archive-content,body.route-interior .uses-content,body.route-interior .page-content,body.route-interior .search-fallbacks{padding-inline:20px}
   body.route-interior .archive-policy-grid{grid-template-columns:1fr}
   body.route-interior .archive-policy-card{padding:18px 0;border-right:0;border-bottom:1px solid var(--border-soft)}
   body.route-interior .now-pulse{grid-template-columns:repeat(2,minmax(0,1fr))}

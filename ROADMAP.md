@@ -23,13 +23,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P2
 
-- [ ] P2: Re-baseline the visual snapshots for the v0.45 design and gate the key routes
-  Why: The baselines predate the v0.45 redesign, preflight never compares screenshots, and nothing runs the Linux set.
-  Evidence: baselines were last updated 2026-07-25 (Linux) and 2026-09-05 (win32), and 30 files under `src/pages`, `src/styles` and `src/components` have changed since; `/colophon/` has no baseline, and neither has `/privacy/`, so `npm run audit:playwright` fails its four privacy snapshots (third drain review); `package.json:41` and `:69`.
-  Touches: `tests/playwright/__screenshots__/`, `tests/playwright/portfolio-audits.spec.mjs`, `package.json`.
-  Acceptance: win32 baselines are regenerated from fixtures for every route, including `/colophon/` and `/privacy/`, and the Linux baselines are deleted. A fixture-built visual comparison of `/`, `/ai/`, `/healthcare-it/`, `/resume/` and `/catalog/` runs in `deploy:preflight`.
-  Complexity: M
-
 - [ ] P2: Make the colours work in every browser the build targets
   Why: The build declares Chrome and Edge 111, Safari 16.4 and Firefox 114 as targets, but every colour token is a custom property set with `light-dark()`, which those browsers before Chrome 123, Safari 17.5 and Firefox 120 don't know. A custom property takes any value and the last declaration wins, so the plain value written before each one (`--grn:#4ade80;--grn:light-dark(…)`) is no fallback, and every `var()` that reads a token is invalid there.
   Evidence: sixth drain review, 2026-09-23 (in Chromium, `--c:red;--c:nosuchfn()` gives black, not red); all 50 `light-dark()` uses in `src/styles` set a custom property; `CSS_BROWSER_TARGETS` in `scripts/lib/minify-css.mjs`.

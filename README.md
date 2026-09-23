@@ -84,7 +84,7 @@ npm run data:summary -- --fail-on-unsigned-featured-releases # fail on featured 
 npm run data:summary:strict # fail on stale, partial, or low-coverage generated-data caches
 npm run data:summary:deploy # strict generated-data gate, token-backed README telemetry, and signed featured releases
 npm run deploy:status # fail when the live version or commit differs from local package.json + HEAD, or live data is past staleAfter
-npm run deploy:preflight # deploy gate: data/catalog/dependency audits, tests, check, and build
+npm run deploy:preflight # deploy gate: data/catalog/dependency audits, tests, check, a screenshot comparison of five key routes on a fixture build, then the real build and the browser a11y audit
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
@@ -96,7 +96,9 @@ npm run forced-colors:audit # verify forced-colors SVG data visualizations after
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
 npm run lhci:summary   # summarize LHCI filesystem warning reports
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
-npm run audit:playwright # browser axe + visual baselines against fixture-built dist/
+npm run audit:playwright # the whole browser suite (axe, layout, screenshots) against a fixture build; live data is swapped back after
+npm run audit:playwright:update # the same run, rewriting every win32 screenshot baseline from the fixtures
+npm run visual:gate   # just the deploy gate: /, /ai/, /healthcare-it/, /resume/ and /catalog/ in both themes
 npm run audit:interactions # focused rendered interaction smoke against built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run typecheck:scripts # check scripts/ and test/ JavaScript contracts with TypeScript

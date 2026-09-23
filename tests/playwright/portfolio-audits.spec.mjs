@@ -19,6 +19,7 @@ const routes = [
   { name: 'resume', path: '/resume/', ready: '#resume-header' },
   { name: 'data', path: '/data/', ready: '#data-overview' },
   { name: 'privacy', path: '/privacy/', ready: '#privacy-overview' },
+  { name: 'colophon', path: '/colophon/', ready: '#colophon-overview' },
   { name: 'uses', path: '/uses/', ready: '#uses-overview' },
   { name: 'now', path: '/now/', ready: '#now-overview' },
   { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },
@@ -279,22 +280,26 @@ test('light-theme mobile ledgers reflow without squeezed columns or overlaps', a
   expect(proofLayout.every((row) => row.width > 300)).toBe(true);
   expect(proofLayout.every((row) => row.valueRight <= row.rowRight + 1)).toBe(true);
 
-  await preparePage(page, '/catalog/', '#catalog');
+  // Since v0.45 the catalog page's intro holds the title and its copy, and
+  // the full catalog section below has a heading only.
+  await preparePage(page, '/catalog/', '#catalog-overview');
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
-  const catalogHeading = page.locator('#catalog .sh');
-  await catalogHeading.scrollIntoViewIfNeeded();
-  const catalogLayout = await catalogHeading.evaluate((heading) => {
-    const title = heading.querySelector('h2')?.getBoundingClientRect();
-    const copy = heading.querySelector('p')?.getBoundingClientRect();
-    return {
-      columns: getComputedStyle(heading).gridTemplateColumns.split(' ').length,
-      titleWidth: title?.width ?? 0,
-      copyWidth: copy?.width ?? 0,
-    };
-  });
-  expect(catalogLayout.columns).toBe(1);
-  expect(catalogLayout.titleWidth).toBeGreaterThan(300);
-  expect(catalogLayout.copyWidth).toBeGreaterThan(300);
+  for (const selector of ['#catalog-overview .sh', '#catalog .sh']) {
+    const heading = page.locator(selector);
+    await heading.scrollIntoViewIfNeeded();
+    const layout = await heading.evaluate((element) => {
+      const title = element.querySelector('h1, h2')?.getBoundingClientRect();
+      const copy = element.querySelector('p')?.getBoundingClientRect();
+      return {
+        columns: getComputedStyle(element).gridTemplateColumns.split(' ').length,
+        titleWidth: title?.width ?? 0,
+        copyWidth: copy?.width ?? null,
+      };
+    });
+    expect(layout.columns, selector).toBe(1);
+    expect(layout.titleWidth, selector).toBeGreaterThan(300);
+    if (selector === '#catalog-overview .sh') expect(layout.copyWidth, selector).toBeGreaterThan(300);
+  }
 });
 
 test('release summaries with unbroken URLs stay inside the mobile viewport', async ({ page }) => {
@@ -417,7 +422,12 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
 
     await expect(page.locator('.hero-proof-strip .hero-proof')).toHaveCount(3);
     await expect(page.locator('#greatest-hits .selected-work-row')).toHaveCount(3);
-    await expect(page.locator('#live .lc2')).toHaveCount(2);
+    // The homepage shows at most six live apps (the slice in
+    // src/pages/index.astro). How many depends on the profile feed, so the
+    // bound is what's pinned: 2 on the day this was written, 6 by v0.45.
+    const liveCards = await page.locator('#live .lc2').count();
+    expect(liveCards).toBeGreaterThan(0);
+    expect(liveCards).toBeLessThanOrEqual(6);
     await expect(page.locator('#skills .practice-row')).toHaveCount(3);
     await expect(page.locator('#catalog .ca')).toHaveCount(0);
     await expect(page.locator('#catalog .handoff-links a')).toHaveCount(3);
@@ -435,6 +445,43 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
   await expectMinimalLayout(1365);
   await expectMinimalLayout(980);
   await expectMinimalLayout(390);
+});
+
+// The colophon's content sat flush against the screen edge on phones for a
+// release before its first baseline showed it: its blocks had no gutter class.
+// Text in main starts at least 12px in from either edge at 390px wide, unless
+// it sits in a container that scrolls sideways on purpose.
+test.describe('Mobile gutter audit', () => {
+  for (const route of routes) {
+    test(`${route.name} keeps its text off the screen edge at 390px`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await preparePage(page, route.path, route.ready);
+      const flush = await page.evaluate(() => {
+        const found = [];
+        const scrollsSideways = (element) => {
+          for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
+            const overflow = getComputedStyle(node).overflowX;
+            if ((overflow === 'auto' || overflow === 'scroll') && node.scrollWidth > node.clientWidth + 1) return true;
+          }
+          return false;
+        };
+        for (const element of document.querySelectorAll('main :is(h1, h2, h3, p, li, dt, dd, blockquote, figcaption)')) {
+          const style = getComputedStyle(element);
+          if (style.display === 'none' || style.visibility === 'hidden' || !element.textContent.trim()) continue;
+          if (element.closest('[aria-hidden="true"], .sr-only, dialog:not([open])')) continue;
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          const text = range.getBoundingClientRect();
+          if (text.width === 0 || text.height === 0) continue;
+          if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
+            found.push(`${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${element.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
+          }
+        }
+        return found.slice(0, 8);
+      });
+      expect(flush).toEqual([]);
+    });
+  }
 });
 
 test.describe('Playwright visual baselines', () => {
