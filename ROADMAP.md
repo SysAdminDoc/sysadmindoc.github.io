@@ -58,13 +58,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `data:summary:deploy` passes `--fail-on-unsigned-featured-releases`. A planted unsigned featured release fails a manual preflight but only reports during `refresh:deploy`, the way catalog drift does, so another repo's release can't freeze the nightly.
   Complexity: S
 
-- [ ] P2: Pin the GoAccess image and run it without a network
-  Why: The daily cron pulls `allinurl/goaccess:latest` and pipes the raw access log, visitor IPs included, into it with networking on.
-  Evidence: `deploy/vps/analytics-report.sh:23`, `:39`; the VPS cron entry `15 4 * * *`; v0.43.0's Caddy pin fixed the same floating-tag problem.
-  Touches: `deploy/vps/analytics-report.sh`.
-  Acceptance: The image is pinned by digest and runs with `--network none` and `--read-only`. The next morning's `analytics/cron.log` shows a successful run.
-  Complexity: S
-
 - [ ] P2: Make the CSP report stream readable, and check it every night
   Why: The sink recorded the avatar bug three weeks before anyone noticed, and 260 of its 303 reports can't be classified.
   Evidence: sink aggregates on 2026-09-23 (303 reports since 2026-08-20, 260 of them recorded as `(invalid-url)`); the policy in `src/layouts/Base.astro:75` has no `'report-sample'`.

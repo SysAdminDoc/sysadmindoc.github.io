@@ -20,7 +20,10 @@ CADDY_CONTAINER="${CADDY_CONTAINER:-caddy}"
 LOG_PATH="${LOG_PATH:-/var/log/caddy/portfolio.log}"
 OUT_DIR="${OUT_DIR:-/home/deploy/sites/portfolio/analytics}"
 OUT_FILE="${OUT_DIR}/report.html"
-GOACCESS_IMAGE="${GOACCESS_IMAGE:-allinurl/goaccess:latest}"
+# GoAccess 1.11, pinned by digest: the report reads every visitor address in
+# the raw log, so the image mustn't change under it between runs. To update,
+# pull the new tag, check `--version`, and replace the digest.
+GOACCESS_IMAGE="${GOACCESS_IMAGE:-allinurl/goaccess@sha256:85028c6c9b6ddb06e5f63bffd092ecaa3d1fa72235de2f5291920d5745a3aa6d}"
 
 mkdir -p "$OUT_DIR"
 
@@ -44,7 +47,7 @@ docker exec "$CADDY_CONTAINER" sh -c '
     [ -e "$rolled" ] && zcat "$rolled"
   done
   cat "$0"' "$LOG_PATH" \
-  | docker run --rm -i "$GOACCESS_IMAGE" - \
+  | docker run --rm -i --network none --read-only --tmpfs /work -w /work "$GOACCESS_IMAGE" - \
       -o html \
       --log-format=CADDY \
       --anonymize-ip \

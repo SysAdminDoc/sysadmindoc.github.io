@@ -68,4 +68,8 @@ test('the traffic report the cron runs is the repo copy, and it reads the rolled
   const script = await read('deploy', 'vps', 'analytics-report.sh');
   assert.ok(script.includes('"${0%.log}"-*.log.gz'), 'rolled, gzipped logs are read as well as the live one');
   assert.match(script, /--anonymize-ip/);
+  // It reads every visitor address in the raw log, so the image is pinned and
+  // gets no network and no writable root.
+  assert.match(script, /GOACCESS_IMAGE:-allinurl\/goaccess@sha256:[0-9a-f]{64}\}/);
+  assert.match(script, /docker run --rm -i --network none --read-only --tmpfs \/work -w \/work "\$GOACCESS_IMAGE"/);
 });
