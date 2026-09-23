@@ -195,6 +195,19 @@ const cases = [
     },
   },
   {
+    name: 'links:audit (privacy link)',
+    args: ['scripts/audit-built-links.mjs', '--dist', scratch],
+    violation: 'a page footer without its link to /privacy/',
+    expect: /index\.html: its footer has no link to \/privacy\//,
+    plant() {
+      const html = readScratch('index.html');
+      const footer = html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0];
+      if (!footer || !footer.includes('href="/privacy/"')) return false;
+      writeScratch('index.html', html.replace(footer, footer.replaceAll('href="/privacy/"', 'href="/"')));
+      return true;
+    },
+  },
+  {
     name: 'dom:audit',
     args: ['scripts/audit-dom-size.mjs', '--dist', scratch],
     violation: 'thousands of extra homepage nodes',

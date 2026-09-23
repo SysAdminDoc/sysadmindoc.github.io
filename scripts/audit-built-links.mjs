@@ -149,6 +149,13 @@ for (const filePath of htmlFiles) {
   const html = await fs.readFile(filePath, 'utf8');
   const hrefs = extractHrefs(html);
 
+  // /privacy/ promises it is one click from every page. The build checks the
+  // pages it is about to ship; a unit test could only read the last build.
+  const footer = html.match(/<footer\b[\s\S]*?<\/footer>/i)?.[0];
+  if (footer && source !== '/privacy/' && !/\bhref=(["'])\/privacy\/\1/.test(footer)) {
+    errors.push(`  ${rel}: its footer has no link to /privacy/`);
+  }
+
   for (const href of hrefs) {
     totalLinks += 1;
 
