@@ -255,8 +255,9 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
 // shared list, so a flag the runner sets has to be on it.
 test('every report-only flag the nightly sets is one the tests know to strip', async () => {
   const source = await fs.readFile(runner, 'utf8');
-  const set = [...source.matchAll(/\b([A-Z][A-Z_]*_REPORT_ONLY): '1'/g)].map((match) => match[1]).sort();
-  assert.deepEqual(set, [...REPORT_ONLY_FLAGS].sort());
+  // Any mention counts, however the flag is set ('1', 'true', env.X = ...).
+  const mentioned = [...new Set([...source.matchAll(/\b([A-Z][A-Z0-9_]*_REPORT_ONLY)\b/g)].map((match) => match[1]))].sort();
+  assert.deepEqual(mentioned, [...REPORT_ONLY_FLAGS].sort());
 });
 
 test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {

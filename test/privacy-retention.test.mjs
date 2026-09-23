@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import fs from 'node:fs/promises';
+import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import test, { mock } from 'node:test';
@@ -68,8 +70,8 @@ test('the traffic report the cron runs is the repo copy, and it reads the rolled
   );
   const script = await read('deploy', 'vps', 'analytics-report.sh');
   assert.ok(script.includes('"${0%.log}"-*.log.gz'), 'rolled, gzipped logs are read as well as the live one');
-  // Comments don't count: a commented-out flag still matched the old check.
-  const code = script.split('\n').filter((line) => !/^\s*#/.test(line)).join('\n');
+  // Comments don't count, whole-line or trailing: both still matched older checks.
+  const code = script.split('\n').map((line) => line.replace(/(^|\s)#.*$/, '$1')).join('\n');
   assert.match(code, /--anonymize-ip/);
   // It reads every visitor address in the raw log, so the image is pinned and
   // gets no network and no writable root.
@@ -164,15 +166,16 @@ const sentStatus = (id) => JSON.stringify({ type: 'status', id, status: 'sent', 
 const leadIds = async (storePath) =>
   (await fs.readFile(storePath, 'utf8')).split('\n').filter(Boolean).map((line) => JSON.parse(line)).filter((entry) => entry.type === 'lead').map((entry) => entry.id);
 
-test('the purge cutoff is the stated number of days, to the day', async () => {
+test('the purge cutoff is the stated number of days, to the minute', async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-lead-retention-'));
   try {
     const storePath = path.join(dir, 'leads.ndjson');
     const now = new Date('2026-09-23T12:00:00.000Z');
-    const daysAgo = (days) => new Date(now.getTime() - days * DAY_MS);
-    const kept = LEAD_RETENTION_DAYS - 1;
-    const gone = LEAD_RETENTION_DAYS + 1;
-    await fs.writeFile(storePath, [storedLead('kept', daysAgo(kept)), sentStatus('kept'), storedLead('gone', daysAgo(gone)), sentStatus('gone'), ''].join('\n'));
+    // A minute either side of the period: a cutoff off by hours, not just a day, fails.
+    const period = LEAD_RETENTION_DAYS * DAY_MS;
+    const kept = new Date(now.getTime() - period + 60_000);
+    const gone = new Date(now.getTime() - period - 60_000);
+    await fs.writeFile(storePath, [storedLead('kept', kept), sentStatus('kept'), storedLead('gone', gone), sentStatus('gone'), ''].join('\n'));
     const quiet = { log() {}, error() {} };
     const handler = createContactHandler({ ...CONTACT_DEFAULTS, ntfyUrl: 'http://ntfy:80/portfolio-leads', storePath }, { now: () => now, logger: quiet });
     await handler.purgeExpired();
@@ -190,9 +193,20 @@ test('the contact handler purges when it starts, before its port opens, and agai
   // Only intervals are faked: the purge's own clock stays real.
   mock.timers.enable({ apis: ['setInterval'] });
   const quiet = mock.method(console, 'log', () => {});
+  // What the store held at the moment the port opened, so a purge moved after
+  // listen() fails even though startServer still awaits it.
+  /** @type {string | null} */
+  let heldAtListen = null;
+  const originalListen = http.Server.prototype.listen;
+  const listen = mock.method(http.Server.prototype, 'listen', function (/** @type {any[]} */ ...args) {
+    heldAtListen = readFileSync(storePath, 'utf8');
+    return originalListen.apply(this, args);
+  });
   let server;
   try {
     server = await startServer({ ...CONTACT_DEFAULTS, ntfyUrl: 'http://127.0.0.1:9/portfolio-leads', storePath, host: '127.0.0.1', port: 0 });
+    const held = /** @type {string | null} */ (heldAtListen);
+    assert.ok(held !== null && !held.includes('"id":"old"'), 'the expired lead was gone before the port opened');
     assert.deepEqual(await leadIds(storePath), ['recent'], 'purged at start');
 
     // A lead that passes the period while the handler runs goes with the daily purge.
@@ -206,6 +220,7 @@ test('the contact handler purges when it starts, before its port opens, and agai
     assert.deepEqual(ids, ['recent'], 'purged again a day later');
   } finally {
     mock.timers.reset();
+    listen.mock.restore();
     quiet.mock.restore();
     await new Promise((resolve) => (server ? server.close(() => resolve(undefined)) : resolve(undefined)));
     await fs.rm(dir, { recursive: true, force: true });
