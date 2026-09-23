@@ -147,9 +147,9 @@ test('no console errors during service worker lifecycle', async ({ page }) => {
 });
 
 // The live /sw.js is served with the production CSP, and a worker's own fetch()
-// obeys only that header. When the worker answered cross-origin requests itself,
-// connect-src refused its fetch of the homepage avatar (then still on GitHub's
-// CDN) and every visit after the first got a synthetic 503 in place of the photo.
+// obeys only that header. This checks the whole page on a return visit; the
+// cross-origin case the avatar bug came from is the describe block below,
+// since the homepage no longer requests another origin at all.
 test('a returning visit under the worker loads every image with the production CSP header', async ({ page }) => {
   const worker = await page.request.get('/sw.js');
   expect(worker.headers()['content-security-policy'], 'the preview must send the production CSP header').toMatch(
@@ -178,4 +178,42 @@ test('a returning visit under the worker loads every image with the production C
   expect(images.length).toBeGreaterThan(0);
   expect(images.filter((img) => img.naturalWidth === 0)).toEqual([]);
   expect(problems).toEqual([]);
+});
+
+test.describe('a cross-origin request on a page the worker controls', () => {
+  // When the worker answered cross-origin requests itself, connect-src refused
+  // its fetch of the homepage avatar and every visit after the first got a
+  // synthetic 503. Nothing on the site requests another origin now, and the
+  // page's own CSP would block one, so the page's CSP is lifted here to get a
+  // cross-origin image requested at all. The worker's CSP still comes from the
+  // header on /sw.js, as it did live.
+  test.use({ bypassCSP: true });
+
+  test('goes to the network, not through the worker', async ({ page, context }) => {
+    await context.route('https://images.example.test/**', (route) =>
+      route.fulfill({ path: 'public/icon-192.png', contentType: 'image/png' }),
+    );
+    await page.goto('/', { waitUntil: 'load' });
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+    const answeredByWorker = [];
+    page.on('response', (response) => {
+      if (response.url().startsWith('https://images.example.test/') && response.fromServiceWorker()) {
+        answeredByWorker.push(`${response.status()} ${response.url()}`);
+      }
+    });
+    const naturalWidth = await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img.naturalWidth);
+          img.onerror = () => resolve(0);
+          img.src = 'https://images.example.test/probe.png';
+          document.body.append(img);
+        }),
+    );
+    expect(answeredByWorker).toEqual([]);
+    expect(naturalWidth).toBeGreaterThan(0);
+  });
 });
