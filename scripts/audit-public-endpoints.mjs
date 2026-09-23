@@ -2,12 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
+import { securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
 const resumeOnly = process.argv.includes('--resume-only');
 const siteUrl = SITE_URL;
 const errors = [];
+// Printed but not fatal: a deadline a person has to act on before it fails the build.
+const warnings = [];
 const releaseProvenanceLevels = new Set(['no-assets', 'unsigned', 'checksum', 'attested', 'unknown']);
 
 const discoveryLinks = [
@@ -648,17 +651,10 @@ function auditSecurityTxt(text) {
       hasCanonical = true;
     } else if (field === 'Expires') {
       requireDate(value, 'security.txt Expires');
-      const expiresDate = new Date(value);
-      if (!Number.isNaN(expiresDate.getTime())) {
-        const now = new Date();
-        if (expiresDate <= now) {
-          fail(`security.txt Expires date "${value}" is in the past.`);
-        }
-        const oneYearFromNow = new Date(now);
-        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
-        if (expiresDate > oneYearFromNow) {
-          fail(`security.txt Expires date "${value}" is more than 1 year from now (RFC 9116 guidance).`);
-        }
+      if (!Number.isNaN(new Date(value).getTime())) {
+        const expiry = securityTxtExpiry(value);
+        if (expiry.level === 'fail') fail(expiry.message);
+        else if (expiry.level === 'warn') warnings.push(expiry.message);
       }
       expires = value;
     } else if (field === 'Preferred-Languages') {
@@ -814,9 +810,14 @@ const robotsSummary = auditRobotsTxt(robotsTxt);
 const speculationSummary = auditSpeculationRules(speculationRules);
 const humansSummary = auditHumansTxt(humansTxt);
 
+function printWarnings() {
+  for (const warning of warnings) console.warn(`WARN  ${warning}`);
+}
+
 if (errors.length > 0) {
   console.error('Public endpoint audit failed:');
   for (const error of errors) console.error(`  - ${error}`);
+  printWarnings();
   process.exit(1);
 }
 
@@ -837,4 +838,5 @@ console.log(`  security.txt contacts: ${securitySummary.contacts.length}, expire
 console.log(`  robots.txt user-agents: ${robotsSummary.userAgents.length}, sitemap: ${robotsSummary.sitemapUrl}`);
 console.log(`  humans.txt: ${humansSummary.present ? 'present' : 'missing'}`);
 console.log(`  speculation-rules.json prerender rules: ${speculationSummary.ruleCount}`);
+printWarnings();
 console.log('Public endpoint audit passed.');

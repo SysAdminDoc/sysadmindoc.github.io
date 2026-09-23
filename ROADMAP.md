@@ -79,13 +79,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: No built `<title>` or feed title contains an em dash, an en dash or a spaced hyphen, and a test enforces it.
   Complexity: S
 
-- [ ] P3: Warn 60 days before `security.txt` expires
-  Why: The endpoint audit fails only once `Expires` has passed, so the nightly will go red on a date nobody chose. That's the same timer failure that stopped deploys in September.
-  Evidence: `public/.well-known/security.txt` expires 2027-06-16; `scripts/audit-public-endpoints.mjs:649-660`.
-  Touches: `scripts/audit-public-endpoints.mjs` and its test.
-  Acceptance: Within 60 days of expiry the audit prints a warning and the nightly status carries it. After expiry it fails, as it does today.
-  Complexity: S
-
 - [ ] P3: Publish GitHub releases for v0.43.0 through v0.45.x
   Why: Releases stop at v0.42.0 while tags reach v0.45.2, and the README still runs `smoke:release` against a v0.43.0 asset that doesn't exist.
   Evidence: `gh release list` on 2026-09-22; `README.md:94`.

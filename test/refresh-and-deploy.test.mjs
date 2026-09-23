@@ -205,6 +205,51 @@ test('an unsigned featured release still deploys, then fails the run as drift', 
   assert.match(log, /PROVENANCE 1 featured release\(s\) without a checksum or attestation: Alpha@v1\.0\.0/);
 });
 
+test('a security.txt inside its 60-day window still deploys, and the status carries the warning', { timeout: 45_000 }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  // The fake preflight stands in for the build: it leaves a dist/ whose
+  // security.txt expires in 30 days.
+  const expires = new Date(Date.now() + 30 * 86_400_000).toISOString();
+  await fs.writeFile(
+    path.join(dir, 'preflight.cjs'),
+    [
+      "const fs = require('node:fs');",
+      "fs.mkdirSync('dist/.well-known', { recursive: true });",
+      `fs.writeFileSync('dist/.well-known/security.txt', 'Contact: https://example.test/\\nExpires: ${expires}\\n');`,
+    ].join('\n'),
+  );
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node preflight.cjs',
+        'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+      },
+    }),
+  );
+
+  const { exited } = runRunner(dir, {
+    ...process.env,
+    GITHUB_TOKEN: 'test-token',
+    PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10',
+    npm_config_update_notifier: 'false',
+  });
+  assert.equal(await exited, 0, 'a warning does not fail the run');
+  assert.equal(await fs.readFile(path.join(dir, 'deployed.marker'), 'utf8'), 'yes');
+
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.status, 'deployed');
+  assert.equal(status.warnings.length, 1);
+  assert.match(status.warnings[0], new RegExp(`^security\\.txt expires ${expires.replace(/\./g, '\\.')}, 30 day\\(s\\) from now`));
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  assert.match(log, /WARN {2}security\.txt expires /);
+});
+
 test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {
   const source = await fs.readFile(runner, 'utf8');
   // A gh waiting on a credential store used to hold the run before the running

@@ -30,6 +30,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 
 const root = process.cwd();
 const tmpDir = path.join(root, '.tmp');
@@ -38,6 +39,9 @@ const statusFile = path.join(tmpDir, 'refresh-and-deploy-status.json');
 const dryRun = process.argv.includes('--dry-run') || process.argv.includes('--skip-deploy');
 const startedAt = new Date();
 const FAIL_TAIL_LINES = 40;
+// Deadlines a person has to act on that don't fail this run. They ride along in
+// the status file, where the daily health check picks them up.
+const warnings = [];
 
 // A hung step would otherwise hold the run until the scheduled task's two-hour
 // limit ends it from outside, and a run ended from outside writes no status at
@@ -235,6 +239,7 @@ function writeStatus(status, { failedStep = null, detail = null } = {}) {
     dryRun,
     pid: process.pid,
     startedAt: startedAt.toISOString(),
+    warnings,
   };
   try {
     fs.mkdirSync(path.dirname(statusFile), { recursive: true });
@@ -279,6 +284,23 @@ function driftRecord(uncataloged, unsigned) {
   };
 }
 
+// The preflight's endpoint audit fails once security.txt has expired. Reading the
+// built copy here gives the owner the same 60 days of notice that audit prints.
+function noteSecurityTxtExpiry() {
+  let text;
+  try {
+    text = fs.readFileSync(path.join(root, 'dist', '.well-known', 'security.txt'), 'utf8');
+  } catch {
+    return;
+  }
+  const value = securityTxtExpiresValue(text);
+  const expiry = value === null ? null : securityTxtExpiry(value);
+  if (expiry?.level === 'warn' && expiry.message) {
+    log(`WARN  ${expiry.message}`);
+    warnings.push(expiry.message);
+  }
+}
+
 function readFreshness() {
   try {
     const stats = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_stats.json'), 'utf8'));
@@ -319,6 +341,7 @@ async function main() {
     // live-app audits, signature verification, dependency audit, tests, check,
     // and a full build. Nothing ships unless it passes.
     await step('deploy:preflight', 'npm', ['run', 'deploy:preflight']);
+    noteSecurityTxtExpiry();
 
     if (dryRun) {
       const uncataloged = readCatalogDrift();
