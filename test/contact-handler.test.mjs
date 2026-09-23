@@ -873,12 +873,12 @@ test('a lead that could not be stored gives its place under the cap back', async
   let failNext = true;
   const flakyFileSystem = {
     ...fs,
-    appendFile: async (/** @type {any[]} */ ...args) => {
+    appendFile: async (/** @type {string} */ file, /** @type {string} */ data, /** @type {any} */ options) => {
       if (failNext) {
         failNext = false;
         throw Object.assign(new Error('disk full'), { code: 'ENOSPC' });
       }
-      return fs.appendFile(...args);
+      return fs.appendFile(file, data, options);
     },
   };
   await withHandler({ config: { globalHourlyCap: 1 }, dependencies: { fileSystem: flakyFileSystem } }, async ({ handler }) => {
