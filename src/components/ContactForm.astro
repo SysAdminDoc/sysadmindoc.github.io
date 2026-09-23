@@ -18,7 +18,7 @@ const { subject = '' } = Astro.props;
     </div>
     <div class="contact-field contact-field-wide">
       <label for="contact-message">What are you working on?</label>
-      <textarea id="contact-message" name="message" required rows="4" minlength="10" placeholder="Describe the workflow, role, or problem. A few lines is enough to start."></textarea>
+      <textarea id="contact-message" name="message" required rows="4" minlength="10" maxlength="5000" placeholder="Describe the workflow, role, or problem. A few lines is enough to start."></textarea>
     </div>
     {/* Honeypot: hidden from humans, filled by bots */}
     <div class="contact-hp" aria-hidden="true" tabindex="-1">

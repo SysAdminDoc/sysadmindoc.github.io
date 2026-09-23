@@ -109,7 +109,9 @@ services:
     command: ["node", "/app/contact-handler.mjs"]
     environment:
       NTFY_URL: http://ntfy:80/portfolio-leads
-      CONTACT_LOG: /var/lib/contact/submissions.ndjson
+      # Full submissions, fsync'd before the visitor gets an answer. The older
+      # submissions.ndjson beside it (name, email, length only) is kept as is.
+      CONTACT_STORE: /var/lib/contact/leads.ndjson
     volumes:
       - ./contact-handler.mjs:/app/contact-handler.mjs:ro
       - ./contact-data:/var/lib/contact

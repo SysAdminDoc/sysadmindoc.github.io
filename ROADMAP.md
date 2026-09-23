@@ -19,13 +19,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P0
 
-- [ ] P0: Store every contact submission in full before replying, and keep visitor text out of HTTP headers
-  Why: The only external inquiry so far (2026-09-18, 842 characters) was told "Message received" and its text now exists nowhere. A name typed as "O’Brien" on an iPhone makes the handler answer 500 and drop the lead with no log line at all.
-  Evidence: VPS probe 2026-09-23T00:45Z (ntfy has no `cache-file`, `/v1/stats` showed 0 messages after a restart); `deploy/vps/contact-handler.mjs:80-91` logs `messageLen`, not the message; `:66-74` puts the name in a `Title` header, and Node 24 throws "Cannot convert argument to a ByteString" for U+2019, CJK and emoji (verified 2026-09-22); `:121-127` answers 500 without logging when ntfy fails; ntfy docs (4 KB message limit, 12-hour in-memory cache by default).
-  Touches: `deploy/vps/contact-handler.mjs`, `deploy/vps/docker-compose.yml`, new `test/contact-handler.test.mjs`.
-  Acceptance: Each accepted submission is written (id, received time, name, email, message, subject, page, status) to durable storage with an fsync (`appendFile` with `flush: true`, or `node:sqlite` in WAL mode with `synchronous=FULL`) before any notification is attempted. Notification runs from that record, publishes JSON to ntfy's root URL, and stays under ntfy's 4 KB message limit (an excerpt plus the record id). A failure leaves the record `pending` for retry instead of returning 500. Tests prove "O’Brien", "李雷", an emoji name and a 2,000-character CJK message each produce a stored record and a 2xx. No message body appears in container stdout.
-  Complexity: M
-
 - [ ] P0: Deliver leads to a subscribed device through an authenticated, current ntfy, and prove delivery in `smoke:live`
   Why: ntfy has no route, no auth and no subscriber, so no person is ever told a lead arrived. Version 2.11.0 is also inside a critical RCE range.
   Evidence: VPS probe 2026-09-23 (no published port, no edge route, no `server.yml`); GHSA-pqhx-w72w-m393 (critical, fixed in 2.22.0); ntfy v2.28.0 shipped 2026-08-27, with declarative users and tokens since 2.14.0; wildcard DNS already sends any `*.getparkerai.com` name to the VPS (checked 2026-09-22), so a new host needs only an edge Caddy block.

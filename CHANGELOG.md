@@ -2,6 +2,13 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- The contact form no longer loses messages. Every accepted submission is written in full to an fsync'd store on the server before the visitor gets an answer, and the notification is sent from that record afterwards. Until now only the sender's name, email and message length were kept, so the text of the one outside inquiry that arrived on 2026-09-18 is gone.
+- A name typed with an iPhone apostrophe ("O’Brien"), any Chinese, Japanese or Korean character, or an emoji made the form fail with a 500 and dropped the lead without a trace. The visitor's text went into an HTTP header, which Node's fetch refuses for anything outside Latin-1. Notifications now travel as JSON, and a failed one stays queued for retry instead of costing the message.
+- Messages are accepted up to 5,000 characters, and the text box stops there, instead of being cut at 2,000 without warning.
+
 ## [v0.45.2] - 2026-09-20
 
 ### Fixed
