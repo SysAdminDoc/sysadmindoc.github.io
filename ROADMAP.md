@@ -28,13 +28,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Tests cover a missing, forged, replayed or expired token, a device clock ten minutes fast, a per-client limit and a global hourly cap. The 422 text is generic ("Please check the form and try again") and doesn't name the honeypot. A request with no token is accepted only on the plain-POST path, under a stricter limit.
   Complexity: M
 
-- [ ] P1: Fix the three contact-form surface defects
-  Why: Healthcare visitors submit a form with no script and land on raw JSON. No visitor without JavaScript gets a real page back, and every notification loses which page it came from.
-  Evidence: `src/pages/healthcare-it.astro:211` renders the form, but `src/layouts/Base.astro:224` loads `contact-form.js` only where `hasContactForm` is set, and the built healthcare page has no script; `deploy/vps/contact-handler.mjs:93-96` always answers JSON; `src/components/ContactForm.astro:9` keeps `data-subject` out of the form data, and the handler ignores it (`:42-50`); MailForm and Formgate both redirect plain POSTs.
-  Touches: `src/layouts/Base.astro`, `src/pages/healthcare-it.astro`, `src/components/ContactForm.astro`, `deploy/vps/contact-handler.mjs`, a small `/contact/sent/` page (through `npm run scaffold:route`), `tests/playwright/interaction-smoke.spec.mjs`.
-  Acceptance: Every page that renders the form loads its script, derived from the component rather than a per-route flag. A plain POST gets a 303 to a thank-you page, or back to the form with a readable error. The subject travels as a hidden field and reaches the stored record. Playwright submits the form on `/`, `/ai/` and `/healthcare-it/` against a stub handler, with and without JavaScript.
-  Complexity: S
-
 - [ ] P1: Publish `staleAfter` in `/status.json` and fail `smoke:live` when live data is past its contract
   Why: On 2026-09-23 the live file told machines `"status":"fresh"` for data that was 37.8 hours old, because its freshness fields are frozen at build time.
   Evidence: live `/status.json` read 2026-09-23T00:45Z (`fetchedAt` 2026-09-21T10:55:31Z, `ageHours` 0.0348); `src/data/generated-trust.ts:70-73`, `:248-255`.

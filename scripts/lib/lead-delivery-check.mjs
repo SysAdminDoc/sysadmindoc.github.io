@@ -77,6 +77,7 @@ export async function checkLeadDelivery({
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json',
       'X-Contact-Smoke': secret,
       'User-Agent': userAgent,
     },

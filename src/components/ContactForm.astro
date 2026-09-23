@@ -6,7 +6,12 @@ export interface Props {
 }
 const { subject = '' } = Astro.props;
 ---
-<form class="contact-form" action="/api/contact" method="POST" data-subject={subject}>
+<form class="contact-form" action="/api/contact" method="POST">
+  {/* Shown only when the handler sends a no-JavaScript submission back here
+      with #contact-not-sent, so the error reads on the form's own page. */}
+  <p class="contact-not-sent" id="contact-not-sent">
+    Your message wasn't sent. Please check the form and try again, or email <a href={contactMailto(subject)}>{contactEmail}</a>.
+  </p>
   <div class="contact-form-fields">
     <div class="contact-field">
       <label for="contact-name">Name</label>
@@ -26,6 +31,7 @@ const { subject = '' } = Astro.props;
       <input type="text" id="contact-website" name="website" autocomplete="off" tabindex="-1" />
     </div>
     <input type="hidden" name="_t" value="" />
+    <input type="hidden" name="subject" value={subject} />
   </div>
   <div class="contact-form-actions">
     <button type="submit" class="btn bp">Send message</button>
@@ -33,6 +39,8 @@ const { subject = '' } = Astro.props;
   </div>
   <div class="contact-form-status" role="status" aria-live="polite"></div>
 </form>
+{/* Loaded by the component, so every page that renders the form gets it. */}
+<script src="/scripts/contact-form.js" is:inline defer></script>
 
 <style>
   .contact-form{max-width:620px}
@@ -50,6 +58,9 @@ const { subject = '' } = Astro.props;
   .contact-form-status{margin-top:12px;font-size:14px;min-height:20px}
   .contact-form-success{color:var(--grn)}
   .contact-form-error{color:var(--red)}
+  .contact-not-sent{display:none;margin:0 0 16px;color:var(--red);font-size:14px}
+  .contact-not-sent:target{display:block}
+  .contact-not-sent a{color:inherit;text-decoration:underline}
   @media(max-width:640px){
     .contact-form-fields{grid-template-columns:1fr}
   }

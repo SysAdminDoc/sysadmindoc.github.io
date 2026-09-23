@@ -21,7 +21,9 @@ const requiredScopeLabels = [
   'Timeline',
   'Uses',
 ];
-const nonContentRoutes = new Set(['/404.html', '/offline.html']);
+// Utility pages with nothing worth finding. /contact/sent/ is the contact
+// form's no-JavaScript thank-you page and is also noindex and off the sitemap.
+const nonContentRoutes = new Set(['/404.html', '/offline.html', '/contact/sent/']);
 const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
 const errors = [];
 

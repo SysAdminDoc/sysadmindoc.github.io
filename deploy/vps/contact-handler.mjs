@@ -195,6 +195,26 @@ function refererPath(value) {
   }
 }
 
+/**
+ * A browser posting the form itself, with no JavaScript, is navigating and
+ * needs a page back rather than JSON. The page script asks for JSON.
+ */
+export function isNavigation(headers) {
+  if (headers['sec-fetch-mode'] === 'navigate') return true;
+  return /\btext\/html\b/i.test(String(headers.accept ?? ''));
+}
+
+/** The form's own page, as a path on this site; never another origin. */
+export function returnPath(referer) {
+  const pathname = refererPath(referer);
+  return /^\/(?![/\\])/.test(pathname) ? pathname : '/';
+}
+
+function redirect(response, location) {
+  response.writeHead(303, { Location: location, 'Cache-Control': 'no-store' });
+  response.end();
+}
+
 export function newLeadId(now = new Date()) {
   return `${now.toISOString().slice(0, 10).replace(/-/g, '')}-${randomBytes(3).toString('hex')}`;
 }
@@ -462,12 +482,21 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       return;
     }
 
+    // Without JavaScript the browser shows whatever comes back, so it gets a
+    // 303: to the thank-you page, or back to the form, where
+    // #contact-not-sent shows a readable error with no script at all.
+    const navigation = isNavigation(request.headers);
+    const refuse = (status, body) => {
+      if (navigation) redirect(response, `${returnPath(request.headers.referer)}#contact-not-sent`);
+      else sendJson(response, status, body);
+    };
+
     let body;
     try {
       body = await readBody(request, config.maxBodyBytes);
     } catch (error) {
       const status = error instanceof HttpError ? error.status : 400;
-      sendJson(response, status, { error: error.message });
+      refuse(status, { error: error.message });
       return;
     }
 
@@ -479,7 +508,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     const synthetic = smokeHeader !== undefined;
     if (synthetic && !secretMatches(smokeHeader, config.smokeSecret)) {
       logger.log('contact: refused a smoke submission with the wrong secret');
-      sendJson(response, 403, { error: 'forbidden' });
+      refuse(403, { error: 'forbidden' });
       return;
     }
 
@@ -488,7 +517,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     const problem = validateSubmission(form, received, config);
     if (problem) {
       logger.log(`contact: rejected a submission (${problem})`);
-      sendJson(response, 422, { error: problem });
+      refuse(422, { error: problem });
       return;
     }
 
@@ -509,12 +538,13 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       await store.append(lead);
     } catch (error) {
       logger.error(`contact: could not store a submission: ${error.message}`);
-      sendJson(response, 503, { error: 'Could not save your message. Please email it directly.' });
+      refuse(503, { error: 'Could not save your message. Please email it directly.' });
       return;
     }
 
     logger.log(`contact: stored lead ${lead.id}`);
-    sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
+    if (navigation) redirect(response, '/contact/sent/');
+    else sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
     const tracked = { ...lead, attempts: 0 };
     pending.set(lead.id, tracked);
     track(deliver(tracked));

@@ -29,8 +29,9 @@ export default defineConfig({
   site: SITE_URL,
   integrations: [
     sitemap({
-      // Keep machine endpoints (OG images, JSON indexes) out of the page sitemap.
-      filter: (page) => !/(\/og\/|\.json$|\.png$)/.test(page),
+      // Keep machine endpoints (OG images, JSON indexes) and the contact form's
+      // thank-you page out of the page sitemap.
+      filter: (page) => !/(\/og\/|\.json$|\.png$|\/contact\/)/.test(page),
       serialize(item) {
         const reviewedDate = reviewedDateByRoute.get(new URL(item.url).pathname);
         if (reviewedDate) {

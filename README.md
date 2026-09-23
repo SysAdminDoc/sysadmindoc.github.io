@@ -207,6 +207,12 @@ that the notify host refuses anonymous access. It then sends a synthetic lead
 through the real form and reads it back as a subscriber within 60 seconds.
 Smoke leads go to their own topic, so they never reach the phone.
 
+`ContactForm.astro` loads its own script, so any page that shows the form can
+send it. With JavaScript the form posts in place and shows the handler's reply.
+Without it the browser posts natively, and the handler answers with a 303: to
+`/contact/sent/` once the message is stored, or back to the form page at
+`#contact-not-sent`, where a note explains what happened without any script.
+
 Deployment is local-first:
 1. Run `npm ci` from a normal local worktree.
 2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.

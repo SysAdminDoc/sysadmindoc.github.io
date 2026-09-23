@@ -513,6 +513,52 @@ test('a smoke submission with the wrong secret, or with none configured, is refu
   }
 });
 
+test('a browser posting without JavaScript gets a page back, never JSON', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    const navigate = { accept: 'text/html,application/xhtml+xml,*/*;q=0.8', 'sec-fetch-mode': 'navigate', referer: 'https://portfolio.getparkerai.com/healthcare-it/' };
+
+    const sent = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: formBody({ name: 'Pat Lee', email: 'pat@example.test', message: 'Our PACS migration needs help.', subject: 'Healthcare IT' }), headers: navigate }),
+      sent,
+    );
+    assert.equal(sent.status, 303);
+    assert.equal(sent.headers.Location, '/contact/sent/');
+    assert.equal(sent.body, '', 'no JSON body for a browser to show');
+
+    const refused = responseMock();
+    await handler.handleRequest(requestMock({ body: formBody({ name: '', email: 'pat@example.test', message: 'long enough text' }), headers: navigate }), refused);
+    assert.equal(refused.status, 303);
+    assert.equal(refused.headers.Location, '/healthcare-it/#contact-not-sent', 'back to the form, where the note shows');
+
+    // Only a path on this site: a crafted referer can't turn this into an open redirect.
+    for (const referer of ['https://evil.example//evil.example/x', 'https://portfolio.getparkerai.com/\\evil.example', 'not a url']) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody({ name: '', email: 'x@example.test', message: 'long enough text' }), headers: { ...navigate, referer } }), response);
+      assert.equal(response.headers.Location, '/#contact-not-sent', referer);
+    }
+    await handler.idle();
+
+    const leads = (await readEntries(storePath)).filter((entry) => entry.type === 'lead');
+    assert.equal(leads.length, 1);
+    assert.equal(leads[0].subject, 'Healthcare IT', 'the hidden subject field reaches the stored record');
+    assert.equal(leads[0].page, '/healthcare-it/');
+  });
+});
+
+test('the page script, which asks for JSON, still gets JSON', async () => {
+  await withHandler({}, async ({ handler }) => {
+    const response = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: formBody({ name: 'Pat Lee', email: 'pat@example.test', message: 'Is this still available?' }), headers: { accept: 'application/json', 'sec-fetch-mode': 'cors' } }),
+      response,
+    );
+    assert.equal(response.status, 200);
+    assert.equal(JSON.parse(response.body).ok, true);
+    await handler.idle();
+  });
+});
+
 test('loadConfig rejects a malformed token or a short smoke secret', () => {
   const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
   assert.throws(() => loadConfig({ ...base, NTFY_TOKEN: 'not-a-token' }), /NTFY_TOKEN/);

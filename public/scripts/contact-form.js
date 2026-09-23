@@ -2,6 +2,9 @@
 (function () {
   var forms = document.querySelectorAll('.contact-form');
   forms.forEach(function (form) {
+    // ContactForm.astro loads this with each form, so bind once.
+    if (form.hasAttribute('data-enhanced')) return;
+    form.setAttribute('data-enhanced', '');
     var timeField = form.querySelector('input[name="_t"]');
     if (timeField) timeField.value = String(Math.floor(Date.now() / 1000));
 
@@ -18,9 +21,11 @@
       var data = new FormData(form);
       var body = new URLSearchParams(data).toString();
 
+      // Accept tells the handler to answer in JSON; a plain browser POST gets
+      // a redirect to a page instead.
       fetch(form.action, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
         body: body,
       })
         .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, data: j }; }); })

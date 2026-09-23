@@ -1027,3 +1027,78 @@ test.describe('focus-not-obscured by sticky navigation', () => {
     expect(runtimeErrors).toEqual([]);
   });
 });
+
+// Every page that renders the contact form, and the subject each one sends.
+const contactFormPages = [
+  { path: '/', subject: '' },
+  { path: '/ai/', subject: 'AI workflow' },
+  { path: '/healthcare-it/', subject: 'Healthcare IT' },
+];
+
+async function fillContactForm(page) {
+  const form = page.locator('form.contact-form');
+  await form.locator('input[name="name"]').fill('Pat Lee');
+  await form.locator('input[name="email"]').fill('pat@example.test');
+  await form.locator('textarea[name="message"]').fill('A test message that is long enough to send.');
+  return form;
+}
+
+test.describe('contact form with JavaScript', () => {
+  for (const { path, subject } of contactFormPages) {
+    test(`the form on ${path} sends through its script and stays on the page`, async ({ page }) => {
+      const posted = [];
+      await page.route('**/api/contact', async (route) => {
+        posted.push({ body: route.request().postData() ?? '', accept: route.request().headers().accept ?? '' });
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json; charset=utf-8',
+          body: JSON.stringify({ ok: true, message: 'Message received. I will get back to you.' }),
+        });
+      });
+      await preparePage(page, path, 'form.contact-form');
+      const form = await fillContactForm(page);
+      await form.locator('button[type="submit"]').click();
+
+      await expect(form.locator('.contact-form-status')).toHaveText('Message received. I will get back to you.');
+      expect(new URL(page.url()).pathname).toBe(path);
+      expect(posted).toHaveLength(1);
+      expect(posted[0].accept).toContain('application/json');
+      expect(new URLSearchParams(posted[0].body).get('subject')).toBe(subject);
+      await expect(page.locator('#contact-not-sent')).toBeHidden();
+    });
+  }
+});
+
+test.describe('contact form without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const { path, subject } of contactFormPages) {
+    test(`the form on ${path} posts natively and lands on the thank-you page`, async ({ page }) => {
+      const posted = [];
+      await page.route('**/api/contact', async (route) => {
+        posted.push(route.request().postData() ?? '');
+        await route.fulfill({ status: 303, headers: { Location: '/contact/sent/' } });
+      });
+      await page.goto(path);
+      const form = await fillContactForm(page);
+      await form.locator('button[type="submit"]').click();
+
+      await page.waitForURL('**/contact/sent/');
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText('Thanks, your message is in');
+      expect(posted).toHaveLength(1);
+      expect(new URLSearchParams(posted[0]).get('subject')).toBe(subject);
+    });
+  }
+
+  test('a refused submission returns to the form with a readable error', async ({ page }) => {
+    await page.route('**/api/contact', (route) => route.fulfill({ status: 303, headers: { Location: '/ai/#contact-not-sent' } }));
+    await page.goto('/ai/');
+    await expect(page.locator('#contact-not-sent')).toBeHidden();
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+
+    await page.waitForURL('**/ai/#contact-not-sent');
+    await expect(page.locator('#contact-not-sent')).toBeVisible();
+    await expect(page.locator('#contact-not-sent')).toContainText("Your message wasn't sent");
+  });
+});
