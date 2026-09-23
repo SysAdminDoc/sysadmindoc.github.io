@@ -6,9 +6,100 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
+- [ ] P1: Stop a killed visual-gate run from shipping fixture data
+  Why: The gate swaps the committed fixtures into `src/data` and puts the live files back afterwards, but it leaves `_etags.json` alone. After a killed run, the nightly's fetch-stars sends the live ETags, gets 304s and keeps the fixture rows as its cache. Those files then no longer equal the fixtures, so the next gate run leaves them in place too. Nothing downstream notices: `profile-feed:sync`, `data:validate`, the audits and `build:ci` all passed on leftover fixture caches, and the built `status.json` said mode "fixture". Two gate runs at once would also share `.tmp/visual-gate/live-data` with no lock.
+  Evidence: eighth drain review, 2026-09-23. A simulated kill against a mocked GitHub left 9 of 17 release rows and all 16 README entries as fixture rows, and the next gate run restored 2 files. `scripts/visual-gate.mjs:9-11,99`, `scripts/fetch-stars.mjs:375,499-516`.
+  Touches: `scripts/visual-gate.mjs`, `scripts/refresh-and-deploy.mjs`, the data checks `deploy:preflight` runs, `test/visual-gate.test.mjs`.
+  Acceptance: `_etags.json` is swapped and restored with the other files, the nightly puts back a killed gate's leftovers before it fetches anything, a second gate run refuses to start while one holds the backup, and a build for deploy refuses data whose `_stats.json` says fixture mode.
+  Complexity: M
+
 ### P2
 
+- [ ] P2: Make the visual gate see a hidden nav or recoloured accents
+  Why: With the nav hidden, or every accent token turned magenta, 0 of 20 comparisons failed. The shots cover only the viewport, and `maxDiffPixelRatio: 0.015` with the default per-pixel threshold of 0.2 lets 9.7% of the pixels change as long as only 1.5% change strongly.
+  Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:503-507`.
+  Touches: `tests/playwright/portfolio-audits.spec.mjs`, the win32 baselines.
+  Acceptance: both mutations fail the gate, and three unchanged runs in a row still pass.
+  Complexity: M
+
+- [ ] P2: Parse the trust settings instead of pattern-matching them
+  Why: The header-contract tests pass configs that reopen the forwarded-address hole: a quoted `header_up "X-Forwarded-For" "{http.request.header.X-Forwarded-For}"`, a `request_header X-Forwarded-For {http.request.header.X-Real-IP}`, ntfy started with `--proxy-forwarded-header X-Real-IP`, and an extra global option such as a `proxy_protocol` listener wrapper, which lets any container on `web` claim the edge's address. The compose network reader misses `web: ~`, `web: null` and `-   web`, and each of those puts the report sink back on `web`.
+  Evidence: eighth drain review, 2026-09-23, each form checked with `caddy adapt` 2.11.4 or `docker compose config`; `test/endpoint-header-contract.test.mjs:136-148,180`.
+  Touches: `test/endpoint-header-contract.test.mjs`.
+  Acceptance: each of those configs fails a test and the committed ones still pass, so the CHANGELOG's "a test fails if either server is told to read the visitor's address from any other header" is true.
+  Complexity: M
+
+- [ ] P2: Say exactly what the error-log filter masks
+  Why: `error regexp` masks the `error` field only. For a handler error, Caddy 2.11.4 puts the error text in `msg`, which a filter encoder can't reach, and live edge entries there carry an unmasked IPv4 (Docker's DNS). No visitor address turned up, but the Caddyfile comment, both CHANGELOGs and /privacy/ say addresses in error text are masked. /privacy/ also says error logs never hold "anything your browser sent", though they keep the method, protocol, host and path, and it gives them no retention period (Docker keeps 3 files of 10 MB per container).
+  Evidence: eighth drain review, 2026-09-23; `errLogValues` in caddyhttp `logging.go:206-222`; `deploy/vps/Caddyfile:36`, `scripts/lib/edge-log-check.mjs:67-68`, `src/pages/privacy.astro:68`.
+  Touches: those files, the ops CHANGELOG line.
+  Acceptance: every claim matches what the filter does, and /privacy/ names what an error entry keeps and for how long.
+  Complexity: S
+
+- [ ] P2: Make the holder test catch a late release, not only a wait for the holder
+  Why: `67daf260` replaced the holder test's 20-second bound with a check that the holder outlives the run. A runner that let go of the output 30 seconds late still passed (32.8 s), which the old bound caught. The check also counts any live pid as the holder, so a reused pid could turn the regression it guards into a pass. That commit's message and the CHANGELOG claim more than it did: the old file failed two runner tests the way the deploy did and two more only by timing out, and preflight still runs a browser audit with fixed timeouts.
+  Evidence: ninth drain review, 2026-09-23. `}, graceMs + 30_000);` in `scripts/refresh-and-deploy.mjs` passed the test.
+  Touches: `test/refresh-and-deploy.test.mjs`, `CHANGELOG.md`.
+  Acceptance: a late release and a missing grace both fail the test, the holder reports its own exit so a reused pid can't pass for it, a slowed run still passes, and the CHANGELOG says only what changed.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Make the CSS output checks cover what they claim
+  Why: css-minify's "lowers only light-dark()" test checks the rest with features every target already supports, so an exclude mask that also lowered nesting, `:dir()` and `:lang()` lists passed all five tests. `css:output:audit` reads only `_assets/*.css` and index.html, so a `light-dark()` in `dist/styles/offline.css` or Pagefind's CSS passes, though the CHANGELOG says the build fails on any. The comment in `minify-css.mjs` says all 50 uses are the accents; most are other tokens.
+  Evidence: eighth drain review, 2026-09-23; `test/css-minify.test.mjs:14-24`, `scripts/audit-css-output.mjs:32-38`, `scripts/lib/minify-css.mjs:13-14`.
+  Touches: those files.
+  Acceptance: a wider exclude mask fails the test, a `light-dark()` planted in any built CSS or HTML fails the audit, and the comment is right.
+  Complexity: S
+
+- [ ] P3: Keep `css:audit` from calling live declarations dead
+  Why: The dead-declaration rule reports the earlier of two `!important` declarations in anonymous `@layer {}` blocks, which browsers apply, folds custom property names to lower case so `--Accent` and `--accent` read as one, and would delete a working fallback across rules such as `-webkit-fill-available` before `stretch`. Nothing in today's source trips it.
+  Evidence: eighth drain review on synthetic CSS, 2026-09-23; `scripts/lib/css-overrides.mjs`.
+  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
+  Acceptance: each of the three cases passes `css:audit`, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Pin the fixture build's layout checks and file four fixes under Fixed
+  Why: The live-card check accepts 1 to 6 cards, though the fixture build it runs on renders exactly 6. The gutter check looks only at `h1`-`h3`, `p`, `li`, `dt`, `dd`, `blockquote` and `figcaption`, while the CHANGELOG says it covers any page text. Four fixes sit under `### Removed`.
+  Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:429-430,468`; `CHANGELOG.md:38-41`.
+  Touches: those files.
+  Acceptance: the card check pins the fixture's 6, the gutter check and its CHANGELOG line agree, and the four entries sit under `### Fixed`.
+  Complexity: S
+
+- [ ] P3: Run the offline-palette and gutter browser checks before a deploy
+  Why: Both run only in `audit:playwright`, which nothing runs on a schedule, so a regression they'd catch ships.
+  Evidence: eighth drain review, 2026-09-23; the `deploy:preflight` chain in `package.json`.
+  Touches: `package.json`, `scripts/visual-gate.mjs` or the preflight chain.
+  Acceptance: `deploy:preflight` runs both checks on the fixture build.
+  Complexity: S
+
+- [ ] P3: Check every logger that writes to the edge container's log
+  Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
+  Evidence: eighth drain review, 2026-09-23; `verifyEdgeLogging` in `scripts/deploy-vps.mjs`.
+  Touches: `scripts/lib/edge-log-check.mjs`, `scripts/deploy-vps.mjs`.
+  Acceptance: the deploy reads the whole `logging.logs` config and fails on any logger other than the site loggers that writes to the container's output unfiltered.
+  Complexity: S
+
+- [ ] P3: Tokenize built HTML the way a browser does in the corner cases
+  Why: `splitHtml` lets `<!-->` and `<!--->` hide the markup after them, counts hosts inside double-escaped script text, nested `<template>`, `<xmp>` and `<noframes>`, and lets a tag opener inside an attribute value swallow the rest of the page. No built page has any of these today.
+  Evidence: eighth drain review, 2026-09-23; `scripts/lib/csp-host-usage.mjs:123-150`.
+  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
+  Acceptance: each case has a test and reads the way the HTML standard's tokenizer reads it.
+  Complexity: S
+
+- [ ] P3: Send `/projects/index.html` to the catalog
+  Why: The per-repo matcher takes `index.html` for a repo name, so `/projects/index.html` answers 302 to `/catalog/?q=index.html`.
+  Evidence: ninth drain review, 2026-09-23.
+  Touches: `deploy/vps/Caddyfile`, `test/retired-urls.test.mjs`, `scripts/smoke-live-site.mjs`.
+  Acceptance: `/projects/index.html` answers 301 to `/catalog/`.
+  Complexity: S
+
+- [ ] P3: Check the preflight's browser audit on a busy PC
+  Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
+  Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.
+  Touches: `playwright.audits.config.mjs`.
+  Acceptance: the audit passes with every process start slowed by 5 s, or its limits change until it does.
+  Complexity: S
 
 ## Research-Driven Additions
 
