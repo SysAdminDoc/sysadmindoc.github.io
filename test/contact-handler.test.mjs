@@ -11,9 +11,11 @@ import {
   NOTIFY_TITLE_MAX_BYTES,
   clientAddress,
   createContactHandler,
+  isNavigation,
   loadConfig,
   notificationFor,
   readToken,
+  returnPath,
   signToken,
   truncateBytes,
 } from '../deploy/vps/contact-handler.mjs';
@@ -585,6 +587,27 @@ test('a browser posting without JavaScript gets a page back, never JSON', async 
     assert.equal(leads.length, 1);
     assert.equal(leads[0].subject, 'Healthcare IT', 'the hidden subject field reaches the stored record');
     assert.equal(leads[0].page, '/healthcare-it/');
+  });
+});
+
+// The URL parser turns a backslash into a slash for http(s), so only a
+// non-special scheme reaches the backslash branch of the guard; the review
+// showed nothing exercised it, nor Sec-Fetch-Mode on its own.
+test('the return path refuses a backslash turn, and Sec-Fetch-Mode alone marks a navigation', async () => {
+  assert.equal(returnPath('foo://evil.example/\\evil.example/x'), '/', 'a path starting /\\ could leave the site');
+  assert.equal(returnPath('foo://evil.example//evil.example/x'), '/');
+  assert.equal(returnPath('https://portfolio.getparkerai.com/ai/'), '/ai/');
+  assert.equal(isNavigation({ 'sec-fetch-mode': 'navigate', accept: '*/*' }), true);
+  assert.equal(isNavigation({ 'sec-fetch-mode': 'cors', accept: '*/*' }), false);
+
+  await withHandler({}, async ({ handler }) => {
+    const response = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: formBody({ name: '', email: 'x@example.test', message: 'long enough text' }), headers: { accept: '*/*', 'sec-fetch-mode': 'navigate', referer: 'foo://evil.example/\\evil.example/x' } }),
+      response,
+    );
+    assert.equal(response.status, 303);
+    assert.equal(response.headers.Location, '/#contact-not-sent');
   });
 });
 
