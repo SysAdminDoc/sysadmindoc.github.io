@@ -253,6 +253,32 @@ function readCatalogDrift() {
   }
 }
 
+// Featured releases with no checksum or attestation, as the preflight's
+// data:summary:deploy recorded them. PROVENANCE_REPORT_ONLY lets that step pass
+// on them, so the run reports them here instead, like catalog drift.
+function readProvenanceDrift() {
+  try {
+    const summaryDir = process.env.DATA_REFRESH_SUMMARY_DIR || 'data-refresh-summary';
+    const summary = JSON.parse(fs.readFileSync(path.join(root, summaryDir, 'summary.json'), 'utf8'));
+    const unsigned = summary?.releaseProvenancePolicy?.unsignedFeaturedDownloadable;
+    return Array.isArray(unsigned) ? unsigned.map((release) => `${release.repo}@${release.tag}`) : [];
+  } catch {
+    return [];
+  }
+}
+
+function driftRecord(uncataloged, unsigned) {
+  return {
+    failedStep: uncataloged.length > 0 ? 'catalog:audit' : 'data:summary:deploy',
+    detail: [
+      uncataloged.length > 0 ? `uncataloged: ${uncataloged.join(', ')}` : '',
+      unsigned.length > 0 ? `featured releases without a checksum or attestation: ${unsigned.join(', ')}` : '',
+    ]
+      .filter(Boolean)
+      .join('; '),
+  };
+}
+
 function readFreshness() {
   try {
     const stats = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_stats.json'), 'utf8'));
@@ -276,6 +302,8 @@ async function main() {
       ...process.env,
       ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}),
       CATALOG_AUDIT_REPORT_ONLY: '1',
+      // Same treatment for an unsigned featured release in another repo.
+      PROVENANCE_REPORT_ONLY: '1',
     };
     if (!githubToken) {
       // Not fatal on its own: the preflight's own gate decides. Surfacing it here
@@ -294,10 +322,14 @@ async function main() {
 
     if (dryRun) {
       const uncataloged = readCatalogDrift();
+      const unsigned = readProvenanceDrift();
       log('DONE  dry run complete; preflight passed and nothing was deployed');
-      if (uncataloged.length > 0) {
-        log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
-        writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
+      if (uncataloged.length > 0 || unsigned.length > 0) {
+        if (uncataloged.length > 0) {
+          log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+        }
+        if (unsigned.length > 0) log(`PROVENANCE ${unsigned.length} featured release(s) without a checksum or attestation: ${unsigned.join(', ')}`);
+        writeStatus('drift', driftRecord(uncataloged, unsigned));
         process.exit(1);
       }
       writeStatus('dry-run');
@@ -315,12 +347,17 @@ async function main() {
 
     const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
     const uncataloged = readCatalogDrift();
-    if (uncataloged.length > 0) {
+    const unsigned = readProvenanceDrift();
+    if (uncataloged.length > 0 || unsigned.length > 0) {
       // The site is fresh and honest about the gap, but somebody still has to
-      // catalog these, so the run reports failure rather than passing quietly.
+      // catalog these or sign those releases, so the run reports failure rather
+      // than passing quietly.
       log(`DONE  deployed in ${elapsed}s`);
-      log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
-      writeStatus('drift', { failedStep: 'catalog:audit', detail: `uncataloged: ${uncataloged.join(', ')}` });
+      if (uncataloged.length > 0) {
+        log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
+      }
+      if (unsigned.length > 0) log(`PROVENANCE ${unsigned.length} featured release(s) without a checksum or attestation: ${unsigned.join(', ')}`);
+      writeStatus('drift', driftRecord(uncataloged, unsigned));
       process.exit(1);
     }
     log(`DONE  deployed in ${elapsed}s`);

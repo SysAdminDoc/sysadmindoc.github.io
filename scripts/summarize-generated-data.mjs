@@ -207,6 +207,11 @@ const unsignedFeaturedDownloadableReleases = Array.isArray(releases)
 const featuredReleaseProvenanceOk =
   !options.failOnUnsignedFeaturedReleases ||
   (featuredRepos.size > 0 && !featuredRepoResult.error && unsignedFeaturedDownloadableReleases.length === 0);
+// The unattended refresh (refresh:deploy) sets this, the way catalog drift is
+// handled: an unsigned release in another repo is reported and fails the run
+// afterwards, but it must not stop the nightly from shipping fresh data. A
+// manual preflight still refuses it.
+const provenanceReportOnly = /^(1|true|yes)$/i.test(process.env.PROVENANCE_REPORT_ONLY ?? '');
 const fetchedAgeHours = ageHours(stats.fetchedAt);
 const fresh = fetchedAgeHours <= options.maxAgeHours;
 const profileProjects = Array.isArray(profileFeed?.projects) ? profileFeed.projects : [];
@@ -413,13 +418,17 @@ const checks = [
     label: `README coverage >= ${PARITY_COVERAGE_THRESHOLD * 100}% of profile-feed projects${fixtureMode ? ' (fixture corpus — skipped)' : ''}`,
     ok: readmesParityOk,
   },
-  {
-    label: `featured downloadable releases have checksum or attestation${options.failOnUnsignedFeaturedReleases ? ' (strict)' : ''}`,
-    ok: featuredReleaseProvenanceOk,
-  },
 ];
+const provenanceCheck = {
+  label: `featured downloadable releases have checksum or attestation${options.failOnUnsignedFeaturedReleases ? (provenanceReportOnly ? ' (strict, report-only)' : ' (strict)') : ''}`,
+  ok: featuredReleaseProvenanceOk,
+};
+checks.push(provenanceCheck);
 
 const failedChecks = checks.filter((check) => !check.ok);
+// What decides the exit code: everything that failed, less a provenance
+// failure the unattended refresh only reports.
+const blockingChecks = failedChecks.filter((check) => !(provenanceReportOnly && check === provenanceCheck));
 const status = failedChecks.length === 0 ? 'fresh' : 'attention-required';
 const generatedDataMode = fixtureMode
   ? 'fixture'
@@ -694,9 +703,14 @@ await Promise.all([
 console.log(markdown);
 
 if (
-  (options.failOnStale && failedChecks.length > 0) ||
-  (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk)
+  (options.failOnStale && blockingChecks.length > 0) ||
+  (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && !provenanceReportOnly)
 ) {
-  console.error(`Generated data summary failed ${failedChecks.length} check(s).`);
+  console.error(`Generated data summary failed ${blockingChecks.length} check(s).`);
   process.exit(1);
+}
+if (options.failOnUnsignedFeaturedReleases && !featuredReleaseProvenanceOk && provenanceReportOnly) {
+  console.warn(
+    `Featured release provenance failed but PROVENANCE_REPORT_ONLY is set, so this run only reports it: ${unsignedFeaturedDownloadableReleases.length} release(s) lack a checksum or attestation.`,
+  );
 }

@@ -36,7 +36,7 @@
     "public-source:audit": "node scripts/audit-public-source-hygiene.mjs",
     "data:summary": "node scripts/summarize-generated-data.mjs",
     "data:summary:strict": "node scripts/summarize-generated-data.mjs --fail-on-stale",
-    "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes",
+    "data:summary:deploy": "node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes --fail-on-unsigned-featured-releases",
     "deploy:status": "node scripts/smoke-live-site.mjs --status-only --retries 1",
     "deploy:preflight": "npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run verify:release-tag && npm run deps:audit -- --strict && npm test && npm run check && npm run build && npm run a11y:audit:browser",
     "verify:signatures": "node scripts/verify-signatures.mjs",

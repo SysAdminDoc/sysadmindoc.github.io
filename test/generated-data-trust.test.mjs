@@ -240,6 +240,19 @@ test('strict generated-data summary fails featured downloadable releases without
   assert.equal(summaryJson.preflight.ready, false);
   assert.equal(summaryJson.provenanceDistribution.unsigned, 1);
   assert.equal(summaryJson.releaseProvenancePolicy.unsignedFeaturedDownloadable.length, 1);
+
+  // The unattended refresh reports the same release and carries on; the
+  // runner fails the run afterwards from summary.json, like catalog drift.
+  const reportOnly = spawnSync(
+    process.execPath,
+    [summaryScript, '--out', 'summary', '--fail-on-unsigned-featured-releases'],
+    { cwd: tmp, encoding: 'utf8', env: { ...process.env, PROVENANCE_REPORT_ONLY: '1' } },
+  );
+  assert.equal(reportOnly.status, 0, reportOnly.stderr);
+  assert.match(reportOnly.stdout, /featured downloadable releases have checksum or attestation \(strict, report-only\)/);
+  assert.match(reportOnly.stderr, /PROVENANCE_REPORT_ONLY is set, so this run only reports it: 1 release\(s\)/);
+  const reported = JSON.parse(await fs.readFile(path.join(tmp, 'summary', 'summary.json'), 'utf8'));
+  assert.equal(reported.releaseProvenancePolicy.unsignedFeaturedDownloadable[0].repo, 'Alpha');
 });
 
 test('deploy preflight script runs strict generated-data gate before tests and build', async () => {
@@ -247,7 +260,7 @@ test('deploy preflight script runs strict generated-data gate before tests and b
 
   assert.equal(
     pkg.scripts['data:summary:deploy'],
-    'node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes',
+    'node scripts/summarize-generated-data.mjs --fail-on-stale --require-token-backed-readmes --fail-on-unsigned-featured-releases',
   );
   assert.match(
     pkg.scripts['deploy:preflight'],

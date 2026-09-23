@@ -116,6 +116,16 @@ test('the unattended refresh runs the catalog audit in report-only mode and stil
   assert.equal(driftExits.length, 2, 'both the dry-run and deploy paths must report drift');
 });
 
+test('the unattended refresh reports unsigned featured releases the same way', async () => {
+  const source = await fs.readFile(path.join(root, 'scripts', 'refresh-and-deploy.mjs'), 'utf8');
+  // The preflight's data:summary:deploy passes on them under this flag, so the
+  // runner has to read summary.json and fail the run itself, on both paths.
+  assert.match(source, /PROVENANCE_REPORT_ONLY: '1'/);
+  assert.match(source, /function readProvenanceDrift\(\)/);
+  assert.equal((source.match(/PROVENANCE \$\{unsigned\.length\}/g) ?? []).length, 2);
+  assert.equal((source.match(/writeStatus\('drift', driftRecord\(uncataloged, unsigned\)\)/g) ?? []).length, 2);
+});
+
 test('the drift artifact is gitignored so a local check never becomes tracked data', async () => {
   const gitignore = await fs.readFile(path.join(root, '.gitignore'), 'utf8');
   assert.match(gitignore, /^src\/data\/_catalog-drift\.json$/m);

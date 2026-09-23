@@ -44,13 +44,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: win32 baselines are regenerated from fixtures for every route, including `/colophon/`, and the Linux baselines are deleted. A fixture-built visual comparison of `/`, `/ai/`, `/healthcare-it/`, `/resume/` and `/catalog/` runs in `deploy:preflight`.
   Complexity: M
 
-- [ ] P2: Move the featured-release provenance check into the deploy gate
-  Why: Its blocker is gone. On 2026-09-22 no featured downloadable release was missing a checksum.
-  Evidence: `node scripts/summarize-generated-data.mjs --fail-on-unsigned-featured-releases` reported "Failing featured downloadable releases: 0"; the item had been parked in Roadmap_Blocked.md because of unsigned ClearCut releases.
-  Touches: `package.json` (`data:summary:deploy`), `scripts/refresh-and-deploy.mjs`, `test/generated-data-trust.test.mjs`.
-  Acceptance: `data:summary:deploy` passes `--fail-on-unsigned-featured-releases`. A planted unsigned featured release fails a manual preflight but only reports during `refresh:deploy`, the way catalog drift does, so another repo's release can't freeze the nightly.
-  Complexity: S
-
 - [ ] P2: Make the CSP report stream readable, and check it every night
   Why: The sink recorded the avatar bug three weeks before anyone noticed, and 260 of its 303 reports can't be classified.
   Evidence: sink aggregates on 2026-09-23 (303 reports since 2026-08-20, 260 of them recorded as `(invalid-url)`); the policy in `src/layouts/Base.astro:75` has no `'report-sample'`.

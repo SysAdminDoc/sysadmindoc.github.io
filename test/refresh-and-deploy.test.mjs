@@ -159,6 +159,52 @@ test('a step that leaves a process holding its output does not hold the run', { 
   assert.doesNotMatch(log, /STOP/);
 });
 
+test('an unsigned featured release still deploys, then fails the run as drift', { timeout: 45_000 }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  // The fake preflight stands in for data:summary:deploy under
+  // PROVENANCE_REPORT_ONLY: it passes, and leaves the release in summary.json.
+  await fs.writeFile(
+    path.join(dir, 'preflight.cjs'),
+    [
+      "const fs = require('node:fs');",
+      "if (process.env.PROVENANCE_REPORT_ONLY !== '1') process.exit(9);",
+      "fs.mkdirSync('data-refresh-summary', { recursive: true });",
+      "fs.writeFileSync('data-refresh-summary/summary.json', JSON.stringify({ releaseProvenancePolicy: { unsignedFeaturedDownloadable: [{ repo: 'Alpha', tag: 'v1.0.0' }] } }));",
+      "fs.writeFileSync('deployed.marker', 'no');",
+    ].join('\n'),
+  );
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node preflight.cjs',
+        'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+      },
+    }),
+  );
+
+  const { exited } = runRunner(dir, {
+    ...process.env,
+    GITHUB_TOKEN: 'test-token',
+    PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10',
+    npm_config_update_notifier: 'false',
+  });
+  assert.equal(await exited, 1, 'the run reports failure');
+  assert.equal(await fs.readFile(path.join(dir, 'deployed.marker'), 'utf8'), 'yes', 'but the deploy went ahead');
+
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.status, 'drift');
+  assert.equal(status.step, 'data:summary:deploy');
+  assert.match(status.detail, /featured releases without a checksum or attestation: Alpha@v1\.0\.0/);
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  assert.match(log, /PROVENANCE 1 featured release\(s\) without a checksum or attestation: Alpha@v1\.0\.0/);
+});
+
 test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {
   const source = await fs.readFile(runner, 'utf8');
   // A gh waiting on a credential store used to hold the run before the running
