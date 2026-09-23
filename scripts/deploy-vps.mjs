@@ -23,6 +23,7 @@ import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { edgeLogExclusionProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
+import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -149,6 +150,17 @@ function verifyEdgeAddress() {
     );
   }
   console.log(`deploy-vps: the edge is on its pinned address, ${EDGE_PROXY_ADDRESS}.`);
+}
+
+// /privacy/ lists what the access log keeps. The filter lives in the shared
+// edge Caddyfile, and a Caddy upgrade can add fields it doesn't know, so the
+// newest entries (the smoke's own requests) are read back from the running
+// edge and checked against that list.
+function verifyAccessLogShape() {
+  const output = captureRemote('docker exec caddy tail -n 20 /var/log/caddy/portfolio.log 2>&1 || true');
+  const problem = accessLogShapeProblem(output);
+  if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  console.log('deploy-vps: the newest access-log entries hold only what /privacy/ names.');
 }
 
 function writeProjectRedirects(distDir) {
@@ -288,6 +300,10 @@ if (process.env.SKIP_SMOKE !== '1') {
     '5',
     '--require-lead-delivery',
   ]);
+  // 6. The smoke's requests are now the newest access-log entries.
+  verifyAccessLogShape();
+} else {
+  console.log('deploy-vps: SKIP_SMOKE=1, so no fresh access-log entries exist to check; the shape check was skipped.');
 }
 
 console.log(`deploy-vps: ${SITE_URL} updated.`);

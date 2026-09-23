@@ -39,16 +39,25 @@ portfolio.getparkerai.com {
 			roll_keep_for 720h
 		}
 		# Only what the traffic report reads and /privacy/ names: no request or
-		# response headers, no TLS details or port, no query string. The user
-		# agent and referrer come back as fields of their own (log_append).
+		# response headers, no TLS details or port, no body size or user id, no
+		# query string on the page or on the referrer. The user agent and
+		# referrer come back as fields of their own (log_append). Caddy 2.11
+		# writes transfer_encoding only for some requests; write_error is newer
+		# than 2.11 and is dropped ahead of an upgrade. deploy-vps reads the
+		# newest entries back and fails on any other field.
 		format filter {
 			wrap json
 			fields {
 				request>headers delete
 				request>tls delete
 				request>remote_port delete
-				resp_headers delete
+				request>transfer_encoding delete
 				request>uri regexp \?.*$ ""
+				bytes_read delete
+				user_id delete
+				resp_headers delete
+				write_error delete
+				referer regexp \?.*$ ""
 			}
 		}
 	}

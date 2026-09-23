@@ -7,6 +7,7 @@ import path from 'node:path';
 import test, { mock } from 'node:test';
 import { DEFAULT_CONFIG as CONTACT_DEFAULTS, createContactHandler, startServer } from '../deploy/vps/contact-handler.mjs';
 import { DEFAULT_CONFIG as CSP_REPORT_DEFAULTS, createReporter } from '../deploy/vps/csp-report-server.mjs';
+import { ACCESS_LOG_FIELDS } from '../scripts/lib/access-log-shape.mjs';
 import {
   ACCESS_LOG_RETENTION_DAYS,
   CSP_REPORT_STORE_MB,
@@ -82,15 +83,32 @@ test('the traffic report the cron runs is the repo copy, and it reads the rolled
 // The edge keeps only what the traffic report reads, and /privacy/ lists that
 // and nothing else. The filter, the fields log_append adds, the report's
 // GoAccess format and the page all have to agree.
+// Every field Caddy 2.11.3 writes to an access entry: zap's own four,
+// LoggableHTTPRequest.MarshalLogObject (modules/caddyhttp/marshalers.go) under
+// `request`, and Server.logRequest (modules/caddyhttp/server.go) at the top
+// level. write_error comes from Caddy's main branch, ahead of an upgrade.
+const CADDY_ACCESS_FIELDS = [
+  'level', 'ts', 'logger', 'msg',
+  'request>remote_ip', 'request>remote_port', 'request>client_ip', 'request>proto', 'request>method', 'request>host',
+  'request>uri', 'request>headers', 'request>transfer_encoding', 'request>tls',
+  'bytes_read', 'user_id', 'duration', 'size', 'status', 'resp_headers', 'write_error',
+];
+
 test('the access log keeps only what the report reads, and the page lists exactly that', async () => {
   const edge = await read('deploy', 'vps', 'caddy-block.txt');
   const block = edge.match(/portfolio\.getparkerai\.com \{[\s\S]*?\n\}/)?.[0] ?? '';
-  for (const field of ['request>headers', 'request>tls', 'request>remote_port', 'resp_headers']) {
-    assert.match(block, new RegExp(`\\b${field} delete\\b`), `${field} is deleted`);
-  }
-  assert.ok(block.includes('request>uri regexp \\?.*$ ""'), 'the query string is dropped');
   const appended = [...block.matchAll(/log_append (\w+) \{http\.request\.header\.([\w-]+)\}/g)].map((match) => `${match[1]}=${match[2]}`).sort();
   assert.deepEqual(appended, ['referer=Referer', 'user_agent=User-Agent']);
+  // Each field Caddy writes is either dropped by the filter or on the list the
+  // deploy checks the live entries against, and never both.
+  const kept = ACCESS_LOG_FIELDS.map((field) => field.replace('.', '>'));
+  for (const field of [...CADDY_ACCESS_FIELDS, 'user_agent', 'referer']) {
+    const deleted = new RegExp(`^\\s*${field} delete\\s*$`, 'm').test(block);
+    assert.ok(deleted !== kept.includes(field), `${field} is ${deleted ? 'both dropped and listed as kept' : 'neither dropped nor listed as kept'}`);
+  }
+  for (const field of kept) assert.ok([...CADDY_ACCESS_FIELDS, 'user_agent', 'referer'].includes(field), `${field} is a field Caddy writes`);
+  assert.ok(block.includes('request>uri regexp \\?.*$ ""'), 'the query string is dropped from the page');
+  assert.ok(block.includes('referer regexp \\?.*$ ""'), 'and from the referrer, where a search on this site put it');
 
   const script = await read('deploy', 'vps', 'analytics-report.sh');
   const format = JSON.parse(script.match(/LOG_FORMAT='([^']+)'/)?.[1] ?? '{}');
@@ -100,8 +118,26 @@ test('the access log keeps only what the report reads, and the page lists exactl
   assert.match(script, /--log-format="\$LOG_FORMAT"/);
 
   const page = await read('src', 'pages', 'privacy.astro');
-  for (const kept of ['your IP address', 'without anything after a question mark', 'user agent', 'the page you came from']) {
-    assert.ok(page.includes(kept), `the page names ${kept}`);
+  // What the page calls each kept field (zap's level, logger name and message
+  // carry nothing about the visitor).
+  const named = {
+    'request.remote_ip': 'your IP address',
+    'request.client_ip': 'your IP address',
+    'request.host': "this site's name",
+    'request.uri': 'the page, without anything after a question mark',
+    ts: 'the time',
+    'request.method': 'the request method and protocol',
+    'request.proto': 'the request method and protocol',
+    status: 'the status, the size and the time it took',
+    size: 'the status, the size and the time it took',
+    duration: 'the status, the size and the time it took',
+    user_agent: 'user agent',
+    referer: 'the page you came from, also cut off at the question mark',
+  };
+  for (const field of ACCESS_LOG_FIELDS) {
+    if (['level', 'logger', 'msg'].includes(field)) continue;
+    assert.ok(named[field], `${field} has a name on the page`);
+    assert.ok(page.includes(named[field]), `the page names ${field} as "${named[field]}"`);
   }
   assert.doesNotMatch(page, /headers your browser sent|IP address and port|how your browser connected/, 'the page claims nothing the log dropped');
 });
