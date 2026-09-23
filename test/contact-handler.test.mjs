@@ -390,6 +390,32 @@ test('a lead that runs out of attempts says so once and gets a fresh round after
   });
 });
 
+test('a lead whose text holds U+2028 or U+2029 survives a restart', async () => {
+  // FileHandle.readLines, like readline, breaks lines at both characters, and
+  // JSON.stringify leaves them raw, so such a lead used to split in two and
+  // vanish from the retry queue at the next restart.
+  await withHandler({ ntfyState: { fail: true } }, async ({ handler, storePath }) => {
+    const pasted = 'Pasted from a spec:\u2028we need PACS help\u2029soon';
+    await handler.handleRequest(requestMock({ body: formBody({ name: 'Pat Lee', email: 'pat@example.test', message: pasted }) }), responseMock());
+    await handler.idle();
+    assert.doesNotMatch(await fs.readFile(storePath, 'utf8'), /[\u2028\u2029]/, 'the store holds them escaped');
+
+    // A record written before the escaping, with the characters raw, loads too.
+    const older = JSON.stringify({ type: 'lead', id: '20260921-a2028b', receivedAt: NOW.toISOString(), name: 'Older Record', email: 'o@example.test', message: 'raw\u2028separators\u2029inside', subject: '', page: '/', status: 'pending' });
+    assert.match(older, /\u2028/);
+    await fs.appendFile(storePath, `${older}\n`);
+
+    const ntfy = fakeNtfy();
+    const restarted = restartedHandler(storePath, ntfy);
+    assert.equal(await restarted.restorePending(), 2);
+    assert.equal(await restarted.retryPending(), 2);
+    await restarted.idle();
+    const sent = ntfy.calls.map((call) => call.body.message);
+    assert.ok(sent.some((message) => message.endsWith(pasted)), 'the pasted text arrives whole');
+    assert.ok(sent.some((message) => message.endsWith('raw\u2028separators\u2029inside')));
+  });
+});
+
 test('names are cut by character and a fast device clock does not block a real visitor', async () => {
   await withHandler({}, async ({ handler, storePath }) => {
     const emojiName = `A${'😀'.repeat(150)}`;

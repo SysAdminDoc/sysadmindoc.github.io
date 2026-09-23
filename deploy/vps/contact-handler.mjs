@@ -354,6 +354,33 @@ function parseRecords(line) {
   }
 }
 
+/**
+ * One store line. U+2028 and U+2029 are escaped too: JSON.stringify leaves
+ * them raw inside strings, and anything that treats them as line breaks
+ * (readline among them) would cut the record in two.
+ */
+function serializeRecord(entry) {
+  return JSON.stringify(entry).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+}
+
+/**
+ * The store's lines, split on \n only. readline and FileHandle.readLines also
+ * break at U+2028 and U+2029, which records written before they were escaped
+ * can still hold raw, so those readers would lose such a lead at restart.
+ */
+async function* storeLines(handle) {
+  let rest = '';
+  for await (const chunk of handle.createReadStream({ encoding: 'utf8', autoClose: false, start: 0 })) {
+    rest += chunk;
+    let index;
+    while ((index = rest.indexOf('\n')) >= 0) {
+      yield rest.slice(0, index);
+      rest = rest.slice(index + 1);
+    }
+  }
+  if (rest) yield rest;
+}
+
 /** Append-only lead store: one `lead` entry per submission, then `status` entries. */
 export function createLeadStore(storePath, fileSystem = fs) {
   let queue = Promise.resolve();
@@ -365,7 +392,7 @@ export function createLeadStore(storePath, fileSystem = fs) {
 
   function append(entry) {
     const task = queue.catch(() => undefined).then(async () => {
-      const line = `${startOnFreshLine ? '\n' : ''}${JSON.stringify(entry)}\n`;
+      const line = `${startOnFreshLine ? '\n' : ''}${serializeRecord(entry)}\n`;
       await fileSystem.mkdir(path.dirname(storePath), { recursive: true });
       try {
         await fileSystem.appendFile(storePath, line, { encoding: 'utf8', mode: 0o600, flush: true });
@@ -400,7 +427,7 @@ export function createLeadStore(storePath, fileSystem = fs) {
         await handle.read(last, 0, 1, size - 1);
         if (last[0] !== 0x0a) startOnFreshLine = true;
       }
-      for await (const line of handle.readLines({ encoding: 'utf8', autoClose: false, start: 0 })) {
+      for await (const line of storeLines(handle)) {
         if (!line.trim()) continue;
         for (const entry of parseRecords(line)) {
           if (entry?.type === 'lead' && typeof entry.id === 'string') {
