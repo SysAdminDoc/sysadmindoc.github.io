@@ -60,7 +60,11 @@ function sha256Csp(value: string) {
 }
 
 const isDev = import.meta.env.DEV;
-const scriptSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
+// Pagefind compiles its WebAssembly inside /pagefind/pagefind-worker.js, and a
+// worker's CSP is the response header deploy-vps.mjs stamps from this policy.
+// Without 'wasm-unsafe-eval' (WebAssembly compilation only, not JS eval) every
+// live search hung at "Searching" from the 2026-08-20 header rollout onward.
+const scriptSrc = isDev ? "'self' 'unsafe-inline' 'wasm-unsafe-eval'" : "'self' 'wasm-unsafe-eval'";
 const styleSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
 const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"

@@ -21,13 +21,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P1
 
-- [ ] P1: Stop the service worker from intercepting cross-origin requests, and run the browser suites with production headers
-  Why: Returning visitors get a broken homepage photo. The worker answers the avatar with a synthetic 503 after its own fetch is refused by `connect-src`. Local tests can't see this, because the preview sends no CSP header and a worker's CSP comes only from its own script's response headers.
-  Evidence: headless run 2026-09-23 (200 on the first visit, then 503 `fromServiceWorker` and `naturalWidth` 0 on reload); 19 CSP reports from `/sw.js` since 2026-09-01; `public/sw.js:162-184`; `/sw.js` is served with `connect-src 'self' https://api.github.com`; `test/offline-fallback.test.mjs:507-642` covers only the `api.github.com` branch.
-  Touches: `public/sw.js`, `test/offline-fallback.test.mjs`, `tests/playwright/preview-server.mjs` (send the built CSP as a response header the way `scripts/deploy-vps.mjs` stamps it), `tests/playwright/sw-lifecycle.spec.mjs`.
-  Acceptance: The fetch handler returns without calling `respondWith` for every cross-origin request, and the dead `api.github.com`/`opengraph` branch is gone. A Playwright spec loads `/` twice under the worker with production headers and asserts every image has `naturalWidth > 0` and nothing returns 503. After the next deploy, no new `/sw.js` CSP reports arrive.
-  Complexity: S
-
 - [ ] P1: Serve the avatar from this origin and cut the CSP to what the build uses
   Why: The hero avatar is the site's last third-party request. The policy still allows five unused image hosts plus the GitHub API and YouTube frames, and every page preconnects to GitHub for nothing.
   Evidence: `src/layouts/Base.astro:75` and `:175-177`; `src/pages/index.astro:11`, `:96`; on 2026-09-22 `dist/` referenced one third-party media host and had zero iframes, and no script called `api.github.com`.

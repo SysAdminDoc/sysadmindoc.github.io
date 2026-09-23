@@ -29,29 +29,6 @@ async function cachedOrOffline(request, fallbackPath) {
     return offlineResponse();
 }
 
-const CROSS_ORIGIN_TTL = 24 * 60 * 60 * 1000; // 24h — bound staleness of cached API/CDN responses.
-
-// Cache a cross-origin response stamped with the time it was stored.
-async function putTimestamped(request, response) {
-    try {
-        const cache = await caches.open(CACHE);
-        const headers = new Headers(response.headers);
-        headers.set('sw-cached-at', String(Date.now()));
-        const body = await response.blob();
-        await cache.put(request, new Response(body, { status: response.status, statusText: response.statusText, headers }));
-    } catch (e) { /* ignore cache write failures */ }
-}
-
-// Serve a cached cross-origin response only if it is within the TTL.
-async function freshCachedOrOffline(request) {
-    const cached = await caches.match(request);
-    if (cached) {
-        const at = Number(cached.headers.get('sw-cached-at') || 0);
-        if (Number.isFinite(at) && at > 0 && Date.now() - at < CROSS_ORIGIN_TTL) return cached;
-    }
-    return offlineResponse();
-}
-
 async function resilientPrecache(cache, urls) {
     const failures = [];
     await Promise.all(urls.map(async (url) => {
@@ -132,10 +109,14 @@ self.addEventListener('message', (e) => {
 self.addEventListener('fetch', (e) => {
     if (e.request.method !== 'GET') return;
     const url = new URL(e.request.url);
-    const sameOrigin = url.origin === self.location.origin;
+    // Cross-origin requests are the browser's to make. The worker's own fetch()
+    // runs under the CSP delivered with /sw.js, whose connect-src lists no image
+    // hosts, so answering them here turned the cross-origin homepage avatar into
+    // a synthetic 503 for every returning visitor from at least 2026-09-01.
+    if (url.origin !== self.location.origin) return;
     const isNavigation = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
 
-    if (isNavigation && sameOrigin) {
+    if (isNavigation) {
         // Network-first navigation keeps deploys truthful while navigation
         // preload avoids serial service-worker startup latency. Cached pages and
         // the dedicated offline shell remain available when the network fails.
@@ -143,27 +124,11 @@ self.addEventListener('fetch', (e) => {
         return;
     }
 
-    // Cross-origin API/CDN: network-first with cache fallback.
-    // Cache successful responses so offline fallback actually works.
-    if (url.hostname === 'api.github.com' || url.hostname === 'opengraph.githubassets.com') {
-        e.respondWith(
-            timedFetch(e.request)
-                .then((response) => {
-                    // Extend the event lifetime so the timestamped cache write is not
-                    // terminated after the response is returned to the page.
-                    if (response.ok) e.waitUntil(putTimestamped(e.request, response.clone()));
-                    return response;
-                })
-                .catch(() => freshCachedOrOffline(e.request))
-        );
-        return;
-    }
-
     e.respondWith(
         caches.match(e.request).then((cached) => {
             const fetchPromise = timedFetch(e.request)
                 .then(async (response) => {
-                    if (response.ok && sameOrigin) {
+                    if (response.ok) {
                         const clone = response.clone();
                         try {
                             const c = await caches.open(CACHE);

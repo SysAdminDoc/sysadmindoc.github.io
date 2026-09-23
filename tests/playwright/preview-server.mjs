@@ -51,7 +51,11 @@ export default async function globalSetup(config) {
   // A leftover daemon from an earlier run serves an older dist/, so a stale
   // server would quietly audit the wrong build. Always replace it.
   astroPreview(['stop'], { ignoreErrors: true });
-  astroPreview(['--background', '--host', hostname, '--port', port]);
+  // Serve the production CSP response header (astro.config.mjs), so the
+  // service worker runs under the policy the live /sw.js is delivered with.
+  astroPreview(['--background', '--host', hostname, '--port', port], {
+    env: { PORTFOLIO_PREVIEW_PRODUCTION_HEADERS: '1' },
+  });
 
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {

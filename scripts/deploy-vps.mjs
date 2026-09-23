@@ -18,6 +18,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
+import { buildCspHeaderValue } from './lib/csp-header.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -119,42 +120,6 @@ function verifyCaddyVersion() {
     );
   }
   console.log(`deploy-vps: portfolio-app is running the pinned Caddy ${running}.`);
-}
-
-function decodeHtmlAttribute(value) {
-  return value
-    .replaceAll('&amp;', '&')
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>');
-}
-
-function buildCspHeaderValue(distDir) {
-  const html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
-  const cspMeta = html
-    .match(/<meta\b[^>]*>/gi)
-    ?.find((tag) => /\bhttp-equiv\s*=\s*(["'])Content-Security-Policy\1/i.test(tag));
-  const contentMatch = cspMeta?.match(/\bcontent\s*=\s*(["'])([\s\S]*?)\1/i);
-  if (!contentMatch?.[2]) {
-    throw new Error('deploy-vps: dist/index.html is missing the production CSP meta policy.');
-  }
-  const policy = decodeHtmlAttribute(contentMatch[2]).replace(/[\r\n]+/g, ' ').trim();
-  if (!policy.includes('report-to csp-endpoint')) {
-    throw new Error('deploy-vps: built CSP policy is missing report-to csp-endpoint.');
-  }
-  if (policy.includes('"') || policy.includes('`') || policy.includes('\n')) {
-    throw new Error('deploy-vps: built CSP policy contains unsupported env-file characters.');
-  }
-  // frame-ancestors and report-uri are header-only directives: a <meta> policy
-  // ignores both, which is why the meta source policy carries neither and the
-  // edge has been relying on X-Frame-Options alone for clickjacking. The header
-  // form can carry frame-ancestors, which supersedes X-Frame-Options in every
-  // browser that supports CSP, so it is added here rather than to the meta tag.
-  if (policy.includes('frame-ancestors')) {
-    throw new Error('deploy-vps: the meta policy already declares frame-ancestors, which browsers ignore there.');
-  }
-  return `${policy}; frame-ancestors 'none'; report-uri /csp-report`;
 }
 
 function writeComposeEnvFile(distDir) {

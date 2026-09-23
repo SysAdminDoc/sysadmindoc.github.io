@@ -1,11 +1,23 @@
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { reviewedInteriorPages } from './src/data/page-freshness.ts';
 import { SITE_URL } from './site.config.mjs';
+import { buildCspHeaderValue } from './scripts/lib/csp-header.mjs';
 
 const reviewedDateByRoute = new Map(
   reviewedInteriorPages.map((page) => [page.route, page.lastReviewed]),
 );
+
+// The Playwright preview sends the CSP response header the live server sends
+// (tests/playwright/preview-server.mjs sets the flag). Without it the service
+// worker runs under no policy at all locally, because a worker's CSP comes only
+// from its own script's response headers. Only the preview asks: a build loads
+// this file before dist/ exists.
+const productionPreviewHeaders = process.env.PORTFOLIO_PREVIEW_PRODUCTION_HEADERS === '1'
+  ? { 'Content-Security-Policy': buildCspHeaderValue(fileURLToPath(new URL('./dist/', import.meta.url))) }
+  : null;
 
 export default defineConfig({
   // Astro 7.2 hashes each route's module graph and reuses unchanged prerendered
@@ -49,4 +61,5 @@ export default defineConfig({
     },
   },
   compressHTML: true,
+  ...(productionPreviewHeaders && { server: { headers: productionPreviewHeaders } }),
 });

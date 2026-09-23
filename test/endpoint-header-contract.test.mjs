@@ -84,14 +84,19 @@ test('CSP reporting stays first-party, bounded, and live-smoke gated', async () 
 
 test('deploy extracts CSP content without treating policy apostrophes as delimiters', async () => {
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+  // The builder moved to a shared module so the Playwright preview can send the
+  // same header; the deploy must still stamp its value.
+  const builder = await fs.readFile(path.join(root, 'scripts', 'lib', 'csp-header.mjs'), 'utf8');
 
-  assert.ok(deploy.includes('.match(/<meta\\b[^>]*>/gi)'));
-  assert.ok(deploy.includes(".match(/\\bcontent\\s*=\\s*([\"'])([\\s\\S]*?)\\1/i)"));
-  assert.ok(deploy.includes('decodeHtmlAttribute(contentMatch[2])'));
+  assert.match(deploy, /import \{ buildCspHeaderValue \} from '\.\/lib\/csp-header\.mjs';/);
+  assert.match(deploy, /const policy = buildCspHeaderValue\(distDir\);/);
+  assert.ok(builder.includes('.match(/<meta\\b[^>]*>/gi)'));
+  assert.ok(builder.includes(".match(/\\bcontent\\s*=\\s*([\"'])([\\s\\S]*?)\\1/i)"));
+  assert.ok(builder.includes('decodeHtmlAttribute(contentMatch[2])'));
 });
 
 test('the deployed CSP header carries frame-ancestors, which a meta policy cannot', async () => {
-  const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+  const deploy = await fs.readFile(path.join(root, 'scripts', 'lib', 'csp-header.mjs'), 'utf8');
   const smoke = await fs.readFile(path.join(root, 'scripts', 'smoke-live-site.mjs'), 'utf8');
   const base = await fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8');
 

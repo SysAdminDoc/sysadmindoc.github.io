@@ -8,12 +8,14 @@ import process from 'node:process';
 
 export const ownedMarkerPath = path.join(process.cwd(), '.tmp', 'playwright-owns-preview');
 
-export function astroPreview(args, { ignoreErrors = false } = {}) {
+export function astroPreview(args, { ignoreErrors = false, env = {} } = {}) {
   try {
     execFileSync('npx', ['astro', 'preview', ...args], {
       stdio: 'pipe',
       shell: process.platform === 'win32',
       timeout: 60_000,
+      // The background daemon inherits this environment (astro/dist/cli/server.js).
+      env: { ...process.env, ...env },
     });
     return true;
   } catch (error) {

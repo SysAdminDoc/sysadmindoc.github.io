@@ -29,11 +29,10 @@ test('service worker exposes a local offline navigation fallback', async () => {
   assert.match(sw, /enableNavigationPreload\(\)/);
   assert.match(sw, /navigationPreload\.enable\(\)/);
   assert.match(sw, /handleNavigation\(e\.request, e\.preloadResponse\)/);
-  assert.match(sw, /e\.waitUntil\(putTimestamped\(e\.request, response\.clone\(\)\)\)/);
   assert.match(sw, /e\.waitUntil\(fetchPromise\.catch\(\(\) => \{\}\)\)/);
-  assert.match(sw, /headers\.set\('sw-cached-at', String\(Date\.now\(\)\)\)/);
-  assert.match(sw, /Number\.isFinite\(at\) && at > 0 && Date\.now\(\) - at < CROSS_ORIGIN_TTL/);
-  assert.doesNotMatch(sw, /if \(!at \|\| Date\.now\(\) - at < CROSS_ORIGIN_TTL\) return cached/);
+  // The worker must not answer cross-origin requests at all (see the behavioural test below).
+  assert.match(sw, /if \(url\.origin !== self\.location\.origin\) return;/);
+  assert.doesNotMatch(sw, /putTimestamped|CROSS_ORIGIN_TTL|api\.github\.com/);
 
   assert.match(html, /<title>Offline \| SysAdminDoc Portfolio<\/title>/);
   assert.match(html, /Content-Security-Policy/);
@@ -504,24 +503,19 @@ test('service worker navigation handler falls back offline when preload and fetc
   assert.equal(await response.text(), 'offline shell');
 });
 
-test('cross-origin API fetch caches a timestamped response on success', async () => {
+// The worker used to answer cross-origin requests itself. Its fetch() runs under
+// the CSP delivered with /sw.js, whose connect-src lists no image hosts, so on
+// the live site the homepage avatar came back as a synthetic 503 for every
+// returning visitor. Cross-origin requests now pass through to the browser.
+test('service worker leaves every cross-origin request to the browser', async () => {
   const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
   const listeners = new Map();
-  const cacheStore = new Map();
-  const script = sw.replace(
-    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
-    "const PRECACHE = [];",
-  );
+  let workerFetches = 0;
+  const script = sw.replace('const PRECACHE = __PRECACHE_PLACEHOLDER__;', 'const PRECACHE = [];');
   const sandbox = {
     console: { warn: () => {} },
     caches: {
-      open: async () => ({
-        add: async () => {},
-        put: async (req, res) => {
-          const url = typeof req === 'string' ? req : req.url;
-          cacheStore.set(url, res);
-        },
-      }),
+      open: async () => ({ add: async () => {}, put: async () => {} }),
       keys: async () => [],
       delete: async () => true,
       match: async () => null,
@@ -536,7 +530,6 @@ test('cross-origin API fetch caches a timestamped response on success', async ()
     setTimeout,
     clearTimeout,
     AbortController,
-    Blob,
     Date,
     Error,
     Headers,
@@ -545,155 +538,37 @@ test('cross-origin API fetch caches a timestamped response on success', async ()
     Request,
     Response,
     URL,
-    fetch: async () => new Response('{"stars":42}', {
-      status: 200,
-      statusText: 'OK',
-      headers: { 'Content-Type': 'application/json' },
-    }),
+    fetch: async () => {
+      workerFetches += 1;
+      return new Response('unexpected', { status: 200 });
+    },
   };
 
   vm.runInNewContext(script, sandbox);
-  let activatePromise;
-  listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
-  await activatePromise;
+  const crossOrigin = [
+    new Request('https://avatars.githubusercontent.com/u/54586742?v=4'),
+    new Request('https://api.github.com/repos/SysAdminDoc/sysadmindoc.github.io'),
+    new Request('https://opengraph.githubassets.com/1/SysAdminDoc/x'),
+    new Request('https://www.youtube-nocookie.com/', { headers: { Accept: 'text/html' } }),
+  ];
+  for (const request of crossOrigin) {
+    let answered = false;
+    listeners.get('fetch')({
+      request,
+      preloadResponse: Promise.resolve(undefined),
+      respondWith: () => { answered = true; },
+      waitUntil: () => {},
+    });
+    assert.equal(answered, false, `the worker must not answer ${request.url}`);
+  }
+  assert.equal(workerFetches, 0, 'the worker must not fetch cross-origin URLs itself');
 
-  /** @type {Promise<Response> | undefined} */
-  let responsePromise;
-  const waitUntilPromises = [];
-  const request = new Request('https://api.github.com/repos/test/test');
+  // A same-origin asset is still served through the cache path.
+  let answeredSameOrigin = false;
   listeners.get('fetch')({
-    request,
-    respondWith: (p) => { responsePromise = p; },
-    waitUntil: (p) => { waitUntilPromises.push(p); },
-  });
-
-  const response = await responsePromise;
-  assert.ok(response);
-  assert.equal(response.status, 200);
-  assert.equal(await response.text(), '{"stars":42}');
-  await Promise.all(waitUntilPromises);
-
-  const cachedResponse = cacheStore.get(request.url);
-  assert.ok(cachedResponse, 'response should be cached');
-  const cachedAt = Number(cachedResponse.headers.get('sw-cached-at'));
-  assert.ok(Number.isFinite(cachedAt) && cachedAt > 0, 'sw-cached-at should be a positive timestamp');
-  assert.ok(Date.now() - cachedAt < 5000, 'sw-cached-at should be recent');
-});
-
-test('cross-origin API fetch serves a fresh cached response when network fails', async () => {
-  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
-  const listeners = new Map();
-  const freshTimestamp = String(Date.now() - 1000);
-  const script = sw.replace(
-    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
-    "const PRECACHE = [];",
-  );
-  const sandbox = {
-    console: { warn: () => {} },
-    caches: {
-      open: async () => ({ add: async () => {} }),
-      keys: async () => [],
-      delete: async () => true,
-      match: async () => new Response('{"cached":true}', {
-        status: 200,
-        headers: { 'sw-cached-at': freshTimestamp },
-      }),
-    },
-    self: {
-      location: { origin: 'https://sysadmindoc.example' },
-      registration: { navigationPreload: { enable: async () => {} } },
-      clients: { claim: async () => {} },
-      skipWaiting: () => {},
-      addEventListener: (type, handler) => listeners.set(type, handler),
-    },
-    setTimeout,
-    clearTimeout,
-    AbortController,
-    Date,
-    Error,
-    Headers,
-    Number,
-    Promise,
-    Request,
-    Response,
-    URL,
-    fetch: async () => { throw new Error('network down'); },
-  };
-
-  vm.runInNewContext(script, sandbox);
-  let activatePromise;
-  listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
-  await activatePromise;
-
-  /** @type {Promise<Response> | undefined} */
-  let responsePromise;
-  listeners.get('fetch')({
-    request: new Request('https://api.github.com/repos/test/test'),
-    respondWith: (p) => { responsePromise = p; },
+    request: new Request('https://sysadmindoc.example/_assets/app.css'),
+    respondWith: (promise) => { answeredSameOrigin = true; promise.catch(() => {}); },
     waitUntil: () => {},
   });
-
-  const response = await responsePromise;
-  assert.ok(response);
-  assert.equal(response.status, 200);
-  assert.equal(await response.text(), '{"cached":true}');
-});
-
-test('cross-origin API fetch returns offline when cache is stale and network fails', async () => {
-  const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
-  const listeners = new Map();
-  const staleTimestamp = String(Date.now() - 25 * 60 * 60 * 1000);
-  const script = sw.replace(
-    'const PRECACHE = __PRECACHE_PLACEHOLDER__;',
-    "const PRECACHE = [];",
-  );
-  const sandbox = {
-    console: { warn: () => {} },
-    caches: {
-      open: async () => ({ add: async () => {} }),
-      keys: async () => [],
-      delete: async () => true,
-      match: async () => new Response('{"stale":true}', {
-        status: 200,
-        headers: { 'sw-cached-at': staleTimestamp },
-      }),
-    },
-    self: {
-      location: { origin: 'https://sysadmindoc.example' },
-      registration: { navigationPreload: { enable: async () => {} } },
-      clients: { claim: async () => {} },
-      skipWaiting: () => {},
-      addEventListener: (type, handler) => listeners.set(type, handler),
-    },
-    setTimeout,
-    clearTimeout,
-    AbortController,
-    Date,
-    Error,
-    Headers,
-    Number,
-    Promise,
-    Request,
-    Response,
-    URL,
-    fetch: async () => { throw new Error('network down'); },
-  };
-
-  vm.runInNewContext(script, sandbox);
-  let activatePromise;
-  listeners.get('activate')({ waitUntil: (p) => { activatePromise = p; } });
-  await activatePromise;
-
-  /** @type {Promise<Response> | undefined} */
-  let responsePromise;
-  listeners.get('fetch')({
-    request: new Request('https://api.github.com/repos/test/test'),
-    respondWith: (p) => { responsePromise = p; },
-    waitUntil: () => {},
-  });
-
-  const response = await responsePromise;
-  assert.ok(response);
-  assert.equal(response.status, 503);
-  assert.equal(await response.text(), 'Offline');
+  assert.equal(answeredSameOrigin, true);
 });

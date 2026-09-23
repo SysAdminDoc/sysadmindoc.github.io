@@ -145,3 +145,41 @@ test('no console errors during service worker lifecycle', async ({ page }) => {
   const swErrors = errors.filter((e) => !e.includes('net::ERR_') && !e.includes('Failed to fetch'));
   expect(swErrors).toEqual([]);
 });
+
+// The live /sw.js is served with the production CSP, and a worker's own fetch()
+// obeys only that header. When the worker answered cross-origin requests itself,
+// connect-src refused its fetch of the homepage avatar and every visit after the
+// first got a synthetic 503 in place of the photo.
+test('a returning visit under the worker loads every image with the production CSP header', async ({ page, context }) => {
+  await context.route('https://avatars.githubusercontent.com/**', (route) =>
+    route.fulfill({ path: 'public/icon-192.png', contentType: 'image/png' }),
+  );
+
+  const worker = await page.request.get('/sw.js');
+  expect(worker.headers()['content-security-policy'], 'the preview must send the production CSP header').toMatch(
+    /connect-src [^;]+;.*frame-ancestors 'none'/,
+  );
+
+  await page.goto('/', { waitUntil: 'load' });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+  const problems = [];
+  page.on('response', (response) => {
+    if (response.status() === 503) problems.push(`503 ${response.url()}`);
+    if (response.fromServiceWorker() && new URL(response.url()).origin !== new URL(page.url()).origin) {
+      problems.push(`the worker answered ${response.url()}`);
+    }
+  });
+  await page.reload({ waitUntil: 'load' });
+
+  const images = await page.evaluate(async () => {
+    const all = Array.from(document.images);
+    for (const img of all) img.loading = 'eager';
+    await Promise.all(all.map((img) => img.decode().catch(() => {})));
+    return all.map((img) => ({ src: img.currentSrc || img.src, naturalWidth: img.naturalWidth }));
+  });
+  expect(images.length).toBeGreaterThan(0);
+  expect(images.filter((img) => img.naturalWidth === 0)).toEqual([]);
+  expect(problems).toEqual([]);
+});
