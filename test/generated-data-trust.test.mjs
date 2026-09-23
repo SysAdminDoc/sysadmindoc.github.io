@@ -358,6 +358,26 @@ test('fixture generated-data summary labels reduced corpus without blocking advi
   assert.match(result.stdout, /README coverage >= 80% of profile-feed projects \(fixture corpus — skipped\)/);
 });
 
+test('a strict summary refuses the committed fixtures even when they look fresh', async () => {
+  // A killed visual-gate run leaves them in src/data. The fixtures on disk are
+  // months old, which the age check catches, but nothing kept them that way.
+  const tmp = await makeTempDataDir();
+  const now = new Date().toISOString();
+  const fixtures = path.join(root, 'src', 'data', 'fixtures', 'generated');
+  for (const name of await fs.readdir(fixtures)) {
+    const value = JSON.parse(await fs.readFile(path.join(fixtures, name), 'utf8'));
+    for (const key of ['fetchedAt', 'generatedAt', 'cachedAt']) if (typeof value?.[key] === 'string') value[key] = now;
+    await writeJson(tmp, name, value);
+  }
+
+  const result = spawnSync(process.execPath, [summaryScript, '--out', 'summary', '--fail-on-stale'], { cwd: tmp, encoding: 'utf8', env: strictEnv() });
+  assert.equal(result.status, 1);
+  const summaryJson = JSON.parse(await fs.readFile(path.join(tmp, 'summary', 'summary.json'), 'utf8'));
+  const fixtureCheck = summaryJson.checks.find((check) => check.label === 'generated data is live, not the committed test fixtures');
+  assert.equal(fixtureCheck?.ok, false);
+  assert.equal(summaryJson.checks.find((check) => check.label.startsWith('generated data age'))?.ok, true, 'it was not the age that failed it');
+});
+
 test('strict semantic audit failure explains credentialed refresh and fixture escape hatch', async () => {
   const tmp = await makeTempDataDir();
   await fs.writeFile(

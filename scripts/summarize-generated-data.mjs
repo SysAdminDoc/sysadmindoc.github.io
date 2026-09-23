@@ -367,6 +367,12 @@ const checks = [
     ok: fresh,
   },
   {
+    // A visual-gate run killed mid-swap leaves them in src/data
+    // (scripts/visual-gate.mjs). Only an advisory run may pass over them.
+    label: 'generated data is live, not the committed test fixtures',
+    ok: profileSource !== 'fixture' && readmeRefreshRaw?.source !== 'fixture',
+  },
+  {
     label: 'profile feed cache exists',
     ok: Boolean(profileFeed),
   },

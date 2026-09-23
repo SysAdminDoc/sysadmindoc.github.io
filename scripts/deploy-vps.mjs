@@ -24,6 +24,7 @@ import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
+import { builtDataProblem } from './lib/built-data-mode.mjs';
 import { smokeReportProblem } from './lib/csp-report-summary.mjs';
 import { vpsSshOptions } from './lib/vps-ssh.mjs';
 
@@ -198,6 +199,12 @@ if (process.env.SKIP_BUILD !== '1') {
 const distDir = path.join(root, 'dist');
 if (!fs.existsSync(path.join(distDir, 'index.html'))) {
   console.error('deploy-vps: dist/index.html not found — build first or unset SKIP_BUILD.');
+  process.exit(1);
+}
+// Whatever path got here, a build from the committed test fixtures never ships.
+const builtData = builtDataProblem(fs.existsSync(path.join(distDir, 'status.json')) ? fs.readFileSync(path.join(distDir, 'status.json'), 'utf8') : '');
+if (builtData) {
+  console.error(`deploy-vps: ${builtData}.`);
   process.exit(1);
 }
 const cspEnvFile = writeComposeEnvFile(distDir);

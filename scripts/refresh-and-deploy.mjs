@@ -31,6 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
+import { restoreKilledRun } from './visual-gate.mjs';
 
 const root = process.cwd();
 const tmpDir = path.join(root, '.tmp');
@@ -249,6 +250,22 @@ function writeStatus(status, { failedStep = null, detail = null } = {}) {
   }
 }
 
+// A visual-gate run killed mid-swap leaves the committed fixtures in src/data,
+// and fetch-stars on top of them keeps a fixture row wherever GitHub answers
+// 304, which the deploy would then ship. Put the live files back first, under
+// the gate's lock; a gate still running elsewhere after 20 minutes stops the run
+// before anything is fetched.
+async function restoreKilledGateRun() {
+  try {
+    const restored = await restoreKilledRun({ log: (message) => log(`DATA  ${message}`) });
+    if (restored.length > 0) log(`DATA  put back ${restored.length} live data file(s) that a killed visual-gate run left as fixtures`);
+  } catch (error) {
+    const failure = new Error('visual:restore');
+    failure.cause = error instanceof Error ? error.message : String(error);
+    throw failure;
+  }
+}
+
 function readCatalogDrift() {
   try {
     const drift = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_catalog-drift.json'), 'utf8'));
@@ -360,6 +377,7 @@ async function main() {
       log('WARN  no GITHUB_TOKEN and `gh auth token` returned nothing; README telemetry will not be token-backed');
     }
 
+    await restoreKilledGateRun();
     await step('fetch-stars', 'npm', ['run', 'fetch-stars']);
     await step('profile-feed:sync', 'npm', ['run', 'profile-feed:sync']);
     log(`DATA  generated caches are now ${readFreshness()}`);

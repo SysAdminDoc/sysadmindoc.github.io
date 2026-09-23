@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { REPORT_ONLY_FLAGS } from '../scripts/lib/report-only-flags.mjs';
+import { REMOVED_FILES, SWAPPED_FILES } from '../scripts/visual-gate.mjs';
 
 const root = process.cwd();
 const runner = path.join(root, 'scripts', 'refresh-and-deploy.mjs');
@@ -383,6 +384,46 @@ test('a CSP report store the run cannot read leaves the deploy standing and says
   const quiet = await runWithCspStep(quietDir, 'node quiet.cjs');
   assert.equal(quiet.exitCode, 0);
   assert.deepEqual(quiet.status.warnings, [`csp:reports finished without a readable ${path.join('.tmp', 'csp-report-summary.json')}`]);
+});
+
+test('the nightly puts back what a killed visual-gate run left before it fetches anything', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  const data = path.join(dir, 'src', 'data');
+  const fixtures = path.join(data, 'fixtures', 'generated');
+  const backup = path.join(dir, '.tmp', 'visual-gate', 'live-data');
+  await fs.mkdir(fixtures, { recursive: true });
+  await fs.mkdir(backup, { recursive: true });
+  // Killed mid-swap: every fixture in place, no ETags, the live copies waiting
+  // in the backup the gate wrote before swapping.
+  for (const name of SWAPPED_FILES) {
+    await fs.writeFile(path.join(backup, name), `"live ${name}"\n`);
+    if (REMOVED_FILES.includes(name)) continue;
+    await fs.writeFile(path.join(fixtures, name), `"fixture ${name}"\n`);
+    await fs.writeFile(path.join(data, name), `"fixture ${name}"\n`);
+  }
+  await fs.writeFile(path.join(backup, 'manifest.json'), JSON.stringify({ present: [...SWAPPED_FILES] }));
+  // fetch-stars notes what it found, then stops the run.
+  await fs.writeFile(
+    path.join(dir, 'fetch.cjs'),
+    [
+      "const fs = require('node:fs');",
+      "const read = (name) => (fs.existsSync(`src/data/${name}`) ? fs.readFileSync(`src/data/${name}`, 'utf8') : null);",
+      "fs.writeFileSync('seen-by-fetch.json', JSON.stringify({ releases: read('_releases.json'), etags: read('_etags.json') }));",
+      'process.exit(4);',
+    ].join('\n'),
+  );
+  await fs.writeFile(path.join(dir, 'package.json'), JSON.stringify({ name: 'refresh-fixture', private: true, scripts: { 'fetch-stars': 'node fetch.cjs' } }));
+
+  const { exited } = runRunner(dir, { ...process.env, GITHUB_TOKEN: 'test-token', npm_config_update_notifier: 'false' });
+  assert.equal(await exited, 1);
+  const seen = JSON.parse(await fs.readFile(path.join(dir, 'seen-by-fetch.json'), 'utf8'));
+  assert.equal(seen.releases, '"live _releases.json"\n', 'fetch-stars starts from the live releases, not the fixtures');
+  assert.equal(seen.etags, '"live _etags.json"\n', 'and from the live ETags, which match those rows');
+  await assert.rejects(fs.access(backup), 'the backup is used up');
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  assert.match(log, new RegExp(`DATA  put back ${SWAPPED_FILES.length} live data file\\(s\\) that a killed visual-gate run left as fixtures`));
+  assert.ok(log.indexOf('DATA  put back') < log.indexOf('START fetch-stars'), 'before the first fetch');
 });
 
 // npm test runs inside the preflight and inherits these flags. Tests strip the

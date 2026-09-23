@@ -3,7 +3,19 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
-import { GATE_ROUTES, SWAPPED_FILES, backUpLiveData, playwrightArgs, restoreLiveData } from '../scripts/visual-gate.mjs';
+import {
+  GATE_ROUTES,
+  LOCK_MAX_AGE_MS,
+  REMOVED_FILES,
+  SWAPPED_FILES,
+  backUpLiveData,
+  playwrightArgs,
+  releaseLock,
+  restoreKilledRun,
+  restoreLiveData,
+  tryLock,
+  withLock,
+} from '../scripts/visual-gate.mjs';
 
 const root = process.cwd();
 const quiet = () => {};
@@ -14,19 +26,20 @@ function setup() {
   const dir = path.join(base, 'data');
   const fixtures = path.join(base, 'fixtures');
   const backup = path.join(base, 'backup');
+  const lock = path.join(base, 'lock.json');
   fs.mkdirSync(dir);
   fs.mkdirSync(fixtures);
   for (const name of SWAPPED_FILES) {
     fs.writeFileSync(path.join(dir, name), `live ${name}\n`);
-    // The catalog record has no fixture, as in the repo.
-    if (name !== '_catalog-drift.json') fs.writeFileSync(path.join(fixtures, name), `fixture ${name}\n`);
+    // The catalog record and the ETags have no fixture, as in the repo.
+    if (!REMOVED_FILES.includes(name)) fs.writeFileSync(path.join(fixtures, name), `fixture ${name}\n`);
   }
-  return { base, dir, fixtures, backup };
+  return { base, dir, fixtures, backup, lock };
 }
 
 /** What the gate does between backup and restore. */
 function swap({ dir, fixtures }) {
-  fs.rmSync(path.join(dir, '_catalog-drift.json'), { force: true });
+  for (const name of REMOVED_FILES) fs.rmSync(path.join(dir, name), { force: true });
   for (const name of fs.readdirSync(fixtures)) fs.copyFileSync(path.join(fixtures, name), path.join(dir, name));
 }
 
@@ -95,16 +108,101 @@ test('a backup without its manifest touches nothing', () => {
 });
 
 test('the backup covers every file the swap touches, or a gate run would lose it', () => {
-  // What install-generated-fixtures.mjs copies over, plus the catalog record
-  // the gate deletes itself. A file missing here would be overwritten, or
-  // deleted, and never put back.
+  // What install-generated-fixtures.mjs copies over, plus the files with no
+  // fixture that the gate deletes itself. A file missing here would be
+  // overwritten, or deleted, and never put back.
   const installer = fs.readFileSync(path.join(root, 'scripts', 'install-generated-fixtures.mjs'), 'utf8');
   const installed = [...(installer.match(/const requiredFiles = \[([\s\S]*?)\];/)?.[1] ?? '').matchAll(/'([^']+)'/g)].map((match) => match[1]);
   assert.ok(installed.length >= 7, 'the installer list was read');
   const gate = fs.readFileSync(path.join(root, 'scripts', 'visual-gate.mjs'), 'utf8');
-  const deleted = [...gate.matchAll(/fs\.rmSync\(path\.join\(dataDir, '([^']+)'\)/g)].map((match) => match[1]);
-  assert.deepEqual(deleted, ['_catalog-drift.json']);
-  assert.deepEqual([...SWAPPED_FILES].sort(), [...new Set([...installed, ...deleted])].sort());
+  assert.match(gate, /for \(const name of REMOVED_FILES\) fs\.rmSync\(path\.join\(dataDir, name\), \{ force: true \}\);/, 'the gate deletes what it has no fixture for');
+  assert.deepEqual([...REMOVED_FILES].sort(), ['_catalog-drift.json', '_etags.json']);
+  for (const name of REMOVED_FILES) {
+    assert.equal(fs.existsSync(path.join(root, 'src', 'data', 'fixtures', 'generated', name)), false, `${name} has no fixture`);
+  }
+  assert.deepEqual([...SWAPPED_FILES].sort(), [...new Set([...installed, ...REMOVED_FILES])].sort());
+});
+
+test('a killed run leaves no live ETags beside the fixture caches', () => {
+  // With the live ETags still there, fetch-stars took GitHub's 304s as leave to
+  // keep the fixture rows it found in the caches (eighth drain review).
+  const env = setup();
+  backUpLiveData({ ...env, log: quiet });
+  swap(env);
+  assert.equal(read(env.dir, '_etags.json'), null, 'no ETags while the fixtures are in');
+  // Killed here. A plain restore brings the live ETags back...
+  restoreLiveData({ ...env, log: quiet });
+  assert.equal(read(env.dir, '_etags.json'), 'live _etags.json\n');
+
+  // ...but ETags written by a refresh after the kill are newer, and stay.
+  backUpLiveData({ ...env, log: quiet });
+  swap(env);
+  fs.writeFileSync(path.join(env.dir, '_etags.json'), 'fresher _etags.json\n');
+  restoreLiveData({ ...env, log: quiet });
+  assert.equal(read(env.dir, '_etags.json'), 'fresher _etags.json\n');
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
+test('one gate run holds the lock at a time, and a dead or hour-old holder loses it', () => {
+  const env = setup();
+  const now = Date.parse('2026-09-24T03:00:00Z');
+  const alive = () => true;
+  const dead = () => false;
+  assert.deepEqual(tryLock({ lock: env.lock, now, isAlive: alive }), { taken: true, holder: null });
+  const held = tryLock({ lock: env.lock, now: now + 60_000, isAlive: alive });
+  assert.equal(held.taken, false);
+  assert.equal(held.holder.pid, process.pid);
+
+  // A holder whose process is gone, or that's older than any real run, is taken over.
+  assert.equal(tryLock({ lock: env.lock, now: now + 60_000, isAlive: dead }).taken, true);
+  // That takeover stamped the lock at now + 60 s; an hour after that it's stale.
+  assert.equal(tryLock({ lock: env.lock, now: now + 60_000 + LOCK_MAX_AGE_MS - 1, isAlive: alive }).taken, false);
+  assert.equal(tryLock({ lock: env.lock, now: now + 60_000 + LOCK_MAX_AGE_MS + 1, isAlive: alive }).taken, true);
+  fs.writeFileSync(env.lock, 'not json');
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: alive }).taken, true);
+
+  // Only the holder releases it.
+  fs.writeFileSync(env.lock, JSON.stringify({ pid: process.pid + 1, takenAt: new Date(now).toISOString() }));
+  releaseLock({ lock: env.lock });
+  assert.equal(fs.existsSync(env.lock), true);
+  fs.writeFileSync(env.lock, JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString() }));
+  releaseLock({ lock: env.lock });
+  assert.equal(fs.existsSync(env.lock), false);
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
+test('a second run waits for the lock, and gives up with the holder named', async () => {
+  const env = setup();
+  fs.writeFileSync(env.lock, JSON.stringify({ pid: 424242, takenAt: new Date().toISOString() }));
+  const messages = [];
+  let ran = false;
+  await assert.rejects(
+    withLock(() => {
+      ran = true;
+    }, { lock: env.lock, waitMs: 300, pollMs: 50, isAlive: () => true, log: (message) => messages.push(message) }),
+    /another visual-gate run \(pid 424242, since [^)]+\) still holds/,
+  );
+  assert.equal(ran, false);
+  assert.equal(messages.length, 1, 'it says once that it is waiting');
+
+  // Once the holder is gone it runs, and lets go afterwards.
+  const result = await withLock(() => 'ran', { lock: env.lock, waitMs: 300, pollMs: 50, isAlive: () => false, log: quiet });
+  assert.equal(result, 'ran');
+  assert.equal(fs.existsSync(env.lock), false);
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
+test('the nightly restore puts back what a killed run left, and does nothing otherwise', async () => {
+  const env = setup();
+  assert.deepEqual(await restoreKilledRun({ ...env, log: quiet }), [], 'no backup, nothing to do');
+  backUpLiveData({ ...env, log: quiet });
+  swap(env);
+  // Killed here.
+  const restored = await restoreKilledRun({ ...env, log: quiet });
+  assert.deepEqual(restored, [...SWAPPED_FILES]);
+  for (const name of SWAPPED_FILES) assert.equal(read(env.dir, name), `live ${name}\n`, name);
+  assert.equal(fs.existsSync(env.lock), false, 'the lock is released');
+  fs.rmSync(env.base, { recursive: true, force: true });
 });
 
 test('the gate compares the five key routes, and the full run runs every audits spec', () => {

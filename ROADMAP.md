@@ -6,13 +6,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
-- [ ] P1: Stop a killed visual-gate run from shipping fixture data
-  Why: The gate swaps the committed fixtures into `src/data` and puts the live files back afterwards, but it leaves `_etags.json` alone. After a killed run, the nightly's fetch-stars sends the live ETags, gets 304s and keeps the fixture rows as its cache. Those files then no longer equal the fixtures, so the next gate run leaves them in place too. Nothing downstream notices: `profile-feed:sync`, `data:validate`, the audits and `build:ci` all passed on leftover fixture caches, and the built `status.json` said mode "fixture". Two gate runs at once would also share `.tmp/visual-gate/live-data` with no lock.
-  Evidence: eighth drain review, 2026-09-23. A simulated kill against a mocked GitHub left 9 of 17 release rows and all 16 README entries as fixture rows, and the next gate run restored 2 files. `scripts/visual-gate.mjs:9-11,99`, `scripts/fetch-stars.mjs:375,499-516`.
-  Touches: `scripts/visual-gate.mjs`, `scripts/refresh-and-deploy.mjs`, the data checks `deploy:preflight` runs, `test/visual-gate.test.mjs`.
-  Acceptance: `_etags.json` is swapped and restored with the other files, the nightly puts back a killed gate's leftovers before it fetches anything, a second gate run refuses to start while one holds the backup, and a build for deploy refuses data whose `_stats.json` says fixture mode.
-  Complexity: M
-
 ### P2
 
 - [ ] P2: Make the visual gate see a hidden nav or recoloured accents

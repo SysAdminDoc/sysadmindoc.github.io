@@ -99,6 +99,7 @@ npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --st
 npm run audit:playwright # the whole browser suite (axe, layout, screenshots) against a fixture build; live data is swapped back after
 npm run audit:playwright:update # the same run, rewriting every win32 screenshot baseline from the fixtures
 npm run visual:gate   # just the deploy gate: /, /ai/, /healthcare-it/, /resume/ and /catalog/ in both themes
+node scripts/visual-gate.mjs --restore # put back the live data a killed gate run left in src/data
 npm run audit:interactions # focused rendered interaction smoke against built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
 npm run typecheck:scripts # check scripts/ and test/ JavaScript contracts with TypeScript
@@ -313,6 +314,13 @@ csp:reports) that kills its whole process tree, so a hung or killed run shows up
 instead of leaving the previous night's result in place. The deploy has already
 happened by the time csp:reports runs, so a store it can't read only adds a
 warning to the status file.
+
+Before the first fetch, the run puts back anything a killed screenshot-gate run
+left in `src/data`, since a refresh on top of the committed fixtures would keep
+fixture rows wherever GitHub answers 304. Gate runs take turns through
+`.tmp/visual-gate/lock.json`, and the run waits up to 20 minutes for one that's
+going. `deploy:vps` refuses any build whose `status.json` says it came from the
+fixtures.
 
 The live site says when its data expires. `/status.json` carries
 `generatedData.staleAfter`, the fetch time plus the 36-hour contract, beside a
