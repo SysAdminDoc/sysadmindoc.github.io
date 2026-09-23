@@ -19,13 +19,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P0
 
-- [ ] P0: Recreate the nightly refresh from a committed definition and make a killed run visible
-  Why: The last run was cut off on 2026-09-21 and nothing has run since, so the live data passed its 36-hour contract without an alert.
-  Evidence: `.tmp/refresh-and-deploy-step-deploy-vps.log` ends at the first ssh call (2026-09-21T10:57:45Z) with no `DONE` or `ABORT`; the status file still reads `deployed` at 2026-09-20T21:14:48Z; no "Portfolio Refresh and Deploy" task was visible on 2026-09-22; `scripts/refresh-and-deploy.mjs:150-166` writes status only on terminal paths, and `:86-144` gives no step a timeout; the README never mentions the task.
-  Touches: new `scripts/register-nightly-task.ps1`, `scripts/refresh-and-deploy.mjs`, `README.md` (Deploy section), `test/refresh-and-deploy.test.mjs`.
-  Acceptance: Running the register script twice leaves exactly one task. The task starts hidden, uses a version-independent pwsh or node path, starts when available, and has no battery conditions. The script's `-Check` mode exits non-zero when the task is missing or disabled. `refresh-and-deploy.mjs` writes `running` with its pid and start time before the first step, and kills any step that exceeds its timeout, recording `aborted` with the step name. A test kills a fake step and asserts the status record.
-  Complexity: M
-
 ### P1
 
 - [ ] P1: Stop the service worker from intercepting cross-origin requests, and run the browser suites with production headers

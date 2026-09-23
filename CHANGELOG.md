@@ -10,6 +10,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Messages are accepted up to 5,000 characters, and the text box stops there, instead of being cut at 2,000 without warning.
 - Lead notifications can finally reach a person. ntfy ran with no configuration, no route, no auth and no subscriber, so every notification went nowhere. It now runs at `https://notify.getparkerai.com` behind the edge, denies anything without a token, keeps its cache on disk, and has a read-only token for the owner's phone.
 
+- The nightly refresh stopped on 2026-09-21 and nothing noticed. Its run was ended from outside partway through the deploy, the status file kept the previous day's "deployed", and the scheduled task itself had disappeared with no way to recreate it from the repo. `scripts/register-nightly-task.ps1` now defines the task (headless, battery-proof, starts late after sleep) and `-Check` reports a missing, disabled or killed run. The runner writes a `running` record before its first step and kills any step that outlives its timeout, recording which one.
+
 ### Security
 - ntfy moves from v2.11.0 to v2.28.0, out of the critical parseActions remote-code-execution range (GHSA-pqhx-w72w-m393, fixed in 2.22.0). It and the contact handler now sit on a private network that only `portfolio-app` joins, instead of the network shared by 22 containers on the server. Before this, any of them could read or forge leads.
 

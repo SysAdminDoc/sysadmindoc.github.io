@@ -39,6 +39,34 @@ const dryRun = process.argv.includes('--dry-run') || process.argv.includes('--sk
 const startedAt = new Date();
 const FAIL_TAIL_LINES = 40;
 
+// A hung step would otherwise hold the run until the scheduled task's two-hour
+// limit ends it from outside, and a run ended from outside writes no status at
+// all: the 2026-09-21 run died that way and the status file kept saying the
+// previous day's "deployed". These bounds are generous (preflight normally
+// takes about two minutes). REFRESH_STEP_TIMEOUT_MS overrides every step.
+const STEP_TIMEOUT_MINUTES = { 'fetch-stars': 20, 'profile-feed:sync': 5, 'deploy:preflight': 45, 'deploy:vps': 20 };
+
+function stepTimeoutMs(label) {
+  const override = Number(process.env.REFRESH_STEP_TIMEOUT_MS);
+  if (Number.isFinite(override) && override > 0) return override;
+  return (STEP_TIMEOUT_MINUTES[label] ?? 30) * 60_000;
+}
+
+// The step runs through a shell, so killing the shell alone would orphan npm,
+// node, ssh and whatever else it started. Take the whole tree down.
+function killTree(pid) {
+  if (!pid) return;
+  if (process.platform === 'win32') {
+    spawnSync('taskkill', ['/pid', String(pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' });
+    return;
+  }
+  try {
+    process.kill(-pid, 'SIGKILL');
+  } catch {
+    /* already gone */
+  }
+}
+
 function log(line) {
   const stamped = `${new Date().toISOString()} ${line}`;
   console.log(stamped);
@@ -111,31 +139,51 @@ function step(label, command, args) {
     };
 
     let settled = false;
+    let timedOut = false;
+    const timeoutMs = stepTimeoutMs(label);
+    let timer = null;
     const finish = (code, signal, spawnError) => {
       if (settled) return;
       settled = true;
+      if (timer) clearTimeout(timer);
       if (pending.trim()) tail.push(pending);
       if (out) out.end();
-      if (code === 0 && !spawnError) {
+      if (code === 0 && !spawnError && !timedOut) {
         log(`OK    ${label}`);
         resolve();
         return;
       }
-      const why = spawnError ? spawnError.message : signal ? `killed by ${signal}` : `exit code ${code}`;
+      const why = timedOut
+        ? `timed out after ${Math.round(timeoutMs / 1000)}s and was killed`
+        : spawnError
+          ? spawnError.message
+          : signal
+            ? `killed by ${signal}`
+            : `exit code ${code}`;
       log(`FAIL  ${label}: ${why}; full output in ${path.relative(root, stepLog)}`);
       for (const line of tail.slice(-FAIL_TAIL_LINES)) log(`  | ${line}`);
-      reject(new Error(label));
+      const error = new Error(label);
+      error.cause = why;
+      reject(error);
     };
 
     // One command string through the shell: npm is npm.cmd on Windows, which
     // spawn refuses without a shell, and passing an args array alongside
     // shell:true trips DEP0190. Every argument here is a literal from this file.
+    // `detached` makes the shell a process-group leader on POSIX so the timeout
+    // can kill the group; on Windows it would open a new console, so not there.
     const child = spawn([command, ...args].join(' '), {
       env,
       shell: true,
       stdio: ['ignore', 'pipe', 'pipe'],
       windowsHide: true,
+      detached: process.platform !== 'win32',
     });
+    timer = setTimeout(() => {
+      timedOut = true;
+      log(`STOP  ${label}: no result after ${Math.round(timeoutMs / 1000)}s; killing the step's process tree`);
+      killTree(child.pid);
+    }, timeoutMs);
     child.stdout.on('data', (chunk) => capture(chunk, process.stdout));
     child.stderr.on('data', (chunk) => capture(chunk, process.stderr));
     child.on('error', (error) => finish(null, null, error));
@@ -156,6 +204,8 @@ function writeStatus(status, { failedStep = null, detail = null } = {}) {
     at: new Date().toISOString(),
     elapsedSeconds: Number(((Date.now() - startedAt.getTime()) / 1000).toFixed(0)),
     dryRun,
+    pid: process.pid,
+    startedAt: startedAt.toISOString(),
   };
   try {
     fs.mkdirSync(path.dirname(statusFile), { recursive: true });
@@ -187,6 +237,10 @@ function readFreshness() {
 
 async function main() {
   try {
+    // Written before any step, so a run killed from outside leaves "running"
+    // with its pid and start time instead of the previous run's verdict. A
+    // "running" record older than the task's two-hour limit means it died.
+    writeStatus('running');
     log(`RUN   refresh-and-deploy${dryRun ? ' (dry run)' : ''}`);
     if (!githubToken) {
       // Not fatal on its own: the preflight's own gate decides. Surfacing it here
@@ -242,8 +296,9 @@ async function main() {
     const failedStep = error.message;
     const stepLog = stepLogPath(failedStep);
     const where = fs.existsSync(stepLog) ? `; see ${path.relative(root, stepLog)}` : '';
+    const reason = typeof error.cause === 'string' ? `${error.cause}; ` : '';
     log(`ABORT after ${elapsed}s at step "${failedStep}"; the previous deployment is still live${where}`);
-    writeStatus('aborted', { failedStep, detail: `the previous deployment is still live${where}` });
+    writeStatus('aborted', { failedStep, detail: `${reason}the previous deployment is still live${where}` });
     process.exit(1);
   }
 }

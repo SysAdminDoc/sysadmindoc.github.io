@@ -136,7 +136,16 @@ test('every terminal path of the unattended refresh records a machine-readable s
   }
   assert.match(source, /function writeStatus\(status, \{ failedStep = null, detail = null \} = \{\}\)/);
 
-  const statuses = [...source.matchAll(/writeStatus\('([a-z-]+)'/g)].map((match) => match[1]);
+  const allStatuses = [...source.matchAll(/writeStatus\('([a-z-]+)'/g)].map((match) => match[1]);
+  // "running" is the one non-terminal record: written once, before the first
+  // step, so a run killed from outside leaves it behind instead of the previous
+  // run's verdict. Everything else is a terminal outcome paired with an exit.
+  assert.equal(allStatuses.filter((status) => status === 'running').length, 1, 'the running marker is written exactly once');
+  assert.ok(
+    source.indexOf("writeStatus('running')") < source.indexOf('await step('),
+    'the running marker is written before the first step',
+  );
+  const statuses = allStatuses.filter((status) => status !== 'running');
   assert.deepEqual(
     [...new Set(statuses)].sort(),
     ['aborted', 'deployed', 'drift', 'dry-run'],

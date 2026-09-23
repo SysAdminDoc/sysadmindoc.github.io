@@ -222,6 +222,22 @@ Deployment is local-first:
 
 `npm run publish:pages` still deploys the GitHub Pages copy during the transition.
 
+### Nightly refresh
+
+`npm run refresh:deploy` runs the whole chain unattended: fetch-stars,
+profile-feed:sync, deploy:preflight, then deploy:vps. On the build machine it
+runs as the scheduled task "Portfolio Refresh and Deploy", daily at 03:00.
+`pwsh -NoProfile -File scripts\register-nightly-task.ps1` creates or replaces
+the task (running it twice still leaves one), and `-Check` reports whether it
+exists, is enabled, and whether the last run was killed. The task starts node
+through `conhost.exe --headless`, so no window ever appears on the desktop.
+Every run writes `.tmp/refresh-and-deploy-status.json`: `running` before the
+first step, then `deployed`, `drift`, `dry-run` or `aborted` with the failing
+step. Each step has a timeout (20 minutes for fetch-stars, 5 for
+profile-feed:sync, 45 for deploy:preflight, 20 for deploy:vps) that kills its
+whole process tree, so a hung or killed run shows up instead of leaving the
+previous night's result in place.
+
 ## Layout
 
 ```
