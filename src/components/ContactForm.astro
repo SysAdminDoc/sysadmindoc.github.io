@@ -1,5 +1,6 @@
 ---
 import { contactEmail, contactMailto } from '../data/identity';
+import { LEAD_RETENTION_DAYS } from '../data/retention';
 
 export interface Props {
   subject?: string;
@@ -37,6 +38,7 @@ const { subject = '' } = Astro.props;
     <span class="contact-form-alt">or email <a href={contactMailto(subject)}>{contactEmail}</a> directly</span>
   </div>
   <div class="contact-form-status" role="status" aria-live="polite"></div>
+  <p class="contact-form-note">Your message is kept for {LEAD_RETENTION_DAYS} days, then deleted. <a href="/privacy/">What else this site keeps</a>.</p>
 </form>
 {/* Loaded by the component, so every page that renders the form gets it. */}
 <script src="/scripts/contact-form.js" is:inline defer></script>
@@ -55,6 +57,8 @@ const { subject = '' } = Astro.props;
   .contact-form-alt{color:var(--t3);font-size:13px}
   .contact-form-alt a{color:var(--t2);text-decoration:underline}
   .contact-form-status{margin-top:12px;font-size:14px;min-height:20px}
+  .contact-form-note{margin:8px 0 0;color:var(--t3);font-size:13px}
+  .contact-form-note a{color:var(--t2);text-decoration:underline}
   .contact-form-success{color:var(--grn)}
   .contact-form-error{color:var(--red)}
   .contact-not-sent{display:none;margin:0 0 16px;color:var(--red);font-size:14px}

@@ -19,6 +19,8 @@
 //   CONTACT_MIN_TIME      optional  minimum seconds between fetching a form token and submitting (default 3)
 //   CONTACT_TOKEN_SECRET  optional  key for form tokens; derived from CONTACT_SMOKE_SECRET when unset,
 //                                   random per start when both are unset
+//   CONTACT_RETENTION_DAYS optional days a lead is kept, then deleted at start and daily (default 365;
+//                                   /privacy/ states the same number, src/data/retention.ts)
 //
 // Form tokens: the page script fetches GET /api/contact/token, a server
 // timestamp and nonce signed with HMAC, and sends it back with the form. A
@@ -44,6 +46,7 @@ import { fileURLToPath } from 'node:url';
  * @property {string} smokeSecret
  * @property {string} tokenSecret
  * @property {string} storePath
+ * @property {number} leadRetentionDays
  * @property {number} minTimeSeconds
  * @property {number} tokenMaxAgeMs
  * @property {number} clientWindowMs
@@ -66,6 +69,9 @@ export const DEFAULT_CONFIG = Object.freeze({
   smokeSecret: '',
   tokenSecret: '',
   storePath: '/var/lib/contact/leads.ndjson',
+  // The privacy page promises this; src/data/retention.ts holds the number and
+  // a test keeps the two equal.
+  leadRetentionDays: 365,
   minTimeSeconds: 3,
   // Long enough to write a careful message, short enough that a harvested
   // token is soon useless.
@@ -162,6 +168,7 @@ export function loadConfig(env = process.env) {
     tokenSecret,
     storePath,
     minTimeSeconds: positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'),
+    leadRetentionDays: positiveInteger(env.CONTACT_RETENTION_DAYS, DEFAULT_CONFIG.leadRetentionDays, 'CONTACT_RETENTION_DAYS'),
   };
 }
 
@@ -450,7 +457,91 @@ export function createLeadStore(storePath, fileSystem = fs) {
     return leads;
   }
 
-  return { append, loadUndelivered };
+  /**
+   * Rewrites the store without leads received before `cutoffMs`, and without
+   * their status lines. It runs in the append queue, so no append can land
+   * between the read and the rename, and it streams, so a year of leads never
+   * has to fit in memory. Returns how many leads were removed.
+   */
+  function purgeBefore(cutoffMs) {
+    const task = queue.catch(() => undefined).then(async () => {
+      let source;
+      try {
+        source = await fileSystem.open(storePath, 'r');
+      } catch (error) {
+        if (error.code === 'ENOENT') return 0;
+        throw error;
+      }
+      const tmpPath = `${storePath}.purge`;
+      const kept = new Set();
+      let removed = 0;
+      let target;
+      try {
+        target = await fileSystem.open(tmpPath, 'w', 0o600);
+        for await (const line of storeLines(source)) {
+          if (!line.trim()) continue;
+          for (const entry of parseRecords(line)) {
+            let keep = false;
+            if (entry?.type === 'lead' && typeof entry.id === 'string') {
+              const receivedAt = Date.parse(entry.receivedAt ?? '');
+              keep = !(Number.isFinite(receivedAt) && receivedAt < cutoffMs);
+              if (keep) kept.add(entry.id);
+              else removed += 1;
+            } else if (entry?.type === 'status') {
+              // A status follows its lead in the file, so its fate is known.
+              keep = kept.has(entry.id);
+            }
+            if (keep) await target.write(`${serializeRecord(entry)}\n`);
+          }
+        }
+        await target.sync();
+      } finally {
+        await target?.close();
+        await source.close();
+      }
+      if (removed === 0) {
+        await fileSystem.rm(tmpPath, { force: true });
+        return 0;
+      }
+      await fileSystem.rename(tmpPath, storePath);
+      startOnFreshLine = false;
+      return removed;
+    });
+    queue = task.then(() => undefined);
+    return task;
+  }
+
+  return { append, loadUndelivered, purgeBefore };
+}
+
+/**
+ * The handler before 2026-09-22 kept only a name, email and message length per
+ * submission in submissions.ndjson beside the store. The same retention applies
+ * to it; it's removed once nothing in it is young enough to keep.
+ */
+export async function purgeLegacySubmissions(storePath, cutoffMs, fileSystem = fs) {
+  const legacyPath = path.join(path.dirname(storePath), 'submissions.ndjson');
+  let text;
+  try {
+    text = await fileSystem.readFile(legacyPath, 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return 0;
+    throw error;
+  }
+  const lines = text.split('\n').filter((line) => line.trim());
+  const keep = lines.filter((line) => {
+    try {
+      const at = Date.parse(JSON.parse(line).ts ?? '');
+      return !(Number.isFinite(at) && at < cutoffMs);
+    } catch {
+      return false;
+    }
+  });
+  const removed = lines.length - keep.length;
+  if (removed === 0) return 0;
+  if (keep.length === 0) await fileSystem.rm(legacyPath, { force: true });
+  else await fileSystem.writeFile(legacyPath, `${keep.join('\n')}\n`, { encoding: 'utf8', mode: 0o600, flush: true });
+  return removed;
 }
 
 function sendJson(response, status, body) {
@@ -748,11 +839,32 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     while (inFlight.size) await Promise.all([...inFlight]);
   }
 
-  return { handleRequest, retryPending, restorePending, idle, store, issueToken };
+  /** Deletes leads, and legacy submission records, older than the retention period. */
+  async function purgeExpired() {
+    const cutoff = now().getTime() - config.leadRetentionDays * 24 * 60 * 60_000;
+    const leads = await store.purgeBefore(cutoff);
+    const legacy = await purgeLegacySubmissions(config.storePath, cutoff, dependencies.fileSystem ?? fs);
+    for (const id of [...pending.keys()]) {
+      const receivedAt = Date.parse(pending.get(id)?.receivedAt ?? '');
+      if (Number.isFinite(receivedAt) && receivedAt < cutoff) pending.delete(id);
+    }
+    if (leads || legacy) {
+      logger.log(`contact: deleted ${leads} lead(s) and ${legacy} legacy record(s) older than ${config.leadRetentionDays} days`);
+    }
+    return { leads, legacy };
+  }
+
+  return { handleRequest, retryPending, restorePending, idle, store, issueToken, purgeExpired };
 }
 
 export async function startServer(config = loadConfig()) {
   const handler = createContactHandler(config);
+  // Expired leads go first, so none is restored only to be deleted, then daily.
+  const purge = () =>
+    handler.purgeExpired().catch((error) => console.error(`contact: could not purge expired leads: ${error.message}`));
+  await purge();
+  const purgeTimer = setInterval(purge, 24 * 60 * 60_000);
+  purgeTimer.unref();
   // The store is read before the port opens, so no request can race it.
   try {
     const count = await handler.restorePending();

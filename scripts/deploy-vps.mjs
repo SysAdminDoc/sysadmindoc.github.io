@@ -143,7 +143,7 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
 const cspEnvFile = writeComposeEnvFile(distDir);
 
 // 2. Ensure the remote site dir exists.
-runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache ${remoteDir}/ntfy-data`);
+runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache ${remoteDir}/ntfy-data ${remoteDir}/bin`);
 
 // 2b. The lead-notification secrets live only on the server. The script that
 // creates them ships first, so a new server has it to run. Stop here with the
@@ -164,6 +164,10 @@ run('scp', [
   cspEnvFile,
   `${ssh}:${remoteDir}/`,
 ]);
+// The daily traffic-report cron (15 4 * * *) runs bin/analytics-report.sh, and
+// its retention behaviour is part of what /privacy/ states, so the copy in the
+// repo is the one that runs.
+run('scp', [...sshOptions, path.join(root, 'deploy', 'vps', 'analytics-report.sh'), `${ssh}:${remoteDir}/bin/analytics-report.sh`]);
 fs.rmSync(cspEnvFile, { force: true });
 
 // tar over ssh rather than rsync: rsync is not present on the Windows build

@@ -26,6 +26,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Returning visitors see the homepage photo again. The service worker fetched cross-origin images itself, and the policy delivered with `/sw.js` refused those fetches, so every visit after the first got a synthetic 503 instead of the avatar. The worker now leaves cross-origin requests to the browser.
 
 ### Removed
+- `humans.txt` no longer says the site is hosted on GitHub Pages, and it and `llms.txt` now say "no client-side analytics" rather than "no analytics", since a server-side traffic report exists.
 - `npm run publish:pages`, its script and `public/.nojekyll`. The `gh-pages` branch has been a three-file redirect to this origin since 2026-07-28, and the documented command would have replaced it with a full copy of the site. The README now lists `refresh:deploy` and `deploy:vps` as the only ways to deploy.
 
 ### Changed
@@ -40,6 +41,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - ntfy now sees each visitor's own address. The inner Caddy replaced the forwarded address with the edge proxy's, so ntfy counted every visitor as one, and 30 bad tokens from anyone could have locked the owner's phone out of its notifications. The inner Caddy now trusts the private docker ranges and ntfy strips the same ranges.
 
 ### Added
+- A `/privacy/` page, linked from every footer and from the contact form, says what the site keeps and for how long, and each period on it is enforced by something. The contact handler deletes leads after 365 days (at start and daily), the edge access log rolls at midnight and rolled files go after 30 days, ntfy drops its copy of a notification after 72 hours, and the CSP report store holds 10 MB at most. A test fails if any of those settings stops matching the page. The daily traffic report now reads the rolled logs as well, and the deploy ships the script the cron runs.
 - Every deploy now proves the whole lead path. The live smoke confirms the notify host refuses anonymous subscribers and publishers, then sends a synthetic lead through the real form and reads it back with a subscriber token within 60 seconds. Smoke leads carry a secret header, are stored as synthetic, and go to their own topic, so they never reach the phone.
 
 ## [v0.45.2] - 2026-09-20

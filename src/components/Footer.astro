@@ -25,7 +25,10 @@ const isHome = variant === 'home';
 // same relative position on every page that offers it. Pinning it to index 0
 // keeps that true no matter how many route-specific links follow.
 const contactLink: FooterLink = { href: contactMailto(), label: 'Contact' };
+// Last on every page, so the privacy statement is one click from anywhere.
+const privacyLink: FooterLink = { href: '/privacy/', label: 'Privacy' };
 const navLinks: FooterLink[] = [contactLink, ...links];
+if (Astro.url.pathname !== '/privacy/') navLinks.push(privacyLink);
 ---
 <footer class={className}>
   <div class:list={['fi', !isHome && 'page-footer-shell']}>

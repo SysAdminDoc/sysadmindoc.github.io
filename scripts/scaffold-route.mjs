@@ -67,7 +67,7 @@ import Footer from '../components/Footer.astro';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
-const title = '${title} — Matt Parker';
+const title = '${title} | Matt Parker';
 const pageOg = interiorOgPageBySlug['${slug}'];
 const pageFreshness = pageFreshnessBySlug['${slug}'];
 const siteUrl = Astro.site?.toString().replace(/\\/$/, '') || 'https://portfolio.getparkerai.com';

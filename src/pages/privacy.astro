@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import Footer from '../components/Footer.astro';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+import { contactEmail, contactMailto } from '../data/identity';
+// Every period on this page comes from here, and a test holds the handler, the
+// edge log roll, ntfy's cache and the CSP report store to the same numbers.
+import {
+  ACCESS_LOG_RETENTION_DAYS,
+  CSP_REPORT_STORE_MB,
+  LEAD_RETENTION_DAYS,
+  NOTIFICATION_CACHE_HOURS,
+  PRIVACY_EFFECTIVE_DATE,
+} from '../data/retention';
+
+const title = 'Privacy | Matt Parker';
+const pageOg = interiorOgPageBySlug['privacy'];
+const pageFreshness = pageFreshnessBySlug['privacy'];
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
+const pageJsonLd = reviewedWebPageJsonLd({
+  siteUrl,
+  route: pageFreshness.route,
+  title,
+  description: pageOg.description,
+  lastReviewed: pageFreshness.lastReviewed,
+  schemaTypes: pageFreshness.schemaTypes,
+});
+const effectiveLabel = new Date(`${PRIVACY_EFFECTIVE_DATE}T00:00:00Z`).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const cmdkSections = [
+  { label: 'The contact form', href: '#privacy-contact-form', desc: 'What a message stores and when it is deleted.', badge: 'PAGE' },
+  { label: 'Server logs', href: '#privacy-logs', desc: 'What the web server records and how long it keeps it.', badge: 'PAGE' },
+  { label: 'Getting something deleted', href: '#privacy-deletion', desc: 'Who to email to see or delete what is stored.', badge: 'PAGE' },
+];
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav contextLabel="Privacy" contextTone="slate" />
+
+  <main id="main" data-pagefind-body data-pagefind-filter="Scope:Privacy">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Privacy"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="si page-shell" id="privacy-overview">
+      <div class="sh rv">
+        <div class="sl">// Privacy</div>
+        <h1 class="st">What this site keeps.</h1>
+        <p class="sd">No cookies, no tracking scripts, and nothing loaded from anyone else's servers. The only personal details the site asks for are the ones you type into the contact form.</p>
+        <p class="page-updated"><span>Effective</span><time datetime={PRIVACY_EFFECTIVE_DATE}>{effectiveLabel}</time></p>
+      </div>
+    </div>
+
+    <section class="si privacy-section" id="privacy-contact-form" aria-labelledby="privacy-contact-form-title">
+      <h2 class="privacy-h2" id="privacy-contact-form-title">The contact form</h2>
+      <p>When you send the form, the server saves your name, your email address, your message, the page you sent it from and the time. It keeps them for {LEAD_RETENTION_DAYS} days and then deletes them. The deletion runs by itself every day.</p>
+      <p>A short notification with your name, email and the start of your message comes to me through a notification server I run myself, which holds it for {NOTIFICATION_CACHE_HOURS} hours. Nothing you send is shared, sold or put on a mailing list.</p>
+      <p>To slow down spam, the server counts how often each IP address sends the form in a ten-minute window. That count lives in memory only and is never written down.</p>
+    </section>
+
+    <section class="si privacy-section" id="privacy-logs" aria-labelledby="privacy-logs-title">
+      <h2 class="privacy-h2" id="privacy-logs-title">Server logs</h2>
+      <p>Like almost every web server, this one logs each request: your IP address, the page, the time, your browser's user agent and the page you came from. The log rolls over at midnight, and old logs are deleted after {ACCESS_LOG_RETENTION_DAYS} days.</p>
+      <p>Once a day a script turns those logs into a traffic report with the last part of every IP address zeroed out. The report stays on the server, isn't published anywhere, and is replaced the next day.</p>
+    </section>
+
+    <section class="si privacy-section" id="privacy-security-reports" aria-labelledby="privacy-security-reports-title">
+      <h2 class="privacy-h2" id="privacy-security-reports-title">Security reports</h2>
+      <p>If your browser blocks something the site's security policy doesn't allow, it may send a short report naming the page and the blocked resource. Reports don't include your IP address, and the server keeps only the latest {CSP_REPORT_STORE_MB} MB of them.</p>
+    </section>
+
+    <section class="si privacy-section" id="privacy-browser" aria-labelledby="privacy-browser-title">
+      <h2 class="privacy-h2" id="privacy-browser-title">In your browser</h2>
+      <p>The site sets no cookies and runs no analytics. It remembers two things in your own browser: whether you picked the light or dark theme, and, for the current tab only, that you dismissed an update notice. It also keeps copies of its pages so they work offline. You can clear all of that from your browser's settings for this site.</p>
+    </section>
+
+    <section class="si privacy-section" id="privacy-deletion" aria-labelledby="privacy-deletion-title">
+      <h2 class="privacy-h2" id="privacy-deletion-title">Getting something deleted</h2>
+      <p>Email <a href={contactMailto('Privacy request')} class="page-inline-link">{contactEmail}</a> to find out what's stored about you, or to have it deleted before the {LEAD_RETENTION_DAYS} days are up. I'll delete it and write back to confirm.</p>
+      <p>If anything on this page changes, the date at the top changes with it.</p>
+    </section>
+  </main>
+
+  <Footer
+    summary="What this site keeps about visitors, for how long, and how to have it deleted."
+    links={[
+      { href: '/colophon/', label: 'How this was built' },
+      { href: '/status/', label: 'Status' },
+    ]}
+  />
+</Base>
+
+<style>
+  .privacy-section{max-width:720px;margin-top:32px}
+  .privacy-h2{margin:0 0 12px;font-size:clamp(20px,2.4vw,24px);line-height:1.25;color:var(--t1)}
+  .privacy-section p{margin:0 0 12px;color:var(--t2);line-height:1.65}
+</style>

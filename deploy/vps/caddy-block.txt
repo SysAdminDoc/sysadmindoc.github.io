@@ -25,8 +25,15 @@ portfolio.getparkerai.com {
 		# CSP report-to directive selects.
 		Reporting-Endpoints      "csp-endpoint=\"https://portfolio.getparkerai.com/csp-report\""
 	}
+	# Rolled at midnight and deleted after 30 days, the period /privacy/ states
+	# (src/data/retention.ts). Size-based rolling alone never rolled this
+	# low-traffic log, so it had kept every visitor address since the move.
 	log {
-		output file /var/log/caddy/portfolio.log
+		output file /var/log/caddy/portfolio.log {
+			roll_at 00:00
+			roll_keep 30
+			roll_keep_for 720h
+		}
 		format json
 	}
 }

@@ -712,6 +712,74 @@ test('stored leads have a global hourly cap that the smoke does not use up', asy
   });
 });
 
+function leadAt(id, receivedAt) {
+  return JSON.stringify({ type: 'lead', id, receivedAt, name: 'N', email: 'n@example.test', message: 'hello there you', subject: '', page: '/', status: 'pending' });
+}
+function statusFor(id) {
+  return JSON.stringify({ type: 'status', id, status: 'sent', at: NOW.toISOString(), attempts: 1 });
+}
+const daysAgo = (days) => new Date(NOW.getTime() - days * 24 * 60 * 60_000).toISOString();
+
+test('leads past the retention period are deleted with their status lines, and nothing else is', async () => {
+  // The purge is held just before it swaps the new file in, while a lead
+  // arrives. That lead must land in the new file, not in the old one the
+  // rename is about to replace.
+  let reachRename;
+  const renameReached = new Promise((resolve) => { reachRename = resolve; });
+  let releaseRename;
+  const renameGate = new Promise((resolve) => { releaseRename = resolve; });
+  const gatedFileSystem = {
+    ...fs,
+    rename: async (/** @type {string} */ from, /** @type {string} */ to) => {
+      reachRename();
+      await renameGate;
+      return fs.rename(from, to);
+    },
+  };
+  await withHandler({ dependencies: { fileSystem: gatedFileSystem } }, async ({ handler, storePath }) => {
+    await fs.writeFile(storePath, [leadAt('old', daysAgo(400)), statusFor('old'), leadAt('recent', daysAgo(10)), statusFor('recent'), ''].join('\n'));
+    const purging = handler.purgeExpired();
+    await renameReached;
+    const arriving = handler.handleRequest(requestMock({ body: formBody({ name: 'During Purge', email: 'd@example.test', message: 'sent while the purge runs' }) }), responseMock());
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    releaseRename();
+    const [result] = await Promise.all([purging, arriving]);
+    await handler.idle();
+    assert.deepEqual(result, { leads: 1, legacy: 0 });
+
+    const entries = await readEntries(storePath);
+    assert.deepEqual(entries.filter((entry) => entry.type === 'lead').map((entry) => entry.name === 'During Purge' ? 'new' : entry.id), ['recent', 'new']);
+    assert.equal(entries.filter((entry) => entry.id === 'old').length, 0, 'the old status line goes with its lead');
+    assert.equal(entries.filter((entry) => entry.type === 'status' && entry.id === 'recent').length, 1);
+    await assert.rejects(fs.access(`${storePath}.purge`), 'no temp file is left behind');
+
+    const before = await fs.readFile(storePath, 'utf8');
+    assert.deepEqual(await handler.purgeExpired(), { leads: 0, legacy: 0 });
+    assert.equal(await fs.readFile(storePath, 'utf8'), before, 'nothing to delete means the file is left alone');
+  });
+});
+
+test('the legacy submissions file follows the same retention and goes once empty', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    const legacyPath = path.join(path.dirname(storePath), 'submissions.ndjson');
+    const record = (ts) => JSON.stringify({ ts, name: 'N', email: 'n@example.test', messageLen: 12, status: 200 });
+    await fs.writeFile(legacyPath, `${record(daysAgo(400))}\n${record(daysAgo(5))}\n`);
+    assert.deepEqual(await handler.purgeExpired(), { leads: 0, legacy: 1 });
+    assert.equal((await fs.readFile(legacyPath, 'utf8')).trim().split('\n').length, 1);
+
+    await fs.writeFile(legacyPath, `${record(daysAgo(500))}\n`);
+    assert.deepEqual(await handler.purgeExpired(), { leads: 0, legacy: 1 });
+    await assert.rejects(fs.access(legacyPath), 'an empty legacy file is removed');
+  });
+});
+
+test('the retention period comes from CONTACT_RETENTION_DAYS', () => {
+  const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
+  assert.equal(loadConfig(base).leadRetentionDays, 365);
+  assert.equal(loadConfig({ ...base, CONTACT_RETENTION_DAYS: '90' }).leadRetentionDays, 90);
+  assert.throws(() => loadConfig({ ...base, CONTACT_RETENTION_DAYS: '0' }), /CONTACT_RETENTION_DAYS/);
+});
+
 test('the client is the right-most address that is not on a private network', () => {
   assert.equal(clientAddress({ 'x-forwarded-for': '203.0.113.7, 172.18.0.2' }), '203.0.113.7');
   assert.equal(clientAddress({ 'x-forwarded-for': 'spoofed, 198.51.100.4, 172.18.0.2' }), '198.51.100.4');

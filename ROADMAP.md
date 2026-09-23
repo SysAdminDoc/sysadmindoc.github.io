@@ -21,13 +21,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P1
 
-- [ ] P1: Add a `/privacy/` page that says what the site actually stores
-  Why: The form collects names and emails and the site has no privacy statement. California requires commercial sites that collect personal information from its residents to post a conspicuous policy.
-  Evidence: `/privacy/` returned 404 on 2026-09-22 and no source file mentions a policy; Cal. Bus. & Prof. Code 22575; FTC guidance to keep personal data only as long as it's needed.
-  Touches: `src/pages/privacy.astro` (through `npm run scaffold:route`), `src/components/ContactForm.astro` (a one-line notice with a link), `src/components/Footer.astro`, `public/humans.txt:12` and `src/pages/llms.txt.ts:64` (say "no client-side analytics").
-  Acceptance: The page covers what the form stores and for how long, the edge access log and its anonymised GoAccess report, the redacted CSP reports, and the absence of cookies and client analytics. It carries an effective date and a deletion contact. Every retention period it states is enforced by a purge job. Owner step: confirm the lead retention period.
-  Complexity: S
-
 ### P2
 
 - [ ] P2: Give secondary routes a sitewide link and fail the build on orphaned pages

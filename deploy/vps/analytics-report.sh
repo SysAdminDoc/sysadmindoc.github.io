@@ -35,7 +35,15 @@ fi
 TMP_FILE="$(mktemp)"
 trap 'rm -f "$TMP_FILE"' EXIT
 
-docker exec "$CADDY_CONTAINER" cat "$LOG_PATH" \
+# The edge rolls this log at midnight and deletes rolled files after 30 days
+# (deploy/vps/caddy-block.txt; /privacy/ states the period), so the report
+# reads the gzipped rolled files and the live one together to cover the whole
+# retention window.
+docker exec "$CADDY_CONTAINER" sh -c '
+  for rolled in "${0%.log}"-*.log.gz; do
+    [ -e "$rolled" ] && zcat "$rolled"
+  done
+  cat "$0"' "$LOG_PATH" \
   | docker run --rm -i "$GOACCESS_IMAGE" - \
       -o html \
       --log-format=CADDY \

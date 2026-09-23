@@ -9,6 +9,14 @@ export interface ReviewedInteriorPage {
 
 export const reviewedInteriorPages: ReviewedInteriorPage[] = [
   {
+    slug: 'privacy',
+    route: '/privacy/',
+    label: 'Privacy',
+    lastReviewed: '2026-09-23',
+    schemaTypes: ['WebPage'],
+    visibleFreshness: false,
+  },
+  {
     slug: 'colophon',
     route: '/colophon/',
     label: 'Colophon',

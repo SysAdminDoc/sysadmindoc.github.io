@@ -11,6 +11,16 @@ export interface InteriorOgPage {
 
 export const interiorOgPages: InteriorOgPage[] = [
   {
+    slug: 'privacy',
+    route: '/privacy/',
+    title: 'Privacy',
+    description: 'What this site keeps about visitors, for how long, and how to have it deleted.',
+    label: 'Privacy',
+    accent: '#1f5fcc',
+    ogImage: '/og/privacy.png',
+    ogImageAlt: 'Privacy page social preview card',
+  },
+  {
     slug: 'colophon',
     route: '/colophon/',
     title: 'Colophon',

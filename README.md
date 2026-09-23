@@ -221,6 +221,12 @@ token, so it gets two, and the site stores at most 30 messages an hour.
 Refusals all read "Please check the form and try again", and the handler's log
 keeps the reason.
 
+What the site keeps, and for how long, is on `/privacy/`. Every period there
+comes from `src/data/retention.ts`, and `test/privacy-retention.test.mjs` holds
+the things that enforce them to the same numbers: the handler's lead purge
+(365 days, run at start and daily), the edge log roll in `caddy-block.txt`
+(30 days), ntfy's cache (72 hours) and the CSP report store (10 MB).
+
 There are two ways to deploy, both local:
 
 - `npm run refresh:deploy` runs the whole chain unattended: it refreshes the

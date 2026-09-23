@@ -18,6 +18,7 @@ const routes = [
   { name: 'screenshots', path: '/screenshots/', ready: '#screenshots-gallery' },
   { name: 'resume', path: '/resume/', ready: '#resume-header' },
   { name: 'data', path: '/data/', ready: '#data-overview' },
+  { name: 'privacy', path: '/privacy/', ready: '#privacy-overview' },
   { name: 'uses', path: '/uses/', ready: '#uses-overview' },
   { name: 'now', path: '/now/', ready: '#now-overview' },
   { name: 'healthcare', path: '/healthcare-it/', ready: '#track-overview' },
