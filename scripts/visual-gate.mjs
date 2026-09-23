@@ -51,6 +51,10 @@ export const SWAPPED_FILES = Object.freeze([
 // No gate run lasts an hour, so a lock that old belongs to a run that died,
 // whatever process its pid names by now.
 export const LOCK_MAX_AGE_MS = 60 * 60_000;
+// How long a second run waits for the first before it gives up, and how often
+// it looks.
+const LOCK_WAIT_MS = 20 * 60_000;
+const LOCK_POLL_MS = 5_000;
 
 // The routes whose look matters most, compared in both themes and at both
 // viewport sizes before every deploy.
@@ -187,7 +191,7 @@ export function releaseLock({ lock = lockPath } = {}) {
 }
 
 /** Run `callback` holding the lock, waiting up to `waitMs` for another run to finish. */
-export async function withLock(callback, { lock = lockPath, waitMs = 20 * 60_000, pollMs = 5_000, log = console.warn, isAlive = pidAlive } = {}) {
+export async function withLock(callback, { lock = lockPath, waitMs = LOCK_WAIT_MS, pollMs = LOCK_POLL_MS, log = console.warn, isAlive = pidAlive } = {}) {
   const deadline = Date.now() + waitMs;
   let announced = false;
   for (;;) {
@@ -211,7 +215,15 @@ export async function withLock(callback, { lock = lockPath, waitMs = 20 * 60_000
  * before it fetches anything.
  * @returns {Promise<string[]>} the names restored
  */
-export function restoreKilledRun({ dir = dataDir, backup = backupDir, fixtures = fixturesDir, lock = lockPath, log = console.warn, waitMs, pollMs } = {}) {
+export function restoreKilledRun({
+  dir = dataDir,
+  backup = backupDir,
+  fixtures = fixturesDir,
+  lock = lockPath,
+  log = console.warn,
+  waitMs = LOCK_WAIT_MS,
+  pollMs = LOCK_POLL_MS,
+} = {}) {
   return withLock(() => (fs.existsSync(backup) ? restoreLiveData({ dir, backup, fixtures, log }) : []), { lock, log, waitMs, pollMs });
 }
 
