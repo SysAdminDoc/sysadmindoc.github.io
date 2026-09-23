@@ -30,6 +30,13 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: win32 baselines are regenerated from fixtures for every route, including `/colophon/` and `/privacy/`, and the Linux baselines are deleted. A fixture-built visual comparison of `/`, `/ai/`, `/healthcare-it/`, `/resume/` and `/catalog/` runs in `deploy:preflight`.
   Complexity: M
 
+- [ ] P2: Make the colours work in every browser the build targets
+  Why: The build declares Chrome and Edge 111, Safari 16.4 and Firefox 114 as targets, but every colour token is a custom property set with `light-dark()`, which those browsers before Chrome 123, Safari 17.5 and Firefox 120 don't know. A custom property takes any value and the last declaration wins, so the plain value written before each one (`--grn:#4ade80;--grn:light-dark(…)`) is no fallback, and every `var()` that reads a token is invalid there.
+  Evidence: sixth drain review, 2026-09-23 (in Chromium, `--c:red;--c:nosuchfn()` gives black, not red); all 50 `light-dark()` uses in `src/styles` set a custom property; `CSS_BROWSER_TARGETS` in `scripts/lib/minify-css.mjs`.
+  Touches: `scripts/lib/minify-css.mjs` (let lightningcss lower `light-dark()`, which it does with `--lightningcss-light`/`--lightningcss-dark` switched by `color-scheme`), or `CSS_BROWSER_TARGETS` if the older browsers are dropped instead; the `color-scheme` rules the theme toggle sets; `test/css-minify.test.mjs`.
+  Acceptance: Chrome for Testing 122, headless, renders the homepage and `/catalog/` in both themes with the same colours as the current Chromium, shown by screenshots, or the declared targets start at the versions that support `light-dark()` and the README says which browsers are supported.
+  Complexity: M
+
 - [ ] P2: Make the CSP report stream readable, and check it every night
   Why: The sink recorded the avatar bug three weeks before anyone noticed, and 260 of its 303 reports can't be classified.
   Evidence: sink aggregates on 2026-09-23 (303 reports since 2026-08-20, 260 of them recorded as `(invalid-url)`); the policy in `src/layouts/Base.astro:75` has no `'report-sample'`.

@@ -11,8 +11,13 @@ import { Features, transform } from 'lightningcss';
 export const CSS_BROWSER_TARGETS = Object.freeze(['chrome111', 'edge111', 'firefox114', 'safari16.4', 'ios16.4']);
 
 // Every other feature lightningcss could lower for those targets stays as
-// written: the source carries its own fallbacks (light-dark() among them), and
-// lowering it would change what browsers render.
+// written. That includes light-dark(), though not because the source has
+// fallbacks: all 50 uses set a custom property, and an earlier declaration of
+// the same property is no fallback, since a custom property takes any value
+// and the last one wins. In the targets that predate light-dark() (Chrome and
+// Edge 111-122, Safari 16.4-17.4, Firefox 114-119) the colour tokens resolve
+// to nothing; ROADMAP.md has the item that settles lowering it or narrowing
+// the targets.
 const everyFeature = Object.values(Features).filter(Number.isInteger).reduce((mask, flag) => mask | flag, 0);
 export const LIGHTNINGCSS_EXCLUDE = everyFeature & ~Features.VendorPrefixes;
 
