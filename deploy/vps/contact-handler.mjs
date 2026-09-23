@@ -25,8 +25,9 @@
 // token must be at least CONTACT_MIN_TIME seconds old, at most four hours old,
 // and unused, so the timing check runs on this server's clock rather than the
 // visitor's. The key is made fresh at every start, because the list of used
-// tokens lives in memory. A POST with no token is accepted only as a no-JavaScript browser
-// navigation from a page on this site, under a stricter per-client limit.
+// tokens lives in memory. Every visitor post has to come from a page on this
+// site, token or not. One with no token is accepted only as a no-JavaScript
+// browser navigation, under a stricter per-client limit.
 // Every client also has a per-ten-minutes and a daily limit, and stored leads
 // have a global hourly cap. A form that fails a field check hears only "Please
 // check the form and try again", and a filled honeypot is answered like a sent
@@ -307,19 +308,26 @@ export function isNavigation(headers) {
 /**
  * Whether a post came from a page on this site. Browsers mark a form post with
  * Sec-Fetch-Site, and older ones still send Origin. Without this, a page on any
- * other site could post here through its visitors' browsers, with no token and
- * each visitor's own address to spend.
+ * other site could post here through its visitors' browsers, each with its own
+ * address to spend, and a token doesn't help: any site can fetch one.
  */
 export function isSameSitePost(headers) {
   const site = headers['sec-fetch-site'];
   if (site) return site === 'same-origin';
+  const host = String(headers.host ?? '');
+  const sameHost = (value) => {
+    try {
+      return Boolean(host) && new URL(value).host === host;
+    } catch {
+      return false;
+    }
+  };
   const origin = headers.origin;
-  if (!origin || origin === 'null') return false;
-  try {
-    return new URL(origin).host === String(headers.host ?? '');
-  } catch {
-    return false;
-  }
+  if (origin) return origin !== 'null' && sameHost(origin);
+  // A text browser sends neither header, but it does send the page it posted
+  // from. Every graphical browser sends Origin on a POST, so a page on another
+  // site can't get here by leaving both out.
+  return typeof headers.referer === 'string' && sameHost(headers.referer);
 }
 
 /** The form's own page, as a path on this site; never another origin. */
@@ -799,6 +807,12 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
 
     const received = now();
     const form = parseSubmission(body);
+    if (!synthetic && !isSameSitePost(request.headers)) {
+      logger.log('contact: rejected a submission (posted from another site)');
+      refuse(422, { error: CHECK_FORM_MESSAGE });
+      return;
+    }
+
     // The token is checked first, so its answer doesn't depend on the other
     // fields and can't be used to find the honeypot.
     if (form.token) {
@@ -814,10 +828,6 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       logger.log('contact: rejected a submission (no token)');
       refuse(422, { error: CHECK_FORM_MESSAGE, code: 'token' });
       return;
-    } else if (!isSameSitePost(request.headers)) {
-      logger.log('contact: rejected a submission (no token, posted from another site)');
-      refuse(422, { error: CHECK_FORM_MESSAGE });
-      return;
     } else if (!synthetic) {
       if (noTokenAttempts.count(client, current) >= config.noTokenClientMax) {
         logger.log('contact: refused a submission (no-JavaScript limit)');
@@ -827,32 +837,31 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       noTokenAttempts.add(client, current);
     }
 
-    // A filled honeypot gets the reply a sent message gets, and nothing is
-    // stored or passed on, so a bot can't tell it tripped anything.
+    // The field checks and the cap come before the honeypot, so a filled
+    // honeypot gets exactly the reply the same form gets without it: 422 for a
+    // bad field, 429 when the hour is full, and otherwise the reply a sent
+    // message gets, with nothing stored or passed on.
+    const problem = validateSubmission({ ...form, honeypot: '' }, config);
+    if (problem) {
+      logger.log(`contact: rejected a submission (${problem})`);
+      refuse(422, { error: CHECK_FORM_MESSAGE });
+      return;
+    }
+    if (!synthetic && storedLastHour.count('all', current) >= config.globalHourlyCap) {
+      logger.error('contact: refused a submission (global hourly cap reached)');
+      refuse(429, { error: BUSY_MESSAGE });
+      return;
+    }
     if (form.honeypot) {
       logger.log('contact: dropped a submission (honeypot filled)');
       if (navigation) redirect(response, '/contact/sent/');
       else sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
       return;
     }
-    const problem = validateSubmission(form, config);
-    if (problem) {
-      logger.log(`contact: rejected a submission (${problem})`);
-      refuse(422, { error: CHECK_FORM_MESSAGE });
-      return;
-    }
-
     // The slot is taken here, before anything awaits, so simultaneous posts
     // can't all find room under the cap and overshoot it. A lead that can't be
     // stored gives its slot back.
-    if (!synthetic) {
-      if (storedLastHour.count('all', current) >= config.globalHourlyCap) {
-        logger.error('contact: refused a submission (global hourly cap reached)');
-        refuse(429, { error: BUSY_MESSAGE });
-        return;
-      }
-      storedLastHour.add('all', current);
-    }
+    if (!synthetic) storedLastHour.add('all', current);
 
     const lead = {
       type: 'lead',

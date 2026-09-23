@@ -104,6 +104,7 @@ function requestMock({ method = 'POST', url = '/api/contact', body = '', headers
     headers: {
       'content-length': String(Buffer.byteLength(body)),
       'content-type': 'application/x-www-form-urlencoded',
+      host: 'portfolio.getparkerai.com',
       referer: 'https://portfolio.getparkerai.com/ai/',
       ...headers,
     },
@@ -715,23 +716,43 @@ test('a scripted submission without a good token is refused, generically, and st
   });
 });
 
-// The review found the honeypot by comparing replies: with the same junk token,
-// a filled honeypot came back without the token code and an empty one with it.
+// Two reviews found the honeypot by comparing replies: first with a junk token,
+// then with a bad field, where a filled honeypot got 200 and an empty one 422.
+// Whatever else a form carries, filling the honeypot must not change the reply.
 test('the replies never give the honeypot away', async () => {
-  await withHandler({}, async ({ handler, storePath }) => {
+  await withHandler({ config: { globalHourlyCap: 3 } }, async ({ handler, storePath }) => {
     const reply = async (fields, headers = {}) => {
       const response = responseMock();
       await handler.handleRequest(jsonPost(fields, headers), response);
       return { status: response.status, body: response.body, location: response.headers.Location };
     };
-    const junk = 'not-a-token';
-    assert.deepEqual(await reply({ ...lead, token: junk, website: 'http://spam.example' }), await reply({ ...lead, token: junk }), 'same junk token, same reply');
-    assert.deepEqual(await reply({ ...lead, name: '', website: 'http://spam.example' }), await reply(lead), 'a filled honeypot reads like a sent message');
-
+    const withAndWithout = async (fields, headers = {}) => [
+      await reply({ ...fields, website: 'http://spam.example' }, headers),
+      await reply(fields, headers),
+    ];
     const navigate = { accept: 'text/html,*/*;q=0.8', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-origin' };
-    assert.equal((await reply({ ...lead, website: 'x' }, navigate)).location, '/contact/sent/');
+    /** @type {Array<[string, Record<string, string>, Record<string, string>, number]>} */
+    const cases = [
+      ['junk token', { ...lead, token: 'not-a-token' }, {}, 422],
+      ['missing name', { ...lead, name: '' }, {}, 422],
+      ['short message', { ...lead, message: 'short' }, {}, 422],
+      ['a good form', lead, {}, 200],
+      ['missing name, no JavaScript', { ...lead, name: '' }, navigate, 303],
+    ];
+    for (const [label, fields, headers, expected] of cases) {
+      const [filled, empty] = await withAndWithout(fields, headers);
+      assert.deepEqual(filled, empty, label);
+      assert.equal(empty.status, expected, label);
+    }
+    // One real message so far and a cap of 3: two more fill the hour, and then
+    // a filled honeypot gets the same 429 a real message does.
+    assert.equal((await reply(lead)).status, 200);
+    assert.equal((await reply(lead)).status, 200);
+    const [filled, empty] = await withAndWithout(lead);
+    assert.equal(empty.status, 429);
+    assert.deepEqual(filled, empty, 'the full hour answers both alike');
     await handler.idle();
-    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1, 'only the real message is stored');
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 3, 'only real messages are stored');
   });
 });
 
@@ -773,13 +794,17 @@ test('a browser without JavaScript can send without a token, under a stricter li
 
 // The review posted tokenless "navigations" from another site, one with a
 // foreign Referer and one with a foreign Origin, and both were stored.
-test('a tokenless post is taken only from a page on this site', async () => {
+test('a post, with or without a token, is taken only from a page on this site', async () => {
   const host = 'portfolio.getparkerai.com';
   assert.equal(isSameSitePost({ 'sec-fetch-site': 'same-origin' }), true);
   assert.equal(isSameSitePost({ 'sec-fetch-site': 'same-site', origin: `https://${host}`, host }), false, 'Sec-Fetch-Site wins when present');
   assert.equal(isSameSitePost({ origin: `https://${host}`, host }), true, 'an older browser sends Origin');
   assert.equal(isSameSitePost({ origin: 'null', host }), false);
   assert.equal(isSameSitePost({ host }), false);
+  // A text browser sends neither header but does send the page it posted from.
+  assert.equal(isSameSitePost({ referer: `https://${host}/ai/`, host }), true);
+  assert.equal(isSameSitePost({ referer: 'https://evil.example/', host }), false);
+  assert.equal(isSameSitePost({ referer: 'https://evil.example/', origin: `https://${host}`, host }), true, 'Origin outranks Referer');
 
   await withHandler({}, async ({ handler, storePath }) => {
     const base = { accept: 'text/html,*/*;q=0.8', host };
@@ -796,6 +821,19 @@ test('a tokenless post is taken only from a page on this site', async () => {
       assert.equal(response.status, 303, JSON.stringify(headers));
       assert.match(response.headers.Location, /#contact-not-sent$/, JSON.stringify(headers));
     }
+    // A token proves timing, not origin: the fifth review had another site's
+    // server fetch one and its visitors' browsers post it, and both were stored.
+    for (const headers of foreign) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody(lead), headers: { ...base, ...headers } }), response);
+      assert.match(response.headers.Location ?? '', /#contact-not-sent$/, `with a token: ${JSON.stringify(headers)}`);
+    }
+    const silentFetch = responseMock();
+    await handler.handleRequest(
+      requestMock({ body: formBody(lead), headers: { accept: '*/*', host, 'sec-fetch-mode': 'no-cors', 'sec-fetch-site': 'cross-site', origin: 'https://evil.example' } }),
+      silentFetch,
+    );
+    assert.equal(silentFetch.status, 422, 'a silent cross-site fetch with a token');
     const own = responseMock();
     await handler.handleRequest(
       requestMock({ body: formBody({ ...lead, token: '' }), headers: { ...base, 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'same-origin', origin: `https://${host}` } }),

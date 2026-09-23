@@ -221,16 +221,21 @@ Once someone starts filling in the form, its script fetches a signed token
 from `/api/contact/token` and sends it back with the message. The handler
 refuses a token under three seconds old, over four hours old, or already used,
 so it times the form on its own clock instead of the visitor's. Its signing key
-is new at every start, so a restart can't let a used token through again. Each visitor
-gets five attempts per ten minutes and ten a day, which keeps one address from
-filling the hourly cap by itself. A browser without JavaScript can't fetch a
-token, so its post is taken only when the browser marks it as coming from a
-page on this site, and it gets two attempts. The site stores at most 30
-messages an hour, and that cap holds even when posts arrive at the same moment.
+is new at every start, so a restart can't let a used token through again.
+
+Every post has to come from a page on this site, token or not, since any site
+can fetch a token. The browser says where it posted from with Sec-Fetch-Site or
+Origin, and a text browser that sends neither is judged by its Referer. Each
+visitor gets five attempts per ten minutes and ten a day, which keeps one
+address from filling the hourly cap by itself. The counts live in memory, so a
+restart (every deploy) starts them over. A browser without JavaScript can't
+fetch a token, so it gets two attempts. The site stores at most 30 messages an
+hour, and that cap holds even when posts arrive at the same moment.
+
 A form that fails a field check hears only "Please check the form and try
-again". The token is checked before the fields, and a filled honeypot gets the
-reply a sent message gets, so the replies don't give the honeypot away. The
-handler's log keeps the reason.
+again". The field checks and the cap come before the honeypot, and a filled
+honeypot then gets the reply a sent message gets, so the reply to a form is the
+same with or without it. The handler's log keeps the reason.
 
 The removed `/projects/<Repo>/` pages still get visits from old links. At each
 deploy, `deploy-vps` writes a `redir` line per catalog repo from
