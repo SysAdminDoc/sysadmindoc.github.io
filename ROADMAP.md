@@ -29,13 +29,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: every claim matches what the filter does, and /privacy/ names what an error entry keeps and for how long.
   Complexity: S
 
-- [ ] P2: Make the holder test catch a late release, not only a wait for the holder
-  Why: `67daf260` replaced the holder test's 20-second bound with a check that the holder outlives the run. A runner that let go of the output 30 seconds late still passed (32.8 s), which the old bound caught. The check also counts any live pid as the holder, so a reused pid could turn the regression it guards into a pass. That commit's message and the CHANGELOG claim more than it did: the old file failed two runner tests the way the deploy did and two more only by timing out, and preflight still runs a browser audit with fixed timeouts.
-  Evidence: ninth drain review, 2026-09-23. `}, graceMs + 30_000);` in `scripts/refresh-and-deploy.mjs` passed the test.
-  Touches: `test/refresh-and-deploy.test.mjs`, `CHANGELOG.md`.
-  Acceptance: a late release and a missing grace both fail the test, the holder reports its own exit so a reused pid can't pass for it, a slowed run still passes, and the CHANGELOG says only what changed.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Make the CSS output checks cover what they claim

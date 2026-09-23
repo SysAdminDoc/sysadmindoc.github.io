@@ -188,9 +188,17 @@ test('a step that leaves a process holding its output does not hold the run', { 
   await fs.mkdir(path.join(dir, '.tmp'), { recursive: true });
   await fs.writeFile(
     path.join(dir, 'hold.cjs'),
-    "require('fs').writeFileSync('.tmp/holder.pid', String(process.pid)); setTimeout(() => {}, 60000);",
+    [
+      "const fs = require('node:fs');",
+      "fs.writeFileSync('.tmp/holder.pid', String(process.pid));",
+      // Only an end of its own writes this; the test's kill afterwards doesn't.
+      "process.on('exit', () => fs.writeFileSync('.tmp/holder.exited', String(Date.now())));",
+      'setTimeout(() => {}, 60000);',
+    ].join('\n'),
   );
-  const background = process.platform === 'win32' ? 'start /b node hold.cjs' : 'node hold.cjs &';
+  // The step's last command stamps the time, just before its shell exits.
+  await fs.writeFile(path.join(dir, 'done.cjs'), "require('fs').writeFileSync('.tmp/step-done.txt', String(Date.now()));");
+  const background = process.platform === 'win32' ? 'start /b node hold.cjs & node done.cjs' : 'node hold.cjs & node done.cjs';
   await fs.writeFile(
     path.join(dir, 'package.json'),
     JSON.stringify({
@@ -210,10 +218,14 @@ test('a step that leaves a process holding its output does not hold the run', { 
   runnerChild = child;
   assert.equal(await exited, 1);
   // The holder lives a minute, and a runner that waited on it could only have
-  // finished once it was gone, so it has to be alive now however slow the run
-  // was. Its pid can land a moment after the run on a slow start.
+  // finished once it was gone. It notes its own end, so a reused pid can't
+  // pass for it. Its pid can land a moment after the run on a slow start.
   const holder = await waitForPid(path.join(dir, '.tmp', 'holder.pid'));
-  assert.ok(isAlive(holder), 'the run waited for the holder to exit');
+  const holderEnded = await fs.access(path.join(dir, '.tmp', 'holder.exited')).then(
+    () => true,
+    () => false,
+  );
+  assert.ok(!holderEnded && isAlive(holder), 'the run waited for the holder to exit');
 
   const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
   assert.equal(status.step, 'profile-feed:sync', 'fetch-stars counted as passed and the run went on');
@@ -221,8 +233,13 @@ test('a step that leaves a process holding its output does not hold the run', { 
 
   const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
   assert.match(log, /WARN {2}fetch-stars: finished, but something it started still held its output after 2s/);
-  assert.match(log, /OK {4}fetch-stars/);
   assert.doesNotMatch(log, /STOP/);
+  // It also let go within the grace, give or take: counted from the step's last
+  // command rather than the run's start, so a slow machine can't stretch it.
+  const doneAt = Number(await fs.readFile(path.join(dir, '.tmp', 'step-done.txt'), 'utf8'));
+  const okAt = Date.parse(log.match(/^(\S+) OK {4}fetch-stars$/m)?.[1] ?? '');
+  assert.ok(Number.isFinite(doneAt) && Number.isFinite(okAt), 'the step and the runner both recorded their times');
+  assert.ok(okAt - doneAt < 10_000, `the run let go of the output ${((okAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s`);
 });
 
 test('an unsigned featured release still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
