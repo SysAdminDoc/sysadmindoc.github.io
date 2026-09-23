@@ -52,6 +52,8 @@ try {
 } catch {}
 
 export async function GET(_context: APIContext) {
+  // One clock for the file: generatedData.evaluatedAt is exactly generatedAt.
+  const now = new Date();
   const generatedData = buildGeneratedDataTrust({
     stats,
     starEntries,
@@ -62,12 +64,13 @@ export async function GET(_context: APIContext) {
     profileFeedInfo,
     readmeRefresh,
     catalogDrift,
+    now,
   });
 
   const status = {
     schema: 'sysadmindoc.status.v1',
     version: pkg.version,
-    generatedAt: new Date().toISOString(),
+    generatedAt: now.toISOString(),
     build: {
       commit: buildIdentity.commit,
       commitShort: buildIdentity.commitShort,
@@ -78,7 +81,12 @@ export async function GET(_context: APIContext) {
       source: profileFeedInfo.source ?? null,
       projectCount: profileFeedInfo.projectCount ?? catalog.length,
     },
-    generatedData,
+    // This file is written once per build and then served for days, so its
+    // verdict ages. On 2026-09-23 it said "fresh" about data 37.8 hours old.
+    generatedData: {
+      ...generatedData,
+      note: 'status, stale and ageHours were evaluated at generatedAt, when this file was built. The data is past its freshness contract once the current time passes staleAfter.',
+    },
   };
 
   return new Response(JSON.stringify(status, null, 2) + '\n', {

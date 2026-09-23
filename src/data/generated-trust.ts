@@ -71,6 +71,14 @@ export type GeneratedDataTrust = {
   fetchedAt: string | null;
   ageHours: number | null;
   stale: boolean;
+  /**
+   * When the data passes its freshness contract: fetchedAt plus maxAgeHours.
+   * `status`, `stale` and `ageHours` describe the data at `evaluatedAt`, which
+   * is the build, so a consumer compares this with its own clock instead.
+   */
+  staleAfter: string | null;
+  /** When `status`, `stale` and `ageHours` were computed. */
+  evaluatedAt: string;
   totalRepos: number | null;
   totalStars: number | null;
   readmeEntries: number;
@@ -140,6 +148,12 @@ function ageHours(value: NullableDate, now: Date) {
   const date = new Date(value ?? '');
   if (Number.isNaN(date.getTime())) return null;
   return roundMetric((now.getTime() - date.getTime()) / 3_600_000);
+}
+
+function staleAfterIso(value: NullableDate, maxAgeHours: number) {
+  const date = new Date(value ?? '');
+  if (Number.isNaN(date.getTime())) return null;
+  return new Date(date.getTime() + maxAgeHours * 3_600_000).toISOString();
 }
 
 function roundMetric(value: number | null | undefined, digits = 4) {
@@ -317,6 +331,8 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
     fetchedAt: isoOrNull(stats.fetchedAt),
     ageHours: dataAgeHours,
     stale: dataStale,
+    staleAfter: staleAfterIso(stats.fetchedAt, maxAgeHours),
+    evaluatedAt: now.toISOString(),
     totalRepos: finiteNumberOrNull(stats.totalRepos),
     totalStars: finiteNumberOrNull(stats.totalStars),
     readmeEntries: input.readmeEntries,

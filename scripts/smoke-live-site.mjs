@@ -7,6 +7,7 @@ import process from 'node:process';
 import sharp from 'sharp';
 import { SITE_URL } from '../site.config.mjs';
 import { NOTIFY_ORIGIN, checkLeadDelivery } from './lib/lead-delivery-check.mjs';
+import { checkStatusFreshness } from './lib/status-freshness.mjs';
 
 const root = process.cwd();
 const runId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -505,6 +506,8 @@ async function checkLiveArtifacts(baseUrl, expected) {
     throw new Error(`/status.json catalog count drifted: expected ${expected.projects}, got ${statusProjectCount}.`);
   }
   summary.push(`status: v${status.version} (${buildCommit})`);
+  const freshness = checkStatusFreshness(status);
+  summary.push(`data freshness: inside its contract until ${freshness.staleAfter} (${freshness.hoursLeft}h left)`);
 
   const projectsResponse = await fetchText(baseUrl, '/projects.json', 'application/json');
   requireHeader(projectsResponse, '/projects.json', { contentTypes: ['application/json'], cacheControl: 'max-age=600' });
@@ -651,9 +654,11 @@ async function checkDeployStatus(baseUrl, expected) {
   }
 
   requireDate(status.generatedAt, '/status.json generatedAt');
+  const freshness = checkStatusFreshness(status);
   console.log('Deploy status');
   console.log(`  live:  v${liveVersion} (${liveCommit})`);
   console.log(`  local: v${expected.version} (${expected.commit})`);
+  console.log(`  data:  inside its contract until ${freshness.staleAfter} (${freshness.hoursLeft}h left)`);
   console.log('Live deployment matches local HEAD.');
 }
 

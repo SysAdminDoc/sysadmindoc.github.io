@@ -250,6 +250,12 @@ profile-feed:sync, 45 for deploy:preflight, 20 for deploy:vps) that kills its
 whole process tree, so a hung or killed run shows up instead of leaving the
 previous night's result in place.
 
+The live site says when its data expires. `/status.json` carries
+`generatedData.staleAfter`, the fetch time plus the 36-hour contract, beside a
+`status` that was only true when the file was built. `npm run smoke:live` and
+`npm run deploy:status` both fail once `staleAfter` has passed, so a nightly
+run that stops deploying shows up the next time either one runs.
+
 ## Layout
 
 ```

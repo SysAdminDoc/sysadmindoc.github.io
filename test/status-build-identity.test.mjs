@@ -123,6 +123,9 @@ test('deploy status compares the live version and commit with local HEAD', async
   const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
   const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).trim();
   let liveVersion = pkg.version;
+  // A live /status.json now carries staleAfter, which the status check judges
+  // against the clock; the fake used to omit it.
+  let staleAfter = new Date(Date.now() + 12 * 3_600_000).toISOString();
   const server = http.createServer((request, response) => {
     if (!request.url?.startsWith('/status.json')) {
       response.writeHead(404).end();
@@ -138,6 +141,7 @@ test('deploy status compares the live version and commit with local HEAD', async
         version: liveVersion,
         generatedAt: '2026-07-25T00:00:00.000Z',
         build: { commit: head },
+        generatedData: { status: 'fresh', stale: false, maxAgeHours: 36, staleAfter },
       }),
     );
   });
@@ -151,6 +155,14 @@ test('deploy status compares the live version and commit with local HEAD', async
   assert.equal(matching.code, 0, matching.stderr);
   assert.match(matching.stdout, new RegExp(`live:\\s+v${pkg.version}`));
   assert.match(matching.stdout, /Live deployment matches local HEAD/);
+  assert.match(matching.stdout, /data:\s+inside its contract until/);
+
+  // The same build, still claiming "fresh", after its data's contract ran out.
+  staleAfter = new Date(Date.now() - 2 * 3_600_000).toISOString();
+  const stale = await runSmoke(['--status-only', '--base-url', baseUrl, '--retries', '1']);
+  assert.equal(stale.code, 1);
+  assert.match(stale.stderr, /went past its 36h freshness contract/);
+  staleAfter = new Date(Date.now() + 12 * 3_600_000).toISOString();
 
   liveVersion = '0.0.0';
   const drifted = await runSmoke(['--status-only', '--base-url', baseUrl, '--retries', '1']);
