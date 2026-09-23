@@ -61,8 +61,10 @@ export async function GET(context: APIContext) {
   lines.push('# Matt Parker | Portfolio');
   lines.push('');
   lines.push(
-      `> ${careerProfile.headline.replace(/\.$/, '')}, with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation. Static and privacy-first: no cookies, no client-side analytics and no third-party requests (details at /privacy/).`,
+      `> ${careerProfile.headline.replace(/\.$/, '')}, with ${experienceLabel} across enterprise IT, healthcare systems, Windows infrastructure, migrations, customer support, and workflow automation.`,
   );
+  lines.push('');
+  lines.push('The site is static and privacy-first, with no cookies, no client-side analytics and no third-party requests. Details are at /privacy/.');
   lines.push('');
 
   lines.push('## Featured projects');
