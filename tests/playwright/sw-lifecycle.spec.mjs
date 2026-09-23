@@ -129,6 +129,25 @@ test('offline navigation reaches the offline fallback page', async ({ page, cont
   await context.setOffline(false);
 });
 
+// The sixth drain review: the palette fetches its dataset only when it opens,
+// so a visitor who never opened it online had nothing cached, and offline the
+// palette only said it couldn't load.
+test('the command palette works offline for a returning visitor who never opened it', async ({ page, context }) => {
+  await stubExternalRuntimeRequests(page);
+  await page.goto('/', { waitUntil: 'networkidle' });
+  // ready resolves once the worker is active, which is after its precache.
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+  await context.setOffline(true);
+  await page.locator('#cmdkToggle').dispatchEvent('click');
+  await expect(page.locator('#cmdk')).toBeVisible();
+  await page.locator('#cmdkInput').fill('python');
+  await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);
+  await context.setOffline(false);
+});
+
 test('no console errors during service worker lifecycle', async ({ page }) => {
   const errors = [];
   await stubExternalRuntimeRequests(page);

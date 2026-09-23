@@ -119,6 +119,21 @@ test('service-worker precache enforces an explicit byte budget', async () => {
   );
 });
 
+// The sixth drain review: once the palette stopped loading its dataset on
+// every page, nothing cached it, and offline the palette only said it couldn't
+// load.
+test('the palette dataset is precached, since the palette fetches it only when opened', async () => {
+  const rootDir = await createFixtureRoot();
+  const dist = path.join(rootDir, 'dist');
+  await writeFixtureFile(path.join(dist, 'pagefind', 'pagefind-entry.json'), '{}');
+  await writeFixtureFile(path.join(dist, 'scripts', 'cmdk-loader.js'), "injectScript('/cmdk-data.js')");
+  await writeFixtureFile(path.join(dist, 'cmdk-data.js'), 'window.__cmdk=[]');
+  assert.ok(buildPrecacheList(dist).includes('/cmdk-data.js'));
+
+  await fs.rm(path.join(dist, 'cmdk-data.js'));
+  assert.throws(() => buildPrecacheList(dist), /cmdk-loader\.js loads \/cmdk-data\.js, but dist\/cmdk-data\.js is missing/);
+});
+
 test('service-worker stamping fails when the search page references Pagefind before indexing', async () => {
   const rootDir = await createFixtureRoot();
 

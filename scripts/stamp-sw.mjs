@@ -83,6 +83,11 @@ function searchPageRequiresPagefind(distRoot) {
   return /\/pagefind\/pagefind-component-ui\.(?:css|js)\b/.test(searchHtml);
 }
 
+function paletteLoadsDataset(distRoot) {
+  const loaderPath = join(distRoot, 'scripts', 'cmdk-loader.js');
+  return existsSync(loaderPath) && readFileSync(loaderPath, 'utf8').includes('/cmdk-data.js');
+}
+
 export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES) {
   // Hashed Astro bundles (CSS + JS under _assets/).
   const assetFiles = collectFiles(join(distRoot, '_assets'), distRoot)
@@ -124,6 +129,17 @@ export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES)
     '/icon-512.png',
   ];
 
+  // The command palette fetches its dataset only when it opens (or its trigger
+  // is hovered), so a visitor who never opened it online would have no copy
+  // offline. It used to load on every page, which cached it as a side effect.
+  const paletteFiles = [];
+  if (paletteLoadsDataset(distRoot)) {
+    if (!existsSync(join(distRoot, 'cmdk-data.js'))) {
+      throw new Error('dist/scripts/cmdk-loader.js loads /cmdk-data.js, but dist/cmdk-data.js is missing.');
+    }
+    paletteFiles.push('/cmdk-data.js');
+  }
+
   // Feeds (present at root level of dist/).
   const feedFiles = [];
   for (const file of ['rss.xml', 'atom.xml']) {
@@ -134,6 +150,7 @@ export function buildPrecacheList(distRoot, budgetBytes = PRECACHE_BUDGET_BYTES)
   const allEntries = [
     ...shellUrls,
     ...staticAssets,
+    ...paletteFiles,
     ...feedFiles,
     ...assetFiles.sort(),
     ...scriptFiles.sort(),
