@@ -216,4 +216,62 @@ test.describe('a cross-origin request on a page the worker controls', () => {
     expect(answeredByWorker).toEqual([]);
     expect(naturalWidth).toBeGreaterThan(0);
   });
+
+  // An image alone passed a worker whose early return had been narrowed to
+  // images, so a fetch() to another origin is covered too.
+  test('a fetch() to another origin goes to the network as well', async ({ page, context }) => {
+    await context.route('https://api.example.test/**', (route) =>
+      route.fulfill({ contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: '{"ok":true}' }),
+    );
+    await page.goto('/', { waitUntil: 'load' });
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+    const answeredByWorker = [];
+    page.on('response', (response) => {
+      if (response.url().startsWith('https://api.example.test/') && response.fromServiceWorker()) {
+        answeredByWorker.push(`${response.status()} ${response.url()}`);
+      }
+    });
+    const body = await page.evaluate(() =>
+      fetch('https://api.example.test/probe.json').then((response) => response.json(), (error) => String(error)),
+    );
+    expect(answeredByWorker).toEqual([]);
+    expect(body).toEqual({ ok: true });
+  });
+});
+
+// The worker's stale-while-revalidate cache used to hold /api/contact/token,
+// so the next message went out with the last one's token and was refused as a
+// replay.
+test('the worker leaves /api/ alone, so a form token is never served twice', async ({ page, context }) => {
+  let issued = 0;
+  await context.route('**/api/contact/token', (route) => {
+    issued += 1;
+    return route.fulfill({
+      contentType: 'application/json; charset=utf-8',
+      headers: { 'Cache-Control': 'no-store' },
+      body: JSON.stringify({ token: `token-${issued}` }),
+    });
+  });
+  await page.goto('/', { waitUntil: 'load' });
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+  const answeredByWorker = [];
+  page.on('response', (response) => {
+    if (new URL(response.url()).pathname.startsWith('/api/') && response.fromServiceWorker()) answeredByWorker.push(response.url());
+  });
+  const tokens = await page.evaluate(async () => {
+    const get = () =>
+      fetch('/api/contact/token', { headers: { Accept: 'application/json' }, cache: 'no-store' })
+        .then((response) => response.json())
+        .then((data) => data.token, (error) => String(error));
+    const first = await get();
+    // Long enough for a background revalidation to land in the cache.
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return [first, await get()];
+  });
+  expect(tokens).toEqual(['token-1', 'token-2']);
+  expect(answeredByWorker).toEqual([]);
 });

@@ -114,6 +114,10 @@ self.addEventListener('fetch', (e) => {
     // hosts, so answering them here turned the cross-origin homepage avatar into
     // a synthetic 503 for every returning visitor from at least 2026-09-01.
     if (url.origin !== self.location.origin) return;
+    // The API answers each request once: a form token is good for one message.
+    // Stale-while-revalidate handed the cached token to the next message, which
+    // the handler refused as a replay.
+    if (url.pathname.startsWith('/api/')) return;
     const isNavigation = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
 
     if (isNavigation) {

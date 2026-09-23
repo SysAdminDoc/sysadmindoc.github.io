@@ -66,12 +66,13 @@
               });
               return;
             }
+            // A token is good for one attempt, sent or refused, so the next one
+            // fetches its own.
+            tokenReady = null;
+            token = null;
             if (result.ok) {
               settle(result.data.message || 'Sent. I will be in touch.', true);
               form.reset();
-              // A token is good for one message; the next one fetches its own.
-              tokenReady = null;
-              token = null;
             } else {
               settle(result.data.error || 'Something went wrong. Try emailing directly.', false);
             }
@@ -90,10 +91,11 @@
       status.textContent = '';
       ensureToken().then(function () {
         if (!token) {
-          // Without a token the page script can't send it, but the browser's
-          // own POST still can, and the handler answers that with a page.
-          // form.submit() skips this listener, so it can't loop.
-          form.submit();
+          // The token and the form go to the same handler, so no token means
+          // it's down or restarting. Posting the form anyway landed on the
+          // error page and lost the text; staying here keeps it.
+          tokenReady = null;
+          settle('Could not reach the server. Try emailing directly.', false);
           return;
         }
         send(false);
