@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: both mutations fail the gate, and three unchanged runs in a row still pass.
   Complexity: M
 
-- [ ] P2: Parse the trust settings instead of pattern-matching them
-  Why: The header-contract tests pass configs that reopen the forwarded-address hole: a quoted `header_up "X-Forwarded-For" "{http.request.header.X-Forwarded-For}"`, a `request_header X-Forwarded-For {http.request.header.X-Real-IP}`, ntfy started with `--proxy-forwarded-header X-Real-IP`, and an extra global option such as a `proxy_protocol` listener wrapper, which lets any container on `web` claim the edge's address. The compose network reader misses `web: ~`, `web: null` and `-   web`, and each of those puts the report sink back on `web`.
-  Evidence: eighth drain review, 2026-09-23, each form checked with `caddy adapt` 2.11.4 or `docker compose config`; `test/endpoint-header-contract.test.mjs:136-148,180`.
-  Touches: `test/endpoint-header-contract.test.mjs`.
-  Acceptance: each of those configs fails a test and the committed ones still pass, so the CHANGELOG's "a test fails if either server is told to read the visitor's address from any other header" is true.
-  Complexity: M
-
 ### P3
 
 - [ ] P3: Make the CSS output checks cover what they claim

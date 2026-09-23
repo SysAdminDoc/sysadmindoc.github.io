@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { parse as parseYaml } from 'yaml';
+import { caddyfileLines, clientAddressHeaderWrites, parseCaddyfile } from '../scripts/lib/caddyfile.mjs';
 import { EDGE_PROXY_ADDRESS } from '../scripts/lib/edge-address.mjs';
 
 const root = process.cwd();
@@ -116,39 +118,100 @@ test('the deployed CSP header carries frame-ancestors, which a meta policy canno
   );
 });
 
+/** A compose service's environment as a map, from either form compose accepts. */
+function serviceEnvironment(service) {
+  const environment = service?.environment ?? {};
+  if (Array.isArray(environment)) {
+    return Object.fromEntries(
+      environment.map((entry) => {
+        const [name, ...value] = String(entry).split('=');
+        return [name, value.length > 0 ? value.join('=') : null];
+      }),
+    );
+  }
+  return Object.fromEntries(Object.entries(environment).map(([name, value]) => [name, value === null ? null : String(value)]));
+}
+
+/** A service's entrypoint and command as separate arguments, from either form. */
+function serviceArgs(service) {
+  return [service?.entrypoint, service?.command].flatMap((value) =>
+    Array.isArray(value) ? value.map(String) : typeof value === 'string' ? value.split(/\s+/).filter(Boolean) : [],
+  );
+}
+
+/**
+ * Every way the inner Caddyfile and the compose file let someone other than the
+ * edge choose the address ntfy and the contact handler see, as the files are
+ * parsed rather than as they happen to be spelled. The seventh drain review
+ * reopened the forgery with an upstream header copying X-Forwarded-For and with
+ * ntfy reading X-Real-IP; the eighth got past the old patterns with quotes, a
+ * request_header, a command-line flag and a listener wrapper.
+ */
+function trustProblems(caddyfile, compose) {
+  const edge = `${EDGE_PROXY_ADDRESS}/32`;
+  const problems = [];
+  const nodes = parseCaddyfile(caddyfile);
+  const [global] = nodes;
+  // Without trusted_proxies the inner Caddy replaces the edge's X-Forwarded-For
+  // with the edge's own address, and every visitor shares one set of ntfy and
+  // handler limits. Trusting more than the edge lets any of the twenty or so
+  // containers on `web` pass on a forged address, and so does a listener
+  // wrapper such as proxy_protocol, which lets a client name its own address.
+  if (!global || global.tokens.length > 0 || !global.children) {
+    problems.push('the file does not open with the global options block');
+  } else {
+    const options = global.children.map((node) => node.tokens[0]).sort();
+    if (options.join(',') !== 'log,servers') problems.push(`the global options are ${options.join(', ')}`);
+    const servers = global.children.find((node) => node.tokens[0] === 'servers');
+    if (servers && servers.tokens.length !== 1) problems.push(`the servers options apply to ${servers.tokens.slice(1).join(' ')} only`);
+    const inside = (servers?.children ?? []).map((node) => node.tokens.join(' '));
+    if (inside.join(';') !== `trusted_proxies static ${edge}`) problems.push(`the servers options hold ${inside.join('; ') || 'nothing'}`);
+  }
+  const lines = [...caddyfileLines(nodes)];
+  const count = (name) => lines.filter((node) => node.tokens[0] === name).length;
+  if (count('trusted_proxies') !== 1) problems.push(`trusted_proxies appears ${count('trusted_proxies')} times`);
+  for (const name of ['client_ip_headers', 'listener_wrappers', 'proxy_protocol']) {
+    if (count(name) > 0) problems.push(`${name} is set`);
+  }
+  problems.push(...clientAddressHeaderWrites(nodes).map((write) => `the Caddyfile sets ${write}`));
+
+  // ntfy strips the edge's address from X-Forwarded-For and takes the next one
+  // as the visitor's. It reads its settings from the environment and from its
+  // command line, and a config file would come on top of both.
+  const ntfy = parseYaml(compose)?.services?.ntfy;
+  const environment = serviceEnvironment(ntfy);
+  const header = environment.NTFY_PROXY_FORWARDED_HEADER;
+  if (header != null && !/^x-forwarded-for$/i.test(header)) problems.push(`ntfy reads the address from ${header}`);
+  if (environment.NTFY_BEHIND_PROXY !== 'true') problems.push('ntfy is not told it sits behind a proxy');
+  if (environment.NTFY_PROXY_TRUSTED_HOSTS !== edge) problems.push(`ntfy trusts ${environment.NTFY_PROXY_TRUSTED_HOSTS}`);
+  const args = serviceArgs(ntfy);
+  args.forEach((arg, index) => {
+    const flag = /^--?(proxy-forwarded-header|proxy-trusted-hosts|behind-proxy|config|c)(?:=(.*))?$/.exec(arg);
+    if (!flag) return;
+    const value = flag[2] ?? args[index + 1] ?? '';
+    if (flag[1] === 'proxy-forwarded-header' && /^x-forwarded-for$/i.test(value)) return;
+    problems.push(`ntfy is started with ${arg}${flag[2] === undefined ? ` ${value}` : ''}`);
+  });
+  for (const volume of ntfy?.volumes ?? []) {
+    const target = typeof volume === 'string' ? volume.split(':')[1] ?? '' : String(volume?.target ?? '');
+    if (/^\/etc\/ntfy\b|\.ya?ml$/.test(target)) problems.push(`ntfy mounts a config file at ${target}`);
+  }
+  return problems;
+}
+
 test('ntfy sees each visitor\'s own address, and only the edge can hand one on', async () => {
-  const [caddyfile, compose, deploy] = await Promise.all([
+  const [caddyfile, compose, deploy, provision] = await Promise.all([
     fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
     fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8'),
     fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'provision-notify-secrets.sh'), 'utf8'),
   ]);
-
-  // Without trusted_proxies the inner Caddy replaces the edge's X-Forwarded-For
-  // with the edge's own address, and ntfy's per-IP limits (failed logins
-  // included) then treat every visitor as one: 30 bad tokens from anyone would
-  // lock the owner's phone out. Trusting more than the edge fails the other
-  // way: about twenty other containers share the `web` network, and any of
-  // them could then pass on a forged address.
-  const edge = `${EDGE_PROXY_ADDRESS}/32`;
-  const code = caddyfile.replace(/^\s*#.*$/gm, '').trim();
-  assert.match(
-    code,
-    new RegExp(`^\\{\\s*servers\\s*\\{\\s*trusted_proxies static ${edge.replaceAll('.', '\\.')}\\s*\\}`),
-    'the global block comes first and trusts the edge alone',
-  );
-  assert.equal(code.split('trusted_proxies').length - 1, 1, 'nothing else widens the trust');
-  // The seventh drain review reopened the forgery for any internet client in
-  // two lines that passed every test: an upstream header copying the incoming
-  // X-Forwarded-For, and ntfy told to read X-Real-IP, which neither Caddy
-  // strips. Nothing may set a client-address header on the way to ntfy or the
-  // handler, or take the address from anywhere but X-Forwarded-For.
-  assert.doesNotMatch(code, /header_up\s+[+-]?(?:X-Forwarded-For|X-Real-IP|Forwarded|True-Client-IP|X-Client-IP|CF-Connecting-IP)\b/i);
-  assert.doesNotMatch(code, /\bclient_ip_headers\b/);
-  const forwardedHeader = compose.match(/NTFY_PROXY_FORWARDED_HEADER:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
-  assert.ok(forwardedHeader === undefined || /^x-forwarded-for$/i.test(forwardedHeader), `ntfy reads the address from ${forwardedHeader}`);
-  assert.match(compose, /NTFY_BEHIND_PROXY: "true"/);
-  const trusted = compose.match(/NTFY_PROXY_TRUSTED_HOSTS: "([^"]+)"/)?.[1].split(',');
-  assert.deepEqual(trusted, [edge], 'ntfy strips the edge address and nothing else');
+  assert.deepEqual(trustProblems(caddyfile, compose), []);
+  // ntfy's env file is written on the server by the provision script, and it
+  // could set the proxy settings too. It writes only accounts and tokens.
+  const keys = [...new Set(provision.match(/\bNTFY_[A-Z_]+/g) ?? [])];
+  assert.ok(keys.length > 0, 'the provision script was read');
+  assert.deepEqual(keys.filter((key) => /PROXY|FORWARD|TRUSTED/.test(key)), []);
 
   // Both lists name the address the edge's compose file pins, so the deploy
   // stops before shipping them if the edge is anywhere else.
@@ -158,61 +221,92 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
   assert.ok(checked < shipped, 'the edge address is checked before the trust settings ship');
 });
 
+test('each way the reviews reopened the forgery fails the trust check', async () => {
+  const [caddyfile, compose] = await Promise.all([
+    fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8'),
+  ]);
+  const edge = `${EDGE_PROXY_ADDRESS}/32`;
+  const inCaddyfile = (find, replace) => {
+    assert.ok(caddyfile.includes(find), `the Caddyfile still has ${JSON.stringify(find)}`);
+    return [caddyfile.replace(find, replace), compose];
+  };
+  const inCompose = (find, replace) => {
+    assert.ok(compose.includes(find), `the compose file still has ${JSON.stringify(find)}`);
+    return [caddyfile, compose.replace(find, replace)];
+  };
+  const variants = {
+    'a quoted header_up copying the incoming X-Forwarded-For': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up "X-Forwarded-For" "{http.request.header.X-Forwarded-For}"',
+    ),
+    'a request_header taking X-Real-IP': inCaddyfile('\troot * /srv', '\troot * /srv\n\trequest_header X-Forwarded-For {http.request.header.X-Real-IP}'),
+    'a header block deleting Forwarded': inCaddyfile('\troot * /srv', '\troot * /srv\n\theader {\n\t\t-Forwarded\n\t}'),
+    'a proxy_protocol listener wrapper on one listener': inCaddyfile(
+      '\tservers {',
+      '\tservers :80 {\n\t\tlistener_wrappers {\n\t\t\tproxy_protocol {\n\t\t\t\tallow 0.0.0.0/0\n\t\t\t}\n\t\t}\n\t}\n\tservers {',
+    ),
+    'trust in every private range': inCaddyfile(`trusted_proxies static ${edge}`, 'trusted_proxies static private_ranges'),
+    'the address read from another header': inCaddyfile(`trusted_proxies static ${edge}`, `trusted_proxies static ${edge}\n\t\tclient_ip_headers X-Real-IP`),
+    'ntfy told to read X-Real-IP on its command line': inCompose('command: ["serve"]', 'command: ["serve", "--proxy-forwarded-header", "X-Real-IP"]'),
+    'ntfy told to read X-Real-IP in its environment': inCompose('NTFY_BEHIND_PROXY: "true"', 'NTFY_BEHIND_PROXY: "true"\n      NTFY_PROXY_FORWARDED_HEADER: X-Real-IP'),
+    'ntfy trusting every private range': inCompose(`NTFY_PROXY_TRUSTED_HOSTS: "${edge}"`, 'NTFY_PROXY_TRUSTED_HOSTS: "172.16.0.0/12"'),
+    'ntfy reading a config file': inCompose('      - ./ntfy-data:/var/lib/ntfy', '      - ./ntfy-data:/var/lib/ntfy\n      - ./server.yml:/etc/ntfy/server.yml:ro'),
+  };
+  for (const [label, [variantCaddyfile, variantCompose]] of Object.entries(variants)) {
+    assert.ok(trustProblems(variantCaddyfile, variantCompose).length > 0, label);
+  }
+  // Compose's list form for the environment reads the same as its map form.
+  assert.deepEqual(serviceEnvironment({ environment: ['NTFY_PROXY_FORWARDED_HEADER=X-Real-IP', 'A=b=c', 'EMPTY'] }), {
+    NTFY_PROXY_FORWARDED_HEADER: 'X-Real-IP',
+    A: 'b=c',
+    EMPTY: null,
+  });
+  assert.deepEqual(serviceArgs({ entrypoint: 'ntfy', command: 'serve --proxy-forwarded-header=X-Real-IP' }), ['ntfy', 'serve', '--proxy-forwarded-header=X-Real-IP']);
+});
+
 /**
- * Each compose service's networks, from the file's own layout, in list form
- * (`- web`, quoted or with a trailing comment) or mapping form (`web:`).
+ * Each compose service's networks, as compose itself reads them: a list, or a
+ * mapping whose values may be settings, `{}`, `~` or null. A service with none
+ * joins the project's default network, which reads here as no network at all.
  */
 function composeServiceNetworks(compose) {
-  const services = compose.replace(/\r\n/g, '\n').split(/^services:\n/m)[1].split(/^\S/m)[0];
-  /** @type {Record<string, string[]>} */
-  const result = {};
-  let current = '';
-  let inNetworks = false;
-  for (const line of services.split('\n')) {
-    const service = /^ {2}([\w-]+):\s*(?:#.*)?$/.exec(line);
-    if (service) {
-      current = service[1];
-      result[current] = [];
-      inNetworks = false;
-    } else if (/^ {4}networks:\s*(?:#.*)?$/.test(line)) {
-      inNetworks = true;
-    } else if (inNetworks) {
-      const item = /^ {6}(?:- )?(["']?)([\w.-]+)\1:?\s*(?:\{\s*\})?\s*(?:#.*)?$/.exec(line);
-      if (item) result[current].push(item[2]);
-      else if (/^ {8,}\S/.test(line) || line.trim() === '' || /^\s*#/.test(line)) continue;
-      else inNetworks = false;
-    }
-  }
-  return result;
+  const services = parseYaml(compose)?.services ?? {};
+  return Object.fromEntries(
+    Object.entries(services).map(([name, service]) => {
+      const networks = service?.networks;
+      const names = Array.isArray(networks) ? networks.map(String) : networks && typeof networks === 'object' ? Object.keys(networks) : [];
+      return [name, names];
+    }),
+  );
 }
 
-/** The top-level `networks:` mapping: each name and the settings under it. */
+/** The top-level `networks:` mapping: each name and its settings. */
 function composeTopNetworks(compose) {
-  const section = compose.replace(/\r\n/g, '\n').split(/^networks:\n/m)[1] ?? '';
-  /** @type {Record<string, string>} */
-  const result = {};
-  let current = '';
-  for (const line of section.split('\n')) {
-    if (/^\S/.test(line)) break;
-    const name = /^ {2}([\w.-]+):\s*$/.exec(line);
-    if (name) {
-      current = name[1];
-      result[current] = '';
-    } else if (current && /^ {4}\S/.test(line)) {
-      result[current] += `${line.trim()};`;
-    }
-  }
-  return result;
+  const networks = parseYaml(compose)?.networks ?? {};
+  return Object.fromEntries(Object.entries(networks).map(([name, settings]) => [name, settings ?? {}]));
 }
 
 test('the compose network reader sees every way to write a network', () => {
-  // The seventh drain review put a service on `web` with `- web # shared`
-  // and with `- "web"`, and the old reader missed both.
+  // The seventh drain review put a service on `web` with `- web # shared` and
+  // with `- "web"`, and the eighth with `web: ~`, `web: null` and `-   web`.
+  // The line-based reader missed each in turn; this one is compose's own YAML.
   const compose = (lines) => `services:\n  app:\n    image: x\n    networks:\n${lines}\n\nnetworks:\n  web:\n    external: true\n`;
-  for (const lines of ['      - web # shared', '      - "web"', "      - 'web'", '      web:\n        ipv4_address: 172.18.0.9', '      web: {}']) {
+  for (const lines of [
+    '      - web # shared',
+    '      - "web"',
+    "      - 'web'",
+    '      -   web',
+    '      web:\n        ipv4_address: 172.18.0.9',
+    '      web: {}',
+    '      web: ~',
+    '      web: null',
+    '      web:',
+  ]) {
     assert.deepEqual(composeServiceNetworks(compose(lines)), { app: ['web'] }, lines);
   }
-  assert.deepEqual(composeTopNetworks(compose('      - web')), { web: 'external: true;' });
+  assert.deepEqual(composeTopNetworks(compose('      - web')), { web: { external: true } });
+  assert.deepEqual(composeServiceNetworks('services:\n  app:\n    image: x\n'), { app: [] }, 'no networks means the default one');
 });
 
 test('only portfolio-app joins the shared web network, and each service sits on its own set', async () => {
@@ -232,10 +326,15 @@ test('only portfolio-app joins the shared web network, and each service sits on 
     'portfolio-app': ['portfolio-private', 'portfolio-reports', 'web'],
   });
   assert.deepEqual(composeTopNetworks(compose), {
-    web: 'external: true;',
-    'portfolio-private': 'internal: true;',
-    'portfolio-reports': 'internal: true;',
+    web: { external: true },
+    'portfolio-private': { internal: true },
+    'portfolio-reports': { internal: true },
   }, 'both portfolio networks have no route out, and there is no other');
+  // network_mode puts a service on the host's network or another container's,
+  // whatever its networks say.
+  for (const [name, service] of Object.entries(parseYaml(compose).services)) {
+    assert.equal(service.network_mode, undefined, `${name} sets network_mode`);
+  }
 });
 
 test('a fresh server receives the secrets script before the deploy checks for its output', async () => {
