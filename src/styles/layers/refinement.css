@@ -459,7 +459,6 @@ html[data-theme="light"] .scroll-progress{
   letter-spacing:.1em;
   text-transform:uppercase;
   backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
 }
 @media(max-width:640px){
   .page-jump-nav{

@@ -6,6 +6,7 @@ import process from 'node:process';
 import ts from 'typescript';
 import { parseMarkupAttributes, scanMarkup } from './lib/csp-markup-parser.mjs';
 import { collectHostReferences, unusedHostSources } from './lib/csp-host-usage.mjs';
+import { minifyCss } from './lib/minify-css.mjs';
 
 const root = process.cwd();
 const sourceDirs = ['src'];
@@ -98,6 +99,19 @@ function extractSingleQuotedConst(text, name) {
   return match?.[1] ?? null;
 }
 
+/**
+ * The CSS a layout constant holds: a `?raw` import of that name, or a`n * `const name = minifyCss(rawImport)` of one, minified the way the build does.
+ */
+async function resolveCssConst(filePath, text, name) {
+  const raw = await extractRawCssImport(filePath, text, name);
+  if (raw !== null) return raw;
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const minified = text.match(new RegExp(`const\\s+${escapedName}\\s*=\\s*minifyCss\\(\\s*([A-Za-z_$][\\w$]*)\\s*\\);`));
+  if (!minified) return null;
+  const source = await extractRawCssImport(filePath, text, minified[1]);
+  return source === null ? null : minifyCss(source);
+}
+
 async function extractRawCssImport(filePath, text, name) {
   const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const match = text.match(new RegExp(`import\\s+${escapedName}\\s+from\\s+['"]([^'"]+)\\?raw['"];?`));
@@ -117,7 +131,7 @@ async function resolveStyleBlockContent(filePath, text, attrs, content) {
   const expressionName = unwrapAstroExpression(attrs['set:html']);
   if (!expressionName) return content;
 
-  return await extractRawCssImport(filePath, text, expressionName)
+  return await resolveCssConst(filePath, text, expressionName)
     ?? extractSingleQuotedConst(text, expressionName);
 }
 
@@ -129,9 +143,9 @@ async function resolveGeneratedCsp(filePath, text, value) {
   const declarations = new Map();
   const values = new Map();
   const resolving = new Set();
-  const criticalCss = await extractRawCssImport(filePath, text, 'criticalCss');
+  const criticalCss = await resolveCssConst(filePath, text, 'criticalCss');
   if (criticalCss === null) {
-    throw new Error(`Unable to resolve source CSP in ${filePath}: criticalCss ?raw import is missing or unreadable.`);
+    throw new Error(`Unable to resolve source CSP in ${filePath}: criticalCss is neither a ?raw import nor minifyCss() of one.`);
   }
   values.set('isDev', false);
   values.set('criticalCss', criticalCss);

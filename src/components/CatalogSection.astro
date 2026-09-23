@@ -9,6 +9,7 @@ import {
   formatProjectRankingDisplayLabel,
   formatProjectRankingLabel,
   projectRankings,
+  rankedCatalog,
 } from '../data/catalog-render';
 import { computeCategoryCounts } from '../data/catalog-views.mjs';
 
@@ -36,6 +37,9 @@ const shown = entries.length;
 // Counts reflect exactly what is rendered so the filter/view chips never claim
 // more than this surface contains. home-catalog.js re-derives these on hydrate.
 const catCounts = computeCategoryCounts(entries);
+// Each category's count across the whole archive, for the preview's handoff to
+// /catalog/ (home-catalog.js reads it from the chip).
+const archiveCounts = computeCategoryCounts(rankedCatalog);
 const shownViewStates = entries.map((entry) => catalogViewState.get(entry.repo)).filter(Boolean) as {
   isNew: boolean;
   isRecent: boolean;
@@ -97,7 +101,7 @@ const statusLead = isPreview
         archive can still be empty here — a chip reading "0" is a control whose
         only outcome is the no-results state. */}
     {filterButtons.filter((f) => (catCounts[f.key] ?? 0) > 0).map((f) => (
-      <button type="button" class="fb" data-filter={f.key} data-label={f.label} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key]}</span></button>
+      <button type="button" class="fb" data-filter={f.key} data-label={f.label} data-archive-count={archiveCounts[f.key] ?? 0} aria-pressed="false">{f.label} <span class="fc" data-cat={f.key}>{catCounts[f.key]}</span></button>
     ))}
   </div>
   </search>

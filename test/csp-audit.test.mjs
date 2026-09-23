@@ -7,6 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseMarkupAttributes, scanMarkup } from '../scripts/lib/csp-markup-parser.mjs';
+import { minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = path.join(repoRoot, 'scripts', 'audit-csp.mjs');
@@ -180,7 +181,8 @@ test('source-mode CSP resolution follows the production branch and rejects unsaf
 
 test('csp style element hashes match the critical and no-js inline style blocks', () => {
   const baseLayout = fs.readFileSync(baseLayoutPath, 'utf8');
-  const criticalCss = fs.readFileSync(criticalCssPath, 'utf8');
+  // The layout inlines the critical CSS minified, and hashes that text.
+  const criticalCss = minifyCss(fs.readFileSync(criticalCssPath, 'utf8'));
   const noJsFallbackCss = baseLayout.match(/const noJsRevealCss = '([^']+)';/)?.[1] ?? '';
   const astroConfig = fs.readFileSync(path.join(repoRoot, 'astro.config.mjs'), 'utf8');
   const output = runAudit();
@@ -190,6 +192,7 @@ test('csp style element hashes match the critical and no-js inline style blocks'
   assert.match(baseLayout, /const styleElemSrc = isDev/);
   assert.match(baseLayout, /\? "'self' 'unsafe-inline'"\s+: \["'self'", `'\$\{sha256Csp\(criticalCss\)\}'`, `'\$\{sha256Csp\(noJsRevealCss\)\}'`\]\.join\(' '\)/);
   assert.match(baseLayout, /sha256Csp\(criticalCss\)/);
+  assert.match(baseLayout, /const criticalCss = minifyCss\(criticalCssSource\);/);
   assert.match(baseLayout, /sha256Csp\(noJsRevealCss\)/);
   assert.match(baseLayout, /content=\{contentSecurityPolicy\}/);
   assert.match(baseLayout, /<style is:inline set:html=\{noJsRevealCss\}><\/style>/);

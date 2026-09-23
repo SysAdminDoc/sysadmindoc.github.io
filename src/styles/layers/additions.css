@@ -176,7 +176,6 @@ html[data-theme="light"] mark{
     border-bottom:1px solid var(--glass-border);
     background:rgba(10,14,23,.95);
     backdrop-filter:blur(24px) saturate(1.4);
-    -webkit-backdrop-filter:blur(24px) saturate(1.4);
     transform:translateY(-8px);
     opacity:0;
     visibility:hidden;
@@ -233,7 +232,6 @@ html.mobile-nav-open body{
     z-index:999;
     background:rgba(5,9,19,.5);
     backdrop-filter:blur(4px);
-    -webkit-backdrop-filter:blur(4px);
     opacity:0;
     visibility:hidden;
     pointer-events:none;
@@ -715,7 +713,6 @@ html[data-theme="light"] .cmdk-subtitle mark{
     border-bottom:1px solid var(--glass-border);
     background:rgba(10,14,23,.96);
     backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
   }
   .route-home .nk.open a{
     width:100%;

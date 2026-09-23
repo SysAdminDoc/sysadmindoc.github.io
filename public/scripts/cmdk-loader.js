@@ -1,8 +1,12 @@
 /* ===== COMMAND PALETTE LOADER =====
- * Keeps the full command-palette controller off the initial parse path. */
+ * Keeps the palette off the initial parse path: its project dataset
+ * (/cmdk-data.js, about 60 KB) and its controller load only when someone heads
+ * for the search button, the dataset first because the controller reads it. */
 (function(){
   const SCRIPT_SRC = '/scripts/cmdk.js';
+  const DATA_SRC = '/cmdk-data.js';
   let loading = null;
+  let dataLoading = null;
   const toggle = document.getElementById('cmdkToggle');
   const defaultLabel = toggle?.getAttribute('aria-label') || 'Open command search';
   let feedback = null;
@@ -60,35 +64,58 @@
     setFeedback('');
   }
 
+  function injectScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.addEventListener('load', () => resolve(script), { once: true });
+      script.addEventListener('error', () => {
+        script.remove();
+        reject(new Error('Command palette script failed to load: ' + src));
+      }, { once: true });
+      document.head.appendChild(script);
+    });
+  }
+
+  function hasData() {
+    const data = window.__PORTFOLIO_DATA;
+    return Boolean(data && Array.isArray(data.allProjects));
+  }
+
+  function loadData() {
+    if (hasData()) return Promise.resolve();
+    if (!dataLoading) {
+      dataLoading = injectScript(DATA_SRC).then(() => undefined, (error) => {
+        dataLoading = null;
+        throw error;
+      });
+    }
+    return dataLoading;
+  }
+
   function loadPalette() {
     const api = getApi();
     if (api) return Promise.resolve(api);
     if (loading) return loading;
     setLoadingState(true);
-    loading = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = SCRIPT_SRC;
-      script.async = true;
-      script.addEventListener('load', () => {
+    loading = loadData()
+      .then(() => injectScript(SCRIPT_SRC))
+      .then((script) => {
         setLoadingState(false);
         const loadedApi = getApi();
         if (loadedApi) {
           clearErrorState();
-          resolve(loadedApi);
-        } else {
-          loading = null;
-          script.remove();
-          reject(new Error('Command palette failed to initialize.'));
+          return loadedApi;
         }
-      }, { once: true });
-      script.addEventListener('error', () => {
-        setLoadingState(false);
         loading = null;
         script.remove();
-        reject(new Error('Command palette script failed to load.'));
-      }, { once: true });
-      document.head.appendChild(script);
-    });
+        throw new Error('Command palette failed to initialize.');
+      }, (error) => {
+        setLoadingState(false);
+        loading = null;
+        throw error;
+      });
     return loading;
   }
 
@@ -109,6 +136,14 @@
         console.warn('Command search failed to load.', error);
       });
   }
+
+  // Start on the dataset as soon as someone points at or tabs to the button, so
+  // the first open rarely waits for it. A failure here is retried on click.
+  function prefetchData() {
+    loadData().catch(() => {});
+  }
+  toggle?.addEventListener('pointerenter', prefetchData, { once: true });
+  toggle?.addEventListener('focus', prefetchData, { once: true });
 
   toggle?.addEventListener('click', event => {
     if (toggle.getAttribute('aria-busy') === 'true') {

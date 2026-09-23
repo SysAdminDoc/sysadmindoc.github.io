@@ -2,7 +2,8 @@
 import crypto from 'node:crypto';
 import globalCssUrl from '../styles/global.css?url';
 import interiorQuietCssUrl from '../styles/interior-quiet.css?url';
-import criticalCss from '../styles/critical.css?raw';
+import criticalCssSource from '../styles/critical.css?raw';
+import { minifyCss } from '../../scripts/lib/minify-css.mjs';
 import type { CmdkSection } from '../data/cmdk';
 import { contactMailto } from '../data/identity';
 import { careerProfile } from '../data/career';
@@ -57,6 +58,8 @@ const isCatalog = Astro.url.pathname === '/catalog/';
 const isStatus = Astro.url.pathname === '/status/';
 const bodyClass = isHome ? 'route-home' : 'route-interior';
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
+// Inlined on every page, so it ships minified; the hash below is of this text.
+const criticalCss = minifyCss(criticalCssSource);
 
 function sha256Csp(value: string) {
   return `sha256-${crypto.createHash('sha256').update(value.replace(/\r\n?/g, '\n')).digest('base64')}`;
@@ -210,11 +213,11 @@ if (isHome) {
       <div class="cmdk-footer" aria-hidden="true"><span>Enter to open · Esc to close</span></div>
     </div>
   </dialog>
-  {/* Page-specific command-palette sections are inert JSON; the large project +
-      quick-link dataset is served once as a cached /cmdk-data.js (loaded next).
-      The controller itself is lazy-loaded by cmdk-loader.js on first activation. */}
+  {/* Page-specific command-palette sections are inert JSON. The large project +
+      quick-link dataset (/cmdk-data.js) and the controller are both loaded by
+      cmdk-loader.js when someone heads for the search button, so no page pays
+      for them up front. */}
   <script is:inline type="application/json" id="cmdk-sections-data" set:html={JSON.stringify(cmdkSections)} />
-  <script src="/cmdk-data.js" is:inline></script>
   <script src="/scripts/shared.js" is:inline></script>
   <script src="/scripts/cmdk-loader.js" is:inline></script>
   <script src="/scripts/relative-time.js" is:inline></script>

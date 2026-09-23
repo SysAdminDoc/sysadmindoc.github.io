@@ -40,7 +40,7 @@ mark{background:rgba(250,204,21,.22);color:var(--t1);padding:0 2px;border-radius
 /* Command palette — native <dialog> */
 .cmdk-backdrop{
   border:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;padding:0;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;overscroll-behavior:contain;transition:opacity var(--dur-fast) var(--ease-out),display var(--dur-fast) var(--ease-out) allow-discrete;
-  &::backdrop{background:rgba(10,14,23,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:cmdkFade .15s ease-out}
+  &::backdrop{background:rgba(10,14,23,.8);backdrop-filter:blur(8px);animation:cmdkFade .15s ease-out}
   &[open]{display:flex;opacity:1;animation:cmdkFade .15s ease-out}
 }
 @starting-style{.cmdk-backdrop[open]{opacity:0}}

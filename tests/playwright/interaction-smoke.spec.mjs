@@ -40,6 +40,16 @@ function collectCspConsoleMessages(page) {
   return messages;
 }
 
+// The palette's dataset and controller, in the order the page asked for them.
+function collectPaletteRequests(page) {
+  const requests = [];
+  page.on('request', (request) => {
+    const { pathname } = new URL(request.url());
+    if (pathname === '/cmdk-data.js' || pathname === '/scripts/cmdk.js') requests.push(pathname);
+  });
+  return requests;
+}
+
 function collectCmdkScriptRequests(page) {
   const requests = [];
   page.on('request', (request) => {
@@ -340,11 +350,25 @@ test.describe('rendered interaction smoke', () => {
     expect(runtimeErrors).toEqual([]);
   });
 
+  test('pointing at the search button starts on the palette dataset, and only a click loads the controller', async ({ page }) => {
+    const paletteRequests = collectPaletteRequests(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await preparePage(page, '/', '#hero');
+    expect(paletteRequests).toEqual([]);
+    await page.locator('#cmdkToggle').hover();
+    await expect.poll(() => paletteRequests).toEqual(['/cmdk-data.js']);
+    await expect.poll(() => page.evaluate(() => Array.isArray(window.__PORTFOLIO_DATA?.allProjects))).toBe(true);
+    expect(paletteRequests).toEqual(['/cmdk-data.js']);
+  });
+
   test('homepage command palette works without runtime errors', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
     const cmdkScriptRequests = collectCmdkScriptRequests(page);
+    const paletteRequests = collectPaletteRequests(page);
     await page.setViewportSize({ width: 1365, height: 900 });
     await preparePage(page, '/', '#hero');
+    // The 60 KB dataset used to load on every page; nothing should ask for it yet.
+    expect(paletteRequests).toEqual([]);
 
     await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute(
       'content',
@@ -361,6 +385,7 @@ test.describe('rendered interaction smoke', () => {
     await openCommandPalette(page);
     await expect(page.locator('#cmdk')).toBeVisible();
     await expect.poll(async () => cmdkScriptRequests.length).toBe(1);
+    expect(paletteRequests).toEqual(['/cmdk-data.js', '/scripts/cmdk.js']);
     await expect(page.locator('script[src="/scripts/cmdk.js"]')).toHaveCount(1);
     await page.locator('#cmdkInput').fill('python');
     await expect(page.locator('#cmdkList .cmdk-item')).not.toHaveCount(0);

@@ -21,15 +21,14 @@
     const catalogStatus=document.getElementById('catalogStatus');
     const catalogMore=document.getElementById('catalogMore');
     const catalogReset=document.getElementById('catalogReset');
-    // Every page ships the full project list for the command palette, so the
-    // preview can count archive matches exactly without extra payload.
-    const archiveProjects=(window.__PORTFOLIO_DATA&&Array.isArray(window.__PORTFOLIO_DATA.allProjects))
-        ?window.__PORTFOLIO_DATA.allProjects:[];
-
+    // Each filter chip carries its category's count across the whole archive,
+    // rendered at build time, so a preview can say how many /catalog/ holds
+    // without the page loading the palette's project list.
     function archiveCountForCategory(category){
-        if(!archiveProjects.length)return null;
-        if(category==='all')return archiveProjects.length;
-        return archiveProjects.filter(project=>project&&project.category===category).length;
+        if(category==='all')return catalogTotal;
+        const chip=document.querySelector('.fb[data-filter="'+CSS.escape(category)+'"]');
+        const count=chip?Number(chip.dataset.archiveCount):NaN;
+        return Number.isFinite(count)?count:null;
     }
 
     function catalogHref(){

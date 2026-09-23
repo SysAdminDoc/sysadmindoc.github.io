@@ -27,6 +27,8 @@ const budgets = {
   cssFileLimitBytes: 122_880, // 120 KB per route/component CSS file
   cssGlobalFileLimitBytes: 163_840, // 160 KB for the shared shell, tokens, and cross-route UI primitives
   cssTotalBytes: 225_280,     // 220 KB aggregate; v0.32 adds route-local career-dossier and print CSS while the shared shell stays below 160 KB
+  inlineCssLimitBytes: 40_960, // 40 KB for the critical CSS every page inlines (minified, about 34 KB)
+  paletteDataLimitBytes: 81_920, // 80 KB for dist/cmdk-data.js, which loads when the palette is first opened
 };
 
 const distDir = path.resolve(root, options.distDir);
@@ -152,6 +154,32 @@ if (cssTotalBytes > budgets.cssTotalBytes) {
   );
 }
 
+// Two payloads outside scripts/ and _assets/: the critical CSS every page
+// inlines, and the palette's project dataset. Neither was counted before, and
+// the inline CSS was over half of the homepage's HTML.
+async function largestInlineStyle(dir) {
+  let largest = { name: null, bytes: 0 };
+  for (const file of await collectFiles(dir, '.html')) {
+    if (file.name.startsWith('pagefind')) continue;
+    const html = await fs.readFile(file.filePath, 'utf8');
+    for (const match of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) {
+      const bytes = Buffer.byteLength(match[1]);
+      if (bytes > largest.bytes) largest = { name: file.name.replace(/\\/g, '/'), bytes };
+    }
+  }
+  return largest;
+}
+const inlineCss = await largestInlineStyle(distDir);
+if (inlineCss.bytes > budgets.inlineCssLimitBytes) {
+  fail(`The largest inline <style> (dist/${inlineCss.name}) is ${formatBytes(inlineCss.bytes)}; inline CSS budget is ${formatBytes(budgets.inlineCssLimitBytes)}.`);
+}
+const paletteDataBytes = await fs.stat(path.join(distDir, 'cmdk-data.js')).then((stat) => stat.size, () => null);
+if (paletteDataBytes === null) {
+  fail('dist/cmdk-data.js is missing; the command palette has no project data without it.');
+} else if (paletteDataBytes > budgets.paletteDataLimitBytes) {
+  fail(`dist/cmdk-data.js is ${formatBytes(paletteDataBytes)}; palette data budget is ${formatBytes(budgets.paletteDataLimitBytes)}.`);
+}
+
 // Print summary
 console.log('Bundle size audit');
 console.log(`  dist: ${path.relative(root, distDir) || distDir}`);
@@ -181,6 +209,8 @@ if (cssFiles.length === 0) {
   );
 }
 
+console.log(`\nInline CSS (largest <style> in dist HTML): ${formatBytes(inlineCss.bytes)} of ${formatBytes(budgets.inlineCssLimitBytes)}${inlineCss.name ? ` (${inlineCss.name})` : ''}`);
+console.log(`Palette data (dist/cmdk-data.js, loaded on first open): ${paletteDataBytes === null ? 'missing' : formatBytes(paletteDataBytes)} of ${formatBytes(budgets.paletteDataLimitBytes)}`);
 console.log('');
 
 if (errors.length > 0) {

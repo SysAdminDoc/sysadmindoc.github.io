@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import { reviewedInteriorPages } from './src/data/page-freshness.ts';
 import { SITE_URL } from './site.config.mjs';
 import { buildCspHeaderValue } from './scripts/lib/csp-header.mjs';
+import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE } from './scripts/lib/minify-css.mjs';
 
 const reviewedDateByRoute = new Map(
   reviewedInteriorPages.map((page) => [page.route, page.lastReviewed]),
@@ -53,6 +54,14 @@ export default defineConfig({
   vite: {
     build: {
       cssMinify: 'lightningcss',
+      // Without targets lightningcss adds no prefixes, and it keeps only the
+      // last of a property and its -webkit- twin, so Chromium lost every
+      // backdrop blur. scripts/lib/minify-css.mjs explains both settings; the
+      // inlined critical CSS is minified with the same ones.
+      cssTarget: [...CSS_BROWSER_TARGETS],
+    },
+    css: {
+      lightningcss: { exclude: LIGHTNINGCSS_EXCLUDE },
     },
   },
   compressHTML: true,

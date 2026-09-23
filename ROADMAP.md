@@ -23,13 +23,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P2
 
-- [ ] P2: Minify the inlined critical CSS and load `cmdk-data.js` on demand, both under a budget
-  Why: 42,121 bytes of unminified CSS make up 54% of the homepage HTML, and a 62,803-byte script blocks every page for a palette that loads lazily anyway. Neither counts against the bundle caps.
-  Evidence: `dist/index.html` is 77,459 bytes; `src/layouts/Base.astro:159` and `:212`; `scripts/audit-bundle-size.mjs:104-111` scans only `scripts/` and `_assets/`.
-  Touches: `src/layouts/Base.astro`, `public/scripts/cmdk-loader.js`, `scripts/audit-bundle-size.mjs`, `test/runtime-scripts.test.mjs`, `test/csp-audit.test.mjs`.
-  Acceptance: The inlined critical CSS is minified with lightningcss before its CSP hash is computed, and `csp:audit:dist` still passes. `cmdk-data.js` is requested only when the palette first opens. The bundle audit counts both files, and the homepage HTML shrinks by at least 10 KB.
-  Complexity: M
-
 - [ ] P2: Re-baseline the visual snapshots for the v0.45 design and gate the key routes
   Why: The baselines predate the v0.45 redesign, preflight never compares screenshots, and nothing runs the Linux set.
   Evidence: baselines were last updated 2026-07-25 (Linux) and 2026-09-05 (win32), and 30 files under `src/pages`, `src/styles` and `src/components` have changed since; `/colophon/` has no baseline, and neither has `/privacy/`, so `npm run audit:playwright` fails its four privacy snapshots (third drain review); `package.json:41` and `:69`.

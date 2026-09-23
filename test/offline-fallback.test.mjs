@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import vm from 'node:vm';
+import { minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const root = process.cwd();
 const noJsRevealCss = '.rv,.card-enter{opacity:1!important;transform:none!important}';
@@ -16,7 +17,8 @@ test('service worker exposes a local offline navigation fallback', async () => {
   const sw = await fs.readFile(path.join(root, 'public', 'sw.js'), 'utf8');
   const html = await fs.readFile(path.join(root, 'public', 'offline.html'), 'utf8');
   const css = await fs.readFile(path.join(root, 'public', 'styles', 'offline.css'), 'utf8');
-  const criticalCss = await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8');
+  // Pages inline the critical CSS minified, and the policy hashes that text.
+  const criticalCss = minifyCss(await fs.readFile(path.join(root, 'src', 'styles', 'critical.css'), 'utf8'));
   const expectedStyleElem = `style-src-elem 'self' '${sha256Csp(criticalCss)}' '${sha256Csp(noJsRevealCss)}'`;
 
   assert.match(sw, /const OFFLINE_URL = '\/offline\.html'/);
