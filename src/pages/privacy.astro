@@ -6,13 +6,15 @@ import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 import { contactEmail, contactMailto } from '../data/identity';
 // Every period on this page comes from here, and a test holds the handler, the
-// edge log roll, ntfy's cache and the CSP report store to the same numbers.
+// edge log roll, ntfy's cache, the CSP report store and the servers' own logs
+// to the same numbers.
 import {
   ACCESS_LOG_RETENTION_DAYS,
   CSP_REPORT_STORE_MB,
   LEAD_RETENTION_DAYS,
   NOTIFICATION_CACHE_HOURS,
   PRIVACY_EFFECTIVE_DATE,
+  SERVER_LOG_MB,
 } from '../data/retention';
 
 const title = 'Privacy | Matt Parker';
@@ -65,7 +67,7 @@ const cmdkSections = [
 
     <section class="si privacy-section" id="privacy-logs" aria-labelledby="privacy-logs-title">
       <h2 class="privacy-h2" id="privacy-logs-title">Server logs</h2>
-      <p>Like almost every web server, this one logs each request, but only what its daily traffic report needs: your IP address, the address you asked for (this site's name and the page, without anything after a question mark), the time, the request method and protocol, how the server answered (the status, the size and the time it took), your browser's user agent, and the page you came from, also cut off at the question mark. Nothing else about the request is kept. The log rolls over at midnight, and each day's file is deleted {ACCESS_LOG_RETENTION_DAYS} days after that day ends. The servers' own error logs, kept for troubleshooting, can note a page, the time and what went wrong, but never your IP address, anything your browser sent, or the part after a question mark.</p>
+      <p>Like almost every web server, this one logs each request, but only what its daily traffic report needs: your IP address, the address you asked for (this site's name and the page, without anything after a question mark), the time, the request method and protocol, how the server answered (the status, the size and the time it took), your browser's user agent, and the page you came from, also cut off at the question mark. Nothing else about the request is kept. The log rolls over at midnight, and each day's file is deleted {ACCESS_LOG_RETENTION_DAYS} days after that day ends. The servers' own logs, kept for troubleshooting, note the time and what went wrong, and for a request that failed, its method, protocol, site name and page, again without anything after a question mark. The request details in them leave out your IP address and your browser's headers, and Docker keeps only the latest {SERVER_LOG_MB} MB of each server's log.</p>
       <p>Once a day a script turns those logs into a traffic report with the last part of every IP address zeroed out. The report stays on the server, isn't published anywhere, and is replaced the next day.</p>
     </section>
 

@@ -15,12 +15,16 @@
 	servers {
 		trusted_proxies static 172.18.255.254/32
 	}
-	# Caddy's own log is the container log, which Docker keeps by size. A
-	# warning for a response the visitor cut short, or an error from the
-	# contact handler, ntfy or the report sink, carries the whole request, the
-	# visitor's address in X-Forwarded-For included. So the addresses, port and
-	# headers go, the query string is cut, and IPv4 addresses in error text are
-	# masked (scripts/lib/edge-log-check.mjs; deploy-vps reads it back).
+	# Caddy's own log is the container log, which Docker keeps by size (30 MB,
+	# SERVER_LOG_MB in src/data/retention.ts). A warning for a response the
+	# visitor cut short, or an error from the contact handler, ntfy or the
+	# report sink, carries the whole request, the visitor's address in
+	# X-Forwarded-For included. So the addresses, port and headers go, the query
+	# string is cut, and an IPv4 address in an entry's `error` field is masked
+	# (scripts/lib/edge-log-check.mjs; deploy-vps reads it back). A handler
+	# error's own text is the entry's message instead, which no filter can
+	# reach. Here that can name an upstream's internal address, but not a
+	# visitor's: this server's only visitor-facing peer is the edge.
 	log default {
 		output stderr
 		format filter {

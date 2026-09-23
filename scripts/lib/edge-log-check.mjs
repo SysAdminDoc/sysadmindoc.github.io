@@ -64,6 +64,9 @@ export function defaultLogProblem(text, { mustExclude = [], mustDelete = [] } = 
   const fields = encoder.fields ?? {};
   const missing = [...REQUIRED_DELETIONS, ...mustDelete].filter((name) => fields[name]?.filter !== 'delete');
   if (applies(fields['request>uri'], '/page?q=secret') !== '/page') missing.push('the query string (request>uri)');
+  // The `error` field, where reverse_proxy puts a failed write to the visitor.
+  // A handler error's own text is the entry's message, which a filter encoder
+  // can't touch, so there's nothing to check for it here.
   const masked = applies(fields.error, 'write tcp 172.18.255.254:443->203.0.113.9:51234: broken pipe');
   if (masked === null || /\d+\.\d+\.\d+\.\d+/.test(masked)) missing.push('addresses in error text (error)');
   if (missing.length > 0) return `the default logger's filter keeps ${missing.join(', ')}`;

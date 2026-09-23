@@ -22,13 +22,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each of those configs fails a test and the committed ones still pass, so the CHANGELOG's "a test fails if either server is told to read the visitor's address from any other header" is true.
   Complexity: M
 
-- [ ] P2: Say exactly what the error-log filter masks
-  Why: `error regexp` masks the `error` field only. For a handler error, Caddy 2.11.4 puts the error text in `msg`, which a filter encoder can't reach, and live edge entries there carry an unmasked IPv4 (Docker's DNS). No visitor address turned up, but the Caddyfile comment, both CHANGELOGs and /privacy/ say addresses in error text are masked. /privacy/ also says error logs never hold "anything your browser sent", though they keep the method, protocol, host and path, and it gives them no retention period (Docker keeps 3 files of 10 MB per container).
-  Evidence: eighth drain review, 2026-09-23; `errLogValues` in caddyhttp `logging.go:206-222`; `deploy/vps/Caddyfile:36`, `scripts/lib/edge-log-check.mjs:67-68`, `src/pages/privacy.astro:68`.
-  Touches: those files, the ops CHANGELOG line.
-  Acceptance: every claim matches what the filter does, and /privacy/ names what an error entry keeps and for how long.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Make the CSS output checks cover what they claim

@@ -76,9 +76,12 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   assert.match(global, /request>uri regexp \\\?\.\*\$ ""/);
   assert.match(global, /error regexp \[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+ x\.x\.x\.x/);
 
-  // What /privacy/ promises about them, which the filters above make true.
+  // What /privacy/ promises about them, which the filters above make true. It
+  // used to say they never hold "anything your browser sent", though they keep
+  // the method, protocol, host and page (eighth drain review).
   const page = await fs.readFile(path.join(root, 'src', 'pages', 'privacy.astro'), 'utf8');
-  assert.match(page, /error logs, kept for troubleshooting, can note a page, the time and what went wrong, but never your IP address, anything your browser sent, or the part after a question mark/);
+  assert.match(page, /The servers' own logs, kept for troubleshooting, note the time and what went wrong, and for a request that failed, its method, protocol, site name and page, again without anything after a question mark\. The request details in them leave out your IP address and your browser's headers, and Docker keeps only the latest \{SERVER_LOG_MB\} MB of each server's log\./);
+  assert.doesNotMatch(page, /anything your browser sent/);
 
   const block = await fs.readFile(path.join(root, 'deploy', 'vps', 'caddy-block.txt'), 'utf8');
   assert.match(block, /\blog portfolio \{\s*\n\s*output file \/var\/log\/caddy\/portfolio\.log/, 'the exclusion names the portfolio logger');
@@ -101,7 +104,7 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
 // review turned the throw into console.warn and every test still passed.
 test('every live check in the deploy stops it on a problem, unconditionally', async () => {
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
-  for (const name of ['verifyEdgeLogging', 'verifyInnerLogging', 'verifyEdgeAddress', 'verifyAccessLogShape', 'verifyCspReportShape']) {
+  for (const name of ['verifyEdgeLogging', 'verifyInnerLogging', 'verifyEdgeAddress', 'verifyAccessLogShape', 'verifyCspReportShape', 'verifyServerLogRetention']) {
     const body = deploy.match(new RegExp(`function ${name}\\([^)]*\\) \\{([\\s\\S]*?)\\n\\}`))?.[1] ?? '';
     assert.ok(body, `${name} exists`);
     assert.match(body, /if \(problem\) \{?\s*throw new Error\(/, `${name} throws on a problem`);

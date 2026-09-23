@@ -25,6 +25,8 @@ import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
 import { builtDataProblem } from './lib/built-data-mode.mjs';
+import { logRetentionProblem } from './lib/log-retention.mjs';
+import { SERVER_LOG_MB } from '../src/data/retention.ts';
 import { smokeReportProblem } from './lib/csp-report-summary.mjs';
 import { vpsSshOptions } from './lib/vps-ssh.mjs';
 
@@ -133,6 +135,19 @@ function verifyInnerLogging() {
   const problem = defaultLogProblem(output);
   if (problem) throw new Error(`deploy-vps: in portfolio-app, ${problem}.`);
   console.log("deploy-vps: portfolio-app's own log drops what identifies a visitor.");
+}
+
+// /privacy/ says how much of each Caddy server's own log Docker keeps. The
+// edge has no log options of its own and takes the host's defaults, so a
+// change to /etc/docker/daemon.json would make the page wrong unnoticed.
+function verifyServerLogRetention() {
+  const daemon = captureRemote('cat /etc/docker/daemon.json 2>/dev/null || true');
+  for (const container of ['caddy', 'portfolio-app']) {
+    const config = captureRemote(`docker inspect ${container} --format '{{json .HostConfig.LogConfig}}' 2>&1 || true`);
+    const problem = logRetentionProblem(container, config, daemon, SERVER_LOG_MB);
+    if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  }
+  console.log(`deploy-vps: Docker keeps ${SERVER_LOG_MB} MB of each Caddy server's own log, as /privacy/ says.`);
 }
 
 // The inner Caddy and ntfy trust only the edge's pinned address to hand on a
@@ -289,6 +304,7 @@ runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-re
 verifyCaddyVersion();
 verifyNtfyVersion();
 verifyInnerLogging();
+verifyServerLogRetention();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //

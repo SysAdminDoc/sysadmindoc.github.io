@@ -14,6 +14,7 @@ import {
   LEAD_RETENTION_DAYS,
   NOTIFICATION_CACHE_HOURS,
   PRIVACY_EFFECTIVE_DATE,
+  SERVER_LOG_MB,
 } from '../src/data/retention.ts';
 
 const root = process.cwd();
@@ -43,11 +44,18 @@ test('every retention period /privacy/ states is the one its purge enforces', as
   // CSP reports: the live file plus one rotated copy.
   assert.equal(CSP_REPORT_DEFAULTS.maxLogBytes * 2, CSP_REPORT_STORE_MB * 1024 * 1024);
   assert.doesNotMatch(compose, /CSP_REPORT_MAX_LOG_BYTES/);
+
+  // The inner Caddy's own log: Docker keeps max-file files of max-size. The
+  // edge takes the host default, which the deploy reads back from the server.
+  const portfolioApp = compose.match(/\n {2}portfolio-app:\n([\s\S]*?)(?=\n {2}[a-z][\w-]*:\n)/)?.[1] ?? '';
+  const logging = portfolioApp.match(/logging:\s*\n\s+driver: json-file\s*\n\s+options:\s*\n\s+max-size: "(\d+)m"\s*\n\s+max-file: "(\d+)"/);
+  assert.ok(logging, 'portfolio-app sets its own json-file limits');
+  assert.equal(Number(logging[1]) * Number(logging[2]), SERVER_LOG_MB);
 });
 
 test('the page renders those numbers from src/data/retention.ts rather than typing its own', async () => {
   const page = await read('src', 'pages', 'privacy.astro');
-  for (const name of ['LEAD_RETENTION_DAYS', 'NOTIFICATION_CACHE_HOURS', 'ACCESS_LOG_RETENTION_DAYS', 'CSP_REPORT_STORE_MB']) {
+  for (const name of ['LEAD_RETENTION_DAYS', 'NOTIFICATION_CACHE_HOURS', 'ACCESS_LOG_RETENTION_DAYS', 'CSP_REPORT_STORE_MB', 'SERVER_LOG_MB']) {
     assert.match(page, new RegExp(`\\{${name}\\}`), `${name} is rendered from the shared constant`);
   }
   assert.match(page, /datetime=\{PRIVACY_EFFECTIVE_DATE\}/);
