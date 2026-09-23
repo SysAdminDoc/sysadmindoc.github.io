@@ -27,6 +27,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Security
 - ntfy moves from v2.11.0 to v2.28.0, out of the critical parseActions remote-code-execution range (GHSA-pqhx-w72w-m393, fixed in 2.22.0). It and the contact handler now sit on a private network that only `portfolio-app` joins, instead of the network shared by 22 containers on the server. Before this, any of them could read or forge leads.
+- ntfy now sees each visitor's own address. The inner Caddy replaced the forwarded address with the edge proxy's, so ntfy counted every visitor as one, and 30 bad tokens from anyone could have locked the owner's phone out of its notifications. The inner Caddy now trusts the private docker ranges and ntfy strips the same ranges.
 
 ### Added
 - Every deploy now proves the whole lead path. The live smoke confirms the notify host refuses anonymous subscribers and publishers, then sends a synthetic lead through the real form and reads it back with a subscriber token within 60 seconds. Smoke leads carry a secret header, are stored as synthetic, and go to their own topic, so they never reach the phone.

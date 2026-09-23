@@ -95,7 +95,13 @@ services:
       # and then portfolio-app. Nothing is readable or writable without a token.
       NTFY_BASE_URL: https://notify.getparkerai.com
       NTFY_LISTEN_HTTP: ":80"
+      # ntfy rate-limits, and locks out failed logins, per visitor IP, taken as
+      # the right-most X-Forwarded-For address it doesn't trust. The two Caddy
+      # hops sit on private docker networks, so stripping those ranges leaves the
+      # visitor's own address. Without this every visitor shared the edge's IP,
+      # and 30 bad tokens from anyone locked the owner's phone out too.
       NTFY_BEHIND_PROXY: "true"
+      NTFY_PROXY_TRUSTED_HOSTS: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,::1/128,fd00::/8"
       NTFY_AUTH_FILE: /var/lib/ntfy/user.db
       NTFY_AUTH_DEFAULT_ACCESS: deny-all
       NTFY_CACHE_FILE: /var/cache/ntfy/cache.db

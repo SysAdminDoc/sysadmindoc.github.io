@@ -3,6 +3,17 @@
 # this instance serves the built site and replicates the machine-endpoint cache
 # policy the live smoke expects (GitHub Pages served max-age=600 globally).
 
+# The edge Caddy is this server's only client, over private docker networks.
+# Trusting those ranges keeps the visitor's address in X-Forwarded-For (with the
+# edge's appended) instead of replacing it with the edge's own, so ntfy can tell
+# visitors apart for its per-IP limits. See NTFY_PROXY_TRUSTED_HOSTS in
+# docker-compose.yml for the other half.
+{
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
 # Lead notifications. The edge forwards https://notify.getparkerai.com here, and
 # this block hands it to ntfy on the private compose network, which refuses
 # everything without a token. It stays a separate site so the portfolio's CSP
