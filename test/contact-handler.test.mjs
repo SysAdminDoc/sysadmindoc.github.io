@@ -845,6 +845,27 @@ test('a post, with or without a token, is taken only from a page on this site', 
   });
 });
 
+// The sixth drain review had another site's page post five times through a
+// visitor's browser, silently, and the visitor's own message then got a 429:
+// each attempt was counted before the handler knew it came from elsewhere.
+test('posts from another site never count against the visitor they come through', async () => {
+  const host = 'portfolio.getparkerai.com';
+  await withHandler({ config: DEFAULT_LIMITS }, async ({ handler, storePath }) => {
+    const visitor = { host, 'x-forwarded-for': '203.0.113.9, 172.18.255.254' };
+    const crossSite = { ...visitor, accept: '*/*', 'sec-fetch-mode': 'no-cors', 'sec-fetch-site': 'cross-site', origin: 'https://evil.example' };
+    for (let attempt = 1; attempt <= DEFAULT_CONFIG.clientDailyMax + 1; attempt += 1) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ body: formBody(lead), headers: crossSite }), response);
+      assert.equal(response.status, 422, `cross-site post ${attempt} is refused as one, not counted toward a 429`);
+    }
+    const own = responseMock();
+    await handler.handleRequest(jsonPost(lead, { ...visitor, 'sec-fetch-site': 'same-origin' }), own);
+    assert.equal(own.status, 200, "the visitor's own message still goes through");
+    await handler.idle();
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1);
+  });
+});
+
 test('stored leads have a global hourly cap that the smoke does not use up', async () => {
   const smokeSecret = 's'.repeat(32);
   await withHandler({ config: { globalHourlyCap: 2, smokeSecret } }, async ({ handler, setClock }) => {

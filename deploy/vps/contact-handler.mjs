@@ -781,8 +781,19 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       return;
     }
 
-    // Every attempt counts against its client, valid or not, so a script can't
-    // probe the checks faster than a person could type. The smoke is exempt.
+    // A post from another site's page is refused before it counts. Counted, a
+    // page elsewhere could spend its visitors' attempts and lock them out of
+    // the form, which is what this check exists to stop.
+    if (!synthetic && !isSameSitePost(request.headers)) {
+      logger.log('contact: rejected a submission (posted from another site)');
+      request.resume();
+      refuse(422, { error: CHECK_FORM_MESSAGE });
+      return;
+    }
+
+    // Every other attempt counts against its client, valid or not, so a script
+    // can't probe the checks faster than a person could type. The smoke is
+    // exempt.
     const client = clientAddress(request.headers, request.socket?.remoteAddress);
     const current = now().getTime();
     if (!synthetic) {
@@ -807,11 +818,6 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
 
     const received = now();
     const form = parseSubmission(body);
-    if (!synthetic && !isSameSitePost(request.headers)) {
-      logger.log('contact: rejected a submission (posted from another site)');
-      refuse(422, { error: CHECK_FORM_MESSAGE });
-      return;
-    }
 
     // The token is checked first, so its answer doesn't depend on the other
     // fields and can't be used to find the honeypot.
