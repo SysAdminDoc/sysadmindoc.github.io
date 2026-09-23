@@ -156,6 +156,35 @@ test('a socket, an unquoted @import, inert markup and a quoted > are each read f
   ]);
 });
 
+// The sixth drain review: comments were stripped from the raw HTML before the
+// scripts came out, so a '<!--' in a script's string swallowed the markup up to
+// the next '-->', and script text inside <template> counted as a real script.
+test('a comment opener in script text hides nothing, and script text in a template loads nothing', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review6-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const policy = [
+    "default-src 'self'",
+    "connect-src 'self' https://templated.example",
+    "img-src 'self' https://after.example https://commented.example",
+  ].join('; ');
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      '<script>const marker = "<!--";</script>' +
+      '<img src="https://after.example/b.png">' +
+      '<!-- <img src="https://commented.example/c.png"> -->' +
+      '<template><script>fetch("https://templated.example/api");</script></template>' +
+      '</body></html>',
+  );
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused, [
+    { directive: 'connect-src', token: 'https://templated.example' },
+    { directive: 'img-src', token: 'https://commented.example' },
+  ]);
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

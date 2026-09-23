@@ -104,23 +104,64 @@ const PRELOAD_KIND = {
   document: 'frame',
 };
 
+// The rest of a start tag after its name: up to the first '>' outside quotes.
+const TAG_REST = /(?:[^>"']|"[^"]*"|'[^']*')*>/y;
+
+/**
+ * Split HTML into markup and inline script bodies in one pass, left to right,
+ * the way a browser tokenizes it. A comment hides what it holds. A script's
+ * text is JavaScript up to </script>, so a '<!--' or '<template' in one of its
+ * strings starts nothing. Template, textarea and title contents are text or
+ * inert until a script clones them, so they load nothing where they stand, a
+ * <script> among them included. Style text stays in the markup for the CSS
+ * rules, but a '<!--' in it doesn't start a comment either.
+ */
+function splitHtml(html) {
+  const scripts = [];
+  let body = '';
+  let index = 0;
+  const opener = /<!--|<(script|style|template|textarea|title)(?=[\s/>])/gi;
+  while (index < html.length) {
+    opener.lastIndex = index;
+    const match = opener.exec(html);
+    if (!match) {
+      body += html.slice(index);
+      break;
+    }
+    body += html.slice(index, match.index);
+    if (!match[1]) {
+      const end = html.indexOf('-->', match.index + 4);
+      index = end < 0 ? html.length : end + 3;
+      continue;
+    }
+    const tag = match[1].toLowerCase();
+    TAG_REST.lastIndex = match.index + match[0].length;
+    const openEnd = TAG_REST.exec(html) ? TAG_REST.lastIndex : html.length;
+    const close = new RegExp(`</${tag}\\s*>`, 'gi');
+    close.lastIndex = openEnd;
+    const closing = close.exec(html);
+    const contentEnd = closing ? closing.index : html.length;
+    const after = closing ? closing.index + closing[0].length : html.length;
+    if (tag === 'script') {
+      scripts.push({ attrs: html.slice(match.index + match[0].length, openEnd - 1), text: html.slice(openEnd, contentEnd) });
+      body += `${html.slice(match.index, openEnd)}</script>`;
+    } else if (tag === 'style') {
+      body += html.slice(match.index, after);
+    }
+    index = after;
+  }
+  return { body, scripts };
+}
+
 function htmlReferences(html) {
   const found = [];
   const add = (kind, url) => {
     const target = absoluteTarget(url);
     if (target) found.push({ kind, ...target });
   };
-  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, '');
-  // Text inside an inline script is JavaScript, not markup: its loading calls
-  // are read below, and a '<template' or a stray quote in it must not reach
-  // the markup rules.
-  const scripts = [...withoutComments.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
-  const body = withoutComments
-    .replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>)/gi, '$1$2')
-    // Markup inside these is text, or inert until a script clones it, so it
-    // loads nothing where it stands.
-    .replace(/<(template|textarea|title)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
-    .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
+  const split = splitHtml(html);
+  const scripts = split.scripts;
+  const body = split.body.replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
   // A quoted attribute value may hold a '>', as in alt="a > b", so the tag runs
   // to the first '>' outside quotes.
   for (const match of body.matchAll(/<(img|source|input|button|video|audio|track|script|link|iframe|frame|embed|object|form|a|area|base)\b((?:[^>"']|"[^"]*"|'[^']*')*)>/gi)) {
@@ -167,9 +208,9 @@ function htmlReferences(html) {
   }
   for (const match of body.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) found.push(...cssReferences(match[1]));
   for (const match of body.matchAll(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) found.push(...cssReferences(match[1] ?? match[2]));
-  for (const match of scripts) {
-    const type = String(attributes(match[1]).type ?? '').toLowerCase();
-    if (!type.includes('json')) found.push(...scriptReferences(match[2]));
+  for (const script of scripts) {
+    const type = String(attributes(script.attrs).type ?? '').toLowerCase();
+    if (!type.includes('json')) found.push(...scriptReferences(script.text));
   }
   return found;
 }
