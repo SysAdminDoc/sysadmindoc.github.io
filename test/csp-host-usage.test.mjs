@@ -95,6 +95,37 @@ test('each resource is matched to the directive that governs it', async (t) => {
   ]);
 });
 
+// The third drain review's inputs, 2026-09-23: a wss:// socket never counted,
+// an unquoted @import url() counted as an image, markup inside <template> and
+// <textarea> counted, and a '>' in a quoted alt hid the src after it.
+test('a socket, an unquoted @import, inert markup and a quoted > are each read for what they load', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review3-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const policy = [
+    "default-src 'self'",
+    "connect-src 'self' wss://socket.example",
+    "style-src 'self' https://styles.example",
+    "img-src 'self' https://styles.example https://inert.example https://quoted.example",
+  ].join('; ');
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      '<template><img src="https://inert.example/a.png"></template>' +
+      '<textarea><img src="https://inert.example/b.png"></textarea>' +
+      '<img alt="a > b" src="https://quoted.example/c.png">' +
+      '</body></html>',
+  );
+  await fs.writeFile(path.join(dist, '_assets', 'live.js'), "const socket = new WebSocket('wss://socket.example/feed');\n");
+  await fs.writeFile(path.join(dist, '_assets', 'site.css'), '@import url(https://styles.example/base.css);\n');
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused, [
+    { directive: 'img-src', token: 'https://styles.example' },
+    { directive: 'img-src', token: 'https://inert.example' },
+  ]);
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

@@ -49,7 +49,7 @@ export function parseHostSource(token) {
 
 function absoluteHostname(value) {
   const url = String(value ?? '').trim();
-  if (!/^(?:https?:)?\/\//i.test(url)) return null;
+  if (!/^(?:(?:https?|wss?):)?\/\//i.test(url)) return null;
   try {
     return new URL(url, 'https://self.invalid/').hostname.toLowerCase();
   } catch {
@@ -95,8 +95,13 @@ function htmlReferences(html) {
   };
   const body = html
     .replace(/<!--[\s\S]*?-->/g, '')
+    // Markup inside these is text, or inert until a script clones it, so it
+    // loads nothing where it stands.
+    .replace(/<(template|textarea|title)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
     .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
-  for (const match of body.matchAll(/<(img|source|input|button|video|audio|track|script|link|iframe|frame|embed|object|form|a|area|base)\b([^>]*)>/gi)) {
+  // A quoted attribute value may hold a '>', as in alt="a > b", so the tag runs
+  // to the first '>' outside quotes.
+  for (const match of body.matchAll(/<(img|source|input|button|video|audio|track|script|link|iframe|frame|embed|object|form|a|area|base)\b((?:[^>"']|"[^"]*"|'[^']*')*)>/gi)) {
     const tag = match[1].toLowerCase();
     const attrs = attributes(match[2]);
     if (tag === 'img' || tag === 'input') {
@@ -161,8 +166,9 @@ function cssReferences(css) {
     for (const match of block.matchAll(CSS_URL)) add('font', match[1] ?? match[2] ?? match[3]);
     return '';
   });
-  rest = rest.replace(/@import\s+(?:url\(\s*)?(?:"([^"]*)"|'([^']*)')/gi, (_all, double, single) => {
-    add('style', double ?? single);
+  // @import takes a quoted string or url(), and url() may leave its URL unquoted.
+  rest = rest.replace(/@import\s+(?:url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)|"([^"]*)"|'([^']*)')/gi, (...args) => {
+    add('style', args.slice(1, 6).find((value) => value !== undefined));
     return '';
   });
   for (const match of rest.matchAll(CSS_URL)) add('img', match[1] ?? match[2] ?? match[3]);
@@ -173,7 +179,8 @@ function cssReferences(css) {
   return found;
 }
 
-// A string literal passed straight to a call that loads something.
+// A string literal passed straight to a call that loads something. WebSocket
+// URLs are ws: or wss:, which absoluteHostname accepts beside http(s).
 /** @type {Array<[RegExp, string]>} */
 const LOADING_CALLS = [
   [/\b(?:fetch|sendBeacon)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
