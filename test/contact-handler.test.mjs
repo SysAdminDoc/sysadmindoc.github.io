@@ -659,6 +659,34 @@ test('the token endpoint issues a signed server timestamp that a later submissio
   });
 });
 
+// Used tokens are remembered in memory, and the key used to be derived from the
+// smoke secret, so the review sent one token twice across a restart and got
+// two stored leads.
+test('a token used before a restart is refused after it', async () => {
+  // Production sets the smoke secret, which the old key was derived from.
+  const smokeSecret = 's'.repeat(32);
+  await withHandler({ config: { tokenSecret: '', smokeSecret } }, async ({ handler, storePath, ntfy, setClock }) => {
+    const issued = responseMock();
+    await handler.handleRequest(requestMock({ method: 'GET', url: '/api/contact/token' }), issued);
+    const { token } = JSON.parse(issued.body);
+    setClock(new Date(NOW.getTime() + 5_000));
+    const first = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, token }), first);
+    assert.equal(first.status, 200);
+    await handler.idle();
+
+    const restarted = createContactHandler(
+      { ...DEFAULT_CONFIG, ...TEST_CONFIG, tokenSecret: '', smokeSecret, storePath },
+      { fetch: ntfy.fetch, now: () => new Date(NOW.getTime() + 10_000), logger: captureLogger() },
+    );
+    const replay = responseMock();
+    await restarted.handleRequest(jsonPost({ ...lead, token }), replay);
+    assert.equal(replay.status, 422);
+    assert.equal(JSON.parse(replay.body).code, 'token', 'the page script fetches a fresh one and sends again');
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 1);
+  });
+});
+
 test('a scripted submission without a good token is refused, generically, and stores nothing', async () => {
   await withHandler({}, async ({ handler, storePath, logger }) => {
     const cases = [
@@ -956,7 +984,7 @@ test('loadConfig rejects a malformed token or a short smoke secret', () => {
   const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
   assert.throws(() => loadConfig({ ...base, NTFY_TOKEN: 'not-a-token' }), /NTFY_TOKEN/);
   assert.throws(() => loadConfig({ ...base, CONTACT_SMOKE_SECRET: 'short' }), /CONTACT_SMOKE_SECRET/);
-  assert.throws(() => loadConfig({ ...base, CONTACT_TOKEN_SECRET: 'short' }), /CONTACT_TOKEN_SECRET/);
+  assert.equal(loadConfig({ ...base, CONTACT_TOKEN_SECRET: 'x'.repeat(40) }).tokenSecret, '', 'no configured key outlives a restart');
   const config = loadConfig({ ...base, NTFY_TOKEN: `tk_${'0'.repeat(29)}`, CONTACT_SMOKE_SECRET: 'x'.repeat(24) });
   assert.equal(config.ntfyToken, `tk_${'0'.repeat(29)}`);
 });

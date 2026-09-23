@@ -220,7 +220,8 @@ Without it the browser posts natively, and the handler answers with a 303: to
 Once someone starts filling in the form, its script fetches a signed token
 from `/api/contact/token` and sends it back with the message. The handler
 refuses a token under three seconds old, over four hours old, or already used,
-so it times the form on its own clock instead of the visitor's. Each visitor
+so it times the form on its own clock instead of the visitor's. Its signing key
+is new at every start, so a restart can't let a used token through again. Each visitor
 gets five attempts per ten minutes and ten a day, which keeps one address from
 filling the hourly cap by itself. A browser without JavaScript can't fetch a
 token, so its post is taken only when the browser marks it as coming from a

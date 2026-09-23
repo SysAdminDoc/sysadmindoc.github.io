@@ -17,8 +17,6 @@
 //                                   sends the header with any other value is refused with 403.
 //   CONTACT_STORE         optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
 //   CONTACT_MIN_TIME      optional  minimum seconds between fetching a form token and submitting (default 3)
-//   CONTACT_TOKEN_SECRET  optional  key for form tokens; derived from CONTACT_SMOKE_SECRET when unset,
-//                                   random per start when both are unset
 //   CONTACT_RETENTION_DAYS optional days a lead is kept, then deleted at start and daily (default 365;
 //                                   /privacy/ states the same number, src/data/retention.ts)
 //
@@ -26,7 +24,8 @@
 // timestamp and nonce signed with HMAC, and sends it back with the form. A
 // token must be at least CONTACT_MIN_TIME seconds old, at most four hours old,
 // and unused, so the timing check runs on this server's clock rather than the
-// visitor's. A POST with no token is accepted only as a no-JavaScript browser
+// visitor's. The key is made fresh at every start, because the list of used
+// tokens lives in memory. A POST with no token is accepted only as a no-JavaScript browser
 // navigation from a page on this site, under a stricter per-client limit.
 // Every client also has a per-ten-minutes and a daily limit, and stored leads
 // have a global hourly cap. A form that fails a field check hears only "Please
@@ -70,6 +69,8 @@ export const DEFAULT_CONFIG = Object.freeze({
   ntfyUrl: '',
   ntfyToken: '',
   smokeSecret: '',
+  // Empty in a deployment, so each start makes its own key. Tests set it to mint
+  // tokens.
   tokenSecret: '',
   storePath: '/var/lib/contact/leads.ndjson',
   // The privacy page promises this; src/data/retention.ts holds the number and
@@ -161,10 +162,6 @@ export function loadConfig(env = process.env) {
   if (smokeSecret && smokeSecret.length < 24) {
     throw new Error('CONTACT_SMOKE_SECRET must be at least 24 characters.');
   }
-  const tokenSecret = String(env.CONTACT_TOKEN_SECRET ?? '').trim();
-  if (tokenSecret && tokenSecret.length < 24) {
-    throw new Error('CONTACT_TOKEN_SECRET must be at least 24 characters.');
-  }
 
   return {
     ...DEFAULT_CONFIG,
@@ -173,7 +170,6 @@ export function loadConfig(env = process.env) {
     ntfyUrl,
     ntfyToken,
     smokeSecret,
-    tokenSecret,
     storePath,
     minTimeSeconds: positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'),
     leadRetentionDays: positiveInteger(env.CONTACT_RETENTION_DAYS, DEFAULT_CONFIG.leadRetentionDays, 'CONTACT_RETENTION_DAYS'),
@@ -605,11 +601,11 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   const pending = new Map();
   const inFlight = new Set();
 
-  // A configured key keeps tokens valid across restarts (the nightly deploy
-  // recreates this container). Without one, tokens die with the process.
-  const tokenKey = config.tokenSecret
-    || (config.smokeSecret ? createHmac('sha256', config.smokeSecret).update('contact-form-token-v1').digest('hex') : '')
-    || randomBytes(32).toString('hex');
+  // A new key every start. Used tokens are remembered in memory only, so a key
+  // that outlived a restart let a token be used again after one. A visitor whose
+  // token dies in a restart gets code 'token', and the page script fetches a
+  // fresh one and sends again.
+  const tokenKey = config.tokenSecret || randomBytes(32).toString('hex');
   /** nonce -> when its token expires, so a used token can't be sent twice */
   const usedNonces = new Map();
   const clientAttempts = createWindowCounter(config.clientWindowMs);
