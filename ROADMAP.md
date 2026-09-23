@@ -79,8 +79,27 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `dist/` mentions GitHub Pages only as history, and `llms.txt` line 3 reads as one sentence. A test asserts that every reviewed route's sitemap `lastmod` equals its structured-data `dateModified`. `/now/` computes the test count or drops it.
   Complexity: S
 
+- [ ] P2: Trust only the edge proxy's address on the inner Caddy
+  Why: `portfolio-app` shares the `web` network with 22 other containers. Since `7e6560df` it trusts every private address, so any of them can hand ntfy and the contact handler a forged `X-Forwarded-For`. That lets it slip the per-client limits or lock a chosen address, the owner's phone for one, out of ntfy with 30 bad tokens.
+  Evidence: second drain review on 2026-09-23, reading ntfy v2.28.0 `server/util.go` (it drops trusted addresses and takes the right-most one left); `deploy/vps/Caddyfile` trusts `static private_ranges`; the edge is 172.18.0.2 on `web` today but has no fixed address.
+  Touches: the shared proxy compose in Contabo-VPS-Ops (a fixed `ipv4_address` for the edge on `web`), `deploy/vps/Caddyfile`, `deploy/vps/docker-compose.yml` (`NTFY_PROXY_TRUSTED_HOSTS`), `test/endpoint-header-contract.test.mjs`.
+  Acceptance: `portfolio-app` trusts and ntfy strips only the edge's fixed address. A request to `portfolio-app` from another container on `web` with a forged `X-Forwarded-For` is attributed to that container's own address, shown by one live probe from a throwaway container.
+  Complexity: M
 ### P3
 
+- [ ] P3: Send `'wasm-unsafe-eval'` only with the Pagefind worker
+  Why: Every page's policy allows WebAssembly compilation, but only the Pagefind worker behind `/search/` uses it, and a worker takes its policy from its own response header.
+  Evidence: second drain review, 2026-09-23; `scriptSrc` in `src/layouts/Base.astro`; `/pagefind/pagefind-worker.js`.
+  Touches: `deploy/vps/Caddyfile` (a route for the worker script that adds the keyword to the stamped header), `src/layouts/Base.astro`, `public/offline.html`, `astro.config.mjs`, `scripts/lib/csp-header.mjs`.
+  Acceptance: Page policies drop `'wasm-unsafe-eval'` and the worker's header keeps it. The 11 search-corpus specs pass under production headers, and a `WebAssembly.compile` on an ordinary page is refused.
+  Complexity: M
+
+- [ ] P3: Show a readable page when a no-JavaScript form post meets a handler that is down
+  Why: With the handler down, Caddy's `handle_errors` serves the 404 page, with a 502 status, to a visitor who posted without JavaScript, and their message is gone.
+  Evidence: second drain review, 2026-09-23; the `handle_errors` block in `deploy/vps/Caddyfile`.
+  Touches: `deploy/vps/Caddyfile`, a not-sent page under `src/pages/contact/`, `test/endpoint-header-contract.test.mjs`.
+  Acceptance: A 5xx from `/api/contact` on a navigation shows a page saying the message wasn't sent and giving the email address, and a test pins the route.
+  Complexity: S
 - [ ] P3: One title and feed-name style, enforced by a test
   Why: Two routes use em dashes in `<title>`, the homepage uses a spaced hyphen, and six feed titles use em dashes, which breaks the site's own writing rule.
   Evidence: `src/pages/colophon.astro:11`, `src/pages/data.astro:73`, the homepage title, `src/layouts/Base.astro:169-174`, and the `&mdash;` in the ImgConverter description (`src/data/projects.ts:111`).
