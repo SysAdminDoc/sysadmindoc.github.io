@@ -35,6 +35,12 @@ fi
 # --anonymize-ip keeps the report useful without retaining visitor addresses.
 # Writing to a temp file first means a failed run leaves the previous report in
 # place rather than truncating it.
+# The edge logs only these fields (deploy/vps/caddy-block.txt): the user agent
+# and referrer are top-level fields rather than request headers, so GoAccess's
+# CADDY preset can't read them. The files already stored on 2026-09-23 were
+# rewritten into the same shape that day, so the whole window reads alike.
+LOG_FORMAT='{"ts":"%x.%^","request":{"client_ip":"%h","proto":"%H","method":"%m","host":"%v","uri":"%U"},"duration":"%T","size":"%b","status":"%s","user_agent":"%u","referer":"%R"}'
+
 TMP_FILE="$(mktemp)"
 trap 'rm -f "$TMP_FILE"' EXIT
 
@@ -49,7 +55,9 @@ docker exec "$CADDY_CONTAINER" sh -c '
   cat "$0"' "$LOG_PATH" \
   | docker run --rm -i --network none --read-only --tmpfs /work -w /work "$GOACCESS_IMAGE" - \
       -o html \
-      --log-format=CADDY \
+      --log-format="$LOG_FORMAT" \
+      --date-format=%s \
+      --time-format=%s \
       --anonymize-ip \
       --no-progress \
       --html-report-title="portfolio.getparkerai.com" \

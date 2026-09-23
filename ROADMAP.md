@@ -44,13 +44,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `portfolio-app` trusts and ntfy strips only the edge's fixed address. A request to `portfolio-app` from another container on `web` with a forged `X-Forwarded-For` is attributed to that container's own address, shown by one live probe from a throwaway container.
   Complexity: M
 
-- [ ] P2: Log only what the traffic report needs, then list exactly that on /privacy/
-  Why: Each access-log entry keeps the full URI with its query string, every request header (Accept-Language among them), TLS details and every response header, about 2.4 KB a request. The report uses the address, page, time, status, user agent and referrer.
-  Evidence: field names of a live `portfolio.log` entry on 2026-09-23; `deploy/vps/caddy-block.txt` logs `format json` unfiltered; `/privacy/` was corrected the same day to describe the full entry.
-  Touches: `deploy/vps/caddy-block.txt` (a `format filter` that drops the other request headers, `resp_headers` and `request>tls`, and perhaps the query string), the Contabo-VPS-Ops Caddyfile mirror, `src/pages/privacy.astro`, `test/privacy-retention.test.mjs`.
-  Acceptance: A live entry holds only the fields /privacy/ names, a test holds the filter and the page to the same list, and the traffic report still renders.
-  Complexity: M
-
 - [ ] P2: Bound the edge container's error log, or say on /privacy/ what it keeps
   Why: Caddy logs a 5xx at ERROR with the visitor's address and headers to the edge container's own log, which Docker keeps by size (3 files of 10 MB) rather than by age, so at this volume it can hold months.
   Evidence: third drain review (Caddy 2.11.4 `server.go` logs 5xx at ERROR, the nightly recreate produces some); `/etc/docker/daemon.json` on the VPS sets `max-size 10m`, `max-file 3`; the `caddy` container log held 18,057 lines on 2026-09-23.

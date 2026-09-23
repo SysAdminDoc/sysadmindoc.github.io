@@ -65,7 +65,7 @@ const cmdkSections = [
 
     <section class="si privacy-section" id="privacy-logs" aria-labelledby="privacy-logs-title">
       <h2 class="privacy-h2" id="privacy-logs-title">Server logs</h2>
-      <p>Like almost every web server, this one logs each request: your IP address and port, the address you asked for (anything after a question mark included), the time, how your browser connected and how the server answered, and the headers your browser sent with it, such as its user agent, its language and the page you came from. The log rolls over at midnight, and each day's file is deleted {ACCESS_LOG_RETENTION_DAYS} days after that day ends.</p>
+      <p>Like almost every web server, this one logs each request, but only what its daily traffic report needs: your IP address, the page you asked for without anything after a question mark, the time, the request method and protocol, how the server answered (the status, the size and the time it took), your browser's user agent and the page you came from. Nothing else about the request is kept. The log rolls over at midnight, and each day's file is deleted {ACCESS_LOG_RETENTION_DAYS} days after that day ends.</p>
       <p>Once a day a script turns those logs into a traffic report with the last part of every IP address zeroed out. The report stays on the server, isn't published anywhere, and is replaced the next day.</p>
     </section>
 

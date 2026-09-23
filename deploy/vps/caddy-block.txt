@@ -34,8 +34,22 @@ portfolio.getparkerai.com {
 			roll_keep 30
 			roll_keep_for 720h
 		}
-		format json
+		# Only what the traffic report reads and /privacy/ names: no request or
+		# response headers, no TLS details or port, no query string. The user
+		# agent and referrer come back as fields of their own (log_append).
+		format filter {
+			wrap json
+			fields {
+				request>headers delete
+				request>tls delete
+				request>remote_port delete
+				resp_headers delete
+				request>uri regexp \?.*$ ""
+			}
+		}
 	}
+	log_append user_agent {http.request.header.User-Agent}
+	log_append referer {http.request.header.Referer}
 }
 
 # OWNERSHIP: portfolio lead notifications (sites/portfolio/, ntfy)

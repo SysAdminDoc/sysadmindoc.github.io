@@ -79,6 +79,33 @@ test('the traffic report the cron runs is the repo copy, and it reads the rolled
   assert.match(script, /docker run --rm -i --network none --read-only --tmpfs \/work -w \/work "\$GOACCESS_IMAGE"/);
 });
 
+// The edge keeps only what the traffic report reads, and /privacy/ lists that
+// and nothing else. The filter, the fields log_append adds, the report's
+// GoAccess format and the page all have to agree.
+test('the access log keeps only what the report reads, and the page lists exactly that', async () => {
+  const edge = await read('deploy', 'vps', 'caddy-block.txt');
+  const block = edge.match(/portfolio\.getparkerai\.com \{[\s\S]*?\n\}/)?.[0] ?? '';
+  for (const field of ['request>headers', 'request>tls', 'request>remote_port', 'resp_headers']) {
+    assert.match(block, new RegExp(`\\b${field} delete\\b`), `${field} is deleted`);
+  }
+  assert.ok(block.includes('request>uri regexp \\?.*$ ""'), 'the query string is dropped');
+  const appended = [...block.matchAll(/log_append (\w+) \{http\.request\.header\.([\w-]+)\}/g)].map((match) => `${match[1]}=${match[2]}`).sort();
+  assert.deepEqual(appended, ['referer=Referer', 'user_agent=User-Agent']);
+
+  const script = await read('deploy', 'vps', 'analytics-report.sh');
+  const format = JSON.parse(script.match(/LOG_FORMAT='([^']+)'/)?.[1] ?? '{}');
+  assert.equal(format.user_agent, '%u');
+  assert.equal(format.referer, '%R');
+  assert.equal(format.request?.headers, undefined, 'the report reads nothing the log no longer keeps');
+  assert.match(script, /--log-format="\$LOG_FORMAT"/);
+
+  const page = await read('src', 'pages', 'privacy.astro');
+  for (const kept of ['your IP address', 'without anything after a question mark', 'user agent', 'the page you came from']) {
+    assert.ok(page.includes(kept), `the page names ${kept}`);
+  }
+  assert.doesNotMatch(page, /headers your browser sent|IP address and port|how your browser connected/, 'the page claims nothing the log dropped');
+});
+
 // The checks below answer the third drain review, which found eight settings
 // this file claimed to hold that could be broken without a test failing.
 
