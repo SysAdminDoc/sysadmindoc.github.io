@@ -9,6 +9,10 @@ import { REPORT_ONLY_FLAGS } from '../scripts/lib/report-only-flags.mjs';
 const root = process.cwd();
 const runner = path.join(root, 'scripts', 'refresh-and-deploy.mjs');
 
+// Each test's bound only ends a hang. On 2026-09-23 a busy PC ran this file
+// six times slower than usual, so the bound sits far above any honest run.
+const HANG_BOUND_MS = 240_000;
+
 function isAlive(pid) {
   try {
     process.kill(pid, 0);
@@ -31,6 +35,32 @@ function killTree(pid) {
   }
 }
 
+// How long npm takes to start a script in `cwd` right now. A busy PC can spend
+// a whole fixed step budget here: on 2026-09-23 the runner killed a fake step
+// at 8 s before it had run a line.
+/** @param {string} cwd */
+function npmStartMs(cwd) {
+  const started = Date.now();
+  spawnSync('npm run noop', {
+    cwd,
+    shell: true,
+    stdio: 'ignore',
+    windowsHide: true,
+    env: { ...process.env, npm_config_update_notifier: 'false' },
+  });
+  return Date.now() - started;
+}
+
+/** @param {string} file */
+async function waitForPid(file, timeoutMs = 30_000) {
+  for (const deadline = Date.now() + timeoutMs; Date.now() < deadline; ) {
+    const pid = Number(await fs.readFile(file, 'utf8').catch(() => '0'));
+    if (pid) return pid;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`${path.basename(file)} never appeared`);
+}
+
 /** @param {string} cwd */
 function runRunner(cwd, env) {
   const child = spawn(process.execPath, [runner], { cwd, env, stdio: 'ignore', windowsHide: true });
@@ -40,7 +70,7 @@ function runRunner(cwd, env) {
 
 // A regression that stops killing the step's tree leaves the runner waiting on
 // the orphan forever, so bound the test and take the whole tree down on the way out.
-test('a hung step is killed at its timeout and recorded as aborted, after a running marker', { timeout: 45_000 }, async (t) => {
+test('a hung step is killed at its timeout and recorded as aborted, after a running marker', { timeout: HANG_BOUND_MS }, async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
   /** @type {import('node:child_process').ChildProcess | null} */
   let runnerChild = null;
@@ -53,26 +83,30 @@ test('a hung step is killed at its timeout and recorded as aborted, after a runn
     await fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
   });
 
-  // The fake fetch-stars snapshots the status file the runner wrote before it,
-  // records its own pid, then hangs until something kills it.
+  // The fake fetch-stars records its own pid, snapshots the status file the
+  // runner wrote before it, then hangs until something kills it.
   await fs.writeFile(
     path.join(dir, 'hang.cjs'),
     [
       "const fs = require('node:fs');",
-      "fs.copyFileSync('.tmp/refresh-and-deploy-status.json', '.tmp/status-during-step.json');",
       "fs.writeFileSync('.tmp/hung-step.pid', String(process.pid));",
+      "fs.copyFileSync('.tmp/refresh-and-deploy-status.json', '.tmp/status-during-step.json');",
       'setInterval(() => {}, 1000);',
     ].join('\n'),
   );
   await fs.writeFile(
     path.join(dir, 'package.json'),
-    JSON.stringify({ name: 'refresh-fixture', private: true, scripts: { 'fetch-stars': 'node hang.cjs' } }),
+    JSON.stringify({ name: 'refresh-fixture', private: true, scripts: { 'fetch-stars': 'node hang.cjs', noop: 'node -e ""' } }),
   );
 
+  // The step has to reach its first line before the timeout, so the budget
+  // follows how slowly npm starts here, and never drops below the usual 8 s.
+  const startMs = npmStartMs(dir);
+  const timeoutSeconds = Math.min(120, Math.max(8, Math.ceil((4 * startMs) / 1000)));
   const { child, exited } = runRunner(dir, {
     ...process.env,
     GITHUB_TOKEN: 'test-token',
-    REFRESH_STEP_TIMEOUT_MS: '8000',
+    REFRESH_STEP_TIMEOUT_MS: String(timeoutSeconds * 1000),
     npm_config_update_notifier: 'false',
   });
   runnerChild = child;
@@ -80,7 +114,18 @@ test('a hung step is killed at its timeout and recorded as aborted, after a runn
   assert.equal(exitCode, 1, 'a timed-out step fails the run');
 
   const tmp = path.join(dir, '.tmp');
-  const during = JSON.parse(await fs.readFile(path.join(tmp, 'status-during-step.json'), 'utf8'));
+  const snapshot = await fs.readFile(path.join(tmp, 'status-during-step.json'), 'utf8').catch(async () => {
+    const ran = await fs.access(path.join(tmp, 'hung-step.pid')).then(
+      () => true,
+      () => false,
+    );
+    throw new Error(
+      ran
+        ? 'the step found no status file when it started, so no running marker came first'
+        : `the fake step never ran inside the ${timeoutSeconds}s timeout (npm took ${startMs} ms to start a script just before)`,
+    );
+  });
+  const during = JSON.parse(snapshot);
   assert.equal(during.status, 'running', 'the running marker is on disk before the first step starts');
   assert.equal(typeof during.pid, 'number');
   assert.ok(!Number.isNaN(Date.parse(during.startedAt)));
@@ -88,7 +133,7 @@ test('a hung step is killed at its timeout and recorded as aborted, after a runn
   const status = JSON.parse(await fs.readFile(path.join(tmp, 'refresh-and-deploy-status.json'), 'utf8'));
   assert.equal(status.status, 'aborted');
   assert.equal(status.step, 'fetch-stars');
-  assert.match(status.detail, /timed out after 8s/);
+  assert.match(status.detail, new RegExp(`timed out after ${timeoutSeconds}s`));
   assert.equal(status.startedAt, during.startedAt);
 
   const hungPid = Number(await fs.readFile(path.join(tmp, 'hung-step.pid'), 'utf8'));
@@ -100,14 +145,14 @@ test('a hung step is killed at its timeout and recorded as aborted, after a runn
   assert.equal(alive, false, 'the hung process itself is dead, not just the shell that started it');
 
   const log = await fs.readFile(path.join(tmp, 'refresh-and-deploy.log'), 'utf8');
-  assert.match(log, /STOP {2}fetch-stars: no result after 8s/);
+  assert.match(log, new RegExp(`STOP {2}fetch-stars: no result after ${timeoutSeconds}s`));
   assert.match(log, /ABORT after \d+s at step "fetch-stars"/);
 });
 
 // A step whose shell exits while something it started keeps the output pipes
 // open used to hold the runner until that process ended: the timeout's
 // `taskkill /T` aimed at a shell that was already gone and killed nothing.
-test('a step that leaves a process holding its output does not hold the run', { timeout: 45_000 }, async (t) => {
+test('a step that leaves a process holding its output does not hold the run', { timeout: HANG_BOUND_MS }, async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
   /** @type {import('node:child_process').ChildProcess | null} */
   let runnerChild = null;
@@ -125,7 +170,7 @@ test('a step that leaves a process holding its output does not hold the run', { 
   await fs.mkdir(path.join(dir, '.tmp'), { recursive: true });
   await fs.writeFile(
     path.join(dir, 'hold.cjs'),
-    "require('fs').writeFileSync('.tmp/holder.pid', String(process.pid)); setTimeout(() => {}, 30000);",
+    "require('fs').writeFileSync('.tmp/holder.pid', String(process.pid)); setTimeout(() => {}, 60000);",
   );
   const background = process.platform === 'win32' ? 'start /b node hold.cjs' : 'node hold.cjs &';
   await fs.writeFile(
@@ -137,22 +182,24 @@ test('a step that leaves a process holding its output does not hold the run', { 
     }),
   );
 
-  const started = Date.now();
   const { child, exited } = runRunner(dir, {
     ...process.env,
     GITHUB_TOKEN: 'test-token',
-    REFRESH_STEP_TIMEOUT_MS: '20000',
+    REFRESH_STEP_TIMEOUT_MS: '45000',
     REFRESH_OUTPUT_GRACE_MS: '2000',
     npm_config_update_notifier: 'false',
   });
   runnerChild = child;
   assert.equal(await exited, 1);
-  const seconds = (Date.now() - started) / 1000;
+  // The holder lives a minute, and a runner that waited on it could only have
+  // finished once it was gone, so it has to be alive now however slow the run
+  // was. Its pid can land a moment after the run on a slow start.
+  const holder = await waitForPid(path.join(dir, '.tmp', 'holder.pid'));
+  assert.ok(isAlive(holder), 'the run waited for the holder to exit');
 
   const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
   assert.equal(status.step, 'profile-feed:sync', 'fetch-stars counted as passed and the run went on');
   assert.match(status.detail, /exit code 3/);
-  assert.ok(seconds < 20, `the run finished in ${seconds.toFixed(1)}s instead of waiting on the holder`);
 
   const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
   assert.match(log, /WARN {2}fetch-stars: finished, but something it started still held its output after 2s/);
@@ -160,7 +207,7 @@ test('a step that leaves a process holding its output does not hold the run', { 
   assert.doesNotMatch(log, /STOP/);
 });
 
-test('an unsigned featured release still deploys, then fails the run as drift', { timeout: 45_000 }, async (t) => {
+test('an unsigned featured release still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
   // The fake preflight stands in for data:summary:deploy under
@@ -206,7 +253,7 @@ test('an unsigned featured release still deploys, then fails the run as drift', 
   assert.match(log, /PROVENANCE 1 featured release\(s\) without a checksum or attestation: Alpha@v1\.0\.0/);
 });
 
-test('a security.txt inside its 60-day window still deploys, and the status carries the warning', { timeout: 45_000 }, async (t) => {
+test('a security.txt inside its 60-day window still deploys, and the status carries the warning', { timeout: HANG_BOUND_MS }, async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
   // The fake preflight stands in for the build: it leaves a dist/ whose

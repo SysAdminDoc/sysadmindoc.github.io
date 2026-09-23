@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Keep the runner tests passing on a busy machine
-  Why: Two tests in `test/refresh-and-deploy.test.mjs` carry wall-clock budgets. On 2026-09-23 a deploy's preflight ran while other work loaded the PC (the suite took 87.6 s instead of 13.8 s) and stopped on both. The hung-step test's fake step never started inside its 8 s timeout, so its snapshot was missing (ENOENT on `status-during-step.json`), and the holder test's run took 29.9 s against a 20 s bound. The nightly can abort the same way.
-  Evidence: `.tmp/refresh-and-deploy-step-deploy-preflight.log`, 2026-09-23 15:15 UTC.
-  Touches: `test/refresh-and-deploy.test.mjs`.
-  Acceptance: The holder test checks that the holder outlives the run instead of timing it, the hung-step test leaves room for a slow npm start, and both still fail against the regressions they were written for.
-  Complexity: S
-
 ### P3
 
 ## Research-Driven Additions
