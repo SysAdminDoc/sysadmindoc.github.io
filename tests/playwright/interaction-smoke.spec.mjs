@@ -1116,6 +1116,95 @@ test.describe('contact form with JavaScript', () => {
     expect(posted).toEqual([]);
   });
 
+  // The fifth drain review's three stale-token paths, each of which failed a
+  // send without trying, or resent a token the handler had already seen.
+  test('a token fetch that failed when the form was touched is tried again at send time', async ({ page }) => {
+    let issued = 0;
+    const posted = [];
+    await page.route('**/api/contact/token', (route) => {
+      issued += 1;
+      return issued === 1
+        ? route.fulfill({ status: 502, contentType: 'text/html', body: '<h1>502</h1>' })
+        : route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: `stub-token-${issued}` }) });
+    });
+    await page.route('**/api/contact', async (route) => {
+      posted.push(new URLSearchParams(route.request().postData() ?? '').get('token'));
+      await route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ ok: true, message: 'Message received. I will get back to you.' }) });
+    });
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Message received. I will get back to you.');
+    expect(posted).toEqual(['stub-token-2']);
+  });
+
+  test('after a refused token whose refetch fails, the next send starts over', async ({ page }) => {
+    let issued = 0;
+    const posted = [];
+    await page.route('**/api/contact/token', (route) => {
+      issued += 1;
+      return issued === 2
+        ? route.fulfill({ status: 502, contentType: 'text/html', body: '<h1>502</h1>' })
+        : route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: `stub-token-${issued}` }) });
+    });
+    await page.route('**/api/contact', async (route) => {
+      posted.push(new URLSearchParams(route.request().postData() ?? '').get('token'));
+      await route.fulfill(
+        posted.length === 1
+          ? { status: 422, contentType: 'application/json; charset=utf-8', body: JSON.stringify({ error: 'Please check the form and try again.', code: 'token' }) }
+          : { contentType: 'application/json; charset=utf-8', body: JSON.stringify({ ok: true, message: 'Message received. I will get back to you.' }) },
+      );
+    });
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Could not reach the server. Try emailing directly.');
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Message received. I will get back to you.');
+    expect(posted).toEqual(['stub-token-1', 'stub-token-3']);
+  });
+
+  test('a send the proxy answers with an error page gives up its token', async ({ page }) => {
+    let issued = 0;
+    const posted = [];
+    await page.route('**/api/contact/token', (route) => {
+      issued += 1;
+      return route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: `stub-token-${issued}` }) });
+    });
+    await page.route('**/api/contact', async (route) => {
+      posted.push(new URLSearchParams(route.request().postData() ?? '').get('token'));
+      await route.fulfill(
+        posted.length === 1
+          ? { status: 502, contentType: 'text/html', body: '<h1>502</h1>' }
+          : { contentType: 'application/json; charset=utf-8', body: JSON.stringify({ ok: true, message: 'Message received. I will get back to you.' }) },
+      );
+    });
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Could not reach the server. Try emailing directly.');
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Message received. I will get back to you.');
+    expect(posted).toEqual(['stub-token-1', 'stub-token-2']);
+  });
+
+  test('a handler that never answers stops the send after 20 seconds', async ({ page }) => {
+    await page.clock.install();
+    await page.route('**/api/contact/token', (route) =>
+      route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: 'stub-token' }) }),
+    );
+    // Never answered.
+    await page.route('**/api/contact', () => {});
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('button[type="submit"]')).toHaveText('Sending...');
+    await page.clock.runFor(4_000);
+    await page.clock.runFor(21_000);
+    await expect(form.locator('.contact-form-status')).toHaveText('Could not reach the server. Try emailing directly.');
+    await expect(form.locator('button[type="submit"]')).toBeEnabled();
+  });
+
   test('a refused message is sent again with a fresh token', async ({ page }) => {
     let issued = 0;
     const tokens = [];

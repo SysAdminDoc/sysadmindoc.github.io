@@ -3,6 +3,23 @@
   // The handler refuses a form token younger than three seconds, so a submit
   // that comes sooner waits out the difference instead of failing.
   var MIN_TOKEN_AGE_MS = 3500;
+  // A handler that never answers would otherwise leave the button on
+  // "Sending..." for good.
+  var TOKEN_TIMEOUT_MS = 10000;
+  var POST_TIMEOUT_MS = 20000;
+  var UNREACHABLE = 'Could not reach the server. Try emailing directly.';
+
+  function fetchWithin(url, init, ms) {
+    if (typeof AbortController !== 'function') return fetch(url, init);
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, ms);
+    var options = Object.assign({}, init, { signal: controller.signal });
+    return fetch(url, options).then(
+      function (res) { clearTimeout(timer); return res; },
+      function (error) { clearTimeout(timer); throw error; }
+    );
+  }
+
   var forms = document.querySelectorAll('.contact-form');
   forms.forEach(function (form) {
     // ContactForm.astro loads this with each form, so bind once.
@@ -13,7 +30,7 @@
     var tokenAt = 0;
     var tokenReady = null;
     function fetchToken() {
-      return fetch('/api/contact/token', { headers: { Accept: 'application/json' }, cache: 'no-store' })
+      return fetchWithin('/api/contact/token', { headers: { Accept: 'application/json' }, cache: 'no-store' }, TOKEN_TIMEOUT_MS)
         .then(function (res) { return res.ok ? res.json() : null; })
         .then(function (data) {
           token = data && typeof data.token === 'string' ? data.token : null;
@@ -30,6 +47,12 @@
     function ensureToken() {
       if (!tokenReady) tokenReady = fetchToken();
       return tokenReady;
+    }
+    // A token is good for one attempt, whatever came of it, and a failed fetch
+    // must not be remembered either, so the next attempt asks again.
+    function forgetToken() {
+      tokenReady = null;
+      token = null;
     }
     form.addEventListener('focusin', ensureToken);
 
@@ -50,26 +73,26 @@
         data.set('token', token);
         // Accept tells the handler to answer in JSON; a plain browser POST gets
         // a redirect to a page instead.
-        fetch(form.action, {
+        fetchWithin(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
           body: new URLSearchParams(data).toString(),
-        })
+        }, POST_TIMEOUT_MS)
           .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, data: j }; }); })
           .then(function (result) {
+            forgetToken();
             // A token can lapse (a long draft, or a restart on the server).
             // Fetch a fresh one and send once more before giving up.
             if (!result.ok && result.data && result.data.code === 'token' && !retried) {
-              fetchToken().then(function (fresh) {
+              ensureToken().then(function (fresh) {
                 if (fresh) send(true);
-                else settle('Could not reach the server. Try emailing directly.', false);
+                else {
+                  forgetToken();
+                  settle(UNREACHABLE, false);
+                }
               });
               return;
             }
-            // A token is good for one attempt, sent or refused, so the next one
-            // fetches its own.
-            tokenReady = null;
-            token = null;
             if (result.ok) {
               settle(result.data.message || 'Sent. I will be in touch.', true);
               form.reset();
@@ -78,7 +101,9 @@
             }
           })
           .catch(function () {
-            settle('Could not reach the server. Try emailing directly.', false);
+            // No answer, or not JSON (an error page from the proxy).
+            forgetToken();
+            settle(UNREACHABLE, false);
           });
       }, wait);
     }
@@ -89,17 +114,25 @@
       btn.disabled = true;
       btn.textContent = 'Sending...';
       status.textContent = '';
-      ensureToken().then(function () {
-        if (!token) {
-          // The token and the form go to the same handler, so no token means
-          // it's down or restarting. Posting the form anyway landed on the
-          // error page and lost the text; staying here keeps it.
-          tokenReady = null;
-          settle('Could not reach the server. Try emailing directly.', false);
-          return;
-        }
-        send(false);
-      });
+      ensureToken()
+        .then(function () {
+          if (token) return token;
+          // The fetch when the form was first touched may have met a restart.
+          // Ask once more before giving up.
+          forgetToken();
+          return ensureToken();
+        })
+        .then(function () {
+          if (!token) {
+            // The token and the form go to the same handler, so no token means
+            // it's down or restarting. Posting the form anyway landed on the
+            // error page and lost the text; staying here keeps it.
+            forgetToken();
+            settle(UNREACHABLE, false);
+            return;
+          }
+          send(false);
+        });
     });
   });
 })();
