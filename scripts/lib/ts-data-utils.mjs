@@ -81,6 +81,22 @@ export function exportedArray(source, exportName) {
 }
 
 /**
+ * Return an exported object literal as a plain JS value, or `null` when the
+ * export is missing or is not an object literal.
+ */
+export function exportedObject(source, exportName) {
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== exportName) continue;
+      if (!declaration.initializer || !ts.isObjectLiteralExpression(declaration.initializer)) return null;
+      return parseValue(declaration.initializer, source);
+    }
+  }
+  return null;
+}
+
+/**
  * Read `src/data/projects.ts` and return the `slug` values from the
  * `liveApps` array.  Calls `fail` for structural problems so the
  * caller's error list stays consistent.

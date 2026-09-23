@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { exportedArray, sourceFile } from '../scripts/lib/ts-data-utils.mjs';
+import { exportedArray, exportedObject, sourceFile } from '../scripts/lib/ts-data-utils.mjs';
 
 const FRESHNESS_WARN_DAYS = 180;  // 6 months — warn but don't fail
 const FRESHNESS_FAIL_DAYS = 365;  // 1 year — fail the test
@@ -75,6 +75,21 @@ test('reviewed page dates drive sitemap lastmod values and their build audit', a
   assert.match(sitemapAudit, /import \{ reviewedInteriorPages \} from '\.\.\/src\/data\/page-freshness\.ts'/);
   assert.match(sitemapAudit, /reviewed route .* is missing <lastmod>/);
   assert.match(sitemapAudit, /entry\.lastmod\.slice\(0, 10\) !== reviewedDate/);
+});
+
+test('the /now/ review date matches the date the page itself carries', async () => {
+  // /now/ is the one reviewed page with two date sources: the sitemap reads
+  // page-freshness.ts and the page's structured data reads curated.ts. They
+  // had drifted to 2026-06-04 and 2026-09-17. sitemap:audit catches that in a
+  // build; this catches it before one.
+  const curatedPath = path.join(root, 'src', 'data', 'curated.ts');
+  const now = exportedObject(sourceFile(curatedPath, await fs.readFile(curatedPath, 'utf8')), 'now');
+  const nowPage = (await loadReviewedPages()).find((page) => page.slug === 'now');
+
+  assert.ok(now, 'curated.ts should export a now object');
+  assert.ok(nowPage, 'page-freshness.ts should list /now/');
+  assert.match(now.updated, /^\d{4}-\d{2}-\d{2}$/, 'now.updated should be a plain date literal');
+  assert.equal(nowPage.lastReviewed, now.updated);
 });
 
 test('reviewed interior pages are not stale (warn >180 days, fail >365 days)', async () => {

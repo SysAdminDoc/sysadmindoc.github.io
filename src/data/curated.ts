@@ -79,10 +79,13 @@ export const healthcareIT = {
  * Date stamped so visitors know how fresh it is.
  */
 export const now = {
-  updated: '2026-09-17',
+  // Keep equal to the /now/ entry in page-freshness.ts: the sitemap takes its
+  // date from there, the page's structured data from here, and sitemap:audit
+  // fails when they differ.
+  updated: '2026-09-23',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site ${siteVersion}. ${fallbackRepoCount} repos, Astro 7 on a Contabo VPS, 295 automated tests, and a colophon page in progress`,
+    `Portfolio site ${siteVersion}: ${fallbackRepoCount} repos on Astro 7 and a Contabo VPS. Every deploy now proves the contact form reaches a person`,
     'AI services: shipping fractional implementation engagements through Parker AI, including workflow automation and team training',
     'OpenRadar: open weather workstation with Tauri 2, React 19, and raw radar data. Twelve research passes in, draining the last 20 items',
     'Healthcare support: PACS/DICOM migrations, hosted-service cutovers, and the documentation that makes them repeatable',

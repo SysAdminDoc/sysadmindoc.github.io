@@ -51,13 +51,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: `script-src` and `style-src` carry `'report-sample'`. The sink stores the 40-character sample and tags each report as synthetic, extension or first-party. The nightly prints the counts, and exits non-zero when a first-party document reports a blocked host or directive it hasn't reported before.
   Complexity: M
 
-- [ ] P2: Correct the stale public facts
-  Why: Several public texts contradict the current deployment or each other.
-  Evidence: `public/humans.txt:11` ("Hosting: GitHub Pages"); `README.md:44` and the version-pinned examples at `:93-94`; `dist/llms.txt:3` ("…running. with 15+ years…", from `src/pages/llms.txt.ts:64`); `src/data/curated.ts:85` ("a colophon page in progress" and a hard-coded test count); the `/now/` sitemap date (2026-06-04, `src/data/page-freshness.ts`) against its structured-data date; `astro.config.mjs:11-16`, which describes removed incremental builds; the profile feed's own entry for this repo, which still says GitHub Pages; the v0.45.1 CHANGELOG, which counts three failed gates and lists four.
-  Touches: the files above, and this repo's entry in the SysAdminDoc/SysAdminDoc catalog.
-  Acceptance: `dist/` mentions GitHub Pages only as history, and `llms.txt` line 3 reads as one sentence. A test asserts that every reviewed route's sitemap `lastmod` equals its structured-data `dateModified`. `/now/` computes the test count or drops it.
-  Complexity: S
-
 - [ ] P2: Trust only the edge proxy's address on the inner Caddy
   Why: `portfolio-app` shares the `web` network with 22 other containers. Since `7e6560df` it trusts every private address, so any of them can hand ntfy and the contact handler a forged `X-Forwarded-For`. That lets it slip the per-client limits or lock a chosen address, the owner's phone for one, out of ntfy with 30 bad tokens.
   Evidence: second drain review on 2026-09-23, reading ntfy v2.28.0 `server/util.go` (it drops trusted addresses and takes the right-most one left); `deploy/vps/Caddyfile` trusts `static private_ranges`; the edge is 172.18.0.2 on `web` today but has no fixed address.

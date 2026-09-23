@@ -151,6 +151,19 @@ const cases = [
     },
   },
   {
+    name: 'sitemap:audit (dateModified)',
+    args: ['scripts/audit-sitemap.mjs', '--dist', scratch],
+    violation: 'a reviewed page whose structured data dates it differently from the sitemap',
+    expect: /reviewed route "\/now\/" says dateModified "2001-01-01" in its structured data but lastmod/,
+    plant() {
+      const html = readScratch('now/index.html');
+      const next = html.replace(/"dateModified":\s*"[^"]*"/g, '"dateModified":"2001-01-01"');
+      if (next === html) return false;
+      writeScratch('now/index.html', next);
+      return true;
+    },
+  },
+  {
     name: 'links:audit',
     args: ['scripts/audit-built-links.mjs', '--dist', scratch],
     violation: 'an internal link to a route the build does not produce',
@@ -274,4 +287,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`Audit gate self-test passed: ${cases.length} gates each rejected a planted violation.`);
+console.log(`Audit gate self-test passed: ${cases.length} planted violations were each rejected.`);

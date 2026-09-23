@@ -25,6 +25,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Site search works again. Once the server started sending the CSP as a response header on 2026-08-20, Pagefind's worker ran under it and couldn't compile its WebAssembly, so every search sat at "Searching" forever. The policy now allows `'wasm-unsafe-eval'`, which permits WebAssembly compilation and nothing else.
 - Old links to the removed `/projects/<Repo>/` pages, the site's most common 404 (92 in the week to 2026-09-23), now go somewhere: a repo the catalog knows answers 301 to its GitHub page, and any other name 302s to a catalog search for it. `/favicon.ico` exists too, packed from the same 16, 32 and 48 pixel renders as the other icons. The live smoke checks all three.
 - Returning visitors see the homepage photo again. The service worker fetched cross-origin images itself, and the policy delivered with `/sw.js` refused those fetches, so every visit after the first got a synthetic 503 instead of the avatar. The worker now leaves cross-origin requests to the browser.
+- Stale public facts are corrected. `/now/` gave search engines two dates (2026-06-04 in the sitemap, 2026-09-17 in its structured data), and the build now fails whenever a reviewed page's two dates disagree. `llms.txt` opens with a single sentence again instead of "…running. with 15+ years". `/now/` drops a hand-typed test count and a colophon that had already shipped. The README stops calling GitHub Pages a fallback, and this site's entry in the project catalog says it's self-hosted. The v0.45.1 notes below said three gates had failed and then listed four.
 
 ### Removed
 - `humans.txt` no longer says the site is hosted on GitHub Pages, and it and `llms.txt` now say "no client-side analytics" rather than "no analytics", since a server-side traffic report exists.
@@ -55,7 +56,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [v0.45.1] - 2026-09-20
 
 ### Fixed
-- The nightly deploy had been aborting in preflight since 2026-09-14. Three separate gates were failing behind each other, so fixing one only revealed the next.
+- The nightly deploy had been aborting in preflight since 2026-09-14. Four separate gates were failing behind each other, so fixing one only revealed the next.
 - Dependency audit: the pinned `vite` and `yaml` overrides had gone stale (8.2.2 and 2.9.0). They now sit at 8.3.0 and 2.9.1, which is what the strict exact-pin rule asks for.
 - Catalog audit: MavenBranding is a public repo that hosts Maven Imaging desktop branding for the provisioning script to fetch. It's an asset host, not a portfolio project, so it's recorded under `intentionallySkippedPublicRepos`.
 - Script typecheck: three service worker tests added on 2026-09-17 skipped the `@type` annotation and the `assert.ok(response)` guard that the other four tests in the file use, so `tsc` flagged the awaited response as possibly undefined.

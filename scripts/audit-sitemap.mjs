@@ -39,6 +39,28 @@ async function readDistFile(relativePath) {
   }
 }
 
+/** The first dateModified in a page's JSON-LD blocks, graph nodes included. */
+function structuredDateModified(html) {
+  for (const match of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    let data;
+    try {
+      data = JSON.parse(match[1]);
+    } catch {
+      continue;
+    }
+    const queue = [data];
+    while (queue.length > 0) {
+      const node = queue.shift();
+      if (Array.isArray(node)) queue.push(...node);
+      else if (node && typeof node === 'object') {
+        if (typeof node.dateModified === 'string') return node.dateModified;
+        queue.push(...Object.values(node));
+      }
+    }
+  }
+  return null;
+}
+
 function extractLocValues(xml) {
   const locs = [];
   for (const match of xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)) {
@@ -178,6 +200,18 @@ for (const loc of indexLocs) {
         );
       } else {
         reviewedLastmodCount += 1;
+      }
+      // A search engine reads two dates for a reviewed page: this lastmod and
+      // the page's own structured data. /now/ said 2026-06-04 in one and
+      // 2026-09-17 in the other.
+      const pageHtml = await readDistFile(path.join(parsed.pathname.replace(/^\/+|\/+$/g, ''), 'index.html'));
+      const modified = pageHtml === null ? null : structuredDateModified(pageHtml);
+      if (pageHtml !== null && !modified) {
+        fail(`reviewed route "${parsed.pathname}" has no dateModified in its structured data.`);
+      } else if (modified && entry.lastmod && modified.slice(0, 10) !== entry.lastmod.slice(0, 10)) {
+        fail(
+          `reviewed route "${parsed.pathname}" says dateModified "${modified}" in its structured data but lastmod "${entry.lastmod}" in the sitemap.`,
+        );
       }
     }
 

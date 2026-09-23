@@ -94,7 +94,8 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     slug: 'now',
     route: '/now/',
     label: 'Now',
-    lastReviewed: '2026-06-04',
+    // Keep equal to now.updated in curated.ts (sitemap:audit compares them).
+    lastReviewed: '2026-09-23',
     schemaTypes: ['WebPage'],
     visibleFreshness: false,
   },

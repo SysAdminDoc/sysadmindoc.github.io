@@ -33,7 +33,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Static full-text search**: Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
 - **Shared interior navigation**: five primary routes stay visible while long-page section
   indexes remain available in a compact `SectionJumpNav` disclosure
-- **Interior freshness signals**: reviewed `/uses/`, `/resume/`, `/healthcare-it/`, and `/ai/` timestamps with audited `WebPage.dateModified` schema
+- **Interior freshness signals**: visible review dates on `/uses/`, `/resume/`, `/healthcare-it/`, `/ai/` and `/colophon/`. The build fails when any reviewed page's `WebPage.dateModified` differs from its sitemap `lastmod`
 - **Catalog discovery**: build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes**: audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance, PWA, update, and CSP hygiene**: Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts
@@ -41,7 +41,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Local semantic audit**: advisory project similarity and category-drift review without hosted inference
 - **Browser accessibility and visual baselines**: Playwright + axe coverage for hydrated shell interactions, major public responsive routes, and mid-wide desktop layout regressions
 - **Public-safe notes policy**: `/til` stays parked until a reviewed note corpus exists
-- **VPS deployment**: local build, audit, and smoke process. A Caddy container serves the static site from the Contabo VPS, with GitHub Pages retained as a fallback.
+- **VPS deployment**: local build, audit, and smoke process. A Caddy container serves the static site from the Contabo VPS. The old GitHub Pages address only redirects there.
 
 ## Develop
 
@@ -89,8 +89,8 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version 0.43.0 --expected-commit <commit-sha> --expected-projects 208 --expected-releases 60 --expected-feed-items 208
-npm run smoke:release -- --tag v0.43.0 --asset sysadmindoc-portfolio-v0.43.0.zip --min-size 1000000
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 208 --expected-releases 60 --expected-feed-items 208
+npm run smoke:release -- --tag v<version> --asset sysadmindoc-portfolio-v<version>.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
