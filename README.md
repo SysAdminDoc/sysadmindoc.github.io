@@ -195,9 +195,10 @@ The contact form posts to `/api/contact`, where a small Node sidecar
 store and then notifies through a self-hosted ntfy at
 `https://notify.getparkerai.com`. ntfy sits on a private compose network behind
 `portfolio-app`, denies everything without a token, and its credentials never
-touch this repo. Before the first deploy with this stack, run
-`sh provision-notify-secrets.sh` once in `/home/deploy/sites/portfolio` on the
-server. It writes `ntfy-auth.env` and `contact-secrets.env` and prints three
+touch this repo. On a new server the first `deploy:vps` copies
+`provision-notify-secrets.sh` to `/home/deploy/sites/portfolio` and stops. Run
+`sh provision-notify-secrets.sh` there once, then deploy again. The script
+writes `ntfy-auth.env` and `contact-secrets.env` and prints three
 values once: the phone's read-only token, plus the smoke token and smoke secret,
 which the deploy machine needs as `PORTFOLIO_NTFY_SMOKE_TOKEN` and
 `PORTFOLIO_CONTACT_SMOKE_SECRET`. `deploy:vps` refuses to run without the two
