@@ -42,6 +42,7 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Evidence: sink aggregates on 2026-09-23 (303 reports since 2026-08-20, 260 of them recorded as `(invalid-url)`); the policy in `src/layouts/Base.astro:75` has no `'report-sample'`.
   Touches: `src/layouts/Base.astro`, `deploy/vps/csp-report-server.mjs`, a new read-only `scripts/csp-report-summary.mjs`, `scripts/refresh-and-deploy.mjs`.
   Acceptance: `script-src` and `style-src` carry `'report-sample'`. The sink stores the 40-character sample and tags each report as synthetic, extension or first-party. The nightly prints the counts, and exits non-zero when a first-party document reports a blocked host or directive it hasn't reported before.
+  Note (seventh drain review): anyone on the internet can post to the sink, so a report's document URL and sample are claims. The nightly has to hold up against a burst of forged first-party reports, for example by needing the same new violation from several distinct reports before it fails.
   Complexity: M
 
 ### P3

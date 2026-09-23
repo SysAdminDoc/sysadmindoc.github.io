@@ -158,7 +158,10 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
   assert.ok(checked < shipped, 'the edge address is checked before the trust settings ship');
 });
 
-/** Each compose service's `networks:` list, read from the file's own layout. */
+/**
+ * Each compose service's networks, from the file's own layout, in list form
+ * (`- web`, quoted or with a trailing comment) or mapping form (`web:`).
+ */
 function composeServiceNetworks(compose) {
   const services = compose.replace(/\r\n/g, '\n').split(/^services:\n/m)[1].split(/^\S/m)[0];
   /** @type {Record<string, string[]>} */
@@ -166,35 +169,73 @@ function composeServiceNetworks(compose) {
   let current = '';
   let inNetworks = false;
   for (const line of services.split('\n')) {
-    const service = /^ {2}([\w-]+):\s*$/.exec(line);
+    const service = /^ {2}([\w-]+):\s*(?:#.*)?$/.exec(line);
     if (service) {
       current = service[1];
       result[current] = [];
       inNetworks = false;
-    } else if (/^ {4}networks:\s*$/.test(line)) {
+    } else if (/^ {4}networks:\s*(?:#.*)?$/.test(line)) {
       inNetworks = true;
     } else if (inNetworks) {
-      const item = /^ {6}- ([\w-]+)\s*$/.exec(line);
-      if (item) result[current].push(item[1]);
-      else if (line.trim() !== '' && !/^\s*#/.test(line)) inNetworks = false;
+      const item = /^ {6}(?:- )?(["']?)([\w.-]+)\1:?\s*(?:\{\s*\})?\s*(?:#.*)?$/.exec(line);
+      if (item) result[current].push(item[2]);
+      else if (/^ {8,}\S/.test(line) || line.trim() === '' || /^\s*#/.test(line)) continue;
+      else inNetworks = false;
     }
   }
   return result;
 }
 
-test('only portfolio-app joins the shared web network, and everything it fronts sits on the internal one', async () => {
+/** The top-level `networks:` mapping: each name and the settings under it. */
+function composeTopNetworks(compose) {
+  const section = compose.replace(/\r\n/g, '\n').split(/^networks:\n/m)[1] ?? '';
+  /** @type {Record<string, string>} */
+  const result = {};
+  let current = '';
+  for (const line of section.split('\n')) {
+    if (/^\S/.test(line)) break;
+    const name = /^ {2}([\w.-]+):\s*$/.exec(line);
+    if (name) {
+      current = name[1];
+      result[current] = '';
+    } else if (current && /^ {4}\S/.test(line)) {
+      result[current] += `${line.trim()};`;
+    }
+  }
+  return result;
+}
+
+test('the compose network reader sees every way to write a network', () => {
+  // The seventh drain review put a service on `web` with `- web # shared`
+  // and with `- "web"`, and the old reader missed both.
+  const compose = (lines) => `services:\n  app:\n    image: x\n    networks:\n${lines}\n\nnetworks:\n  web:\n    external: true\n`;
+  for (const lines of ['      - web # shared', '      - "web"', "      - 'web'", '      web:\n        ipv4_address: 172.18.0.9', '      web: {}']) {
+    assert.deepEqual(composeServiceNetworks(compose(lines)), { app: ['web'] }, lines);
+  }
+  assert.deepEqual(composeTopNetworks(compose('      - web')), { web: 'external: true;' });
+});
+
+test('only portfolio-app joins the shared web network, and each service sits on its own set', async () => {
   const compose = await fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8');
 
   // About twenty other containers share `web`. Any service on it can be
-  // reached, and posted to, by every one of them without going through
-  // portfolio-app's routes and their limits.
+  // reached by every one of them without going through portfolio-app's
+  // routes. The report sink parses reports from anyone on the internet, so it
+  // gets a network of its own: on the private one it could reach ntfy and the
+  // contact handler, which both take a visitor's address from X-Forwarded-For.
   const services = composeServiceNetworks(compose);
-  const names = Object.keys(services).sort();
-  assert.deepEqual(names, ['contact-handler', 'csp-reporter', 'ntfy', 'portfolio-app']);
-  const on = (/** @type {string} */ network) => names.filter((name) => services[name].includes(network));
-  assert.deepEqual(on('web'), ['portfolio-app'], 'portfolio-app is the only way in from the edge');
-  assert.deepEqual(on('portfolio-private'), names, 'portfolio-app reaches the rest on the private network');
-  assert.match(compose.replace(/\r\n/g, '\n'), /\n {2}portfolio-private:\n {4}internal: true\n/, 'the private network has no route out');
+  const sets = Object.fromEntries(Object.keys(services).sort().map((name) => [name, [...services[name]].sort()]));
+  assert.deepEqual(sets, {
+    'contact-handler': ['portfolio-private'],
+    'csp-reporter': ['portfolio-reports'],
+    ntfy: ['portfolio-private'],
+    'portfolio-app': ['portfolio-private', 'portfolio-reports', 'web'],
+  });
+  assert.deepEqual(composeTopNetworks(compose), {
+    web: 'external: true;',
+    'portfolio-private': 'internal: true;',
+    'portfolio-reports': 'internal: true;',
+  }, 'both portfolio networks have no route out, and there is no other');
 });
 
 test('a fresh server receives the secrets script before the deploy checks for its output', async () => {

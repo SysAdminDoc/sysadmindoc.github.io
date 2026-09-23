@@ -44,18 +44,22 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    # The only container on both networks: the edge reaches it on `web`, and it
-    # reaches the report sink, the contact handler and ntfy on the private
-    # network.
+    # The only container on more than one network: the edge reaches it on
+    # `web`, it reaches the contact handler and ntfy on the private network,
+    # and the report sink on a network of its own.
     networks:
       - web
       - portfolio-private
+      - portfolio-reports
 
   csp-reporter:
     # The reporter has no third-party runtime dependency and is not published
-    # on a host port. It sits on the private network, so only portfolio-app,
-    # which routes /csp-report to it, can reach it. On `web` any of the other
-    # containers there could post to it directly.
+    # on a host port. Its network holds only portfolio-app, which routes
+    # /csp-report to it, so the containers on `web` can't reach it directly,
+    # and it can't reach ntfy or the contact handler, which both take a
+    # visitor's address from X-Forwarded-For. Anyone can still send it reports
+    # through that route, which is what a report endpoint is for, so what it
+    # stores is untrusted input.
     image: node:24-alpine
     container_name: portfolio-csp-reporter
     restart: unless-stopped
@@ -79,7 +83,7 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - portfolio-private
+      - portfolio-reports
 
   ntfy:
     # Lead notifications. 2.28.0 is past the critical parseActions RCE
@@ -185,8 +189,11 @@ services:
 networks:
   web:
     external: true
-  # portfolio-app, the report sink, the contact handler and ntfy. None of the
-  # other containers on the shared `web` network can reach the last three, and
-  # the network has no route out.
+  # Only portfolio-app, the contact handler and ntfy. None of the other
+  # containers on the shared `web` network can reach the lead path, and the
+  # network has no route out.
   portfolio-private:
+    internal: true
+  # Only portfolio-app and the report sink, with no route out.
+  portfolio-reports:
     internal: true
