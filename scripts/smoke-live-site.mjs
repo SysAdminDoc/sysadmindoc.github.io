@@ -364,7 +364,8 @@ async function checkNotFoundStatus(baseUrl, summary) {
 async function checkRetiredUrls(baseUrl, summary) {
   // Old links to the removed /projects/<Repo>/ pages, and plain /favicon.ico
   // requests, were the site's commonest 404s. A known repo goes to its GitHub
-  // page for good, any other name to a catalog search, and the icon exists.
+  // page for good, any other name to a catalog search, the bare /projects/
+  // path to the catalog, and the icon exists.
   const request = async (pathname) => {
     const response = await timedFetch(siteUrl(pathname, baseUrl), {
       headers: { 'User-Agent': `sysadmindoc-live-smoke/${runId}` },
@@ -391,11 +392,17 @@ async function checkRetiredUrls(baseUrl, summary) {
       `/projects/${unknownName}/ answered HTTP ${unknown.status} to "${unknown.location ?? '(none)'}"; expected 302 to /catalog/?q=${unknownName}.`,
     );
   }
+  for (const index of ['/projects/', '/projects']) {
+    const moved = await request(index);
+    if (moved.status !== 301 || moved.location !== '/catalog/') {
+      throw new Error(`${index} answered HTTP ${moved.status} to "${moved.location ?? '(none)'}"; expected 301 to /catalog/.`);
+    }
+  }
   const icon = await fetchBinary(baseUrl, '/favicon.ico', 'image/x-icon,image/*,*/*');
   if (!icon.buffer.subarray(0, 4).equals(Buffer.from([0, 0, 1, 0]))) {
     throw new Error('/favicon.ico answered 200 but is not an ICO file.');
   }
-  summary.push('retired URLs: /projects/<repo>/ 301 to GitHub, other names 302 to the catalog, /favicon.ico is an ICO');
+  summary.push('retired URLs: /projects/ 301 to the catalog, /projects/<repo>/ 301 to GitHub, other names 302 to the catalog, /favicon.ico is an ICO');
 }
 
 async function checkCspReportEndpoint(baseUrl, summary) {

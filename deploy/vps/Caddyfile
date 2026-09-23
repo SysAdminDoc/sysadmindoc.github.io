@@ -89,7 +89,11 @@ http://notify.getparkerai.com {
 	# The /projects/<Repo>/ pages were removed in 864d3451 and old links still
 	# arrive. A repo the catalog knows goes to its GitHub page for good (the
 	# redir list is generated from dist/projects.json at deploy time); any other
-	# safe name goes to a catalog search for it.
+	# safe name goes to a catalog search for it. The bare /projects/ path, which
+	# people trim a link back to, was never a page and goes to the catalog.
+	@projects_index path /projects /projects/
+	redir @projects_index /catalog/ 301
+
 	@retired_project path_regexp retired_project ^/projects/([A-Za-z0-9._-]+)/?$
 	handle @retired_project {
 		import project-redirects.caddy

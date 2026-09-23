@@ -85,10 +85,3 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
   Acceptance: A Chromium and a Firefox check show which directive governs a cross-origin prefetch, and the audit maps it the same way.
   Complexity: S
-
-- [ ] P3: Send the bare `/projects/` path to the catalog
-  Why: The retired-route redirects cover `/projects/<repo>/`, but `/projects/` itself still answers 404.
-  Evidence: fourth drain review.
-  Touches: `deploy/vps/Caddyfile`, `scripts/smoke-live-site.mjs`.
-  Acceptance: `/projects/` answers 301 to `/catalog/`, and `smoke:live` checks it.
-  Complexity: S
