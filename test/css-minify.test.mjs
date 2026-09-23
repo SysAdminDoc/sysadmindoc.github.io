@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { cssOutputProblems } from '../scripts/lib/css-output-check.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE, minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -43,21 +44,24 @@ test('the source writes standard properties alone, and Vite minifies with the sa
   assert.ok(LIGHTNINGCSS_EXCLUDE > 0);
 });
 
-test('the built stylesheets keep every blur and every scroll timeline', async (t) => {
-  const assets = path.join(root, 'dist', '_assets');
-  const names = await fs.readdir(assets).catch(() => null);
-  if (!names) {
-    t.skip('dist/ not built; run npm run build');
-    return;
-  }
-  let prefixed = 0;
-  for (const name of names.filter((file) => file.endsWith('.css'))) {
-    const css = await fs.readFile(path.join(assets, name), 'utf8');
-    const webkit = (css.match(/-webkit-backdrop-filter:/g) ?? []).length;
-    const standard = (css.match(/(?<!-webkit-)backdrop-filter:/g) ?? []).length;
-    prefixed += webkit;
-    assert.ok(standard >= webkit, `${name}: ${webkit} -webkit-backdrop-filter but ${standard} backdrop-filter`);
-    assert.doesNotMatch(css, /animation:[^;}]*\b(?:scroll|view)\(\)/, `${name} folds a timeline into the animation shorthand`);
-  }
-  assert.ok(prefixed > 0, 'the build carries backdrop blurs at all');
+// The built stylesheets are checked by css:output:audit inside build:ci, on the
+// build it just made. A test here could only read whatever dist/ the last
+// build left, since deploy:preflight runs npm test before it builds.
+test('the output check finds a blur left without its standard property, or a folded timeline', () => {
+  const good = cssOutputProblems('a{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}b{animation:fill linear;animation-timeline:scroll()}');
+  assert.deepEqual(good, { problems: [], prefixed: 1 });
+  const lostBlur = cssOutputProblems('a{-webkit-backdrop-filter:blur(2px)}c{backdrop-filter:blur(4px)}');
+  assert.match(lostBlur.problems.join('\n'), /1 rule\(s\) with -webkit-backdrop-filter but no backdrop-filter/, 'a standard blur in another rule does not pair with it');
+  const folded = cssOutputProblems('b{animation:fill linear scroll()}');
+  assert.match(folded.problems.join('\n'), /timeline folded into the animation shorthand/);
+  assert.deepEqual(cssOutputProblems('d{width:1px}'), { problems: [], prefixed: 0 });
+});
+
+test('build:ci runs the output check on its own build, and the self-test proves it can fail', async () => {
+  const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+  const steps = pkg.scripts['build:ci'].split('&&').map((step) => step.trim());
+  assert.equal(pkg.scripts['css:output:audit'], 'node scripts/audit-css-output.mjs');
+  assert.ok(steps.indexOf('npm run css:output:audit') > steps.indexOf('astro build'), 'after the build it checks');
+  const selftest = await fs.readFile(path.join(root, 'scripts', 'audit-gate-selftest.mjs'), 'utf8');
+  assert.match(selftest, /args: \['scripts\/audit-css-output\.mjs', '--dist', scratch\]/);
 });

@@ -244,6 +244,37 @@ const cases = [
     },
   },
   {
+    name: 'css:output:audit',
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: 'a blur left with only its -webkit- twin, as the untargeted minifier wrote it',
+    expect: /with -webkit-backdrop-filter but no backdrop-filter/,
+    plant() {
+      const assets = path.join(scratch, '_assets');
+      for (const name of fs.readdirSync(assets).filter((file) => file.endsWith('.css')).sort()) {
+        const css = readScratch(`_assets/${name}`);
+        const planted = css.replace(/-webkit-backdrop-filter:([^;}]*);backdrop-filter:\1(?=[;}])/, '-webkit-backdrop-filter:$1');
+        if (planted !== css) {
+          writeScratch(`_assets/${name}`, planted);
+          return true;
+        }
+      }
+      return false;
+    },
+  },
+  {
+    name: 'css:output:audit (inline)',
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: 'the same lost blur in the critical CSS the homepage inlines',
+    expect: /index\.html <style> \d+: 1 rule\(s\) with -webkit-backdrop-filter but no backdrop-filter/,
+    plant() {
+      const html = readScratch('index.html');
+      const planted = html.replace(/(<style\b[^>]*>[^<]*?)-webkit-backdrop-filter:([^;}]*);backdrop-filter:\2(?=[;}])/, '$1-webkit-backdrop-filter:$2');
+      if (planted === html) return false;
+      writeScratch('index.html', planted);
+      return true;
+    },
+  },
+  {
     name: 'og-cards:audit',
     args: ['scripts/audit-og-cards.mjs', '--dist', scratch],
     violation: 'a social card replaced with a blank raster',
