@@ -32,10 +32,14 @@ export function keyPaths(value, prefix = '') {
 
 /**
  * Why the newest access-log entries hold something /privacy/ doesn't name, or null.
+ * With `since` (epoch seconds), at least one entry must be that new: a request
+ * whose Host differs in case, or a site whose logger mapping broke, is logged
+ * somewhere else, and old entries would still look right.
  * @param {string} text newline-separated JSON entries, as `tail` prints them
+ * @param {{ since?: number }} [options]
  * @returns {string | null}
  */
-export function accessLogShapeProblem(text) {
+export function accessLogShapeProblem(text, { since } = {}) {
   const lines = String(text)
     .split('\n')
     .map((line) => line.trim())
@@ -43,6 +47,7 @@ export function accessLogShapeProblem(text) {
   if (lines.length === 0) return "the edge's portfolio access log had no entries to check";
   const extra = new Set();
   const withQuery = new Set();
+  let newest = Number.NEGATIVE_INFINITY;
   for (const line of lines) {
     let entry;
     try {
@@ -55,6 +60,10 @@ export function accessLogShapeProblem(text) {
     }
     if (String(entry?.request?.uri ?? '').includes('?')) withQuery.add('the page');
     if (String(entry?.referer ?? '').includes('?')) withQuery.add('the referrer');
+    if (Number.isFinite(Number(entry?.ts))) newest = Math.max(newest, Number(entry.ts));
+  }
+  if (since !== undefined && !(newest >= since)) {
+    return "none of the edge's newest portfolio access-log entries is from this deploy's smoke, so its requests were logged somewhere else";
   }
   if (extra.size > 0) {
     return `the edge's portfolio access log keeps ${[...extra].sort().join(', ')}, which /privacy/ doesn't name`;

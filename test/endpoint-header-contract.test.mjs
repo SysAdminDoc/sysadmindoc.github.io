@@ -133,9 +133,10 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
   const code = caddyfile.replace(/^\s*#.*$/gm, '').trim();
   assert.match(
     code,
-    new RegExp(`^\\{\\s*servers\\s*\\{\\s*trusted_proxies static ${edge.replaceAll('.', '\\.')}\\s*\\}\\s*\\}`),
+    new RegExp(`^\\{\\s*servers\\s*\\{\\s*trusted_proxies static ${edge.replaceAll('.', '\\.')}\\s*\\}`),
     'the global block comes first and trusts the edge alone',
   );
+  assert.equal(code.split('trusted_proxies').length - 1, 1, 'nothing else widens the trust');
   assert.match(compose, /NTFY_BEHIND_PROXY: "true"/);
   const trusted = compose.match(/NTFY_PROXY_TRUSTED_HOSTS: "([^"]+)"/)?.[1].split(',');
   assert.deepEqual(trusted, [edge], 'ntfy strips the edge address and nothing else');

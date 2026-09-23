@@ -21,7 +21,7 @@ import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
-import { edgeLogExclusionProblem } from './lib/edge-log-check.mjs';
+import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
 
@@ -127,15 +127,24 @@ function verifyCaddyVersion() {
   console.log(`deploy-vps: portfolio-app is running the pinned Caddy ${running}.`);
 }
 
-// /privacy/ says portfolio requests stay out of the edge container's own log.
-// That rests on the shared edge Caddyfile (Contabo-VPS-Ops), so each deploy
-// reads the running default logger's exclusions back through the admin API,
-// which listens on IPv4 loopback only.
+// /privacy/ says a request reaches only the portfolio access log. Each Caddy's
+// default logger (its container log) has to drop what identifies a visitor
+// (scripts/lib/edge-log-check.mjs), so each deploy reads both running configs
+// back through their admin APIs, which listen on IPv4 loopback only. The edge
+// is the shared one (Contabo-VPS-Ops); if its admin API ever moves to a unix
+// socket, this fails closed and needs the new address.
 function verifyEdgeLogging() {
-  const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs/default/exclude 2>&1 || true');
-  const problem = edgeLogExclusionProblem(output);
-  if (problem) throw new Error(`deploy-vps: ${problem}.`);
-  console.log('deploy-vps: the edge keeps portfolio requests out of its container log.');
+  const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs/default 2>&1 || true');
+  const problem = defaultLogProblem(output, { mustExclude: EDGE_EXCLUDES, mustDelete: EDGE_DELETIONS });
+  if (problem) throw new Error(`deploy-vps: on the edge, ${problem}.`);
+  console.log("deploy-vps: the edge's own log drops what identifies a portfolio visitor.");
+}
+
+function verifyInnerLogging() {
+  const output = captureRemote('docker exec portfolio-app wget -qO- http://127.0.0.1:2019/config/logging/logs/default 2>&1 || true');
+  const problem = defaultLogProblem(output);
+  if (problem) throw new Error(`deploy-vps: in portfolio-app, ${problem}.`);
+  console.log("deploy-vps: portfolio-app's own log drops what identifies a visitor.");
 }
 
 // The inner Caddy and ntfy trust only the edge's pinned address to hand on a
@@ -156,9 +165,9 @@ function verifyEdgeAddress() {
 // edge Caddyfile, and a Caddy upgrade can add fields it doesn't know, so the
 // newest entries (the smoke's own requests) are read back from the running
 // edge and checked against that list.
-function verifyAccessLogShape() {
+function verifyAccessLogShape(since) {
   const output = captureRemote('docker exec caddy tail -n 20 /var/log/caddy/portfolio.log 2>&1 || true');
-  const problem = accessLogShapeProblem(output);
+  const problem = accessLogShapeProblem(output, { since });
   if (problem) throw new Error(`deploy-vps: ${problem}.`);
   console.log('deploy-vps: the newest access-log entries hold only what /privacy/ names.');
 }
@@ -207,9 +216,11 @@ runRemote(
     `{ echo "deploy-vps: ntfy-auth.env or contact-secrets.env is missing in ${remoteDir}; run 'sh provision-notify-secrets.sh' there first (see README, Deploy)." >&2; exit 1; }`,
 );
 
-// 2c. The trust settings shipped below name the edge's pinned address, so stop
-// before anything ships if the edge isn't on it.
+// 2c. The trust settings shipped below name the edge's pinned address, and
+// /privacy/ relies on the edge's own log filter. Neither depends on the new
+// build, so stop before the site or its settings ship if either is off.
 verifyEdgeAddress();
+verifyEdgeLogging();
 
 // 3. Ship the server config, reporter, CSP environment, then the site itself.
 run('scp', [
@@ -271,7 +282,7 @@ runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-re
 // assumed.
 verifyCaddyVersion();
 verifyNtfyVersion();
-verifyEdgeLogging();
+verifyInnerLogging();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //
@@ -284,6 +295,8 @@ verifyEdgeLogging();
 // was just shipped, which is the only artifact that can define them.
 if (process.env.SKIP_SMOKE !== '1') {
   const counts = readArtifactCounts();
+  // Five minutes of slack for the two machines' clocks.
+  const smokeStartedAt = Math.floor(Date.now() / 1000) - 300;
   run('npm', [
     'run',
     'smoke:live',
@@ -301,7 +314,7 @@ if (process.env.SKIP_SMOKE !== '1') {
     '--require-lead-delivery',
   ]);
   // 6. The smoke's requests are now the newest access-log entries.
-  verifyAccessLogShape();
+  verifyAccessLogShape(smokeStartedAt);
 } else {
   console.log('deploy-vps: SKIP_SMOKE=1, so no fresh access-log entries exist to check; the shape check was skipped.');
 }

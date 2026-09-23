@@ -41,6 +41,16 @@ test('a query string on the page or the referrer fails', () => {
   assert.match(accessLogShapeProblem(lines({ ...entry, referer: 'https://portfolio.getparkerai.com/search/?q=clinic' })) ?? '', /query string in the referrer/);
 });
 
+// The seventh drain review: a request whose Host differs in case skips the
+// portfolio logger, so a shape check over old entries passed while new ones
+// went elsewhere.
+test('the entries must include one from this deploy, or the smoke was logged elsewhere', () => {
+  const since = entry.ts - 60;
+  assert.equal(accessLogShapeProblem(lines({ ...entry, ts: since - 3600 }, entry), { since }), null);
+  assert.match(accessLogShapeProblem(lines({ ...entry, ts: since - 3600 }, { ...entry, ts: since - 1 }), { since }) ?? '', /none of the edge's newest portfolio access-log entries is from this deploy's smoke/);
+  assert.equal(accessLogShapeProblem(lines({ ...entry, ts: since - 3600 })), null, 'without since, age is not judged');
+});
+
 test('an empty or unreadable log fails rather than passing unchecked', () => {
   assert.match(accessLogShapeProblem('') ?? '', /no entries to check/);
   assert.match(accessLogShapeProblem('\n\n') ?? '', /no entries to check/);
@@ -51,7 +61,9 @@ test('the deploy reads the smoke\'s own entries back from the running edge', asy
   const deploy = await fs.readFile(path.join(process.cwd(), 'scripts', 'deploy-vps.mjs'), 'utf8');
   assert.match(deploy, /docker exec caddy tail -n 20 \/var\/log\/caddy\/portfolio\.log/);
   const smoke = deploy.indexOf("'--require-lead-delivery',");
-  const checked = deploy.indexOf('\n  verifyAccessLogShape();');
+  const started = deploy.indexOf('const smokeStartedAt = ');
+  const checked = deploy.indexOf('\n  verifyAccessLogShape(smokeStartedAt);');
+  assert.ok(started > 0 && started < smoke, 'the clock is read before the smoke runs');
   assert.ok(smoke > 0 && checked > smoke, 'the check runs after the smoke has made its requests');
 });
 
