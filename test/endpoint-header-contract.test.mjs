@@ -115,6 +115,18 @@ test('the deployed CSP header carries frame-ancestors, which a meta policy canno
   );
 });
 
+test('a fresh server receives the secrets script before the deploy checks for its output', async () => {
+  const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+
+  // The check stops the deploy and says to run provision-notify-secrets.sh on
+  // the server, so the script has to be there already on a first deploy.
+  const shipped = deploy.indexOf("path.join(root, 'deploy', 'vps', 'provision-notify-secrets.sh')");
+  const checked = deploy.indexOf('test -s ntfy-auth.env && test -s contact-secrets.env');
+  assert.ok(shipped > 0 && checked > 0, 'both steps must exist');
+  assert.ok(shipped < checked, 'the script ships before the secrets check');
+  assert.equal(deploy.split('provision-notify-secrets.sh').length - 1, 2, 'shipped once, and named once in the fix message');
+});
+
 test('the Caddy image is pinned to an exact patch and the deploy verifies it', async () => {
   const compose = await fs.readFile(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8');
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');

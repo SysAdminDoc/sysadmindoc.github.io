@@ -144,8 +144,10 @@ const cspEnvFile = writeComposeEnvFile(distDir);
 // 2. Ensure the remote site dir exists.
 runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache ${remoteDir}/ntfy-data`);
 
-// 2b. The lead-notification secrets live only on the server. Stop here with the
+// 2b. The lead-notification secrets live only on the server. The script that
+// creates them ships first, so a new server has it to run. Stop here with the
 // fix named, rather than letting compose fail halfway through a recreate.
+run('scp', [...sshOptions, path.join(root, 'deploy', 'vps', 'provision-notify-secrets.sh'), `${ssh}:${remoteDir}/`]);
 runRemote(
   `cd ${remoteDir} && { test -s ntfy-auth.env && test -s contact-secrets.env; } || ` +
     `{ echo "deploy-vps: ntfy-auth.env or contact-secrets.env is missing in ${remoteDir}; run 'sh provision-notify-secrets.sh' there first (see README, Deploy)." >&2; exit 1; }`,
@@ -158,7 +160,6 @@ run('scp', [
   path.join(root, 'deploy', 'vps', 'Caddyfile'),
   path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'),
   path.join(root, 'deploy', 'vps', 'contact-handler.mjs'),
-  path.join(root, 'deploy', 'vps', 'provision-notify-secrets.sh'),
   cspEnvFile,
   `${ssh}:${remoteDir}/`,
 ]);
