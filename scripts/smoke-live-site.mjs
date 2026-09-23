@@ -7,6 +7,7 @@ import process from 'node:process';
 import sharp from 'sharp';
 import { SITE_URL } from '../site.config.mjs';
 import { NOTIFY_ORIGIN, checkLeadDelivery } from './lib/lead-delivery-check.mjs';
+import { SMOKE_REPORT_SAMPLE } from './lib/csp-report-summary.mjs';
 import { checkStatusFreshness } from './lib/status-freshness.mjs';
 
 const root = process.cwd();
@@ -426,6 +427,8 @@ async function checkCspReportEndpoint(baseUrl, summary) {
         documentURL: `${new URL(baseUrl).origin}/__live-smoke-${runId}/?synthetic=1`,
         effectiveDirective: 'script-src',
         blockedURL: 'https://live-smoke.invalid/synthetic.js?synthetic=1',
+        // deploy-vps reads this back scrubbed, which only the current sink does.
+        sample: SMOKE_REPORT_SAMPLE,
       },
     }]),
     redirect: 'follow',

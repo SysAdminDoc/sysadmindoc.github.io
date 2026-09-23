@@ -83,5 +83,25 @@ test('script-src allows WebAssembly compilation for Pagefind in every policy cop
   assert.ok(scriptSrc, 'Base.astro must declare scriptSrc for dev and production');
   assert.match(scriptSrc[2], /'wasm-unsafe-eval'/);
   assert.doesNotMatch(scriptSrc[2], /'unsafe-eval'|'unsafe-inline'/);
-  assert.match(offline, /script-src 'self' 'wasm-unsafe-eval';/);
+  assert.match(offline, /script-src 'self' 'wasm-unsafe-eval'[^;]*;/);
+});
+
+test("'report-sample' rides on every directive an inline block is checked against, and only those", async () => {
+  const [base, offline] = await Promise.all([
+    fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8'),
+    fs.readFile(path.join(root, 'public', 'offline.html'), 'utf8'),
+  ]);
+  // Without it, 262 of the first 327 stored reports named nothing but a
+  // directive, and nobody could tell the site's own code from an extension's.
+  assert.match(base, /const reportSample = isDev \? '' : " 'report-sample'";/);
+  assert.match(base, /script-src \$\{scriptSrc\}\$\{reportSample\}; style-src \$\{styleSrc\}\$\{reportSample\}; style-src-elem \$\{styleElemSrc\}\$\{reportSample\}; style-src-attr \$\{styleAttrSrc\};/);
+
+  const policy = offline.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
+  const directives = new Map(policy.split(';').map((part) => part.trim().split(/\s+/)).map(([name, ...tokens]) => [name, tokens]));
+  for (const name of ['script-src', 'style-src', 'style-src-elem']) {
+    assert.ok(directives.get(name)?.includes("'report-sample'"), `${name} carries 'report-sample' in offline.html`);
+  }
+  // 'none' only means none on its own.
+  assert.deepEqual(directives.get('style-src-attr'), ["'none'"]);
+  assert.ok(!directives.get('default-src')?.includes("'report-sample'"));
 });

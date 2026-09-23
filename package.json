@@ -54,6 +54,7 @@
     "csp:audit:dist": "node scripts/audit-csp.mjs --dist",
     "css:output:audit": "node scripts/audit-css-output.mjs",
     "csp:audit:dist:style:elem": "node scripts/audit-csp.mjs --dist --active-style-src-elem --strict",
+    "csp:reports": "node scripts/csp-report-summary.mjs",
     "dom:audit": "node scripts/audit-dom-size.mjs",
     "schema:audit": "node scripts/audit-schema.mjs",
     "scripts:minify": "node scripts/minify-public-scripts.mjs",

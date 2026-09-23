@@ -24,6 +24,8 @@ import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
+import { smokeReportProblem } from './lib/csp-report-summary.mjs';
+import { vpsSshOptions } from './lib/vps-ssh.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -34,22 +36,7 @@ if (!ssh) {
   process.exit(1);
 }
 
-// Unattended runs need an explicit identity and a pinned host key; an
-// interactive session can rely on the agent and the user's known_hosts.
-const sshOptions = [
-  '-o',
-  'BatchMode=yes',
-  '-o',
-  'ConnectTimeout=15',
-  '-o',
-  'ServerAliveInterval=15',
-];
-if (process.env.PORTFOLIO_VPS_SSH_KEY) {
-  sshOptions.push('-i', process.env.PORTFOLIO_VPS_SSH_KEY, '-o', 'IdentitiesOnly=yes');
-}
-if (process.env.PORTFOLIO_VPS_KNOWN_HOSTS) {
-  sshOptions.push('-o', `UserKnownHostsFile=${process.env.PORTFOLIO_VPS_KNOWN_HOSTS}`);
-}
+const sshOptions = vpsSshOptions();
 
 // The smoke compares the live endpoints against these. Reading them from the
 // built tree rather than hardcoding keeps the deploy honest as the catalog grows.
@@ -170,6 +157,18 @@ function verifyAccessLogShape(since) {
   const problem = accessLogShapeProblem(output, { since });
   if (problem) throw new Error(`deploy-vps: ${problem}.`);
   console.log('deploy-vps: the newest access-log entries hold only what /privacy/ names.');
+}
+
+// The smoke's synthetic CSP report, read back from the store. Only the sink in
+// this repo files it as synthetic with its sample scrubbed, so this also proves
+// the container runs the code that was just shipped.
+function verifyCspReportShape(since) {
+  const output = captureRemote(
+    "docker exec portfolio-csp-reporter sh -c 'tail -n 200 /var/lib/csp-reports/reports.ndjson.1 2>/dev/null; tail -n 200 /var/lib/csp-reports/reports.ndjson' 2>&1 || true",
+  );
+  const problem = smokeReportProblem(output, { since });
+  if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  console.log('deploy-vps: the CSP report sink filed the smoke report as synthetic, with its sample scrubbed.');
 }
 
 function writeProjectRedirects(distDir) {
@@ -315,8 +314,9 @@ if (process.env.SKIP_SMOKE !== '1') {
   ]);
   // 6. The smoke's requests are now the newest access-log entries.
   verifyAccessLogShape(smokeStartedAt);
+  verifyCspReportShape(smokeStartedAt);
 } else {
-  console.log('deploy-vps: SKIP_SMOKE=1, so no fresh access-log entries exist to check; the shape check was skipped.');
+  console.log('deploy-vps: SKIP_SMOKE=1, so no fresh access-log entries or smoke CSP report exist to check; both shape checks were skipped.');
 }
 
 console.log(`deploy-vps: ${SITE_URL} updated.`);

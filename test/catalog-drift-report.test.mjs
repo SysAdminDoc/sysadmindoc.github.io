@@ -123,7 +123,8 @@ test('the unattended refresh reports unsigned featured releases the same way', a
   assert.match(source, /PROVENANCE_REPORT_ONLY: '1'/);
   assert.match(source, /function readProvenanceDrift\(\)/);
   assert.equal((source.match(/PROVENANCE \$\{unsigned\.length\}/g) ?? []).length, 2);
-  assert.equal((source.match(/writeStatus\('drift', driftRecord\(uncataloged, unsigned\)\)/g) ?? []).length, 2);
+  // The deploy path also passes what the CSP report check found.
+  assert.equal((source.match(/writeStatus\('drift', driftRecord\(uncataloged, unsigned(?:, cspViolations)?\)\)/g) ?? []).length, 2);
 });
 
 test('the drift artifact is gitignored so a local check never becomes tracked data', async () => {
@@ -151,10 +152,13 @@ test('every terminal path of the unattended refresh records a machine-readable s
   // step, so a run killed from outside leaves it behind instead of the previous
   // run's verdict. Everything else is a terminal outcome paired with an exit.
   assert.equal(allStatuses.filter((status) => status === 'running').length, 1, 'the running marker is written exactly once');
-  assert.ok(
-    source.indexOf("writeStatus('running')") < source.indexOf('await step('),
-    'the running marker is written before the first step',
-  );
+  // Helpers above main() can run steps too (readCspReports), so the first step
+  // is the first one main() itself awaits.
+  const mainStart = source.indexOf('async function main()');
+  assert.ok(mainStart > 0, 'the runner has a main()');
+  const running = source.indexOf("writeStatus('running')", mainStart);
+  const firstStep = source.indexOf('await step(', mainStart);
+  assert.ok(running > 0 && firstStep > 0 && running < firstStep, 'the running marker is written before the first step');
   const statuses = allStatuses.filter((status) => status !== 'running');
   assert.deepEqual(
     [...new Set(statuses)].sort(),

@@ -61,6 +61,23 @@ async function waitForPid(file, timeoutMs = 30_000) {
   throw new Error(`${path.basename(file)} never appeared`);
 }
 
+// The fake csp:reports writes the summary the runner reads, naming these new
+// first-party violations, and notes the arguments the runner gave it.
+/** @param {string} dir @param {string[]} newViolations */
+async function writeCspFixture(dir, newViolations = []) {
+  await fs.writeFile(
+    path.join(dir, 'csp.cjs'),
+    [
+      "const fs = require('node:fs');",
+      "fs.mkdirSync('.tmp', { recursive: true });",
+      `const newViolations = ${JSON.stringify(newViolations.map((key) => ({ key, count: 4, hours: 2 })))};`,
+      "const line = newViolations.length ? 'NEW first-party: ' + newViolations.map((v) => v.key).join(', ') : 'no new first-party violation';",
+      "fs.writeFileSync('.tmp/csp-report-summary.json', JSON.stringify({ line, newViolations }));",
+      "fs.writeFileSync('csp-args.txt', process.argv.slice(2).join(' '));",
+    ].join('\n'),
+  );
+}
+
 /** @param {string} cwd */
 function runRunner(cwd, env) {
   const child = spawn(process.execPath, [runner], { cwd, env, stdio: 'ignore', windowsHide: true });
@@ -222,6 +239,7 @@ test('an unsigned featured release still deploys, then fails the run as drift', 
       "fs.writeFileSync('deployed.marker', 'no');",
     ].join('\n'),
   );
+  await writeCspFixture(dir);
   await fs.writeFile(
     path.join(dir, 'package.json'),
     JSON.stringify({
@@ -232,6 +250,7 @@ test('an unsigned featured release still deploys, then fails the run as drift', 
         'profile-feed:sync': 'node -e ""',
         'deploy:preflight': 'node preflight.cjs',
         'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+        'csp:reports': 'node csp.cjs',
       },
     }),
   );
@@ -267,6 +286,7 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
       `fs.writeFileSync('dist/.well-known/security.txt', 'Contact: https://example.test/\\nExpires: ${expires}\\n');`,
     ].join('\n'),
   );
+  await writeCspFixture(dir);
   await fs.writeFile(
     path.join(dir, 'package.json'),
     JSON.stringify({
@@ -277,6 +297,7 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
         'profile-feed:sync': 'node -e ""',
         'deploy:preflight': 'node preflight.cjs',
         'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+        'csp:reports': 'node csp.cjs',
       },
     }),
   );
@@ -296,6 +317,72 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
   assert.match(status.warnings[0], new RegExp(`^security\\.txt expires ${expires.replace(/\./g, '\\.')}, 30 day\\(s\\) from now`));
   const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
   assert.match(log, /WARN {2}security\.txt expires /);
+});
+
+/** A whole fake run whose csp:reports step is `cspScript`. */
+async function runWithCspStep(dir, cspScript) {
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node -e ""',
+        'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+        'csp:reports': cspScript,
+      },
+    }),
+  );
+  const { exited } = runRunner(dir, {
+    ...process.env,
+    GITHUB_TOKEN: 'test-token',
+    PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10',
+    npm_config_update_notifier: 'false',
+  });
+  const exitCode = await exited;
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  return { exitCode, status, log };
+}
+
+test('a new first-party CSP violation still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  await writeCspFixture(dir, ['style-src-elem inline']);
+
+  const { exitCode, status, log } = await runWithCspStep(dir, 'node csp.cjs');
+  assert.equal(exitCode, 1, 'the run reports failure');
+  assert.equal(await fs.readFile(path.join(dir, 'deployed.marker'), 'utf8'), 'yes', 'but the deploy went ahead');
+  assert.equal(await fs.readFile(path.join(dir, 'csp-args.txt'), 'utf8'), '--record', 'so the same violation fails only this run');
+  assert.equal(status.status, 'drift');
+  assert.equal(status.step, 'csp:reports');
+  assert.equal(status.detail, 'new first-party CSP violations: style-src-elem inline');
+  assert.match(log, /CSP {3}NEW first-party: style-src-elem inline/);
+  assert.match(log, /CSP {3}1 new first-party violation\(s\): style-src-elem inline/);
+});
+
+test('a CSP report store the run cannot read leaves the deploy standing and says so', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  // Scripts, not `node -e`: npm appends --record, which node itself would
+  // refuse as an option after -e.
+  await fs.writeFile(path.join(dir, 'unreadable.cjs'), 'process.exit(1);');
+
+  const { exitCode, status } = await runWithCspStep(dir, 'node unreadable.cjs');
+  assert.equal(exitCode, 0);
+  assert.equal(status.status, 'deployed');
+  assert.equal(status.warnings.length, 1);
+  assert.match(status.warnings[0], /^csp:reports could not read the CSP report store \(exit code 1\); see \.tmp[\\/]refresh-and-deploy-step-csp-reports\.log$/);
+
+  // A step that exits 0 without its summary is as good as no read at all.
+  const quietDir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(quietDir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  await fs.writeFile(path.join(quietDir, 'quiet.cjs'), '');
+  const quiet = await runWithCspStep(quietDir, 'node quiet.cjs');
+  assert.equal(quiet.exitCode, 0);
+  assert.deepEqual(quiet.status.warnings, [`csp:reports finished without a readable ${path.join('.tmp', 'csp-report-summary.json')}`]);
 });
 
 // npm test runs inside the preflight and inherits these flags. Tests strip the

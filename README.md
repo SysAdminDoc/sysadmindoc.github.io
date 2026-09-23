@@ -186,6 +186,21 @@ which stores redacted NDJSON reports in a rotated file outside the served site.
 `npm run deploy:vps` stamps the built hash-pinned policy into the response header
 so browsers can report real violations without a third-party service.
 
+The policy asks for `'report-sample'`, so a report about a blocked inline script
+or style carries that code's first 40 characters. The sink scrubs anything in
+them shaped like an ID, a long number or an email address before storing it. It
+keeps the keyword a browser sends in place of a URL (`inline`, `eval`) and tags
+each report as synthetic, extension, first-party or other. Anyone can post a
+report, so a tag only says what the report claims.
+
+`npm run csp:reports` reads the store over SSH and prints the counts. The
+nightly runs it after every deploy with `--record`, and a first-party violation
+it hasn't reported before fails that one run the way catalog drift does. It has
+to have arrived at least three times across two separate clock hours first, so a
+single burst of forged reports can't trip it. Every deploy also reads the
+smoke's own report back from the store and stops unless the running sink filed
+it as synthetic with its sample scrubbed.
+
 The policy names no other host. Images, fonts, scripts, styles and connections
 all come from the site itself, the homepage photo included. The build's
 `csp:audit:dist:style:elem` step fails if the policy ever allows a host that no
@@ -254,8 +269,8 @@ the things that enforce them to the same numbers: the handler's lead purge
 There are two ways to deploy, both local:
 
 - `npm run refresh:deploy` runs the whole chain unattended: it refreshes the
-  generated data, runs `deploy:preflight`, then `deploy:vps`. The nightly task
-  uses it (see Nightly refresh below).
+  generated data, runs `deploy:preflight`, then `deploy:vps`, and reads the CSP
+  report store afterwards. The nightly task uses it (see Nightly refresh below).
 - `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps` ships what you have. It
   builds and mirrors `dist/` to `/home/deploy/sites/portfolio/`, recreates the
   containers, and smokes the live origin.
@@ -284,7 +299,7 @@ accident.
 ### Nightly refresh
 
 `npm run refresh:deploy` runs the whole chain unattended: fetch-stars,
-profile-feed:sync, deploy:preflight, then deploy:vps. On the build machine it
+profile-feed:sync, deploy:preflight, deploy:vps, then csp:reports. On the build machine it
 runs as the scheduled task "Portfolio Refresh and Deploy", daily at 03:00.
 `pwsh -NoProfile -File scripts\register-nightly-task.ps1` creates or replaces
 the task (running it twice still leaves one), and `-Check` reports whether it
@@ -293,9 +308,11 @@ through `conhost.exe --headless`, so no window ever appears on the desktop.
 Every run writes `.tmp/refresh-and-deploy-status.json`: `running` before the
 first step, then `deployed`, `drift`, `dry-run` or `aborted` with the failing
 step. Each step has a timeout (20 minutes for fetch-stars, 5 for
-profile-feed:sync, 45 for deploy:preflight, 20 for deploy:vps) that kills its
-whole process tree, so a hung or killed run shows up instead of leaving the
-previous night's result in place.
+profile-feed:sync, 45 for deploy:preflight, 20 for deploy:vps, 3 for
+csp:reports) that kills its whole process tree, so a hung or killed run shows up
+instead of leaving the previous night's result in place. The deploy has already
+happened by the time csp:reports runs, so a store it can't read only adds a
+warning to the status file.
 
 The live site says when its data expires. `/status.json` carries
 `generatedData.staleAfter`, the fetch time plus the 36-hour contract, beside a

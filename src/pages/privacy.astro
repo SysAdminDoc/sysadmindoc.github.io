@@ -71,7 +71,7 @@ const cmdkSections = [
 
     <section class="si privacy-section" id="privacy-security-reports" aria-labelledby="privacy-security-reports-title">
       <h2 class="privacy-h2" id="privacy-security-reports-title">Security reports</h2>
-      <p>If your browser blocks something the site's security policy doesn't allow, it may send a short report naming the page and the blocked resource. Reports don't include your IP address, and the server keeps only the latest {CSP_REPORT_STORE_MB} MB of them.</p>
+      <p>If your browser blocks something the site's security policy doesn't allow, it may send a short report naming the page and the blocked resource. When it blocks a script or style written into the page, the report also carries that code's first 40 characters, and the server removes anything in them that looks like an ID, a long number or an email address before keeping it. Reports don't include your IP address, and the server keeps only the latest {CSP_REPORT_STORE_MB} MB of them.</p>
     </section>
 
     <section class="si privacy-section" id="privacy-browser" aria-labelledby="privacy-browser-title">

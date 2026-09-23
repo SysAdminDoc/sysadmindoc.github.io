@@ -6,7 +6,7 @@
 // deployed site quietly aged past its own contract whenever work paused. This
 // runs the whole chain on a schedule:
 //
-//   fetch-stars -> profile-feed:sync -> deploy:preflight -> deploy:vps
+//   fetch-stars -> profile-feed:sync -> deploy:preflight -> deploy:vps -> csp:reports
 //
 // Failure policy: any failing step aborts before deploying, so the last good
 // deployment stays live. Every run appends a one-line verdict to
@@ -48,7 +48,7 @@ const warnings = [];
 // all: the 2026-09-21 run died that way and the status file kept saying the
 // previous day's "deployed". These bounds are generous (preflight normally
 // takes about two minutes). REFRESH_STEP_TIMEOUT_MS overrides every step.
-const STEP_TIMEOUT_MINUTES = { 'fetch-stars': 20, 'profile-feed:sync': 5, 'deploy:preflight': 45, 'deploy:vps': 20 };
+const STEP_TIMEOUT_MINUTES = { 'fetch-stars': 20, 'profile-feed:sync': 5, 'deploy:preflight': 45, 'deploy:vps': 20, 'csp:reports': 3 };
 
 function stepTimeoutMs(label) {
   const override = Number(process.env.REFRESH_STEP_TIMEOUT_MS);
@@ -272,16 +272,43 @@ function readProvenanceDrift() {
   }
 }
 
-function driftRecord(uncataloged, unsigned) {
+function driftRecord(uncataloged, unsigned, cspViolations = []) {
   return {
-    failedStep: uncataloged.length > 0 ? 'catalog:audit' : 'data:summary:deploy',
+    failedStep: uncataloged.length > 0 ? 'catalog:audit' : unsigned.length > 0 ? 'data:summary:deploy' : 'csp:reports',
     detail: [
       uncataloged.length > 0 ? `uncataloged: ${uncataloged.join(', ')}` : '',
       unsigned.length > 0 ? `featured releases without a checksum or attestation: ${unsigned.join(', ')}` : '',
+      cspViolations.length > 0 ? `new first-party CSP violations: ${cspViolations.join(', ')}` : '',
     ]
       .filter(Boolean)
       .join('; '),
   };
+}
+
+// What visitors' browsers refused since the store began, read back through
+// scripts/csp-report-summary.mjs, which remembers what it has reported
+// (--record) so each new first-party violation fails one run, not every run
+// after it. Returns those violations. The deploy has already happened by now,
+// so a store that can't be read is a warning in the status file, not a failure.
+async function readCspReports() {
+  const summaryFile = path.join(tmpDir, 'csp-report-summary.json');
+  fs.rmSync(summaryFile, { force: true });
+  try {
+    await step('csp:reports', 'npm', ['run', 'csp:reports', '--', '--record']);
+  } catch (error) {
+    const why = typeof error.cause === 'string' ? error.cause : error.message;
+    warnings.push(`csp:reports could not read the CSP report store (${why}); see ${path.relative(root, stepLogPath('csp:reports'))}`);
+    return [];
+  }
+  try {
+    const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+    if (typeof summary.line === 'string') log(`CSP   ${summary.line.slice(0, 400)}`);
+    if (!Array.isArray(summary.newViolations)) return [];
+    return summary.newViolations.map((group) => String(group?.key ?? '').slice(0, 120)).filter(Boolean);
+  } catch {
+    warnings.push(`csp:reports finished without a readable ${path.relative(root, summaryFile)}`);
+    return [];
+  }
 }
 
 // The preflight's endpoint audit fails once security.txt has expired. Reading the
@@ -367,20 +394,22 @@ async function main() {
 
     // The build already ran inside preflight; reuse it rather than rebuilding.
     await step('deploy:vps', 'npm', ['run', 'deploy:vps']);
+    const cspViolations = await readCspReports();
 
     const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
     const uncataloged = readCatalogDrift();
     const unsigned = readProvenanceDrift();
-    if (uncataloged.length > 0 || unsigned.length > 0) {
+    if (uncataloged.length > 0 || unsigned.length > 0 || cspViolations.length > 0) {
       // The site is fresh and honest about the gap, but somebody still has to
-      // catalog these or sign those releases, so the run reports failure rather
-      // than passing quietly.
+      // catalog these, sign those releases or look at what the browsers
+      // refused, so the run reports failure rather than passing quietly.
       log(`DONE  deployed in ${elapsed}s`);
       if (uncataloged.length > 0) {
         log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
       }
       if (unsigned.length > 0) log(`PROVENANCE ${unsigned.length} featured release(s) without a checksum or attestation: ${unsigned.join(', ')}`);
-      writeStatus('drift', driftRecord(uncataloged, unsigned));
+      if (cspViolations.length > 0) log(`CSP   ${cspViolations.length} new first-party violation(s): ${cspViolations.join(', ')}`);
+      writeStatus('drift', driftRecord(uncataloged, unsigned, cspViolations));
       process.exit(1);
     }
     log(`DONE  deployed in ${elapsed}s`);
