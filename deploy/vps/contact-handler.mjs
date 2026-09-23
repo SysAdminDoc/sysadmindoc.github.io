@@ -28,7 +28,7 @@
 // and unused, so the timing check runs on this server's clock rather than the
 // visitor's. A POST with no token is accepted only as a no-JavaScript browser
 // navigation, under a stricter per-client limit. Every client also has a
-// per-ten-minutes limit, and stored leads have a global hourly cap. Refusals
+// per-ten-minutes and a daily limit, and stored leads have a global hourly cap. Refusals
 // say only "Please check the form and try again"; the reason goes to the log.
 import http from 'node:http';
 import fs from 'node:fs/promises';
@@ -51,6 +51,7 @@ import { fileURLToPath } from 'node:url';
  * @property {number} tokenMaxAgeMs
  * @property {number} clientWindowMs
  * @property {number} clientMax
+ * @property {number} clientDailyMax
  * @property {number} noTokenClientMax
  * @property {number} globalHourlyCap
  * @property {number} maxBodyBytes
@@ -80,6 +81,10 @@ export const DEFAULT_CONFIG = Object.freeze({
   // twice fits easily, a script does not.
   clientWindowMs: 10 * 60_000,
   clientMax: 5,
+  // Attempts per client per day. The ten-minute limit alone let one address,
+  // pacing itself, fill the global hourly cap by itself and turn every other
+  // visitor away. A third of the cap leaves room for everyone else.
+  clientDailyMax: 10,
   // A browser without JavaScript sends no token, so it gets fewer attempts.
   noTokenClientMax: 2,
   // Stored leads per rolling hour from everyone together, smoke leads aside.
@@ -272,6 +277,12 @@ function createWindowCounter(windowMs, maxKeys = 10_000) {
       list.push(current);
       hits.set(key, list);
       if (hits.size > maxKeys) hits.delete(hits.keys().next().value);
+    },
+    /** Gives back one hit recorded at `at`. */
+    remove(key, at) {
+      const list = hits.get(key);
+      const index = list ? list.lastIndexOf(at) : -1;
+      if (index >= 0) list.splice(index, 1);
     },
   };
 }
@@ -581,6 +592,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   /** nonce -> when its token expires, so a used token can't be sent twice */
   const usedNonces = new Map();
   const clientAttempts = createWindowCounter(config.clientWindowMs);
+  const clientDailyAttempts = createWindowCounter(24 * 60 * 60_000);
   const noTokenAttempts = createWindowCounter(config.clientWindowMs);
   const storedLastHour = createWindowCounter(60 * 60_000, 1);
 
@@ -749,13 +761,14 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     const client = clientAddress(request.headers, request.socket?.remoteAddress);
     const current = now().getTime();
     if (!synthetic) {
-      if (clientAttempts.count(client, current) >= config.clientMax) {
+      if (clientAttempts.count(client, current) >= config.clientMax || clientDailyAttempts.count(client, current) >= config.clientDailyMax) {
         logger.log('contact: refused a submission (per-client limit)');
         request.resume();
         refuse(429, { error: BUSY_MESSAGE });
         return;
       }
       clientAttempts.add(client, current);
+      clientDailyAttempts.add(client, current);
     }
 
     let body;
@@ -798,10 +811,16 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       noTokenAttempts.add(client, current);
     }
 
-    if (!synthetic && storedLastHour.count('all', current) >= config.globalHourlyCap) {
-      logger.error('contact: refused a submission (global hourly cap reached)');
-      refuse(429, { error: BUSY_MESSAGE });
-      return;
+    // The slot is taken here, before anything awaits, so simultaneous posts
+    // can't all find room under the cap and overshoot it. A lead that can't be
+    // stored gives its slot back.
+    if (!synthetic) {
+      if (storedLastHour.count('all', current) >= config.globalHourlyCap) {
+        logger.error('contact: refused a submission (global hourly cap reached)');
+        refuse(429, { error: BUSY_MESSAGE });
+        return;
+      }
+      storedLastHour.add('all', current);
     }
 
     const lead = {
@@ -820,13 +839,13 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     try {
       await store.append(lead);
     } catch (error) {
+      if (!synthetic) storedLastHour.remove('all', current);
       logger.error(`contact: could not store a submission: ${error.message}`);
       refuse(503, { error: 'Could not save your message. Please email it directly.' });
       return;
     }
 
     logger.log(`contact: stored lead ${lead.id}`);
-    if (!synthetic) storedLastHour.add('all', current);
     if (navigation) redirect(response, '/contact/sent/');
     else sendJson(response, 200, { ok: true, message: SUCCESS_MESSAGE });
     const tracked = { ...lead, attempts: 0 };

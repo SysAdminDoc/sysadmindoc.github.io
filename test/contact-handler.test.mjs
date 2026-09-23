@@ -23,7 +23,14 @@ import {
 const NOW = new Date('2026-09-22T12:00:00.000Z');
 const TOKEN_SECRET = 'test-token-secret-'.repeat(3);
 // Limits high enough that only the tests about limits ever meet them.
-const TEST_CONFIG = { ntfyUrl: 'http://ntfy:80/portfolio-leads', tokenSecret: TOKEN_SECRET, clientMax: 1000, noTokenClientMax: 1000, globalHourlyCap: 1000 };
+const TEST_CONFIG = { ntfyUrl: 'http://ntfy:80/portfolio-leads', tokenSecret: TOKEN_SECRET, clientMax: 1000, clientDailyMax: 1000, noTokenClientMax: 1000, globalHourlyCap: 1000 };
+// The limits a deployment runs with, for the tests that are about them.
+const DEFAULT_LIMITS = {
+  clientMax: DEFAULT_CONFIG.clientMax,
+  clientDailyMax: DEFAULT_CONFIG.clientDailyMax,
+  noTokenClientMax: DEFAULT_CONFIG.noTokenClientMax,
+  globalHourlyCap: DEFAULT_CONFIG.globalHourlyCap,
+};
 
 /** A valid form token issued `ageMs` before NOW, with its own nonce. */
 function tokenAged(ageMs = 30_000) {
@@ -732,6 +739,81 @@ test('stored leads have a global hourly cap that the smoke does not use up', asy
     await handler.handleRequest(requestMock({ body: new URLSearchParams({ website: '', ...lead, token: signToken(TOKEN_SECRET, NOW.getTime() + 60 * 60_000, 'b'.repeat(16)) }).toString(), headers: { accept: 'application/json', 'x-forwarded-for': '203.0.113.4' } }), later);
     assert.equal(later.status, 200, 'the hour rolls on');
     await handler.idle();
+  });
+});
+
+// The second drain review held the whole hourly cap from one address by posting
+// every two minutes, under the ten-minute limit, and turned 17 other visitors
+// away over the next two hours.
+test('one address pacing itself cannot hold the hourly cap against everyone else', async () => {
+  assert.ok(DEFAULT_CONFIG.clientDailyMax * 3 <= DEFAULT_CONFIG.globalHourlyCap, 'one client can take a third of an hour at most');
+  await withHandler({ config: DEFAULT_LIMITS }, async ({ handler, setClock }) => {
+    let accepted = 0;
+    const others = [];
+    for (let minute = 0; minute < 180; minute += 2) {
+      setClock(new Date(NOW.getTime() + minute * 60_000));
+      const response = responseMock();
+      await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '203.0.113.7, 172.18.0.2' }), response);
+      if (response.status === 200) accepted += 1;
+      if (minute >= 63 && minute % 6 === 0) {
+        const other = responseMock();
+        await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': `198.51.100.${minute}, 172.18.0.2` }), other);
+        others.push(other.status);
+      }
+    }
+    assert.equal(accepted, DEFAULT_CONFIG.clientDailyMax);
+    assert.ok(others.length >= 10);
+    assert.deepEqual(new Set(others), new Set([200]), 'every other visitor still gets through');
+    await handler.idle();
+  });
+});
+
+test('simultaneous posts cannot overshoot the hourly cap', async () => {
+  await withHandler({ config: { globalHourlyCap: 5 } }, async ({ handler, storePath }) => {
+    const responses = Array.from({ length: 12 }, () => responseMock());
+    await Promise.all(
+      responses.map((response, index) => handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': `203.0.113.${index + 1}` }), response)),
+    );
+    await handler.idle();
+    const statuses = responses.map((response) => response.status);
+    assert.equal(statuses.filter((status) => status === 200).length, 5);
+    assert.equal(statuses.filter((status) => status === 429).length, 7);
+    assert.equal((await readEntries(storePath)).filter((entry) => entry.type === 'lead').length, 5);
+  });
+});
+
+test('a lead that could not be stored gives its place under the cap back', async () => {
+  let failNext = true;
+  const flakyFileSystem = {
+    ...fs,
+    appendFile: async (/** @type {any[]} */ ...args) => {
+      if (failNext) {
+        failNext = false;
+        throw Object.assign(new Error('disk full'), { code: 'ENOSPC' });
+      }
+      return fs.appendFile(...args);
+    },
+  };
+  await withHandler({ config: { globalHourlyCap: 1 }, dependencies: { fileSystem: flakyFileSystem } }, async ({ handler }) => {
+    const failed = responseMock();
+    await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '203.0.113.1' }), failed);
+    assert.equal(failed.status, 503);
+    const next = responseMock();
+    await handler.handleRequest(jsonPost(lead, { 'x-forwarded-for': '203.0.113.2' }), next);
+    assert.equal(next.status, 200, 'the failed lead did not use up the only slot');
+    await handler.idle();
+  });
+});
+
+test('refused attempts count against the client limit too', async () => {
+  await withHandler({ config: { clientMax: 3 } }, async ({ handler }) => {
+    const statuses = [];
+    for (const fields of [{ ...lead, name: '' }, { ...lead, email: 'nope' }, { ...lead, message: 'short' }, lead]) {
+      const response = responseMock();
+      await handler.handleRequest(jsonPost(fields, { 'x-forwarded-for': '203.0.113.9' }), response);
+      statuses.push(response.status);
+    }
+    assert.deepEqual(statuses, [422, 422, 422, 429], 'three bad forms use up the attempts a good one would need');
   });
 });
 
