@@ -3,6 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { reviewedInteriorPages } from '../src/data/page-freshness.ts';
 import { SITE_URL } from '../site.config.mjs';
+import { pageNodeDates } from './lib/reviewed-page-date.mjs';
 
 const root = process.cwd();
 const distDir = path.resolve(root, process.argv.includes('--dist') ? process.argv[process.argv.indexOf('--dist') + 1] : 'dist');
@@ -37,28 +38,6 @@ async function readDistFile(relativePath) {
     fail(`dist/${relativePath} is missing or unreadable: ${error.message}`);
     return null;
   }
-}
-
-/** The first dateModified in a page's JSON-LD blocks, graph nodes included. */
-function structuredDateModified(html) {
-  for (const match of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
-    let data;
-    try {
-      data = JSON.parse(match[1]);
-    } catch {
-      continue;
-    }
-    const queue = [data];
-    while (queue.length > 0) {
-      const node = queue.shift();
-      if (Array.isArray(node)) queue.push(...node);
-      else if (node && typeof node === 'object') {
-        if (typeof node.dateModified === 'string') return node.dateModified;
-        queue.push(...Object.values(node));
-      }
-    }
-  }
-  return null;
 }
 
 function extractLocValues(xml) {
@@ -205,12 +184,15 @@ for (const loc of indexLocs) {
       // the page's own structured data. /now/ said 2026-06-04 in one and
       // 2026-09-17 in the other.
       const pageHtml = await readDistFile(path.join(parsed.pathname.replace(/^\/+|\/+$/g, ''), 'index.html'));
-      const modified = pageHtml === null ? null : structuredDateModified(pageHtml);
-      if (pageHtml !== null && !modified) {
-        fail(`reviewed route "${parsed.pathname}" has no dateModified in its structured data.`);
-      } else if (modified && entry.lastmod && modified.slice(0, 10) !== entry.lastmod.slice(0, 10)) {
+      const pageUrl = `${siteUrl}${parsed.pathname}`;
+      const dates = pageHtml === null ? [] : pageNodeDates(pageHtml, pageUrl);
+      if (pageHtml !== null && dates.length === 0) {
+        fail(`reviewed route "${parsed.pathname}" has no dateModified on its page node (${pageUrl}#webpage).`);
+      } else if (dates.length > 1) {
+        fail(`reviewed route "${parsed.pathname}" gives its page node more than one dateModified: ${dates.join(', ')}.`);
+      } else if (dates.length === 1 && entry.lastmod && dates[0].slice(0, 10) !== entry.lastmod.slice(0, 10)) {
         fail(
-          `reviewed route "${parsed.pathname}" says dateModified "${modified}" in its structured data but lastmod "${entry.lastmod}" in the sitemap.`,
+          `reviewed route "${parsed.pathname}" says dateModified "${dates[0]}" in its structured data but lastmod "${entry.lastmod}" in the sitemap.`,
         );
       }
     }
