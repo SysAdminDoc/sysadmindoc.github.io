@@ -275,6 +275,19 @@ const cases = [
     },
   },
   {
+    name: 'css:output:audit (light-dark)',
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: 'an accent written with light-dark(), which the older targets drop',
+    expect: /a light-dark\(\) the minifier left in place/,
+    plant() {
+      const assets = path.join(scratch, '_assets');
+      const name = fs.readdirSync(assets).filter((file) => file.endsWith('.css')).sort()[0];
+      if (!name) return false;
+      writeScratch(`_assets/${name}`, `${readScratch(`_assets/${name}`)}\n.planted{color:light-dark(#000,#fff)}`);
+      return true;
+    },
+  },
+  {
     name: 'css:output:audit (inline)',
     args: ['scripts/audit-css-output.mjs', '--dist', scratch],
     violation: 'the same lost blur in the critical CSS the homepage inlines',

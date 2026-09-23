@@ -23,5 +23,10 @@ export function cssOutputProblems(css) {
   if (/animation\s*:[^;}]*\b(?:scroll|view)\(/.test(String(css))) {
     problems.push('a scroll or view timeline folded into the animation shorthand, which Chromium rejects');
   }
+  // The build targets browsers from before light-dark(), which drop it and
+  // lose the accent it sets; the minifier lowers every one.
+  if (/\blight-dark\(/.test(String(css))) {
+    problems.push('a light-dark() the minifier left in place, which Chrome and Edge before 123, Safari before 17.5 and Firefox before 120 drop');
+  }
   return { problems, prefixed };
 }
