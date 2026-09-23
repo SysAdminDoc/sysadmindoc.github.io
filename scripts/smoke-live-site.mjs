@@ -394,6 +394,87 @@ async function checkCspReportEndpoint(baseUrl, summary) {
   summary.push('CSP report endpoint: synthetic report accepted and stored');
 }
 
+const NOTIFY_ORIGIN = 'https://notify.getparkerai.com';
+const LEAD_TOPIC = 'portfolio-leads';
+const LEAD_DELIVERY_TIMEOUT_MS = 60_000;
+
+// A 200 from /api/contact only proves ntfy accepted a publish, which is how the
+// form ran for five days while notifying nobody. This proves the other end: the
+// lead is stored, published, and readable by a subscriber holding a token, and
+// the notify host refuses anyone without one. Smoke leads carry a secret header
+// so the handler files them as synthetic and publishes them to their own topic,
+// never to the owner's phone.
+async function checkLeadDelivery(baseUrl, summary) {
+  if (!isEdgeHost(baseUrl)) {
+    summary.push(`lead delivery: skipped (non-edge base ${new URL(baseUrl).host})`);
+    return;
+  }
+  const notifyOrigin = (option('--notify-url') ?? process.env.PORTFOLIO_NOTIFY_URL ?? NOTIFY_ORIGIN).replace(/\/+$/, '');
+  const userAgent = `sysadmindoc-live-smoke/${runId}`;
+
+  const probes = [
+    { label: 'anonymous subscribe', url: `${notifyOrigin}/${LEAD_TOPIC}/json?poll=1`, init: { method: 'GET' } },
+    { label: 'anonymous publish', url: `${notifyOrigin}/${LEAD_TOPIC}`, init: { method: 'POST', body: 'anonymous publish probe from the live smoke' } },
+  ];
+  for (const probe of probes) {
+    const response = await timedFetch(probe.url, { ...probe.init, headers: { 'User-Agent': userAgent } });
+    await response.text().catch(() => '');
+    if (![401, 403].includes(response.status)) {
+      throw new Error(`notify host: ${probe.label} returned HTTP ${response.status}; expected 401 or 403 from ${notifyOrigin}.`);
+    }
+  }
+  summary.push('notify host: anonymous subscribe and publish refused');
+
+  const secret = process.env.PORTFOLIO_CONTACT_SMOKE_SECRET ?? '';
+  const token = process.env.PORTFOLIO_NTFY_SMOKE_TOKEN ?? '';
+  if (!secret || !token) {
+    if (hasFlag('--require-lead-delivery')) {
+      throw new Error('lead delivery: PORTFOLIO_CONTACT_SMOKE_SECRET and PORTFOLIO_NTFY_SMOKE_TOKEN must be set to prove leads reach a subscriber.');
+    }
+    summary.push('lead delivery: skipped (no smoke credentials in this environment)');
+    return;
+  }
+
+  const marker = `smoke-${runId}`;
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const form = new URLSearchParams({
+    name: 'Live Smoke',
+    email: 'smoke@example.invalid',
+    message: `Synthetic lead ${marker} from the deploy smoke. Safe to ignore.`,
+    website: '',
+    _t: String(nowSeconds - 60),
+  });
+  const started = Date.now();
+  const post = await timedFetch(siteUrl('/api/contact', baseUrl), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Contact-Smoke': secret,
+      'User-Agent': userAgent,
+    },
+    body: form.toString(),
+  });
+  const postBody = await post.text();
+  if (post.status !== 200) {
+    throw new Error(`lead delivery: /api/contact returned HTTP ${post.status}: ${postBody.slice(0, 200)}`);
+  }
+
+  const pollUrl = `${notifyOrigin}/${LEAD_TOPIC}-smoke/json?poll=1&since=${nowSeconds - 5}`;
+  while (Date.now() - started < LEAD_DELIVERY_TIMEOUT_MS) {
+    const poll = await timedFetch(pollUrl, { headers: { Authorization: `Bearer ${token}`, 'User-Agent': userAgent } });
+    const body = await poll.text();
+    if (poll.status !== 200) {
+      throw new Error(`lead delivery: the smoke subscriber was refused (HTTP ${poll.status}); check the token in PORTFOLIO_NTFY_SMOKE_TOKEN.`);
+    }
+    if (body.includes(marker)) {
+      summary.push(`lead delivery: synthetic lead stored, published and read back by a subscriber in ${Math.round((Date.now() - started) / 1000)}s`);
+      return;
+    }
+    await sleep(3000);
+  }
+  throw new Error(`lead delivery: synthetic lead ${marker} was accepted but never reached the smoke topic within ${LEAD_DELIVERY_TIMEOUT_MS / 1000}s.`);
+}
+
 async function checkCachePolicy(baseUrl, summary, homepageHtml) {
   const hashedAsset = findFirstAssetPath(
     homepageHtml,
@@ -446,6 +527,7 @@ async function checkLiveArtifacts(baseUrl, expected) {
   await checkSecurityHeaders(baseUrl, summary);
   await checkNotFoundStatus(baseUrl, summary);
   await checkCspReportEndpoint(baseUrl, summary);
+  await checkLeadDelivery(baseUrl, summary);
 
   const homepage = await fetchText(baseUrl, '/', 'text/html,*/*');
   requireHeader(homepage, '/', { contentTypes: ['text/html'], cacheControl: null });

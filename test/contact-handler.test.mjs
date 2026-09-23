@@ -295,6 +295,33 @@ test('notification text is cut on a character boundary and stays under the ntfy 
   assert.equal(truncateBytes('ab😀', 3), 'ab', 'a four-byte character is never split');
 });
 
+test('the write token is sent as a bearer header and smoke leads go to their own topic', async () => {
+  const smokeSecret = 's'.repeat(32);
+  const ntfyToken = `tk_${'a1'.repeat(14)}b`;
+  await withHandler({ config: { ntfyToken, smokeSecret } }, async ({ handler, storePath, ntfy }) => {
+    const body = formBody({ name: 'Live Smoke', email: 'smoke@example.invalid', message: 'synthetic lead for the deploy smoke' });
+    await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': smokeSecret } }), responseMock());
+    await handler.handleRequest(requestMock({ body, headers: { 'x-contact-smoke': 'wrong'.repeat(8) } }), responseMock());
+    await handler.handleRequest(requestMock({ body }), responseMock());
+    await handler.idle();
+
+    assert.deepEqual(ntfy.calls.map((call) => call.body.topic), ['portfolio-leads-smoke', 'portfolio-leads', 'portfolio-leads']);
+    assert.equal(ntfy.calls[0].body.priority, 1, 'smoke leads never buzz a phone');
+    for (const call of ntfy.calls) assert.equal(call.headers.get('authorization'), `Bearer ${ntfyToken}`);
+
+    const leads = (await readEntries(storePath)).filter((entry) => entry.type === 'lead');
+    assert.deepEqual(leads.map((lead) => lead.synthetic === true), [true, false, false]);
+  });
+});
+
+test('loadConfig rejects a malformed token or a short smoke secret', () => {
+  const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
+  assert.throws(() => loadConfig({ ...base, NTFY_TOKEN: 'not-a-token' }), /NTFY_TOKEN/);
+  assert.throws(() => loadConfig({ ...base, CONTACT_SMOKE_SECRET: 'short' }), /CONTACT_SMOKE_SECRET/);
+  const config = loadConfig({ ...base, NTFY_TOKEN: `tk_${'0'.repeat(29)}`, CONTACT_SMOKE_SECRET: 'x'.repeat(24) });
+  assert.equal(config.ntfyToken, `tk_${'0'.repeat(29)}`);
+});
+
 test('loadConfig requires a topic URL and an absolute store path', () => {
   assert.throws(() => loadConfig({}), /NTFY_URL/);
   assert.throws(() => loadConfig({ NTFY_URL: 'http://ntfy:80/' }), /name a topic/);

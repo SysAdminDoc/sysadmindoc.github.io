@@ -8,6 +8,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The contact form no longer loses messages. Every accepted submission is written in full to an fsync'd store on the server before the visitor gets an answer, and the notification is sent from that record afterwards. Until now only the sender's name, email and message length were kept, so the text of the one outside inquiry that arrived on 2026-09-18 is gone.
 - A name typed with an iPhone apostrophe ("O’Brien"), any Chinese, Japanese or Korean character, or an emoji made the form fail with a 500 and dropped the lead without a trace. The visitor's text went into an HTTP header, which Node's fetch refuses for anything outside Latin-1. Notifications now travel as JSON, and a failed one stays queued for retry instead of costing the message.
 - Messages are accepted up to 5,000 characters, and the text box stops there, instead of being cut at 2,000 without warning.
+- Lead notifications can finally reach a person. ntfy ran with no configuration, no route, no auth and no subscriber, so every notification went nowhere. It now runs at `https://notify.getparkerai.com` behind the edge, denies anything without a token, keeps its cache on disk, and has a read-only token for the owner's phone.
+
+### Security
+- ntfy moves from v2.11.0 to v2.28.0, out of the critical parseActions remote-code-execution range (GHSA-pqhx-w72w-m393, fixed in 2.22.0). It and the contact handler now sit on a private network that only `portfolio-app` joins, instead of the network shared by 22 containers on the server. Before this, any of them could read or forge leads.
+
+### Added
+- Every deploy now proves the whole lead path. The live smoke confirms the notify host refuses anonymous subscribers and publishers, then sends a synthetic lead through the real form and reads it back with a subscriber token within 60 seconds. Smoke leads carry a secret header, are stored as synthetic, and go to their own topic, so they never reach the phone.
 
 ## [v0.45.2] - 2026-09-20
 

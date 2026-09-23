@@ -9,14 +9,18 @@
 // U+00FF, which includes the apostrophe an iPhone types in "O’Brien".
 //
 // Environment:
-//   NTFY_URL           required  topic URL, e.g. http://ntfy:80/portfolio-leads
-//   CONTACT_STORE      optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
-//   CONTACT_MIN_TIME   optional  minimum seconds between page load and submit (default 3)
+//   NTFY_URL              required  topic URL, e.g. http://ntfy:80/portfolio-leads
+//   NTFY_TOKEN            optional  write-only ntfy access token (tk_...), sent as a Bearer header
+//   CONTACT_SMOKE_SECRET  optional  shared secret the live smoke sends in X-Contact-Smoke; such
+//                                   leads are stored as synthetic and published to <topic>-smoke,
+//                                   which the owner's phone does not subscribe to
+//   CONTACT_STORE         optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
+//   CONTACT_MIN_TIME      optional  minimum seconds between page load and submit (default 3)
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -24,6 +28,8 @@ import { fileURLToPath } from 'node:url';
  * @property {string} host
  * @property {number} port
  * @property {string} ntfyUrl
+ * @property {string} ntfyToken
+ * @property {string} smokeSecret
  * @property {string} storePath
  * @property {number} minTimeSeconds
  * @property {number} maxBodyBytes
@@ -38,6 +44,8 @@ export const DEFAULT_CONFIG = Object.freeze({
   host: '0.0.0.0',
   port: 8090,
   ntfyUrl: '',
+  ntfyToken: '',
+  smokeSecret: '',
   storePath: '/var/lib/contact/leads.ndjson',
   minTimeSeconds: 3,
   // A 5,000-character message of CJK text is about 45 KB once URL-encoded.
@@ -81,12 +89,22 @@ export function loadConfig(env = process.env) {
   if (!storePath || !path.isAbsolute(storePath)) {
     throw new Error('CONTACT_STORE must be an absolute path.');
   }
+  const ntfyToken = String(env.NTFY_TOKEN ?? '').trim();
+  if (ntfyToken && !/^tk_[a-z0-9]{29}$/.test(ntfyToken)) {
+    throw new Error('NTFY_TOKEN must be an ntfy access token (tk_ followed by 29 lowercase letters or digits).');
+  }
+  const smokeSecret = String(env.CONTACT_SMOKE_SECRET ?? '').trim();
+  if (smokeSecret && smokeSecret.length < 24) {
+    throw new Error('CONTACT_SMOKE_SECRET must be at least 24 characters.');
+  }
 
   return {
     ...DEFAULT_CONFIG,
     host: String(env.CONTACT_HOST ?? DEFAULT_CONFIG.host),
     port: positiveInteger(env.CONTACT_PORT, DEFAULT_CONFIG.port, 'CONTACT_PORT'),
     ntfyUrl,
+    ntfyToken,
+    smokeSecret,
     storePath,
     minTimeSeconds: positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'),
   };
@@ -242,6 +260,13 @@ function sendJson(response, status, body) {
   response.end(JSON.stringify(body));
 }
 
+function secretMatches(provided, expected) {
+  if (!expected || typeof provided !== 'string' || !provided) return false;
+  const a = Buffer.from(provided, 'utf8');
+  const b = Buffer.from(expected, 'utf8');
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 function retryDelayMs(attempts) {
   return Math.min(60 * 60_000, 60_000 * 2 ** Math.max(0, attempts - 1));
 }
@@ -257,15 +282,19 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
 
   async function publish(lead) {
     const topicUrl = new URL(config.ntfyUrl);
-    const topic = topicUrl.pathname.replace(/^\/+|\/+$/g, '');
+    const baseTopic = topicUrl.pathname.replace(/^\/+|\/+$/g, '');
+    const topic = lead.synthetic ? `${baseTopic}-smoke` : baseTopic;
     const { title, message } = notificationFor(lead);
+    /** @type {Record<string, string>} */
+    const headers = { 'Content-Type': 'application/json' };
+    if (config.ntfyToken) headers.Authorization = `Bearer ${config.ntfyToken}`;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), config.notifyTimeoutMs);
     try {
       const response = await fetchImpl(new URL('/', topicUrl).toString(), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, title, message, tags: ['incoming_envelope'], priority: 4 }),
+        headers,
+        body: JSON.stringify({ topic, title, message, tags: ['incoming_envelope'], priority: lead.synthetic ? 1 : 4 }),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`ntfy answered ${response.status}`);
@@ -367,6 +396,9 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       page: refererPath(request.headers.referer),
       status: 'pending',
     };
+    // The live smoke proves the whole path on every deploy. Its leads are kept
+    // apart so they never reach the owner's phone or read as real inquiries.
+    if (secretMatches(request.headers['x-contact-smoke'], config.smokeSecret)) lead.synthetic = true;
     try {
       await store.append(lead);
     } catch (error) {

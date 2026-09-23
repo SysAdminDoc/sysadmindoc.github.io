@@ -30,3 +30,21 @@ portfolio.getparkerai.com {
 		format json
 	}
 }
+
+# OWNERSHIP: portfolio lead notifications (sites/portfolio/, ntfy)
+# ntfy for the contact form, served through portfolio-app so ntfy itself stays
+# on the portfolio's private compose network. ntfy refuses everything without a
+# token, so the edge only terminates TLS. No `encode` here: compressing a
+# subscription stream buffers it, and flush_interval -1 keeps it streaming.
+notify.getparkerai.com {
+	reverse_proxy portfolio-app:80 {
+		flush_interval -1
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options    "nosniff"
+		Referrer-Policy           "no-referrer"
+		X-Frame-Options           "DENY"
+		-Server
+	}
+}

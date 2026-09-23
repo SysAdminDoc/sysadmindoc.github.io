@@ -42,8 +42,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    # The only container on both networks: the edge reaches it on `web`, and it
+    # reaches the contact handler and ntfy on the private network.
     networks:
       - web
+      - portfolio-private
 
   csp-reporter:
     # The reporter has no third-party runtime dependency and is not published
@@ -74,7 +77,10 @@ services:
       - web
 
   ntfy:
-    image: binwiederhier/ntfy:v2.11.0
+    # Lead notifications. 2.28.0 is past the critical parseActions RCE
+    # (GHSA-pqhx-w72w-m393, fixed in 2.22.0) that the old 2.11.0 pin sat inside.
+    # PORTFOLIO_NTFY_VERSION in scripts/deploy-vps.mjs must be bumped with this.
+    image: binwiederhier/ntfy:v2.28.0
     container_name: portfolio-ntfy
     restart: unless-stopped
     stop_grace_period: 10s
@@ -83,9 +89,34 @@ services:
     pids_limit: 32
     security_opt:
       - no-new-privileges:true
-    command: ["serve", "--listen-http=:80", "--base-url=http://ntfy"]
+    command: ["serve"]
+    environment:
+      # Reached publicly only as https://notify.getparkerai.com, through the edge
+      # and then portfolio-app. Nothing is readable or writable without a token.
+      NTFY_BASE_URL: https://notify.getparkerai.com
+      NTFY_LISTEN_HTTP: ":80"
+      NTFY_BEHIND_PROXY: "true"
+      NTFY_AUTH_FILE: /var/lib/ntfy/user.db
+      NTFY_AUTH_DEFAULT_ACCESS: deny-all
+      NTFY_CACHE_FILE: /var/cache/ntfy/cache.db
+      NTFY_CACHE_DURATION: 72h
+      NTFY_WEB_ROOT: disable
+      NTFY_ENABLE_SIGNUP: "false"
+      NTFY_ENABLE_LOGIN: "false"
+    # NTFY_AUTH_USERS / NTFY_AUTH_ACCESS / NTFY_AUTH_TOKENS: bcrypt hashes and
+    # tokens, generated on the server by deploy/vps/provision-notify-secrets.sh.
+    # Never committed; compose refuses to start without the file.
+    env_file:
+      - path: ./ntfy-auth.env
+        required: true
     volumes:
       - ./ntfy-cache:/var/cache/ntfy
+      - ./ntfy-data:/var/lib/ntfy
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:80/v1/health"]
       interval: 30s
@@ -93,7 +124,7 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - web
+      - portfolio-private
 
   contact-handler:
     image: node:24-alpine
@@ -112,12 +143,22 @@ services:
       # Full submissions, fsync'd before the visitor gets an answer. The older
       # submissions.ndjson beside it (name, email, length only) is kept as is.
       CONTACT_STORE: /var/lib/contact/leads.ndjson
+    # NTFY_TOKEN (write-only) and CONTACT_SMOKE_SECRET, from
+    # deploy/vps/provision-notify-secrets.sh. Never committed.
+    env_file:
+      - path: ./contact-secrets.env
+        required: true
     volumes:
       - ./contact-handler.mjs:/app/contact-handler.mjs:ro
       - ./contact-data:/var/lib/contact
     depends_on:
       ntfy:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8090/healthz"]
       interval: 30s
@@ -125,8 +166,13 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - web
+      - portfolio-private
 
 networks:
   web:
     external: true
+  # Only portfolio-app, the contact handler and ntfy. None of the other
+  # containers on the shared `web` network can reach the lead path, and the
+  # network has no route out.
+  portfolio-private:
+    internal: true

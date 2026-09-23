@@ -19,13 +19,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
 
 ### P0
 
-- [ ] P0: Deliver leads to a subscribed device through an authenticated, current ntfy, and prove delivery in `smoke:live`
-  Why: ntfy has no route, no auth and no subscriber, so no person is ever told a lead arrived. Version 2.11.0 is also inside a critical RCE range.
-  Evidence: VPS probe 2026-09-23 (no published port, no edge route, no `server.yml`); GHSA-pqhx-w72w-m393 (critical, fixed in 2.22.0); ntfy v2.28.0 shipped 2026-08-27, with declarative users and tokens since 2.14.0; wildcard DNS already sends any `*.getparkerai.com` name to the VPS (checked 2026-09-22), so a new host needs only an edge Caddy block.
-  Touches: `deploy/vps/docker-compose.yml` (image pin, a `server.yml` with `auth-default-access: deny-all`, `cache-file` and declared users and tokens, and a private network shared only with the handler), `deploy/vps/caddy-block.txt` and its Contabo-VPS-Ops mirror (a notification host), `deploy/vps/contact-handler.mjs` (token), `scripts/deploy-vps.mjs` (assert the running ntfy version the way it asserts the Caddy pin), `scripts/smoke-live-site.mjs`.
-  Acceptance: ntfy 2.28.0 or later answers 401 or 403 to anonymous publish and subscribe on its public host. The handler holds a write-only token and the phone a read-only one. `smoke:live` sends a synthetic lead marked by a secret header, reads it back through the read-only token within 60 seconds, and fails otherwise. Titles stay under ntfy 2.28's 1 KB limit. Owner step: subscribe the Android app, then record the date in the repo's working notes.
-  Complexity: M
-
 - [ ] P0: Recreate the nightly refresh from a committed definition and make a killed run visible
   Why: The last run was cut off on 2026-09-21 and nothing has run since, so the live data passed its 36-hour contract without an alert.
   Evidence: `.tmp/refresh-and-deploy-step-deploy-vps.log` ends at the first ssh call (2026-09-21T10:57:45Z) with no `DONE` or `ABORT`; the status file still reads `deployed` at 2026-09-20T21:14:48Z; no "Portfolio Refresh and Deploy" task was visible on 2026-09-22; `scripts/refresh-and-deploy.mjs:150-166` writes status only on terminal paths, and `:86-144` gives no step a timeout; the README never mentions the task.

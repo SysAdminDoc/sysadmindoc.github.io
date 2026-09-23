@@ -2,6 +2,18 @@
 # The shared edge Caddy reverse-proxies to this and adds the security headers;
 # this instance serves the built site and replicates the machine-endpoint cache
 # policy the live smoke expects (GitHub Pages served max-age=600 globally).
+
+# Lead notifications. The edge forwards https://notify.getparkerai.com here, and
+# this block hands it to ntfy on the private compose network, which refuses
+# everything without a token. It stays a separate site so the portfolio's CSP
+# and cache headers never reach ntfy responses, and flush_interval -1 keeps a
+# phone's subscription streaming instead of buffered.
+http://notify.getparkerai.com {
+	reverse_proxy ntfy:80 {
+		flush_interval -1
+	}
+}
+
 :80 {
 	root * /srv
 	encode zstd gzip

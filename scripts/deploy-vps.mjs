@@ -91,8 +91,20 @@ function captureRemote(script) {
   }).trim();
 }
 
-// Keep in step with the image pin in deploy/vps/docker-compose.yml.
+// Keep in step with the image pins in deploy/vps/docker-compose.yml.
 const PORTFOLIO_CADDY_VERSION = '2.11.4';
+const PORTFOLIO_NTFY_VERSION = '2.28.0';
+
+function verifyNtfyVersion() {
+  const output = captureRemote('docker exec portfolio-ntfy ntfy --version 2>/dev/null | head -1');
+  const running = output.match(/(\d+\.\d+\.\d+)/)?.[1];
+  if (running !== PORTFOLIO_NTFY_VERSION) {
+    throw new Error(
+      `deploy-vps: portfolio-ntfy reports "${output || '(empty)'}" but the compose file pins ${PORTFOLIO_NTFY_VERSION}.`,
+    );
+  }
+  console.log(`deploy-vps: portfolio-ntfy is running the pinned ntfy ${running}.`);
+}
 
 function verifyCaddyVersion() {
   const output = captureRemote('docker exec portfolio-app caddy version 2>/dev/null | head -1');
@@ -165,7 +177,14 @@ if (!fs.existsSync(path.join(distDir, 'index.html'))) {
 const cspEnvFile = writeComposeEnvFile(distDir);
 
 // 2. Ensure the remote site dir exists.
-runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache`);
+runRemote(`mkdir -p ${remoteDir} ${remoteDir}/csp-reports ${remoteDir}/contact-data ${remoteDir}/ntfy-cache ${remoteDir}/ntfy-data`);
+
+// 2b. The lead-notification secrets live only on the server. Stop here with the
+// fix named, rather than letting compose fail halfway through a recreate.
+runRemote(
+  `cd ${remoteDir} && { test -s ntfy-auth.env && test -s contact-secrets.env; } || ` +
+    `{ echo "deploy-vps: ntfy-auth.env or contact-secrets.env is missing in ${remoteDir}; run 'sh provision-notify-secrets.sh' there first (see README, Deploy)." >&2; exit 1; }`,
+);
 
 // 3. Ship the server config, reporter, CSP environment, then the site itself.
 run('scp', [
@@ -174,6 +193,7 @@ run('scp', [
   path.join(root, 'deploy', 'vps', 'Caddyfile'),
   path.join(root, 'deploy', 'vps', 'csp-report-server.mjs'),
   path.join(root, 'deploy', 'vps', 'contact-handler.mjs'),
+  path.join(root, 'deploy', 'vps', 'provision-notify-secrets.sh'),
   cspEnvFile,
   `${ssh}:${remoteDir}/`,
 ]);
@@ -220,6 +240,7 @@ runRemote(`cd ${remoteDir} && docker compose --env-file csp.env up -d --force-re
 // checking it here is the only place a drifted image becomes visible instead of
 // assumed.
 verifyCaddyVersion();
+verifyNtfyVersion();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //
@@ -246,6 +267,7 @@ if (process.env.SKIP_SMOKE !== '1') {
     String(counts.feedItems),
     '--retries',
     '5',
+    '--require-lead-delivery',
   ]);
 }
 

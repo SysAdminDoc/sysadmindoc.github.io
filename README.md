@@ -185,6 +185,22 @@ which stores redacted NDJSON reports in a rotated file outside the served site.
 `npm run deploy:vps` stamps the built hash-pinned policy into the response header
 so browsers can report real violations without a third-party service.
 
+The contact form posts to `/api/contact`, where a small Node sidecar
+(`deploy/vps/contact-handler.mjs`) writes each submission in full to an fsync'd
+store and then notifies through a self-hosted ntfy at
+`https://notify.getparkerai.com`. ntfy sits on a private compose network behind
+`portfolio-app`, denies everything without a token, and its credentials never
+touch this repo. Before the first deploy with this stack, run
+`sh provision-notify-secrets.sh` once in `/home/deploy/sites/portfolio` on the
+server. It writes `ntfy-auth.env` and `contact-secrets.env` and prints three
+values once: the phone's read-only token, plus the smoke token and smoke secret,
+which the deploy machine needs as `PORTFOLIO_NTFY_SMOKE_TOKEN` and
+`PORTFOLIO_CONTACT_SMOKE_SECRET`. `deploy:vps` refuses to run without the two
+server files and asserts the running ntfy version, and its live smoke checks
+that the notify host refuses anonymous access. It then sends a synthetic lead
+through the real form and reads it back as a subscriber within 60 seconds.
+Smoke leads go to their own topic, so they never reach the phone.
+
 Deployment is local-first:
 1. Run `npm ci` from a normal local worktree.
 2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.
