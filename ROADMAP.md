@@ -28,13 +28,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Tests cover a missing, forged, replayed or expired token, a device clock ten minutes fast, a per-client limit and a global hourly cap. The 422 text is generic ("Please check the form and try again") and doesn't name the honeypot. A request with no token is accepted only on the plain-POST path, under a stricter limit.
   Complexity: M
 
-- [ ] P1: Relock to clear the devalue, satori, fflate and smol-toml advisories
-  Why: The build tree ships eight devalue advisories (one of them high), a satori SVG-escaping advisory, an fflate infinite loop and a smol-toml DoS, and `npm audit` sees only some of them.
-  Evidence: `npm ls` on 2026-09-22 (devalue 5.8.1, satori 0.33.4, fflate 0.7.3 and 0.7.4, smol-toml 1.8.0); the sveltejs/devalue advisories of 2026-09-18 (fixed in 5.9.3); GHSA-wx4j-mvgx-mqwp (fixed in 0.33.5); GHSA-px8p-9vwx-vf98 (fixed in 0.7.5, which satori's exact pin blocks); the smol-toml advisory of 2026-09-22 (fixed in 1.9.0); astro 7.3.4 accepts devalue `^5.8.1` and smol-toml `^1.8.0`.
-  Touches: `package.json` (satori `^0.33.5`; overrides `fflate: ^0.7.5` and a `js-yaml` floor of `^4.3.2`), `package-lock.json`.
-  Acceptance: After 2026-09-25, once the `.npmrc` three-day window has passed, `npm ls` shows devalue 5.9.3 or later, smol-toml 1.9.0 or later, fflate 0.7.5 or later, satori 0.33.5 or later and astro 7.3.4 or later. `npm audit --omit=dev` reports nothing, `deploy:preflight` passes, and the OG cards render unchanged.
-  Complexity: S
-
 - [ ] P1: Add a `/privacy/` page that says what the site actually stores
   Why: The form collects names and emails and the site has no privacy statement. California requires commercial sites that collect personal information from its residents to post a conspicuous policy.
   Evidence: `/privacy/` returned 404 on 2026-09-22 and no source file mentions a policy; Cal. Bus. & Prof. Code 22575; FTC guidance to keep personal data only as long as it's needed.
