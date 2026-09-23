@@ -83,6 +83,17 @@ test('status endpoint and live smoke expose build commit identity', () => {
   assert.match(smoke, /\/status\.json build\.commit drifted/);
 });
 
+// Moved from the retired GitHub Pages publisher's test, which carried these
+// checks on the smoke itself.
+test('the live smoke loads the homepage and the built assets it names', () => {
+  const smoke = fs.readFileSync(smokeScript, 'utf8');
+  assert.match(smoke, /fetchText\(baseUrl, '\/', 'text\/html,\*\/\*'\)/);
+  assert.match(smoke, /findFirstAssetPath\(homepage\.body/);
+  assert.match(smoke, /Astro CSS asset/);
+  assert.match(smoke, /_assets/);
+  assert.match(smoke, /\/pagefind\/pagefind\.js/);
+});
+
 test('live smoke contract emits build commit from status.json', () => {
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'status-build-contract-'));
   const outputFile = path.join(dist, 'github-output.txt');

@@ -255,7 +255,8 @@ test('deploy preflight script runs strict generated-data gate before tests and b
     // built dist/ served to a real browser, so it runs after `npm run build`.
     /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run verify:release-tag && npm run deps:audit -- --strict && npm test && npm run check && npm run build && npm run a11y:audit:browser$/,
   );
-  assert.equal(pkg.scripts['publish:pages'], 'node scripts/publish-pages.mjs');
+  // GitHub Pages is a redirect stub now; nothing may publish over it.
+  assert.equal(pkg.scripts['publish:pages'], undefined);
 });
 
 test('fixture generated-data summary labels reduced corpus without blocking advisory runs', async () => {

@@ -29,7 +29,7 @@ if (result.error) {
 if (result.status !== 0 && NETWORK_HINTS.test(output)) {
   console.error('verify-signatures: could not reach the npm registry to verify dependency signatures.');
   console.error('verify-signatures: this is a NETWORK issue, not a signature failure.');
-  console.error('verify-signatures: reconnect and re-run `npm run verify:signatures` (or `npm run publish:pages`).');
+  console.error('verify-signatures: reconnect and re-run `npm run verify:signatures` (or `npm run deploy:preflight`).');
   process.exit(2);
 }
 

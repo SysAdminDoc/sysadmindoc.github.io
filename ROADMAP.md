@@ -35,13 +35,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: After 2026-09-25, once the `.npmrc` three-day window has passed, `npm ls` shows devalue 5.9.3 or later, smol-toml 1.9.0 or later, fflate 0.7.5 or later, satori 0.33.5 or later and astro 7.3.4 or later. `npm audit --omit=dev` reports nothing, `deploy:preflight` passes, and the OG cards render unchanged.
   Complexity: S
 
-- [ ] P1: Retire `publish:pages` before it overwrites the redirect stub
-  Why: The documented command would replace the three-file redirect on `gh-pages` with a full duplicate of the site, undoing the move to the VPS.
-  Evidence: `origin/gh-pages` holds `.nojekyll`, `404.html` and `index.html` (`8003c640`, 2026-07-28); `scripts/publish-pages.mjs` has no guard; `README.md:88` and `:207` still document it.
-  Touches: `package.json`, `scripts/publish-pages.mjs`, `README.md`, any test that references the script.
-  Acceptance: `npm run publish:pages` is gone, or exits 1 naming the redirect stub. The README's Deploy section lists only `deploy:vps` and `refresh:deploy`, and the tests pass.
-  Complexity: S
-
 - [ ] P1: Add a `/privacy/` page that says what the site actually stores
   Why: The form collects names and emails and the site has no privacy statement. California requires commercial sites that collect personal information from its residents to post a conspicuous policy.
   Evidence: `/privacy/` returned 404 on 2026-09-22 and no source file mentions a policy; Cal. Bus. & Prof. Code 22575; FTC guidance to keep personal data only as long as it's needed.

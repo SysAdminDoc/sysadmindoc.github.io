@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Deploy the built static portfolio to the Contabo VPS, behind the shared edge
-// Caddy (see deploy/vps/). Replaces the GitHub Pages `publish:pages` flow once
-// portfolio.getparkerai.com is cut over.
+// Caddy (see deploy/vps/). This is the only deploy path: the gh-pages branch is
+// a three-file redirect stub to portfolio.getparkerai.com, and the publisher
+// that could overwrite it was removed on 2026-09-23.
 //
 //   PORTFOLIO_VPS_SSH          required, e.g. deploy@203.0.113.10
 //   PORTFOLIO_VPS_DIR          optional, default /home/deploy/sites/portfolio

@@ -85,7 +85,6 @@ npm run data:summary:strict # fail on stale, partial, or low-coverage generated-
 npm run data:summary:deploy # strict generated-data gate plus token-backed README telemetry requirement
 npm run deploy:status # fail when the live version or commit differs from local package.json + HEAD
 npm run deploy:preflight # deploy gate: data/catalog/dependency audits, tests, check, and build
-npm run publish:pages # run preflight, publish dist/ to gh-pages, and smoke the live Pages URL
 npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
@@ -163,7 +162,7 @@ The curated fallback and live-app screenshot overlays live in **[src/data/projec
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: reviewed technology metadata for language lanes and discovery
 
-Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, and `npm run deploy:preflight` runs that gate plus catalog drift, package signatures, and strict exact-override freshness before tests, check, and build. Documented major holds remain visible but non-blocking until their upstream compatibility work lands. `npm run publish:pages` copies the verified build to the `gh-pages` branch with `.nojekyll` before smoking the live Pages URL. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides on `/catalog/`; its search form remains a no-JS `GET /search/?q=...` fallback. The homepage links to that complete archive instead of duplicating it. Project cards and project entries in search, feeds, releases, screenshots, timeline, language lanes, and archive surfaces point directly to their GitHub repositories. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can be narrowed by Scope; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body, Scope filter, removed project-route boundary, and direct GitHub catalog-link contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
+Category and catalog-view counts auto-compute from the feed-backed catalog plus generated GitHub metadata. The default `Recommended` sort blends stars, freshness, and release-download activity at build time; `npm run data:summary` reports top ranked rows, validates ranking weights/scores/ranks, labels fixture/unauthenticated/production generated-data modes, reports release provenance distribution, and can fail featured downloadable releases without checksum or attestation when run with `--fail-on-unsigned-featured-releases`. `npm run data:summary:strict` fails on stale or low-coverage caches. `npm run data:summary:deploy` adds the production deploy requirement that README refresh telemetry is token-backed, and `npm run deploy:preflight` runs that gate plus catalog drift, package signatures, and strict exact-override freshness before tests, check, and build. Documented major holds remain visible but non-blocking until their upstream compatibility work lands. `view=` URL state combines with `cat=`, `q=`, and explicit `sort=` overrides on `/catalog/`; its search form remains a no-JS `GET /search/?q=...` fallback. The homepage links to that complete archive instead of duplicating it. Project cards and project entries in search, feeds, releases, screenshots, timeline, language lanes, and archive surfaces point directly to their GitHub repositories. The `/search/` page uses the generated Pagefind index in faceted mode so full-text results can be narrowed by Scope; searchable routes tag intentional content with `data-pagefind-body` so repeated global UI stays out of the index, and `npm run search:audit` checks the built page/body, Scope filter, removed project-route boundary, and direct GitHub catalog-link contract after indexing. `npm run bundle:audit` runs inside `build:ci` and budgets JS, route CSS chunks, the shared global shell, and total CSS before the rest of the build-output audits. `npm run dom:audit` guards the built homepage/catalog size budget before service-worker stamping. `/feed.json` is JSON Feed 1.1 with absolute icon metadata, `/atom.xml` mirrors the project feed for Atom clients, and both are guarded by `npm run feed:audit`. `/llms.txt` is a generated AI-readable site map covering reviewed pages, language lanes, feeds, machine endpoints, sitemap, and exact catalog counts.
 
 Public notes/TIL content is intentionally not published until a durable reviewed source corpus exists.
 
@@ -213,14 +212,21 @@ Without it the browser posts natively, and the handler answers with a 303: to
 `/contact/sent/` once the message is stored, or back to the form page at
 `#contact-not-sent`, where a note explains what happened without any script.
 
-Deployment is local-first:
-1. Run `npm ci` from a normal local worktree.
-2. Refresh generated data with `GITHUB_TOKEN` set, using `npm run fetch-stars` and `npm run profile-feed:sync`.
-3. Run `npm run deploy:preflight`; it fails if generated data is stale, coverage is low, README refresh telemetry was not token-backed, the public GitHub repo catalog has unreviewed drift, dependency signatures fail, or an exact override pin trails a patch/minor release.
-4. Preview `dist/` with `npm run preview` and run any relevant browser audits.
-5. Deploy with `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps`. It builds and mirrors
-   `dist/` to `/home/deploy/sites/portfolio/`, recreates the static container, and
-   smokes the live origin.
+There are two ways to deploy, both local:
+
+- `npm run refresh:deploy` runs the whole chain unattended: it refreshes the
+  generated data, runs `deploy:preflight`, then `deploy:vps`. The nightly task
+  uses it (see Nightly refresh below).
+- `PORTFOLIO_VPS_SSH=deploy@<vps> npm run deploy:vps` ships what you have. It
+  builds and mirrors `dist/` to `/home/deploy/sites/portfolio/`, recreates the
+  containers, and smokes the live origin.
+
+Before a hand deploy, run `npm ci`, refresh the data with `GITHUB_TOKEN` set
+(`npm run fetch-stars` and `npm run profile-feed:sync`), and run
+`npm run deploy:preflight`. It fails if generated data is stale, coverage is
+low, README refresh telemetry wasn't token-backed, the public repo catalog has
+unreviewed drift, dependency signatures fail, or an exact override pin trails a
+patch or minor release.
 
 ### Go-live (one-time cutover)
 1. Point `portfolio.getparkerai.com` DNS at the VPS.
@@ -232,7 +238,9 @@ Deployment is local-first:
 4. Keep `sysadmindoc.github.io` serving (with a canonical/redirect to the new
    origin) until search equity settles.
 
-`npm run publish:pages` still deploys the GitHub Pages copy during the transition.
+The `gh-pages` branch now holds only a three-file redirect stub to this origin.
+Nothing in this repo publishes to it any more, so it can't be overwritten by
+accident.
 
 ### Nightly refresh
 
@@ -312,8 +320,7 @@ scripts/
 ├── audit-dom-size.mjs     # built homepage/catalog DOM-size budget audit
 ├── audit-search-index.mjs # generated Pagefind Category/filter contract audit
 ├── audit-forced-colors.mjs # CDP forced-colors SVG data-viz audit
-├── smoke-live-site.mjs    # post-deploy live Pages artifact smoke check
-├── publish-pages.mjs      # local gh-pages branch publisher with live smoke
+├── smoke-live-site.mjs    # post-deploy live artifact smoke check
 ├── smoke-release-artifact.mjs # GitHub Release ZIP asset smoke check
 ├── audit-semantic-index.mjs
 ├── summarize-lhci.mjs     # LHCI filesystem warning summary

@@ -25,6 +25,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Site search works again. Once the server started sending the CSP as a response header on 2026-08-20, Pagefind's worker ran under it and couldn't compile its WebAssembly, so every search sat at "Searching" forever. The policy now allows `'wasm-unsafe-eval'`, which permits WebAssembly compilation and nothing else.
 - Returning visitors see the homepage photo again. The service worker fetched cross-origin images itself, and the policy delivered with `/sw.js` refused those fetches, so every visit after the first got a synthetic 503 instead of the avatar. The worker now leaves cross-origin requests to the browser.
 
+### Removed
+- `npm run publish:pages`, its script and `public/.nojekyll`. The `gh-pages` branch has been a three-file redirect to this origin since 2026-07-28, and the documented command would have replaced it with a full copy of the site. The README now lists `refresh:deploy` and `deploy:vps` as the only ways to deploy.
+
 ### Changed
 - `/status.json` says when its data expires. `generatedData.staleAfter` is the fetch time plus the 36-hour contract, `evaluatedAt` records that `status` and `stale` were judged when the file was built, and a note says so in words. On 2026-09-23 the live file said "fresh" about data 37.8 hours old. The live smoke and `deploy:status` now fail once `staleAfter` has passed.
 - The homepage photo is served from this site instead of GitHub's avatar CDN, as 82 and 164 pixel WebP. That was the last third-party request, so the policy now allows images from this origin and `data:` only, connections to this origin only, and no frames. Six image hosts, the GitHub API and YouTube frames are gone from it, and so are the GitHub preconnect and DNS prefetch hints on every page. The build fails if the policy allows a host no built file loads from, and a Playwright check fails on any third-party request from the homepage.
