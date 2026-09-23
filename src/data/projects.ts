@@ -147,7 +147,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "ColumnKit", name: "ColumnKit", url: "https://github.com/SysAdminDoc/ColumnKit", category: "ext", desc: "VS Code status bar buttons that snap editor columns to even widths" },
   { repo: "GLP-Ultra", name: "GLP-Ultra", url: "https://github.com/SysAdminDoc/GLP-Ultra", category: "ext", desc: "Godlike Productions forum userscript with dark themes, thread cleanup, filtering, moderation tools, and exports" },
   { repo: "HubSpot-Ticket-Refined", name: "HubSpot-Ticket-Refined", url: "https://github.com/SysAdminDoc/HubSpot-Ticket-Refined", category: "ext", desc: "Compact userscript theme for HubSpot ticket lists and records" },
-  { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
+  { repo: "Onward_Userscript", name: "Onward", url: "https://github.com/SysAdminDoc/Onward_Userscript", category: "ext", desc: "Auto-pager userscript that appends the next page of paginated sites as you scroll, with no rule database" },  { repo: "ScriptVault", name: "ScriptVault", url: "https://github.com/SysAdminDoc/ScriptVault", category: "ext", desc: "MV3 userscript manager" },
   { repo: "NDNS", name: "NDNS", url: "https://github.com/SysAdminDoc/NDNS", category: "ext", desc: "NextDNS floating panel & analytics" },
   { repo: "BackgroundSearch", name: "BackgroundSearch", url: "https://github.com/SysAdminDoc/BackgroundSearch", category: "ext", desc: "Background tab opener extension" },
   { repo: "Claude-Ultimate-Enhancer", name: "Claude-Ultimate-Enhancer", url: "https://github.com/SysAdminDoc/Claude-Ultimate-Enhancer", category: "ext", desc: "Claude.ai enhancement suite" },
