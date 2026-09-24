@@ -62,6 +62,38 @@ export async function assertPortFree(hostname, port, { waitMs = 5_000, pollMs = 
   }
 }
 
+const TOKEN_PREFIX = '__preview-check-';
+
+/**
+ * Put a file only this run knows into dist/, before the preview starts, so
+ * the server that answers can prove it serves this dist/ now. A home page
+ * match alone passed a server built from the same commit in another
+ * checkout, or one that only answered / with this build (thirteenth drain
+ * review). Leftovers from a killed run go first.
+ * @returns {{ path: string, token: string, remove: () => void }}
+ */
+export function writeServeToken(distDir, token) {
+  for (const name of fs.readdirSync(distDir)) {
+    if (name.startsWith(TOKEN_PREFIX)) fs.rmSync(path.join(distDir, name), { force: true });
+  }
+  const name = `${TOKEN_PREFIX}${token}.txt`;
+  const file = path.join(distDir, name);
+  fs.writeFileSync(file, token);
+  return { path: `/${name}`, token, remove: () => fs.rmSync(file, { force: true }) };
+}
+
+/** Refuse a server that doesn't serve this run's token file. */
+export async function assertServesToken(baseURL, serveToken) {
+  const response = await fetch(new URL(serveToken.path, baseURL), { redirect: 'manual' });
+  const body = response.status === 200 ? (await response.text()).trim() : '';
+  if (body !== serveToken.token) {
+    throw new Error(
+      `preview-server: ${baseURL} answers, but not with the file this run just wrote into dist/ (HTTP ${response.status}), ` +
+        'so it is another checkout\'s server or another build.',
+    );
+  }
+}
+
 /** Refuse a server whose home page isn't this checkout's dist/index.html. */
 export async function assertServesBuild(baseURL, distDir) {
   const expected = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');

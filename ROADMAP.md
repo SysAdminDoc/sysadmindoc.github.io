@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Prove the preview answering is this run's, and keep the gate on its own build
-  Why: `assertServesBuild` passed a server that returns this checkout's `dist/index.html` for `/` and other pages for every other path, and two checkouts at one commit have identical home pages, so a run that lost the port race could audit the other's server and have it stopped under it. `PLAYWRIGHT_BASE_URL`, if set in the shell, skips every check, and `visual-gate.mjs` doesn't clear it, so the deploy gate would audit whatever it names.
-  Evidence: thirteenth drain review, 2026-09-24; `tests/playwright/preview-server.mjs:48`, `preview-server-control.mjs`.
-  Touches: those files, `scripts/visual-gate.mjs`, `test/preview-server.test.mjs`.
-  Acceptance: the setup fetches a file only this run wrote into `dist/` and refuses a server that doesn't serve it, and the gate runs Playwright without `PLAYWRIGHT_BASE_URL`.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Make the gutter check measure what its CHANGELOG line says

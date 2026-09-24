@@ -17,11 +17,14 @@
 // it to answer, and let preview-server-teardown.mjs stop it. Setting
 // PLAYWRIGHT_BASE_URL bypasses all of this, which is what a manual run against an
 // already-serving preview wants.
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import process from 'node:process';
 import {
   assertPortFree,
   assertServesBuild,
+  assertServesToken,
+  writeServeToken,
   astroPreview,
   clearMarker,
   markerOwnerAlive,
@@ -56,31 +59,41 @@ export default async function globalSetup(config) {
   astroPreview(['stop'], { ignoreErrors: true });
   // Anything still on the port isn't ours (preview-server-control.mjs).
   await assertPortFree(hostname, port);
-  // Serve the production CSP response header (astro.config.mjs), so the
-  // service worker runs under the policy the live /sw.js is delivered with.
-  astroPreview(['--background', '--host', hostname, '--port', port], {
-    env: { PORTFOLIO_PREVIEW_PRODUCTION_HEADERS: '1' },
-  });
+  // A file only this run knows, in dist/ before the server starts, so the one
+  // that answers has to prove it serves this dist/. It comes out again once
+  // checked, whatever happens, so it can't ship.
+  const dist = path.join(process.cwd(), 'dist');
+  const serveToken = writeServeToken(dist, randomUUID());
+  try {
+    // Serve the production CSP response header (astro.config.mjs), so the
+    // service worker runs under the policy the live /sw.js is delivered with.
+    astroPreview(['--background', '--host', hostname, '--port', port], {
+      env: { PORTFOLIO_PREVIEW_PRODUCTION_HEADERS: '1' },
+    });
 
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline) {
-    let answered = false;
-    try {
-      answered = (await fetch(baseURL, { redirect: 'manual' })).status > 0;
-    } catch {
-      /* not up yet */
-    }
-    if (answered) {
+    const deadline = Date.now() + 60_000;
+    while (Date.now() < deadline) {
+      let answered = false;
       try {
-        await assertServesBuild(baseURL, path.join(process.cwd(), 'dist'));
-      } catch (error) {
-        astroPreview(['stop'], { ignoreErrors: true });
-        throw error;
+        answered = (await fetch(baseURL, { redirect: 'manual' })).status > 0;
+      } catch {
+        /* not up yet */
       }
-      writeMarker({ pid: process.pid, baseURL, startedAt: new Date().toISOString() });
-      return;
+      if (answered) {
+        try {
+          await assertServesToken(baseURL, serveToken);
+          await assertServesBuild(baseURL, dist);
+        } catch (error) {
+          astroPreview(['stop'], { ignoreErrors: true });
+          throw error;
+        }
+        writeMarker({ pid: process.pid, baseURL, startedAt: new Date().toISOString() });
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 250));
     }
-    await new Promise((resolve) => setTimeout(resolve, 250));
+  } finally {
+    serveToken.remove();
   }
 
   astroPreview(['stop'], { ignoreErrors: true });

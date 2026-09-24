@@ -89,16 +89,27 @@ export function playwrightArgs({ all = false, update = false } = {}) {
   return args;
 }
 
-function run(command, args) {
+function run(command, args, env = process.env) {
   console.log(`$ ${command} ${args.join(' ')}`);
   // npm is a .cmd shim on Windows, which spawnSync can't start without a
   // shell. Only `npm run build:ci` goes that way; Playwright's grep pattern
   // holds characters cmd.exe would read as pipes, so it runs through node.
   const result = process.platform === 'win32' && command === 'npm'
-    ? spawnSync('cmd.exe', ['/d', '/s', '/c', ['npm', ...args].join(' ')], { stdio: 'inherit', windowsHide: true })
-    : spawnSync(command, args, { stdio: 'inherit', windowsHide: true });
+    ? spawnSync('cmd.exe', ['/d', '/s', '/c', ['npm', ...args].join(' ')], { stdio: 'inherit', windowsHide: true, env })
+    : spawnSync(command, args, { stdio: 'inherit', windowsHide: true, env });
   if (result.error) throw result.error;
   return result.status ?? 1;
+}
+
+/**
+ * The environment the gate's Playwright run gets: without PLAYWRIGHT_BASE_URL,
+ * which points the audits at an already running server and skips every check
+ * that it's this build (tests/playwright/preview-server.mjs). The gate always
+ * audits the fixture build it just made (thirteenth drain review).
+ */
+export function playwrightEnv(env = process.env) {
+  const { PLAYWRIGHT_BASE_URL: _dropped, ...rest } = env;
+  return rest;
 }
 
 /**
@@ -421,7 +432,7 @@ async function main() {
       // installer checks that its parent is the process holding the lock.
       if (run(process.execPath, ['scripts/install-generated-fixtures.mjs', '--under-gate']) !== 0) return 1;
       if (run('npm', ['run', 'build:ci']) !== 0) return 1;
-      return run(process.execPath, [path.join('node_modules', '@playwright', 'test', 'cli.js'), ...playwrightArgs({ all, update })]);
+      return run(process.execPath, [path.join('node_modules', '@playwright', 'test', 'cli.js'), ...playwrightArgs({ all, update })], playwrightEnv());
     } finally {
       restoreLiveData({ log: console.log });
     }
