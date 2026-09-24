@@ -7,23 +7,33 @@ import { EDGE_DELETIONS, EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem } 
 const root = process.cwd();
 
 // The edge's default logger as its admin API returned it on 2026-09-23, after
-// the seventh drain review (field order as Caddy writes it).
+// the seventh drain review (field order as Caddy writes it). The eleventh
+// review showed it still let top-level addresses and pages through.
+const fields0923 = {
+  error: { filter: 'regexp', regexp: '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+', value: 'x.x.x.x' },
+  'request>client_ip': { filter: 'delete' },
+  'request>headers': { filter: 'delete' },
+  'request>remote_ip': { filter: 'delete' },
+  'request>remote_port': { filter: 'delete' },
+  'request>tls': { filter: 'delete' },
+  'request>uri': { filter: 'regexp', regexp: '\\?.*$' },
+  resp_headers: { filter: 'delete' },
+  referer: { filter: 'delete' },
+  user_agent: { filter: 'delete' },
+};
+// And with the top-level fields dropped too, as both Caddyfiles now have it.
 const filtered = {
   writer: { output: 'stderr' },
   encoder: {
     format: 'filter',
     wrap: { format: 'json' },
     fields: {
-      error: { filter: 'regexp', regexp: '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+', value: 'x.x.x.x' },
-      'request>client_ip': { filter: 'delete' },
-      'request>headers': { filter: 'delete' },
-      'request>remote_ip': { filter: 'delete' },
-      'request>remote_port': { filter: 'delete' },
-      'request>tls': { filter: 'delete' },
-      'request>uri': { filter: 'regexp', regexp: '\\?.*$' },
-      resp_headers: { filter: 'delete' },
-      referer: { filter: 'delete' },
-      user_agent: { filter: 'delete' },
+      ...fields0923,
+      client_ip: { filter: 'delete' },
+      remote_addr: { filter: 'delete' },
+      remote_ip: { filter: 'delete' },
+      remote_port: { filter: 'delete' },
+      uri: { filter: 'regexp', regexp: '\\?.*$' },
     },
   },
   exclude: ['http.log.access.portfolio', 'http.log.error.portfolio'],
@@ -47,6 +57,17 @@ test('on the edge, the fields the portfolio block appends are dropped too', () =
     assert.match(problem ?? '', new RegExp(`keeps ${name}`), name);
   }
   assert.equal(defaultLogProblem(withFields((fields) => ({ ...fields, referer: undefined, user_agent: undefined }))), null, 'the inner Caddy appends nothing');
+});
+
+// On 2026-09-24 the edge's log held 13 warnings like this one, from a request
+// to /.well-known/acme-challenge/ (eleventh drain review; address and path
+// made up here). Nothing under `request` holds the visitor's details.
+test('the address and page some entries carry at the top level are dropped too', () => {
+  const problem = defaultLogProblem(JSON.stringify({ ...filtered, encoder: { ...filtered.encoder, fields: fields0923 } }), edgeOptions) ?? '';
+  for (const name of ['remote_addr', 'remote_ip', 'remote_port', 'client_ip']) assert.match(problem, new RegExp(`keeps [^.]*\\b(?<!>)${name}\\b`), name);
+  assert.match(problem, /the query string \(uri\)/);
+  assert.doesNotMatch(problem, /request>uri/, 'the nested one was already cut');
+  assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, uri: { filter: 'regexp', regexp: '#.*$' } }))) ?? '', /keeps the query string \(uri\)/);
 });
 
 // The seventh drain review got whole portfolio requests into the edge's
@@ -74,6 +95,7 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   const global = inner.replace(/^\s*#.*$/gm, '').trim().match(/^\{[\s\S]*?\n\}/)?.[0] ?? '';
   for (const name of REQUIRED_DELETIONS) assert.match(global, new RegExp(`\\n\\s*${name} delete\\n`), `the inner Caddy drops ${name}`);
   assert.match(global, /request>uri regexp \\\?\.\*\$ ""/);
+  assert.match(global, /\n\s*uri regexp \\\?\.\*\$ ""\n/, 'and the top-level uri');
   assert.match(global, /error regexp \[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+ x\.x\.x\.x/);
 
   // What /privacy/ promises about them, which the filters above make true. It

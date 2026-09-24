@@ -9,15 +9,28 @@
 // addresses in error text, and deploy-vps reads both running configs back
 // through their admin APIs on every deploy.
 
-/** Filters every default logger needs, as Caddy's JSON config spells them. */
+/**
+ * Filters every default logger needs, as Caddy's JSON config spells them. Some
+ * entries carry the address at the top level rather than under `request`: the
+ * edge's "looking up info for HTTP challenge" warning, logged for any request
+ * to /.well-known/acme-challenge/, has `remote_addr` (address and port) and
+ * `uri` (eleventh drain review).
+ */
 export const REQUIRED_DELETIONS = Object.freeze([
   'request>remote_ip',
   'request>client_ip',
   'request>remote_port',
   'request>headers',
   'request>tls',
+  'remote_addr',
+  'remote_ip',
+  'remote_port',
+  'client_ip',
   'resp_headers',
 ]);
+
+/** Fields holding the page a visitor asked for, whose query string is cut. */
+export const QUERY_FIELDS = Object.freeze(['request>uri', 'uri']);
 
 /** The edge also keeps the portfolio's error entries out of its log entirely. */
 export const EDGE_EXCLUDES = Object.freeze(['http.log.error.portfolio']);
@@ -63,7 +76,9 @@ export function defaultLogProblem(text, { mustExclude = [], mustDelete = [] } = 
   }
   const fields = encoder.fields ?? {};
   const missing = [...REQUIRED_DELETIONS, ...mustDelete].filter((name) => fields[name]?.filter !== 'delete');
-  if (applies(fields['request>uri'], '/page?q=secret') !== '/page') missing.push('the query string (request>uri)');
+  for (const name of QUERY_FIELDS) {
+    if (applies(fields[name], '/page?q=secret') !== '/page') missing.push(`the query string (${name})`);
+  }
   // The `error` field, where reverse_proxy puts a failed write to the visitor.
   // A handler error's own text is the entry's message, which a filter encoder
   // can't touch, so there's nothing to check for it here.

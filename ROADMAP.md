@@ -6,13 +6,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
-- [ ] P1: Keep visitors' addresses and query strings out of the edge's own log
-  Why: Caddy's "looking up info for HTTP challenge" warning, logged for any request to `/.well-known/acme-challenge/`, carries top-level `remote_addr` and `uri` fields. The default loggers' filters delete only `request>*` fields, so the edge's container log holds the visitor's address and port and the whole query string, which `/privacy/` and the CHANGELOG say it never does. 13 such entries were there on 2026-09-24.
-  Evidence: eleventh drain review, 2026-09-24: a probe GET with `?reviewq=1` showed up in `docker logs caddy` with both fields.
-  Touches: the edge Caddyfile in Contabo-VPS-Ops, `deploy/vps/Caddyfile`, `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: both default loggers delete `remote_addr` and cut the query from a top-level `uri`, the deploy check fails on a filter without either, and a probe request's entry on the edge shows neither.
-  Complexity: S
-
 - [ ] P1: Make the edge's Docker log rotate, and check each container's own log settings
   Why: Docker copies daemon.json's log defaults into a container only when it's created, and the edge was created before they were set, so `docker inspect caddy` shows json-file with no options and its log never rotates. The deploy's check merges today's daemon.json and passes, so `/privacy/`'s "Docker keeps only the latest 30 MB of each server's log" is false for the edge. The check also reads sizes in binary units and rejects `10mb`, where Docker uses decimal units and accepts it.
   Evidence: eleventh drain review, 2026-09-24; moby `daemon/create.go` and `daemon/container/container.go`; `verifyServerLogRetention` in `scripts/deploy-vps.mjs`.
