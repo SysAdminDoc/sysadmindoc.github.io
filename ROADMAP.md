@@ -22,13 +22,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: only a file writer to a real file is exempt, every other logger is held to the filter whatever it includes, include and exclude follow Caddy's loggerAllowed, and each case has a test.
   Complexity: S
 
-- [ ] P2: Read built HTML with a spec-compliant parser in the CSS output audit
-  Why: The hand-written scanner in 33101492 lost cases the old reader caught (`<!-->`, `<!--->` and `--!>` comments, `<svg><style / >`, an SVG `<style>` inside an SVG `<script>`, CDATA opening a comment in SVG) and misses more: an end tag with a quoted `>`, an inline `<script>` that injects a `<style>` (every page has two or three), `<link rel=stylesheet href="data:...">`, `@import"data:..."` and `@import/**/url(...)`, a quoted data URI holding `)`, a `%FF` byte in one, `\6b` before CRLF, an internal DTD entity in an SVG file, a JS escape such as `\x28` in a script.
-  Evidence: fifteenth drain review, 2026-09-24, checked against headless Chromium 153; `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs:62`.
-  Touches: `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs`, `package.json` (parse5), the selftest and tests.
-  Acceptance: styles, style attributes, stylesheet links and inline scripts are read from a parse5 tree; the CSS-level cases are handled or refused; each listed case fails the audit.
-  Complexity: M
-
 - [ ] P2: Keep PLAYWRIGHT_BASE_URL out of every deploy step, in any case
   Why: `playwrightEnv` drops only the exact key, and Windows environment names are case-insensitive, so `Playwright_Base_Url` still reaches the child. `deploy:preflight` also runs `a11y:audit:browser` straight through Playwright, which honours the variable and skips the preview checks. A direct Playwright run outside the gate lock during `deploy:vps`'s build-to-tar window, or a hard-killed setup before `SKIP_BUILD=1`, can leave a `__preview-check-*` token in what ships.
   Evidence: fifteenth drain review, 2026-09-24; `scripts/visual-gate.mjs:112`, `playwright.audits.config.mjs:5`, `tests/playwright/preview-server.mjs:51`.

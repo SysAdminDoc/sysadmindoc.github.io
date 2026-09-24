@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import { Features } from 'lightningcss';
-import { cssOutputProblems, embeddedCss } from '../scripts/lib/css-output-check.mjs';
+import { cssOutputProblems, embeddedCss, scriptCarriesLightDark, svgUnreadable } from '../scripts/lib/css-output-check.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE, minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -121,13 +121,39 @@ test('the output check also reads escapes, entities, odd closing tags, data: imp
   assert.ok(lightDark(`@import "data:text/css;base64,${Buffer.from('.a{color:light-dark(#000,#fff)}').toString('base64')}";`), 'a base64 data: import');
   assert.ok(!lightDark('.a{content:"light-darkish"}'), 'no false alarm');
 
-  const found = (markup, options) => embeddedCss(markup, options).map(({ css }) => css);
+  // Styles only: embeddedCss also hands back inline scripts now.
+  const found = (markup) => embeddedCss(markup).filter((piece) => !piece.script).map(({ css }) => css);
   assert.deepEqual(found('<style>a{}</style x><style>b{}</style/>'), ['a{}', 'b{}'], 'closing tags with more before the >');
   assert.deepEqual(found('<p title="a>b" style="c:d">'), ['c:d'], 'a > inside an earlier quoted value');
   assert.deepEqual(found('<p style="color:light&#x2d;dark(red,blue)">'), ['color:light-dark(red,blue)'], 'an entity in an attribute');
   assert.deepEqual(found('<style>a{b:&#45;}</style><svg><style>c{d:light&#45;dark(red,blue)}</style></svg>'), ['a{b:&#45;}', 'c{d:light-dark(red,blue)}'], 'decoded in SVG only');
-  assert.deepEqual(found('<style><![CDATA[e{f:g}]]></style>', { svg: true }), ['e{f:g}'], 'CDATA in an SVG file');
+  // The parser knows SVG from the markup itself, so no option says so any more.
+  assert.deepEqual(found('<svg><style><![CDATA[e{f:g}]]></style></svg>'), ['e{f:g}'], 'CDATA in SVG');
   assert.deepEqual(found('<script>const s = "<style>x{}</style>";</script><style/>h{}</style>'), ['h{}'], 'a script is opaque, and HTML ignores /');
+});
+
+// The fifteenth drain review: Chromium applies each of these, and the
+// hand-written scanner missed them. The reader is parse5 now.
+test('the output check reads what a browser reads, comments, SVG, links and scripts included', () => {
+  const lightDark = (css) => /light-dark/.test(cssOutputProblems(css).problems.join('\n'));
+  const styles = (markup) => embeddedCss(markup).filter((piece) => !piece.script).map(({ css }) => css);
+  assert.deepEqual(styles('<!--><style>a{}</style><!---><style>b{}</style><!-- x --!><style>c{}</style>'), ['a{}', 'b{}', 'c{}'], 'comments end where a browser ends them');
+  assert.deepEqual(styles('<svg><style / >d{}</style></svg>'), ['d{}'], '"/ >" is no self-closing tag');
+  assert.deepEqual(styles('<svg><script><style>e{}</style></script></svg>'), ['e{}'], 'an SVG script holds elements');
+  assert.deepEqual(styles('<svg><![CDATA[<!--]]><style>f{}</style></svg>'), ['f{}'], 'CDATA hides no comment opener');
+  assert.deepEqual(styles('<b></b x=">"><p style="g:h">'), ['g:h'], 'an end tag with a quoted >');
+
+  const pieces = embeddedCss('<link rel="stylesheet" href="data:text/css,.i%7Bcolor:light-dark(red,blue)%7D"><script>x.innerHTML="<style>.j{color:light\\x2ddark(red,blue)}</style>"</script>');
+  assert.ok(lightDark(pieces.find((piece) => piece.label.startsWith('data: stylesheet link')).css), 'a data: stylesheet link');
+  assert.ok(scriptCarriesLightDark(pieces.find((piece) => piece.script).css), 'an inline script, through its \\x2d');
+
+  assert.ok(lightDark('@import"data:text/css,.k%7Bcolor:light-dark%28red,blue%29%7D";'), '@import with no space');
+  assert.ok(lightDark('@import/**/url(data:text/css,.l%7Bcolor:light-dark%28red,blue%29%7D);'), '@import with a comment');
+  assert.ok(lightDark('@import url("data:text/css,a)b{color:light-dark%28red,blue%29}");'), 'a quoted data URI holding )');
+  assert.ok(lightDark('@import "data:text/css,%FF.m{color:light-dark%28red,blue%29}";'), 'a byte that is not UTF-8');
+  assert.ok(lightDark('.n{color:light-dar\\6b\r\n(red,blue)}'), 'a hex escape before CRLF');
+  assert.match(svgUnreadable('<!DOCTYPE svg [<!ENTITY ld "light-dark">]><svg><style>.o{color:&ld;(red,blue)}</style></svg>') ?? '', /its own entities/);
+  assert.equal(svgUnreadable('<svg><style>.p{}</style></svg>'), null);
 });
 
 test('build:ci runs the output check on its own build, and the self-test proves it can fail', async () => {

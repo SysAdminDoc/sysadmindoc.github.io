@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { cssOutputProblems, embeddedCss } from './lib/css-output-check.mjs';
+import { cssOutputProblems, embeddedCss, scriptCarriesLightDark, svgUnreadable } from './lib/css-output-check.mjs';
 
 const root = process.cwd();
 const distArg = process.argv.indexOf('--dist');
@@ -47,20 +47,25 @@ const relative = (file) => path.relative(dist, file).replaceAll('\\', '/');
 for (const file of builtFiles(dist, '.css').sort()) {
   check(relative(file), fs.readFileSync(file, 'utf8'));
 }
-// The <style> blocks and style attributes of every page and SVG. The critical
-// CSS each page inlines goes through the same minifier, and a page or an image
-// can carry CSS of its own. They're read the way a browser reads them: a
-// <STYLE> block, one closed with </style > or </style x>, a style attribute
-// after a value holding >, and character references where the parser decodes
-// them (twelfth and thirteenth drain reviews).
+// The <style> blocks, style attributes, data: stylesheet links and inline
+// scripts of every page and SVG, read from the tree parse5 builds, which
+// tokenizes as a browser does. The critical CSS each page inlines goes
+// through the same minifier, and a page or an image can carry CSS of its own
+// (twelfth, thirteenth and fifteenth drain reviews).
 for (const file of [...builtFiles(dist, '.html'), ...builtFiles(dist, '.svg')].sort()) {
-  const svg = file.endsWith('.svg');
-  for (const { label, css } of embeddedCss(fs.readFileSync(file, 'utf8'), { svg })) check(`${relative(file)} ${label}`, css);
+  const text = fs.readFileSync(file, 'utf8');
+  const unreadable = file.endsWith('.svg') ? svgUnreadable(text) : null;
+  if (unreadable) problems.push(`${relative(file)}: ${unreadable}`);
+  for (const piece of embeddedCss(text)) {
+    if (!piece.script) check(`${relative(file)} ${piece.label}`, piece.css);
+    else if (scriptCarriesLightDark(piece.css)) problems.push(`${relative(file)} ${piece.label}: a script carries a light-dark() it could put on the page`);
+  }
 }
 // CSS a script puts on the page never passes through the minifier, so a
-// light-dark() written in one would reach browsers as is.
+// light-dark() written in one, however its string escapes spell it, would
+// reach browsers as is.
 for (const file of builtFiles(dist, '.js').sort()) {
-  if (/\blight-dark\(/i.test(fs.readFileSync(file, 'utf8'))) problems.push(`${relative(file)}: a script carries a light-dark() it could put on the page`);
+  if (scriptCarriesLightDark(fs.readFileSync(file, 'utf8'))) problems.push(`${relative(file)}: a script carries a light-dark() it could put on the page`);
 }
 if (prefixed === 0) problems.push('no built rule carries a prefixed backdrop blur, so this check saw nothing to check');
 

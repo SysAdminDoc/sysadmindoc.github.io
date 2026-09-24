@@ -4,36 +4,54 @@
 // animation shorthand, which Chromium rejects (see scripts/lib/minify-css.mjs).
 // CSS names are case-insensitive, and so is every match here: a file copied as
 // is, like the offline page's, can spell them any way (twelfth drain review).
+import { parse } from 'parse5';
 
 /**
  * CSS text with its escapes resolved the way the tokenizer resolves them
  * (`\6b ` or `\k` is k), so `light-dar\6b(` reads as light-dark( (thirteenth
- * drain review). An escaped newline is dropped, as in a string.
+ * drain review). CSS preprocessing turns CRLF, CR and form feed into one
+ * newline first, so a hex escape before CRLF eats both (fifteenth). An escaped
+ * newline is dropped, as in a string.
  * @param {string} css
  */
 export function unescapeCss(css) {
-  return String(css).replace(/\\(?:([0-9a-fA-F]{1,6})[ \t\n\r\f]?|(\n)|([^\n]))/g, (_, hex, newline, char) => {
-    if (newline) return '';
-    if (char) return char;
-    const code = Number.parseInt(hex, 16);
-    return code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff) ? String.fromCharCode(0xfffd) : String.fromCodePoint(code);
-  });
+  return String(css)
+    .replace(/\r\n?|\f/g, '\n')
+    .replace(/\\(?:([0-9a-fA-F]{1,6})[ \t\n]?|(\n)|([^\n]))/g, (_, hex, newline, char) => {
+      if (newline) return '';
+      if (char) return char;
+      const code = Number.parseInt(hex, 16);
+      return code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff) ? String.fromCharCode(0xfffd) : String.fromCodePoint(code);
+    });
 }
 
-/** The stylesheets `@import`ed as data: URIs, decoded. */
+/** A data: URI's body, decoded; bytes that aren't valid UTF-8 percent-escapes come through one by one. */
+export function decodeDataUri(uri) {
+  const comma = uri.indexOf(',');
+  if (comma < 0 || !/^data:/i.test(uri)) return null;
+  const meta = uri.slice(5, comma);
+  const body = uri.slice(comma + 1);
+  let text;
+  try {
+    text = decodeURIComponent(body);
+  } catch {
+    text = body.replace(/%([0-9a-fA-F]{2})/g, (_, hex) => String.fromCharCode(Number.parseInt(hex, 16)));
+  }
+  return /;base64$/i.test(meta) ? Buffer.from(text, 'base64').toString('utf8') : text;
+}
+
+/**
+ * The stylesheets imported as data: URIs, decoded: with or without space or
+ * a comment after the at-rule's name, as url() or a string, a quoted one
+ * allowed to hold `)` (fifteenth drain review).
+ */
 function dataImports(css) {
   const found = [];
-  for (const match of css.matchAll(/@import\s+(?:url\(\s*)?(["']?)(data:[^"')\s]*)\1/gi)) {
-    const uri = match[2];
-    const comma = uri.indexOf(',');
-    if (comma < 0) continue;
-    const meta = uri.slice(5, comma);
-    const body = uri.slice(comma + 1);
-    try {
-      found.push(/;base64$/i.test(meta) ? Buffer.from(decodeURIComponent(body), 'base64').toString('utf8') : decodeURIComponent(body));
-    } catch {
-      found.push(body);
-    }
+  const text = css.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  const importRule = /@import\s*(?:url\(\s*(?:"(data:[^"]*)"|'(data:[^']*)'|(data:[^)\s]*))\s*\)|"(data:[^"]*)"|'(data:[^']*)')/gi;
+  for (const match of text.matchAll(importRule)) {
+    const decoded = decodeDataUri(match.slice(1).find((value) => value !== undefined) ?? '');
+    if (decoded !== null) found.push(decoded);
   }
   return found;
 }
@@ -70,100 +88,73 @@ export function cssOutputProblems(css) {
   return { problems, prefixed };
 }
 
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", lpar: '(', rpar: ')', hyphen: '-', dash: '-', colon: ':', semi: ';', lbrace: '{', rbrace: '}', num: '#' };
-
-/** HTML character references resolved: numeric ones, and the named ones CSS syntax could hide behind. */
-export function decodeEntities(text) {
-  return String(text).replace(/&(?:#[xX]([0-9a-fA-F]+)|#(\d+)|([A-Za-z]+));?/g, (whole, hex, decimal, name) => {
-    if (hex || decimal) {
-      const code = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
-      return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : whole;
-    }
-    return NAMED_ENTITIES[name.toLowerCase()] ?? whole;
+/**
+ * JavaScript text with its string escapes resolved (\x28, (, \u{28}),
+ * so a script can't spell light-dark past the check.
+ * @param {string} js
+ */
+export function unescapeJs(js) {
+  return String(js).replace(/\\(?:x([0-9a-fA-F]{2})|u\{([0-9a-fA-F]{1,6})\}|u([0-9a-fA-F]{4}))/g, (whole, hex2, hexBraced, hex4) => {
+    const code = Number.parseInt(hex2 ?? hexBraced ?? hex4, 16);
+    return code <= 0x10ffff ? String.fromCodePoint(code) : whole;
   });
 }
 
+/** Whether a script's text could put a light-dark() on the page. */
+export function scriptCarriesLightDark(js) {
+  return /light-dark/i.test(unescapeJs(js));
+}
+
+/** Every element in a parse5 tree, a template's contents included, since a script can clone them. */
+function* elements(node) {
+  for (const child of [...(node.childNodes ?? []), ...(node.content?.childNodes ?? [])]) {
+    if (!child.tagName) continue;
+    yield child;
+    yield* elements(child);
+  }
+}
+
+const textOf = (node) => (node.childNodes ?? []).map((child) => (child.nodeName === '#text' ? child.value : '')).join('');
+
 /**
- * The CSS a built HTML or SVG file carries, found the way a browser's parser
- * finds it: each `<style>` element's text, closed by `</style` and anything up
- * to `>` in any case, and each `style` attribute, read with quoted values that
- * may hold a `>`. Character references are resolved in attributes, and in a
- * `<style>` inside SVG, which is foreign content and decodes them; an HTML
- * `<style>` is raw text and doesn't. A `<script>`'s text is skipped whole.
+ * The CSS a built HTML or SVG file carries, read from the tree parse5 builds,
+ * which tokenizes as the HTML standard does: each `<style>` element's text
+ * (in SVG with character references and CDATA resolved), each `style`
+ * attribute, and each stylesheet `<link>` whose href is a data: URI. Inline
+ * scripts come back as `script` pieces, checked for light-dark() apart from
+ * CSS. A hand-written scanner here missed cases a browser reads (fifteenth
+ * drain review). It parses with scripting off, so <noscript> styles count.
  * @param {string} markup
- * @param {{ svg?: boolean }} [options] svg: the file is an SVG document, where every <style> decodes
- * @returns {{ label: string, css: string }[]}
+ * @returns {{ label: string, css: string, script?: boolean }[]}
  */
-export function embeddedCss(markup, { svg = false } = {}) {
-  const text = String(markup);
+export function embeddedCss(markup) {
   const styles = [];
   const attributes = [];
-  let svgDepth = svg ? 1 : 0;
-  let index = 0;
-  while (index < text.length) {
-    const open = text.indexOf('<', index);
-    if (open < 0) break;
-    if (text.startsWith('<!--', open)) {
-      const end = text.indexOf('-->', open + 4);
-      index = end < 0 ? text.length : end + 3;
-      continue;
+  const links = [];
+  const scripts = [];
+  for (const element of elements(parse(String(markup), { scriptingEnabled: false }))) {
+    const tag = element.tagName.toLowerCase();
+    /** @type {Record<string, string>} */
+    const attrs = {};
+    for (const attr of element.attrs ?? []) attrs[attr.name.toLowerCase()] ??= attr.value;
+    if (tag === 'style') styles.push(textOf(element));
+    if (attrs.style !== undefined) attributes.push(attrs.style);
+    if (tag === 'link' && /(?:^|\s)stylesheet(?:\s|$)/i.test(attrs.rel ?? '') && /^\s*data:/i.test(attrs.href ?? '')) {
+      const decoded = decodeDataUri(String(attrs.href).trim());
+      if (decoded !== null) links.push(decoded);
     }
-    const endTag = /^<\/([A-Za-z][^\s/>]*)[^>]*>/.exec(text.slice(open));
-    if (endTag) {
-      if (endTag[1].toLowerCase() === 'svg' && svgDepth > 0) svgDepth -= 1;
-      index = open + endTag[0].length;
-      continue;
-    }
-    const name = /^<([A-Za-z][^\s/>]*)/.exec(text.slice(open))?.[1];
-    if (!name) {
-      index = open + 1;
-      continue;
-    }
-    // Attributes, with quoted values that may hold `>`.
-    let at = open + 1 + name.length;
-    let selfClosing = false;
-    for (;;) {
-      while (at < text.length && /[\s/]/.test(text[at])) {
-        if (text[at] === '/') selfClosing = true;
-        at += 1;
-      }
-      if (at >= text.length || text[at] === '>') break;
-      selfClosing = false;
-      const attribute = /^[^\s/>=]+/.exec(text.slice(at))?.[0] ?? text[at];
-      at += attribute.length;
-      while (at < text.length && /\s/.test(text[at])) at += 1;
-      let value = null;
-      if (text[at] === '=') {
-        at += 1;
-        while (at < text.length && /\s/.test(text[at])) at += 1;
-        const quote = text[at];
-        if (quote === '"' || quote === "'") {
-          const close = text.indexOf(quote, at + 1);
-          value = text.slice(at + 1, close < 0 ? text.length : close);
-          at = close < 0 ? text.length : close + 1;
-        } else {
-          value = /^[^\s>]*/.exec(text.slice(at))?.[0] ?? '';
-          at += value.length;
-        }
-      }
-      if (attribute.toLowerCase() === 'style' && value !== null) attributes.push(decodeEntities(value));
-    }
-    index = at + 1;
-    const lower = name.toLowerCase();
-    if (lower === 'svg' && !selfClosing) svgDepth += 1;
-    // HTML ignores a / on <style/> and <script/>; only SVG (XML) closes them.
-    if ((lower === 'style' || lower === 'script') && !(selfClosing && svgDepth > 0)) {
-      const close = new RegExp(`</${lower}(?=[\\s/>])[^>]*>`, 'i').exec(text.slice(index));
-      const body = close ? text.slice(index, index + close.index) : text.slice(index);
-      if (lower === 'style') {
-        const css = body.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
-        styles.push(svgDepth > 0 ? decodeEntities(css) : css);
-      }
-      index = close ? index + close.index + close[0].length : text.length;
-    }
+    if (tag === 'script' && !/json/i.test(attrs.type ?? '')) scripts.push(textOf(element));
   }
   return [
     ...styles.map((css, position) => ({ label: `<style> ${position + 1}`, css })),
     ...attributes.map((css, position) => ({ label: `style attribute ${position + 1}`, css })),
+    ...links.map((css, position) => ({ label: `data: stylesheet link ${position + 1}`, css })),
+    ...scripts.map((css, position) => ({ label: `inline script ${position + 1}`, css, script: true })),
   ];
+}
+
+/** Why an SVG file can't be read the way a browser would read it, or null. */
+export function svgUnreadable(text) {
+  // An internal DTD can define entities that only an XML parser expands.
+  return /<!ENTITY/i.test(String(text)) ? 'it defines its own entities, which this audit can\'t expand' : null;
 }
