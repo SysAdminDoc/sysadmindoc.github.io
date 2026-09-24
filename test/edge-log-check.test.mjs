@@ -132,6 +132,13 @@ test('only a file writer the container shows to be a regular file, or a discard 
   const plain = { encoder: { format: 'json' } };
   const check = (extra, realFiles = edgeFiles) => loggingProblem(JSON.stringify({ ...edgeLogs(), extra }), { ...edgeOptions, realFiles });
   assert.equal(check({ ...plain, writer: { output: 'file', filename: '/var/log/caddy/extra.log' } }, [...edgeFiles, '/var/log/caddy/extra.log']), null);
+  // The twentieth drain review: the file still keeps whatever the level lets in.
+  const debugFile = { writer: { output: 'file', filename: '/var/log/caddy/debug.log' }, include: ['http.handlers.reverse_proxy'] };
+  const withDebugFile = [...edgeFiles, '/var/log/caddy/debug.log'];
+  assert.match(check({ ...plain, ...debugFile, level: 'DEBUG' }, withDebugFile) ?? '', /the extra logger, which writes to \/var\/log\/caddy\/debug\.log, runs at DEBUG/);
+  assert.match(check({ ...plain, ...debugFile, level: '{env.LVL}' }, withDebugFile) ?? '', /the extra logger, which writes to \/var\/log\/caddy\/debug\.log, takes its level from a placeholder/);
+  assert.equal(check({ ...plain, ...debugFile, level: 'INFO' }, withDebugFile), null);
+  assert.equal(check({ ...plain, level: 'debug', writer: { output: 'discard' } }), null, 'a discard logger is gone whatever its level');
   assert.match(loggingProblem(JSON.stringify(edgeLogs()), edgeOptions) ?? '', /the log0 logger's format is json, .*, and it writes to \/var\/log\/caddy\/log0\.log, which isn't shown to be a regular file/, 'no proof, no exemption');
   for (const filename of ['/dev/stderr', '/proc/self/fd/1', '/var/log/caddy/linked-to-stdout.log']) {
     assert.match(check({ ...plain, writer: { output: 'file', filename } }) ?? '', new RegExp(`writes to ${filename.replace(/[./]/g, '\\$&')}, which isn't shown`), filename);

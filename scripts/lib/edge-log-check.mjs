@@ -82,12 +82,12 @@ export function defaultLogProblem(text, { mustExclude = [] } = {}) {
 }
 
 /**
- * What a logger's filter lets through, worded for `subject`, or null.
+ * Why a logger's level would log whole requests, worded for `subject`, or null.
  * @param {any} logger
- * @param {{ mustExclude?: readonly string[], subject: string, possessive: string }} options
+ * @param {string} subject
  * @returns {string | null}
  */
-function filterProblem(logger, { mustExclude = [], subject, possessive }) {
+function levelProblem(logger, subject) {
   const level = String(logger.level ?? '');
   if (level.toLowerCase() === 'debug') {
     return `${subject} runs at DEBUG, which logs every proxied request in full`;
@@ -97,6 +97,18 @@ function filterProblem(logger, { mustExclude = [], subject, possessive }) {
   if (level.includes('{')) {
     return `${subject} takes its level from a placeholder (${level}), which could come out as DEBUG`;
   }
+  return null;
+}
+
+/**
+ * What a logger's filter lets through, worded for `subject`, or null.
+ * @param {any} logger
+ * @param {{ mustExclude?: readonly string[], subject: string, possessive: string }} options
+ * @returns {string | null}
+ */
+function filterProblem(logger, { mustExclude = [], subject, possessive }) {
+  const level = levelProblem(logger, subject);
+  if (level) return level;
   const encoder = logger.encoder ?? {};
   if (encoder.format !== 'filter') {
     return `${possessive} format is ${encoder.format ?? 'the plain default'}, not a filter that drops the request details`;
@@ -186,12 +198,10 @@ export function fileWriterPaths(text) {
  */
 export const REAL_FILE_PROBE = 'for f; do r=$(readlink -f "$f") || continue; [ -f "$r" ] || continue; case "$r" in /proc/*|/dev/*|/sys/*) continue;; esac; printf "%s\\n" "$f"; done';
 
-/** Where a logger's entries end up, in words, or null for nowhere. */
+/** Where a logger's entries end up, in words, or null for a proven regular file. */
 function destination(logger, realFiles) {
   const writer = logger.writer ?? {};
   const output = String(writer.output ?? 'stderr');
-  // Caddy deletes a logger with the discard writer outright (logging.go).
-  if (output === 'discard') return null;
   if (output === 'file') {
     return realFiles.includes(writer.filename) ? null : `${writer.filename}, which isn't shown to be a regular file in the container`;
   }
@@ -209,7 +219,9 @@ function destination(logger, realFiles) {
  * addresses. The fifteenth: a `net` writer falls back to stderr, a file writer
  * can name `/dev/stderr`, and a logger that includes only another site's log
  * still gets portfolio requests through a catch-all site, a mixed-case Host or
- * `log_name`, so what a logger includes no longer exempts it.
+ * `log_name`, so what a logger includes no longer exempts it. The twentieth:
+ * a file logger at DEBUG keeps every proxied request's headers in that file,
+ * so the level is checked on every logger that isn't discarding.
  * @param {string} text the admin API's /config/logging/logs
  * @param {{ mustExclude?: readonly string[], realFiles?: readonly string[] }} [options]
  * @returns {string | null}
@@ -228,8 +240,14 @@ export function loggingProblem(text, { mustExclude = [], realFiles = [] } = {}) 
   if (problem) return problem;
   for (const [name, logger] of Object.entries(logs)) {
     if (name === 'default' || !logger || typeof logger !== 'object') continue;
+    // Caddy deletes a logger with the discard writer outright (logging.go).
+    if (String(logger.writer?.output ?? 'stderr') === 'discard') continue;
     const where = destination(logger, realFiles);
-    if (where === null) continue;
+    if (where === null) {
+      const level = levelProblem(logger, `the ${name} logger, which writes to ${logger.writer.filename},`);
+      if (level) return level;
+      continue;
+    }
     const found = filterProblem(logger, { mustExclude, subject: `the ${name} logger, which writes to ${where},`, possessive: `the ${name} logger's` });
     if (found) return found.startsWith(`the ${name} logger's`) ? `${found}, and it writes to ${where}` : found;
   }

@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Check the level of every Caddy logger, file writers included
-  Why: `loggingProblem` skips a logger whose writer is a proven regular file before `filterProblem` runs, so a `DEBUG` or `{env.X}` level on a file logger passes. A debug file log keeps headers and addresses, which `/privacy/` says aren't kept.
-  Evidence: twentieth review. `loggingProblem(JSON.stringify({default: filtered, dbg:{level:'{env.LVL}', writer:{output:'file', filename:'/var/log/caddy/debug.log'}}}), {realFiles:['/var/log/caddy/debug.log']})` returns null. The same happens with a literal `DEBUG` level.
-  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: a debug level, or one containing `{`, is refused on every logger whatever its writer, with a test for the file-writer case.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Put `staleAfter` at the build time when a catalog verdict has no readable time
