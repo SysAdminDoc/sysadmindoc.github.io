@@ -8,7 +8,35 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Check the level of every Caddy logger, file writers included
+  Why: `loggingProblem` skips a logger whose writer is a proven regular file before `filterProblem` runs, so a `DEBUG` or `{env.X}` level on a file logger passes. A debug file log keeps headers and addresses, which `/privacy/` says aren't kept.
+  Evidence: twentieth review. `loggingProblem(JSON.stringify({default: filtered, dbg:{level:'{env.LVL}', writer:{output:'file', filename:'/var/log/caddy/debug.log'}}}), {realFiles:['/var/log/caddy/debug.log']})` returns null. The same happens with a literal `DEBUG` level.
+  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: a debug level, or one containing `{`, is refused on every logger whatever its writer, with a test for the file-writer case.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Put `staleAfter` at the build time when a catalog verdict has no readable time
+  Why: a catalog record with a verdict but no parseable `generatedAt` is warned stale, yet `staleAfterIso(null)` drops out of the deadline list and the page keeps the fetch deadline.
+  Evidence: twentieth review. fetchedAt `2026-09-21T10:00Z`, profile `10:30Z`, `catalogDrift: {complete: true}`, now `11:00Z` gives `staleAfter` `2026-09-22T22:00:00.000Z`. `{complete: false, generatedAt: 'garbage'}` gives the same.
+  Touches: `src/data/generated-trust.ts`, `test/generated-trust.test.mjs`.
+  Acceptance: a catalog record with a verdict and no parseable `generatedAt` puts `staleAfter` at `evaluatedAt`, with a test for the missing and the garbage time.
+  Complexity: S
+
+- [ ] P3: Keep the CSP sink starting whatever its store holds, in bounded memory
+  Why: the start-up restore reads both store files whole and throws on odd entries. A directory at `reports.ndjson.1` or `sample.key` makes `startServer` reject, so the container restart-loops where it used to serve. Two full 5 MB files with two-byte text reached the 64 MiB compose cap in a WSL run. A row cut mid-append after its sample keeps the old text, because unparseable lines are copied through.
+  Evidence: twentieth review (EISDIR from `readFile`, ERR_FS_EISDIR from `rm`, 61.9 MB peak on Latin-1 text, the cap reached with one non-Latin-1 character per sample).
+  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`, `scripts/lib/csp-own-samples.mjs` (stale "keyed marker" comment).
+  Acceptance: an unreadable store entry is logged and skipped and the sink still listens. The restore streams line by line. A line that doesn't parse loses any `"sample"` text it holds.
+  Complexity: M
+
+- [ ] P3: Check the retention the contact handler uses, not the variable it was given
+  Why: the deploy reads `CONTACT_RETENTION_DAYS` from the container's configured env. Another variable such as `NODE_OPTIONS` can set a different value inside the process, and a multi-line value can print a fake `CONTACT_RETENTION_DAYS=` line ahead of the real one.
+  Evidence: twentieth review. `NODE_OPTIONS=--import=data:text/javascript,process.env.CONTACT_RETENTION_DAYS="730"` makes Node see 730 while the check passes on "unset".
+  Touches: `deploy/vps/contact-handler.mjs`, `scripts/lib/lead-retention-check.mjs`, `scripts/deploy-vps.mjs`, their tests.
+  Acceptance: the handler reports the retention it enforces on `/healthz`, and the deploy fails unless that matches the expected days.
+  Complexity: S
 
 - [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit
   Why: parse5 names `xlink:href` and `href` both `href`, and the first kept wins, so `<image xlink:href="A" href="B">` counts A while browsers load B (`feImage` too). `http:noslash.example/a.png` and `http:/oneslash...` load in Chromium but the `//` check misses them. `<svg><script href>` loads in both engines and is missed. Comments are stripped before CSS escapes are read, so `\/*` hides a real url(). Older misses: `<table background>` and a static `import` in a module script.
