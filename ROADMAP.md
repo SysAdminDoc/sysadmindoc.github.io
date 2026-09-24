@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Make the visual gate see a hidden nav or recoloured accents
-  Why: With the nav hidden, or every accent token turned magenta, 0 of 20 comparisons failed. The shots cover only the viewport, and `maxDiffPixelRatio: 0.015` with the default per-pixel threshold of 0.2 lets 9.7% of the pixels change as long as only 1.5% change strongly.
-  Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:503-507`.
-  Touches: `tests/playwright/portfolio-audits.spec.mjs`, the win32 baselines.
-  Acceptance: both mutations fail the gate, and three unchanged runs in a row still pass.
-  Complexity: M
-
 ### P3
 
 - [ ] P3: Time the holder test from the next step's start

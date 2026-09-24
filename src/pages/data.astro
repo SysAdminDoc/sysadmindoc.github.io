@@ -145,7 +145,7 @@ const headline = [
           Every number below is computed at build time from the same caches that produce
           <a href="/status.json">/status.json</a> and <a href="/catalog/">the catalog</a>. Nothing is
           hand-entered, so the page is only ever as current as the data behind it, which was
-          refreshed {generatedData.ageHours == null ? 'at an unknown time' : `${generatedData.ageHours.toFixed(1)} hours ago`}.
+          refreshed <span data-build-age>{generatedData.ageHours == null ? 'at an unknown time' : `${generatedData.ageHours.toFixed(1)} hours ago`}</span>.
         </p>
       </div>
 

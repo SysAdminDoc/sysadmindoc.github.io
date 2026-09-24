@@ -14,10 +14,17 @@ export default defineConfig({
   timeout: 90_000,
   expect: {
     timeout: 10_000,
+    // The fixture build renders the same pixels every time on this machine: on
+    // 2026-09-23 all 20 gate shots matched their baselines with no tolerance at
+    // all. The old limits (a 1.5% share of pixels, each allowed a 0.2 colour
+    // distance) passed a hidden nav, which moved 9-11% of pixels a little, and
+    // every accent turned magenta, which moved about 1% a lot. Those now differ
+    // by 1,294 pixels or more; 20 leaves room for a stray one and no more.
     toHaveScreenshot: {
       animations: 'disabled',
       caret: 'hide',
-      maxDiffPixelRatio: 0.015,
+      threshold: 0,
+      maxDiffPixels: 20,
     },
   },
   fullyParallel: false,

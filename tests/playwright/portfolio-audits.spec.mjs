@@ -131,6 +131,15 @@ function dynamicMasks(page) {
   ];
 }
 
+// /data/ gives the data's age in hours as of the build, which moves every hour
+// against the fixtures' fixed fetch time. A mask can't hold it still (its box
+// follows the text's width), so the text itself is pinned before comparing.
+async function pinBuildAge(page) {
+  await page.locator('[data-build-age]').evaluateAll((elements) => {
+    for (const element of elements) element.textContent = '0.0 hours ago';
+  });
+}
+
 function summarizeViolations(violations) {
   return violations.map((violation) => ({
     id: violation.id,
@@ -389,6 +398,7 @@ test.describe('Mid-wide desktop layout regression audit', () => {
         await expectNoHorizontalOverflow(page);
         expect(await collectTargetSizeViolations(page, desktopTargetSizeMinimum)).toEqual([]);
         expect(runtimeErrors).toEqual([]);
+        await pinBuildAge(page);
         await expect(page).toHaveScreenshot(`${route.name}-${viewport.name}.png`, {
           fullPage: false,
           mask: dynamicMasks(page),
@@ -500,6 +510,7 @@ test.describe('Playwright visual baselines', () => {
           await page.waitForTimeout(200);
         }
 
+        await pinBuildAge(page);
         await expect(page).toHaveScreenshot(`${route.name}-${viewport.name}.png`, {
           fullPage: false,
           mask: dynamicMasks(page),
