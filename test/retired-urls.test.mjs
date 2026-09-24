@@ -42,8 +42,11 @@ test('Caddy sends known repos to GitHub and any other safe name to a catalog sea
   assert.equal(`^[${matcher[1]}]+$`, SAFE_REPO_NAME.source);
   assert.match(caddyfile, /handle @retired_project \{\s*import project-redirects\.caddy\s*redir \* \/catalog\/\?q=\{re\.retired_project\.1\} 302\s*\}/);
   // The bare /projects/ path, which the per-repo matcher can't reach: it
-  // needs a name after the slash.
-  assert.match(caddyfile, /@projects_index path \/projects \/projects\/\s*\n\s*redir @projects_index \/catalog\/ 301/);
+  // needs a name after the slash. And /projects/index.html, which it would
+  // take for a repo called index.html (ninth drain review); redir runs before
+  // handle, so the index matcher gets it first.
+  assert.match(caddyfile, /@projects_index path \/projects \/projects\/ \/projects\/index\.html\s*\n\s*redir @projects_index \/catalog\/ 301/);
+  assert.ok(caddyfile.indexOf('redir @projects_index') < caddyfile.indexOf('handle @retired_project'));
   assert.match(compose, /- \.\/project-redirects\.caddy:\/etc\/caddy\/project-redirects\.caddy:ro/);
   assert.match(deploy, /const projectRedirectsFile = writeProjectRedirects\(distDir\);/);
   assert.match(deploy, /cspEnvFile,\s*projectRedirectsFile,\s*`\$\{ssh\}:\$\{remoteDir\}\/`/);
@@ -75,6 +78,6 @@ test('the live smoke checks the retired URLs on every deploy', async () => {
   assert.match(smoke, /await checkNotFoundStatus\(baseUrl, summary\);\n\s+await checkRetiredUrls\(baseUrl, summary\);/);
   assert.match(smoke, /expected 301 to \$\{repository\}/);
   assert.match(smoke, /expected 302 to \/catalog\/\?q=\$\{unknownName\}/);
-  assert.match(smoke, /for \(const index of \['\/projects\/', '\/projects'\]\)/);
+  assert.match(smoke, /for \(const index of \['\/projects\/', '\/projects', '\/projects\/index\.html'\]\)/);
   assert.match(smoke, /expected 301 to \/catalog\/\./);
 });

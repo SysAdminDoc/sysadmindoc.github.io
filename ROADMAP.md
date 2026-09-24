@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each case has a test and reads the way the HTML standard's tokenizer reads it.
   Complexity: S
 
-- [ ] P3: Send `/projects/index.html` to the catalog
-  Why: The per-repo matcher takes `index.html` for a repo name, so `/projects/index.html` answers 302 to `/catalog/?q=index.html`.
-  Evidence: ninth drain review, 2026-09-23.
-  Touches: `deploy/vps/Caddyfile`, `test/retired-urls.test.mjs`, `scripts/smoke-live-site.mjs`.
-  Acceptance: `/projects/index.html` answers 301 to `/catalog/`.
-  Complexity: S
-
 - [ ] P3: Check the preflight's browser audit on a busy PC
   Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
   Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.

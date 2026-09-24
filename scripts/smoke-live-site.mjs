@@ -396,7 +396,7 @@ async function checkRetiredUrls(baseUrl, summary) {
       `/projects/${unknownName}/ answered HTTP ${unknown.status} to "${unknown.location ?? '(none)'}"; expected 302 to /catalog/?q=${unknownName}.`,
     );
   }
-  for (const index of ['/projects/', '/projects']) {
+  for (const index of ['/projects/', '/projects', '/projects/index.html']) {
     const moved = await request(index);
     if (moved.status !== 301 || moved.location !== '/catalog/') {
       throw new Error(`${index} answered HTTP ${moved.status} to "${moved.location ?? '(none)'}"; expected 301 to /catalog/.`);
@@ -406,7 +406,7 @@ async function checkRetiredUrls(baseUrl, summary) {
   if (!icon.buffer.subarray(0, 4).equals(Buffer.from([0, 0, 1, 0]))) {
     throw new Error('/favicon.ico answered 200 but is not an ICO file.');
   }
-  summary.push('retired URLs: /projects/ 301 to the catalog, /projects/<repo>/ 301 to GitHub, other names 302 to the catalog, /favicon.ico is an ICO');
+  summary.push('retired URLs: /projects/ and /projects/index.html 301 to the catalog, /projects/<repo>/ 301 to GitHub, other names 302 to the catalog, /favicon.ico is an ICO');
 }
 
 async function checkCspReportEndpoint(baseUrl, summary) {

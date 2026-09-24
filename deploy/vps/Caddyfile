@@ -104,8 +104,10 @@ http://notify.getparkerai.com {
 	# arrive. A repo the catalog knows goes to its GitHub page for good (the
 	# redir list is generated from dist/projects.json at deploy time); any other
 	# safe name goes to a catalog search for it. The bare /projects/ path, which
-	# people trim a link back to, was never a page and goes to the catalog.
-	@projects_index path /projects /projects/
+	# people trim a link back to, was never a page and goes to the catalog, and
+	# so does /projects/index.html, which the matcher below would otherwise take
+	# for a repo named index.html (ninth drain review).
+	@projects_index path /projects /projects/ /projects/index.html
 	redir @projects_index /catalog/ 301
 
 	@retired_project path_regexp retired_project ^/projects/([A-Za-z0-9._-]+)/?$
