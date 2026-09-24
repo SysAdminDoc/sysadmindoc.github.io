@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Time the holder test from the next step's start
-  Why: The test times the runner's `OK fetch-stars` line, but a runner that logs OK on time and still waits for the pipes to close passed it in 32.8 s. The run has moved on when it logs `START profile-feed:sync`.
-  Evidence: tenth drain review, 2026-09-23.
-  Touches: `test/refresh-and-deploy.test.mjs`, `CHANGELOG.md`.
-  Acceptance: that mutation fails the test, the two before it still do, and a slowed run still passes.
-  Complexity: S
-
 - [ ] P3: Make the CSS output checks cover what they claim
   Why: css-minify's "lowers only light-dark()" test checks the rest with features every target already supports, so an exclude mask that also lowered nesting, `:dir()` and `:lang()` lists passed all five tests. `css:output:audit` reads only `_assets/*.css` and index.html, so a `light-dark()` in `dist/styles/offline.css` or Pagefind's CSS passes, though the CHANGELOG says the build fails on any. The comment in `minify-css.mjs` says all 50 uses are the accents; most are other tokens.
   Evidence: eighth drain review, 2026-09-23; `test/css-minify.test.mjs:14-24`, `scripts/audit-css-output.mjs:32-38`, `scripts/lib/minify-css.mjs:13-14`.

@@ -234,12 +234,14 @@ test('a step that leaves a process holding its output does not hold the run', { 
   const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
   assert.match(log, /WARN {2}fetch-stars: finished, but something it started still held its output after 2s/);
   assert.doesNotMatch(log, /STOP/);
-  // It also let go within the grace, give or take: counted from the step's last
-  // command rather than the run's start, so a slow machine can't stretch it.
+  // It also moved on within the grace, give or take: counted from the step's
+  // last command rather than the run's start, so a slow machine can't stretch
+  // it, and up to the next step's START rather than this one's OK, which a
+  // runner could log on time and still wait on the pipes (tenth drain review).
   const doneAt = Number(await fs.readFile(path.join(dir, '.tmp', 'step-done.txt'), 'utf8'));
-  const okAt = Date.parse(log.match(/^(\S+) OK {4}fetch-stars$/m)?.[1] ?? '');
-  assert.ok(Number.isFinite(doneAt) && Number.isFinite(okAt), 'the step and the runner both recorded their times');
-  assert.ok(okAt - doneAt < 10_000, `the run let go of the output ${((okAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s`);
+  const nextAt = Date.parse(log.match(/^(\S+) START profile-feed:sync$/m)?.[1] ?? '');
+  assert.ok(Number.isFinite(doneAt) && Number.isFinite(nextAt), 'the step and the runner both recorded their times');
+  assert.ok(nextAt - doneAt < 10_000, `the run moved on ${((nextAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s`);
 });
 
 test('an unsigned featured release still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
