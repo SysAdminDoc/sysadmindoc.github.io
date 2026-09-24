@@ -24,6 +24,7 @@ import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
+import { caddyTrustProblems, networkProblems, ntfyTrustProblems } from './lib/proxy-trust-check.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
 import { builtDataProblem } from './lib/built-data-mode.mjs';
 import { logRetentionProblem } from './lib/log-retention.mjs';
@@ -150,6 +151,41 @@ function verifyServerLogRetention() {
     if (problem) throw new Error(`deploy-vps: ${problem}.`);
   }
   console.log(`deploy-vps: Docker keeps ${SERVER_LOG_MB} MB of each Caddy server's own log, as /privacy/ says.`);
+}
+
+// Only the edge may choose the address the inner Caddy, ntfy and the contact
+// handler see for a visitor, and the report sink stays off the network they
+// share. The header-contract test reads the files before they ship; this reads
+// what the new containers run (scripts/lib/proxy-trust-check.mjs). Only ntfy's
+// proxy settings leave the server: the rest of its environment holds its
+// accounts and tokens.
+function verifyProxyTrust() {
+  const edge = `${EDGE_PROXY_ADDRESS}/32`;
+  const config = captureRemote('docker exec portfolio-app wget -qO- http://127.0.0.1:2019/config/ 2>&1 || true');
+  const args = captureRemote("docker inspect portfolio-ntfy --format '{{json .Config.Entrypoint}} {{json .Config.Cmd}}' 2>&1 || true");
+  const env = captureRemote(
+    "docker inspect portfolio-ntfy --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E '^NTFY_(BEHIND_PROXY|PROXY_[A-Z_]+|CONFIG_FILE)=' || true",
+  );
+  // ntfy reads /etc/ntfy/server.yml, or the file NTFY_CONFIG_FILE names, when
+  // it exists. Any uncommented proxy setting in it counts.
+  const configLines = captureRemote(
+    'docker exec portfolio-ntfy sh -c \'f=${NTFY_CONFIG_FILE:-/etc/ntfy/server.yml}; [ -f "$f" ] && grep -iE "behind[-_]proxy|proxy[-_]" "$f" | grep -vE "^[[:space:]]*#"; true\' 2>&1 || true',
+  );
+  const networks = captureRemote(
+    'for c in portfolio-app portfolio-ntfy portfolio-contact-handler portfolio-csp-reporter; do printf "%s " "$c"; docker inspect "$c" --format \'{{range $name, $settings := .NetworkSettings.Networks}}{{$name}} {{end}}\' 2>/dev/null; echo; done',
+  );
+  const problem = [
+    ...caddyTrustProblems(config, edge),
+    ...ntfyTrustProblems({ args, env, configLines }, edge),
+    ...networkProblems(networks, {
+      'portfolio-app': ['portfolio_portfolio-private', 'portfolio_portfolio-reports', 'web'],
+      'portfolio-ntfy': ['portfolio_portfolio-private'],
+      'portfolio-contact-handler': ['portfolio_portfolio-private'],
+      'portfolio-csp-reporter': ['portfolio_portfolio-reports'],
+    }),
+  ].join('; ');
+  if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  console.log('deploy-vps: only the edge can hand the inner Caddy and ntfy a visitor\'s address, and the report sink stays off their network.');
 }
 
 // The inner Caddy and ntfy trust only the edge's pinned address to hand on a
@@ -316,6 +352,7 @@ verifyCaddyVersion();
 verifyNtfyVersion();
 verifyInnerLogging();
 verifyServerLogRetention();
+verifyProxyTrust();
 
 // 5. Verify the deploy against the live origin unless skipped.
 //

@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Check the proxy trust settings the way Caddy and ntfy read them
-  Why: The trust test reads the Caddyfile and compose file with its own lexer. An environment default (`{$NOT_SET:X-Forwarded-For}`), a snippet argument, a `\\` before a quote, an escaped newline and a heredoc each set `X-Forwarded-For` from `X-Real-IP` after `caddy adapt` and pass it. ntfy's underscore flags (`--proxy_forwarded_header`, `--proxy_trusted_hosts`), `NTFY_CONFIG_FILE` and a compose `extends` pass too. `header { -Forwarded }`, which touches only response headers, and a quoted flag value fail it.
-  Evidence: eleventh drain review, 2026-09-24, with `caddy adapt` 2.11.4 and ntfy v2.28.0 `cmd/serve.go`; commit dc6bd64a.
-  Touches: `test/` trust tests, `scripts/deploy-vps.mjs` (read the running configs back), the ntfy compose service.
-  Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
-  Complexity: M
-
 - [ ] P2: Prove the preview answering is this run's, and keep the gate on its own build
   Why: `assertServesBuild` passed a server that returns this checkout's `dist/index.html` for `/` and other pages for every other path, and two checkouts at one commit have identical home pages, so a run that lost the port race could audit the other's server and have it stopped under it. `PLAYWRIGHT_BASE_URL`, if set in the shell, skips every check, and `visual-gate.mjs` doesn't clear it, so the deploy gate would audit whatever it names.
   Evidence: thirteenth drain review, 2026-09-24; `tests/playwright/preview-server.mjs:48`, `preview-server-control.mjs`.

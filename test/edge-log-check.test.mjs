@@ -126,7 +126,7 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
 // review turned the throw into console.warn and every test still passed.
 test('every live check in the deploy stops it on a problem, unconditionally', async () => {
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
-  for (const name of ['verifyEdgeLogging', 'verifyInnerLogging', 'verifyEdgeAddress', 'verifyAccessLogShape', 'verifyCspReportShape', 'verifyServerLogRetention']) {
+  for (const name of ['verifyEdgeLogging', 'verifyInnerLogging', 'verifyEdgeAddress', 'verifyAccessLogShape', 'verifyCspReportShape', 'verifyServerLogRetention', 'verifyProxyTrust']) {
     const body = deploy.match(new RegExp(`function ${name}\\([^)]*\\) \\{([\\s\\S]*?)\\n\\}`))?.[1] ?? '';
     assert.ok(body, `${name} exists`);
     assert.match(body, /if \(problem\) \{?\s*throw new Error\(/, `${name} throws on a problem`);

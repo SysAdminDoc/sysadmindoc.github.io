@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import { parse as parseYaml } from 'yaml';
-import { caddyfileLines, clientAddressHeaderWrites, parseCaddyfile } from '../scripts/lib/caddyfile.mjs';
+import { caddyfileLines, clientAddressHeaderWrites, expandEnvDefaults, parseCaddyfile } from '../scripts/lib/caddyfile.mjs';
 import { EDGE_PROXY_ADDRESS } from '../scripts/lib/edge-address.mjs';
 
 const root = process.cwd();
@@ -132,10 +132,55 @@ function serviceEnvironment(service) {
   return Object.fromEntries(Object.entries(environment).map(([name, value]) => [name, value === null ? null : String(value)]));
 }
 
+/**
+ * A command string split the way compose splits one (go-shellwords): on
+ * whitespace, with single quotes taken raw, and double quotes and a backslash
+ * outside single quotes escaping what follows. Splitting on whitespace alone
+ * kept the quotes in `--proxy-forwarded-header "X-Forwarded-For"` and failed a
+ * harmless setting (eleventh drain review).
+ */
+function shellSplit(command) {
+  const words = [];
+  let word = null;
+  let quote = null;
+  for (let index = 0; index < command.length; index += 1) {
+    const char = command[index];
+    if (quote === "'") {
+      if (char === "'") quote = null;
+      else word += char;
+      continue;
+    }
+    if (char === '\\' && index + 1 < command.length) {
+      word = (word ?? '') + command[index + 1];
+      index += 1;
+      continue;
+    }
+    if (quote === '"') {
+      if (char === '"') quote = null;
+      else word += char;
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      word = word ?? '';
+      continue;
+    }
+    if (/\s/.test(char)) {
+      if (word !== null) words.push(word);
+      word = null;
+      continue;
+    }
+    word = (word ?? '') + char;
+  }
+  if (quote) throw new Error(`an unclosed ${quote} in ${command}`);
+  if (word !== null) words.push(word);
+  return words;
+}
+
 /** A service's entrypoint and command as separate arguments, from either form. */
 function serviceArgs(service) {
   return [service?.entrypoint, service?.command].flatMap((value) =>
-    Array.isArray(value) ? value.map(String) : typeof value === 'string' ? value.split(/\s+/).filter(Boolean) : [],
+    Array.isArray(value) ? value.map(String) : typeof value === 'string' ? shellSplit(value) : [],
   );
 }
 
@@ -150,7 +195,9 @@ function serviceArgs(service) {
 function trustProblems(caddyfile, compose) {
   const edge = `${EDGE_PROXY_ADDRESS}/32`;
   const problems = [];
-  const nodes = parseCaddyfile(caddyfile);
+  // Caddy puts an unset variable's default in place before it lexes, so a
+  // default can be a directive or a header name (eleventh drain review).
+  const nodes = parseCaddyfile(expandEnvDefaults(caddyfile));
   const [global] = nodes;
   // Without trusted_proxies the inner Caddy replaces the edge's X-Forwarded-For
   // with the edge's own address, and every visitor shares one set of ntfy and
@@ -174,22 +221,40 @@ function trustProblems(caddyfile, compose) {
     if (count(name) > 0) problems.push(`${name} is set`);
   }
   problems.push(...clientAddressHeaderWrites(nodes).map((write) => `the Caddyfile sets ${write}`));
+  // What this reader can't follow, it refuses: a snippet (its arguments fill
+  // in a header name only at import), an import of anything but the generated
+  // redirects (which hold redir lines alone), and a line whose directive is an
+  // environment placeholder with no default, whose value is on the server.
+  for (const node of lines) {
+    const [first = '', ...rest] = node.tokens;
+    if (/^\(.*\)$/.test(first)) problems.push(`the Caddyfile defines the snippet ${first} (line ${node.line})`);
+    if (first === 'import' && rest.join(' ') !== 'project-redirects.caddy') problems.push(`the Caddyfile imports ${rest.join(' ')} (line ${node.line})`);
+    if (first.includes('{$')) problems.push(`the Caddyfile has a directive named by ${first} (line ${node.line})`);
+  }
 
   // ntfy strips the edge's address from X-Forwarded-For and takes the next one
-  // as the visitor's. It reads its settings from the environment and from its
-  // command line, and a config file would come on top of both.
-  const ntfy = parseYaml(compose)?.services?.ntfy;
+  // as the visitor's. It reads its settings from its command line, then its
+  // environment, then a config file.
+  const services = parseYaml(compose)?.services ?? {};
+  for (const [name, service] of Object.entries(services)) {
+    // extends pulls a service's settings, networks included, from another
+    // definition this reader doesn't follow.
+    if (service?.extends !== undefined) problems.push(`the ${name} service extends another`);
+  }
+  const ntfy = services.ntfy;
   const environment = serviceEnvironment(ntfy);
   const header = environment.NTFY_PROXY_FORWARDED_HEADER;
   if (header != null && !/^x-forwarded-for$/i.test(header)) problems.push(`ntfy reads the address from ${header}`);
   if (environment.NTFY_BEHIND_PROXY !== 'true') problems.push('ntfy is not told it sits behind a proxy');
   if (environment.NTFY_PROXY_TRUSTED_HOSTS !== edge) problems.push(`ntfy trusts ${environment.NTFY_PROXY_TRUSTED_HOSTS}`);
+  if (environment.NTFY_CONFIG_FILE !== undefined) problems.push(`ntfy reads the config file ${environment.NTFY_CONFIG_FILE}`);
   const args = serviceArgs(ntfy);
   args.forEach((arg, index) => {
-    const flag = /^--?(proxy-forwarded-header|proxy-trusted-hosts|behind-proxy|config|c)(?:=(.*))?$/.exec(arg);
+    // ntfy takes each of these with dashes or underscores, and -P for behind-proxy.
+    const flag = /^--?(proxy[-_]forwarded[-_]header|proxy[-_]trusted[-_]hosts|behind[-_]proxy|P|config|c)(?:=(.*))?$/.exec(arg);
     if (!flag) return;
     const value = flag[2] ?? args[index + 1] ?? '';
-    if (flag[1] === 'proxy-forwarded-header' && /^x-forwarded-for$/i.test(value)) return;
+    if (/^proxy[-_]forwarded[-_]header$/.test(flag[1]) && /^x-forwarded-for$/i.test(value)) return;
     problems.push(`ntfy is started with ${arg}${flag[2] === undefined ? ` ${value}` : ''}`);
   });
   for (const volume of ntfy?.volumes ?? []) {
@@ -241,7 +306,25 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
       'reverse_proxy ntfy:80 {\n\t\theader_up "X-Forwarded-For" "{http.request.header.X-Forwarded-For}"',
     ),
     'a request_header taking X-Real-IP': inCaddyfile('\troot * /srv', '\troot * /srv\n\trequest_header X-Forwarded-For {http.request.header.X-Real-IP}'),
-    'a header block deleting Forwarded': inCaddyfile('\troot * /srv', '\troot * /srv\n\theader {\n\t\t-Forwarded\n\t}'),
+    // The eleventh review's five, each of which `caddy adapt` 2.11.4 turns into
+    // headers.request.set X-Forwarded-For = {http.request.header.X-Real-IP}.
+    'a header name from an unset variable\'s default': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up {$NOT_SET:X-Forwarded-For} {http.request.header.X-Real-IP}',
+    ),
+    'a header name from a snippet argument': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\timport fwd X-Forwarded-For {http.request.header.X-Real-IP}',
+    ).map((text, index) => (index === 0 ? `(fwd) {\n\theader_up {args[0]} {args[1]}\n}\n\n${text}` : text)),
+    'a \\\\ before a quote, which closes it': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up X-Note "a\\\\"\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
+    ),
+    'a continued line': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\theader_up \\\n\t\t\tX-Forwarded-For {http.request.header.X-Real-IP}'),
+    'a heredoc holding a quote': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up X-Note <<EOF\n\t\t"\n\t\tEOF\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}',
+    ),
     'a proxy_protocol listener wrapper on one listener': inCaddyfile(
       '\tservers {',
       '\tservers :80 {\n\t\tlistener_wrappers {\n\t\t\tproxy_protocol {\n\t\t\t\tallow 0.0.0.0/0\n\t\t\t}\n\t\t}\n\t}\n\tservers {',
@@ -252,10 +335,29 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
     'ntfy told to read X-Real-IP in its environment': inCompose('NTFY_BEHIND_PROXY: "true"', 'NTFY_BEHIND_PROXY: "true"\n      NTFY_PROXY_FORWARDED_HEADER: X-Real-IP'),
     'ntfy trusting every private range': inCompose(`NTFY_PROXY_TRUSTED_HOSTS: "${edge}"`, 'NTFY_PROXY_TRUSTED_HOSTS: "172.16.0.0/12"'),
     'ntfy reading a config file': inCompose('      - ./ntfy-data:/var/lib/ntfy', '      - ./ntfy-data:/var/lib/ntfy\n      - ./server.yml:/etc/ntfy/server.yml:ro'),
+    'ntfy told to read X-Real-IP with an underscore flag': inCompose('command: ["serve"]', 'command: ["serve", "--proxy_forwarded_header", "X-Real-IP"]'),
+    'ntfy told to trust everyone with an underscore flag': inCompose('command: ["serve"]', 'command: ["serve", "--proxy_trusted_hosts=0.0.0.0/0"]'),
+    'ntfy pointed at a config file in its data volume': inCompose('NTFY_BEHIND_PROXY: "true"', 'NTFY_BEHIND_PROXY: "true"\n      NTFY_CONFIG_FILE: /var/lib/ntfy/server.yml'),
+    'the report sink extending another definition': inCompose(
+      '  csp-reporter:\n',
+      '  csp-reporter:\n    extends:\n      file: ./reporter-base.yml\n      service: reporter\n',
+    ),
   };
   for (const [label, [variantCaddyfile, variantCompose]] of Object.entries(variants)) {
     assert.ok(trustProblems(variantCaddyfile, variantCompose).length > 0, label);
   }
+  // And two harmless settings the first version failed: `header` changes only
+  // responses, and compose drops the quotes around a flag's value.
+  const harmless = {
+    'a header block deleting Forwarded from responses': inCaddyfile('\troot * /srv', '\troot * /srv\n\theader {\n\t\t-Forwarded\n\t}'),
+    'a quoted X-Forwarded-For flag value': inCompose('command: ["serve"]', 'command: serve --proxy-forwarded-header "X-Forwarded-For"'),
+  };
+  for (const [label, [variantCaddyfile, variantCompose]] of Object.entries(harmless)) {
+    assert.deepEqual(trustProblems(variantCaddyfile, variantCompose), [], label);
+  }
+  // A default takes the placeholder's place as Caddy puts it there, and a
+  // placeholder without one is left for the checks above to refuse.
+  assert.equal(expandEnvDefaults('header_up {$A:X-Forwarded-For} {$B} {$C:}'), 'header_up X-Forwarded-For {$B} ');
   // Compose's list form for the environment reads the same as its map form.
   assert.deepEqual(serviceEnvironment({ environment: ['NTFY_PROXY_FORWARDED_HEADER=X-Real-IP', 'A=b=c', 'EMPTY'] }), {
     NTFY_PROXY_FORWARDED_HEADER: 'X-Real-IP',
@@ -263,6 +365,7 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
     EMPTY: null,
   });
   assert.deepEqual(serviceArgs({ entrypoint: 'ntfy', command: 'serve --proxy-forwarded-header=X-Real-IP' }), ['ntfy', 'serve', '--proxy-forwarded-header=X-Real-IP']);
+  assert.deepEqual(serviceArgs({ command: `serve --a "b c" 'd "e"' f\\ g ""` }), ['serve', '--a', 'b c', 'd "e"', 'f g', '']);
 });
 
 /**
