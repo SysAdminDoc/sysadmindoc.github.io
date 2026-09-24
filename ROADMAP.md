@@ -6,9 +6,37 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
+- [ ] P1: Store other CSP samples as a bare marker, drop the key, and say so on /privacy/
+  Why: `/privacy/` still says the report sink "removes anything in them that looks like an ID, a long number or an email address before keeping it", the scrub 0d5aaa23 removed, and doesn't mention the keyed hash (the `Base.astro` comment is stale the same way). And the keyed hash can be reversed for short secrets by anyone who reads the store, because `sample.key` sits beside it: a six-digit code in an extension's style came back in 12.4 s. The hash only groups non-site samples, which the alerts don't need, since the site's own blocks keep their text. Its exclusive create can also leave an empty key that fails every report.
+  Evidence: nineteenth drain review, 2026-09-24; `src/pages/privacy.astro:76`, `deploy/vps/csp-report-server.mjs:187-213`.
+  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/lib/csp-report-summary.mjs` (smoke read-back), `src/pages/privacy.astro`, `src/layouts/Base.astro`, their tests.
+  Acceptance: a sample that isn't the site's own is stored as `[other]` with no hash and no key file, older rows are rewritten the same way, the smoke read-back expects `[other]`, and `/privacy/` says the sink keeps the start of a refused block only when it's the site's own code.
+  Complexity: S
+
 ### P2
 
+- [ ] P2: Recognise every engine's sample of the site's own inline blocks
+  Why: Firefox appends "…" to a 40-character sample, so both of the site's real blocks (41 characters with it) are stored as markers; Chromium trims whitespace at both ends, so a block that starts with whitespace, or a short one ending in a space, never matches. WebKit matches.
+  Evidence: nineteenth drain review, 2026-09-24 (headless Chromium, Firefox and WebKit probes); `deploy/vps/csp-report-server.mjs:187`, `scripts/lib/csp-own-samples.mjs:43`.
+  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/lib/csp-own-samples.mjs`, their tests.
+  Acceptance: each engine's real sample of every built inline block is kept as the site's own: a trailing "…" is dropped and whitespace is trimmed at both ends before comparing, with a test per engine's shape.
+  Complexity: S
+
+- [ ] P2: Count a planted audit as rejected only when it says why
+  Why: On Windows an audit killed from outside exits 1 (taskkill, `process.kill`) or 4294967295 (Stop-Process), never a null status, so `noVerdict` misses it and the self-test still prints "rejects ..." for the eleven cases without an `expect`; the test used a hand-made `{ status: null }`. `build:ci` also runs `og-cards:audit` directly with no time limit.
+  Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:25,34`, `scripts/audit-gate-selftest.mjs:515`.
+  Touches: `scripts/audit-gate-selftest.mjs`, `scripts/lib/run-audit.mjs`, `test/toolchain.test.mjs`.
+  Acceptance: every case carries an `expect` its audit's rejection must match, a planted run counts as rejected only when it does, a real external kill on win32 is tested, and the direct `og-cards:audit` step in `build:ci` can't hang the build.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit
+  Why: parse5 names `xlink:href` and `href` both `href`, and the first kept wins, so `<image xlink:href="A" href="B">` counts A while browsers load B (`feImage` too). `http:noslash.example/a.png` and `http:/oneslash...` load in Chromium but the `//` check misses them. `<svg><script href>` loads in both engines and is missed. Comments are stripped before CSS escapes are read, so `\/*` hides a real url(). Older misses: `<table background>` and a static `import` in a module script.
+  Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:79,159,173,194,222`.
+  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
+  Acceptance: `href` wins over `xlink:href`, every value is resolved with `new URL(value, pageUrl)` and any origin but the site's counts, SVG script href counts, escapes are read before comments, and the two older misses are found, each with a test.
+  Complexity: S
 
 - [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit
   Why: 79c031f0's rule catches `\p{Pd}` and one spaced hyphen only, so `Home -- tools`, a spaced U+2212 minus, U+2796, a box horizontal and `&nbsp;-&nbsp;` in a feed title all pass (planted in a copied build, the audit passed). It never reads `manifest.json`'s `name`, the one the commit fixed, nor `og:site_name`, nor the feed item titles the site writes itself (catalog names, atom's `(live)` suffix, `releases.xml`'s `${project} ${tag}`). Each feed's own title is `Matt Parker | Projects` while its link says `Recent projects | Matt Parker`.
