@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Pin the fixture build's layout checks and file four fixes under Fixed
-  Why: The live-card check accepts 1 to 6 cards, though the fixture build it runs on renders exactly 6. The gutter check looks only at `h1`-`h3`, `p`, `li`, `dt`, `dd`, `blockquote` and `figcaption`, while the CHANGELOG says it covers any page text. Four fixes sit under `### Removed`.
-  Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:429-430,468`; `CHANGELOG.md:38-41`.
-  Touches: those files.
-  Acceptance: the card check pins the fixture's 6, the gutter check and its CHANGELOG line agree, and the four entries sit under `### Fixed`.
-  Complexity: S
-
 - [ ] P3: Run the offline-palette and gutter browser checks before a deploy
   Why: Both run only in `audit:playwright`, which nothing runs on a schedule, so a regression they'd catch ships.
   Evidence: eighth drain review, 2026-09-23; the `deploy:preflight` chain in `package.json`.

@@ -433,11 +433,10 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
     await expect(page.locator('.hero-proof-strip .hero-proof')).toHaveCount(3);
     await expect(page.locator('#greatest-hits .selected-work-row')).toHaveCount(3);
     // The homepage shows at most six live apps (the slice in
-    // src/pages/index.astro). How many depends on the profile feed, so the
-    // bound is what's pinned: 2 on the day this was written, 6 by v0.45.
-    const liveCards = await page.locator('#live .lc2').count();
-    expect(liveCards).toBeGreaterThan(0);
-    expect(liveCards).toBeLessThanOrEqual(6);
+    // src/pages/index.astro). This suite runs on the fixture build (npm run
+    // audit:playwright), whose profile feed lists exactly six, so a count
+    // that drops any of them fails (eighth drain review).
+    await expect(page.locator('#live .lc2')).toHaveCount(6);
     await expect(page.locator('#skills .practice-row')).toHaveCount(3);
     await expect(page.locator('#catalog .ca')).toHaveCount(0);
     await expect(page.locator('#catalog .handoff-links a')).toHaveCount(3);
@@ -459,15 +458,17 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
 
 // The colophon's content sat flush against the screen edge on phones for a
 // release before its first baseline showed it: its blocks had no gutter class.
-// Text in main starts at least 12px in from either edge at 390px wide, unless
-// it sits in a container that scrolls sideways on purpose.
+// Any text in main starts at least 12px in from either edge at 390px wide,
+// unless it sits in a container that scrolls sideways on purpose. Every text
+// node counts, not just headings and paragraphs: a label, a table cell or a
+// link on its own reaches the edge the same way (eighth drain review).
 test.describe('Mobile gutter audit', () => {
   for (const route of routes) {
     test(`${route.name} keeps its text off the screen edge at 390px`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 900 });
       await preparePage(page, route.path, route.ready);
       const flush = await page.evaluate(() => {
-        const found = [];
+        const found = new Map();
         const scrollsSideways = (element) => {
           for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
             const overflow = getComputedStyle(node).overflowX;
@@ -475,19 +476,33 @@ test.describe('Mobile gutter audit', () => {
           }
           return false;
         };
-        for (const element of document.querySelectorAll('main :is(h1, h2, h3, p, li, dt, dd, blockquote, figcaption)')) {
-          const style = getComputedStyle(element);
-          if (style.display === 'none' || style.visibility === 'hidden' || !element.textContent.trim()) continue;
-          if (element.closest('[aria-hidden="true"], .sr-only, dialog:not([open])')) continue;
+        // Clipped away for screen readers only, like Pagefind's input hint.
+        const visuallyHidden = (element) => {
+          for (let node = element; node && node !== document.body; node = node.parentElement) {
+            const style = getComputedStyle(node);
+            if (style.clipPath === 'inset(100%)' || /^rect\(0px,? 0px,? 0px,? 0px\)$/.test(style.clip)) return true;
+            const box = node.getBoundingClientRect();
+            if (style.overflow === 'hidden' && box.width <= 1 && box.height <= 1) return true;
+          }
+          return false;
+        };
+        const main = document.querySelector('main');
+        if (!main) return ['no main element'];
+        const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const element = node.parentElement;
+          if (!element || !node.textContent.trim() || found.has(element)) continue;
+          if (element.closest('script, style, template, noscript, [aria-hidden="true"], .sr-only, dialog:not([open])')) continue;
+          if (!element.checkVisibility({ visibilityProperty: true }) || visuallyHidden(element)) continue;
           const range = document.createRange();
-          range.selectNodeContents(element);
+          range.selectNodeContents(node);
           const text = range.getBoundingClientRect();
           if (text.width === 0 || text.height === 0) continue;
           if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
-            found.push(`${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${element.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
+            found.set(element, `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${node.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
           }
         }
-        return found.slice(0, 8);
+        return [...found.values()].slice(0, 8);
       });
       expect(flush).toEqual([]);
     });
