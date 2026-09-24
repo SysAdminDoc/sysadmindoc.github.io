@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Put `staleAfter` at the build time when a catalog verdict has no readable time
-  Why: a catalog record with a verdict but no parseable `generatedAt` is warned stale, yet `staleAfterIso(null)` drops out of the deadline list and the page keeps the fetch deadline.
-  Evidence: twentieth review. fetchedAt `2026-09-21T10:00Z`, profile `10:30Z`, `catalogDrift: {complete: true}`, now `11:00Z` gives `staleAfter` `2026-09-22T22:00:00.000Z`. `{complete: false, generatedAt: 'garbage'}` gives the same.
-  Touches: `src/data/generated-trust.ts`, `test/generated-trust.test.mjs`.
-  Acceptance: a catalog record with a verdict and no parseable `generatedAt` puts `staleAfter` at `evaluatedAt`, with a test for the missing and the garbage time.
-  Complexity: S
-
 - [ ] P3: Keep the CSP sink starting whatever its store holds, in bounded memory
   Why: the start-up restore reads both store files whole and throws on odd entries. A directory at `reports.ndjson.1` or `sample.key` makes `startServer` reject, so the container restart-loops where it used to serve. Two full 5 MB files with two-byte text reached the 64 MiB compose cap in a WSL run. A row cut mid-append after its sample keeps the old text, because unparseable lines are copied through.
   Evidence: twentieth review (EISDIR from `readFile`, ERR_FS_EISDIR from `rm`, 61.9 MB peak on Latin-1 text, the cap reached with one non-Latin-1 character per sample).

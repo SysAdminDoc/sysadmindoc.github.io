@@ -321,13 +321,14 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
   // fresh fetch can't carry a stale feed past its deadline (third drain
   // review). A part that is warned stale with no time of its own is already
   // past its contract, so its deadline is now: leaving it out gave a build
-  // with less evidence a later deadline (eighteenth drain review). Without a
-  // fetch time there's still no contract to state.
+  // with less evidence a later deadline (eighteenth drain review), and a
+  // catalog verdict with no readable time is one of those (twentieth). Without
+  // a fetch time there's still no contract to state.
   const already = now.toISOString();
   const profileDeadline = profileAgeHours == null ? already : staleAfterIso(input.profileFeedInfo.cachedAt, maxAgeHours);
   const catalogDeadline =
     catalogMeasured || catalogStaleRecord
-      ? staleAfterIso(catalogCompleteness.checkedAt, maxAgeHours)
+      ? (staleAfterIso(catalogCompleteness.checkedAt, maxAgeHours) ?? already)
       : fixtureMode
         ? null
         : already;

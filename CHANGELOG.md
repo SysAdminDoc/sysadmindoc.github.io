@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- `/status/` no longer gives a later stale-after time to a catalog check whose record has a verdict but no readable time. The page already warned it was stale, so its deadline is now the build time, like any other part with no time of its own.
 - Older browsers that don't know `style-src-elem` (Firefox before 108, Safari before 15.4) now apply the page's own critical CSS right away instead of drawing it unstyled until the stylesheet arrives. They check an inline style block against `style-src`, which only allowed `'self'`, so it now carries the same two hashes. `csp:audit --strict` fails the build if the two ever drift apart.
 - The contact form no longer loses messages. Every accepted submission is written in full to an fsync'd store on the server before the visitor gets an answer, and the notification is sent from that record afterwards. Until now only the sender's name, email and message length were kept, so the text of the one outside inquiry that arrived on 2026-09-18 is gone.
 - A name typed with an iPhone apostrophe ("O’Brien"), any Chinese, Japanese or Korean character, or an emoji made the form fail with a 500 and dropped the lead without a trace. The visitor's text went into an HTTP header, which Node's fetch refuses for anything outside Latin-1. Notifications now travel as JSON, and a failed one stays queued for retry instead of costing the message.

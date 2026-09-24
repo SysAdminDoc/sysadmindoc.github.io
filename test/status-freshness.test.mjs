@@ -56,6 +56,10 @@ test('staleAfter is the earliest deadline of the fetch, the profile feed and the
   assert.equal(trust('2026-09-21T10:30:00Z', null).staleAfter, BUILD.toISOString(), 'nor did a missing one');
   assert.equal(trust(null).staleAfter, BUILD.toISOString(), 'a feed with no time is already stale');
   assert.equal(trust('not-a-date').staleAfter, BUILD.toISOString());
+  // The twentieth: a verdict with no readable time is warned stale, so it's
+  // past its contract too.
+  assert.equal(trust('2026-09-21T10:30:00Z', { complete: true }).staleAfter, BUILD.toISOString(), 'a verdict with no time');
+  assert.equal(trust('2026-09-21T10:30:00Z', { complete: false, generatedAt: 'garbage' }).staleAfter, BUILD.toISOString(), 'a verdict with an unreadable time');
   assert.equal(trust('2026-09-21T10:30:00Z', null, 'fixture').staleAfter, '2026-09-22T22:00:00.000Z', 'a fixture build is never catalog-checked, and says so nowhere');
   // The live file keeps failing once the earliest deadline passes.
   const live = { generatedData: trust('2026-09-20T12:00:00Z') };
