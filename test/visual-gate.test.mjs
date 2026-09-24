@@ -380,8 +380,14 @@ test('the gate also runs every route gutter check and the offline palette check'
   assert.ok(gateArgs.includes('tests/playwright/sw-lifecycle.spec.mjs'));
   const gate = new RegExp(gateArgs[gateArgs.indexOf('-g') + 1]);
   const spec = fs.readFileSync(path.join(root, 'tests', 'playwright', 'portfolio-audits.spec.mjs'), 'utf8');
-  const routes = [...spec.matchAll(/\{ name: '([\w-]+)', path: '[^']+', ready: '[^']+' \}/g)].map((match) => match[1]);
+  // Any name the spec gives a route, not just [\w-]+ (thirteenth drain review:
+  // a route named lang-c# would have dropped out of the grep and this test).
+  const routes = [...spec.matchAll(/\{ name: '([^']+)', path: '[^']+', ready: '[^']+' \}/g)].map((match) => match[1]);
   assert.ok(routes.length >= 17, 'the routes were found');
+  assert.equal(routes.length, spec.match(/^\s+\{ name: '[^']+', path: /gm)?.length, 'every route line was read');
+  for (const route of ['lang-c#', 'lang-c++', 'lang-.net']) {
+    assert.match(`chromium portfolio-audits.spec.mjs Mobile gutter audit ${route} keeps its text off the screen edge at 390px`, gate);
+  }
   for (const route of routes) {
     assert.match(`chromium-light portfolio-audits.spec.mjs Mobile gutter audit ${route} keeps its text off the screen edge at 390px`, gate);
   }

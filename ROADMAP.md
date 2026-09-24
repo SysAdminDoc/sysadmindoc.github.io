@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Make the gutter check measure what its CHANGELOG line says
-  Why: It skips `aria-hidden` text, which is visible (the `01`/`02`/`03` numerals and arrows on several pages), and treats any `clip: rect(0 0 0 0)` as hidden though `clip` only applies to positioned elements. It starts its sideways-scroller search at the text's parent's parent, so text directly in a `<pre>` that scrolls fails it. The CHANGELOG says "every piece of text in the page body". The gate's grep and its test take route names as `[\w-]+`, so a route like `lang-c#` would drop out of both unnoticed.
-  Evidence: thirteenth drain review, 2026-09-24; the gutter test in `tests/playwright/portfolio-audits.spec.mjs`; `GATE_CHECKS` in `scripts/visual-gate.mjs`.
-  Touches: those files, `test/visual-gate.test.mjs`, `CHANGELOG.md`.
-  Acceptance: visible aria-hidden text and a static element with `clip` are measured, a `<pre>` that scrolls passes, the CHANGELOG line matches, and any route name reaches the gate.
-  Complexity: S
-
 - [ ] P3: Close the CSS output audit's remaining reading gaps
   Why: Chromium applies each of these and the audit misses them: `</style x>` and `</style/>` closing tags, a `style` attribute after an attribute value holding `>`, an entity in an SVG `<style>` inside HTML or in a `style` attribute (`light&#x2d;dark(`), a CSS escape (`light-dar\6b(`), and a `data:` URI `@import`. CSS a script injects, like Pagefind's highlight script, is never read.
   Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-output-check.mjs:43,47`.

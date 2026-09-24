@@ -469,20 +469,32 @@ test.describe('Mobile gutter audit', () => {
       await preparePage(page, route.path, route.ready);
       const flush = await page.evaluate(() => {
         const found = new Map();
+        // From the text's own element up: a <pre> that scrolls holds its text
+        // directly (thirteenth drain review).
         const scrollsSideways = (element) => {
-          for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
+          for (let node = element; node && node !== document.body; node = node.parentElement) {
             const overflow = getComputedStyle(node).overflowX;
             if ((overflow === 'auto' || overflow === 'scroll') && node.scrollWidth > node.clientWidth + 1) return true;
           }
           return false;
         };
         // Clipped away for screen readers only, like Pagefind's input hint.
+        // `clip` only applies to an absolutely or fixed positioned box, and
+        // Chromium reports it on a static one that it doesn't clip.
         const visuallyHidden = (element) => {
           for (let node = element; node && node !== document.body; node = node.parentElement) {
             const style = getComputedStyle(node);
-            if (style.clipPath === 'inset(100%)' || /^rect\(0px,? 0px,? 0px,? 0px\)$/.test(style.clip)) return true;
+            if (style.clipPath === 'inset(100%)') return true;
+            if ((style.position === 'absolute' || style.position === 'fixed') && /^rect\(0px,? 0px,? 0px,? 0px\)$/.test(style.clip)) return true;
             const box = node.getBoundingClientRect();
             if (style.overflow === 'hidden' && box.width <= 1 && box.height <= 1) return true;
+          }
+          return false;
+        };
+        const positionedOffScreen = (element) => {
+          for (let node = element; node && node !== document.body; node = node.parentElement) {
+            const position = getComputedStyle(node).position;
+            if (position === 'absolute' || position === 'fixed') return true;
           }
           return false;
         };
@@ -492,12 +504,19 @@ test.describe('Mobile gutter audit', () => {
         for (let node = walker.nextNode(); node; node = walker.nextNode()) {
           const element = node.parentElement;
           if (!element || !node.textContent.trim() || found.has(element)) continue;
-          if (element.closest('script, style, template, noscript, [aria-hidden="true"], .sr-only, dialog:not([open])')) continue;
+          // aria-hidden text is still on screen (the 01/02/03 numerals, arrows),
+          // so it counts; only what isn't drawn is left out.
+          if (element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) continue;
           if (!element.checkVisibility({ visibilityProperty: true }) || visuallyHidden(element)) continue;
           const range = document.createRange();
           range.selectNodeContents(node);
           const text = range.getBoundingClientRect();
           if (text.width === 0 || text.height === 0) continue;
+          // Moved wholly off the screen by an absolutely or fixed positioned box,
+          // the other way to hide text from sight but not from screen readers,
+          // like the contact form's honeypot label at left: -9999px. Text that's
+          // only partly off the screen still counts.
+          if ((text.right <= 0 || text.left >= window.innerWidth) && positionedOffScreen(element)) continue;
           if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
             found.set(element, `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${node.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
           }

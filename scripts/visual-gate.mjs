@@ -67,7 +67,8 @@ export const GATE_ROUTES = Object.freeze(['home', 'ai', 'healthcare', 'resume', 
 // for a returning visitor. Only audit:playwright ran them before, and nothing
 // runs that on a schedule (eighth drain review).
 export const GATE_CHECKS = Object.freeze([
-  'Mobile gutter audit [\\w-]+ keeps its text off the screen edge at 390px',
+  // Any route name, since a route called lang-c# would fall outside [\w-]+.
+  'Mobile gutter audit .+ keeps its text off the screen edge at 390px',
   'the command palette works offline for a returning visitor who never opened it',
 ]);
 
