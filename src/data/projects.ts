@@ -244,6 +244,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "NoNo", name: "NoNo", url: "https://github.com/SysAdminDoc/NoNo", category: "kt", desc: "Local-first Android notification rule manager with redacted metadata" },
   { repo: "IRL_Streamer", name: "IRL_Streamer", url: "https://github.com/SysAdminDoc/IRL_Streamer", category: "kt", desc: "Android live-streaming console with camera, mic, and RTMP/RTMPS broadcast" },
   { repo: "hushfeed", name: "hushfeed", url: "https://github.com/SysAdminDoc/hushfeed", category: "kt", desc: "Morphe patch bundle for TikTok, with quieter feeds and saner taps" },
+  { repo: "Hushfacebook", name: "Hushfacebook", url: "https://github.com/SysAdminDoc/Hushfacebook", category: "kt", desc: "Morphe patch bundle for Facebook that clears ads, Reels and Stories out of the feed" },
   { repo: "BillMinder4PC", name: "BillMinder4PC", url: "https://github.com/SysAdminDoc/BillMinder4PC", category: "cs", desc: "Tray-resident Windows bill tracker. Offline, no account. Compose Multiplatform" },
   { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" }
 ];
