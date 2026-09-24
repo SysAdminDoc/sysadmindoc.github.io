@@ -262,14 +262,15 @@ test('a claim older than a minute is stale whatever its pid, and dead claims on 
   const staleLock = (nonce) => fs.writeFileSync(env.lock, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce }));
   const leftovers = () => fs.readdirSync(path.dirname(env.lock)).filter((name) => name.startsWith(`${path.basename(env.lock)}.`));
 
-  // A live pid (reused) on a claim made 61 s ago.
+  // A live pid (reused) on a claim made just over ten minutes ago. (A minute
+  // until the fourteenth drain review overtook a claimant stalled for 61 s.)
   staleLock('x1');
-  fs.writeFileSync(claimFile(env.lock, 'x1'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 61_000).toISOString(), nonce: 'c1' }));
+  fs.writeFileSync(claimFile(env.lock, 'x1'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 601_000).toISOString(), nonce: 'c1' }));
   assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
   assert.deepEqual(leftovers(), []);
-  // One made 59 s ago still stands.
+  // One made 61 s ago, a live claimant stalled, still stands.
   staleLock('x2');
-  fs.writeFileSync(claimFile(env.lock, 'x2'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 59_000).toISOString(), nonce: 'c2' }));
+  fs.writeFileSync(claimFile(env.lock, 'x2'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 61_000).toISOString(), nonce: 'c2' }));
   assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, false);
   fs.rmSync(claimFile(env.lock, 'x2'));
 
@@ -288,10 +289,48 @@ test('a claim older than a minute is stale whatever its pid, and dead claims on 
   fs.writeFileSync(claimFile(env.lock, 'x4'), '');
   assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
 
+  // Ten dead claims deep, past the depth limit: the bottom one is dropped
+  // rather than locking everyone out.
+  staleLock('x5');
+  let chainParent = null;
+  let chainId = 'x5';
+  for (let depth = 0; depth < 10; depth += 1) {
+    const file = claimFile(env.lock, chainId, chainParent);
+    const nonce = `d${depth}`;
+    fs.writeFileSync(file, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce }));
+    chainParent = file;
+    chainId = nonce;
+  }
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+
   // However deep, a claim's path stays short enough for Windows.
   let parent = claimFile(env.lock, `${process.pid}.${'f'.repeat(36)}`);
   for (let depth = 0; depth < 10; depth += 1) parent = claimFile(env.lock, 'f'.repeat(36), parent);
   assert.ok(`${parent}.${'f'.repeat(36)}.new`.length < env.lock.length + 80);
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
+// The fourteenth drain review left 274 drafts and claims behind after 300
+// random kills. Each lives for milliseconds, so old ones are swept.
+test('drafts and claims a killed run left are swept once they are older than any claim can be', () => {
+  const env = setup();
+  const dir = path.dirname(env.lock);
+  const old = (Date.now() - 11 * 60_000) / 1000;
+  const leftovers = [`${env.lock}.123.abc.new`, claimFile(env.lock, 'gone-instance'), `${env.lock}.0123456789abcdef0123.claim`];
+  for (const file of leftovers) {
+    fs.writeFileSync(file, '{}');
+    fs.utimesSync(file, old, old);
+  }
+  const fresh = claimFile(env.lock, 'someone-now');
+  fs.writeFileSync(fresh, JSON.stringify({ pid: process.pid, takenAt: new Date().toISOString(), nonce: 'n' }));
+  const unrelated = path.join(dir, 'other.claim');
+  fs.writeFileSync(unrelated, 'x');
+  fs.utimesSync(unrelated, old, old);
+
+  assert.equal(tryLock({ lock: env.lock }).taken, true);
+  for (const file of leftovers) assert.equal(fs.existsSync(file), false, path.basename(file));
+  assert.equal(fs.existsSync(fresh), true, 'a fresh claim stays');
+  assert.equal(fs.existsSync(unrelated), true, 'and so does a file that is not the lock\'s');
   fs.rmSync(env.base, { recursive: true, force: true });
 });
 

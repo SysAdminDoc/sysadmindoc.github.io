@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Keep a stalled claimant from being overtaken, and leave nothing behind
-  Why: A claimant that stalls more than 60 s between its re-check and its rename (a sleep, a debugger) has its claim judged stale by age and taken over, and then renames over the new holder's lock: two holders, reproduced with real processes and with a clock 61 s ahead. After 300 random kills, 274 drafts and claims were left that nothing removes, and a chain of nine dead claims locks everyone out for good, since the depth limit returns null.
-  Evidence: fourteenth drain review, 2026-09-24, `rv14-stall.mjs` and `rv14-kill.mjs`; `scripts/visual-gate.mjs` `claimInstance`, `tryLock`.
-  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
-  Acceptance: a claim whose process is alive stands for ten minutes, not one; leftovers older than that are swept; a stale claim at the depth limit is removed rather than blocking; the paced and six-worker races still show one holder.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Read the last few log-size forms as Go does

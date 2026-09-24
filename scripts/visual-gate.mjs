@@ -200,7 +200,11 @@ function readLock(lock) {
 
 // A claim is held for the milliseconds a takeover or release takes, so one
 // older than this belongs to a process that died, whatever its pid names now.
-const CLAIM_MAX_AGE_MS = 60_000;
+// It was a minute until the fourteenth drain review stalled a live claimant
+// for 61 s between its re-check and its rename and had it overtaken; ten
+// minutes covers a debugger pause or a short sleep, and a pid reused by a live
+// process still clears well inside the gate's 20-minute wait.
+const CLAIM_MAX_AGE_MS = 10 * 60_000;
 // Each level down is a claim on a dead claim, one per process killed inside
 // that window, so this bounds work, not correctness.
 const CLAIM_MAX_DEPTH = 8;
@@ -215,7 +219,25 @@ export function claimFile(lock, id, parent = null) {
   return `${lock}.${createHash('sha256').update(`${parent}\0${id}`).digest('hex').slice(0, 20)}.claim`;
 }
 
-/** A claim whose process is gone, that's over a minute old, or that can't be read. */
+/**
+ * Drafts and claims a killed process left beside the lock. Each lives for
+ * milliseconds, so one older than a claim can be is a leftover; 300 random
+ * kills left 274 of them for good before this (fourteenth drain review).
+ */
+function sweepLeftovers(lock, now) {
+  const dir = path.dirname(lock);
+  const prefix = `${path.basename(lock)}.`;
+  for (const name of fs.readdirSync(dir)) {
+    if (!name.startsWith(prefix) || !(name.endsWith('.new') || name.endsWith('.claim'))) continue;
+    try {
+      if (now - fs.statSync(path.join(dir, name)).mtimeMs > CLAIM_MAX_AGE_MS) fs.rmSync(path.join(dir, name), { force: true });
+    } catch {
+      // Gone already, or being replaced; either way not ours to worry about.
+    }
+  }
+}
+
+/** A claim whose process is gone, that's over ten minutes old, or that can't be read. */
 function claimIsStale(holder, now, isAlive) {
   if (holder === null || !Number.isSafeInteger(holder?.pid) || !isAlive(holder.pid)) return true;
   const takenAt = Date.parse(holder.takenAt ?? '');
@@ -254,7 +276,14 @@ function claimInstance(lock, id, isAlive, now, parent = null, depth = 0) {
       }
       const left = readLock(claim);
       if (left.state === 'absent') continue;
-      if (left.state !== 'present' || !claimIsStale(left.holder, now, isAlive) || depth >= CLAIM_MAX_DEPTH) return null;
+      if (left.state !== 'present' || !claimIsStale(left.holder, now, isAlive)) return null;
+      // At the bottom of a chain of dead claims, nine processes killed inside
+      // their milliseconds, drop the stale one outright rather than lock
+      // everyone out for good.
+      if (depth >= CLAIM_MAX_DEPTH) {
+        if (readLock(claim).id === left.id) fs.rmSync(claim, { force: true });
+        continue;
+      }
       const releaseStale = claimInstance(lock, left.id, isAlive, now, claim, depth + 1);
       if (!releaseStale) return null;
       try {
@@ -305,6 +334,7 @@ function replaceFile(from, to) {
  */
 export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive } = {}) {
   fs.mkdirSync(path.dirname(lock), { recursive: true });
+  sweepLeftovers(lock, now);
   const nonce = `${process.pid}.${randomUUID()}`;
   const draft = `${lock}.${nonce}.new`;
   fs.writeFileSync(draft, `${JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce })}\n`);
