@@ -41,11 +41,24 @@ test('custom property names keep their case, and other property names lose it', 
   assert.deepEqual(found('.a{COLOR:red}\n.a{color:blue}'), ['.a COLOR 1>2']);
 });
 
-test('a vendor-prefixed value and the values around it are fallbacks for each other', () => {
+test('a value some target can\'t parse leaves the one before it live', () => {
   assert.deepEqual(found('.a{width:-webkit-fill-available}\n.a{width:stretch}'), [], 'a browser without stretch keeps the prefixed value');
   assert.deepEqual(found('.a{width:stretch}\n.a{width:-webkit-fill-available}'), [], 'and one without the prefix keeps stretch');
   assert.deepEqual(found('.a{width:100%}\n.a{width:-moz-available}\n.a{width:stretch}'), [], 'and one with neither keeps 100%');
-  assert.deepEqual(found('.a{width:100%}\n.a{width:stretch}'), ['.a width 1>2'], 'without a prefix in the chain, nothing is a fallback');
+  // The thirteenth drain review: these are fallbacks too. The earlier version
+  // of this test called 100% before stretch dead, which was wrong, since the
+  // targets don't know stretch.
+  assert.deepEqual(found('.a{width:100%}\n.a{width:stretch}'), []);
+  assert.deepEqual(found('.a{text-wrap:wrap}\n.a{text-wrap:pretty}'), []);
+  assert.deepEqual(found('.a{color:#888}\n.a{color:rgb(from red r g b / 50%)}'), []);
+});
+
+test('a value every target parses makes everything before it dead, prefixed or not', () => {
+  assert.deepEqual(found('.a{width:10px}\n.a{width:20px}\n.a{width:-webkit-fill-available}'), ['.a width 1>2'], '20px is there wherever the prefix fails');
+  assert.deepEqual(found('.a{width:-webkit-fill-available}\n.a{width:100%}'), ['.a width 1>2']);
+  assert.deepEqual(found('.a{content:"x"}\n.a{content:"see -webkit-foo"}'), ['.a content 1>2'], 'a prefix inside a string is text');
+  assert.deepEqual(found('.a{width:100%}\n.a{width:50%}'), ['.a width 1>2']);
+  assert.deepEqual(found('.a{column-fill:auto}\n.a{column-fill:balance}'), ['.a column-fill 1>2'], 'balance is only new for text-wrap');
 });
 
 test('a later !important replaces an earlier normal declaration', () => {

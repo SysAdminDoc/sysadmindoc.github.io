@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Make css:audit's fallback rule exact both ways
-  Why: A prefixed value anywhere later in a chain exempts everything before it (`width:10px` then `20px` then `-webkit-fill-available` keeps the dead 10px), a prefixed value before a universal one is exempt, and the prefix test matches inside strings. The other way, fallbacks for features newer than the targets, like `text-wrap:wrap` before `pretty` or a colour before relative colour syntax, are still reported dead.
-  Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:38,66,74`.
-  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
-  Acceptance: each case above comes out right, with a test apiece.
-  Complexity: M
-
 - [ ] P3: Scrub what the CSP sink's samples still leak, and stop mangling harmless text
   Why: A 32-letter extension ID cut short by the 40-character sample keeps 12 letters, which is enough to identify it. `john.smith%40example.com`, `4111_1111_1111_1111` and `555/123/4567` pass unchanged. Custom properties of 24 characters or more become `[id]`, and SVG path data and ISO dates become `[number]`.
   Evidence: eleventh drain review, 2026-09-24; `scrubSample` in `deploy/vps/csp-report-server.mjs`.

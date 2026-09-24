@@ -6,12 +6,12 @@
 // Nothing about other selectors matters: same selector and context means the
 // later one wins for every element the earlier one could reach.
 //
-// Some kinds are kept as fallbacks: a repeat inside one rule, a regular
-// property before a later light-dark() value, which the targets that predate
-// light-dark() can't parse, and any pair where either value is vendor-prefixed
-// (-webkit-fill-available before stretch), since a browser that can't parse
-// one drops it and keeps the other. Custom properties never fall back, so an
-// earlier --token is always overridden.
+// A later declaration only kills an earlier one if every target browser
+// parses it; one with a vendor prefix or syntax newer than the targets
+// (light-dark(), stretch, text-wrap: pretty, relative colour syntax) is
+// dropped where it isn't understood, and the earlier one applies there. A
+// repeat inside one rule is left alone as the usual way to write a fallback.
+// Custom properties take any value, so an earlier --token is always dead.
 //
 // Each anonymous @layer {} block is a layer of its own, and an earlier layer's
 // !important beats a later one's, so declarations in two such blocks never
@@ -35,7 +35,29 @@ function contextOf(node) {
 }
 
 const propertyKey = (prop) => (prop.startsWith('--') ? prop : prop.toLowerCase());
-const vendorPrefixed = (value) => /(?:^|[\s,(/])-(?:webkit|moz|ms|o)-/i.test(value);
+
+// Syntax some target browser (Chrome and Edge 111, Firefox 114, Safari 16.4;
+// scripts/lib/minify-css.mjs) doesn't parse, so it drops the declaration and
+// keeps the one before. Only what this site could plausibly write; a value
+// missing here reads as understood everywhere.
+const NEWER_THAN_TARGETS = [
+  { value: /\blight-dark\(/i }, // Chrome 123, Safari 17.5, Firefox 120
+  { value: /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(\s*from\s/i }, // relative colour syntax
+  { value: /\b(?:round|mod|rem|anchor|anchor-size|calc-size|if|sibling-index|sibling-count)\(/i },
+  { prop: /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size))$/i, value: /^\s*stretch\s*$/i },
+  { prop: /^text-wrap(?:-style)?$/i, value: /^\s*(?:pretty|balance|stable)\s*$/i },
+];
+
+/**
+ * Whether every target browser parses this declaration's value. A vendor
+ * prefix, outside a quoted string, means some don't.
+ */
+function understoodEverywhere(decl) {
+  if (decl.prop.startsWith('--')) return true;
+  const value = decl.value.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""');
+  if (/(?:^|[\s,(/])-(?:webkit|moz|ms|o)-/i.test(value)) return false;
+  return !NEWER_THAN_TARGETS.some((rule) => (!rule.prop || rule.prop.test(decl.prop)) && rule.value.test(value));
+}
 
 const selectorKey = (selector) =>
   selector
@@ -55,30 +77,36 @@ export function overriddenDeclarations(css) {
     if (decl.parent?.type !== 'rule') return;
     decls.push({ decl, key: `${contextOf(decl.parent)} || ${selectorKey(decl.parent.selector)} || ${propertyKey(decl.prop)}` });
   });
-  const winners = new Map();
-  // Keys where a later declaration is vendor-prefixed: everything before it in
-  // the chain can be what a browser falls back to.
-  const prefixedLater = new Set();
+  // A declaration is dead when a later one on the same key, at least as
+  // important, is understood by every target browser: then no browser ever
+  // falls back to it. The thirteenth drain review found the old rule loose
+  // one way (any prefixed value later in a chain spared everything before it,
+  // a prefix inside a string counted, and a prefixed value before a plain one
+  // was spared) and strict the other (a plain value before stretch,
+  // text-wrap: pretty or relative colour syntax was called dead).
+  /** @type {Map<string, { any: import('postcss').Declaration | null, important: import('postcss').Declaration | null }>} */
+  const later = new Map();
   const overridden = [];
   for (let index = decls.length - 1; index >= 0; index -= 1) {
     const { decl, key } = decls[index];
-    const winner = winners.get(key);
-    const fallbackChain = prefixedLater.has(key);
-    if (vendorPrefixed(decl.value)) prefixedLater.add(key);
-    if (!winner || (!winner.important && decl.important)) {
-      winners.set(key, decl);
-      continue;
+    const after = later.get(key) ?? { any: null, important: null };
+    const over = decl.important ? after.important : after.any;
+    // A repeat inside one rule is the usual way to write a fallback, and is
+    // left alone.
+    if (over && over.parent !== decl.parent) {
+      overridden.push({
+        node: decl,
+        selector: decl.parent.selector.replace(/\s+/g, ' '),
+        prop: decl.prop,
+        line: decl.source?.start?.line ?? 0,
+        overriddenAt: over.source?.start?.line ?? 0,
+      });
     }
-    if (winner.parent === decl.parent) continue;
-    if (!decl.prop.startsWith('--') && /light-dark\(/i.test(winner.value)) continue;
-    if (!decl.prop.startsWith('--') && (fallbackChain || vendorPrefixed(decl.value))) continue;
-    overridden.push({
-      node: decl,
-      selector: decl.parent.selector.replace(/\s+/g, ' '),
-      prop: decl.prop,
-      line: decl.source?.start?.line ?? 0,
-      overriddenAt: winner.source?.start?.line ?? 0,
-    });
+    if (understoodEverywhere(decl)) {
+      after.any ??= decl;
+      if (decl.important) after.important ??= decl;
+      later.set(key, after);
+    }
   }
   return overridden.reverse();
 }
