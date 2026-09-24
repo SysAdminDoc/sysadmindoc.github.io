@@ -11,8 +11,19 @@ export const NOTIFY_ORIGIN = 'https://notify.getparkerai.com';
 export const LEAD_TOPIC = 'portfolio-leads';
 export const LEAD_DELIVERY_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 3000;
-// The handler refuses a form token younger than three seconds.
-const TOKEN_MIN_AGE_MS = 3500;
+// The handler refuses a form token younger than its CONTACT_MIN_TIME and says
+// how young beside each token; an older handler that doesn't asks for three
+// seconds. The smoke waits that long and half a second more, as the page
+// script does, and a minute at most.
+const DEFAULT_TOKEN_AGE_MS = 3000;
+const TOKEN_AGE_MARGIN_MS = 500;
+const MAX_TOKEN_AGE_MS = 60_000;
+
+/** How long to let a token from this response body age before sending it. */
+export function tokenWaitMs(body) {
+  const asked = typeof body?.minAgeMs === 'number' && Number.isFinite(body.minAgeMs) && body.minAgeMs >= 0 ? body.minAgeMs : DEFAULT_TOKEN_AGE_MS;
+  return Math.min(asked, MAX_TOKEN_AGE_MS) + TOKEN_AGE_MARGIN_MS;
+}
 
 /**
  * @param {object} options
@@ -76,7 +87,7 @@ export async function checkLeadDelivery({
   if (tokenResponse.status !== 200 || typeof tokenBody?.token !== 'string') {
     throw new Error(`lead delivery: the form token endpoint returned HTTP ${tokenResponse.status} without a token.`);
   }
-  await sleep(TOKEN_MIN_AGE_MS);
+  await sleep(tokenWaitMs(tokenBody));
   const form = new URLSearchParams({
     name: 'Live Smoke',
     email: 'smoke@example.invalid',

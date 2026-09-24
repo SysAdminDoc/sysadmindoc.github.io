@@ -751,7 +751,9 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
         'Cache-Control': 'no-store',
         'X-Content-Type-Options': 'nosniff',
       });
-      response.end(JSON.stringify({ token: issueToken() }));
+      // The minimum age travels with the token, so the page script and the
+      // live smoke wait as long as this server asks, whatever CONTACT_MIN_TIME is.
+      response.end(JSON.stringify({ token: issueToken(), minAgeMs: config.minTimeSeconds * 1000 }));
       return;
     }
     if (request.method !== 'POST' || (pathname !== '/contact' && pathname !== '/api/contact')) {

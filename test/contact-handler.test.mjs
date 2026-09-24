@@ -660,6 +660,38 @@ test('the token endpoint issues a signed server timestamp that a later submissio
   });
 });
 
+// The third drain review: the page script and the smoke waited a fixed 3.5 s,
+// so a CONTACT_MIN_TIME above that failed every scripted send's first try.
+test('the token endpoint says how long a token has to age, and the handler holds to it', async () => {
+  const minAge = (config) =>
+    withHandler({ config }, async ({ handler }) => {
+      const issued = responseMock();
+      await handler.handleRequest(requestMock({ method: 'GET', url: '/api/contact/token' }), issued);
+      return JSON.parse(issued.body).minAgeMs;
+    });
+  assert.equal(await minAge({}), 3000);
+  assert.equal(loadConfig({ NTFY_URL: 'http://ntfy:80/portfolio-leads', CONTACT_MIN_TIME: '5' }).minTimeSeconds, 5);
+  await withHandler({ config: { minTimeSeconds: 5 } }, async ({ handler, setClock }) => {
+    const issue = async () => {
+      const issued = responseMock();
+      await handler.handleRequest(requestMock({ method: 'GET', url: '/api/contact/token' }), issued);
+      return JSON.parse(issued.body);
+    };
+    const early = await issue();
+    const onTime = await issue();
+    assert.equal(onTime.minAgeMs, 5000);
+    setClock(new Date(NOW.getTime() + 4_000));
+    const refused = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, token: early.token }), refused);
+    assert.equal(refused.status, 422, 'younger than it said');
+    setClock(new Date(NOW.getTime() + onTime.minAgeMs + 500));
+    const accepted = responseMock();
+    await handler.handleRequest(jsonPost({ ...lead, token: onTime.token }), accepted);
+    assert.equal(accepted.status, 200, 'the wait the page script and the smoke now take');
+    await handler.idle();
+  });
+});
+
 // Used tokens are remembered in memory, and the key used to be derived from the
 // smoke secret, so the review sent one token twice across a restart and got
 // two stored leads.

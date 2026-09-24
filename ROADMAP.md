@@ -120,13 +120,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: A deploy fails on a mismatched retention in the live env, and no backup keeps a lead longer than the page says.
   Complexity: S
 
-- [ ] P3: Serve the token's minimum age with the token
-  Why: `public/scripts/contact-form.js` and the lead-delivery smoke wait a hard-coded 3.5 s, while the handler's minimum is `CONTACT_MIN_TIME`. Raising that past 3.5 s would make every scripted send fail its first try.
-  Evidence: third drain review; `contact-form.js` `MIN_TOKEN_AGE_MS`, `scripts/lib/lead-delivery-check.mjs`.
-  Touches: `deploy/vps/contact-handler.mjs` (return `minAgeMs` beside the token), `public/scripts/contact-form.js`, `scripts/lib/lead-delivery-check.mjs`.
-  Acceptance: With `CONTACT_MIN_TIME=5` the page script and the smoke both send on the first try.
-  Complexity: S
-
 - [ ] P3: Match the CSP host audit to how browsers check a prefetch
   Why: `scripts/lib/csp-host-usage.mjs` counts a `rel=prefetch` against the directive its `as` names, but CSP Level 3 checks prefetches against `default-src`.
   Evidence: third drain review, from the spec; not yet tested in a browser.

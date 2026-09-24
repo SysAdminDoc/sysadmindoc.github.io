@@ -1205,6 +1205,33 @@ test.describe('contact form with JavaScript', () => {
     await expect(form.locator('button[type="submit"]')).toBeEnabled();
   });
 
+  // The third drain review: the script waited a fixed 3.5 s, so a
+  // CONTACT_MIN_TIME above that failed every send's first try. The handler
+  // now says how long its token needs, and this one refuses anything younger.
+  test('the form waits as long as the handler says its token needs, and sends once', async ({ page }) => {
+    let issuedAt = 0;
+    const ages = [];
+    await page.route('**/api/contact/token', (route) => {
+      issuedAt = Date.now();
+      return route.fulfill({ contentType: 'application/json; charset=utf-8', body: JSON.stringify({ token: 'stub-token', minAgeMs: 5000 }) });
+    });
+    await page.route('**/api/contact', async (route) => {
+      const age = Date.now() - issuedAt;
+      ages.push(age);
+      await route.fulfill(
+        age < 5000
+          ? { status: 422, contentType: 'application/json; charset=utf-8', body: JSON.stringify({ error: 'Please check the form and try again.', code: 'token' }) }
+          : { contentType: 'application/json; charset=utf-8', body: JSON.stringify({ ok: true, message: 'Message received. I will get back to you.' }) },
+      );
+    });
+    await preparePage(page, '/ai/', 'form.contact-form');
+    const form = await fillContactForm(page);
+    await form.locator('button[type="submit"]').click();
+    await expect(form.locator('.contact-form-status')).toHaveText('Message received. I will get back to you.', { timeout: 15_000 });
+    expect(ages).toHaveLength(1);
+    expect(ages[0]).toBeGreaterThanOrEqual(5000);
+  });
+
   test('a refused message is sent again with a fresh token', async ({ page }) => {
     let issued = 0;
     const tokens = [];

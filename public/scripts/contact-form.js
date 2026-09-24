@@ -1,8 +1,13 @@
 /* Progressive enhancement for the contact form */
 (function () {
-  // The handler refuses a form token younger than three seconds, so a submit
-  // that comes sooner waits out the difference instead of failing.
-  var MIN_TOKEN_AGE_MS = 3500;
+  // The handler refuses a form token younger than its CONTACT_MIN_TIME, and
+  // says how young beside each token (minAgeMs), so a submit that comes sooner
+  // waits out the difference instead of failing. A handler that doesn't say
+  // is an older one, which asks for three seconds. Half a second more covers
+  // the trip, and a minute is the most a visitor is asked to wait.
+  var DEFAULT_TOKEN_AGE_MS = 3000;
+  var TOKEN_AGE_MARGIN_MS = 500;
+  var MAX_TOKEN_AGE_MS = 60000;
   // A handler that never answers would otherwise leave the button on
   // "Sending..." for good.
   var TOKEN_TIMEOUT_MS = 10000;
@@ -28,12 +33,15 @@
 
     var token = null;
     var tokenAt = 0;
+    var tokenAgeMs = DEFAULT_TOKEN_AGE_MS;
     var tokenReady = null;
     function fetchToken() {
       return fetchWithin('/api/contact/token', { headers: { Accept: 'application/json' }, cache: 'no-store' }, TOKEN_TIMEOUT_MS)
         .then(function (res) { return res.ok ? res.json() : null; })
         .then(function (data) {
           token = data && typeof data.token === 'string' ? data.token : null;
+          var asked = data && typeof data.minAgeMs === 'number' && isFinite(data.minAgeMs) && data.minAgeMs >= 0 ? data.minAgeMs : DEFAULT_TOKEN_AGE_MS;
+          tokenAgeMs = Math.min(asked, MAX_TOKEN_AGE_MS);
           tokenAt = Date.now();
           return token;
         })
@@ -67,7 +75,7 @@
     }
 
     function send(retried) {
-      var wait = Math.max(0, MIN_TOKEN_AGE_MS - (Date.now() - tokenAt));
+      var wait = Math.max(0, tokenAgeMs + TOKEN_AGE_MARGIN_MS - (Date.now() - tokenAt));
       setTimeout(function () {
         var data = new FormData(form);
         data.set('token', token);
