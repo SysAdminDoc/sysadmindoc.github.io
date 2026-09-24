@@ -46,6 +46,10 @@ test('each way a running config lets someone else choose the address is named', 
   // The fourteenth drain review: `vars fwd X-Forwarded-For` and `header_up
   // {vars.fwd} ...` forged the header through a real Caddy.
   assert.match(variant((c) => { proxy(c).headers = { request: { set: { '{vars.fwd}': ['{http.request.header.X-Real-IP}'] } } }; }), /request\.set \{vars\.fwd\}/);
+  // The fifteenth: a wildcard replace or delete, and a handler with trust of its own.
+  assert.match(variant((c) => { proxy(c).headers = { request: { replace: { '*': [{ search_regexp: '^[^,]+,', replace: '{http.request.header.X-Real-IP},' }] } } }; }), /request\.replace \*/);
+  assert.match(variant((c) => { proxy(c).headers = { request: { delete: ['X-Forwarded-*'] } }; }), /request\.delete X-Forwarded-\*/);
+  assert.match(variant((c) => { proxy(c).trusted_proxies = { source: 'static', ranges: ['172.16.0.0/12'] }; }), /trusted_proxies/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.routes.push({ handle: [{ handler: 'headers', request: { replace: { 'X-Forwarded-For': [{ search: '.*', replace: '1.2.3.4' }] } } }] }); }), /request\.replace X-Forwarded-For/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.trusted_proxies = { source: 'static', ranges: ['private_ranges'] }; }), /trusts .*private_ranges/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.client_ip_headers = ['X-Real-IP']; }), /reads the address from \["X-Real-IP"\]/);

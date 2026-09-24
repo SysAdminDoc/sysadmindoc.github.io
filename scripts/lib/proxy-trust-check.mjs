@@ -10,8 +10,10 @@ import { CLIENT_ADDRESS_HEADERS } from './caddyfile.mjs';
 
 // Caddy expands placeholders in a header's name too, so `header_up
 // {vars.fwd} ...` with fwd set to X-Forwarded-For forges it; a name holding
-// one counts (fourteenth drain review).
-const isClientAddressHeader = (name) => CLIENT_ADDRESS_HEADERS.includes(String(name).toLowerCase()) || String(name).includes('{');
+// one counts (fourteenth drain review). So does a wildcard: `replace` with
+// `*` rewrites every field, and a delete of `X-Forwarded-*` takes the
+// address with it (fifteenth).
+const isClientAddressHeader = (name) => CLIENT_ADDRESS_HEADERS.includes(String(name).toLowerCase()) || /[{*]/.test(String(name));
 
 /** Every request-header change in a Caddy JSON config that names a client-address header. */
 function requestHeaderChanges(config) {
@@ -22,6 +24,9 @@ function requestHeaderChanges(config) {
       return;
     }
     if (!node || typeof node !== 'object') return;
+    // A reverse_proxy with trust of its own takes an address from whoever is
+    // in those ranges, whatever the server trusts (fifteenth drain review).
+    if (node.handler === 'reverse_proxy' && node.trusted_proxies !== undefined) found.push(`${where}.trusted_proxies ${JSON.stringify(node.trusted_proxies)}`);
     const request = node.request;
     if (request && typeof request === 'object' && !Array.isArray(request)) {
       for (const operation of ['set', 'add', 'replace']) {

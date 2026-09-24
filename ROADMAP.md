@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Hold the proxy trust checks to an allowlist (fourth attempt)
-  Why: A placeholder with no colon (`{$ "x}`, which Caddy replaces with nothing) and one whose variable is set (`{$PATH:"}`) still fool the static lexer; `header_up * "^[^,]+," "{http.request.header.X-Real-IP},"` rewrites X-Forwarded-For through a wildcard that neither check reads; reverse_proxy's own `trusted_proxies` on a handler isn't read live; wildcard deletes (`X-Forwarded-*`) pass. Three rounds of fixing each spelling haven't held.
-  Evidence: fifteenth drain review, 2026-09-24; Caddy v2.11.4 parse.go:94-105, headers.go:287-310, reverseproxy.go:147,928-935.
-  Touches: `scripts/lib/proxy-trust-check.mjs`, `scripts/lib/caddyfile.mjs`, `test/endpoint-header-contract.test.mjs`, `test/proxy-trust-check.test.mjs`.
-  Acceptance: the static check refuses every `{$...}` but `{$CSP_POLICY}`, both checks refuse a request header name holding `*` or a placeholder and any handler-level `trusted_proxies`, and each of these variants fails. If this is refuted again, the item moves to Roadmap_Blocked.md.
-  Complexity: S
-
 - [ ] P2: Count every writer that can reach a Caddy container's output
   Why: A `net` writer with `soft_start` falls back to stderr; a file writer aimed at `/dev/stderr` or `/proc/self/fd/1` writes to the container log; the include/exclude reading isn't Caddy's longest-match rule (an include of `http` and `http.log.error.portfolio` with an exclude of `http.log.error` still logs portfolio errors); and a logger that names only another site's log can still receive portfolio requests through a catch-all site, a mixed-case Host or `log_name`. `exclude ["*"]` reads as a leak though Caddy drops every module log with it.
   Evidence: fifteenth drain review, 2026-09-24; Caddy logging.go:94-113,549-591, netwriter.go:199-211, httptype.go:914-917; `scripts/lib/edge-log-check.mjs`.

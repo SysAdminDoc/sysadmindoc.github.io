@@ -195,8 +195,14 @@ function serviceArgs(service) {
 function trustProblems(caddyfile, compose) {
   const edge = `${EDGE_PROXY_ADDRESS}/32`;
   const problems = [];
-  // Caddy puts an unset variable's default in place before it lexes, so a
-  // default can be a directive or a header name (eleventh drain review).
+  // Caddy puts a variable's value (or its default, or nothing) in place before
+  // it lexes, so a placeholder can become a directive, a header name or a
+  // stray quote. Reading them kept losing (a colon-less name, a variable that
+  // is set: fifteenth drain review), so the only one allowed is the CSP the
+  // deploy writes into csp.env.
+  for (const placeholder of caddyfile.match(/\{\$[^}]*\}/g) ?? []) {
+    if (placeholder !== '{$CSP_POLICY}') problems.push(`the Caddyfile uses the environment placeholder ${placeholder}`);
+  }
   const nodes = parseCaddyfile(expandEnvDefaults(caddyfile));
   const [global] = nodes;
   // Without trusted_proxies the inner Caddy replaces the edge's X-Forwarded-For
@@ -326,6 +332,18 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
       'reverse_proxy ntfy:80 {',
       'reverse_proxy ntfy:80 {\n\t\tflush_interval -1 {$ "x:}\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
     ),
+    // The fifteenth review's.
+    'a variable name with no colon': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\tflush_interval -1 {$ "x}\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
+    ),
+    'a variable that is set': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up X-Note {$PATH:"}\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
+    ),
+    'a wildcard replace': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\theader_up * "^[^,]+," "{http.request.header.X-Real-IP},"'),
+    'a wildcard delete': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\theader_up -X-Forwarded-*'),
+    'a handler that trusts ranges of its own': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\ttrusted_proxies 172.16.0.0/12'),
     'a continued line': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\theader_up \\\n\t\t\tX-Forwarded-For {http.request.header.X-Real-IP}'),
     'a heredoc holding a quote': inCaddyfile(
       'reverse_proxy ntfy:80 {',

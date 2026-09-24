@@ -247,7 +247,9 @@ export function clientAddressHeaderWrites(nodes) {
     for (const child of node.children ?? []) if (child.tokens[0]) fields.push(child.tokens[0]);
     for (const field of fields) {
       const header = field.replace(/^[+\-?>]/, '');
-      if (CLIENT_ADDRESS_HEADERS.includes(header.toLowerCase()) || header.includes('{')) found.push(`${name} ${field} (line ${node.line})`);
+      // A placeholder or a wildcard could name any header, X-Forwarded-For
+      // included (fourteenth and fifteenth drain reviews).
+      if (CLIENT_ADDRESS_HEADERS.includes(header.toLowerCase()) || /[{*]/.test(header)) found.push(`${name} ${field} (line ${node.line})`);
     }
   }
   return found;
