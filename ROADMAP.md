@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Mask IPv6 addresses in both Caddy servers' error text, and drop `remote`
-  Why: The `error` filter masks IPv4 only, and whether the edge ever sees a visitor's IPv6 address is unverified. certmagic's "served key authentication" INFO entries carry a top-level `remote` (address and port), normally the CA's validator, which neither filter deletes.
-  Evidence: fourteenth drain review, 2026-09-24; certmagic `handshake.go`, `httphandlers.go`; both Caddyfiles' `error regexp`.
-  Touches: `deploy/vps/Caddyfile`, the edge Caddyfile in Contabo-VPS-Ops, `scripts/lib/edge-log-check.mjs`, its test.
-  Acceptance: an IPv6 address in `error` text is masked on both servers, `remote` is deleted, and the deploy fails on a filter without either.
-  Complexity: S
-
 - [ ] P3: Tokenize built HTML the way a browser does in the corner cases
   Why: `splitHtml` lets `<!-->` and `<!--->` hide the markup after them, counts hosts inside double-escaped script text, nested `<template>`, `<xmp>` and `<noframes>`, and lets a tag opener inside an attribute value swallow the rest of the page. No built page has any of these today.
   Evidence: eighth drain review, 2026-09-23; `scripts/lib/csp-host-usage.mjs:123-150`.

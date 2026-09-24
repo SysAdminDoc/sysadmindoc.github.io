@@ -30,8 +30,21 @@ export const REQUIRED_DELETIONS = Object.freeze([
   'client_ip',
   'user_agent',
   'referer',
+  // certmagic's "served key authentication" entries name their peer here,
+  // normally the CA's validator (fourteenth drain review).
+  'remote',
   'resp_headers',
 ]);
+
+// Error text as reverse_proxy and the TLS stack write it, with a visitor's
+// address in each form: IPv4, IPv6 and IPv4-mapped. The `error` filter must
+// leave no address in any.
+const ERROR_SAMPLES = Object.freeze([
+  'write tcp 172.18.255.254:443->203.0.113.9:51234: broken pipe',
+  'write tcp [2001:db8::1]:443->[2001:db8:0:1::5]:51234: broken pipe',
+  'read tcp [::ffff:203.0.113.9]:443: connection reset by peer',
+]);
+const leavesAddress = (text) => /\d+\.\d+\.\d+\.\d+/.test(text) || /[0-9a-f]{1,4}:[0-9a-f]{0,4}:/i.test(text) || /::[0-9a-f]/i.test(text);
 
 /** Fields holding the page a visitor asked for, whose query string is cut. */
 export const QUERY_FIELDS = Object.freeze(['request>uri', 'uri']);
@@ -90,8 +103,10 @@ function filterProblem(logger, { mustExclude = [], subject, possessive }) {
   // The `error` field, where reverse_proxy puts a failed write to the visitor.
   // A handler error's own text is the entry's message, which a filter encoder
   // can't touch, so there's nothing to check for it here.
-  const masked = applies(fields.error, 'write tcp 172.18.255.254:443->203.0.113.9:51234: broken pipe');
-  if (masked === null || /\d+\.\d+\.\d+\.\d+/.test(masked)) missing.push('addresses in error text (error)');
+  if (ERROR_SAMPLES.some((sample) => {
+    const masked = applies(fields.error, sample);
+    return masked === null || leavesAddress(masked);
+  })) missing.push('addresses in error text (error)');
   if (missing.length > 0) return `${possessive} filter keeps ${missing.join(', ')}`;
   // An exclusion covers a logger and everything under it, so http.log.error
   // also keeps http.log.error.portfolio out. A logger that includes only

@@ -21,7 +21,9 @@ const fields0923 = {
   referer: { filter: 'delete' },
   user_agent: { filter: 'delete' },
 };
-// And with the top-level fields dropped too, as both Caddyfiles now have it.
+// And with the top-level fields dropped too, `remote` included, and IPv6
+// masked in error text, as both Caddyfiles now have it.
+const ERROR_MASK = '[0-9a-fA-F:]*[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+|[0-9a-fA-F]*:[0-9a-fA-F]*:[0-9a-fA-F:]*';
 const filtered = {
   writer: { output: 'stderr' },
   encoder: {
@@ -29,7 +31,9 @@ const filtered = {
     wrap: { format: 'json' },
     fields: {
       ...fields0923,
+      error: { filter: 'regexp', regexp: ERROR_MASK, value: 'x.x.x.x' },
       client_ip: { filter: 'delete' },
+      remote: { filter: 'delete' },
       remote_addr: { filter: 'delete' },
       remote_ip: { filter: 'delete' },
       remote_port: { filter: 'delete' },
@@ -84,6 +88,17 @@ const edgeLogs = () => ({
   portfolio: fileLogger('portfolio'),
 });
 
+// The fourteenth drain review: the mask knew IPv4 only, and certmagic's
+// "served key authentication" entries carry a top-level `remote`.
+test('error text loses IPv6 and IPv4-mapped addresses too, and remote goes', () => {
+  const ipv4Only = { filter: 'regexp', regexp: '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+', value: 'x.x.x.x' };
+  assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, error: ipv4Only }))) ?? '', /keeps addresses in error text/);
+  assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, remote: undefined }))) ?? '', /keeps remote\b/);
+  const mask = new RegExp(ERROR_MASK, 'g');
+  assert.equal('read tcp [::ffff:203.0.113.9]:443: reset'.replace(mask, 'x.x.x.x'), 'read tcp [x.x.x.x]x.x.x.x reset', 'an IPv4-mapped address goes whole');
+  assert.equal('context deadline exceeded'.replace(mask, 'x.x.x.x'), 'context deadline exceeded', 'and ordinary error text stays');
+});
+
 // The eighth drain review: the deploy read only `default`, so a second logger
 // on the container's output would have passed while it wrote addresses.
 test('every logger that writes to the container output is held to the default one\'s filter', () => {
@@ -132,7 +147,7 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   for (const name of REQUIRED_DELETIONS) assert.match(global, new RegExp(`\\n\\s*${name} delete\\n`), `the inner Caddy drops ${name}`);
   assert.match(global, /request>uri regexp \\\?\.\*\$ ""/);
   assert.match(global, /\n\s*uri regexp \\\?\.\*\$ ""\n/, 'and the top-level uri');
-  assert.match(global, /error regexp \[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+ x\.x\.x\.x/);
+  assert.ok(global.includes(`error regexp ${ERROR_MASK} x.x.x.x`), 'the error mask covers IPv4, IPv6 and IPv4-mapped addresses');
 
   // What /privacy/ promises about them, which the filters above make true. It
   // used to say they never hold "anything your browser sent", though they keep
