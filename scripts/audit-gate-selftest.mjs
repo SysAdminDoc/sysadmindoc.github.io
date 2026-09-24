@@ -198,6 +198,31 @@ const cases = [
     },
   },
   {
+    name: 'title-style:audit',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: 'an em dash in the home page title',
+    expect: /index\.html: <title> "[^"]*" has an em dash/,
+    plant() {
+      const html = readScratch('index.html');
+      if (!/<title>/.test(html)) return false;
+      writeScratch('index.html', html.replace('<title>', `<title>Home ${String.fromCharCode(0x2014)} `));
+      return true;
+    },
+  },
+  {
+    name: 'title-style:audit (feed name)',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: 'a spaced hyphen in a feed link name',
+    expect: /the \/rss\.xml link "[^"]*" has a hyphen between spaces/,
+    plant() {
+      const html = readScratch('index.html');
+      const planted = html.replace(/(<link\b[^>]*\bhref="\/rss\.xml"[^>]*\btitle=")|(<link\b[^>]*\btitle=")(?=[^"]*"[^>]*\bhref="\/rss\.xml")/, (match) => `${match}Feed - `);
+      if (planted === html) return false;
+      writeScratch('index.html', planted);
+      return true;
+    },
+  },
+  {
     name: 'feed:audit',
     args: ['scripts/audit-feed.mjs', '--dist', scratch],
     violation: 'a JSON feed with no items',

@@ -43,11 +43,11 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: A 5xx from `/api/contact` on a navigation shows a page saying the message wasn't sent and giving the email address, and a test pins the route.
   Complexity: S
 
-- [ ] P3: One title and feed-name style, enforced by a test
-  Why: Two routes use em dashes in `<title>`, the homepage uses a spaced hyphen, and six feed titles use em dashes, which breaks the site's own writing rule.
-  Evidence: `src/pages/colophon.astro:11`, `src/pages/data.astro:73`, the homepage title, `src/layouts/Base.astro:169-174`, and the `&mdash;` in the ImgConverter description (`src/data/projects.ts:111`).
-  Touches: those files, and a new assertion in `test/`.
-  Acceptance: No built `<title>` or feed title contains an em dash, an en dash or a spaced hyphen, and a test enforces it.
+- [ ] P3: Take the em dashes out of the project descriptions
+  Why: 41 descriptions in `src/data/projects.ts` join their halves with `&mdash;` (ImgConverter's among them), and they reach every catalog card, `rss.xml`, `atom.xml` and `feed.json`, which breaks the site's own writing rule. `title-style:audit` checks names only, not descriptions.
+  Evidence: `git grep -c '&mdash;' src/data/projects.ts` gives 41 on 2026-09-24; 18 in `rss.xml`, 18 in `atom.xml` and 9 in `feed.json` in that day's build.
+  Touches: `src/data/projects.ts`, a check over built descriptions (the feed audit or the title-style audit).
+  Acceptance: No project description in `src/data` or in any built feed has an em dash or en dash, each rewritten as a sentence rather than a mechanical swap, and a build check keeps it that way.
   Complexity: S
 
 - [ ] P3: Publish GitHub releases for v0.43.0 through v0.45.x

@@ -308,6 +308,7 @@ test('every dist-reading audit is proven able to reject a planted violation', as
     'schema:audit',
     'search:audit',
     'sitemap:audit',
+    'title-style:audit',
     'fix-html-structure',
   ]) {
     assert.ok(covered.has(gate), `${gate} has no planted-violation case in the gate self-test`);

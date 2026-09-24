@@ -19,7 +19,7 @@ test('Atom project feed is routed, advertised, cached, and audited', async () =>
   assert.match(atom, /endpointHeaders\('application\/atom\+xml; charset=UTF-8'\)/);
   assert.match(atom, /<link href="\$\{site\}\/atom\.xml" rel="self" type="application\/atom\+xml" \/>/);
   assert.match(atom, /<entry>/);
-  assert.match(base, /type="application\/atom\+xml" title="Matt Parker . projects \(Atom\)" href="\/atom\.xml"/);
+  assert.match(base, /type="application\/atom\+xml" title="Projects \(Atom\) \| Matt Parker" href="\/atom\.xml"/);
   assert.match(endpointsAudit, /href: '\/atom\.xml', type: 'application\/atom\+xml'/);
   assert.match(endpointsAudit, /route: '\/atom\.xml', file: 'src\/pages\/atom\.xml\.ts'/);
   assert.match(feedAudit, /dist\/atom\.xml/);
