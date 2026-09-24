@@ -92,13 +92,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Each minor version from v0.43.0 has a release with the static-site ZIP and its SHA-256, and `smoke:release` passes against the newest one.
   Complexity: S
 
-- [ ] P3: Check the server's own contact settings and backups against /privacy/
-  Why: `CONTACT_RETENTION_DAYS` set in the server-side `contact-secrets.env` would override the default the page is built from, and the privacy test can't see that file. A backup of the `contact-data` volume would outlive the 365-day purge.
-  Evidence: third drain review; `test/privacy-retention.test.mjs` reads only the committed compose file.
-  Touches: `scripts/deploy-vps.mjs` (refuse to deploy when the live env file sets a retention the page doesn't state), the VPS backup scripts in Contabo-VPS-Ops.
-  Acceptance: A deploy fails on a mismatched retention in the live env, and no backup keeps a lead longer than the page says.
-  Complexity: S
-
 - [ ] P3: Match the CSP host audit to how browsers check a prefetch
   Why: `scripts/lib/csp-host-usage.mjs` counts a `rel=prefetch` against the directive its `as` names, but CSP Level 3 checks prefetches against `default-src`.
   Evidence: third drain review, from the spec; not yet tested in a browser.

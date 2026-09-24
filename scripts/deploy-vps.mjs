@@ -29,7 +29,8 @@ import { caddyTrustProblems, networkProblems, ntfyTrustProblems } from './lib/pr
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
 import { builtDataProblem } from './lib/built-data-mode.mjs';
 import { logRetentionProblem } from './lib/log-retention.mjs';
-import { SERVER_LOG_MB } from '../src/data/retention.ts';
+import { LEAD_RETENTION_DAYS, SERVER_LOG_MB } from '../src/data/retention.ts';
+import { leadRetentionProblem } from './lib/lead-retention-check.mjs';
 import { smokeReportProblem } from './lib/csp-report-summary.mjs';
 import { vpsSshOptions } from './lib/vps-ssh.mjs';
 import { acquireLock, restoreLeftovers } from './visual-gate.mjs';
@@ -167,6 +168,18 @@ function verifyServerLogRetention() {
     if (problem) throw new Error(`deploy-vps: ${problem}.`);
   }
   console.log(`deploy-vps: Docker keeps ${SERVER_LOG_MB} MB of each Caddy server's own log, as /privacy/ says.`);
+}
+
+// /privacy/ states how long a lead is kept, and contact-secrets.env on the
+// server can override the handler's default. Only that one variable leaves
+// the box: the rest of the environment holds the handler's secrets.
+function verifyLeadRetention() {
+  const output = captureRemote(
+    "docker inspect portfolio-contact-handler --format 'container={{.Name}}{{println}}{{range .Config.Env}}{{println .}}{{end}}' 2>&1 | grep -E '^(container=|CONTACT_RETENTION_DAYS=)' || true",
+  );
+  const problem = leadRetentionProblem(output, LEAD_RETENTION_DAYS);
+  if (problem) throw new Error(`deploy-vps: ${problem}.`);
+  console.log(`deploy-vps: the contact handler keeps leads ${LEAD_RETENTION_DAYS} days, as /privacy/ says.`);
 }
 
 // Only the edge may choose the address the inner Caddy, ntfy and the contact
@@ -381,6 +394,7 @@ verifyCaddyVersion();
 verifyNtfyVersion();
 verifyInnerLogging();
 verifyServerLogRetention();
+verifyLeadRetention();
 verifyProxyTrust();
 
 // 5. Verify the deploy against the live origin unless skipped.
