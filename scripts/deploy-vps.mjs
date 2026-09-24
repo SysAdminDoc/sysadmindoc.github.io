@@ -21,6 +21,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
+import { encodeOwnSamples, ownInlineSamples } from './lib/csp-own-samples.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
 import { EDGE_EXCLUDES, REAL_FILE_PROBE, fileWriterPaths, loggingProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
@@ -261,7 +262,9 @@ function writeComposeEnvFile(distDir) {
   const envFile = path.join(root, '.tmp', 'csp.env');
   fs.mkdirSync(path.dirname(envFile), { recursive: true });
   const policy = buildCspHeaderValue(distDir);
-  fs.writeFileSync(envFile, `CSP_POLICY="${policy}"\n`, 'utf8');
+  // The report sink keeps a sample only when it's the start of one of these.
+  const ownSamples = encodeOwnSamples(ownInlineSamples(distDir));
+  fs.writeFileSync(envFile, `CSP_POLICY="${policy}"\nCSP_OWN_SAMPLES=${ownSamples}\n`, 'utf8');
   return envFile;
 }
 

@@ -8,12 +8,12 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Store only the site's own samples in the CSP sink, and a marker for the rest
-  Why: Four rounds of scrub rules still leak. The seventeenth review got through `jane.doe&commat;example.com`, the JS octal `jane.doe\100example.com`, `(at)` and `[at]` spellings, standard base64 keys (`+` and `/` split the run; 28% of random 12-byte tokens survived whole), IPv4 and IPv6 addresses, a MAC address and a dotted session ID. The sample exists to tell the site's own inline code from an extension's, and the site knows its own inline blocks.
-  Evidence: seventeenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:169-203`.
-  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/deploy-vps.mjs` (ship the site's own sample prefixes), `scripts/lib/csp-report-summary.mjs`, their tests.
-  Acceptance: a sample that starts like one of the built site's inline scripts or styles is stored as it came (it's public code); any other is stored as a fixed marker plus a short keyed hash that groups repeats, so no visitor text is kept whatever it holds; every sample from the review is stored as the marker.
-  Complexity: M
+- [ ] P2: Re-store the samples already in the CSP store under the new rule
+  Why: The sink now keeps only the site's own samples and a keyed marker for the rest, but rows written before that keep whatever the old scrub rules let through, which the seventeenth review showed can include an address or a key, until 10 MB of new reports rotate them out.
+  Evidence: `deploy/vps/csp-report-server.mjs` (`storedSample`), the store at `/home/deploy/sites/portfolio/csp-reports/`.
+  Touches: `deploy/vps/csp-report-server.mjs` (rewrite the store's samples at start), its tests.
+  Acceptance: at start the sink rewrites every stored sample that isn't the site's own as the marker, atomically and once per row, and a test shows a planted old row come out as a marker with the rest of the row unchanged.
+  Complexity: S
 
 ### P3
 

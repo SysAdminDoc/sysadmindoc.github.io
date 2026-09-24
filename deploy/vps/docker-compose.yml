@@ -73,6 +73,9 @@ services:
     command: ["node", "/app/csp-report-server.mjs"]
     environment:
       CSP_REPORT_LOG: /var/lib/csp-reports/reports.ndjson
+      # The start of each of the site's own inline blocks, which deploy-vps.mjs
+      # reads from the build; the sink stores any other sample as a marker.
+      CSP_OWN_SAMPLES: ${CSP_OWN_SAMPLES:?csp.env with the site's own CSP samples is required}
     volumes:
       - ./csp-report-server.mjs:/app/csp-report-server.mjs:ro
       - ./csp-reports:/var/lib/csp-reports

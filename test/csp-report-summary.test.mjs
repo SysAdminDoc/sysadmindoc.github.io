@@ -10,7 +10,7 @@ import {
   ALERT_MIN_SPAN_MS,
   NEW_VIOLATIONS_LIMIT,
   SMOKE_REPORT_SAMPLE,
-  SMOKE_REPORT_SCRUBBED,
+  SMOKE_REPORT_STORED,
   parseStore,
   printable,
   smokeReportProblem,
@@ -203,9 +203,11 @@ test("the deploy's read-back accepts only the smoke report the current sink woul
         },
       },
       new Date(at),
+      undefined,
+      { key: Buffer.alloc(32, 7) },
     );
   const stored = posted('2026-09-24T02:01:00Z');
-  assert.equal(stored.sample, SMOKE_REPORT_SCRUBBED);
+  assert.match(String(stored.sample), SMOKE_REPORT_STORED, "a keyed marker, since the smoke sample is none of the site's own code");
   const lines = (...entries) => entries.map((entry) => JSON.stringify(entry)).join('\n');
   const runId = 'run1';
 
@@ -223,7 +225,10 @@ test("the deploy's read-back accepts only the smoke report the current sink woul
   assert.match(smokeReportProblem(lines({ ...stored, sample: SMOKE_REPORT_SAMPLE }), { since, runId }), /sample was stored as "live-smoke uid=4815162342"/);
   assert.match(smokeReportProblem(lines({ ...stored, document: `${stored.document}?synthetic=1` }), { since, runId }), /kept a query string/);
   assert.equal(category, 'synthetic');
-  assert.equal(sample, SMOKE_REPORT_SCRUBBED);
+  assert.match(String(sample), SMOKE_REPORT_STORED);
+  // The sink before the marker kept a scrubbed copy; a deploy that finds one is
+  // talking to a stale container.
+  assert.match(smokeReportProblem(lines({ ...stored, sample: 'live-smoke uid=[number]' }), { since, runId }), /not as a keyed \[other\] marker/);
 });
 
 test('every deploy posts the sample and reads the smoke report back after the smoke', async () => {

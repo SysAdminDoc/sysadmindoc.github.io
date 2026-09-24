@@ -7,6 +7,7 @@
 // Each stored report carries a category (synthetic, extension, first-party or
 // other) worked out from its redacted fields; scripts/csp-report-summary.mjs
 // reads them back for the nightly.
+import { createHmac, randomBytes } from 'node:crypto';
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -24,6 +25,7 @@ import { fileURLToPath } from 'node:url';
  * @property {number} maxReportsPerRequest
  * @property {number} maxRequestsPerMinute
  * @property {string} siteOrigin
+ * @property {readonly string[]} [ownSamples] the start of each of the site's own inline blocks
  */
 
 /** @type {ReporterConfig} */
@@ -37,6 +39,7 @@ export const DEFAULT_CONFIG = Object.freeze({
   maxReportsPerRequest: 20,
   maxRequestsPerMinute: 120,
   siteOrigin: 'https://portfolio.getparkerai.com',
+  ownSamples: Object.freeze([]),
 });
 
 export const REPORT_CATEGORIES = Object.freeze(['synthetic', 'extension', 'first-party', 'other']);
@@ -86,6 +89,7 @@ export function loadConfig(env = process.env) {
 
   return {
     siteOrigin,
+    ownSamples: decodeOwnSamples(env.CSP_OWN_SAMPLES),
     host: String(env.CSP_REPORT_HOST ?? DEFAULT_CONFIG.host),
     port: positiveInteger(env.CSP_REPORT_PORT, DEFAULT_CONFIG.port, 'CSP_REPORT_PORT'),
     logPath,
@@ -142,67 +146,75 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 }
 
 // The first 40 characters of the inline script or style a browser refused,
-// sent because the policy asks for 'report-sample'. The site's own inline code
-// is public, but an extension's can open with a per-user id or key, so anything
-// shaped like one goes before the sample is stored, along with control and
-// direction characters that could disguise what a log line says. In order: an
-// email address, even one the 40-character cut left without its domain, or
-// with its @ written %40; an extension's URL, which names the extension even
-// when cut short; any run of 24 or more letters, digits, _ or - (a Chrome
-// extension ID is 32 letters a to p) unless it's words joined by hyphens, like
-// a long custom property, and a shorter one of 12 or more that mixes letters
-// and digits; at the 40-character cut, 6 or more letters a to p opening a
-// string or argument, which is what's left of an ID cut short; digits split by
-// spaces, dashes, dots, slashes, underscores or brackets that come to 7 or more
-// in groups of 2 or more after the first (card and phone numbers, but not an
-// ISO date or a path's single-digit coordinates); and any 6 digits in a row.
-// The eleventh drain review found the %40, _ and / numbers and the cut ID
-// leaking, and custom properties, dates and path data mangled. The fifteenth
-// found an at sign escaped, encoded twice or full width, an ID cut after `{`,
-// `[` or `/`, a cut missed in a sample with line breaks, and two regressions:
-// an ID joined to a word by a hyphen, and a phone number with a one-digit
-// group after its country code.
-const NOT_ADDRESS = '[^\\s@"\'`<>(){};,]';
-// @ as a URL (%40, %2540), a JS string (\x40, @, \u{40}), HTML (&#64;,
-// &#x40;) or CSS (\40 ) can write it. NFKC below makes the full-width and
-// small at signs plain ones.
-const AT = String.raw`(?:@|%(?:25)*40|\\x40|\\u0*40|\\u\{0*40\}|&#0*64;?|&#x0*40;?|\\0*40 ?)`;
-const EMAIL = new RegExp(`${NOT_ADDRESS}+?${AT}${NOT_ADDRESS}*`, 'gi');
-export function scrubSample(value) {
-  if (typeof value !== 'string') return null;
-  const raw = value.slice(0, 256);
-  const whole = raw
-    .normalize('NFKC')
-    .replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  // A browser cuts the sample at 40 characters before its whitespace is
-  // collapsed here, so a cut one with line breaks or indentation comes out
-  // shorter: measure what arrived. One that ends in whitespace ended on a
-  // whole word.
-  const cut = whole.length >= 40 || (raw.length >= 40 && !/[\s\p{Cc}\p{Cf}\p{Zl}\p{Zp}]$/u.test(raw));
-  let text = whole
-    .slice(0, 40)
-    .replace(EMAIL, '[email]')
-    .replace(/\b([a-z]+(?:-[a-z]+)*-extension|webkit-masked-url):\/\/[^\s"'`<>()]*/gi, '$1://[extension]')
-    .replace(/[A-Za-z0-9_-]{12,}/g, (run) => {
-      // Words joined by hyphens, like a long custom property, but not an ID
-      // joined to one (`--<id>-root`): no word runs past 16 letters.
-      const words = /^-{0,2}[A-Za-z]+(?:-[A-Za-z]+)+$/.test(run) && run.split('-').every((part) => part.length <= 16);
-      if (words || /^\d{4}-\d{2}-\d{2}(?:T\d{2})?$/.test(run)) return run;
-      return run.length >= 24 || (/\d/.test(run) && /[A-Za-z]/.test(run)) ? '[id]' : run;
-    });
-  if (cut) text = text.replace(/(^|[^A-Za-z0-9_])[a-p]{6,}$/, '$1[id]');
-  text = text
-    .replace(/\+?\d[\d ()./_-]{4,}\d/g, (run) => {
-      if (/^\d{4}([-/.])\d{2}\1\d{2}$/.test(run)) return run;
-      const groups = run.split(/\D+/).filter(Boolean);
-      if (groups.join('').length < 7) return run;
-      // A leading + or 00 dials abroad, whatever the groups: +33 6 12 34 56 78.
-      return /^(?:\+|00)/.test(run) || groups.slice(1).every((group) => group.length >= 2) ? '[number]' : run;
-    })
-    .replace(/\d{6,}/g, '[number]');
-  return text || null;
+// sent because the policy asks for 'report-sample'. It's there to tell the
+// site's own inline code from anything else, and the deploy hands the sink
+// the start of each of the site's own blocks (CSP_OWN_SAMPLES), which is
+// public code. A sample that is one of those, or a start of one, is stored as
+// it came. Any other sample could be an extension's code or a visitor's text,
+// holding an ID, a key or an address in whatever spelling, so four rounds of
+// scrub rules kept missing some (tenth, eleventh, fifteenth and seventeenth
+// drain reviews). It's stored as a fixed marker with a keyed hash instead:
+// repeats of one sample still group together, and nothing of what it said is
+// kept.
+export const OWN_SAMPLE_LENGTH = 40;
+const MIN_OWN_MATCH = 16;
+
+/** The site's own sample starts, from CSP_OWN_SAMPLES (base64url JSON array). */
+export function decodeOwnSamples(value) {
+  if (value === undefined || value === '') return [];
+  let parsed;
+  try {
+    parsed = JSON.parse(Buffer.from(String(value), 'base64url').toString('utf8'));
+  } catch {
+    parsed = null;
+  }
+  if (!Array.isArray(parsed) || !parsed.every((entry) => typeof entry === 'string' && entry.length > 0)) {
+    throw new Error('CSP_OWN_SAMPLES must be a base64url JSON array of non-empty strings.');
+  }
+  return parsed.map((entry) => entry.slice(0, OWN_SAMPLE_LENGTH));
+}
+
+/**
+ * What to store for a sample: the sample itself when it's the start of one of
+ * the site's own blocks, otherwise `[other <12 hex>]`, an HMAC of it under
+ * the sink's own key.
+ * @param {unknown} value
+ * @param {{ ownSamples?: readonly string[], key: Buffer | null }} options
+ */
+export function storedSample(value, { ownSamples = [], key }) {
+  if (typeof value !== 'string' || value === '') return null;
+  const text = value.slice(0, 256).replace(/\r\n?/g, '\n');
+  const own = ownSamples.some((start) => start.startsWith(text) && text.length >= Math.min(MIN_OWN_MATCH, start.length));
+  if (own) return text;
+  if (!key) return '[other]';
+  return `[other ${createHmac('sha256', key).update(text).digest('hex').slice(0, 12)}]`;
+}
+
+/**
+ * The sink's hash key, made once and kept beside the store so a restart
+ * doesn't split a sample's repeats into two groups.
+ * @param {typeof fs} fileSystem
+ * @param {string} dir
+ */
+export async function loadSampleKey(fileSystem, dir) {
+  const keyPath = path.join(dir, 'sample.key');
+  const read = async () => {
+    const key = Buffer.from((await fileSystem.readFile(keyPath, 'utf8')).trim(), 'base64');
+    if (key.length < 32) throw new Error(`csp-report: ${keyPath} holds no usable key; delete it to make a new one.`);
+    return key;
+  };
+  try {
+    return await read();
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  await fileSystem.mkdir(dir, { recursive: true });
+  try {
+    await fileSystem.writeFile(keyPath, randomBytes(32).toString('base64'), { flag: 'wx', mode: 0o600 });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  return read();
 }
 
 function schemeOf(value) {
@@ -253,7 +265,10 @@ function reportType(report) {
   return type && /^[a-z][a-z0-9-]*$/i.test(type) ? type : 'csp-violation';
 }
 
-export function normalizeReport(report, receivedAt = new Date(), siteOrigin = DEFAULT_CONFIG.siteOrigin) {
+/**
+ * @param {{ ownSamples?: readonly string[], key: Buffer | null }} [samples] what storedSample needs; without a key no sample is kept
+ */
+export function normalizeReport(report, receivedAt = new Date(), siteOrigin = DEFAULT_CONFIG.siteOrigin, samples = undefined) {
   const body = reportBody(report);
   const normalized = {
     receivedAt: receivedAt.toISOString(),
@@ -262,7 +277,7 @@ export function normalizeReport(report, receivedAt = new Date(), siteOrigin = DE
     blocked: redactUrl(body.blockedURL ?? body['blocked-uri'], { allowBareToken: true }),
     source: redactUrl(body.sourceFile ?? body['source-file'], { allowBareToken: true }),
     directive: directive(body.effectiveDirective ?? body['effective-directive'] ?? body.violatedDirective ?? body['violated-directive']),
-    sample: scrubSample(body.sample ?? body['script-sample']),
+    sample: storedSample(body.sample ?? body['script-sample'], samples ?? { key: null }),
     disposition: boundedText(body.disposition, 32),
     statusCode: boundedNumber(body.statusCode ?? body['status-code'], 100, 599),
     age: boundedNumber(report?.age, 0, 86_400_000),
@@ -277,6 +292,7 @@ export function normalizeReports(
   receivedAt = new Date(),
   maxReports = DEFAULT_CONFIG.maxReportsPerRequest,
   siteOrigin = DEFAULT_CONFIG.siteOrigin,
+  samples = undefined,
 ) {
   if (payload === null || typeof payload !== 'object') {
     throw new HttpError(400, 'Report body must be a JSON object or array.');
@@ -285,7 +301,7 @@ export function normalizeReports(
   if (reports.length < 1 || reports.length > maxReports) {
     throw new HttpError(413, `Report batch must contain 1-${maxReports} reports.`);
   }
-  return reports.map((report) => normalizeReport(report, receivedAt, siteOrigin));
+  return reports.map((report) => normalizeReport(report, receivedAt, siteOrigin, samples));
 }
 
 export function createRateLimiter(maxRequests, windowMs = 60_000, now = () => Date.now()) {
@@ -344,6 +360,13 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
   const now = dependencies.now ?? (() => new Date());
   const allowRequest = createRateLimiter(config.maxRequestsPerMinute, 60_000, () => now().getTime());
   let writeQueue = Promise.resolve();
+  /** @type {Promise<Buffer> | null} */
+  let keyReady = null;
+  const sampleKey = () =>
+    (keyReady ??= (dependencies.sampleKey ? Promise.resolve(dependencies.sampleKey) : loadSampleKey(fileSystem, path.dirname(config.logPath))).catch((error) => {
+      keyReady = null;
+      throw error;
+    }));
 
   async function appendLines(lines) {
     const text = `${lines.join('\n')}\n`;
@@ -422,7 +445,8 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
       } catch {
         throw new HttpError(400, 'Report body must be valid JSON.');
       }
-      const reports = normalizeReports(payload, now(), config.maxReportsPerRequest, config.siteOrigin ?? DEFAULT_CONFIG.siteOrigin);
+      const samples = { ownSamples: config.ownSamples ?? [], key: await sampleKey() };
+      const reports = normalizeReports(payload, now(), config.maxReportsPerRequest, config.siteOrigin ?? DEFAULT_CONFIG.siteOrigin, samples);
       const lines = reports.map((report) => JSON.stringify(report));
       if (lines.some((line) => Buffer.byteLength(line, 'utf8') > config.maxLineBytes)) {
         throw new HttpError(413, 'Normalized report is too large.');

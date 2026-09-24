@@ -10,9 +10,12 @@ import {
   loadConfig,
   normalizeReport,
   normalizeReports,
-  scrubSample,
+  decodeOwnSamples,
+  loadSampleKey,
+  storedSample,
 } from '../deploy/vps/csp-report-server.mjs';
 import { SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
+import { encodeOwnSamples } from '../scripts/lib/csp-own-samples.mjs';
 
 async function withTempReporter(options = {}, callback) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-csp-report-'));
@@ -80,7 +83,8 @@ test('normalizeReport keeps diagnostic paths but drops query strings and user da
     blocked: 'https://cdn.example.test/script.js',
     source: 'https://portfolio.getparkerai.com/app.js',
     directive: 'script-src',
-    sample: 'window.__cfg={user:"[id]",',
+    // Not the site's own code, and no key given, so nothing of it is kept.
+    sample: '[other]',
     statusCode: 200,
     category: 'first-party',
   });
@@ -105,68 +109,75 @@ test('normalizeReport keeps the keyword or scheme a browser sends instead of a U
   assert.equal(report({ blockedURL: 'not a url at all' }).blocked, '(invalid-url)');
 });
 
-test('scrubSample drops ids, long numbers, email addresses and control characters, and stays short', () => {
-  assert.equal(scrubSample('.dark-reader{color:#fff}'), '.dark-reader{color:#fff}');
-  assert.equal(scrubSample('var k="AKIA1234567890ABCDEF";'), 'var k="[id]";');
-  assert.equal(scrubSample('uid=4815162342;'), 'uid=[number];');
-  assert.equal(scrubSample('mail("someone@example.com")'), 'mail("[email]")');
-  assert.equal(scrubSample('a\u202Eb\nc\u0007d\u2066e\u2028f\uFEFFg'), 'a b c d e f g');
-  // Stays short. (Spaced, since a 40-character run is now an opaque token.)
-  assert.equal(scrubSample('x '.repeat(100)), 'x '.repeat(20));
-  // The tenth drain review's samples: a Chrome extension ID is letters only,
-  // an extension URL cut mid-ID still names it, card and phone numbers come in
-  // groups, and the 40-character cut can leave an email without its domain.
-  assert.equal(scrubSample('id="cjpalhdlnbpafiamejdnhcphjbkeiagm";'), 'id="[id]";');
-  assert.equal(scrubSample('url(chrome-extension://nngceckbapebfimnl'), 'url(chrome-extension://[extension]');
-  assert.equal(scrubSample('card 4111 1111 1111 1111;'), 'card [number];');
-  assert.equal(scrubSample('card 4111-1111-1111-1111;'), 'card [number];');
-  assert.equal(scrubSample('tel:+1-555-867-5309'), 'tel:[number]');
-  assert.equal(scrubSample('mailto:john.doe@'), '[email]');
-  // Short numbers and ordinary CSS stay as they are.
-  assert.equal(scrubSample('box-shadow:0 0 1px 2px rgba(0,0,0,.5)'), 'box-shadow:0 0 1px 2px rgba(0,0,0,.5)');
-  // Plain words and short numbers are code, not identifiers.
-  assert.equal(scrubSample('document.addEventListener("load",f,!0)'), 'document.addEventListener("load",f,!0)');
-  for (const value of [undefined, null, 42, '', '   ']) assert.equal(scrubSample(value), null);
+const KEY = Buffer.alloc(32, 3);
+const MARKER = /^\[other [0-9a-f]{12}\]$/;
+// The start of the critical CSS and the no-JS reveal block, as a build has them.
+const OWN = ['.rv,.card-enter{opacity:1!important;tra', ':root{--bg:#050913;--bg2:#0b1220;--bg3:#'];
+
+test("a sample from the site's own code is kept as it came, and any other as a keyed marker", () => {
+  const stored = (value, key = KEY) => storedSample(value, { ownSamples: OWN, key });
+  assert.equal(stored(OWN[0]), OWN[0]);
+  assert.equal(stored(OWN[1].slice(0, 20)), OWN[1].slice(0, 20), 'a start of one of them is public code too');
+  assert.match(stored(OWN[1].slice(0, 10)), MARKER, 'but not a scrap too short to say whose it is');
+  assert.match(stored(`${OWN[0]}x`), MARKER, 'nor anything that goes past it');
+  assert.equal(stored('p{a:1}\r\nq'), stored('p{a:1}\nq'), 'line endings read as one');
+  assert.equal(stored('window.foo=1'), stored('window.foo=1'), "a sample's repeats group together");
+  assert.notEqual(stored('window.foo=1'), stored('window.foo=2'));
+  assert.notEqual(stored('window.foo=1'), stored('window.foo=1', Buffer.alloc(32, 4)), 'under another key the hash is another');
+  assert.equal(storedSample('window.foo=1', { key: null }), '[other]');
+  for (const value of [undefined, null, 42, '']) assert.equal(stored(value), null);
 });
 
-// The eleventh drain review's samples, each of which leaked or was mangled.
-test('scrubSample catches what it missed and leaves code it mangled alone', () => {
-  // A 32-letter extension ID cut to 12 by the 40-character sample.
-  assert.equal(scrubSample('chrome.runtime.sendMessage("abcdefghijklmnopabcdefghijklmnop",x)'), 'chrome.runtime.sendMessage("[id]');
-  assert.equal(scrubSample('john.smith%40example.com'), '[email]');
-  assert.equal(scrubSample('pan=4111_1111_1111_1111;'), 'pan=[number];');
-  assert.equal(scrubSample('tel 555/123/4567'), 'tel [number]');
-
-  assert.equal(scrubSample('--portfolio-accent-highlight-strong:red'), '--portfolio-accent-highlight-strong:red', 'a long custom property');
-  assert.equal(scrubSample('<path d="M12 2C6.48 2 2 6.48 2 12s4.48"'), '<path d="M12 2C6.48 2 2 6.48 2 12s4.48"', 'path data');
-  assert.equal(scrubSample('var built="2026-09-24T12:00:00Z";'), 'var built="2026-09-24T12:00:00Z";', 'an ISO date');
-  // A short sample isn't cut, so a trailing word stays.
-  assert.equal(scrubSample('f("headline")'), 'f("headline")');
-});
-
-// The fifteenth drain review's samples: four leaks and two regressions.
-test('scrubSample finds a cut in a sample with line breaks, a cut ID after any mark, and an at sign however it is written', () => {
-  // Cut at 40 by the browser, 28 once its whitespace collapses.
-  const indented = `if(a){\n${' '.repeat(12)}send("abcdefghijklmnopabcdefghijklmnop`.slice(0, 40);
-  assert.equal(indented.length, 40);
-  assert.equal(scrubSample(indented), 'if(a){ send("[id]');
-  assert.equal(scrubSample(`x = headline${' '.repeat(28)}`), 'x = headline', 'a sample that ends in whitespace ended on a whole word');
-  for (const mark of ['{', '[', '/', ';']) {
-    assert.equal(scrubSample(`${'x=1;'.repeat(8)}${mark}abcdefghijklmnop`), `${'x=1;'.repeat(8)}${mark}[id]`, mark);
-  }
-
+// Every sample a scrub rule let through in the tenth, eleventh, fifteenth and
+// seventeenth drain reviews, and the ones it mangled. None is the site's own,
+// so each is kept as nothing but the marker.
+test('no visitor or extension text survives, whatever it holds', () => {
   const backslash = '\\';
-  const ats = ['%2540', '%252540', `${backslash}x40`, `${backslash}u0040`, `${backslash}u{40}`, '&#64;', '&#x40;', `${backslash}40 `, String.fromCharCode(0xff20), String.fromCharCode(0xfe6b)];
-  for (const at of ats) assert.equal(scrubSample(`mail("jane${at}example.com")`), 'mail("[email]")', JSON.stringify(at));
+  const samples = [
+    'window.__cfg={user:"u-9f8e7d6c5b4a3210",n:1};',
+    'var k="AKIA1234567890ABCDEF";',
+    'mail("someone@example.com")',
+    'id="cjpalhdlnbpafiamejdnhcphjbkeiagm";',
+    'url(chrome-extension://nngceckbapebfimnl',
+    'card 4111 1111 1111 1111;',
+    'tel:+33 6 12 34 56 78',
+    'john.smith%40example.com',
+    'jane.doe&commat;example.com',
+    `jane.doe${backslash}100example.com`,
+    'jane (at) example [dot] com',
+    'k="Zm9vYmFy+YmF6cXV4/cXV1eA=="',
+    'addr 203.0.113.9 mac 00:1a:2b:3c:4d:5e',
+    'fe80::1ff:fe23:4567:890a',
+    `mail("jane${String.fromCharCode(0xff20)}example.com")`,
+    '--abcdefghijklmnopabcdefghijklmnop-root:1',
+  ];
+  const stored = samples.map((sample) => storedSample(sample, { ownSamples: OWN, key: KEY }));
+  for (const [index, value] of stored.entries()) assert.match(value, MARKER, samples[index]);
+  assert.equal(new Set(stored).size, samples.length, 'each keeps a group of its own');
 });
 
-test('scrubSample scrubs an ID joined to a word and a number dialled abroad again', () => {
-  assert.equal(scrubSample('--abcdefghijklmnopabcdefghijklmnop-root:1'), '[id]:');
-  assert.equal(scrubSample('x:var(--Abcdefghijklmnopqrstu-bg)'), 'x:var([id])', 'a 21-letter word is no word');
-  assert.equal(scrubSample('--portfolio-accent-highlight-strong:red'), '--portfolio-accent-highlight-strong:red', 'a long custom property still stays');
-  assert.equal(scrubSample('tel:+33 6 12 34 56 78'), 'tel:[number]');
-  assert.equal(scrubSample('tel:0033 6 12 34 56 78'), 'tel:[number]');
-  assert.equal(scrubSample('<path d="M12 2C6.48 2 2 6.48 2 12s4.48"'), '<path d="M12 2C6.48 2 2 6.48 2 12s4.48"', 'path data still stays');
+test("the site's own samples arrive base64url-encoded, and a bad value stops the sink", () => {
+  assert.deepEqual(decodeOwnSamples(encodeOwnSamples(OWN)), OWN);
+  assert.deepEqual(decodeOwnSamples(encodeOwnSamples(['x'.repeat(60)])), ['x'.repeat(40)], 'only a sample-sized start is kept');
+  assert.deepEqual(decodeOwnSamples(undefined), []);
+  assert.throws(() => decodeOwnSamples('not-json'), /CSP_OWN_SAMPLES/);
+  assert.throws(() => decodeOwnSamples(encodeOwnSamples(['ok', ''])), /CSP_OWN_SAMPLES/);
+  assert.deepEqual(loadConfig({ CSP_OWN_SAMPLES: encodeOwnSamples(OWN) }).ownSamples, OWN);
+  assert.deepEqual(loadConfig({}).ownSamples, []);
+});
+
+test("the sink's key is made once and kept beside the store", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-csp-key-'));
+  try {
+    const first = await loadSampleKey(fs, dir);
+    const second = await loadSampleKey(fs, dir);
+    assert.equal(first.length, 32);
+    assert.deepEqual(second, first);
+    await fs.writeFile(path.join(dir, 'sample.key'), 'c2hvcnQ=');
+    await assert.rejects(loadSampleKey(fs, dir), /holds no usable key/);
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true });
+  }
 });
 
 // The eleventh drain review: at 120 requests a minute of 20 reports each,
@@ -272,8 +283,30 @@ test('reporter appends a redacted report and returns a stored marker', async () 
     assert.equal(stored.directive, 'style-src');
     assert.equal(stored.blocked, 'inline');
     assert.equal(stored.category, 'first-party');
-    assert.equal(stored.sample, 'body{--visitor:[number];color:red}');
-    assert.doesNotMatch(lines[0], /48151623/);
+    assert.match(stored.sample, MARKER);
+    assert.doesNotMatch(lines[0], /48151623|visitor/);
+  });
+});
+
+test("the reporter keeps the site's own sample, and one key across restarts", async () => {
+  await withTempReporter({ ownSamples: OWN }, async ({ logPath }) => {
+    const post = async (reporter, sample) => {
+      const response = responseMock();
+      const body = JSON.stringify({ type: 'csp-violation', body: { documentURL: 'https://portfolio.getparkerai.com/', blockedURL: 'inline', effectiveDirective: 'style-src', sample } });
+      await reporter.handleRequest(requestMock({ body }), response);
+      assert.equal(response.status, 204);
+    };
+    const first = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
+    await post(first, OWN[1]);
+    await post(first, 'extension-code(1234)');
+    // A restart reads the key the first run made beside the store.
+    const restarted = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
+    await post(restarted, 'extension-code(1234)');
+    const samples = (await fs.readFile(logPath, 'utf8')).trim().split('\n').map((line) => JSON.parse(line).sample);
+    assert.equal(samples[0], OWN[1]);
+    assert.match(samples[1], MARKER);
+    assert.equal(samples[2], samples[1], 'the same group after the restart');
+    await fs.access(path.join(path.dirname(logPath), 'sample.key'));
   });
 });
 

@@ -43,8 +43,9 @@ export function parseStore(text) {
   return { reports, unreadable };
 }
 
-// Far past anything the sink stores, which is 40 characters of which every
-// two can become a seven-character mark.
+// Far past anything a sink stores: the current one keeps 40 characters of the
+// site's own code or a short marker, and older rows up to 40 characters of
+// which every two could become a seven-character mark.
 const KEY_SAMPLE_MAX = 512;
 const KEY_MAX = 2048;
 
@@ -66,8 +67,8 @@ export function violationKey(report) {
       blocked = keyword ? report.blocked.toLowerCase() : '(unreadable)';
     }
   }
-  // The whole stored sample (the sink keeps 40 characters, more after its
-  // [email] and [number] marks), quoted JSON-style. Cut to 21, reports spread
+  // The whole stored sample (the site's own code, or a marker whose hash
+  // groups a sample's repeats), quoted JSON-style. Cut to 21, reports spread
   // over an hour could alert once and then silence every real block that began
   // the same way (eleventh drain review); cut to 64, or with " turned into ',
   // two samples still shared a key (fifteenth).
@@ -142,10 +143,11 @@ export function summarizeReports(
 
 // The live smoke posts one synthetic report per deploy with this sample
 // (scripts/smoke-live-site.mjs), and deploy-vps reads it back from the store.
-// Only the sink in this repo stores it as synthetic, with the number scrubbed
-// and the query strings cut, so a stale container can't pass for it.
+// Only the sink in this repo stores it as synthetic, with its sample replaced
+// by a keyed marker (it's none of the site's own code) and the query strings
+// cut, so a stale container can't pass for it.
 export const SMOKE_REPORT_SAMPLE = 'live-smoke uid=4815162342';
-export const SMOKE_REPORT_SCRUBBED = 'live-smoke uid=[number]';
+export const SMOKE_REPORT_STORED = /^\[other [0-9a-f]{12}\]$/;
 
 /**
  * @param {string} text  the store's lines that name this run
@@ -180,8 +182,8 @@ export function smokeReportProblem(text, { since, runId, oldest = '' }) {
   if (newest.category !== 'synthetic') {
     return `the smoke's CSP report was stored as ${JSON.stringify(newest.category ?? '(no category)')}, not "synthetic"`;
   }
-  if (newest.sample !== SMOKE_REPORT_SCRUBBED) {
-    return `the smoke's CSP report sample was stored as ${JSON.stringify(printable(newest.sample ?? '(none)', 60))}, not ${JSON.stringify(SMOKE_REPORT_SCRUBBED)}`;
+  if (typeof newest.sample !== 'string' || !SMOKE_REPORT_STORED.test(newest.sample)) {
+    return `the smoke's CSP report sample was stored as ${JSON.stringify(printable(newest.sample ?? '(none)', 60))}, not as a keyed [other] marker`;
   }
   if (`${newest.document}${newest.blocked ?? ''}`.includes('?')) return "the smoke's CSP report kept a query string";
   return null;
