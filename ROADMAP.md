@@ -8,7 +8,35 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Close the three ways past the proxy trust checks
+  Why: The live check compares header names literally, but Caddy expands placeholders in them, so `vars fwd X-Forwarded-For` with `header_up {vars.fwd} {http.request.header.X-Real-IP}` let a local client's forged address through a real Caddy 2.11.4 while the check passed. The static check's `expandEnvDefaults` only knows `[A-Za-z0-9_]+` names, where Caddy replaces any `{$...}`, so `{$ "x:}` hides a following `header_up` in a false quote. The ntfy config probe greps for key text, which a YAML escape (`"proxy\x2dforwarded\x2dheader"`) gets past.
+  Evidence: fourteenth drain review, 2026-09-24, `rv14-live-walker.mjs`; `scripts/lib/proxy-trust-check.mjs:26,30`, `scripts/lib/caddyfile.mjs` `expandEnvDefaults`, the config probe in `verifyProxyTrust`.
+  Touches: those files, `test/proxy-trust-check.test.mjs`, `test/endpoint-header-contract.test.mjs`.
+  Acceptance: a request header whose name holds a placeholder fails the live check, any `{$...}` expands the way Caddy's replaceEnvVars does, and ntfy fails the deploy if it has any config file at all.
+  Complexity: S
+
+- [ ] P2: Keep a stalled claimant from being overtaken, and leave nothing behind
+  Why: A claimant that stalls more than 60 s between its re-check and its rename (a sleep, a debugger) has its claim judged stale by age and taken over, and then renames over the new holder's lock: two holders, reproduced with real processes and with a clock 61 s ahead. After 300 random kills, 274 drafts and claims were left that nothing removes, and a chain of nine dead claims locks everyone out for good, since the depth limit returns null.
+  Evidence: fourteenth drain review, 2026-09-24, `rv14-stall.mjs` and `rv14-kill.mjs`; `scripts/visual-gate.mjs` `claimInstance`, `tryLock`.
+  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
+  Acceptance: a claim whose process is alive stands for ten minutes, not one; leftovers older than that are swept; a stale claim at the depth limit is removed rather than blocking; the paced and six-worker races still show one holder.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Read the last few log-size forms as Go does
+  Why: `sizeMb` rejects `1_0m` and hex floats like `0x1p24`, which Go's ParseFloat reads, measures the suffix after lowercasing and in UTF-16 where Go measures bytes first (a Kelvin sign in `10KB`), and reads `max-file` with `Number()` where Docker uses Atoi. Each fails safe: the deploy stops rather than passes.
+  Evidence: fourteenth drain review, 2026-09-24, `rv14-sizes.mjs`; `scripts/lib/log-retention.mjs:33-37,76,81`.
+  Touches: `scripts/lib/log-retention.mjs`, `test/log-retention.test.mjs`.
+  Acceptance: each of those reads as Go and Docker read it, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Mask IPv6 addresses in both Caddy servers' error text, and drop `remote`
+  Why: The `error` filter masks IPv4 only, and whether the edge ever sees a visitor's IPv6 address is unverified. certmagic's "served key authentication" INFO entries carry a top-level `remote` (address and port), normally the CA's validator, which neither filter deletes.
+  Evidence: fourteenth drain review, 2026-09-24; certmagic `handshake.go`, `httphandlers.go`; both Caddyfiles' `error regexp`.
+  Touches: `deploy/vps/Caddyfile`, the edge Caddyfile in Contabo-VPS-Ops, `scripts/lib/edge-log-check.mjs`, its test.
+  Acceptance: an IPv6 address in `error` text is masked on both servers, `remote` is deleted, and the deploy fails on a filter without either.
+  Complexity: S
 
 - [ ] P3: Time the holder test from the next step's own start
   Why: The test now times the runner's `START profile-feed:sync` line, but a runner that logs START on time and then waits up to 30 s for the held step's pipes before spawning passed it in 32.7 s. A log line is still standing in for the run moving on.
