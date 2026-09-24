@@ -44,17 +44,30 @@ const NEWER_THAN_TARGETS = [
   { value: /\blight-dark\(/i }, // Chrome 123, Safari 17.5, Firefox 120
   { value: /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(\s*from\s/i }, // relative colour syntax
   { value: /\b(?:round|mod|rem|anchor|anchor-size|calc-size|if|sibling-index|sibling-count)\(/i },
+  // Chrome 120 for the exponential functions, and later still for abs() and sign().
+  { value: /\b(?:pow|sqrt|hypot|log|exp|abs|sign)\(/i },
+  { value: /\blinear\(/i }, // linear() easing: Chrome 113, Safari 17.2
+  { value: /(?<![\w-])image-set\(/i }, // unprefixed: Chrome 113
+  { value: /\dr?lh\b/i }, // the lh and rlh units: Firefox 120
+  { value: /\ballow-discrete\b/i }, // Chrome 117, Safari 17.4, Firefox 129
+  { prop: /^transition-behavior$/i, value: /./ },
+  { prop: /^display$/i, value: /^\s*[a-z-]+\s+[a-z-]/i }, // two-value display: Chrome 115
   { prop: /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size))$/i, value: /^\s*stretch\s*$/i },
   { prop: /^text-wrap(?:-style)?$/i, value: /^\s*(?:pretty|balance|stable)\s*$/i },
 ];
 
 /**
  * Whether every target browser parses this declaration's value. A vendor
- * prefix, outside a quoted string, means some don't.
+ * prefix, outside a quoted string or url(), means some don't. A value with
+ * var() in it parses everywhere whatever else it holds: the browser checks it
+ * only once the variable is filled in, and a value it can't use then makes
+ * the property unset rather than bringing back the declaration before it
+ * (fifteenth drain review).
  */
 function understoodEverywhere(decl) {
   if (decl.prop.startsWith('--')) return true;
-  const value = decl.value.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""');
+  const value = decl.value.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""').replace(/\burl\([^)]*\)/gi, 'url()');
+  if (/\bvar\(/i.test(value)) return true;
   if (/(?:^|[\s,(/])-(?:webkit|moz|ms|o)-/i.test(value)) return false;
   return !NEWER_THAN_TARGETS.some((rule) => (!rule.prop || rule.prop.test(decl.prop)) && rule.value.test(value));
 }

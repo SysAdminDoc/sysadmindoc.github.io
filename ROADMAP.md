@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: only text whose own positioned box sits off-screen is skipped, fully transparent text is skipped, text is clipped by its overflow-hiding ancestors before it's measured, and each case is checked planted.
   Complexity: S
 
-- [ ] P3: Complete css:audit's list of syntax newer than the targets, and let var() values kill
-  Why: `allow-discrete` transitions, the `lh` unit, `linear()` easing, `pow()`, `abs()`, unprefixed `image-set()` and two-value `display` are each dropped by a target, so the value before one is a live fallback, but the audit calls it dead. The other way, a value with `var()` always parses (then computes to unset), so `color:#888` before `rgb(from var(--accent) ...)` is dead, not a fallback.
-  Evidence: fifteenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:43,55`.
-  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
-  Acceptance: each case comes out right, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Close the CSP sink's scrub regressions and cut-off gaps
   Why: The cut rule measures the sample after whitespace is collapsed, so a browser-cut sample with a newline or indentation never counts as cut; a cut-off ID after `{`, `[` or `/` survives; a whole ID joined to a word by a hyphen (`--<id>-root`) now passes, and so does `+33 6 12 34 56 78` (one single-digit group), both of which the previous version scrubbed; `\x40`, `%2540`, a full-width at sign and `@` hide an email. Keys still collide once a scrubbed sample passes 64 characters, and the `"` to `'` swap merges `getElementById("app")` with `getElementById('app')`. A store younger than the smoke's five-minute margin reads a missing smoke row as a flood.
   Evidence: fifteenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:168-182`, `scripts/lib/csp-report-summary.mjs:68`.

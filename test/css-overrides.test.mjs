@@ -61,6 +61,40 @@ test('a value every target parses makes everything before it dead, prefixed or n
   assert.deepEqual(found('.a{column-fill:auto}\n.a{column-fill:balance}'), ['.a column-fill 1>2'], 'balance is only new for text-wrap');
 });
 
+// The fifteenth drain review: a target drops each of these, so the value
+// before it still applies there.
+test('newer syntax the list had missed leaves the value before it live', () => {
+  const cases = [
+    ['transition', 'opacity .2s', 'opacity .2s allow-discrete'],
+    ['transition-behavior', 'allow-discrete', 'normal'], // the property itself is new
+    ['margin-top', '1em', '1lh'],
+    ['padding-top', '4px', 'calc(.5rlh + 1px)'],
+    ['transition-timing-function', 'ease', 'linear(0, .5 50%, 1)'],
+    ['width', '8px', 'calc(pow(2, 3) * 1px)'],
+    ['margin-left', '1px', 'abs(-1px)'],
+    ['background-image', 'url(a.png)', 'image-set("a.avif" type("image/avif"), "a.png" type("image/png"))'],
+    ['display', 'flex', 'block flex'],
+  ];
+  for (const [prop, before, after] of cases) {
+    assert.deepEqual(found(`.a{${prop}:${before}}\n.a{${prop}:${after}}`), [], `${prop}: ${after}`);
+  }
+  // Near misses every target understands.
+  assert.deepEqual(found('.a{background:red}\n.a{background:linear-gradient(red, blue)}'), ['.a background 1>2'], 'a gradient is not linear() easing');
+  assert.deepEqual(found('.a{display:block}\n.a{display:inline-flex}'), ['.a display 1>2'], 'one keyword');
+  assert.deepEqual(found('.a{background:red}\n.a{background:url(x1lh.png)}'), ['.a background 1>2'], 'a file name is not a unit');
+});
+
+// A value with var() parses everywhere and, if the browser can't use it once
+// the variable is filled in, leaves the property unset: the declaration before
+// it never comes back (fifteenth drain review).
+test('a value with var() in it kills what comes before, whatever else it holds', () => {
+  assert.deepEqual(found('.a{color:#888}\n.a{color:rgb(from var(--accent) r g b / 50%)}'), ['.a color 1>2']);
+  assert.deepEqual(found('.a{color:#fff}\n.a{color:light-dark(var(--a), var(--b))}'), ['.a color 1>2']);
+  assert.deepEqual(found('.a{width:100%}\n.a{width:var(--w, -webkit-fill-available)}'), ['.a width 1>2']);
+  assert.deepEqual(found('.a{margin-top:1em}\n.a{margin-top:calc(var(--n) * 1lh)}'), ['.a margin-top 1>2']);
+  assert.deepEqual(found('.a{font-family:serif}\n.a{font-family:"var(x)", -webkit-body}'), [], 'var( inside a string is text');
+});
+
 test('a later !important replaces an earlier normal declaration', () => {
   assert.deepEqual(found('.a{color:red}\n.a{color:blue !important}'), ['.a color 1>2']);
   assert.deepEqual(found('.a{color:red !important}\n.a{color:blue !important}'), ['.a color 1>2']);
