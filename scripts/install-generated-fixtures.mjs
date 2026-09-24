@@ -8,6 +8,7 @@ import {
   computeProjectRankings,
 } from '../src/data/project-ranking.mjs';
 import { validateProfileFeed } from './lib/profile-feed.mjs';
+import { REMOVED_FILES, backUpLiveData, lockHolderPid, withLock } from './visual-gate.mjs';
 
 const root = process.cwd();
 const dataDir = path.join(root, 'src', 'data');
@@ -24,6 +25,7 @@ const requiredFiles = [
 
 const options = {
   checkOnly: false,
+  underGate: false,
   fixturesDir: defaultFixturesDir,
 };
 
@@ -31,13 +33,15 @@ for (let index = 2; index < process.argv.length; index += 1) {
   const arg = process.argv[index];
   if (arg === '--check') {
     options.checkOnly = true;
+  } else if (arg === '--under-gate') {
+    options.underGate = true;
   } else if (arg === '--fixtures') {
     index += 1;
     options.fixturesDir = path.resolve(root, process.argv[index]);
   } else if (arg.startsWith('--fixtures=')) {
     options.fixturesDir = path.resolve(root, arg.slice('--fixtures='.length));
   } else if (arg === '--help' || arg === '-h') {
-    console.log('Usage: node scripts/install-generated-fixtures.mjs [--check] [--fixtures <dir>]');
+    console.log('Usage: node scripts/install-generated-fixtures.mjs [--check] [--fixtures <dir>] [--under-gate]');
     process.exit(0);
   } else {
     throw new Error(`Unknown argument: ${arg}`);
@@ -270,8 +274,32 @@ if (result.errors.length > 0) {
   process.exit(1);
 }
 
+// Fixtures written over the live data with the live ETags left beside them
+// are what let the nightly's 304s keep fixture rows (the eleventh drain
+// review found this command still did that). So the swap only happens the way
+// the screenshot gate does it: under its lock, with the live data backed up
+// and the ETags taken out. The gate runs this with --under-gate once it has
+// done both; by hand, this does them, and leaves the backup where
+// `node scripts/visual-gate.mjs --restore`, the nightly refresh, fetch-stars
+// and deploy:vps all put it back from.
 if (!options.checkOnly) {
-  await installFixtures(fixturesDir);
+  if (options.underGate) {
+    if (lockHolderPid() !== process.ppid) {
+      console.error('install-generated-fixtures: --under-gate is for visual-gate.mjs, which holds the gate lock while it runs this. Run `npm run generated:fixtures` instead.');
+      process.exit(1);
+    }
+    await installFixtures(fixturesDir);
+  } else {
+    await withLock(async () => {
+      backUpLiveData({ log: console.log });
+      for (const name of REMOVED_FILES) await fs.rm(path.join(dataDir, name), { force: true });
+      await installFixtures(fixturesDir);
+    }, { log: console.log });
+    console.log(
+      'The live data is backed up in .tmp/visual-gate/live-data. `node scripts/visual-gate.mjs --restore` puts it back, ' +
+        'and the nightly refresh, fetch-stars and deploy:vps put it back before they fetch or build.',
+    );
+  }
 }
 
 const action = options.checkOnly ? 'checked' : 'installed';

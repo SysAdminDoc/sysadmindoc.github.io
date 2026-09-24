@@ -12,6 +12,8 @@
 // fixture caches keeps fixture rows wherever GitHub answers 304. deploy-vps
 // refuses a build whose status.json says it came from fixtures, whatever path
 // got it there. One run at a time holds .tmp/visual-gate/lock.json.
+// `npm run generated:fixtures` by hand swaps the same way under the same lock,
+// and leaves its backup for the same restores (install-generated-fixtures.mjs).
 //
 //   node scripts/visual-gate.mjs                   the five routes deploy:preflight gates, plus GATE_CHECKS
 //   node scripts/visual-gate.mjs --all             the whole audits suite (npm run audit:playwright)
@@ -303,6 +305,12 @@ export function releaseLock({ lock = lockPath, isAlive = pidAlive } = {}) {
   }
 }
 
+/** The pid holding the gate's lock, or null when nobody does. */
+export function lockHolderPid({ lock = lockPath } = {}) {
+  const current = readLock(lock);
+  return current.state === 'present' && Number.isSafeInteger(current.holder?.pid) ? current.holder.pid : null;
+}
+
 /**
  * Take the lock, waiting up to `waitMs` for another run to finish, and return
  * the function that releases it.
@@ -370,7 +378,9 @@ async function main() {
     backUpLiveData();
     try {
       for (const name of REMOVED_FILES) fs.rmSync(path.join(dataDir, name), { force: true });
-      if (run('node', ['scripts/install-generated-fixtures.mjs']) !== 0) return 1;
+      // process.execPath, not a node from PATH that could be a shim: the
+      // installer checks that its parent is the process holding the lock.
+      if (run(process.execPath, ['scripts/install-generated-fixtures.mjs', '--under-gate']) !== 0) return 1;
       if (run('npm', ['run', 'build:ci']) !== 0) return 1;
       return run(process.execPath, [path.join('node_modules', '@playwright', 'test', 'cli.js'), ...playwrightArgs({ all, update })]);
     } finally {

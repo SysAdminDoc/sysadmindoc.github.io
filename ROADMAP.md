@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
   Complexity: M
 
-- [ ] P2: Guard `npm run generated:fixtures` the way the gate is guarded
-  Why: It writes the fixtures into `src/data` with no backup and no lock, and leaves the live `_etags.json` in place, the state that let the nightly's 304s keep fixture rows.
-  Evidence: eleventh drain review, 2026-09-24 (not run end to end).
-  Touches: `scripts/install-generated-fixtures.mjs`, `package.json`, a test.
-  Acceptance: run by hand it either refuses or goes through the gate's backup and lock, and a nightly after it can't keep a fixture row.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Scrub what the CSP sink's samples still leak, and stop mangling harmless text
