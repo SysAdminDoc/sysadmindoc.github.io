@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Scrub what the CSP sink's samples still leak, and stop mangling harmless text
-  Why: A 32-letter extension ID cut short by the 40-character sample keeps 12 letters, which is enough to identify it. `john.smith%40example.com`, `4111_1111_1111_1111` and `555/123/4567` pass unchanged. Custom properties of 24 characters or more become `[id]`, and SVG path data and ISO dates become `[number]`.
-  Evidence: eleventh drain review, 2026-09-24; `scrubSample` in `deploy/vps/csp-report-server.mjs`.
-  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`.
-  Acceptance: each leaking case is scrubbed and each harmless one comes through, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Keep forged reports from rotating out the smoke row or silencing a key
   Why: The store keeps two 5 MB files, and at 120 requests a minute of 20 reports each, forged rows can rotate the smoke's row out before the read-back. Keys carry only 21 characters of the sample, so reports spread over an hour alert once and then silence every later real block that starts the same way.
   Evidence: eleventh drain review, 2026-09-24; `scripts/lib/csp-report-summary.mjs`.

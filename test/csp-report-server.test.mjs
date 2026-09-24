@@ -128,6 +128,21 @@ test('scrubSample drops ids, long numbers, email addresses and control character
   for (const value of [undefined, null, 42, '', '   ']) assert.equal(scrubSample(value), null);
 });
 
+// The eleventh drain review's samples, each of which leaked or was mangled.
+test('scrubSample catches what it missed and leaves code it mangled alone', () => {
+  // A 32-letter extension ID cut to 12 by the 40-character sample.
+  assert.equal(scrubSample('chrome.runtime.sendMessage("abcdefghijklmnopabcdefghijklmnop",x)'), 'chrome.runtime.sendMessage("[id]');
+  assert.equal(scrubSample('john.smith%40example.com'), '[email]');
+  assert.equal(scrubSample('pan=4111_1111_1111_1111;'), 'pan=[number];');
+  assert.equal(scrubSample('tel 555/123/4567'), 'tel [number]');
+
+  assert.equal(scrubSample('--portfolio-accent-highlight-strong:red'), '--portfolio-accent-highlight-strong:red', 'a long custom property');
+  assert.equal(scrubSample('<path d="M12 2C6.48 2 2 6.48 2 12s4.48"'), '<path d="M12 2C6.48 2 2 6.48 2 12s4.48"', 'path data');
+  assert.equal(scrubSample('var built="2026-09-24T12:00:00Z";'), 'var built="2026-09-24T12:00:00Z";', 'an ISO date');
+  // A short sample isn't cut, so a trailing word stays.
+  assert.equal(scrubSample('f("headline")'), 'f("headline")');
+});
+
 test('classifyReport tells the smoke, extensions, this site and everything else apart', () => {
   const at = new Date('2026-09-23T12:00:00.000Z');
   // The report scripts/smoke-live-site.mjs posts on every deploy.

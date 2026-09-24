@@ -146,24 +146,41 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 // is public, but an extension's can open with a per-user id or key, so anything
 // shaped like one goes before the sample is stored, along with control and
 // direction characters that could disguise what a log line says. In order: an
-// email address, even one the 40-character cut left without its domain; an
-// extension's URL, which names the extension even when cut short; any run of
-// 24 or more letters, digits, _ or - (a Chrome extension ID is 32 letters),
-// and a shorter one of 12 or more that mixes letters and digits; digits split
-// by spaces, dashes, dots or brackets that come to 7 or more (card and phone
-// numbers); and any 6 digits in a row.
+// email address, even one the 40-character cut left without its domain, or
+// with its @ written %40; an extension's URL, which names the extension even
+// when cut short; any run of 24 or more letters, digits, _ or - (a Chrome
+// extension ID is 32 letters a to p) unless it's words joined by hyphens, like
+// a long custom property, and a shorter one of 12 or more that mixes letters
+// and digits; at the 40-character cut, 6 or more letters a to p opening a
+// string or argument, which is what's left of an ID cut short; digits split by
+// spaces, dashes, dots, slashes, underscores or brackets that come to 7 or more
+// in groups of 2 or more after the first (card and phone numbers, but not an
+// ISO date or a path's single-digit coordinates); and any 6 digits in a row.
+// The eleventh drain review found the %40, _ and / numbers and the cut ID
+// leaking, and custom properties, dates and path data mangled.
 export function scrubSample(value) {
   if (typeof value !== 'string') return null;
-  const text = value
+  const whole = value
     .slice(0, 256)
     .replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu, ' ')
     .replace(/\s+/g, ' ')
-    .trim()
+    .trim();
+  const cut = whole.length >= 40;
+  let text = whole
     .slice(0, 40)
-    .replace(/[^\s@"'`<>(){};,]+@[^\s@"'`<>(){};,]*/g, '[email]')
+    .replace(/[^\s@"'`<>(){};,]+?(?:@|%40)[^\s@"'`<>(){};,]*/gi, '[email]')
     .replace(/\b([a-z]+(?:-[a-z]+)*-extension|webkit-masked-url):\/\/[^\s"'`<>()]*/gi, '$1://[extension]')
-    .replace(/[A-Za-z0-9_-]{12,}/g, (run) => (run.length >= 24 || (/\d/.test(run) && /[A-Za-z]/.test(run)) ? '[id]' : run))
-    .replace(/\+?\d[\d ().-]{4,}\d/g, (run) => (run.replace(/\D/g, '').length >= 7 ? '[number]' : run))
+    .replace(/[A-Za-z0-9_-]{12,}/g, (run) => {
+      if (/^-{0,2}[A-Za-z]+(?:-[A-Za-z]+)+$/.test(run) || /^\d{4}-\d{2}-\d{2}(?:T\d{2})?$/.test(run)) return run;
+      return run.length >= 24 || (/\d/.test(run) && /[A-Za-z]/.test(run)) ? '[id]' : run;
+    });
+  if (cut) text = text.replace(/(["'`(=,:\s])[a-p]{6,}$/, '$1[id]');
+  text = text
+    .replace(/\+?\d[\d ()./_-]{4,}\d/g, (run) => {
+      if (/^\d{4}([-/.])\d{2}\1\d{2}$/.test(run)) return run;
+      const groups = run.split(/\D+/).filter(Boolean);
+      return groups.join('').length >= 7 && groups.slice(1).every((group) => group.length >= 2) ? '[number]' : run;
+    })
     .replace(/\d{6,}/g, '[number]');
   return text || null;
 }
