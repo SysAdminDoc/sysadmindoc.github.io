@@ -6,13 +6,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
-- [ ] P1: Store other CSP samples as a bare marker, drop the key, and say so on /privacy/
-  Why: `/privacy/` still says the report sink "removes anything in them that looks like an ID, a long number or an email address before keeping it", the scrub 0d5aaa23 removed, and doesn't mention the keyed hash (the `Base.astro` comment is stale the same way). And the keyed hash can be reversed for short secrets by anyone who reads the store, because `sample.key` sits beside it: a six-digit code in an extension's style came back in 12.4 s. The hash only groups non-site samples, which the alerts don't need, since the site's own blocks keep their text. Its exclusive create can also leave an empty key that fails every report.
-  Evidence: nineteenth drain review, 2026-09-24; `src/pages/privacy.astro:76`, `deploy/vps/csp-report-server.mjs:187-213`.
-  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/lib/csp-report-summary.mjs` (smoke read-back), `src/pages/privacy.astro`, `src/layouts/Base.astro`, their tests.
-  Acceptance: a sample that isn't the site's own is stored as `[other]` with no hash and no key file, older rows are rewritten the same way, the smoke read-back expects `[other]`, and `/privacy/` says the sink keeps the start of a refused block only when it's the site's own code.
-  Complexity: S
-
 ### P2
 
 - [ ] P2: Recognise every engine's sample of the site's own inline blocks

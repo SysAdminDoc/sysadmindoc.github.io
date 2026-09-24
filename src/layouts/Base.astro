@@ -84,7 +84,8 @@ const styleAttrSrc = isDev ? "'unsafe-inline'" : "'none'";
 const trustedTypes = isDev ? '' : "; require-trusted-types-for 'script'";
 // 'report-sample' puts the first 40 characters of a refused inline script or
 // style into the violation report, which is what tells the site's own code from
-// an extension's. The sink scrubs anything shaped like an id before storing it
+// an extension's. The sink keeps a sample only when it's the start of one of
+// the site's own inline blocks and stores anything else as [other]
 // (deploy/vps/csp-report-server.mjs). style-src-attr stays a lone 'none', since
 // 'none' can't share a directive with another keyword.
 const reportSample = isDev ? '' : " 'report-sample'";

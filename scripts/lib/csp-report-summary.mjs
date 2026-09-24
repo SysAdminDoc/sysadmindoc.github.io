@@ -44,7 +44,7 @@ export function parseStore(text) {
 }
 
 // Far past anything a sink stores: the current one keeps 40 characters of the
-// site's own code or a short marker, and older rows up to 40 characters of
+// site's own code or [other], and older rows up to 40 characters of
 // which every two could become a seven-character mark.
 const KEY_SAMPLE_MAX = 512;
 const KEY_MAX = 2048;
@@ -67,8 +67,8 @@ export function violationKey(report) {
       blocked = keyword ? report.blocked.toLowerCase() : '(unreadable)';
     }
   }
-  // The whole stored sample (the site's own code, or a marker whose hash
-  // groups a sample's repeats), quoted JSON-style. Cut to 21, reports spread
+  // The whole stored sample (the site's own code, or [other] for anything
+  // else), quoted JSON-style. Cut to 21, reports spread
   // over an hour could alert once and then silence every real block that began
   // the same way (eleventh drain review); cut to 64, or with " turned into ',
   // two samples still shared a key (fifteenth).
@@ -144,10 +144,10 @@ export function summarizeReports(
 // The live smoke posts one synthetic report per deploy with this sample
 // (scripts/smoke-live-site.mjs), and deploy-vps reads it back from the store.
 // Only the sink in this repo stores it as synthetic, with its sample replaced
-// by a keyed marker (it's none of the site's own code) and the query strings
-// cut, so a stale container can't pass for it.
+// by the bare [other] marker (it's none of the site's own code) and the query
+// strings cut, so a stale container can't pass for it.
 export const SMOKE_REPORT_SAMPLE = 'live-smoke uid=4815162342';
-export const SMOKE_REPORT_STORED = /^\[other [0-9a-f]{12}\]$/;
+export const SMOKE_REPORT_STORED = /^\[other\]$/;
 
 /**
  * @param {string} text  the store's lines that name this run
@@ -183,7 +183,7 @@ export function smokeReportProblem(text, { since, runId, oldest = '' }) {
     return `the smoke's CSP report was stored as ${JSON.stringify(newest.category ?? '(no category)')}, not "synthetic"`;
   }
   if (typeof newest.sample !== 'string' || !SMOKE_REPORT_STORED.test(newest.sample)) {
-    return `the smoke's CSP report sample was stored as ${JSON.stringify(printable(newest.sample ?? '(none)', 60))}, not as a keyed [other] marker`;
+    return `the smoke's CSP report sample was stored as ${JSON.stringify(printable(newest.sample ?? '(none)', 60))}, not as the [other] marker`;
   }
   if (`${newest.document}${newest.blocked ?? ''}`.includes('?')) return "the smoke's CSP report kept a query string";
   return null;

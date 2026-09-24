@@ -188,8 +188,10 @@ which stores redacted NDJSON reports in a rotated file outside the served site.
 so browsers can report real violations without a third-party service.
 
 The policy asks for `'report-sample'`, so a report about a blocked inline script
-or style carries that code's first 40 characters. The sink scrubs anything in
-them shaped like an ID, a long number or an email address before storing it. It
+or style carries that code's first 40 characters. The deploy tells the sink how
+each of the site's own inline blocks starts (`CSP_OWN_SAMPLES`), and the sink
+keeps a sample only when it's one of those. Anything else is stored as
+`[other]`, so nothing an extension's code or a visitor's text held is kept. It
 keeps the keyword a browser sends in place of a URL (`inline`, `eval`) and tags
 each report as synthetic, extension, first-party or other. Anyone can post a
 report, so a tag only says what the report claims.

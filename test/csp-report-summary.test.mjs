@@ -203,11 +203,9 @@ test("the deploy's read-back accepts only the smoke report the current sink woul
         },
       },
       new Date(at),
-      undefined,
-      { key: Buffer.alloc(32, 7) },
     );
   const stored = posted('2026-09-24T02:01:00Z');
-  assert.match(String(stored.sample), SMOKE_REPORT_STORED, "a keyed marker, since the smoke sample is none of the site's own code");
+  assert.match(String(stored.sample), SMOKE_REPORT_STORED, "the bare marker, since the smoke sample is none of the site's own code");
   const lines = (...entries) => entries.map((entry) => JSON.stringify(entry)).join('\n');
   const runId = 'run1';
 
@@ -228,7 +226,7 @@ test("the deploy's read-back accepts only the smoke report the current sink woul
   assert.match(String(sample), SMOKE_REPORT_STORED);
   // The sink before the marker kept a scrubbed copy; a deploy that finds one is
   // talking to a stale container.
-  assert.match(smokeReportProblem(lines({ ...stored, sample: 'live-smoke uid=[number]' }), { since, runId }), /not as a keyed \[other\] marker/);
+  assert.match(smokeReportProblem(lines({ ...stored, sample: 'live-smoke uid=[number]' }), { since, runId }), /not as the \[other\] marker/);
 });
 
 test('every deploy posts the sample and reads the smoke report back after the smoke', async () => {

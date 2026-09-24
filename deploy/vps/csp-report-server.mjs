@@ -7,7 +7,6 @@
 // Each stored report carries a category (synthetic, extension, first-party or
 // other) worked out from its redacted fields; scripts/csp-report-summary.mjs
 // reads them back for the nightly.
-import { createHmac, randomBytes } from 'node:crypto';
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -153,10 +152,12 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 // it came. Any other sample could be an extension's code or a visitor's text,
 // holding an ID, a key or an address in whatever spelling, so four rounds of
 // scrub rules kept missing some (tenth, eleventh, fifteenth and seventeenth
-// drain reviews). It's stored as a fixed marker with a keyed hash instead:
-// repeats of one sample still group together, and nothing of what it said is
-// kept.
+// drain reviews). It's stored as the bare marker `[other]`. A keyed hash of it
+// was tried and dropped: with the key beside the store, a short secret came
+// back from its hash in seconds (nineteenth drain review), and grouping other
+// samples bought nothing, since the site's own blocks keep their text.
 export const OWN_SAMPLE_LENGTH = 40;
+export const OTHER_SAMPLE = '[other]';
 const MIN_OWN_MATCH = 16;
 
 /** The site's own sample starts, from CSP_OWN_SAMPLES (base64url JSON array). */
@@ -176,45 +177,15 @@ export function decodeOwnSamples(value) {
 
 /**
  * What to store for a sample: the sample itself when it's the start of one of
- * the site's own blocks, otherwise `[other <12 hex>]`, an HMAC of it under
- * the sink's own key.
+ * the site's own blocks, otherwise `[other]`.
  * @param {unknown} value
- * @param {{ ownSamples?: readonly string[], key: Buffer | null }} options
+ * @param {{ ownSamples?: readonly string[] }} [options]
  */
-export function storedSample(value, { ownSamples = [], key }) {
+export function storedSample(value, { ownSamples = [] } = {}) {
   if (typeof value !== 'string' || value === '') return null;
   const text = value.slice(0, 256).replace(/\r\n?/g, '\n');
   const own = ownSamples.some((start) => start.startsWith(text) && text.length >= Math.min(MIN_OWN_MATCH, start.length));
-  if (own) return text;
-  if (!key) return '[other]';
-  return `[other ${createHmac('sha256', key).update(text).digest('hex').slice(0, 12)}]`;
-}
-
-/**
- * The sink's hash key, made once and kept beside the store so a restart
- * doesn't split a sample's repeats into two groups.
- * @param {typeof fs} fileSystem
- * @param {string} dir
- */
-export async function loadSampleKey(fileSystem, dir) {
-  const keyPath = path.join(dir, 'sample.key');
-  const read = async () => {
-    const key = Buffer.from((await fileSystem.readFile(keyPath, 'utf8')).trim(), 'base64');
-    if (key.length < 32) throw new Error(`csp-report: ${keyPath} holds no usable key; delete it to make a new one.`);
-    return key;
-  };
-  try {
-    return await read();
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error;
-  }
-  await fileSystem.mkdir(dir, { recursive: true });
-  try {
-    await fileSystem.writeFile(keyPath, randomBytes(32).toString('base64'), { flag: 'wx', mode: 0o600 });
-  } catch (error) {
-    if (error.code !== 'EEXIST') throw error;
-  }
-  return read();
+  return own ? text : OTHER_SAMPLE;
 }
 
 function schemeOf(value) {
@@ -266,7 +237,7 @@ function reportType(report) {
 }
 
 /**
- * @param {{ ownSamples?: readonly string[], key: Buffer | null }} [samples] what storedSample needs; without a key no sample is kept
+ * @param {{ ownSamples?: readonly string[] }} [samples] the site's own sample starts, for storedSample
  */
 export function normalizeReport(report, receivedAt = new Date(), siteOrigin = DEFAULT_CONFIG.siteOrigin, samples = undefined) {
   const body = reportBody(report);
@@ -277,7 +248,7 @@ export function normalizeReport(report, receivedAt = new Date(), siteOrigin = DE
     blocked: redactUrl(body.blockedURL ?? body['blocked-uri'], { allowBareToken: true }),
     source: redactUrl(body.sourceFile ?? body['source-file'], { allowBareToken: true }),
     directive: directive(body.effectiveDirective ?? body['effective-directive'] ?? body.violatedDirective ?? body['violated-directive']),
-    sample: storedSample(body.sample ?? body['script-sample'], samples ?? { key: null }),
+    sample: storedSample(body.sample ?? body['script-sample'], samples),
     disposition: boundedText(body.disposition, 32),
     statusCode: boundedNumber(body.statusCode ?? body['status-code'], 100, 599),
     age: boundedNumber(report?.age, 0, 86_400_000),
@@ -360,13 +331,6 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
   const now = dependencies.now ?? (() => new Date());
   const allowRequest = createRateLimiter(config.maxRequestsPerMinute, 60_000, () => now().getTime());
   let writeQueue = Promise.resolve();
-  /** @type {Promise<Buffer> | null} */
-  let keyReady = null;
-  const sampleKey = () =>
-    (keyReady ??= (dependencies.sampleKey ? Promise.resolve(dependencies.sampleKey) : loadSampleKey(fileSystem, path.dirname(config.logPath))).catch((error) => {
-      keyReady = null;
-      throw error;
-    }));
 
   async function appendLines(lines) {
     const text = `${lines.join('\n')}\n`;
@@ -445,7 +409,7 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
       } catch {
         throw new HttpError(400, 'Report body must be valid JSON.');
       }
-      const samples = { ownSamples: config.ownSamples ?? [], key: await sampleKey() };
+      const samples = { ownSamples: config.ownSamples ?? [] };
       const reports = normalizeReports(payload, now(), config.maxReportsPerRequest, config.siteOrigin ?? DEFAULT_CONFIG.siteOrigin, samples);
       const lines = reports.map((report) => JSON.stringify(report));
       if (lines.some((line) => Buffer.byteLength(line, 'utf8') > config.maxLineBytes)) {
@@ -469,7 +433,9 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
    * @returns {Promise<number>} how many samples became markers
    */
   async function restoreSamples() {
-    const samples = { ownSamples: config.ownSamples ?? [], key: await sampleKey() };
+    const samples = { ownSamples: config.ownSamples ?? [] };
+    // The key file the keyed-hash marker used, if a sink ever made one.
+    await fileSystem.rm(path.join(path.dirname(config.logPath), 'sample.key'), { force: true });
     let changed = 0;
     for (const file of [config.logPath, rotatedLogPath(config.logPath)]) {
       let text;
@@ -487,7 +453,7 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
         } catch {
           return line;
         }
-        if (!row || typeof row !== 'object' || typeof row.sample !== 'string' || STORED_MARKER.test(row.sample)) return line;
+        if (!row || typeof row !== 'object' || typeof row.sample !== 'string' || row.sample === OTHER_SAMPLE) return line;
         const stored = storedSample(row.sample, samples);
         if (stored === row.sample) return line;
         fileChanged += 1;
@@ -504,8 +470,6 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
 
   return { handleRequest, restoreSamples };
 }
-
-const STORED_MARKER = /^\[other(?: [0-9a-f]{12})?\]$/;
 
 export async function startServer(config = loadConfig()) {
   const reporter = createReporter(config);

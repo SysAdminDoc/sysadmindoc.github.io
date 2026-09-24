@@ -11,7 +11,6 @@ import {
   normalizeReport,
   normalizeReports,
   decodeOwnSamples,
-  loadSampleKey,
   storedSample,
 } from '../deploy/vps/csp-report-server.mjs';
 import { SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
@@ -109,22 +108,21 @@ test('normalizeReport keeps the keyword or scheme a browser sends instead of a U
   assert.equal(report({ blockedURL: 'not a url at all' }).blocked, '(invalid-url)');
 });
 
-const KEY = Buffer.alloc(32, 3);
-const MARKER = /^\[other [0-9a-f]{12}\]$/;
+const MARKER = /^\[other\]$/;
 // The start of the critical CSS and the no-JS reveal block, as a build has them.
 const OWN = ['.rv,.card-enter{opacity:1!important;tra', ':root{--bg:#050913;--bg2:#0b1220;--bg3:#'];
 
-test("a sample from the site's own code is kept as it came, and any other as a keyed marker", () => {
-  const stored = (value, key = KEY) => storedSample(value, { ownSamples: OWN, key });
+test("a sample from the site's own code is kept as it came, and any other as the bare marker", () => {
+  const stored = (value) => storedSample(value, { ownSamples: OWN });
   assert.equal(stored(OWN[0]), OWN[0]);
   assert.equal(stored(OWN[1].slice(0, 20)), OWN[1].slice(0, 20), 'a start of one of them is public code too');
   assert.match(stored(OWN[1].slice(0, 10)), MARKER, 'but not a scrap too short to say whose it is');
   assert.match(stored(`${OWN[0]}x`), MARKER, 'nor anything that goes past it');
-  assert.equal(stored('p{a:1}\r\nq'), stored('p{a:1}\nq'), 'line endings read as one');
-  assert.equal(stored('window.foo=1'), stored('window.foo=1'), "a sample's repeats group together");
-  assert.notEqual(stored('window.foo=1'), stored('window.foo=2'));
-  assert.notEqual(stored('window.foo=1'), stored('window.foo=1', Buffer.alloc(32, 4)), 'under another key the hash is another');
-  assert.equal(storedSample('window.foo=1', { key: null }), '[other]');
+  assert.equal(stored(`${OWN[0].slice(0, 20)}\r\n`), stored(`${OWN[0].slice(0, 20)}\n`), 'line endings read as one');
+  // No hash: with its key beside the store, a short secret came back from it
+  // in seconds (nineteenth drain review).
+  assert.equal(stored('window.foo=1'), '[other]');
+  assert.equal(storedSample('window.foo=1'), '[other]', 'with no list of its own, nothing is the site\'s');
   for (const value of [undefined, null, 42, '']) assert.equal(stored(value), null);
 });
 
@@ -151,9 +149,8 @@ test('no visitor or extension text survives, whatever it holds', () => {
     `mail("jane${String.fromCharCode(0xff20)}example.com")`,
     '--abcdefghijklmnopabcdefghijklmnop-root:1',
   ];
-  const stored = samples.map((sample) => storedSample(sample, { ownSamples: OWN, key: KEY }));
+  const stored = samples.map((sample) => storedSample(sample, { ownSamples: OWN }));
   for (const [index, value] of stored.entries()) assert.match(value, MARKER, samples[index]);
-  assert.equal(new Set(stored).size, samples.length, 'each keeps a group of its own');
 });
 
 test("the site's own samples arrive base64url-encoded, and a bad value stops the sink", () => {
@@ -164,20 +161,6 @@ test("the site's own samples arrive base64url-encoded, and a bad value stops the
   assert.throws(() => decodeOwnSamples(encodeOwnSamples(['ok', ''])), /CSP_OWN_SAMPLES/);
   assert.deepEqual(loadConfig({ CSP_OWN_SAMPLES: encodeOwnSamples(OWN) }).ownSamples, OWN);
   assert.deepEqual(loadConfig({}).ownSamples, []);
-});
-
-test("the sink's key is made once and kept beside the store", async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-csp-key-'));
-  try {
-    const first = await loadSampleKey(fs, dir);
-    const second = await loadSampleKey(fs, dir);
-    assert.equal(first.length, 32);
-    assert.deepEqual(second, first);
-    await fs.writeFile(path.join(dir, 'sample.key'), 'c2hvcnQ=');
-    await assert.rejects(loadSampleKey(fs, dir), /holds no usable key/);
-  } finally {
-    await fs.rm(dir, { recursive: true, force: true });
-  }
 });
 
 // The eleventh drain review: at 120 requests a minute of 20 reports each,
@@ -292,27 +275,29 @@ test('reporter appends a redacted report and returns a stored marker', async () 
 // rotation drops them, so the sink rewrites them before it listens.
 test('the sink stores older samples as markers at start, once, and leaves the rest of each row alone', async () => {
   await withTempReporter({ ownSamples: OWN }, async ({ logPath }) => {
+    // A key a sink with the keyed-hash marker made goes too.
+    await fs.writeFile(path.join(path.dirname(logPath), 'sample.key'), 'a'.repeat(44));
     const row = (sample, extra = {}) => JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'script-src-elem', blocked: 'inline', category: 'first-party', ...(sample === undefined ? {} : { sample }), ...extra });
     await fs.writeFile(`${logPath}.1`, `${row('mail("[email]") k=Zm9vYmFy+YmF6', { document: 'https://portfolio.getparkerai.com/a/' })}\n`);
     await fs.writeFile(logPath, [row(OWN[0]), row('[other 0123456789ab]'), row(undefined), 'not json', row('addr 203.0.113.9'), ''].join('\n'));
     const reporter = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
-    assert.equal(await reporter.restoreSamples(), 2);
+    assert.equal(await reporter.restoreSamples(), 3);
     const rotated = JSON.parse((await fs.readFile(`${logPath}.1`, 'utf8')).trim());
     assert.match(rotated.sample, MARKER);
     assert.equal(rotated.document, 'https://portfolio.getparkerai.com/a/', 'the rest of the row stays');
     const current = (await fs.readFile(logPath, 'utf8')).split('\n');
     assert.equal(JSON.parse(current[0]).sample, OWN[0], "the site's own sample stays");
-    assert.equal(JSON.parse(current[1]).sample, '[other 0123456789ab]', 'a marker stays');
+    assert.equal(JSON.parse(current[1]).sample, '[other]', 'a hashed marker loses its hash');
     assert.equal(JSON.parse(current[2]).sample, undefined);
     assert.equal(current[3], 'not json');
     assert.match(JSON.parse(current[4]).sample, MARKER);
     assert.doesNotMatch(current.join('\n') + rotated.sample, /203\.0\.113\.9|Zm9vYmFy|\[email\]/);
     assert.equal(await reporter.restoreSamples(), 0, 'a second run finds nothing to do');
-    assert.deepEqual((await fs.readdir(path.dirname(logPath))).sort(), ['reports.ndjson', 'reports.ndjson.1', 'sample.key'], 'no temporary file is left');
+    assert.deepEqual((await fs.readdir(path.dirname(logPath))).sort(), ['reports.ndjson', 'reports.ndjson.1'], 'no key and no temporary file is left');
   });
 });
 
-test("the reporter keeps the site's own sample, and one key across restarts", async () => {
+test("the reporter keeps the site's own sample, and makes no key", async () => {
   await withTempReporter({ ownSamples: OWN }, async ({ logPath }) => {
     const post = async (reporter, sample) => {
       const response = responseMock();
@@ -323,14 +308,9 @@ test("the reporter keeps the site's own sample, and one key across restarts", as
     const first = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
     await post(first, OWN[1]);
     await post(first, 'extension-code(1234)');
-    // A restart reads the key the first run made beside the store.
-    const restarted = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
-    await post(restarted, 'extension-code(1234)');
     const samples = (await fs.readFile(logPath, 'utf8')).trim().split('\n').map((line) => JSON.parse(line).sample);
-    assert.equal(samples[0], OWN[1]);
-    assert.match(samples[1], MARKER);
-    assert.equal(samples[2], samples[1], 'the same group after the restart');
-    await fs.access(path.join(path.dirname(logPath), 'sample.key'));
+    assert.deepEqual(samples, [OWN[1], '[other]']);
+    assert.deepEqual(await fs.readdir(path.dirname(logPath)), ['reports.ndjson'], 'nothing beside the store');
   });
 });
 

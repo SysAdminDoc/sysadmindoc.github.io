@@ -189,12 +189,8 @@ test('the CSP report store holds the live file and one rotated copy, never more'
       );
       assert.equal(response.status, 204);
     }
-    // Beside the reports, only the key the sink hashes other samples with,
-    // which holds no report data.
-    const all = (await fs.readdir(dir)).sort();
-    assert.deepEqual(all, ['reports.ndjson', 'reports.ndjson.1', 'sample.key']);
-    assert.match(await fs.readFile(path.join(dir, 'sample.key'), 'utf8'), /^[A-Za-z0-9+/]{43}=$/);
-    const files = all.filter((file) => file.startsWith('reports.ndjson'));
+    const files = (await fs.readdir(dir)).sort();
+    assert.deepEqual(files, ['reports.ndjson', 'reports.ndjson.1']);
     let total = 0;
     for (const file of files) total += (await fs.stat(path.join(dir, file))).size;
     assert.ok(total <= maxLogBytes * 2, `${total} bytes kept`);

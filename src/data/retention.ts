@@ -24,4 +24,4 @@ export const CSP_REPORT_STORE_MB = 10;
 export const SERVER_LOG_MB = 30;
 
 /** When the privacy page last changed what it says. */
-export const PRIVACY_EFFECTIVE_DATE = '2026-09-23';
+export const PRIVACY_EFFECTIVE_DATE = '2026-09-24';
