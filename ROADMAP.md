@@ -6,9 +6,58 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
+- [ ] P1: Keep visitors' addresses and query strings out of the edge's own log
+  Why: Caddy's "looking up info for HTTP challenge" warning, logged for any request to `/.well-known/acme-challenge/`, carries top-level `remote_addr` and `uri` fields. The default loggers' filters delete only `request>*` fields, so the edge's container log holds the visitor's address and port and the whole query string, which `/privacy/` and the CHANGELOG say it never does. 13 such entries were there on 2026-09-24.
+  Evidence: eleventh drain review, 2026-09-24: a probe GET with `?reviewq=1` showed up in `docker logs caddy` with both fields.
+  Touches: the edge Caddyfile in Contabo-VPS-Ops, `deploy/vps/Caddyfile`, `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: both default loggers delete `remote_addr` and cut the query from a top-level `uri`, the deploy check fails on a filter without either, and a probe request's entry on the edge shows neither.
+  Complexity: S
+
+- [ ] P1: Make the edge's Docker log rotate, and check each container's own log settings
+  Why: Docker copies daemon.json's log defaults into a container only when it's created, and the edge was created before they were set, so `docker inspect caddy` shows json-file with no options and its log never rotates. The deploy's check merges today's daemon.json and passes, so `/privacy/`'s "Docker keeps only the latest 30 MB of each server's log" is false for the edge. The check also reads sizes in binary units and rejects `10mb`, where Docker uses decimal units and accepts it.
+  Evidence: eleventh drain review, 2026-09-24; moby `daemon/create.go` and `daemon/container/container.go`; `verifyServerLogRetention` in `scripts/deploy-vps.mjs`.
+  Touches: the edge's compose file in Contabo-VPS-Ops, the retention check and its test, the ops notes from b242e95.
+  Acceptance: the check reads only the container's own LogConfig, with Docker's units, and fails on `{"Type":"json-file","Config":{}}`. The edge's inspect shows a size limit and file count, and the deploy passes on it.
+  Complexity: S
+
 ### P2
 
+- [ ] P2: Check the proxy trust settings the way Caddy and ntfy read them
+  Why: The trust test reads the Caddyfile and compose file with its own lexer. An environment default (`{$NOT_SET:X-Forwarded-For}`), a snippet argument, a `\\` before a quote, an escaped newline and a heredoc each set `X-Forwarded-For` from `X-Real-IP` after `caddy adapt` and pass it. ntfy's underscore flags (`--proxy_forwarded_header`, `--proxy_trusted_hosts`), `NTFY_CONFIG_FILE` and a compose `extends` pass too. `header { -Forwarded }`, which touches only response headers, and a quoted flag value fail it.
+  Evidence: eleventh drain review, 2026-09-24, with `caddy adapt` 2.11.4 and ntfy v2.28.0 `cmd/serve.go`; commit dc6bd64a.
+  Touches: `test/` trust tests, `scripts/deploy-vps.mjs` (read the running configs back), the ntfy compose service.
+  Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
+  Complexity: M
+
+- [ ] P2: Let only one process take a stale gate lock
+  Why: With six workers taking the lock and exiting without releasing it, as a killed run does, 4 of 3,529 stale takeovers left two holders at once. The move-aside-and-put-back path in `scripts/visual-gate.mjs` lets a third run in, which its own comment admits, and the CHANGELOG says one run holds it at a time.
+  Evidence: eleventh drain review, 2026-09-24, `lock-race.mjs`; `scripts/visual-gate.mjs:197-212`.
+  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
+  Acceptance: the six-worker stale race shows no overlap in 10,000 takeovers.
+  Complexity: M
+
+- [ ] P2: Guard `npm run generated:fixtures` the way the gate is guarded
+  Why: It writes the fixtures into `src/data` with no backup and no lock, and leaves the live `_etags.json` in place, the state that let the nightly's 304s keep fixture rows.
+  Evidence: eleventh drain review, 2026-09-24 (not run end to end).
+  Touches: `scripts/install-generated-fixtures.mjs`, `package.json`, a test.
+  Acceptance: run by hand it either refuses or goes through the gate's backup and lock, and a nightly after it can't keep a fixture row.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Scrub what the CSP sink's samples still leak, and stop mangling harmless text
+  Why: A 32-letter extension ID cut short by the 40-character sample keeps 12 letters, which is enough to identify it. `john.smith%40example.com`, `4111_1111_1111_1111` and `555/123/4567` pass unchanged. Custom properties of 24 characters or more become `[id]`, and SVG path data and ISO dates become `[number]`.
+  Evidence: eleventh drain review, 2026-09-24; `scrubSample` in `deploy/vps/csp-report-server.mjs`.
+  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`.
+  Acceptance: each leaking case is scrubbed and each harmless one comes through, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Keep forged reports from rotating out the smoke row or silencing a key
+  Why: The store keeps two 5 MB files, and at 120 requests a minute of 20 reports each, forged rows can rotate the smoke's row out before the read-back. Keys carry only 21 characters of the sample, so reports spread over an hour alert once and then silence every later real block that starts the same way.
+  Evidence: eleventh drain review, 2026-09-24; `scripts/lib/csp-report-summary.mjs`.
+  Touches: `scripts/lib/csp-report-summary.mjs`, `deploy/vps/csp-report-server.mjs`, the deploy's read-back.
+  Acceptance: a test floods the store between the smoke and the read-back and the read-back still finds its row or fails naming the flood, and two samples that differ after character 21 get two keys.
+  Complexity: S
 
 - [ ] P3: Check every logger that writes to the edge container's log
   Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
