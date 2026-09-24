@@ -15,6 +15,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
   Complexity: M
 
+- [ ] P2: Make the browser suites fail when their preview server isn't the one answering
+  Why: `tests/playwright/preview-server.mjs` accepts any answer on the port. With the port taken, Astro moved to the next one and logged it, while the tests kept using the configured port: 13 screenshots passed against another project's server and 7 got `ERR_CONNECTION_REFUSED`.
+  Evidence: twelfth drain review, 2026-09-24, port 4391 in a second worktree.
+  Touches: `tests/playwright/preview-server.mjs`, a test.
+  Acceptance: with the port held by another server, the global setup fails naming the port, and a server that answers but isn't this build's preview is refused.
+  Complexity: S
+
 - [ ] P2: Let only one process take a stale gate lock
   Why: With six workers taking the lock and exiting without releasing it, as a killed run does, 4 of 3,529 stale takeovers left two holders at once. The move-aside-and-put-back path in `scripts/visual-gate.mjs` lets a third run in, which its own comment admits, and the CHANGELOG says one run holds it at a time.
   Evidence: eleventh drain review, 2026-09-24, `lock-race.mjs`; `scripts/visual-gate.mjs:197-212`.
@@ -43,6 +50,20 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Evidence: eleventh drain review, 2026-09-24; `scripts/lib/csp-report-summary.mjs`.
   Touches: `scripts/lib/csp-report-summary.mjs`, `deploy/vps/csp-report-server.mjs`, the deploy's read-back.
   Acceptance: a test floods the store between the smoke and the read-back and the read-back still finds its row or fails naming the flood, and two samples that differ after character 21 get two keys.
+  Complexity: S
+
+- [ ] P3: Time the holder test from the next step's own start
+  Why: The test now times the runner's `START profile-feed:sync` line, but a runner that logs START on time and then waits up to 30 s for the held step's pipes before spawning passed it in 32.7 s. A log line is still standing in for the run moving on.
+  Evidence: twelfth drain review, 2026-09-24; `test/refresh-and-deploy.test.mjs:279-282`.
+  Touches: `test/refresh-and-deploy.test.mjs`.
+  Acceptance: the fake next step records when it actually starts, the test times that, and the START-then-wait mutant fails while the unchanged runner passes, also slowed.
+  Complexity: S
+
+- [ ] P3: Read built CSS the way browsers do: any case, any closing tag spacing, SVG and style attributes
+  Why: A `<STYLE>` block, a block closed with `</style >`, and `LIGHT-DARK(` in a stylesheet copied as is all pass `css:output:audit`, and Chromium applies each. A `<style>` inside an SVG and a `style` attribute aren't read either (the CSP blocks the attribute). The CHANGELOG says the audit reads any built CSS or HTML. Separately, the CHANGELOG's "every pixel's colour has to match" skips that pixelmatch ignores pixels it takes for anti-aliasing.
+  Evidence: twelfth drain review, 2026-09-24; `scripts/audit-css-output.mjs:54`, `scripts/lib/css-output-check.mjs`.
+  Touches: those files, `scripts/audit-gate-selftest.mjs`, `CHANGELOG.md`.
+  Acceptance: each of those plants fails the audit, and both CHANGELOG lines say what the checks do.
   Complexity: S
 
 - [ ] P3: Check every logger that writes to the edge container's log
