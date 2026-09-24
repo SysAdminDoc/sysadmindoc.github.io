@@ -22,7 +22,7 @@ import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
-import { EDGE_EXCLUDES, loggingProblem } from './lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, REAL_FILE_PROBE, fileWriterPaths, loggingProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { caddyTrustProblems, networkProblems, ntfyTrustProblems } from './lib/proxy-trust-check.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
@@ -130,16 +130,27 @@ function verifyCaddyVersion() {
 // Every logger, not just `default`: any other one writing to the container's
 // output would pass a check of `default` alone while it wrote addresses
 // (eighth drain review).
+const shellQuote = (value) => `'${String(value).replace(/'/g, `'\\''`)}'`;
+
+// Which of a server's file loggers write to a regular file, read inside its
+// container, since a filename can name /dev/stderr or a link to it (fifteenth
+// drain review). Only those escape the filter check.
+function realFilesIn(container, logs) {
+  const files = fileWriterPaths(logs);
+  if (files.length === 0) return [];
+  return captureRemote(`docker exec ${container} sh -c ${shellQuote(REAL_FILE_PROBE)} sh ${files.map(shellQuote).join(' ')} 2>/dev/null || true`).split('\n');
+}
+
 function verifyEdgeLogging() {
   const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs 2>&1 || true');
-  const problem = loggingProblem(output, { mustExclude: EDGE_EXCLUDES });
+  const problem = loggingProblem(output, { mustExclude: EDGE_EXCLUDES, realFiles: realFilesIn('caddy', output) });
   if (problem) throw new Error(`deploy-vps: on the edge, ${problem}.`);
   console.log("deploy-vps: the edge's own log drops what identifies a portfolio visitor.");
 }
 
 function verifyInnerLogging() {
   const output = captureRemote('docker exec portfolio-app wget -qO- http://127.0.0.1:2019/config/logging/logs 2>&1 || true');
-  const problem = loggingProblem(output);
+  const problem = loggingProblem(output, { realFiles: realFilesIn('portfolio-app', output) });
   if (problem) throw new Error(`deploy-vps: in portfolio-app, ${problem}.`);
   console.log("deploy-vps: portfolio-app's own log drops what identifies a visitor.");
 }

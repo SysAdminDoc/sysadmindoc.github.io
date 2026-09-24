@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Count every writer that can reach a Caddy container's output
-  Why: A `net` writer with `soft_start` falls back to stderr; a file writer aimed at `/dev/stderr` or `/proc/self/fd/1` writes to the container log; the include/exclude reading isn't Caddy's longest-match rule (an include of `http` and `http.log.error.portfolio` with an exclude of `http.log.error` still logs portfolio errors); and a logger that names only another site's log can still receive portfolio requests through a catch-all site, a mixed-case Host or `log_name`. `exclude ["*"]` reads as a leak though Caddy drops every module log with it.
-  Evidence: fifteenth drain review, 2026-09-24; Caddy logging.go:94-113,549-591, netwriter.go:199-211, httptype.go:914-917; `scripts/lib/edge-log-check.mjs`.
-  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: only a file writer to a real file is exempt, every other logger is held to the filter whatever it includes, include and exclude follow Caddy's loggerAllowed, and each case has a test.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Tighten the holder test's budget

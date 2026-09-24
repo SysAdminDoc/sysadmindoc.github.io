@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem, loggingProblem } from '../scripts/lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, REAL_FILE_PROBE, REQUIRED_DELETIONS, defaultLogProblem, fileWriterPaths, loggerAllowed, loggingProblem } from '../scripts/lib/edge-log-check.mjs';
 
 const root = process.cwd();
 
@@ -87,6 +87,8 @@ const edgeLogs = () => ({
   ...Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`log${index}`, fileLogger(`log${index}`)])),
   portfolio: fileLogger('portfolio'),
 });
+// What the deploy's probe found inside the container: each one a regular file.
+const edgeFiles = Object.values(edgeLogs()).flatMap((logger) => (logger.writer?.output === 'file' ? [logger.writer.filename] : []));
 
 // The fourteenth drain review: the mask knew IPv4 only, and certmagic's
 // "served key authentication" entries carry a top-level `remote`.
@@ -102,7 +104,7 @@ test('error text loses IPv6 and IPv4-mapped addresses too, and remote goes', () 
 // The eighth drain review: the deploy read only `default`, so a second logger
 // on the container's output would have passed while it wrote addresses.
 test('every logger that writes to the container output is held to the default one\'s filter', () => {
-  const check = (logs) => loggingProblem(JSON.stringify(logs), edgeOptions);
+  const check = (logs) => loggingProblem(JSON.stringify(logs), { ...edgeOptions, realFiles: edgeFiles });
   assert.equal(check(edgeLogs()), null, 'the edge as it runs');
   assert.equal(loggingProblem(JSON.stringify({ default: { ...filtered, exclude: undefined } })), null, 'and the inner Caddy');
 
@@ -112,13 +114,75 @@ test('every logger that writes to the container output is held to the default on
   assert.match(check({ ...edgeLogs(), extra: { encoder: { format: 'json' } } }) ?? '', /extra logger/, 'no writer means stderr');
   assert.match(check({ ...edgeLogs(), extra: { ...plain, include: ['http.log.access.portfolio'] } }) ?? '', /extra logger/, 'the portfolio access log on stderr');
   assert.match(check({ ...edgeLogs(), extra: { ...plain, include: ['http.handlers.reverse_proxy'] } }) ?? '', /extra logger/, 'handler warnings carry portfolio requests too');
-  assert.equal(check({ ...edgeLogs(), extra: { ...plain, include: ['http.log.access.log3', 'http.log.error.log3'] } }), null, 'another site\'s own logs never see a portfolio request');
+  // The fifteenth drain review: a catch-all site, a mixed-case Host or
+  // `log_name` sends portfolio requests to another site's logger, so naming
+  // one no longer exempts a logger (httptype.go, the log associations).
+  assert.match(check({ ...edgeLogs(), extra: { ...plain, include: ['http.log.access.log3', 'http.log.error.log3'] } }) ?? '', /the extra logger's format is json/, 'another site\'s logs on stderr are held too');
   assert.equal(check({ ...edgeLogs(), extra: { ...filtered } }), null, 'a second logger filtered like default passes');
   assert.match(check({ ...edgeLogs(), extra: { ...filtered, exclude: [] } }) ?? '', /extra logger, which writes to the container's stderr, doesn't exclude http\.log\.error\.portfolio/);
   assert.equal(check({ ...edgeLogs(), extra: { ...filtered, exclude: [], include: ['http.log.access.log4'] } }), null, 'an exclusion it can never need');
   assert.match(check({ ...edgeLogs(), default: undefined }) ?? '', /no default logger/);
   assert.match(loggingProblem('null') ?? '', /no loggers are configured/);
   assert.match(loggingProblem("wget: can't connect to remote host") ?? '', /could not read the logging config/);
+});
+
+// The fifteenth drain review reached the container's output through writers
+// the check didn't count.
+test('only a file writer the container shows to be a regular file, or a discard writer, escapes the filter', () => {
+  const plain = { encoder: { format: 'json' } };
+  const check = (extra, realFiles = edgeFiles) => loggingProblem(JSON.stringify({ ...edgeLogs(), extra }), { ...edgeOptions, realFiles });
+  assert.equal(check({ ...plain, writer: { output: 'file', filename: '/var/log/caddy/extra.log' } }, [...edgeFiles, '/var/log/caddy/extra.log']), null);
+  assert.match(loggingProblem(JSON.stringify(edgeLogs()), edgeOptions) ?? '', /the log0 logger's format is json, .*, and it writes to \/var\/log\/caddy\/log0\.log, which isn't shown to be a regular file/, 'no proof, no exemption');
+  for (const filename of ['/dev/stderr', '/proc/self/fd/1', '/var/log/caddy/linked-to-stdout.log']) {
+    assert.match(check({ ...plain, writer: { output: 'file', filename } }) ?? '', new RegExp(`writes to ${filename.replace(/[./]/g, '\\$&')}, which isn't shown`), filename);
+  }
+  // netwriter.go: with soft_start, or once the address stops answering, each
+  // entry goes to stderr instead; either way it leaves the server.
+  assert.match(check({ ...plain, writer: { output: 'net', address: 'tcp/203.0.113.5:9000', soft_start: true } }) ?? '', /writes to tcp\/203\.0\.113\.5:9000 and, whenever that can't be reached, the container's stderr/);
+  assert.equal(check({ ...filtered, writer: { output: 'net', address: 'tcp/203.0.113.5:9000' } }), null, 'filtered like default, it may');
+  // logging.go deletes a discard logger before it's used.
+  assert.equal(check({ ...plain, writer: { output: 'discard' } }), null);
+  assert.match(check({ ...plain, writer: { output: 'Discard' } }) ?? '', /the Discard writer/, 'module names are exact');
+
+  assert.deepEqual(
+    fileWriterPaths(JSON.stringify({
+      a: { writer: { output: 'file', filename: '/var/log/a.log' } },
+      b: { writer: { output: 'file', filename: '/var/log/a.log' } },
+      c: { writer: { output: 'file', filename: 'relative.log' } },
+      d: { writer: { output: 'file', filename: '/var/log/{env.SITE}.log' } },
+      e: { writer: { output: 'file', filename: '/var/log/x\n/var/log/a.log' } },
+      f: { writer: { output: 'stderr', filename: '/var/log/f.log' } },
+      g: { writer: { output: 'file', filename: '/dev/stderr' } },
+    })),
+    ['/var/log/a.log', '/dev/stderr'],
+    'the probe gets absolute names without placeholders or line breaks, once each',
+  );
+  assert.deepEqual(fileWriterPaths('not json'), []);
+});
+
+// Caddy 2.11.4 logging.go, CustomLog.loggerAllowed, case by case.
+test("include and exclude follow Caddy's longest match", () => {
+  const name = 'http.log.error.portfolio';
+  const allowed = (include, exclude) => loggerAllowed({ include, exclude }, name);
+  assert.equal(allowed(undefined, undefined), true);
+  assert.equal(allowed(['http', name], ['http.log.error']), true, 'the review\'s case: the longer include wins');
+  assert.equal(allowed(['http'], ['http.log.error']), false);
+  assert.equal(allowed(['http.log.error'], ['http.log']), true);
+  assert.equal(allowed([name], [name]), false, 'a tie goes to the exclusion');
+  assert.equal(allowed(['http.log.error.port'], undefined), false, 'a partial name matches nothing');
+  assert.equal(allowed(undefined, ['http.log.error.port']), true);
+  assert.equal(allowed(['http.log.access'], undefined), false);
+  assert.equal(allowed(undefined, ['*']), false, '* drops every module\'s entries');
+  assert.equal(allowed(['http'], ['*']), false);
+  assert.equal(allowed(undefined, ['.']), true, '. drops only Caddy core\'s');
+  assert.equal(loggerAllowed({ exclude: ['.'] }, '.'), false);
+  assert.equal(allowed([], ['http.log.error']), false);
+
+  const logs = (logger) => loggingProblem(JSON.stringify({ ...edgeLogs(), extra: { ...filtered, exclude: undefined, ...logger } }), { ...edgeOptions, realFiles: edgeFiles });
+  assert.match(logs({ include: ['http', name], exclude: ['http.log.error'] }) ?? '', /extra logger, which writes to the container's stderr, doesn't exclude http\.log\.error\.portfolio/);
+  assert.equal(logs({ exclude: ['*'] }), null, 'exclude * keeps portfolio errors out');
+  assert.equal(defaultLogProblem(JSON.stringify({ ...filtered, exclude: ['*'] }), edgeOptions), null);
+  assert.match(defaultLogProblem(JSON.stringify({ ...filtered, exclude: ['.'] }), edgeOptions) ?? '', /doesn't exclude/);
 });
 
 // The seventh drain review got whole portfolio requests into the edge's
@@ -164,7 +228,16 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   // logs object is read rather than /logs/default.
   assert.match(deploy, /docker exec caddy wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs /);
   assert.match(deploy, /docker exec portfolio-app wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs /);
-  assert.match(deploy, /loggingProblem\(output, \{ mustExclude: EDGE_EXCLUDES \}\)/, 'the edge is held to its exclusion');
+  assert.match(deploy, /loggingProblem\(output, \{ mustExclude: EDGE_EXCLUDES, realFiles: realFilesIn\('caddy', output\) \}\)/, 'the edge is held to its exclusion');
+  assert.match(deploy, /loggingProblem\(output, \{ realFiles: realFilesIn\('portfolio-app', output\) \}\)/);
+  // The file proof is read inside the same container, every name quoted.
+  const probe = deploy.match(/function realFilesIn\(container, logs\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+  assert.match(probe, /docker exec \$\{container\} sh -c \$\{shellQuote\(REAL_FILE_PROBE\)\} sh \$\{files\.map\(shellQuote\)\.join\(' '\)\}/);
+  assert.match(deploy, /const shellQuote = \(value\) => `'\$\{String\(value\)\.replace\(\/'\/g, `'\\\\''`\)\}'`;/);
+  assert.doesNotMatch(REAL_FILE_PROBE, /'/, 'the probe survives single quotes');
+  assert.match(REAL_FILE_PROBE, /readlink -f "\$f"/);
+  assert.match(REAL_FILE_PROBE, /\[ -f "\$r" \]/);
+  assert.match(REAL_FILE_PROBE, /case "\$r" in \/proc\/\*\|\/dev\/\*\|\/sys\/\*\) continue;;/);
   // The edge's check doesn't depend on the new build, so it runs before
   // anything ships; the inner one reads the container the deploy just made.
   const edgeChecked = deploy.indexOf('\nverifyEdgeLogging();');

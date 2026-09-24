@@ -108,35 +108,107 @@ function filterProblem(logger, { mustExclude = [], subject, possessive }) {
     return masked === null || leavesAddress(masked);
   })) missing.push('addresses in error text (error)');
   if (missing.length > 0) return `${possessive} filter keeps ${missing.join(', ')}`;
-  // An exclusion covers a logger and everything under it, so http.log.error
-  // also keeps http.log.error.portfolio out. A logger that includes only
-  // other loggers never sees the name at all.
-  const covers = (entry, name) => name === entry || name.startsWith(`${entry}.`);
-  const includes = Array.isArray(logger.include) ? logger.include.map(String) : [];
-  const excludes = Array.isArray(logger.exclude) ? logger.exclude.map(String) : [];
-  const kept = mustExclude.filter(
-    (name) => (includes.length === 0 || includes.some((entry) => covers(entry, name))) && !excludes.some((entry) => covers(entry, name)),
-  );
+  const kept = mustExclude.filter((name) => loggerAllowed(logger, name));
   if (kept.length > 0) return `${subject} doesn't exclude ${kept.join(' or ')}`;
   return null;
 }
 
-// Loggers that name one site's own access or error log, and nothing else,
-// never see a portfolio request unless the site is the portfolio.
-const OTHER_SITE_LOGGER = /^http\.log\.(?:access|error)\.(.+)$/;
+/**
+ * Whether a logger with these include and exclude lists writes an entry
+ * logged under `name`, as Caddy 2.11's CustomLog.loggerAllowed decides it
+ * (logging.go): the longest matching include has to beat the longest matching
+ * exclusion, `*` excludes every module's entries and `.` Caddy core's. The
+ * fifteenth drain review: an include of `http` and `http.log.error.portfolio`
+ * beside an exclusion of `http.log.error` still logs portfolio errors, and
+ * `exclude ["*"]` keeps them all out.
+ * @param {any} logger
+ * @param {string} name
+ */
+export function loggerAllowed(logger, name) {
+  const include = Array.isArray(logger?.include) ? logger.include.map(String) : [];
+  const exclude = Array.isArray(logger?.exclude) ? logger.exclude.map(String) : [];
+  if (include.length === 0 && exclude.length === 0) return true;
+  // The dot keeps `foo.b` from matching `foo.bar`.
+  const key = name !== '' && name !== '*' && name !== '.' ? `${name}.` : name;
+  let longestAccept = 0;
+  let longestReject = 0;
+  if (include.length > 0) {
+    for (const namespace of include) {
+      if (key.startsWith(`${namespace}.`)) longestAccept = Math.max(longestAccept, namespace.length);
+    }
+    if (longestAccept === 0) return false;
+  }
+  if (exclude.length > 0) {
+    for (const namespace of exclude) {
+      if ((namespace === '*' && key !== '.') || (namespace === '.' && key === '.')) return false;
+      if (key.startsWith(`${namespace}.`)) longestReject = Math.max(longestReject, namespace.length);
+    }
+    if (longestReject > longestAccept) return false;
+  }
+  return longestAccept > longestReject || (include.length === 0 && longestReject === 0);
+}
 
 /**
- * Why any logger that writes to the container's own output (stderr, stdout,
- * or no writer, which Caddy takes as stderr) would keep what identifies a
- * visitor, or null. The eighth drain review: the deploy read only `default`,
- * so a second logger on stderr would have passed while it wrote addresses.
- * Loggers writing to a file don't reach the container log; ones that take
- * only another site's access or error log never see a portfolio request.
+ * The file writers' filenames that could be a real file, for the deploy to
+ * check inside the container: absolute, and with no placeholder, which Caddy
+ * fills in only when it opens the file (filewriter.go).
  * @param {string} text the admin API's /config/logging/logs
- * @param {{ mustExclude?: readonly string[] }} [options]
+ * @returns {string[]}
+ */
+export function fileWriterPaths(text) {
+  let logs;
+  try {
+    logs = JSON.parse(String(text));
+  } catch {
+    return [];
+  }
+  if (!logs || typeof logs !== 'object') return [];
+  return [
+    ...new Set(
+      Object.values(logs)
+        .filter((logger) => logger?.writer?.output === 'file' && typeof logger.writer.filename === 'string')
+        .map((logger) => logger.writer.filename)
+        .filter((filename) => filename.startsWith('/') && !/[{\n\r\0]/.test(filename)),
+    ),
+  ];
+}
+
+/**
+ * Prints each argument that resolves to a regular file outside /proc, /dev
+ * and /sys, run with sh inside the container. `/dev/stderr`, `/proc/self/fd/1`
+ * and a link to either resolve to a pipe, which isn't one.
+ */
+export const REAL_FILE_PROBE = 'for f; do r=$(readlink -f "$f") || continue; [ -f "$r" ] || continue; case "$r" in /proc/*|/dev/*|/sys/*) continue;; esac; printf "%s\\n" "$f"; done';
+
+/** Where a logger's entries end up, in words, or null for nowhere. */
+function destination(logger, realFiles) {
+  const writer = logger.writer ?? {};
+  const output = String(writer.output ?? 'stderr');
+  // Caddy deletes a logger with the discard writer outright (logging.go).
+  if (output === 'discard') return null;
+  if (output === 'file') {
+    return realFiles.includes(writer.filename) ? null : `${writer.filename}, which isn't shown to be a regular file in the container`;
+  }
+  if (output === 'net') return `${writer.address} and, whenever that can't be reached, the container's stderr`;
+  if (output === 'stderr' || output === 'stdout') return `the container's ${output}`;
+  return `the ${output} writer`;
+}
+
+/**
+ * Why any logger whose entries can reach the container's output, or leave
+ * the server, would keep what identifies a visitor, or null. Only a logger
+ * writing to a file proven a regular file in the container (`realFiles`), or
+ * discarding everything, is exempt. The eighth drain review: the deploy read
+ * only `default`, so a second logger on stderr passed while it wrote
+ * addresses. The fifteenth: a `net` writer falls back to stderr, a file writer
+ * can name `/dev/stderr`, and a logger that includes only another site's log
+ * still gets portfolio requests through a catch-all site, a mixed-case Host or
+ * `log_name`, so what a logger includes no longer exempts it.
+ * @param {string} text the admin API's /config/logging/logs
+ * @param {{ mustExclude?: readonly string[], realFiles?: readonly string[] }} [options]
  * @returns {string | null}
  */
-export function loggingProblem(text, { mustExclude = [] } = {}) {
+export function loggingProblem(text, { mustExclude = [], realFiles = [] } = {}) {
   let logs;
   try {
     logs = JSON.parse(String(text));
@@ -150,12 +222,10 @@ export function loggingProblem(text, { mustExclude = [] } = {}) {
   if (problem) return problem;
   for (const [name, logger] of Object.entries(logs)) {
     if (name === 'default' || !logger || typeof logger !== 'object') continue;
-    const output = String(logger.writer?.output ?? 'stderr').toLowerCase();
-    if (output !== 'stderr' && output !== 'stdout') continue;
-    const includes = Array.isArray(logger.include) ? logger.include.map(String) : [];
-    if (includes.length > 0 && includes.every((entry) => (OTHER_SITE_LOGGER.exec(entry)?.[1] ?? 'portfolio') !== 'portfolio')) continue;
-    const found = filterProblem(logger, { mustExclude, subject: `the ${name} logger, which writes to the container's ${output},`, possessive: `the ${name} logger's` });
-    if (found) return found.startsWith(`the ${name} logger's`) ? `${found}, and it writes to the container's ${output}` : found;
+    const where = destination(logger, realFiles);
+    if (where === null) continue;
+    const found = filterProblem(logger, { mustExclude, subject: `the ${name} logger, which writes to ${where},`, possessive: `the ${name} logger's` });
+    if (found) return found.startsWith(`the ${name} logger's`) ? `${found}, and it writes to ${where}` : found;
   }
   return null;
 }
