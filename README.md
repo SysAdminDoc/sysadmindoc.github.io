@@ -238,7 +238,11 @@ Without it the browser posts natively, and the handler answers with a 303: to
 Once someone starts filling in the form, its script fetches a signed token
 from `/api/contact/token` and sends it back with the message. The handler
 refuses a token under three seconds old, over four hours old, or already used,
-so it times the form on its own clock instead of the visitor's. Its signing key
+so it times the form on its own clock instead of the visitor's. The minimum
+comes from `CONTACT_MIN_TIME` in `contact-secrets.env` and travels with each
+token, and the page script and the smoke wait that long. It can go up to 60
+seconds. Raise it one deploy after the script that reads it, since a returning
+visitor's service worker can serve the older script for one more visit. Its signing key
 is new at every start, so a restart can't let a used token through again.
 
 Every post has to come from a page on this site, token or not, since any site

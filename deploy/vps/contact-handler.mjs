@@ -16,7 +16,8 @@
 //                                   which the owner's phone does not subscribe to. A request that
 //                                   sends the header with any other value is refused with 403.
 //   CONTACT_STORE         optional  absolute path of the lead store (default /var/lib/contact/leads.ndjson)
-//   CONTACT_MIN_TIME      optional  minimum seconds between fetching a form token and submitting (default 3)
+//   CONTACT_MIN_TIME      optional  minimum seconds between fetching a form token and submitting (default 3,
+//                                   at most 60, the longest the page script and the smoke wait)
 //   CONTACT_RETENTION_DAYS optional days a lead is kept, then deleted at start and daily (default 365;
 //                                   /privacy/ states the same number, src/data/retention.ts)
 //
@@ -124,6 +125,16 @@ function positiveInteger(value, fallback, label) {
   return parsed;
 }
 
+// The page script and the live smoke wait at most a minute for a token to
+// age (public/scripts/contact-form.js, scripts/lib/lead-delivery-check.mjs), so
+// a longer minimum would refuse every scripted send and its retry.
+export const MAX_MIN_TIME_SECONDS = 60;
+
+function atMost(value, max, label) {
+  if (value > max) throw new Error(`${label} must be at most ${max}.`);
+  return value;
+}
+
 export function loadConfig(env = process.env) {
   const ntfyUrl = String(env.NTFY_URL ?? '').trim();
   let topicUrl;
@@ -172,7 +183,7 @@ export function loadConfig(env = process.env) {
     ntfyToken,
     smokeSecret,
     storePath,
-    minTimeSeconds: positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'),
+    minTimeSeconds: atMost(positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'), MAX_MIN_TIME_SECONDS, 'CONTACT_MIN_TIME'),
     leadRetentionDays: positiveInteger(env.CONTACT_RETENTION_DAYS, DEFAULT_CONFIG.leadRetentionDays, 'CONTACT_RETENTION_DAYS'),
   };
 }
@@ -752,7 +763,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
         'X-Content-Type-Options': 'nosniff',
       });
       // The minimum age travels with the token, so the page script and the
-      // live smoke wait as long as this server asks, whatever CONTACT_MIN_TIME is.
+      // live smoke wait as long as this server asks, up to CONTACT_MIN_TIME's cap.
       response.end(JSON.stringify({ token: issueToken(), minAgeMs: config.minTimeSeconds * 1000 }));
       return;
     }

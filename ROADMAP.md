@@ -22,13 +22,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: a part that is warned stale with no parseable time puts `staleAfter` at or before `evaluatedAt`, and the status page shows its stale panel once the current time is past `generatedData.staleAfter`, each with a test.
   Complexity: S
 
-- [ ] P2: Hold CONTACT_MIN_TIME to what the page script will wait
-  Why: The handler takes any positive CONTACT_MIN_TIME, but the page script and the smoke wait at most 60.5 s, so at 61 or more every send and its retry are refused, and the comment at `contact-handler.mjs:754` ("whatever CONTACT_MIN_TIME is") is wrong. A returning visitor's service worker can also serve the old script with its fixed 3.5 s wait for one load after a deploy (plausible, not reproduced).
-  Evidence: eighteenth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:118-125,175`, `public/scripts/contact-form.js:10,44`, `scripts/lib/lead-delivery-check.mjs:20,25`, `public/sw.js:131-148`.
-  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`, README (raise it only after the new script has been live for a deploy).
-  Acceptance: loadConfig refuses CONTACT_MIN_TIME above 60 with a test, and the README says to raise it one deploy after the script that reads minAgeMs.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit

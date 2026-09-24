@@ -7,6 +7,7 @@ import { randomBytes } from 'node:crypto';
 import {
   CHECK_FORM_MESSAGE,
   DEFAULT_CONFIG,
+  MAX_MIN_TIME_SECONDS,
   NOTIFY_MESSAGE_MAX_BYTES,
   NOTIFY_TITLE_MAX_BYTES,
   clientAddress,
@@ -20,6 +21,7 @@ import {
   signToken,
   truncateBytes,
 } from '../deploy/vps/contact-handler.mjs';
+import { tokenWaitMs } from '../scripts/lib/lead-delivery-check.mjs';
 
 const NOW = new Date('2026-09-22T12:00:00.000Z');
 const TOKEN_SECRET = 'test-token-secret-'.repeat(3);
@@ -671,6 +673,13 @@ test('the token endpoint says how long a token has to age, and the handler holds
     });
   assert.equal(await minAge({}), 3000);
   assert.equal(loadConfig({ NTFY_URL: 'http://ntfy:80/portfolio-leads', CONTACT_MIN_TIME: '5' }).minTimeSeconds, 5);
+  // The page script and the smoke wait a minute at most, so a longer minimum
+  // would refuse every scripted send (eighteenth drain review).
+  assert.equal(loadConfig({ NTFY_URL: 'http://ntfy:80/portfolio-leads', CONTACT_MIN_TIME: '60' }).minTimeSeconds, 60);
+  assert.throws(() => loadConfig({ NTFY_URL: 'http://ntfy:80/portfolio-leads', CONTACT_MIN_TIME: '61' }), /CONTACT_MIN_TIME must be at most 60/);
+  assert.equal(tokenWaitMs({ token: 'x', minAgeMs: MAX_MIN_TIME_SECONDS * 1000 }) >= MAX_MIN_TIME_SECONDS * 1000, true, 'the smoke waits out the longest minimum allowed');
+  const pageScript = await fs.readFile(path.join(process.cwd(), 'public', 'scripts', 'contact-form.js'), 'utf8');
+  assert.equal(Number(pageScript.match(/var MAX_TOKEN_AGE_MS = (\d+);/)?.[1]), MAX_MIN_TIME_SECONDS * 1000, 'and so does the page script');
   await withHandler({ config: { minTimeSeconds: 5 } }, async ({ handler, setClock }) => {
     const issue = async () => {
       const issued = responseMock();
