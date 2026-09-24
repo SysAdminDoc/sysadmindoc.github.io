@@ -22,7 +22,49 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: only a file writer to a real file is exempt, every other logger is held to the filter whatever it includes, include and exclude follow Caddy's loggerAllowed, and each case has a test.
   Complexity: S
 
+- [ ] P2: Read built HTML with a spec-compliant parser in the CSS output audit
+  Why: The hand-written scanner in 33101492 lost cases the old reader caught (`<!-->`, `<!--->` and `--!>` comments, `<svg><style / >`, an SVG `<style>` inside an SVG `<script>`, CDATA opening a comment in SVG) and misses more: an end tag with a quoted `>`, an inline `<script>` that injects a `<style>` (every page has two or three), `<link rel=stylesheet href="data:...">`, `@import"data:..."` and `@import/**/url(...)`, a quoted data URI holding `)`, a `%FF` byte in one, `\6b` before CRLF, an internal DTD entity in an SVG file, a JS escape such as `\x28` in a script.
+  Evidence: fifteenth drain review, 2026-09-24, checked against headless Chromium 153; `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs:62`.
+  Touches: `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs`, `package.json` (parse5), the selftest and tests.
+  Acceptance: styles, style attributes, stylesheet links and inline scripts are read from a parse5 tree; the CSS-level cases are handled or refused; each listed case fails the audit.
+  Complexity: M
+
+- [ ] P2: Keep PLAYWRIGHT_BASE_URL out of every deploy step, in any case
+  Why: `playwrightEnv` drops only the exact key, and Windows environment names are case-insensitive, so `Playwright_Base_Url` still reaches the child. `deploy:preflight` also runs `a11y:audit:browser` straight through Playwright, which honours the variable and skips the preview checks. A direct Playwright run outside the gate lock during `deploy:vps`'s build-to-tar window, or a hard-killed setup before `SKIP_BUILD=1`, can leave a `__preview-check-*` token in what ships.
+  Evidence: fifteenth drain review, 2026-09-24; `scripts/visual-gate.mjs:112`, `playwright.audits.config.mjs:5`, `tests/playwright/preview-server.mjs:51`.
+  Touches: `playwright.audits.config.mjs`, `tests/playwright/preview-server.mjs`, `scripts/visual-gate.mjs`, `scripts/deploy-vps.mjs`.
+  Acceptance: the audits config takes an outside server only when it's asked for explicitly, any casing of the variable is dropped, and the deploy never packs a token file.
+  Complexity: S
+
+- [ ] P2: Undo the depth-limit claim removal, and let a stalled claimant wait instead of throw
+  Why: Removing a stale claim at the depth limit without claiming it let two threads against a nine-deep dead chain both take the lock, 4 of 4 paced runs. The ten-minute sweep already clears old chains. A claimant stalled past ten minutes has its draft swept, so its link throws ENOENT.
+  Evidence: fifteenth drain review, 2026-09-24; `scripts/visual-gate.mjs:283-284`. Fourth refutation of the lock work: anything left after this goes to Roadmap_Blocked.md.
+  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
+  Acceptance: the paced nine-deep race gives one holder, a swept draft makes tryLock report not taken, and the races still show one holder.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Tighten the holder test's budget
+  Why: It allows 10 s plus three npm starts, so at normal speed a runner that releases 8 s late, or waits 8 s after logging OK or START, passes at about 10.25 s against 10.7 s; slowed by 5 s per start, the budget reaches 55.9 s and the 30 s mutants pass at 47.3 s.
+  Evidence: fifteenth drain review, 2026-09-24; `test/refresh-and-deploy.test.mjs:252`.
+  Touches: `test/refresh-and-deploy.test.mjs`.
+  Acceptance: the 8 s and 30 s mutants fail at normal speed and the 30 s ones slowed, while the unchanged runner passes both ways.
+  Complexity: S
+
+- [ ] P3: Narrow the gutter check's off-screen skip, and stop two false alarms
+  Why: Text is skipped when wholly off-screen and any ancestor is positioned, so a `<p>` moved off by a transform or a negative margin inside a positioned card passes. `aria-hidden` text at `opacity: 0` near the edge fails though it isn't drawn, and an ellipsis-truncated line fails on text it hides.
+  Evidence: fifteenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:494-500,519`.
+  Touches: `tests/playwright/portfolio-audits.spec.mjs`.
+  Acceptance: only text whose own positioned box sits off-screen is skipped, fully transparent text is skipped, text is clipped by its overflow-hiding ancestors before it's measured, and each case is checked planted.
+  Complexity: S
+
+- [ ] P3: Complete css:audit's list of syntax newer than the targets, and let var() values kill
+  Why: `allow-discrete` transitions, the `lh` unit, `linear()` easing, `pow()`, `abs()`, unprefixed `image-set()` and two-value `display` are each dropped by a target, so the value before one is a live fallback, but the audit calls it dead. The other way, a value with `var()` always parses (then computes to unset), so `color:#888` before `rgb(from var(--accent) ...)` is dead, not a fallback.
+  Evidence: fifteenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:43,55`.
+  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
+  Acceptance: each case comes out right, with a test apiece.
+  Complexity: S
 
 - [ ] P3: Close the CSP sink's scrub regressions and cut-off gaps
   Why: The cut rule measures the sample after whitespace is collapsed, so a browser-cut sample with a newline or indentation never counts as cut; a cut-off ID after `{`, `[` or `/` survives; a whole ID joined to a word by a hyphen (`--<id>-root`) now passes, and so does `+33 6 12 34 56 78` (one single-digit group), both of which the previous version scrubbed; `\x40`, `%2540`, a full-width at sign and `@` hide an email. Keys still collide once a scrubbed sample passes 64 characters, and the `"` to `'` swap merges `getElementById("app")` with `getElementById('app')`. A store younger than the smoke's five-minute margin reads a missing smoke row as a flood.
