@@ -8,7 +8,63 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Give each gate self-test run a time limit, and count running out as a failure
+  Why: On 2026-09-24 `og-cards:audit` hung in sharp on the planted blank raster (0.25 s of CPU in 13 minutes), and `runAudit` in `scripts/audit-gate-selftest.mjs:483` has no timeout, so `build:ci` waited with it; killing the process then counted as the plant being rejected, which proves nothing. A nightly deploy would sit on its 45-minute preflight limit instead.
+  Evidence: 2026-09-24 restore build; `scripts/audit-gate-selftest.mjs:483-490`.
+  Touches: `scripts/audit-gate-selftest.mjs`, `test/toolchain.test.mjs`.
+  Acceptance: each audit run gets a time limit, a run that hits it fails the self-test with its name, and neither a hung clean run nor a hung planted run can pass.
+  Complexity: S
+
+- [ ] P2: Store only the site's own samples in the CSP sink, and a marker for the rest
+  Why: Four rounds of scrub rules still leak. The seventeenth review got through `jane.doe&commat;example.com`, the JS octal `jane.doe\100example.com`, `(at)` and `[at]` spellings, standard base64 keys (`+` and `/` split the run; 28% of random 12-byte tokens survived whole), IPv4 and IPv6 addresses, a MAC address and a dotted session ID. The sample exists to tell the site's own inline code from an extension's, and the site knows its own inline blocks.
+  Evidence: seventeenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:169-203`.
+  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/deploy-vps.mjs` (ship the site's own sample prefixes), `scripts/lib/csp-report-summary.mjs`, their tests.
+  Acceptance: a sample that starts like one of the built site's inline scripts or styles is stored as it came (it's public code); any other is stored as a fixed marker plus a short keyed hash that groups repeats, so no visitor text is kept whatever it holds; every sample from the review is stored as the marker.
+  Complexity: M
+
+- [ ] P2: Read noscript both ways and declarative shadow roots in the CSP host audit
+  Why: 62d90dc1 parses with `scriptingEnabled: false`, so `<noscript><style></noscript><img src="https://ns-style.example/a.png"></style></noscript>`, which loads in a browser with scripting on, is missed where the old scanner found it. `<template shadowrootmode="open">` contents load with no script in Chrome 111 and Safari 16.4 and are skipped, while the CSS audit does walk templates. `<svg><image href>`, `<iframe srcdoc>`, `src="https:\\host/"` and `url(https\3a //...)` were missed before and after.
+  Evidence: seventeenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:106-132`.
+  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
+  Acceptance: the page is read with scripting on and off and hosts from both count, a `shadowrootmode` template's contents count, and each missed reference above is found, with a test apiece.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Close the CSS output audit's foreign-content, comment and script-escape gaps
+  Why: 371502dd regressed two cases: an `.svg` whose `<style>` sits after `<p/>` keeps `light-dar&#x6b;(` undecoded because parse5 leaves foreign content there, and `@import "data:text/css,/*";...` hides a later import because comments are stripped inside strings. JS spellings still pass: `'light\-dark('`, octal `'\154ight-dark('`, a line continuation, `'light-'+'dark('`, an `onerror=` handler, and `<link rel=preload onload="this.rel='stylesheet'" href="data:...">`; `@import` data URIs with `\"`, a leading space or `; base64` are missed.
+  Evidence: seventeenth drain review, 2026-09-24; `scripts/audit-css-output.mjs:57`, `scripts/lib/css-output-check.mjs:40-106`.
+  Touches: `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs`, `test/css-output-check.test.mjs`.
+  Acceptance: SVG is read by an XML parser, comments are stripped outside strings only, and each spelling above fails the audit, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Teach css:audit five more late features, unknown properties and exact var()
+  Why: c4de5ded calls live fallbacks dead before `grid-template-rows:subgrid` (Chrome 117), `linear-gradient(in oklch, ...)` (Firefox 127), the `cap` unit (Chrome 118), `clip-path:xywh()` (Chrome 119) and unprefixed `background-clip:text` (Chrome 120). The other way, `transition-behavior:allow-discrete` before `transition-behavior:normal` is spared though a target without the property drops both, and `color:--my-var()` counts as var().
+  Evidence: seventeenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:43`.
+  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
+  Acceptance: each case comes out right, a property the targets don't know doesn't spare the declaration before it, and var() is matched as a whole function name, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Clip the gutter check the way CSS does, and skip transparent and vertically hidden text
+  Why: d109412f treats only transform and position as containing blocks and only `overflow: hidden|clip` as clipping, so text in a positioned box inside an `overflow: hidden` parent with `filter`, `translate` or `contain: paint`, or inside `overflow: auto`, is flagged though it's cut off; `color: transparent` text is flagged; a box at `top: -9999px; left: 0` is flagged because only horizontal off-screen counts. Option text, textarea text, input values and CSS `content` text are never measured.
+  Evidence: seventeenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:510-554`.
+  Touches: `tests/playwright/portfolio-audits.spec.mjs`.
+  Acceptance: containing blocks follow CSS (transform, translate, filter, contain, will-change), every scroll container clips, fully transparent text colour is skipped, a box off-screen in any direction is skipped, form-control and generated text are measured, and each case is planted on the check's page.
+  Complexity: S
+
+- [ ] P3: Load the browser too when checking the preflight's audit on a busy PC
+  Why: b8a38227's run slowed only node process starts; Chromium and its renderers ran at full speed, and the slowdown fell in global setup, outside the 90 s and 10 s limits, so the limits never met the load.
+  Evidence: seventeenth drain review, 2026-09-24; `playwright.audits.config.mjs:14,16,25`.
+  Touches: `playwright.audits.config.mjs`.
+  Acceptance: the audit runs with the CPU starved (a busy loop on every core, or the browser processes slowed), the longest test time is reported against 90 s, and the limits change if it doesn't pass.
+  Complexity: S
+
+- [ ] P3: Refuse a Caddy logger level with a placeholder in it
+  Why: `scripts/lib/edge-log-check.mjs:91` compares the level literally, but Caddy fills placeholders first, so `level: "{env.LVL}"` with `LVL=debug` passes and logs debug entries.
+  Evidence: seventeenth drain review, 2026-09-24.
+  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: a level containing `{` is refused, with a test.
+  Complexity: S
 
 ## Research-Driven Additions
 
