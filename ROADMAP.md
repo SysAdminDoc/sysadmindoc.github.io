@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Read the last few log-size forms as Go does
-  Why: `sizeMb` rejects `1_0m` and hex floats like `0x1p24`, which Go's ParseFloat reads, measures the suffix after lowercasing and in UTF-16 where Go measures bytes first (a Kelvin sign in `10KB`), and reads `max-file` with `Number()` where Docker uses Atoi. Each fails safe: the deploy stops rather than passes.
-  Evidence: fourteenth drain review, 2026-09-24, `rv14-sizes.mjs`; `scripts/lib/log-retention.mjs:33-37,76,81`.
-  Touches: `scripts/lib/log-retention.mjs`, `test/log-retention.test.mjs`.
-  Acceptance: each of those reads as Go and Docker read it, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Mask IPv6 addresses in both Caddy servers' error text, and drop `remote`
   Why: The `error` filter masks IPv4 only, and whether the edge ever sees a visitor's IPv6 address is unverified. certmagic's "served key authentication" INFO entries carry a top-level `remote` (address and port), normally the CA's validator, which neither filter deletes.
   Evidence: fourteenth drain review, 2026-09-24; certmagic `handshake.go`, `httphandlers.go`; both Caddyfiles' `error regexp`.

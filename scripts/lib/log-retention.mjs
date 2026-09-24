@@ -18,6 +18,49 @@
 // (thirteenth drain review).
 const BYTES_PER_UNIT = { k: 1e3, m: 1e6, g: 1e9, t: 1e12, p: 1e15 };
 
+/**
+ * Go's strconv.ParseFloat for the forms a size could take: decimal with an
+ * optional exponent, or hexadecimal with a p exponent, either with
+ * underscores between digits (atof.go readFloat and underscoreOK). Null where
+ * Go returns an error, an infinite result included (fourteenth drain review:
+ * `1_0m` and `0x1p24` were refused).
+ */
+function parseGoFloat(text) {
+  let body = text;
+  let sign = 1;
+  if (body[0] === '+' || body[0] === '-') {
+    if (body[0] === '-') sign = -1;
+    body = body.slice(1);
+  }
+  const hex = /^0[xX]/.test(body);
+  // Underscores only between digits, or between the 0x prefix and a digit.
+  let saw = hex ? '0' : '^';
+  for (const char of hex ? body.slice(2) : body) {
+    const digit = hex ? /[0-9a-fA-F]/.test(char) : /[0-9]/.test(char);
+    if (digit) saw = '0';
+    else if (char === '_') {
+      if (saw !== '0') return null;
+      saw = '_';
+    } else {
+      if (saw === '_') return null;
+      saw = '!';
+    }
+  }
+  if (saw === '_') return null;
+  const plain = body.replaceAll('_', '');
+  let value;
+  if (hex) {
+    const match = /^0[xX]([0-9a-fA-F]*)(?:\.([0-9a-fA-F]*))?[pP]([+-]?\d+)$/.exec(plain);
+    if (!match || `${match[1]}${match[2] ?? ''}` === '') return null;
+    const digits = `${match[1]}${match[2] ?? ''}`;
+    value = Number.parseInt(digits, 16) * 2 ** (Number(match[3]) - 4 * (match[2]?.length ?? 0));
+  } else {
+    if (!/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(plain)) return null;
+    value = Number(plain);
+  }
+  return Number.isFinite(value) ? sign * value : null;
+}
+
 /** The bytes go-units reads from a size, or null where it returns an error. */
 export function sizeBytes(value) {
   const text = String(value ?? '');
@@ -30,11 +73,13 @@ export function sizeBytes(value) {
   }
   if (separator === -1) return null;
   const number = text[separator] === ' ' ? text.slice(0, separator) : text.slice(0, separator + 1);
-  const suffix = text.slice(separator + 1).toLowerCase();
-  if (!/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(number)) return null;
-  let size = Number(number);
-  if (!Number.isFinite(size) || size < 0) return null;
-  if (suffix.length > 3) return null;
+  const rawSuffix = text.slice(separator + 1);
+  let size = parseGoFloat(number);
+  if (size === null || size < 0) return null;
+  // Go measures the suffix in bytes before it lowercases it, so a Kelvin sign
+  // (three bytes, lowercasing to k) makes it too long.
+  if (Buffer.byteLength(rawSuffix) > 3) return null;
+  const suffix = rawSuffix.toLowerCase();
   if (suffix.length > 0 && suffix[0] === 'b') {
     if (suffix.length > 1) return null;
   } else if (suffix.length > 0) {
@@ -57,6 +102,12 @@ export function sizeMb(value) {
 const LOCAL_DEFAULT_MB = (20 * 1024 * 1024) / 1e6;
 const LOCAL_DEFAULT_FILES = 5;
 
+/** max-file as Docker reads it, with strconv.Atoi: an optional sign and digits, nothing else. */
+function fileCount(value) {
+  const text = String(value);
+  return /^[+-]?\d+$/.test(text) ? Number(text) : Number.NaN;
+}
+
 /**
  * @param {string} logConfigJson  `docker inspect <c> --format '{{json .HostConfig.LogConfig}}'`
  * @returns {number | null}  the MB Docker keeps, or null when nothing bounds the log
@@ -73,12 +124,12 @@ export function keptLogMb(logConfigJson) {
   if (config?.Type === 'none') return 0;
   if (config?.Type === 'local') {
     const size = 'max-size' in options ? sizeMb(options['max-size']) : LOCAL_DEFAULT_MB;
-    const files = Number(options['max-file'] ?? LOCAL_DEFAULT_FILES);
+    const files = fileCount(options['max-file'] ?? LOCAL_DEFAULT_FILES);
     return size && Number.isSafeInteger(files) && files > 0 ? size * files : null;
   }
   if (config?.Type !== 'json-file') return null;
   const size = sizeMb(options['max-size']);
-  const files = Number(options['max-file'] ?? 1);
+  const files = fileCount(options['max-file'] ?? 1);
   return size && Number.isSafeInteger(files) && files > 0 ? size * files : null;
 }
 

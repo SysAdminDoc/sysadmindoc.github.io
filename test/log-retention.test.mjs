@@ -19,6 +19,18 @@ test('sizes read the way Docker reads them, in decimal units', () => {
     assert.equal(sizeMb(value), mb, String(value));
   }
   for (const value of ['10mbb', '10bb', '10xb', '10 m b', 'e7', '1e7.5']) assert.equal(sizeMb(value), null, value);
+  // The fourteenth drain review's: underscores between digits and hex floats
+  // are Go floats too, and Go measures the suffix in bytes before lowering it.
+  for (const [value, mb] of [['1_0m', 10], ['1_000_0000', 10], ['0x1p24', 16.777216], ['0x1.4p23', 10.48576], ['0x_1p24', 16.777216]]) {
+    assert.equal(sizeMb(value), mb, String(value));
+  }
+  for (const value of ['1__0m', '_10m', '10_m', '0x1', '0x1.8', `10${String.fromCharCode(0x212a)}B`]) assert.equal(sizeMb(value), null, value);
+});
+
+test('max-file is read as Docker reads it, whole numbers only', () => {
+  assert.equal(keptLogMb(inspect('json-file', { 'max-size': '10m', 'max-file': '+3' })), 30);
+  assert.equal(keptLogMb(inspect('json-file', { 'max-size': '10m', 'max-file': '3.0' })), null, 'Docker refuses 3.0');
+  assert.equal(keptLogMb(inspect('json-file', { 'max-size': '10m', 'max-file': '3e0' })), null);
 });
 
 test('the none driver keeps nothing, and says so', () => {
