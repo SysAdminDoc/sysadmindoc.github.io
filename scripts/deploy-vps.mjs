@@ -29,6 +29,7 @@ import { logRetentionProblem } from './lib/log-retention.mjs';
 import { SERVER_LOG_MB } from '../src/data/retention.ts';
 import { smokeReportProblem } from './lib/csp-report-summary.mjs';
 import { vpsSshOptions } from './lib/vps-ssh.mjs';
+import { acquireLock, restoreLeftovers } from './visual-gate.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -207,7 +208,13 @@ function writeComposeEnvFile(distDir) {
   return envFile;
 }
 
-// 1. Build the static site unless reusing an existing dist/.
+// 1. Build the static site unless reusing an existing dist/. The screenshot
+// gate's lock is held from here until the tarball exists, so no gate run can
+// swap the committed fixtures into src/data under the build, and whatever a
+// killed gate run left goes back first (scripts/visual-gate.mjs).
+const releaseGateLock = await acquireLock({ log: console.log });
+process.on('exit', releaseGateLock);
+restoreLeftovers({ log: console.log });
 if (process.env.SKIP_BUILD !== '1') {
   run('npm', ['run', 'build']);
 }
@@ -270,6 +277,7 @@ const tarball = path.join(root, '.tmp', 'dist-deploy.tar.gz');
 fs.mkdirSync(path.dirname(tarball), { recursive: true });
 fs.rmSync(tarball, { force: true });
 run('tar', ['-czf', tarball, '-C', distDir, '.']);
+releaseGateLock();
 run('scp', [...sshOptions, tarball, `${ssh}:${remoteDir}/dist-deploy.tar.gz`]);
 runRemote(
   [

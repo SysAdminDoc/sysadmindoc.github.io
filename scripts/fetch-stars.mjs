@@ -16,6 +16,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getUtcDayKey, computeStreak } from './lib/streak.mjs';
 import { summarizeReleaseBody } from '../src/data/release-summary.mjs';
+import { restoreKilledRun } from './visual-gate.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -195,6 +196,16 @@ function computeProvenance(assets, body) {
 
 async function main() {
   mkdirSync(dataDir, { recursive: true });
+  // A screenshot-gate run killed mid-swap leaves the committed fixtures here,
+  // and a refresh on top of them keeps a fixture row wherever GitHub answers
+  // 304, or rewrites one without making it live when there's no token. Put the
+  // live files back first, under the gate's lock (scripts/visual-gate.mjs).
+  await restoreKilledRun({
+    dir: dataDir,
+    backup: join(root, '.tmp', 'visual-gate', 'live-data'),
+    lock: join(root, '.tmp', 'visual-gate', 'lock.json'),
+    log: (message) => console.warn(message),
+  });
 
   const existingStars = readJson(starsPath, {});
   const existingStats = readJson(statsPath, {});
