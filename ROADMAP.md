@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Check the preflight's browser audit on a busy PC
-  Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
-  Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.
-  Touches: `playwright.audits.config.mjs`.
-  Acceptance: the audit passes with every process start slowed by 5 s, or its limits change until it does.
-  Complexity: S
-
 ## Research-Driven Additions
 
 Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the owner's decision went to Roadmap_Blocked.md instead.

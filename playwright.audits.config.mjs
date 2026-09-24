@@ -13,6 +13,9 @@ export default defineConfig({
   testDir: './tests/playwright',
   outputDir: '.tmp/playwright-results',
   snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{projectName}/{arg}{ext}',
+  // Enough for a busy PC: on 2026-09-24, with every node process start slowed
+  // by 5 s (the load that stopped the runner tests the day before), the
+  // preflight's a11y:audit:browser passed all 106 checks in 2.0 minutes.
   timeout: 90_000,
   expect: {
     timeout: 10_000,
