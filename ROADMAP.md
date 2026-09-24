@@ -15,7 +15,28 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: at start the sink rewrites every stored sample that isn't the site's own as the marker, atomically and once per row, and a test shows a planted old row come out as a marker with the rest of the row unchanged.
   Complexity: S
 
+- [ ] P2: Let no missing clock push `staleAfter` later, and show the stale panel by it
+  Why: a82ddce1 leaves a part with no parseable time out of the minimum, so a build whose feed has no `cachedAt`, or whose catalog record is missing or has no verdict, gets the fetch deadline and passes the live check for 34 more hours, though it's `attention-required` and the README says the first part to expire sets it. And `/status/`'s "gone stale" panel (`public/scripts/status-freshness.js`) reads only the two age cards, so once the catalog deadline passes, `smoke:live` and `deploy:status` fail while the page stays green.
+  Evidence: eighteenth drain review, 2026-09-24; `src/data/generated-trust.ts:324-329`, `src/pages/status.astro:121-122`.
+  Touches: `src/data/generated-trust.ts`, `public/scripts/status-freshness.js`, `src/pages/status.astro`, `test/status-freshness.test.mjs`.
+  Acceptance: a part that is warned stale with no parseable time puts `staleAfter` at or before `evaluatedAt`, and the status page shows its stale panel once the current time is past `generatedData.staleAfter`, each with a test.
+  Complexity: S
+
+- [ ] P2: Hold CONTACT_MIN_TIME to what the page script will wait
+  Why: The handler takes any positive CONTACT_MIN_TIME, but the page script and the smoke wait at most 60.5 s, so at 61 or more every send and its retry are refused, and the comment at `contact-handler.mjs:754` ("whatever CONTACT_MIN_TIME is") is wrong. A returning visitor's service worker can also serve the old script with its fixed 3.5 s wait for one load after a deploy (plausible, not reproduced).
+  Evidence: eighteenth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:118-125,175`, `public/scripts/contact-form.js:10,44`, `scripts/lib/lead-delivery-check.mjs:20,25`, `public/sw.js:131-148`.
+  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`, README (raise it only after the new script has been live for a deploy).
+  Acceptance: loadConfig refuses CONTACT_MIN_TIME above 60 with a test, and the README says to raise it one deploy after the script that reads minAgeMs.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit
+  Why: 79c031f0's rule catches `\p{Pd}` and one spaced hyphen only, so `Home -- tools`, a spaced U+2212 minus, U+2796, a box horizontal and `&nbsp;-&nbsp;` in a feed title all pass (planted in a copied build, the audit passed). It never reads `manifest.json`'s `name`, the one the commit fixed, nor `og:site_name`, nor the feed item titles the site writes itself (catalog names, atom's `(live)` suffix, `releases.xml`'s `${project} ${tag}`). Each feed's own title is `Matt Parker | Projects` while its link says `Recent projects | Matt Parker`.
+  Evidence: eighteenth drain review, 2026-09-24; `scripts/lib/title-style.mjs:25,32`, `scripts/audit-title-style.mjs:47-81`.
+  Touches: `scripts/lib/title-style.mjs`, `scripts/audit-title-style.mjs`, `scripts/audit-gate-selftest.mjs`, the feed titles, their tests.
+  Acceptance: any run of hyphen-like characters (dash punctuation, U+2212, U+2796, box horizontals) between spaces fails, the audit reads the manifest's `name` and `short_name`, `og:site_name` and the item titles the site writes, each with a gate plant, and a feed's own title matches its link's name.
+  Complexity: S
 
 - [ ] P3: Close the CSS output audit's foreign-content, comment and script-escape gaps
   Why: 371502dd regressed two cases: an `.svg` whose `<style>` sits after `<p/>` keeps `light-dar&#x6b;(` undecoded because parse5 leaves foreign content there, and `@import "data:text/css,/*";...` hides a later import because comments are stripped inside strings. JS spellings still pass: `'light\-dark('`, octal `'\154ight-dark('`, a line continuation, `'light-'+'dark('`, an `onerror=` handler, and `<link rel=preload onload="this.rel='stylesheet'" href="data:...">`; `@import` data URIs with `\"`, a leading space or `; base64` are missed.
