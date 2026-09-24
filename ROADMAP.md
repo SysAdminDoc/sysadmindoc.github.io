@@ -73,13 +73,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each leaking case is scrubbed, each regression is back to `[id]` or `[number]`, keys don't collide on either case, and a young store with no smoke row says the row is missing.
   Complexity: S
 
-- [ ] P3: Tokenize built HTML the way a browser does in the corner cases
-  Why: `splitHtml` lets `<!-->` and `<!--->` hide the markup after them, counts hosts inside double-escaped script text, nested `<template>`, `<xmp>` and `<noframes>`, and lets a tag opener inside an attribute value swallow the rest of the page. No built page has any of these today.
-  Evidence: eighth drain review, 2026-09-23; `scripts/lib/csp-host-usage.mjs:123-150`.
-  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
-  Acceptance: each case has a test and reads the way the HTML standard's tokenizer reads it.
-  Complexity: S
-
 - [ ] P3: Check the preflight's browser audit on a busy PC
   Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
   Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.

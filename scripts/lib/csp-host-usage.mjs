@@ -16,6 +16,7 @@
 // from the build (it names who may embed the site) and is skipped.
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { parse } from 'parse5';
 
 const KINDS_BY_DIRECTIVE = {
   'img-src': ['img'],
@@ -38,7 +39,8 @@ const KINDS_BY_DIRECTIVE = {
 const TEXT_FILE = /\.(?:html?|css|m?js|json|webmanifest|svg|xml)$/i;
 
 // CSP Level 3 scheme-part matching, for a source that names its scheme: an
-// `https:` source does not allow a `wss:` URL, while a `wss:` source allows`n// `https:`. A source with no scheme keeps matching any, as it always has here.
+// `https:` source does not allow a `wss:` URL, while a `wss:` source allows
+// `https:`. A source with no scheme keeps matching any, as it always has here.
 function schemeAllows(sourceScheme, urlScheme) {
   if (!sourceScheme || sourceScheme === urlScheme) return true;
   if (sourceScheme === 'http') return urlScheme === 'https';
@@ -74,14 +76,6 @@ function absoluteTarget(value) {
   }
 }
 
-function attributes(tagSource) {
-  const attrs = {};
-  for (const match of tagSource.matchAll(/([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g)) {
-    attrs[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
-  }
-  return attrs;
-}
-
 function srcsetUrls(value) {
   return String(value ?? '')
     .split(',')
@@ -104,69 +98,42 @@ const PRELOAD_KIND = {
   document: 'frame',
 };
 
-// The rest of a start tag after its name: up to the first '>' outside quotes.
-const TAG_REST = /(?:[^>"']|"[^"]*"|'[^']*')*>/y;
-
 /**
- * Split HTML into markup and inline script bodies in one pass, left to right,
- * the way a browser tokenizes it. A comment hides what it holds. A script's
- * text is JavaScript up to </script>, so a '<!--' or '<template' in one of its
- * strings starts nothing. Template, textarea and title contents are text or
- * inert until a script clones them, so they load nothing where they stand, a
- * <script> among them included. Style text stays in the markup for the CSS
- * rules, but a '<!--' in it doesn't start a comment either.
+ * Every element of a parsed document, depth first. A template's contents live
+ * apart from its children in parse5's tree and are left out: they load
+ * nothing where they stand, a <script> among them included.
  */
-function splitHtml(html) {
-  const scripts = [];
-  let body = '';
-  let index = 0;
-  const opener = /<!--|<(script|style|template|textarea|title)(?=[\s/>])/gi;
-  while (index < html.length) {
-    opener.lastIndex = index;
-    const match = opener.exec(html);
-    if (!match) {
-      body += html.slice(index);
-      break;
-    }
-    body += html.slice(index, match.index);
-    if (!match[1]) {
-      const end = html.indexOf('-->', match.index + 4);
-      index = end < 0 ? html.length : end + 3;
-      continue;
-    }
-    const tag = match[1].toLowerCase();
-    TAG_REST.lastIndex = match.index + match[0].length;
-    const openEnd = TAG_REST.exec(html) ? TAG_REST.lastIndex : html.length;
-    const close = new RegExp(`</${tag}\\s*>`, 'gi');
-    close.lastIndex = openEnd;
-    const closing = close.exec(html);
-    const contentEnd = closing ? closing.index : html.length;
-    const after = closing ? closing.index + closing[0].length : html.length;
-    if (tag === 'script') {
-      scripts.push({ attrs: html.slice(match.index + match[0].length, openEnd - 1), text: html.slice(openEnd, contentEnd) });
-      body += `${html.slice(match.index, openEnd)}</script>`;
-    } else if (tag === 'style') {
-      body += html.slice(match.index, after);
-    }
-    index = after;
+function* elements(node) {
+  for (const child of node.childNodes ?? []) {
+    if (!child.tagName) continue;
+    yield child;
+    yield* elements(child);
   }
-  return { body, scripts };
 }
 
+const textOf = (node) => (node.childNodes ?? []).map((child) => (child.nodeName === '#text' ? child.value : '')).join('');
+
+/**
+ * What a page loads, read from the tree a browser builds: parse5 tokenizes as
+ * the HTML standard does, so comments end where a browser ends them (<!-->,
+ * <!--->, --!>), a script's text ends by the script data states, raw-text
+ * elements (style, textarea, title, xmp, noframes, noembed, iframe,
+ * plaintext) hold text, a tag opener inside an attribute value opens nothing,
+ * and nested templates nest. The hand-written tokenizer this replaced got each
+ * of those wrong (eighth drain review). It parses with scripting off, so what
+ * a <noscript> loads for a visitor without JavaScript counts.
+ */
 function htmlReferences(html) {
   const found = [];
   const add = (kind, url) => {
     const target = absoluteTarget(url);
     if (target) found.push({ kind, ...target });
   };
-  const split = splitHtml(html);
-  const scripts = split.scripts;
-  const body = split.body.replace(/<meta\b[^>]*http-equiv\s*=\s*["']?Content-Security-Policy["']?[^>]*>/gi, '');
-  // A quoted attribute value may hold a '>', as in alt="a > b", so the tag runs
-  // to the first '>' outside quotes.
-  for (const match of body.matchAll(/<(img|source|input|button|video|audio|track|script|link|iframe|frame|embed|object|form|a|area|base)\b((?:[^>"']|"[^"]*"|'[^']*')*)>/gi)) {
-    const tag = match[1].toLowerCase();
-    const attrs = attributes(match[2]);
+  for (const element of elements(parse(html, { scriptingEnabled: false }))) {
+    const tag = element.tagName.toLowerCase();
+    /** @type {Record<string, string>} */
+    const attrs = {};
+    for (const attr of element.attrs ?? []) attrs[attr.name.toLowerCase()] ??= attr.value;
     if (tag === 'img' || tag === 'input') {
       add('img', attrs.src);
       for (const url of srcsetUrls(attrs.srcset)) add('img', url);
@@ -182,6 +149,8 @@ function htmlReferences(html) {
       add('media', attrs.src);
     } else if (tag === 'script') {
       add('script', attrs.src);
+      const type = String(attrs.type ?? '').toLowerCase();
+      if (!type.includes('json')) found.push(...scriptReferences(textOf(element)));
     } else if (tag === 'link') {
       const rel = String(attrs.rel ?? '').toLowerCase().split(/\s+/);
       if (rel.includes('stylesheet')) add('style', attrs.href);
@@ -204,13 +173,10 @@ function htmlReferences(html) {
       for (const url of String(attrs.ping ?? '').split(/\s+/)) add('connect', url);
     } else if (tag === 'base') {
       add('base', attrs.href);
+    } else if (tag === 'style') {
+      found.push(...cssReferences(textOf(element)));
     }
-  }
-  for (const match of body.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) found.push(...cssReferences(match[1]));
-  for (const match of body.matchAll(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) found.push(...cssReferences(match[1] ?? match[2]));
-  for (const script of scripts) {
-    const type = String(attributes(script.attrs).type ?? '').toLowerCase();
-    if (!type.includes('json')) found.push(...scriptReferences(script.text));
+    if (attrs.style !== undefined) found.push(...cssReferences(attrs.style));
   }
   return found;
 }

@@ -185,6 +185,39 @@ test('a comment opener in script text hides nothing, and script text in a templa
   ]);
 });
 
+// The eighth drain review: the hand-written tokenizer let <!--> and <!--->
+// hide the markup after them, counted hosts in double-escaped script text,
+// nested <template>, <xmp> and <noframes>, and let a tag opener in an
+// attribute value swallow the rest of the page. The audit now reads the tree
+// parse5 builds, which tokenizes as the HTML standard does.
+test('built HTML is read the way a browser tokenizes it, corner cases included', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review8-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const hosts = ['after-empty', 'after-dash', 'double-escaped', 'nested', 'xmp', 'noframes', 'attr-first', 'attr-later', 'noscript'];
+  const policy = ["default-src 'self'", `img-src 'self' ${hosts.map((host) => `https://${host}.example`).join(' ')}`].join('; ');
+  const img = (host) => `<img src="https://${host}.example/a.png">`;
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      `<!-->${img('after-empty')}` +
+      `<!--->${img('after-dash')}` +
+      `<script><!--<script></script>${img('double-escaped')}</script>` +
+      `<template><template></template>${img('nested')}</template>` +
+      `<xmp>${img('xmp')}</xmp><noframes>${img('noframes')}</noframes>` +
+      `<img alt="<script" src="https://attr-first.example/a.png">${img('attr-later')}` +
+      `<noscript>${img('noscript')}</noscript>` +
+      '</body></html>',
+  );
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(
+    unused.map((entry) => entry.token),
+    ['https://double-escaped.example', 'https://nested.example', 'https://xmp.example', 'https://noframes.example'],
+    'loaded: after <!--> and <!--->, both images around a <script in a value, and what <noscript> loads without JavaScript',
+  );
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));
