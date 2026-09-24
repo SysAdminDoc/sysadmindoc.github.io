@@ -17,6 +17,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parse } from 'parse5';
+import { unescapeCss } from './css-output-check.mjs';
 
 const KINDS_BY_DIRECTIVE = {
   'img-src': ['img'],
@@ -64,9 +65,17 @@ export function parseHostSource(token) {
   };
 }
 
-/** The host and scheme of an absolute or protocol-relative URL (which takes https), or null. */
+/**
+ * The host and scheme of an absolute or protocol-relative URL (which takes
+ * https), or null. Read as a browser's URL parser reads it: spaces and control
+ * characters at either end go, tabs and newlines anywhere go, and a backslash
+ * is a slash, so `https:\\host/` loads from host (seventeenth drain review).
+ */
 function absoluteTarget(value) {
-  const url = String(value ?? '').trim();
+  const url = String(value ?? '')
+    .replace(/^[\x00-\x20]+|[\x00-\x20]+$/g, '')
+    .replace(/[\t\n\r]/g, '')
+    .replace(/\\/g, '/');
   if (!/^(?:(?:https?|wss?):)?\/\//i.test(url)) return null;
   try {
     const parsed = new URL(url, 'https://self.invalid/');
@@ -98,16 +107,24 @@ const PRELOAD_KIND = {
   document: 'frame',
 };
 
+const DECLARATIVE_SHADOW_ROOT = new Set(['shadowrootmode', 'shadowroot']);
+
 /**
  * Every element of a parsed document, depth first. A template's contents live
  * apart from its children in parse5's tree and are left out: they load
- * nothing where they stand, a <script> among them included.
+ * nothing where they stand, a <script> among them included. The exception is
+ * a declarative shadow root (`shadowrootmode`, or `shadowroot` before Chrome
+ * 112), which the parser attaches as the host's shadow tree with no script,
+ * so what it holds loads (seventeenth drain review).
  */
 function* elements(node) {
   for (const child of node.childNodes ?? []) {
     if (!child.tagName) continue;
     yield child;
     yield* elements(child);
+    if (child.tagName === 'template' && child.content && (child.attrs ?? []).some((attr) => DECLARATIVE_SHADOW_ROOT.has(attr.name.toLowerCase()))) {
+      yield* elements(child.content);
+    }
   }
 }
 
@@ -120,16 +137,22 @@ const textOf = (node) => (node.childNodes ?? []).map((child) => (child.nodeName 
  * elements (style, textarea, title, xmp, noframes, noembed, iframe,
  * plaintext) hold text, a tag opener inside an attribute value opens nothing,
  * and nested templates nest. The hand-written tokenizer this replaced got each
- * of those wrong (eighth drain review). It parses with scripting off, so what
- * a <noscript> loads for a visitor without JavaScript counts.
+ * of those wrong (eighth drain review). A page reads differently with
+ * scripting on and off (a <noscript> is raw text to one and markup to the
+ * other), and a visitor may have either, so it's read both ways and what
+ * either loads counts (seventeenth drain review).
  */
 function htmlReferences(html) {
+  return [false, true].flatMap((scriptingEnabled) => treeReferences(parse(html, { scriptingEnabled })));
+}
+
+function treeReferences(tree) {
   const found = [];
   const add = (kind, url) => {
     const target = absoluteTarget(url);
     if (target) found.push({ kind, ...target });
   };
-  for (const element of elements(parse(html, { scriptingEnabled: false }))) {
+  for (const element of elements(tree)) {
     const tag = element.tagName.toLowerCase();
     /** @type {Record<string, string>} */
     const attrs = {};
@@ -164,6 +187,11 @@ function htmlReferences(html) {
       }
     } else if (tag === 'iframe' || tag === 'frame') {
       add('frame', attrs.src);
+      // A srcdoc document inherits this page's policy, so what it loads counts here.
+      if (attrs.srcdoc !== undefined) found.push(...htmlReferences(attrs.srcdoc));
+    } else if ((tag === 'image' || tag === 'feimage') && element.namespaceURI === 'http://www.w3.org/2000/svg') {
+      // href, or xlink:href, which parse5 names `href` under the xlink prefix.
+      add('img', attrs.href);
     } else if (tag === 'embed' || tag === 'object') {
       add('object', attrs.src ?? attrs.data);
     } else if (tag === 'form') {
@@ -189,7 +217,9 @@ function cssReferences(css) {
     const target = absoluteTarget(value);
     if (target) found.push({ kind, ...target });
   };
-  let rest = String(css).replace(/\/\*[\s\S]*?\*\//g, '');
+  // Escapes read first, as the CSS tokenizer reads them: `url(https\3a //x)`
+  // loads from x (seventeenth drain review).
+  let rest = unescapeCss(String(css).replace(/\/\*[\s\S]*?\*\//g, ''));
   // Fonts first, so a font's url() never counts as an image.
   rest = rest.replace(/@font-face\s*\{[^}]*\}/gi, (block) => {
     for (const match of block.matchAll(CSS_URL)) add('font', match[1] ?? match[2] ?? match[3]);

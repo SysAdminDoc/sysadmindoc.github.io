@@ -218,6 +218,33 @@ test('built HTML is read the way a browser tokenizes it, corner cases included',
   );
 });
 
+// The seventeenth drain review: parse5 read the page with scripting off only,
+// so a <noscript> that is raw text to a browser with JavaScript hid the image
+// after it; declarative shadow roots, SVG images, srcdoc frames, backslashed
+// and tab-split URLs and CSS escapes in url() were missed too.
+test('what a page loads with scripting on or off, in a shadow root, an SVG image or a srcdoc frame counts', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review17-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const hosts = ['ns-style', 'dsd', 'legacy-dsd', 'inert', 'svg-image', 'svg-xlink', 'srcdoc', 'backslash', 'tabbed', 'css-esc'];
+  const policy = ["default-src 'self'", `img-src 'self' ${hosts.map((host) => `https://${host}.example`).join(' ')}`].join('; ');
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      '<noscript><style></noscript><img src="https://ns-style.example/a.png"></style></noscript>' +
+      '<div><template shadowrootmode="open"><img src="https://dsd.example/a.png"></template></div>' +
+      '<div><template shadowroot="open"><img src="https://legacy-dsd.example/a.png"></template></div>' +
+      '<template><img src="https://inert.example/a.png"></template>' +
+      '<svg><image href="https://svg-image.example/a.png"/><image xlink:href="https://svg-xlink.example/a.png"/></svg>' +
+      '<iframe srcdoc="&lt;img src=&quot;https://srcdoc.example/a.png&quot;&gt;"></iframe>' +
+      '<img src="https:\\\\backslash.example/a.png"><img src="ht&#9;tps://tabbed.example/a.png">' +
+      '<style>.a{background:url(https\\3a //css-esc.example/a.png)}</style>' +
+      '</body></html>',
+  );
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused.map((entry) => entry.token), ['https://inert.example'], 'only a plain template stays inert');
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

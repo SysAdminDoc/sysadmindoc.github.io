@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: a sample that starts like one of the built site's inline scripts or styles is stored as it came (it's public code); any other is stored as a fixed marker plus a short keyed hash that groups repeats, so no visitor text is kept whatever it holds; every sample from the review is stored as the marker.
   Complexity: M
 
-- [ ] P2: Read noscript both ways and declarative shadow roots in the CSP host audit
-  Why: 62d90dc1 parses with `scriptingEnabled: false`, so `<noscript><style></noscript><img src="https://ns-style.example/a.png"></style></noscript>`, which loads in a browser with scripting on, is missed where the old scanner found it. `<template shadowrootmode="open">` contents load with no script in Chrome 111 and Safari 16.4 and are skipped, while the CSS audit does walk templates. `<svg><image href>`, `<iframe srcdoc>`, `src="https:\\host/"` and `url(https\3a //...)` were missed before and after.
-  Evidence: seventeenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:106-132`.
-  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
-  Acceptance: the page is read with scripting on and off and hosts from both count, a `shadowrootmode` template's contents count, and each missed reference above is found, with a test apiece.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Close the CSS output audit's foreign-content, comment and script-escape gaps
