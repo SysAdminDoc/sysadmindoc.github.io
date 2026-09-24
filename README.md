@@ -323,7 +323,9 @@ going. `deploy:vps` refuses any build whose `status.json` says it came from the
 fixtures.
 
 The live site says when its data expires. `/status.json` carries
-`generatedData.staleAfter`, the fetch time plus the 36-hour contract, beside a
+`generatedData.staleAfter`, the first moment any part of the data goes past
+the 36-hour contract (the GitHub fetch, the profile feed and the catalog check
+each keep their own clock), beside a
 `status` that was only true when the file was built. `npm run smoke:live` and
 `npm run deploy:status` both fail once `staleAfter` has passed, so a nightly
 run that stops deploying shows up the next time either one runs.

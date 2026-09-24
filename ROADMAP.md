@@ -71,13 +71,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: With `CONTACT_MIN_TIME=5` the page script and the smoke both send on the first try.
   Complexity: S
 
-- [ ] P3: Make `staleAfter` the earliest of the data's own deadlines
-  Why: `/status.json` `staleAfter` follows `_stats.json` `fetchedAt` only, while the profile feed and the catalog check keep their own 36-hour clocks.
-  Evidence: third drain review; `src/data/generated-trust.ts`.
-  Touches: `src/data/generated-trust.ts`, `src/pages/status.json.ts`, `test/generated-data-trust.test.mjs`.
-  Acceptance: `staleAfter` is the earliest expiry of the three, and a test with a stale feed but fresh stars shows it.
-  Complexity: S
-
 - [ ] P3: Match the CSP host audit to how browsers check a prefetch
   Why: `scripts/lib/csp-host-usage.mjs` counts a `rel=prefetch` against the directive its `as` names, but CSP Level 3 checks prefetches against `default-src`.
   Evidence: third drain review, from the spec; not yet tested in a browser.

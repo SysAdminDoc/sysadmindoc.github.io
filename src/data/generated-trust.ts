@@ -72,9 +72,11 @@ export type GeneratedDataTrust = {
   ageHours: number | null;
   stale: boolean;
   /**
-   * When the data passes its freshness contract: fetchedAt plus maxAgeHours.
-   * `status`, `stale` and `ageHours` describe the data at `evaluatedAt`, which
-   * is the build, so a consumer compares this with its own clock instead.
+   * When the data passes its freshness contract: the earliest of the GitHub
+   * fetch, the profile feed's cache and the catalog check, each plus
+   * maxAgeHours, since each keeps its own clock. `status`, `stale` and
+   * `ageHours` describe the data at `evaluatedAt`, which is the build, so a
+   * consumer compares this with its own clock instead.
    */
   staleAfter: string | null;
   /** When `status`, `stale` and `ageHours` were computed. */
@@ -315,6 +317,17 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
     warnings.push(`Catalog references ${catalogStaleRefs.length} repo(s) that are no longer active and public (${catalogStaleRefs.join(', ')}).`);
   }
 
+  // The profile feed and the catalog check expire on their own clocks, so a
+  // fresh fetch can't carry a stale feed past its deadline (third drain
+  // review). A part with no time of its own is already reported stale above
+  // and sets no deadline; without a fetch time there's no contract to state.
+  const catalogDeadline = catalogMeasured || catalogStaleRecord ? catalogCompleteness.checkedAt : null;
+  const deadlines = [stats.fetchedAt, input.profileFeedInfo.cachedAt, catalogDeadline]
+    .map((value) => staleAfterIso(value, maxAgeHours))
+    .filter((value): value is string => value !== null)
+    .sort();
+  const staleAfter = staleAfterIso(stats.fetchedAt, maxAgeHours) === null ? null : deadlines[0];
+
   const status = warnings.length === 0 ? 'fresh' : 'attention-required';
   const mode = fixtureMode
     ? 'fixture'
@@ -331,7 +344,7 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
     fetchedAt: isoOrNull(stats.fetchedAt),
     ageHours: dataAgeHours,
     stale: dataStale,
-    staleAfter: staleAfterIso(stats.fetchedAt, maxAgeHours),
+    staleAfter,
     evaluatedAt: now.toISOString(),
     totalRepos: finiteNumberOrNull(stats.totalRepos),
     totalStars: finiteNumberOrNull(stats.totalStars),
