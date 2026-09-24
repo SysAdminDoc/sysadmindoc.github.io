@@ -167,9 +167,9 @@ function verifyProxyTrust() {
     "docker inspect portfolio-ntfy --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E '^NTFY_(BEHIND_PROXY|PROXY_[A-Z_]+|CONFIG_FILE)=' || true",
   );
   // ntfy reads /etc/ntfy/server.yml, or the file NTFY_CONFIG_FILE names, when
-  // it exists. Any uncommented proxy setting in it counts.
+  // it exists. It has none; any that appears counts, whatever it says.
   const configLines = captureRemote(
-    'docker exec portfolio-ntfy sh -c \'f=${NTFY_CONFIG_FILE:-/etc/ntfy/server.yml}; [ -f "$f" ] && grep -iE "behind[-_]proxy|proxy[-_]" "$f" | grep -vE "^[[:space:]]*#"; true\' 2>&1 || true',
+    'docker exec portfolio-ntfy sh -c \'for f in "$NTFY_CONFIG_FILE" /etc/ntfy/server.yml; do if [ -n "$f" ] && [ -e "$f" ]; then echo "$f"; fi; done; true\' 2>&1 || true',
   );
   const networks = captureRemote(
     'for c in portfolio-app portfolio-ntfy portfolio-contact-handler portfolio-csp-reporter; do printf "%s " "$c"; docker inspect "$c" --format \'{{range $name, $settings := .NetworkSettings.Networks}}{{$name}} {{end}}\' 2>/dev/null; echo; done',

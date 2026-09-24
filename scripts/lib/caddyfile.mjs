@@ -128,7 +128,28 @@ export function lexCaddyfile(source) {
  * @param {string} source
  */
 export function expandEnvDefaults(source) {
-  return String(source).replace(/\{\$([A-Za-z0-9_]+):([^}]*)\}/g, (_, name, fallback) => fallback);
+  // As Caddy's replaceEnvVars (caddyconfig/caddyfile/parse.go) scans: from
+  // each {$ to the next }, whatever lies between, name and default split at
+  // the first colon. A name can hold any character, a quote included, which a
+  // pattern for word characters missed (fourteenth drain review).
+  let text = String(source);
+  let offset = 0;
+  for (;;) {
+    const begin = text.indexOf('{$', offset);
+    if (begin < 0) break;
+    const end = text.indexOf('}', begin + 2);
+    if (end < 0) break;
+    const inner = text.slice(begin + 2, end);
+    const colon = inner.indexOf(':');
+    if (inner.length === 0 || colon < 0) {
+      offset = end + 1;
+      continue;
+    }
+    const fallback = inner.slice(colon + 1);
+    text = `${text.slice(0, begin)}${fallback}${text.slice(end + 1)}`;
+    offset = begin + fallback.length;
+  }
+  return text;
 }
 
 /**

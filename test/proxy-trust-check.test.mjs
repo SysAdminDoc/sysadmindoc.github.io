@@ -43,6 +43,9 @@ test('each way a running config lets someone else choose the address is named', 
   assert.match(variant((c) => { proxy(c).headers = { request: { set: { 'X-Forwarded-For': ['{http.request.header.X-Real-IP}'] } } }; }), /request\.set X-Forwarded-For/);
   assert.match(variant((c) => { proxy(c).headers = { request: { add: { 'x-real-ip': ['1'] } } }; }), /request\.add x-real-ip/);
   assert.match(variant((c) => { proxy(c).headers = { request: { delete: ['Forwarded'] } }; }), /request\.delete Forwarded/);
+  // The fourteenth drain review: `vars fwd X-Forwarded-For` and `header_up
+  // {vars.fwd} ...` forged the header through a real Caddy.
+  assert.match(variant((c) => { proxy(c).headers = { request: { set: { '{vars.fwd}': ['{http.request.header.X-Real-IP}'] } } }; }), /request\.set \{vars\.fwd\}/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.routes.push({ handle: [{ handler: 'headers', request: { replace: { 'X-Forwarded-For': [{ search: '.*', replace: '1.2.3.4' }] } } }] }); }), /request\.replace X-Forwarded-For/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.trusted_proxies = { source: 'static', ranges: ['private_ranges'] }; }), /trusts .*private_ranges/);
   assert.match(variant((c) => { c.apps.http.servers.srv0.client_ip_headers = ['X-Real-IP']; }), /reads the address from \["X-Real-IP"\]/);
@@ -67,7 +70,9 @@ test('each way ntfy could take the address from someone else is named', () => {
   assert.match(problems({ env: `NTFY_PROXY_TRUSTED_HOSTS=${edge}` }), /not told it sits behind a proxy/);
   assert.match(problems({ env: `${liveNtfy.env}\nNTFY_PROXY_FORWARDED_HEADER=X-Real-IP` }), /reads the address from X-Real-IP/);
   assert.match(problems({ env: `${liveNtfy.env}\nNTFY_CONFIG_FILE=/var/lib/ntfy/server.yml` }), /config file named by NTFY_CONFIG_FILE/);
-  assert.match(problems({ configLines: 'proxy-trusted-hosts: "0.0.0.0/0"' }), /config file sets proxy-trusted-hosts/);
+  // Any config file counts now, whatever it says: a YAML escape spelled a key
+  // past the old grep for setting names (fourteenth drain review).
+  assert.match(problems({ configLines: '/etc/ntfy/server.yml' }), /has a config file \(\/etc\/ntfy\/server\.yml\)/);
   assert.match(problems({ args: 'Error: No such object' }), /could not read ntfy's command line/);
 });
 

@@ -320,6 +320,12 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
       'reverse_proxy ntfy:80 {',
       'reverse_proxy ntfy:80 {\n\t\theader_up X-Note "a\\\\"\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
     ),
+    // The fourteenth review's: Caddy takes ` "x` as a variable name, and
+    // replaces the placeholder with its empty default before it lexes.
+    'a variable name holding a quote': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\tflush_interval -1 {$ "x:}\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\t\t# "',
+    ),
     'a continued line': inCaddyfile('reverse_proxy ntfy:80 {', 'reverse_proxy ntfy:80 {\n\t\theader_up \\\n\t\t\tX-Forwarded-For {http.request.header.X-Real-IP}'),
     'a heredoc holding a quote': inCaddyfile(
       'reverse_proxy ntfy:80 {',
@@ -358,6 +364,7 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
   // A default takes the placeholder's place as Caddy puts it there, and a
   // placeholder without one is left for the checks above to refuse.
   assert.equal(expandEnvDefaults('header_up {$A:X-Forwarded-For} {$B} {$C:}'), 'header_up X-Forwarded-For {$B} ');
+  assert.equal(expandEnvDefaults('a {$ "x:} b {$}'), 'a  b {$}', 'any name, and an empty one is skipped');
   // Compose's list form for the environment reads the same as its map form.
   assert.deepEqual(serviceEnvironment({ environment: ['NTFY_PROXY_FORWARDED_HEADER=X-Real-IP', 'A=b=c', 'EMPTY'] }), {
     NTFY_PROXY_FORWARDED_HEADER: 'X-Real-IP',

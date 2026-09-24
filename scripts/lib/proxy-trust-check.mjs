@@ -8,7 +8,10 @@
 
 import { CLIENT_ADDRESS_HEADERS } from './caddyfile.mjs';
 
-const isClientAddressHeader = (name) => CLIENT_ADDRESS_HEADERS.includes(String(name).toLowerCase());
+// Caddy expands placeholders in a header's name too, so `header_up
+// {vars.fwd} ...` with fwd set to X-Forwarded-For forges it; a name holding
+// one counts (fourteenth drain review).
+const isClientAddressHeader = (name) => CLIENT_ADDRESS_HEADERS.includes(String(name).toLowerCase()) || String(name).includes('{');
 
 /** Every request-header change in a Caddy JSON config that names a client-address header. */
 function requestHeaderChanges(config) {
@@ -73,11 +76,12 @@ export function caddyTrustProblems(text, edge) {
  * What in ntfy's running settings lets anyone but the edge choose a visitor's
  * address. A command-line flag beats the environment, which beats the config
  * file, so ntfy has to run as plain `ntfy serve`, with its proxy settings in
- * the environment and no config file that names any.
+ * the environment and no config file at all: a grep for setting names missed
+ * one a YAML escape spelled differently (fourteenth drain review).
  * @param {{ args: string, env: string, configLines: string }} probe
  *   args: `docker inspect --format '{{json .Config.Entrypoint}} {{json .Config.Cmd}}'`;
  *   env: the container's NTFY_BEHIND_PROXY, NTFY_PROXY_* and NTFY_CONFIG_FILE lines;
- *   configLines: the proxy settings grep found in its config file
+ *   configLines: the config files it would read that exist, one a line
  * @param {string} edge
  * @returns {string[]}
  */
@@ -106,7 +110,7 @@ export function ntfyTrustProblems({ args, env, configLines }, edge) {
   if (header !== undefined && !/^x-forwarded-for$/i.test(header)) problems.push(`ntfy reads the address from ${header}`);
   if (values.NTFY_CONFIG_FILE !== undefined) problems.push(`ntfy reads a config file named by NTFY_CONFIG_FILE (${values.NTFY_CONFIG_FILE})`);
   const configured = String(configLines).split('\n').map((line) => line.trim()).filter(Boolean);
-  if (configured.length > 0) problems.push(`ntfy's config file sets ${configured.join('; ')}`);
+  if (configured.length > 0) problems.push(`ntfy has a config file (${configured.join(', ')}), whose settings apply wherever its environment is silent`);
   return problems;
 }
 

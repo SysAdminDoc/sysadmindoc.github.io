@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Close the three ways past the proxy trust checks
-  Why: The live check compares header names literally, but Caddy expands placeholders in them, so `vars fwd X-Forwarded-For` with `header_up {vars.fwd} {http.request.header.X-Real-IP}` let a local client's forged address through a real Caddy 2.11.4 while the check passed. The static check's `expandEnvDefaults` only knows `[A-Za-z0-9_]+` names, where Caddy replaces any `{$...}`, so `{$ "x:}` hides a following `header_up` in a false quote. The ntfy config probe greps for key text, which a YAML escape (`"proxy\x2dforwarded\x2dheader"`) gets past.
-  Evidence: fourteenth drain review, 2026-09-24, `rv14-live-walker.mjs`; `scripts/lib/proxy-trust-check.mjs:26,30`, `scripts/lib/caddyfile.mjs` `expandEnvDefaults`, the config probe in `verifyProxyTrust`.
-  Touches: those files, `test/proxy-trust-check.test.mjs`, `test/endpoint-header-contract.test.mjs`.
-  Acceptance: a request header whose name holds a placeholder fails the live check, any `{$...}` expands the way Caddy's replaceEnvVars does, and ntfy fails the deploy if it has any config file at all.
-  Complexity: S
-
 - [ ] P2: Keep a stalled claimant from being overtaken, and leave nothing behind
   Why: A claimant that stalls more than 60 s between its re-check and its rename (a sleep, a debugger) has its claim judged stale by age and taken over, and then renames over the new holder's lock: two holders, reproduced with real processes and with a clock 61 s ahead. After 300 random kills, 274 drafts and claims were left that nothing removes, and a chain of nine dead claims locks everyone out for good, since the depth limit returns null.
   Evidence: fourteenth drain review, 2026-09-24, `rv14-stall.mjs` and `rv14-kill.mjs`; `scripts/visual-gate.mjs` `claimInstance`, `tryLock`.
