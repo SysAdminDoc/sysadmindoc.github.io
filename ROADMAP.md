@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
   Complexity: M
 
-- [ ] P2: Let only one process take a stale gate lock
-  Why: With six workers taking the lock and exiting without releasing it, as a killed run does, 4 of 3,529 stale takeovers left two holders at once. The move-aside-and-put-back path in `scripts/visual-gate.mjs` lets a third run in, which its own comment admits, and the CHANGELOG says one run holds it at a time.
-  Evidence: eleventh drain review, 2026-09-24, `lock-race.mjs`; `scripts/visual-gate.mjs:197-212`.
-  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
-  Acceptance: the six-worker stale race shows no overlap in 10,000 takeovers.
-  Complexity: M
-
 - [ ] P2: Guard `npm run generated:fixtures` the way the gate is guarded
   Why: It writes the fixtures into `src/data` with no backup and no lock, and leaves the live `_etags.json` in place, the state that let the nightly's 304s keep fixture rows.
   Evidence: eleventh drain review, 2026-09-24 (not run end to end).

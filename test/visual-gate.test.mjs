@@ -192,6 +192,61 @@ test('one gate run holds the lock at a time, and a dead or hour-old holder loses
   fs.rmSync(env.base, { recursive: true, force: true });
 });
 
+// The eleventh drain review got two holders out of the old stale takeover,
+// which moved the lock aside and put back one that turned out fresh: 4 pairs
+// in 3,529 takeovers with six workers. Now only the process that claims a
+// stale instance may replace it, in one rename. These pin the claim's rules;
+// the race itself ran 13,843 takeovers with no overlap (2026-09-24).
+test('only the process that claims a stale lock replaces it, and a dead claimant is outlived', () => {
+  const env = setup();
+  const now = Date.parse('2026-09-24T03:00:00Z');
+  const alive = () => true;
+  const deadPid = 999_999;
+  const onlyMeAlive = (pid) => pid === process.pid;
+  const stale = JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'stale-one' });
+
+  // Someone alive is replacing this stale lock: leave it to them.
+  fs.writeFileSync(env.lock, stale);
+  fs.writeFileSync(`${env.lock}.stale-one.claim`, JSON.stringify({ pid: process.pid, nonce: 'theirs' }));
+  const held = tryLock({ lock: env.lock, now, isAlive: onlyMeAlive });
+  assert.equal(held.taken, false);
+  assert.equal(fs.readFileSync(env.lock, 'utf8'), stale, 'the stale lock is left for the claimant');
+
+  // The claimant died in its few milliseconds: its claim is claimed and dropped.
+  fs.writeFileSync(`${env.lock}.stale-one.claim`, JSON.stringify({ pid: deadPid, nonce: 'theirs' }));
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+  assert.equal(JSON.parse(fs.readFileSync(env.lock, 'utf8')).pid, process.pid);
+  assert.deepEqual(fs.readdirSync(path.dirname(env.lock)).filter((name) => name.includes('.claim') || name.endsWith('.new')), [], 'no claim or draft is left behind');
+
+  const mine = JSON.parse(fs.readFileSync(env.lock, 'utf8'));
+
+  // Judged stale, then replaced by a faster run before this one claimed it:
+  // the claim is on the old instance, so the new lock stays.
+  fs.writeFileSync(env.lock, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'stale-two' }));
+  const fresh = JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce: 'fresh-one' });
+  let replaced = false;
+  const replacedWhileJudging = (pid) => {
+    if (pid === deadPid && !replaced) {
+      replaced = true;
+      fs.writeFileSync(env.lock, fresh);
+    }
+    return pid === process.pid;
+  };
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: replacedWhileJudging }).taken, false);
+  assert.equal(fs.readFileSync(env.lock, 'utf8'), fresh);
+  fs.writeFileSync(env.lock, JSON.stringify(mine));
+
+  // A holder never removes a lock while someone has claimed it, and one it
+  // doesn't hold is never its to remove.
+  fs.writeFileSync(`${env.lock}.${mine.nonce}.claim`, JSON.stringify({ pid: process.pid, nonce: 'taker' }));
+  releaseLock({ lock: env.lock, isAlive: alive });
+  assert.equal(fs.existsSync(env.lock), true);
+  fs.rmSync(`${env.lock}.${mine.nonce}.claim`);
+  releaseLock({ lock: env.lock, isAlive: alive });
+  assert.equal(fs.existsSync(env.lock), false);
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
 test('processes racing for the lock never hold it at the same time', async (t) => {
   // The tenth drain review had two processes inside the old lock together 6 to
   // 15 times in 800 tries: a lock caught between its create and its write read

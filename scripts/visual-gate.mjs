@@ -18,7 +18,7 @@
 //   node scripts/visual-gate.mjs --all --update    the same, rewriting every baseline
 //   node scripts/visual-gate.mjs --restore         only put back what a killed run left
 import { spawnSync } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -160,16 +160,60 @@ function pidAlive(pid) {
 }
 
 /**
- * The lock file's holder: the parsed record, null when it can't be read (which
- * can't be a lock being written, since a lock only ever appears whole), or
- * undefined when there's no lock.
+ * The lock file as it stands: absent, busy (Windows is still deleting it), or
+ * there, with its parsed record (null if it doesn't parse) and an `id` naming
+ * this lock instance, its nonce or a hash of its text.
  */
-function readHolder(lock) {
+function readLock(lock) {
+  let raw;
   try {
-    return JSON.parse(fs.readFileSync(lock, 'utf8'));
+    raw = fs.readFileSync(lock, 'utf8');
   } catch (error) {
-    return error.code === 'ENOENT' ? undefined : null;
+    if (error.code === 'ENOENT') return { state: 'absent' };
+    if (error.code === 'EPERM' || error.code === 'EACCES' || error.code === 'EBUSY') return { state: 'busy' };
+    throw error;
   }
+  let holder = null;
+  try {
+    holder = JSON.parse(raw);
+  } catch {
+    holder = null;
+  }
+  const nonce = holder?.nonce;
+  const id = typeof nonce === 'string' && /^[\w.-]{1,80}$/.test(nonce) ? nonce : `h${createHash('sha256').update(raw).digest('hex').slice(0, 32)}`;
+  return { state: 'present', holder, id };
+}
+
+/**
+ * Claim the lock instance `id`: create its claim file, which only one process
+ * can. Only a claim's owner replaces or removes that instance, so a stale lock
+ * is replaced once, and a run never takes a lock someone else took first. A
+ * claim is held for milliseconds; one left by a process killed in that window
+ * is itself claimed (one level down) and removed once that process is gone.
+ * @returns {(() => void) | null} the claim's release, or null if another process has it
+ */
+function claimInstance(lock, id, isAlive, depth = 0) {
+  const claim = `${lock}.${id}.claim`;
+  const record = `${JSON.stringify({ pid: process.pid, nonce: randomUUID() })}\n`;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      fs.writeFileSync(claim, record, { flag: 'wx' });
+      return () => fs.rmSync(claim, { force: true });
+    } catch (error) {
+      if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
+    }
+    if (depth > 0) return null;
+    const left = readLock(claim);
+    if (left.state !== 'present' || (Number.isSafeInteger(left.holder?.pid) && isAlive(left.holder.pid))) return null;
+    const releaseStale = claimInstance(claim, left.id, isAlive, depth + 1);
+    if (!releaseStale) return null;
+    try {
+      if (readLock(claim).id === left.id) fs.rmSync(claim, { force: true });
+    } finally {
+      releaseStale();
+    }
+  }
+  return null;
 }
 
 /** A holder whose process is gone, or whose lock is over an hour old. A lock from the future is fresh. */
@@ -179,13 +223,31 @@ function isStale(holder, now, isAlive) {
   return !Number.isFinite(takenAt) || now - takenAt > LOCK_MAX_AGE_MS;
 }
 
+/** Move `from` over `to`, retrying while Windows holds `to` open. */
+function replaceFile(from, to) {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      fs.renameSync(from, to);
+      return;
+    } catch (error) {
+      if (attempt >= 20 || !['EPERM', 'EACCES', 'EBUSY'].includes(error.code)) throw error;
+      const until = Date.now() + 10;
+      while (Date.now() < until) {
+        // A reader has the file open for a moment; wait it out.
+      }
+    }
+  }
+}
+
 /**
  * Take the gate's lock, or say who holds it. Two runs at once would share one
  * backup, and the second would put the live data back under the first. The
  * record is written to a file of this process's own first and then hard-linked
  * into place, which fails if a lock exists, so no reader ever sees half a lock.
- * A stale one is moved aside and only dropped if it's still the one judged
- * stale; a fresh lock that took its place in between goes back.
+ * A stale lock is replaced in one rename by the one process that claims it
+ * (claimInstance), so the lock is never missing while runs contend for it.
+ * The eleventh drain review got two holders at once out of the old way, which
+ * moved a stale lock aside and put back one that turned out fresh.
  * @returns {{ taken: boolean, holder: { pid?: number, takenAt?: string } | null }}
  */
 export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive } = {}) {
@@ -202,37 +264,43 @@ export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive 
         // EPERM: on Windows, a lock that's being deleted can't be replaced yet.
         if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
       }
-      const holder = readHolder(lock);
-      if (holder === undefined) continue;
-      if (!isStale(holder, now, isAlive)) return { taken: false, holder };
-      const aside = `${lock}.${nonce}.stale`;
+      const current = readLock(lock);
+      if (current.state !== 'present') continue;
+      if (!isStale(current.holder, now, isAlive)) return { taken: false, holder: current.holder };
+      const release = claimInstance(lock, current.id, isAlive);
+      if (!release) return { taken: false, holder: current.holder };
       try {
-        fs.renameSync(lock, aside);
-      } catch (error) {
-        if (error.code === 'ENOENT' || error.code === 'EPERM') continue;
-        throw error;
+        // Nobody else can replace or remove this instance while the claim is
+        // ours, so if it's still the one judged stale, it's ours to replace.
+        if (readLock(lock).id !== current.id) continue;
+        replaceFile(draft, lock);
+        return { taken: true, holder: null };
+      } finally {
+        release();
       }
-      if (JSON.stringify(readHolder(aside)) !== JSON.stringify(holder)) {
-        try {
-          fs.linkSync(aside, lock);
-        } catch {
-          // A third run has the lock by now; the one moved aside was fresh, but
-          // its holder will find the lock isn't its own when it releases.
-        }
-      }
-      fs.rmSync(aside, { force: true });
     }
-    const holder = readHolder(lock);
-    return { taken: false, holder: holder ?? null };
+    const current = readLock(lock);
+    return { taken: false, holder: current.state === 'present' ? current.holder : null };
   } finally {
     fs.rmSync(draft, { force: true });
   }
 }
 
-/** Drop the lock if this process holds it. */
-export function releaseLock({ lock = lockPath } = {}) {
-  if (readHolder(lock)?.pid !== process.pid) return;
-  fs.rmSync(lock, { force: true });
+/**
+ * Drop the lock if this process holds it. It claims the instance first, the
+ * way a takeover does, so a release never removes a lock that has just
+ * replaced its own.
+ */
+export function releaseLock({ lock = lockPath, isAlive = pidAlive } = {}) {
+  const current = readLock(lock);
+  if (current.state !== 'present' || current.holder?.pid !== process.pid) return;
+  const release = claimInstance(lock, current.id, isAlive);
+  if (!release) return;
+  try {
+    if (readLock(lock).id === current.id) fs.rmSync(lock, { force: true });
+  } finally {
+    release();
+  }
 }
 
 /**
