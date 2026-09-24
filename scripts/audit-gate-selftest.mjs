@@ -19,7 +19,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { noVerdict, runAudit } from './lib/run-audit.mjs';
+import { noVerdict, plantVerdict, runAudit } from './lib/run-audit.mjs';
 
 const root = process.cwd();
 const distArg = process.argv.indexOf('--dist');
@@ -49,10 +49,11 @@ function scratchHtmlFiles(dir = scratch) {
 }
 
 // Each case names the audit, the argv that points it at the scratch copy, and a
-// mutation that violates exactly what that audit exists to catch. A case with
-// `expect` must also fail for that reason, not for something the plant broke
-// on the way.
-/** @type {{ name: string, args: string[], violation: string, expect?: RegExp, prepare?: () => void, plant: () => boolean }[]} */
+// mutation that violates exactly what that audit exists to catch, and what the
+// audit prints when it rejects it: a planted run counts only when it fails for
+// that reason, not for something the plant broke on the way, and not because
+// something killed it (on Windows that exits with an ordinary code).
+/** @type {{ name: string, args: string[], violation: string, expect: RegExp, prepare?: () => void, plant: () => boolean }[]} */
 const cases = [
   {
     name: 'csp:audit:dist:style:elem',
@@ -151,6 +152,7 @@ const cases = [
     name: 'fix-html-structure',
     args: ['scripts/fix-html-structure.mjs', '--dist', scratch],
     violation: 'a SafeDOM consumer loading before shared.js',
+    expect: /homepage scripts load before their shared\/core dependencies in:\s*- \/index\.html/,
     plant() {
       const html = readScratch('index.html');
       const shared = '<script src="/scripts/shared.js"></script>';
@@ -164,6 +166,7 @@ const cases = [
     name: 'a11y:audit',
     args: ['scripts/audit-a11y.mjs', '--strict', '--dist', scratch],
     violation: 'an image with no alt text',
+    expect: /img-has-alt: 1 issue\(s\)/,
     plant() {
       const html = readScratch('index.html');
       const at = html.indexOf('<main');
@@ -177,6 +180,7 @@ const cases = [
     name: 'resume:audit',
     args: ['scripts/audit-resume-schema.mjs', '--dist', scratch],
     violation: 'a work entry whose startDate is a number',
+    expect: /1 schema violation\(s\):\s*- instance\.work\[0\]\.startDate is not of a type\(s\) string/,
     plant() {
       const resume = JSON.parse(readScratch('resume.json'));
       if (!Array.isArray(resume.work) || resume.work.length === 0) return false;
@@ -189,6 +193,7 @@ const cases = [
     name: 'endpoints:audit',
     args: ['scripts/audit-public-endpoints.mjs', '--dist', scratch],
     violation: 'speculation rules with eagerness: eager',
+    expect: /prerender\[0\] eagerness must be moderate or conservative, got "eager"/,
     plant() {
       const rules = JSON.parse(readScratch('speculation-rules.json'));
       if (!Array.isArray(rules.prerender) || rules.prerender.length === 0) return false;
@@ -226,6 +231,7 @@ const cases = [
     name: 'feed:audit',
     args: ['scripts/audit-feed.mjs', '--dist', scratch],
     violation: 'a JSON feed with no items',
+    expect: /feed\.items must be a non-empty array/,
     plant() {
       const feed = JSON.parse(readScratch('feed.json'));
       feed.items = [];
@@ -237,6 +243,7 @@ const cases = [
     name: 'sitemap:audit',
     args: ['scripts/audit-sitemap.mjs', '--dist', scratch],
     violation: 'a sitemap index with every URL removed',
+    expect: /Sitemap is missing required route "\/"/,
     plant() {
       const file = fs.existsSync(path.join(scratch, 'sitemap-0.xml')) ? 'sitemap-0.xml' : 'sitemap-index.xml';
       writeScratch(file, '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>\n');
@@ -260,6 +267,7 @@ const cases = [
     name: 'links:audit',
     args: ['scripts/audit-built-links.mjs', '--dist', scratch],
     violation: 'an internal link to a route the build does not produce',
+    expect: /1 broken link\(s\) or orphaned page\(s\):\s*\S*index\.html \S+ \/definitely-not-a-route\//,
     plant() {
       const html = readScratch('index.html');
       const at = html.indexOf('<main');
@@ -317,6 +325,7 @@ const cases = [
     name: 'dom:audit',
     args: ['scripts/audit-dom-size.mjs', '--dist', scratch],
     violation: 'thousands of extra homepage nodes',
+    expect: /Homepage HTML size is [\d.]+ KB; budget is [\d.]+ KB/,
     plant() {
       const html = readScratch('index.html');
       const at = html.indexOf('<main');
@@ -330,6 +339,7 @@ const cases = [
     name: 'schema:audit',
     args: ['scripts/audit-schema.mjs', '--dist', scratch],
     violation: 'the structured-data blocks stripped from the homepage',
+    expect: /\/ was not found in built HTML output/,
     plant() {
       const html = readScratch('index.html');
       const stripped = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
@@ -342,6 +352,7 @@ const cases = [
     name: 'search:audit',
     args: ['scripts/audit-search-index.mjs', '--dist', scratch],
     violation: 'the Pagefind bundle removed',
+    expect: /pagefind-entry\.json is missing or invalid/,
     plant() {
       const pagefind = path.join(scratch, 'pagefind');
       if (!fs.existsSync(pagefind)) return false;
@@ -458,6 +469,7 @@ const cases = [
     name: 'og-cards:audit',
     args: ['scripts/audit-og-cards.mjs', '--dist', scratch],
     violation: 'a social card replaced with a blank raster',
+    expect: /og\.png: dimensions 1x1, expected 1200x630/,
     plant() {
       const card = path.join(scratch, 'og.png');
       if (!fs.existsSync(card)) return false;
@@ -506,18 +518,11 @@ for (const testCase of cases) {
     continue;
   }
 
-  const planted = runAudit(testCase.args, { cwd: root });
-  const plantedHung = noVerdict(planted);
-  if (plantedHung) {
-    failures.push(`${testCase.name}: ${plantedHung} with ${testCase.violation} planted, which is no rejection`);
-    continue;
-  }
-  if (planted.status === 0) {
-    failures.push(`${testCase.name}: passed with ${testCase.violation} planted, so the gate does not check what it claims`);
-    continue;
-  }
-  if (testCase.expect && !testCase.expect.test(planted.stderr)) {
-    failures.push(`${testCase.name}: failed with ${testCase.violation} planted, but not for that reason: ${planted.stderr.trim().slice(0, 300)}`);
+  // Rejected only when it says why: on Windows a run killed from outside exits
+  // with an ordinary code, so a bare non-zero exit proves nothing.
+  const why = plantVerdict(runAudit(testCase.args, { cwd: root }), testCase.expect);
+  if (why) {
+    failures.push(`${testCase.name}: with ${testCase.violation} planted, it ${why}`);
     continue;
   }
   console.log(`  ${testCase.name}: rejects ${testCase.violation}`);

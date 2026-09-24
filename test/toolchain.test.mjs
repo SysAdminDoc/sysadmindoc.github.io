@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
+import { pathToFileURL } from 'node:url';
 
 const root = process.cwd();
 
@@ -275,28 +276,67 @@ test('the build removes dist/ first so stale artifacts cannot ship', async () =>
 });
 
 // 2026-09-24: og-cards:audit hung in sharp on a plant, build:ci waited, and
-// killing it would have counted as the plant being rejected.
-test('a self-test run that hangs or is killed gives no verdict, and the self-test fails on it', async () => {
-  const { noVerdict, runAudit } = await import('../scripts/lib/run-audit.mjs');
+// killing it would have counted as the plant being rejected. The nineteenth
+// drain review killed a hung audit from outside on Windows: it exits 1, not
+// with a signal, so only the reason in its output can tell a rejection apart.
+test('a self-test run counts as a rejection only when it says why, not when it hangs or is killed', async () => {
+  const { noVerdict, plantVerdict, runAudit } = await import('../scripts/lib/run-audit.mjs');
   const hang = runAudit(['-e', 'setInterval(() => {}, 1000)'], { cwd: root, timeoutMs: 1500 });
   assert.equal(hang.status, null);
   assert.equal(hang.timedOut, true);
   assert.equal(noVerdict(hang, 1500), 'was still running after 1.5s');
-  const refused = runAudit(['-e', 'console.error("planted violation found"); process.exit(1)'], { cwd: root });
-  assert.deepEqual({ ...refused, stderr: refused.stderr.trim() }, { status: 1, stderr: 'planted violation found', timedOut: false });
-  assert.equal(noVerdict(refused), null);
-  assert.deepEqual(runAudit(['-e', ''], { cwd: root }), { status: 0, stderr: '', timedOut: false });
-  assert.equal(noVerdict({ status: null, stderr: '', timedOut: false }), 'was killed before it exited');
+  assert.match(plantVerdict(hang, /planted/, 1500) ?? '', /still running after 1\.5s, which is no rejection/);
+  const refused = runAudit(['-e', 'console.log("checked 3 pages"); console.error("planted violation found"); process.exit(1)'], { cwd: root });
+  assert.deepEqual({ ...refused, output: refused.output.replace(/\r/g, '') }, { status: 1, output: 'checked 3 pages\nplanted violation found\n', timedOut: false });
+  assert.equal(plantVerdict(refused, /planted violation found/), null, 'stdout and stderr are both read');
+  assert.match(plantVerdict(refused, /another reason/) ?? '', /failed, but not for that reason/);
+  assert.match(plantVerdict(runAudit(['-e', ''], { cwd: root }), /x/) ?? '', /^passed, so the gate does not check what it claims$/);
+  assert.equal(noVerdict({ status: null, output: '', timedOut: false }), 'was killed before it exited');
+
+  // A real kill from outside, the way the 2026-09-24 hang was ended.
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'run-audit-kill-'));
+  try {
+    const pidFile = path.join(dir, 'audit.pid');
+    const hanger = path.join(dir, 'hang.cjs');
+    await fs.writeFile(hanger, `require('fs').writeFileSync(${JSON.stringify(pidFile)}, String(process.pid)); setInterval(() => {}, 1000);`);
+    const runner = path.join(dir, 'runner.mjs');
+    const lib = pathToFileURL(path.join(root, 'scripts', 'lib', 'run-audit.mjs')).href;
+    await fs.writeFile(runner, `import { runAudit } from ${JSON.stringify(lib)};\nprocess.stdout.write(JSON.stringify(runAudit([${JSON.stringify(hanger)}], { timeoutMs: 60000 })));`);
+    const { spawn } = await import('node:child_process');
+    const child = spawn(process.execPath, [runner], { windowsHide: true });
+    let out = '';
+    child.stdout.on('data', (chunk) => { out += chunk; });
+    const closed = new Promise((resolve) => child.on('close', resolve));
+    let pid = 0;
+    for (let tries = 0; !pid && tries < 100; tries += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      pid = Number(await fs.readFile(pidFile, 'utf8').catch(() => '0'));
+    }
+    assert.ok(pid, 'the hung audit started');
+    if (process.platform === 'win32') spawnSync('taskkill', ['/pid', String(pid), '/F'], { windowsHide: true, stdio: 'ignore' });
+    else process.kill(pid, 'SIGKILL');
+    await closed;
+    const killed = JSON.parse(out);
+    assert.match(plantVerdict(killed, /planted violation found/) ?? '', /was killed|not for that reason/, `a killed run is no rejection (${JSON.stringify(killed)})`);
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true });
+  }
 
   const script = await fs.readFile(path.join(root, 'scripts', 'audit-gate-selftest.mjs'), 'utf8');
   const clean = script.indexOf('const cleanHung = noVerdict(clean);');
   const cleanPass = script.indexOf('if (clean.status !== 0) {');
-  const planted = script.indexOf('const plantedHung = noVerdict(planted);');
-  const plantedPass = script.indexOf('if (planted.status === 0) {');
   assert.ok(clean > 0 && clean < cleanPass, 'a hung clean run is caught before its exit code is read');
-  assert.ok(planted > 0 && planted < plantedPass, 'and a hung planted run before it can count as a rejection');
-  assert.match(script, /if \(cleanHung\) \{\s*failures\.push\(/);
-  assert.match(script, /if \(plantedHung\) \{\s*failures\.push\(/);
+  assert.match(script, /const why = plantVerdict\(runAudit\(testCase\.args, \{ cwd: root \}\), testCase\.expect\);\s*if \(why\) \{\s*failures\.push\(/);
+  assert.match(script, /\/\*\* @type \{\{ name: string, args: string\[\], violation: string, expect: RegExp,/, 'every case must say what its rejection looks like');
+  const bodies = script.slice(script.indexOf('const cases = ['), script.indexOf('\n];\n')).split(/\n {2}\{\n {4}name: '/).slice(1);
+  for (const body of bodies) {
+    const own = body.split(/\n {2}\},?(?:\n|$)/)[0];
+    assert.match(own, /\n {4}expect: /, `${body.slice(0, body.indexOf("'"))} has an expect`);
+  }
+  // build:ci also runs the social-card audit directly, outside that limit.
+  const og = await fs.readFile(path.join(root, 'scripts', 'audit-og-cards.mjs'), 'utf8');
+  assert.match(og, /setTimeout\(\(\) => \{\s*console\.error\([^)]*\);\s*process\.exit\(1\);\s*\}, OG_AUDIT_WATCHDOG_MS\)\.unref\(\);/);
+  assert.match(og, /const OG_AUDIT_WATCHDOG_MS = 120_000;/);
 });
 
 test('every dist-reading audit is proven able to reject a planted violation', async () => {

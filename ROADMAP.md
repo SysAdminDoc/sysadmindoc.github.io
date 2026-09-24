@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Count a planted audit as rejected only when it says why
-  Why: On Windows an audit killed from outside exits 1 (taskkill, `process.kill`) or 4294967295 (Stop-Process), never a null status, so `noVerdict` misses it and the self-test still prints "rejects ..." for the eleven cases without an `expect`; the test used a hand-made `{ status: null }`. `build:ci` also runs `og-cards:audit` directly with no time limit.
-  Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:25,34`, `scripts/audit-gate-selftest.mjs:515`.
-  Touches: `scripts/audit-gate-selftest.mjs`, `scripts/lib/run-audit.mjs`, `test/toolchain.test.mjs`.
-  Acceptance: every case carries an `expect` its audit's rejection must match, a planted run counts as rejected only when it does, a real external kill on win32 is tested, and the direct `og-cards:audit` step in `build:ci` can't hang the build.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit

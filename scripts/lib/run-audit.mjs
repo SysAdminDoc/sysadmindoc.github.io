@@ -4,6 +4,11 @@
 // of CPU, and build:ci waited with it. A run that times out reports so, and
 // the self-test counts it as a failure either way, since a hang neither passes
 // the clean build nor rejects a plant.
+//
+// An exit code alone doesn't prove a rejection either: on Windows a process
+// killed from outside exits 1 (taskkill, process.kill) or 4294967295
+// (Stop-Process), not with a signal (nineteenth drain review). So a planted
+// run counts as rejected only when its output names the reason (`plantVerdict`).
 import { execFileSync } from 'node:child_process';
 import process from 'node:process';
 
@@ -11,19 +16,20 @@ export const AUDIT_TIMEOUT_MS = 180_000;
 
 /**
  * `status` is the audit's exit code, or null when it gave none: it timed out
- * or something killed it, which is no verdict on the build.
+ * or something killed it with a signal, which is no verdict on the build.
+ * `output` is everything it printed, stdout and stderr.
  * @param {string[]} args node's arguments: the audit script and its flags
  * @param {{ cwd?: string, timeoutMs?: number }} [options]
- * @returns {{ status: number | null, stderr: string, timedOut: boolean }}
+ * @returns {{ status: number | null, output: string, timedOut: boolean }}
  */
 export function runAudit(args, { cwd = process.cwd(), timeoutMs = AUDIT_TIMEOUT_MS } = {}) {
   try {
-    execFileSync(process.execPath, args, { cwd, stdio: 'pipe', windowsHide: true, timeout: timeoutMs });
-    return { status: 0, stderr: '', timedOut: false };
+    const stdout = execFileSync(process.execPath, args, { cwd, stdio: 'pipe', windowsHide: true, timeout: timeoutMs, encoding: 'utf8' });
+    return { status: 0, output: String(stdout ?? ''), timedOut: false };
   } catch (error) {
     return {
       status: typeof error?.status === 'number' ? error.status : null,
-      stderr: String(error?.stderr ?? ''),
+      output: `${String(error?.stdout ?? '')}${String(error?.stderr ?? '')}`,
       timedOut: error?.code === 'ETIMEDOUT',
     };
   }
@@ -33,4 +39,20 @@ export function runAudit(args, { cwd = process.cwd(), timeoutMs = AUDIT_TIMEOUT_
 export function noVerdict(run, timeoutMs = AUDIT_TIMEOUT_MS) {
   if (run.status !== null) return null;
   return run.timedOut ? `was still running after ${timeoutMs / 1000}s` : 'was killed before it exited';
+}
+
+/**
+ * Whether a planted run rejected the plant for the reason the case names:
+ * it exited non-zero on its own and said so. Null when it did; otherwise why
+ * not, for the self-test's failure list.
+ * @param {{ status: number | null, output: string, timedOut: boolean }} run
+ * @param {RegExp} expect
+ * @param {number} [timeoutMs]
+ */
+export function plantVerdict(run, expect, timeoutMs = AUDIT_TIMEOUT_MS) {
+  const hung = noVerdict(run, timeoutMs);
+  if (hung) return `${hung}, which is no rejection`;
+  if (run.status === 0) return 'passed, so the gate does not check what it claims';
+  if (!expect.test(run.output)) return `failed, but not for that reason: ${run.output.trim().slice(-300)}`;
+  return null;
 }
