@@ -11,7 +11,10 @@ import { SMOKE_REPORT_SAMPLE } from './lib/csp-report-summary.mjs';
 import { checkStatusFreshness } from './lib/status-freshness.mjs';
 
 const root = process.cwd();
-const runId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+// deploy-vps passes its own, so it can find this run's CSP report again.
+const runId = /^[a-z0-9-]{8,64}$/.test(process.env.LIVE_SMOKE_RUN_ID ?? '')
+  ? process.env.LIVE_SMOKE_RUN_ID
+  : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 const DEFAULT_LIVE_SITE_URL = `${SITE_URL}/`;
 
 function hasFlag(name) {

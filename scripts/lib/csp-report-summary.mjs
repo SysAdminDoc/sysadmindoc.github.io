@@ -5,11 +5,14 @@
 import { REPORT_CATEGORIES } from '../../deploy/vps/csp-report-server.mjs';
 
 // A first-party violation the nightly hasn't reported before fails the run
-// once it has come in at least this often, in at least this many separate
-// clock hours. A burst of forged reports lands in one hour; a real fault keeps
-// arriving as people visit.
+// once it has come in at least this often, with its first and last report at
+// least this far apart. A burst of forged reports arrives within seconds,
+// however it straddles the hour; a real fault keeps arriving as people visit.
 export const ALERT_MIN_REPORTS = 3;
-export const ALERT_MIN_HOURS = 2;
+export const ALERT_MIN_SPAN_MS = 60 * 60_000;
+// At most this many new violations are named, and so remembered, per run. The
+// rest wait for the next run rather than being remembered unseen.
+export const NEW_VIOLATIONS_LIMIT = 20;
 
 export const SUMMARY_CATEGORIES = Object.freeze([...REPORT_CATEGORIES, 'legacy']);
 
@@ -41,20 +44,30 @@ export function parseStore(text) {
 }
 
 // A violation is the directive plus what it blocked: a host for a URL, and the
-// keyword ("inline", "eval") otherwise.
+// keyword ("inline", "eval") otherwise. A keyword violation also carries the
+// start of its sample, so that a forged burst for `style-src-elem inline` burns
+// only the block it named, and a real unhashed block later still alerts.
 export function violationKey(report) {
   const directive =
     typeof report?.directive === 'string' && /^[a-z][a-z0-9-]{0,63}$/i.test(report.directive) ? report.directive.toLowerCase() : '(none)';
   let blocked = '(none)';
+  let keyword = false;
   if (typeof report?.blocked === 'string' && report.blocked) {
     try {
       const url = new URL(report.blocked);
       blocked = url.origin === 'null' ? url.protocol : url.host;
     } catch {
-      blocked = /^[a-z][a-z0-9+.-]{0,31}$/i.test(report.blocked) ? report.blocked.toLowerCase() : '(unreadable)';
+      keyword = /^[a-z][a-z0-9+.-]{0,31}$/i.test(report.blocked);
+      blocked = keyword ? report.blocked.toLowerCase() : '(unreadable)';
     }
   }
-  return `${directive} ${blocked}`;
+  const sample = keyword ? printable(report?.sample, 24).replaceAll('"', "'") : '';
+  return sample ? `${directive} ${blocked} "${sample}"` : `${directive} ${blocked}`;
+}
+
+/** "45 min" under two hours, "3.2 h" above. */
+function spanText(ms) {
+  return ms < 2 * 60 * 60_000 ? `${Math.round(ms / 60_000)} min` : `${(ms / (60 * 60_000)).toFixed(1)} h`;
 }
 
 function receivedAtOf(report) {
@@ -70,7 +83,10 @@ function receivedAtOf(report) {
  * carried a category count as legacy: their blocked field was flattened to
  * "(invalid-url)", so they can't say what they were.
  */
-export function summarizeReports(reports, { known = [], minReports = ALERT_MIN_REPORTS, minHours = ALERT_MIN_HOURS } = {}) {
+export function summarizeReports(
+  reports,
+  { known = [], minReports = ALERT_MIN_REPORTS, minSpanMs = ALERT_MIN_SPAN_MS, limit = NEW_VIOLATIONS_LIMIT } = {},
+) {
   const counts = Object.fromEntries(SUMMARY_CATEGORIES.map((name) => [name, 0]));
   const groups = new Map();
   for (const report of reports) {
@@ -78,11 +94,11 @@ export function summarizeReports(reports, { known = [], minReports = ALERT_MIN_R
     counts[category] += 1;
     if (category !== 'first-party') continue;
     const key = violationKey(report);
-    const group = groups.get(key) ?? { key, count: 0, hours: new Set(), lastAt: null, sample: null };
+    const group = groups.get(key) ?? { key, count: 0, firstAt: null, lastAt: null, sample: null };
     group.count += 1;
     const at = receivedAtOf(report);
     if (at) {
-      group.hours.add(at.slice(0, 13));
+      if (!group.firstAt || at < group.firstAt) group.firstAt = at;
       if (!group.lastAt || at >= group.lastAt) {
         group.lastAt = at;
         if (typeof report.sample === 'string' && report.sample) group.sample = printable(report.sample, 40);
@@ -93,15 +109,23 @@ export function summarizeReports(reports, { known = [], minReports = ALERT_MIN_R
 
   const knownKeys = new Set(known);
   const firstParty = [...groups.values()]
-    .map((group) => ({ key: printable(group.key, 120), count: group.count, hours: group.hours.size, lastAt: group.lastAt, sample: group.sample }))
+    .map((group) => ({
+      key: printable(group.key, 120),
+      count: group.count,
+      spanMs: group.firstAt && group.lastAt ? Date.parse(group.lastAt) - Date.parse(group.firstAt) : 0,
+      lastAt: group.lastAt,
+      sample: group.sample,
+    }))
     .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
   const unreported = firstParty.filter((group) => !knownKeys.has(group.key));
-  const meetsBar = (group) => group.count >= minReports && group.hours >= minHours;
+  const meetsBar = (group) => group.count >= minReports && group.spanMs >= minSpanMs;
+  const due = unreported.filter(meetsBar);
   return {
     total: reports.length,
     counts,
     firstParty,
-    newViolations: unreported.filter(meetsBar),
+    newViolations: due.slice(0, limit),
+    deferred: Math.max(0, due.length - limit),
     watching: unreported.filter((group) => !meetsBar(group)),
   };
 }
@@ -114,17 +138,21 @@ export const SMOKE_REPORT_SAMPLE = 'live-smoke uid=4815162342';
 export const SMOKE_REPORT_SCRUBBED = 'live-smoke uid=[number]';
 
 /**
- * @param {string} text  the newest lines of the store
- * @param {{ since: number }} options  epoch seconds before the smoke started
+ * @param {string} text  the store's lines that name this run
+ * @param {{ since: number, runId: string }} options  epoch seconds before the
+ *   smoke started, and the run id the deploy gave the smoke
  * @returns {string | null}  what's wrong, or null
  */
-export function smokeReportProblem(text, { since }) {
+export function smokeReportProblem(text, { since, runId }) {
+  // Only this run's own row counts. Anyone can post a smoke-looking report, so
+  // the newest one is not necessarily ours.
+  const marker = `/__live-smoke-${runId}/`;
   const fresh = parseStore(text).reports.filter((report) => {
-    if (typeof report.document !== 'string' || !report.document.includes('/__live-smoke-')) return false;
+    if (typeof report.document !== 'string' || !report.document.includes(marker)) return false;
     const time = Date.parse(report.receivedAt);
     return !Number.isNaN(time) && time / 1000 >= since;
   });
-  if (fresh.length === 0) return 'the CSP report store holds no smoke report from this deploy';
+  if (fresh.length === 0) return `the CSP report store holds no smoke report from this deploy (run ${runId})`;
   const newest = fresh[fresh.length - 1];
   if (newest.category !== 'synthetic') {
     return `the smoke's CSP report was stored as ${JSON.stringify(newest.category ?? '(no category)')}, not "synthetic"`;
@@ -143,8 +171,9 @@ export function summaryLine(summary, unreadable = 0) {
   if (summary.newViolations.length === 0) return `${head}; no new first-party violation`;
   const named = summary.newViolations
     .slice(0, 5)
-    .map((group) => `${group.key} (${group.count} report(s) over ${group.hours} hour(s))`)
+    .map((group) => `${group.key} (${group.count} report(s) over ${spanText(group.spanMs)})`)
     .join(', ');
   const more = summary.newViolations.length > 5 ? `, and ${summary.newViolations.length - 5} more` : '';
-  return `${head}; NEW first-party: ${named}${more}`;
+  const later = summary.deferred > 0 ? `; ${summary.deferred} more wait for the next run` : '';
+  return `${head}; NEW first-party: ${named}${more}${later}`;
 }

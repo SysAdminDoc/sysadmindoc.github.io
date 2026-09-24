@@ -6,8 +6,9 @@ import path from 'node:path';
 import test from 'node:test';
 import { normalizeReport } from '../deploy/vps/csp-report-server.mjs';
 import {
-  ALERT_MIN_HOURS,
   ALERT_MIN_REPORTS,
+  ALERT_MIN_SPAN_MS,
+  NEW_VIOLATIONS_LIMIT,
   SMOKE_REPORT_SAMPLE,
   SMOKE_REPORT_SCRUBBED,
   parseStore,
@@ -46,6 +47,10 @@ test('a violation is keyed on its directive and what it blocked', () => {
   assert.equal(violationKey(report({ blocked: 'chrome-extension://(redacted)' })), 'script-src-elem chrome-extension:');
   assert.equal(violationKey(report({ blocked: '(invalid-url)' })), 'script-src-elem (unreadable)');
   assert.equal(violationKey(report({ blocked: undefined, directive: 'bad directive;' })), '(none) (none)');
+  // A keyword violation carries the start of its sample; a URL one doesn't.
+  assert.equal(violationKey(report({ blocked: 'inline', directive: 'style-src-elem', sample: 'p{a:1}' })), 'style-src-elem inline "p{a:1}"');
+  assert.equal(violationKey(report({ blocked: 'inline', sample: 'x="y"' })), 'script-src-elem inline "x=\'y\'"');
+  assert.equal(violationKey(report({ blocked: 'https://cdn.example.test/x.js', sample: 'p{a:1}' })), 'script-src-elem cdn.example.test');
 });
 
 test('printable strips control and direction characters and bounds the length', () => {
@@ -68,22 +73,32 @@ test('categories are counted, and reports from before the store had them count a
   assert.deepEqual(summary.firstParty.map((group) => group.key), ['script-src-elem inline']);
 });
 
-test('a new first-party violation needs repeated reports in separate hours before it counts', () => {
+test('a new first-party violation needs repeated reports an hour or more apart before it counts', () => {
   assert.equal(ALERT_MIN_REPORTS, 3);
-  assert.equal(ALERT_MIN_HOURS, 2);
+  assert.equal(ALERT_MIN_SPAN_MS, 60 * 60_000);
   // Fifty forged reports in one burst stay under watch.
   const burst = summarizeReports(reportsOver(50, 0.01, { blocked: 'https://evil.example.test/x.js' }));
   assert.equal(burst.newViolations.length, 0);
-  assert.deepEqual(burst.watching.map((group) => [group.key, group.count, group.hours]), [['script-src-elem evil.example.test', 50, 1]]);
+  assert.deepEqual(burst.watching.map((group) => [group.key, group.count]), [['script-src-elem evil.example.test', 50]]);
 
-  // Two reports an hour apart are not enough either.
+  // So do three sent 110 ms apart across a change of hour, which the old bar,
+  // counting clock-hour labels, took for two hours (tenth drain review).
+  const straddle = summarizeReports(
+    ['2026-09-24T16:59:59.900Z', '2026-09-24T16:59:59.950Z', '2026-09-24T17:00:00.010Z'].map((receivedAt) =>
+      report({ receivedAt, blocked: 'https://evil.example.test/x.js' }),
+    ),
+  );
+  assert.equal(straddle.newViolations.length, 0);
+
+  // Two reports an hour apart are not enough, and neither are three that span 59 minutes.
   assert.equal(summarizeReports(reportsOver(2, 60, {})).newViolations.length, 0);
+  assert.equal(summarizeReports(reportsOver(3, 29.5, {})).newViolations.length, 0);
 
-  // Three reports across two hours are.
+  // Three whose first and last are an hour apart are.
   const real = summarizeReports(reportsOver(3, 30, { blocked: 'inline', directive: 'style-src-elem' }));
   assert.deepEqual(
-    real.newViolations.map((group) => [group.key, group.count, group.hours]),
-    [['style-src-elem inline', 3, 2]],
+    real.newViolations.map((group) => [group.key, group.count, group.spanMs]),
+    [['style-src-elem inline', 3, 60 * 60_000]],
   );
   assert.equal(real.watching.length, 0);
 
@@ -92,6 +107,29 @@ test('a new first-party violation needs repeated reports in separate hours befor
   assert.equal(later.newViolations.length, 0);
   assert.equal(later.watching.length, 0);
   assert.equal(later.firstParty[0].count, 9);
+});
+
+test('a burst that burns an inline key cannot hide a new block with a sample of its own', () => {
+  // The tenth drain review: once `style-src-elem inline` was known, a real
+  // unhashed block reported over two days raised nothing.
+  const forged = reportsOver(3, 40, { blocked: 'inline', directive: 'style-src-elem', sample: 'x{}' });
+  const burned = summarizeReports(forged).newViolations.map((group) => group.key);
+  assert.deepEqual(burned, ['style-src-elem inline "x{}"']);
+  const real = reportsOver(4, 720, { blocked: 'inline', directive: 'style-src-elem', sample: '.new-block{color:red}' });
+  const later = summarizeReports([...forged, ...real], { known: burned });
+  assert.deepEqual(later.newViolations.map((group) => group.key), ['style-src-elem inline ".new-block{color:red}"']);
+});
+
+test('only as many new violations are named as the limit allows, and the rest wait', () => {
+  assert.equal(NEW_VIOLATIONS_LIMIT, 20);
+  const reports = Array.from({ length: 22 }, (_, index) => reportsOver(3, 40, { blocked: `https://h${index}.example.test/x.js` })).flat();
+  const first = summarizeReports(reports);
+  assert.equal(first.newViolations.length, 20);
+  assert.equal(first.deferred, 2);
+  assert.match(summaryLine(first), /; 2 more wait for the next run$/);
+  const second = summarizeReports(reports, { known: first.newViolations.map((group) => group.key) });
+  assert.equal(second.newViolations.length, 2);
+  assert.equal(second.deferred, 0);
 });
 
 test('extension, synthetic and other reports never raise a first-party alert', () => {
@@ -103,14 +141,17 @@ test('extension, synthetic and other reports never raise a first-party alert', (
 });
 
 test('the newest sample is shown, cleaned, and a report without a valid time still counts', () => {
+  // Blocked by URL, so the three are one violation; an inline one with three
+  // different samples would be three.
+  const blocked = 'https://cdn.example.test/x.js';
   const summary = summarizeReports([
-    report({ receivedAt: '2026-09-24T01:00:00Z', sample: 'older' }),
-    report({ receivedAt: '2026-09-24T03:00:00Z', sample: `body{x:1}${ESC}[31m${RLO}` }),
-    report({ receivedAt: 'yesterday', sample: 'undated' }),
+    report({ receivedAt: '2026-09-24T01:00:00Z', blocked, sample: 'older' }),
+    report({ receivedAt: '2026-09-24T03:00:00Z', blocked, sample: `body{x:1}${ESC}[31m${RLO}` }),
+    report({ receivedAt: 'yesterday', blocked, sample: 'undated' }),
   ]);
   const [group] = summary.firstParty;
   assert.equal(group.count, 3);
-  assert.equal(group.hours, 2);
+  assert.equal(group.spanMs, 2 * 60 * 60_000);
   assert.equal(group.lastAt, '2026-09-24T03:00:00.000Z');
   assert.equal(group.sample, 'body{x:1} [31m');
 });
@@ -118,9 +159,10 @@ test('the newest sample is shown, cleaned, and a report without a valid time sti
 test('the summary line names new violations and says so when there are none', () => {
   const quiet = summarizeReports([report({ category: 'extension' })]);
   assert.equal(summaryLine(quiet), '1 report(s): 1 extension; no new first-party violation');
-  // 01:10, 01:50, 02:30 and 03:10 fall in three clock hours.
+  // 01:10 to 03:10 is two hours; under two, the span reads in minutes.
   const loud = summarizeReports(reportsOver(4, 40, {}));
-  assert.equal(summaryLine(loud, 2), '4 report(s): 4 first-party; 2 unreadable line(s); NEW first-party: script-src-elem inline (4 report(s) over 3 hour(s))');
+  assert.equal(summaryLine(loud, 2), '4 report(s): 4 first-party; 2 unreadable line(s); NEW first-party: script-src-elem inline (4 report(s) over 2.0 h)');
+  assert.match(summaryLine(summarizeReports(reportsOver(3, 40, {}))), /\(3 report\(s\) over 80 min\)$/);
 });
 
 test("the deploy's read-back accepts only the smoke report the current sink would store", () => {
@@ -143,15 +185,21 @@ test("the deploy's read-back accepts only the smoke report the current sink woul
   const stored = posted('2026-09-24T02:01:00Z');
   assert.equal(stored.sample, SMOKE_REPORT_SCRUBBED);
   const lines = (...entries) => entries.map((entry) => JSON.stringify(entry)).join('\n');
+  const runId = 'run1';
 
-  assert.equal(smokeReportProblem(lines(report({ receivedAt: '2026-09-24T02:02:00Z' }), stored), { since }), null);
-  assert.match(smokeReportProblem(lines(posted('2026-09-24T01:00:00Z')), { since }), /no smoke report from this deploy/);
-  assert.match(smokeReportProblem('', { since }), /no smoke report from this deploy/);
+  assert.equal(smokeReportProblem(lines(report({ receivedAt: '2026-09-24T02:02:00Z' }), stored), { since, runId }), null);
+  assert.match(smokeReportProblem(lines(posted('2026-09-24T01:00:00Z')), { since, runId }), /no smoke report from this deploy/);
+  assert.match(smokeReportProblem('', { since, runId }), /no smoke report from this deploy \(run run1\)/);
+  // A smoke-looking row posted after ours, by anyone, doesn't stand in for it
+  // (tenth drain review), and our row alone is judged.
+  const forged = { ...stored, document: `${site}/__live-smoke-forged/`, category: 'first-party', sample: 'x' };
+  assert.equal(smokeReportProblem(lines(stored, forged), { since, runId }), null);
+  assert.match(smokeReportProblem(lines(forged), { since, runId }), /no smoke report from this deploy/);
   // The sink as it was before this change: no category, sample dropped.
   const { category, sample, ...old } = stored;
-  assert.match(smokeReportProblem(lines(old), { since }), /stored as "\(no category\)", not "synthetic"/);
-  assert.match(smokeReportProblem(lines({ ...stored, sample: SMOKE_REPORT_SAMPLE }), { since }), /sample was stored as "live-smoke uid=4815162342"/);
-  assert.match(smokeReportProblem(lines({ ...stored, document: `${stored.document}?synthetic=1` }), { since }), /kept a query string/);
+  assert.match(smokeReportProblem(lines(old), { since, runId }), /stored as "\(no category\)", not "synthetic"/);
+  assert.match(smokeReportProblem(lines({ ...stored, sample: SMOKE_REPORT_SAMPLE }), { since, runId }), /sample was stored as "live-smoke uid=4815162342"/);
+  assert.match(smokeReportProblem(lines({ ...stored, document: `${stored.document}?synthetic=1` }), { since, runId }), /kept a query string/);
   assert.equal(category, 'synthetic');
   assert.equal(sample, SMOKE_REPORT_SCRUBBED);
 });
@@ -163,8 +211,13 @@ test('every deploy posts the sample and reads the smoke report back after the sm
   ]);
   assert.match(smoke, /blockedURL: 'https:\/\/live-smoke\.invalid\/synthetic\.js\?synthetic=1',\s*\/\/[^\n]*\n\s*sample: SMOKE_REPORT_SAMPLE,/);
   const logShape = deploy.indexOf('\n  verifyAccessLogShape(smokeStartedAt);');
-  const reportShape = deploy.indexOf('\n  verifyCspReportShape(smokeStartedAt);');
+  const reportShape = deploy.indexOf('\n  verifyCspReportShape(smokeStartedAt, smokeRunId);');
   assert.ok(logShape > 0 && reportShape > logShape, 'the read-back runs after the smoke, beside the access-log check');
+  // The deploy names the run, the smoke uses that name, and the read-back asks
+  // the store for that run's rows alone.
+  assert.match(deploy, /\], \{ env: \{ \.\.\.process\.env, LIVE_SMOKE_RUN_ID: smokeRunId \} \}\);/);
+  assert.match(deploy, /grep -hF "\/__live-smoke-\$\{runId\}\/"/);
+  assert.match(smoke, /const runId = \/\^\[a-z0-9-\]\{8,64\}\$\/\.test\(process\.env\.LIVE_SMOKE_RUN_ID \?\? ''\)/);
 });
 
 test('the command reads a store file, writes the summary, and records a violation only once with --record', async (t) => {
@@ -178,7 +231,7 @@ test('the command reads a store file, writes the summary, and records a violatio
   // A plain run reports but remembers nothing.
   const look = run();
   assert.equal(look.status, 0, look.stderr);
-  assert.match(look.stdout, /NEW first-party: connect-src avatars\.githubusercontent\.com \(3 report\(s\) over 2 hour\(s\)\)/);
+  assert.match(look.stdout, /NEW first-party: connect-src avatars\.githubusercontent\.com \(3 report\(s\) over 80 min\)/);
   await assert.rejects(fs.access(path.join(dir, '.tmp', 'csp-report-state.json')));
 
   const first = run('--record');
@@ -193,6 +246,24 @@ test('the command reads a store file, writes the summary, and records a violatio
   const again = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'csp-report-summary.json'), 'utf8'));
   assert.deepEqual(again.newViolations, []);
   assert.match(again.line, /no new first-party violation/);
+
+  // --record remembers only what the summary names: with 21 due, the 21st is
+  // left for the next run instead of being remembered unseen.
+  const crowdDir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-csp-summary-'));
+  t.after(() => fs.rm(crowdDir, { recursive: true, force: true }));
+  const crowd = path.join(crowdDir, 'reports.ndjson');
+  const crowdLines = Array.from({ length: 21 }, (_, index) => reportsOver(3, 40, { blocked: `https://h${index}.example.test/x.js` })).flat();
+  await fs.writeFile(crowd, `${crowdLines.map((entry) => JSON.stringify(entry)).join('\n')}\n`);
+  const crowdRun = () => spawnSync(process.execPath, [cli, '--file', crowd, '--record'], { cwd: crowdDir, encoding: 'utf8', windowsHide: true });
+  assert.equal(crowdRun().status, 0);
+  const named = JSON.parse(await fs.readFile(path.join(crowdDir, '.tmp', 'csp-report-summary.json'), 'utf8'));
+  const state = JSON.parse(await fs.readFile(path.join(crowdDir, '.tmp', 'csp-report-state.json'), 'utf8'));
+  assert.equal(named.newViolations.length, 20);
+  assert.equal(named.deferred, 1);
+  assert.deepEqual(Object.keys(state.known).sort(), named.newViolations.map((group) => group.key).sort());
+  assert.equal(crowdRun().status, 0);
+  const rest = JSON.parse(await fs.readFile(path.join(crowdDir, '.tmp', 'csp-report-summary.json'), 'utf8'));
+  assert.equal(rest.newViolations.length, 1, 'the 21st is named the next time');
 
   // No store and no server to read from is a failure, not an empty store.
   const missing = spawnSync(process.execPath, [cli], { cwd: dir, encoding: 'utf8', windowsHide: true, env: { ...process.env, PORTFOLIO_VPS_SSH: '' } });

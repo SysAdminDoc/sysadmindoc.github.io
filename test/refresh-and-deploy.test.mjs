@@ -443,6 +443,29 @@ test('the nightly puts back what a killed visual-gate run left before it fetches
   assert.ok(log.indexOf('DATA  put back') < log.indexOf('START fetch-stars'), 'before the first fetch');
 });
 
+test('a failed deploy:vps does not claim the old deployment is still live', { timeout: HANG_BOUND_MS }, async (t) => {
+  // deploy:vps checks the live site after it has shipped, so its failure can
+  // leave either build serving (tenth drain review). A failure before it can't.
+  const status = async (failing) => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+    t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+    await fs.writeFile(path.join(dir, 'fail.cjs'), 'process.exit(1);');
+    const scripts = { 'fetch-stars': 'node -e ""', 'profile-feed:sync': 'node -e ""', 'deploy:preflight': 'node -e ""', 'deploy:vps': 'node -e ""' };
+    scripts[failing] = 'node fail.cjs';
+    await fs.writeFile(path.join(dir, 'package.json'), JSON.stringify({ name: 'refresh-fixture', private: true, scripts }));
+    const { exited } = runRunner(dir, { ...process.env, GITHUB_TOKEN: 'test-token', PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10', npm_config_update_notifier: 'false' });
+    assert.equal(await exited, 1);
+    return JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  };
+  const afterShip = await status('deploy:vps');
+  assert.equal(afterShip.step, 'deploy:vps');
+  assert.match(afterShip.detail, /the live site may be on either the previous build or this one/);
+  assert.doesNotMatch(afterShip.detail, /previous deployment is still live/);
+  const beforeShip = await status('deploy:preflight');
+  assert.equal(beforeShip.step, 'deploy:preflight');
+  assert.match(beforeShip.detail, /the previous deployment is still live/);
+});
+
 // npm test runs inside the preflight and inherits these flags. Tests strip the
 // shared list, so a flag the runner sets has to be on it.
 test('every report-only flag the nightly sets is one the tests know to strip', async () => {

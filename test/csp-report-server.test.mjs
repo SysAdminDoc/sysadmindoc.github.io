@@ -110,7 +110,19 @@ test('scrubSample drops ids, long numbers, email addresses and control character
   assert.equal(scrubSample('uid=4815162342;'), 'uid=[number];');
   assert.equal(scrubSample('mail("someone@example.com")'), 'mail("[email]")');
   assert.equal(scrubSample('a\u202Eb\nc\u0007d\u2066e\u2028f\uFEFFg'), 'a b c d e f g');
-  assert.equal(scrubSample('x'.repeat(100)), 'x'.repeat(40));
+  // Stays short. (Spaced, since a 40-character run is now an opaque token.)
+  assert.equal(scrubSample('x '.repeat(100)), 'x '.repeat(20));
+  // The tenth drain review's samples: a Chrome extension ID is letters only,
+  // an extension URL cut mid-ID still names it, card and phone numbers come in
+  // groups, and the 40-character cut can leave an email without its domain.
+  assert.equal(scrubSample('id="cjpalhdlnbpafiamejdnhcphjbkeiagm";'), 'id="[id]";');
+  assert.equal(scrubSample('url(chrome-extension://nngceckbapebfimnl'), 'url(chrome-extension://[extension]');
+  assert.equal(scrubSample('card 4111 1111 1111 1111;'), 'card [number];');
+  assert.equal(scrubSample('card 4111-1111-1111-1111;'), 'card [number];');
+  assert.equal(scrubSample('tel:+1-555-867-5309'), 'tel:[number]');
+  assert.equal(scrubSample('mailto:john.doe@'), '[email]');
+  // Short numbers and ordinary CSS stay as they are.
+  assert.equal(scrubSample('box-shadow:0 0 1px 2px rgba(0,0,0,.5)'), 'box-shadow:0 0 1px 2px rgba(0,0,0,.5)');
   // Plain words and short numbers are code, not identifiers.
   assert.equal(scrubSample('document.addEventListener("load",f,!0)'), 'document.addEventListener("load",f,!0)');
   for (const value of [undefined, null, 42, '', '   ']) assert.equal(scrubSample(value), null);

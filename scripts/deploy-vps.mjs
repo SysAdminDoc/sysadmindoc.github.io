@@ -15,6 +15,7 @@
 // band, through the Contabo-VPS-Ops repo (its Caddyfile is the source of truth);
 // this script only ships the site and (re)starts its container.
 import { execFileSync } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -178,12 +179,14 @@ function verifyAccessLogShape(since) {
 
 // The smoke's synthetic CSP report, read back from the store. Only the sink in
 // this repo files it as synthetic with its sample scrubbed, so this also proves
-// the container runs the code that was just shipped.
-function verifyCspReportShape(since) {
+// the container runs the code that was just shipped. The rows are picked by
+// the run id this deploy gave the smoke, so no report posted after it, forged
+// or real, can stand in for it or push it out of view.
+function verifyCspReportShape(since, runId) {
   const output = captureRemote(
-    "docker exec portfolio-csp-reporter sh -c 'tail -n 200 /var/lib/csp-reports/reports.ndjson.1 2>/dev/null; tail -n 200 /var/lib/csp-reports/reports.ndjson' 2>&1 || true",
+    `docker exec portfolio-csp-reporter sh -c 'grep -hF "/__live-smoke-${runId}/" /var/lib/csp-reports/reports.ndjson.1 /var/lib/csp-reports/reports.ndjson 2>/dev/null' || true`,
   );
-  const problem = smokeReportProblem(output, { since });
+  const problem = smokeReportProblem(output, { since, runId });
   if (problem) throw new Error(`deploy-vps: ${problem}.`);
   console.log('deploy-vps: the CSP report sink filed the smoke report as synthetic, with its sample scrubbed.');
 }
@@ -327,6 +330,7 @@ if (process.env.SKIP_SMOKE !== '1') {
   const counts = readArtifactCounts();
   // Five minutes of slack for the two machines' clocks.
   const smokeStartedAt = Math.floor(Date.now() / 1000) - 300;
+  const smokeRunId = `${Date.now()}-${randomBytes(6).toString('hex')}`;
   run('npm', [
     'run',
     'smoke:live',
@@ -342,10 +346,10 @@ if (process.env.SKIP_SMOKE !== '1') {
     '--retries',
     '5',
     '--require-lead-delivery',
-  ]);
+  ], { env: { ...process.env, LIVE_SMOKE_RUN_ID: smokeRunId } });
   // 6. The smoke's requests are now the newest access-log entries.
   verifyAccessLogShape(smokeStartedAt);
-  verifyCspReportShape(smokeStartedAt);
+  verifyCspReportShape(smokeStartedAt, smokeRunId);
 } else {
   console.log('deploy-vps: SKIP_SMOKE=1, so no fresh access-log entries or smoke CSP report exist to check; both shape checks were skipped.');
 }

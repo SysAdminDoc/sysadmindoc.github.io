@@ -145,7 +145,13 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 // sent because the policy asks for 'report-sample'. The site's own inline code
 // is public, but an extension's can open with a per-user id or key, so anything
 // shaped like one goes before the sample is stored, along with control and
-// direction characters that could disguise what a log line says.
+// direction characters that could disguise what a log line says. In order: an
+// email address, even one the 40-character cut left without its domain; an
+// extension's URL, which names the extension even when cut short; any run of
+// 24 or more letters, digits, _ or - (a Chrome extension ID is 32 letters),
+// and a shorter one of 12 or more that mixes letters and digits; digits split
+// by spaces, dashes, dots or brackets that come to 7 or more (card and phone
+// numbers); and any 6 digits in a row.
 export function scrubSample(value) {
   if (typeof value !== 'string') return null;
   const text = value
@@ -154,8 +160,10 @@ export function scrubSample(value) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 40)
-    .replace(/[^\s@"'`<>(){};,]+@[^\s@"'`<>(){};,]+/g, '[email]')
-    .replace(/[A-Za-z0-9_-]{12,}/g, (run) => (/\d/.test(run) && /[A-Za-z]/.test(run) ? '[id]' : run))
+    .replace(/[^\s@"'`<>(){};,]+@[^\s@"'`<>(){};,]*/g, '[email]')
+    .replace(/\b([a-z]+(?:-[a-z]+)*-extension|webkit-masked-url):\/\/[^\s"'`<>()]*/gi, '$1://[extension]')
+    .replace(/[A-Za-z0-9_-]{12,}/g, (run) => (run.length >= 24 || (/\d/.test(run) && /[A-Za-z]/.test(run)) ? '[id]' : run))
+    .replace(/\+?\d[\d ().-]{4,}\d/g, (run) => (run.replace(/\D/g, '').length >= 7 ? '[number]' : run))
     .replace(/\d{6,}/g, '[number]');
   return text || null;
 }

@@ -77,7 +77,8 @@ function main() {
   for (const group of summary.firstParty.slice(0, 10)) {
     const flag = summary.newViolations.includes(group) ? 'NEW ' : known[group.key] ? '    ' : 'WAIT';
     const sample = group.sample ? `  sample: ${JSON.stringify(group.sample)}` : '';
-    console.log(`  ${flag} ${group.key}: ${group.count} report(s) over ${group.hours} hour(s), last ${group.lastAt ?? 'unknown'}${sample}`);
+    const minutes = Math.round(group.spanMs / 60_000);
+    console.log(`  ${flag} ${group.key}: ${group.count} report(s) over ${minutes} min, last ${group.lastAt ?? 'unknown'}${sample}`);
   }
 
   fs.mkdirSync(tmpDir, { recursive: true });
@@ -92,7 +93,9 @@ function main() {
         total: summary.total,
         unreadable,
         counts: summary.counts,
-        newViolations: summary.newViolations.slice(0, 20),
+        // Already capped, and exactly what --record remembers below.
+        newViolations: summary.newViolations,
+        deferred: summary.deferred,
         watching: summary.watching.slice(0, 20),
         firstParty: summary.firstParty.slice(0, 20),
       },

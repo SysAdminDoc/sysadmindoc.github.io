@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Make the CSP alert bar hold against a burst, and keep a burst from silencing a key
-  Why: The bar counts clock-hour labels, so three forged reports 110 ms apart across 17:00 pass it. A known key never alerts again, so one forged burst for `style-src-elem inline` would hide every later unhashed inline block. `--record` remembers every new violation, but the summary the runner reads keeps 20, so a 21st is silenced without ever being named. The sample scrub misses a Chrome extension ID (32 letters), an extension URL cut off mid-ID, digit groups split by spaces or dashes (card and phone numbers) and an email address cut off after its @. The deploy's read-back takes the newest smoke-looking row without checking the run id, so one forged row fails a deploy after the site shipped, and the runner then says the previous deployment is still live.
-  Evidence: tenth drain review, 2026-09-23, with the real functions on a built store.
-  Touches: `scripts/lib/csp-report-summary.mjs`, `scripts/csp-report-summary.mjs`, `deploy/vps/csp-report-server.mjs`, `scripts/smoke-live-site.mjs`, `scripts/deploy-vps.mjs`, `scripts/refresh-and-deploy.mjs`, their tests, `CHANGELOG.md`.
-  Acceptance: the review's burst stays under watch. A new inline block with a different sample alerts after a burst has burned the bare key. `--record` records only what the summary names. Each of the review's samples is scrubbed. The read-back finds the smoke's own row by its run id however many rows follow it. A failed `deploy:vps` no longer claims the old deployment is still live, and the CHANGELOG's report count is right.
-  Complexity: M
-
 - [ ] P2: Make the visual gate see a hidden nav or recoloured accents
   Why: With the nav hidden, or every accent token turned magenta, 0 of 20 comparisons failed. The shots cover only the viewport, and `maxDiffPixelRatio: 0.015` with the default per-pixel threshold of 0.2 lets 9.7% of the pixels change as long as only 1.5% change strongly.
   Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:503-507`.

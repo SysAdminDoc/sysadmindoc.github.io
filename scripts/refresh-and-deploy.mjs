@@ -439,8 +439,11 @@ async function main() {
     const stepLog = stepLogPath(failedStep);
     const where = fs.existsSync(stepLog) ? `; see ${path.relative(root, stepLog)}` : '';
     const reason = typeof error.cause === 'string' ? `${error.cause}; ` : '';
-    log(`ABORT after ${elapsed}s at step "${failedStep}"; the previous deployment is still live${where}`);
-    writeStatus('aborted', { failedStep, detail: `${reason}the previous deployment is still live${where}` });
+    // deploy:vps checks the live site after it has shipped, so a failure there
+    // can leave either build serving. Every step before it ships nothing.
+    const live = failedStep === 'deploy:vps' ? 'the live site may be on either the previous build or this one' : 'the previous deployment is still live';
+    log(`ABORT after ${elapsed}s at step "${failedStep}"; ${live}${where}`);
+    writeStatus('aborted', { failedStep, detail: `${reason}${live}${where}` });
     process.exit(1);
   }
 }
