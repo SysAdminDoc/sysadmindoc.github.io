@@ -112,6 +112,24 @@ test('the output check reads CSS the way browsers do: any case, any closing-tag 
   assert.deepEqual(embeddedCss('<svg><style>.x{fill:red}</style></svg>'), [{ label: '<style> 1', css: '.x{fill:red}' }]);
 });
 
+// The thirteenth drain review's gaps: Chromium applies each of these.
+test('the output check also reads escapes, entities, odd closing tags, data: imports and quoted >', () => {
+  const lightDark = (css) => /light-dark/.test(cssOutputProblems(css).problems.join('\n'));
+  assert.ok(lightDark('.a{color:light-dar\\6b(#000,#fff)}'), 'a hex escape');
+  assert.ok(lightDark('.a{color:light-dar\\k(#000,#fff)}'), 'a character escape');
+  assert.ok(lightDark('@import url("data:text/css,.a%7Bcolor:light-dark(%23000,%23fff)%7D");'), 'a data: import');
+  assert.ok(lightDark(`@import "data:text/css;base64,${Buffer.from('.a{color:light-dark(#000,#fff)}').toString('base64')}";`), 'a base64 data: import');
+  assert.ok(!lightDark('.a{content:"light-darkish"}'), 'no false alarm');
+
+  const found = (markup, options) => embeddedCss(markup, options).map(({ css }) => css);
+  assert.deepEqual(found('<style>a{}</style x><style>b{}</style/>'), ['a{}', 'b{}'], 'closing tags with more before the >');
+  assert.deepEqual(found('<p title="a>b" style="c:d">'), ['c:d'], 'a > inside an earlier quoted value');
+  assert.deepEqual(found('<p style="color:light&#x2d;dark(red,blue)">'), ['color:light-dark(red,blue)'], 'an entity in an attribute');
+  assert.deepEqual(found('<style>a{b:&#45;}</style><svg><style>c{d:light&#45;dark(red,blue)}</style></svg>'), ['a{b:&#45;}', 'c{d:light-dark(red,blue)}'], 'decoded in SVG only');
+  assert.deepEqual(found('<style><![CDATA[e{f:g}]]></style>', { svg: true }), ['e{f:g}'], 'CDATA in an SVG file');
+  assert.deepEqual(found('<script>const s = "<style>x{}</style>";</script><style/>h{}</style>'), ['h{}'], 'a script is opaque, and HTML ignores /');
+});
+
 test('build:ci runs the output check on its own build, and the self-test proves it can fail', async () => {
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
   const steps = pkg.scripts['build:ci'].split('&&').map((step) => step.trim());

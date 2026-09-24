@@ -50,10 +50,17 @@ for (const file of builtFiles(dist, '.css').sort()) {
 // The <style> blocks and style attributes of every page and SVG. The critical
 // CSS each page inlines goes through the same minifier, and a page or an image
 // can carry CSS of its own. They're read the way a browser reads them: a
-// <STYLE> block, or one closed with </style >, still applies (twelfth drain
-// review).
+// <STYLE> block, one closed with </style > or </style x>, a style attribute
+// after a value holding >, and character references where the parser decodes
+// them (twelfth and thirteenth drain reviews).
 for (const file of [...builtFiles(dist, '.html'), ...builtFiles(dist, '.svg')].sort()) {
-  for (const { label, css } of embeddedCss(fs.readFileSync(file, 'utf8'))) check(`${relative(file)} ${label}`, css);
+  const svg = file.endsWith('.svg');
+  for (const { label, css } of embeddedCss(fs.readFileSync(file, 'utf8'), { svg })) check(`${relative(file)} ${label}`, css);
+}
+// CSS a script puts on the page never passes through the minifier, so a
+// light-dark() written in one would reach browsers as is.
+for (const file of builtFiles(dist, '.js').sort()) {
+  if (/\blight-dark\(/i.test(fs.readFileSync(file, 'utf8'))) problems.push(`${relative(file)}: a script carries a light-dark() it could put on the page`);
 }
 if (prefixed === 0) problems.push('no built rule carries a prefixed backdrop blur, so this check saw nothing to check');
 
@@ -62,4 +69,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`  - ${problem}`);
   process.exit(1);
 }
-console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, no timeline in an animation shorthand, and no light-dark() left, across every built stylesheet and the styles in every page and SVG.`);
+console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, no timeline in an animation shorthand, and no light-dark() left, across every built stylesheet, the styles in every page and SVG, and every script.`);

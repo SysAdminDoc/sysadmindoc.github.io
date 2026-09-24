@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Close the CSS output audit's remaining reading gaps
-  Why: Chromium applies each of these and the audit misses them: `</style x>` and `</style/>` closing tags, a `style` attribute after an attribute value holding `>`, an entity in an SVG `<style>` inside HTML or in a `style` attribute (`light&#x2d;dark(`), a CSS escape (`light-dar\6b(`), and a `data:` URI `@import`. CSS a script injects, like Pagefind's highlight script, is never read.
-  Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-output-check.mjs:43,47`.
-  Touches: `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs`, `scripts/audit-gate-selftest.mjs`, `test/css-minify.test.mjs`.
-  Acceptance: each case fails the audit, with a plant or test apiece, or the CHANGELOG says plainly what isn't read.
-  Complexity: S
-
 - [ ] P3: Make css:audit's fallback rule exact both ways
   Why: A prefixed value anywhere later in a chain exempts everything before it (`width:10px` then `20px` then `-webkit-fill-available` keeps the dead 10px), a prefixed value before a universal one is exempt, and the prefix test matches inside strings. The other way, fallbacks for features newer than the targets, like `text-wrap:wrap` before `pretty` or a colour before relative colour syntax, are still reported dead.
   Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:38,66,74`.
