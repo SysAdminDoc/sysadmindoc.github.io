@@ -22,7 +22,7 @@ import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
-import { EDGE_DELETIONS, EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { caddyTrustProblems, networkProblems, ntfyTrustProblems } from './lib/proxy-trust-check.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
@@ -128,7 +128,7 @@ function verifyCaddyVersion() {
 // socket, this fails closed and needs the new address.
 function verifyEdgeLogging() {
   const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs/default 2>&1 || true');
-  const problem = defaultLogProblem(output, { mustExclude: EDGE_EXCLUDES, mustDelete: EDGE_DELETIONS });
+  const problem = defaultLogProblem(output, { mustExclude: EDGE_EXCLUDES });
   if (problem) throw new Error(`deploy-vps: on the edge, ${problem}.`);
   console.log("deploy-vps: the edge's own log drops what identifies a portfolio visitor.");
 }

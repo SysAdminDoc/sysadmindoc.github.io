@@ -22,8 +22,9 @@
 	# X-Forwarded-For included. So the addresses, port and headers go, the query
 	# string is cut, and an IPv4 address in an entry's `error` field is masked
 	# (scripts/lib/edge-log-check.mjs; deploy-vps reads it back). Some entries
-	# carry the address and page at the top level instead of under `request`,
-	# like the edge's warning for an ACME challenge lookup, so those go too. A
+	# carry the address, page and user agent at the top level instead of under
+	# `request`, like the warning for an ACME challenge lookup, which this server
+	# logs as well as the edge, so those go too. A
 	# handler error's own text is the entry's message instead, which no filter
 	# can reach. Here that can name an upstream's internal address, but not a
 	# visitor's: this server's only visitor-facing peer is the edge.
@@ -43,6 +44,8 @@
 				remote_port delete
 				client_ip delete
 				uri regexp \?.*$ ""
+				user_agent delete
+				referer delete
 				resp_headers delete
 				error regexp [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ x.x.x.x
 			}

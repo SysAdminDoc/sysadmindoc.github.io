@@ -6,13 +6,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
-- [ ] P1: Drop the user agent from the inner Caddy's own log
-  Why: The inner Caddy runs the same ACME challenge handler as the edge, and its warning carries a top-level `user_agent`. The edge's filter deletes it only because of the portfolio block's appended fields, the inner's doesn't, and the deploy checks the inner without that deletion, so `/privacy/`'s "leave out ... your browser's headers" is false there. A local Caddy 2.11.4 with the inner's global log block logged the user agent for a challenge request.
-  Evidence: thirteenth drain review, 2026-09-24; certmagic v0.25.3 `httphandlers.go:117-122`; `deploy/vps/Caddyfile`; `verifyInnerLogging` in `scripts/deploy-vps.mjs`.
-  Touches: `deploy/vps/Caddyfile`, `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: both servers' filters must delete `user_agent` and `referer` for the deploy to pass, and a challenge request to the inner leaves neither in its log.
-  Complexity: S
-
 ### P2
 
 - [ ] P2: Close the lock's claim gaps: half-written claims and claims that never expire

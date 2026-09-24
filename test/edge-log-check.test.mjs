@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { EDGE_DELETIONS, EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem } from '../scripts/lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem } from '../scripts/lib/edge-log-check.mjs';
 
 const root = process.cwd();
 
@@ -38,7 +38,7 @@ const filtered = {
   },
   exclude: ['http.log.access.portfolio', 'http.log.error.portfolio'],
 };
-const edgeOptions = { mustExclude: EDGE_EXCLUDES, mustDelete: EDGE_DELETIONS };
+const edgeOptions = { mustExclude: EDGE_EXCLUDES };
 const withFields = (change) => JSON.stringify({ ...filtered, encoder: { ...filtered.encoder, fields: change({ ...filtered.encoder.fields }) } });
 
 test('a default logger that drops what identifies a visitor passes, on the edge and inside portfolio-app', () => {
@@ -50,13 +50,17 @@ test('a default logger that drops what identifies a visitor passes, on the edge 
 
 // With a mixed-case Host the portfolio's access entry lands in the edge's
 // default logger, and the fields its log_append adds come along (2026-09-23,
-// live: the user agent reached the container log).
-test('on the edge, the fields the portfolio block appends are dropped too', () => {
-  for (const name of EDGE_DELETIONS) {
-    const problem = defaultLogProblem(withFields((fields) => ({ ...fields, [name]: undefined })), edgeOptions);
-    assert.match(problem ?? '', new RegExp(`keeps ${name}`), name);
+// live: the user agent reached the container log). The inner Caddy appends
+// nothing, but it logs the ACME challenge warning with a top-level user_agent
+// too, so the old "the inner Caddy appends nothing, so it needs neither" was
+// wrong (thirteenth drain review): both servers drop both.
+test('both servers drop the user agent and referrer', () => {
+  for (const name of ['user_agent', 'referer']) {
+    for (const options of [edgeOptions, {}]) {
+      const problem = defaultLogProblem(withFields((fields) => ({ ...fields, [name]: undefined })), options);
+      assert.match(problem ?? '', new RegExp(`keeps ${name}\\b`), name);
+    }
   }
-  assert.equal(defaultLogProblem(withFields((fields) => ({ ...fields, referer: undefined, user_agent: undefined }))), null, 'the inner Caddy appends nothing');
 });
 
 // On 2026-09-24 the edge's log held 13 warnings like this one, from a request
@@ -111,7 +115,7 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
   assert.match(deploy, /docker exec caddy wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs\/default /);
   assert.match(deploy, /docker exec portfolio-app wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs\/default /);
-  assert.match(deploy, /defaultLogProblem\(output, \{ mustExclude: EDGE_EXCLUDES, mustDelete: EDGE_DELETIONS \}\)/, 'the edge is held to its extra deletions');
+  assert.match(deploy, /defaultLogProblem\(output, \{ mustExclude: EDGE_EXCLUDES \}\)/, 'the edge is held to its exclusion');
   // The edge's check doesn't depend on the new build, so it runs before
   // anything ships; the inner one reads the container the deploy just made.
   const edgeChecked = deploy.indexOf('\nverifyEdgeLogging();');

@@ -11,10 +11,12 @@
 
 /**
  * Filters every default logger needs, as Caddy's JSON config spells them. Some
- * entries carry the address at the top level rather than under `request`: the
- * edge's "looking up info for HTTP challenge" warning, logged for any request
- * to /.well-known/acme-challenge/, has `remote_addr` (address and port) and
- * `uri` (eleventh drain review).
+ * entries carry the visitor's details at the top level rather than under
+ * `request`: the "looking up info for HTTP challenge" warning, which both
+ * servers log for any request to /.well-known/acme-challenge/, has
+ * `remote_addr` (address and port), `uri` and `user_agent` (eleventh and
+ * thirteenth drain reviews). `user_agent` and `referer` are also the fields
+ * the portfolio block's log_append adds on the edge.
  */
 export const REQUIRED_DELETIONS = Object.freeze([
   'request>remote_ip',
@@ -26,6 +28,8 @@ export const REQUIRED_DELETIONS = Object.freeze([
   'remote_ip',
   'remote_port',
   'client_ip',
+  'user_agent',
+  'referer',
   'resp_headers',
 ]);
 
@@ -34,12 +38,6 @@ export const QUERY_FIELDS = Object.freeze(['request>uri', 'uri']);
 
 /** The edge also keeps the portfolio's error entries out of its log entirely. */
 export const EDGE_EXCLUDES = Object.freeze(['http.log.error.portfolio']);
-
-/**
- * The portfolio block's log_append fields ride along on every portfolio entry,
- * so they reach the edge's default logger with a mixed-case Host too.
- */
-export const EDGE_DELETIONS = Object.freeze(['user_agent', 'referer']);
 
 function applies(field, input) {
   if (field?.filter !== 'regexp' || typeof field.regexp !== 'string') return null;
@@ -54,10 +52,10 @@ function applies(field, input) {
  * Why a Caddy default logger would keep something that identifies a visitor,
  * or null.
  * @param {string} text the admin API's /config/logging/logs/default
- * @param {{ mustExclude?: readonly string[], mustDelete?: readonly string[] }} [options]
+ * @param {{ mustExclude?: readonly string[] }} [options]
  * @returns {string | null}
  */
-export function defaultLogProblem(text, { mustExclude = [], mustDelete = [] } = {}) {
+export function defaultLogProblem(text, { mustExclude = [] } = {}) {
   let logger;
   try {
     logger = JSON.parse(String(text));
@@ -75,7 +73,7 @@ export function defaultLogProblem(text, { mustExclude = [], mustDelete = [] } = 
     return `the default logger's format is ${encoder.format ?? 'the plain default'}, not a filter that drops the request details`;
   }
   const fields = encoder.fields ?? {};
-  const missing = [...REQUIRED_DELETIONS, ...mustDelete].filter((name) => fields[name]?.filter !== 'delete');
+  const missing = REQUIRED_DELETIONS.filter((name) => fields[name]?.filter !== 'delete');
   for (const name of QUERY_FIELDS) {
     if (applies(fields[name], '/page?q=secret') !== '/page') missing.push(`the query string (${name})`);
   }
