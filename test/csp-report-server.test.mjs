@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { once } from 'node:events';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   classifyReport,
   createReporter,
@@ -11,6 +14,7 @@ import {
   normalizeReport,
   normalizeReports,
   decodeOwnSamples,
+  startServer,
   storedSample,
 } from '../deploy/vps/csp-report-server.mjs';
 import { SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
@@ -294,6 +298,66 @@ test('the sink stores older samples as markers at start, once, and leaves the re
     assert.doesNotMatch(current.join('\n') + rotated.sample, /203\.0\.113\.9|Zm9vYmFy|\[email\]/);
     assert.equal(await reporter.restoreSamples(), 0, 'a second run finds nothing to do');
     assert.deepEqual((await fs.readdir(path.dirname(logPath))).sort(), ['reports.ndjson', 'reports.ndjson.1'], 'no key and no temporary file is left');
+  });
+});
+
+// The twentieth drain review stopped the sink starting with a directory where
+// a store file or the old key belongs, and a row cut short after its sample
+// kept the old text.
+test('the sink still starts whatever its store holds, and a row cut short keeps no sample', async (t) => {
+  await withTempReporter({ ownSamples: OWN }, async ({ logPath, dir }) => {
+    const errors = t.mock.method(console, 'error', () => {});
+    t.mock.method(console, 'log', () => {});
+    await fs.mkdir(`${logPath}.1`);
+    await fs.mkdir(path.join(dir, 'sample.key'));
+    const row = JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'style-src', blocked: 'inline', category: 'first-party', sample: 'addr 203.0.113.9' });
+    const cut = '{"receivedAt":"2026-09-20T12:00:00.000Z","sample":"mail 198.51.100.7","categ';
+    await fs.writeFile(logPath, `${row}\nnot json\n${cut}\n`);
+    const server = await startServer({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN, host: '127.0.0.1', port: 0 });
+    try {
+      if (!server.listening) await once(server, 'listening');
+      const address = server.address();
+      const health = await fetch(`http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}/healthz`);
+      assert.equal(health.status, 200);
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+    const current = (await fs.readFile(logPath, 'utf8')).split('\n');
+    assert.match(JSON.parse(current[0]).sample, MARKER);
+    assert.equal(current[1], 'not json', 'a line with no sample in it stays');
+    assert.equal(current[2], '{"receivedAt":"2026-09-20T12:00:00.000Z",', 'nothing from "sample" on is kept');
+    assert.doesNotMatch(current.join('\n'), /203\.0\.113\.9|198\.51\.100\.7/);
+    const said = errors.mock.calls.map((call) => String(call.arguments[0])).join('\n');
+    assert.match(said, /reports\.ndjson\.1/);
+    assert.match(said, /sample\.key/);
+    assert.deepEqual((await fs.readdir(dir)).sort(), ['reports.ndjson', 'reports.ndjson.1', 'sample.key'], 'no temporary file is left');
+  });
+});
+
+// Reading both files whole took a 64 MiB container to its cap with two-byte
+// text (twentieth drain review). V8 keeps a string with one character past
+// Latin-1 at two bytes a character, so each 5 MB file here is 10 MB in memory.
+test('the start-up restore streams, so two full store files fit a 16 MB heap', async () => {
+  await withTempReporter({}, async ({ logPath }) => {
+    const wide = String.fromCharCode(0x4e2d);
+    const line = `${JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'style-src', blocked: 'inline', category: 'other', sample: `${wide} ${'x'.repeat(180)}` })}\n`;
+    const rows = Math.floor(DEFAULT_CONFIG.maxLogBytes / Buffer.byteLength(line));
+    await fs.writeFile(logPath, line.repeat(rows));
+    await fs.writeFile(`${logPath}.1`, line.repeat(rows));
+    const server = pathToFileURL(fileURLToPath(new URL('../deploy/vps/csp-report-server.mjs', import.meta.url))).href;
+    const script = [
+      `import { createReporter, DEFAULT_CONFIG } from ${JSON.stringify(server)};`,
+      `const reporter = createReporter({ ...DEFAULT_CONFIG, logPath: ${JSON.stringify(logPath)} });`,
+      'console.log(await reporter.restoreSamples());',
+    ].join('\n');
+    const run = spawnSync(process.execPath, ['--max-old-space-size=16', '--input-type=module', '-e', script], { encoding: 'utf8', windowsHide: true, timeout: 120_000 });
+    assert.equal(run.status, 0, run.stderr.slice(-2000));
+    assert.equal(run.stdout.trim(), String(2 * rows));
+    for (const file of [logPath, `${logPath}.1`]) {
+      const text = await fs.readFile(file, 'utf8');
+      assert.equal(text.split('\n').length, rows + 1);
+      assert.ok(!text.includes(wide), file);
+    }
   });
 });
 

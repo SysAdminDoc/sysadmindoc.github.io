@@ -2,7 +2,7 @@
 // (deploy/vps/csp-report-server.mjs). A violation report's sample is the first
 // 40 characters of the inline script or style a browser refused; the sink
 // keeps a sample only when it's one of these, which are public code, and
-// stores a keyed marker for anything else.
+// stores a plain `[other]` marker for anything else.
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse } from 'parse5';

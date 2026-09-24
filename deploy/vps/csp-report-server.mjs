@@ -334,6 +334,22 @@ function rotatedLogPath(logPath) {
   return `${logPath}.1`;
 }
 
+/** A stored line with its sample under today's rule. */
+function restoredLine(line, samples) {
+  let row;
+  try {
+    row = JSON.parse(line);
+  } catch {
+    // A row cut short mid-append can still hold an old sample, and nothing
+    // reads a line that doesn't parse, so nothing from "sample" on is kept.
+    const at = line.indexOf('"sample"');
+    return at === -1 ? line : line.slice(0, at);
+  }
+  if (!row || typeof row !== 'object' || typeof row.sample !== 'string' || row.sample === OTHER_SAMPLE) return line;
+  const stored = storedSample(row.sample, samples);
+  return stored === row.sample ? line : JSON.stringify({ ...row, sample: stored });
+}
+
 export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
   const fileSystem = dependencies.fileSystem ?? fs;
   const now = dependencies.now ?? (() => new Date());
@@ -433,45 +449,76 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
   }
 
   /**
+   * One store file under today's rule, a line at a time into a temporary file
+   * that is renamed over it, so memory holds a line rather than the file
+   * (twentieth drain review: two whole files reached the container's cap).
+   * @returns {Promise<number>} how many lines changed
+   */
+  async function restoreFile(file, samples) {
+    let input;
+    try {
+      input = await fileSystem.open(file, 'r');
+    } catch (error) {
+      if (error.code === 'ENOENT') return 0;
+      throw error;
+    }
+    const temporary = `${file}.restore`;
+    let changed = 0;
+    try {
+      const output = await fileSystem.open(temporary, 'w', 0o600);
+      try {
+        let pending = '';
+        for await (const line of input.readLines({ encoding: 'utf8', autoClose: false })) {
+          const next = restoredLine(line, samples);
+          if (next !== line) changed += 1;
+          pending += `${next}\n`;
+          if (pending.length >= 64 * 1024) {
+            await output.write(pending);
+            pending = '';
+          }
+        }
+        if (pending !== '') await output.write(pending);
+      } finally {
+        await output.close();
+      }
+    } catch (error) {
+      await fileSystem.rm(temporary, { force: true }).catch(() => undefined);
+      throw error;
+    } finally {
+      await input.close();
+    }
+    if (changed === 0) {
+      await fileSystem.rm(temporary, { force: true });
+      return 0;
+    }
+    await fileSystem.rename(temporary, file);
+    return changed;
+  }
+
+  /**
    * Rewrite every stored sample under today's rule: rows written before the
    * sink kept only the site's own samples carry whatever the old scrub rules
-   * let through. Each file is rewritten to a temporary one and renamed over,
-   * and a sample that is already a marker or the site's own stays as it is,
-   * so running it again changes nothing. Called before the server listens.
+   * let through. A sample that is already a marker or the site's own stays as
+   * it is, so running it again changes nothing. Called before the server
+   * listens, and a store entry it can't rewrite is logged and left, so the
+   * sink starts regardless (twentieth drain review).
    * @returns {Promise<number>} how many samples became markers
    */
   async function restoreSamples() {
     const samples = { ownSamples: config.ownSamples ?? [] };
     // The key file the keyed-hash marker used, if a sink ever made one.
-    await fileSystem.rm(path.join(path.dirname(config.logPath), 'sample.key'), { force: true });
+    try {
+      await fileSystem.rm(path.join(path.dirname(config.logPath), 'sample.key'), { force: true });
+    } catch (error) {
+      console.error(`csp-report: left sample.key in place: ${error.message}`);
+    }
     let changed = 0;
     for (const file of [config.logPath, rotatedLogPath(config.logPath)]) {
-      let text;
       try {
-        text = await fileSystem.readFile(file, 'utf8');
+        changed += await restoreFile(file, samples);
       } catch (error) {
-        if (error.code === 'ENOENT') continue;
-        throw error;
+        console.error(`csp-report: left ${path.basename(file)} as it was: ${error.message}`);
       }
-      let fileChanged = 0;
-      const lines = text.split('\n').map((line) => {
-        let row;
-        try {
-          row = JSON.parse(line);
-        } catch {
-          return line;
-        }
-        if (!row || typeof row !== 'object' || typeof row.sample !== 'string' || row.sample === OTHER_SAMPLE) return line;
-        const stored = storedSample(row.sample, samples);
-        if (stored === row.sample) return line;
-        fileChanged += 1;
-        return JSON.stringify({ ...row, sample: stored });
-      });
-      if (fileChanged === 0) continue;
-      const temporary = `${file}.restore`;
-      await fileSystem.writeFile(temporary, lines.join('\n'), { encoding: 'utf8', mode: 0o600 });
-      await fileSystem.rename(temporary, file);
-      changed += fileChanged;
     }
     return changed;
   }

@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Keep the CSP sink starting whatever its store holds, in bounded memory
-  Why: the start-up restore reads both store files whole and throws on odd entries. A directory at `reports.ndjson.1` or `sample.key` makes `startServer` reject, so the container restart-loops where it used to serve. Two full 5 MB files with two-byte text reached the 64 MiB compose cap in a WSL run. A row cut mid-append after its sample keeps the old text, because unparseable lines are copied through.
-  Evidence: twentieth review (EISDIR from `readFile`, ERR_FS_EISDIR from `rm`, 61.9 MB peak on Latin-1 text, the cap reached with one non-Latin-1 character per sample).
-  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`, `scripts/lib/csp-own-samples.mjs` (stale "keyed marker" comment).
-  Acceptance: an unreadable store entry is logged and skipped and the sink still listens. The restore streams line by line. A line that doesn't parse loses any `"sample"` text it holds.
-  Complexity: M
-
 - [ ] P3: Check the retention the contact handler uses, not the variable it was given
   Why: the deploy reads `CONTACT_RETENTION_DAYS` from the container's configured env. Another variable such as `NODE_OPTIONS` can set a different value inside the process, and a multi-line value can print a fake `CONTACT_RETENTION_DAYS=` line ahead of the real one.
   Evidence: twentieth review. `NODE_OPTIONS=--import=data:text/javascript,process.env.CONTACT_RETENTION_DAYS="730"` makes Node see 730 while the check passes on "unset".
