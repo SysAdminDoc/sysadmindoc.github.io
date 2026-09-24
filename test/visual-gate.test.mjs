@@ -270,6 +270,27 @@ test('the nightly restore puts back what a killed run left, and does nothing oth
   fs.rmSync(env.base, { recursive: true, force: true });
 });
 
+// The eighth drain review: these two ran only in audit:playwright, which
+// nothing runs on a schedule, so a regression they'd catch could ship.
+test('the gate also runs every route gutter check and the offline palette check', () => {
+  const gateArgs = playwrightArgs();
+  assert.ok(gateArgs.includes('tests/playwright/sw-lifecycle.spec.mjs'));
+  const gate = new RegExp(gateArgs[gateArgs.indexOf('-g') + 1]);
+  const spec = fs.readFileSync(path.join(root, 'tests', 'playwright', 'portfolio-audits.spec.mjs'), 'utf8');
+  const routes = [...spec.matchAll(/\{ name: '([\w-]+)', path: '[^']+', ready: '[^']+' \}/g)].map((match) => match[1]);
+  assert.ok(routes.length >= 17, 'the routes were found');
+  for (const route of routes) {
+    assert.match(`chromium-light portfolio-audits.spec.mjs Mobile gutter audit ${route} keeps its text off the screen edge at 390px`, gate);
+  }
+  assert.match(spec, /test\.describe\('Mobile gutter audit'/);
+  assert.match(spec, /test\(`\$\{route\.name\} keeps its text off the screen edge at 390px`/);
+  const sw = fs.readFileSync(path.join(root, 'tests', 'playwright', 'sw-lifecycle.spec.mjs'), 'utf8');
+  const palette = 'the command palette works offline for a returning visitor who never opened it';
+  assert.ok(sw.includes(`test('${palette}'`), 'the title still names the test');
+  assert.match(`chromium sw-lifecycle.spec.mjs ${palette}`, gate);
+  assert.doesNotMatch('chromium sw-lifecycle.spec.mjs offline navigation reaches the offline fallback page', gate, 'and nothing else from that file');
+});
+
 test('the gate compares the five key routes, and the full run runs every audits spec', () => {
   const spec = fs.readFileSync(path.join(root, 'tests', 'playwright', 'portfolio-audits.spec.mjs'), 'utf8');
   const routePaths = Object.fromEntries([...spec.matchAll(/\{ name: '([\w-]+)', path: '([^']+)', ready: '[^']+' \}/g)].map((match) => [match[1], match[2]]));

@@ -13,7 +13,7 @@
 // refuses a build whose status.json says it came from fixtures, whatever path
 // got it there. One run at a time holds .tmp/visual-gate/lock.json.
 //
-//   node scripts/visual-gate.mjs                   the five routes deploy:preflight gates
+//   node scripts/visual-gate.mjs                   the five routes deploy:preflight gates, plus GATE_CHECKS
 //   node scripts/visual-gate.mjs --all             the whole audits suite (npm run audit:playwright)
 //   node scripts/visual-gate.mjs --all --update    the same, rewriting every baseline
 //   node scripts/visual-gate.mjs --restore         only put back what a killed run left
@@ -60,15 +60,26 @@ const LOCK_POLL_MS = 5_000;
 // viewport sizes before every deploy.
 export const GATE_ROUTES = Object.freeze(['home', 'ai', 'healthcare', 'resume', 'catalog']);
 
+// The browser checks the gate runs besides the screenshots: every route's
+// text kept off a phone screen's edge, and the command palette working offline
+// for a returning visitor. Only audit:playwright ran them before, and nothing
+// runs that on a schedule (eighth drain review).
+export const GATE_CHECKS = Object.freeze([
+  'Mobile gutter audit [\\w-]+ keeps its text off the screen edge at 390px',
+  'the command palette works offline for a returning visitor who never opened it',
+]);
+
 /**
  * The Playwright CLI arguments for a run. The gate compares the key routes'
- * viewport screenshots; --all runs every audits spec (axe, target size,
- * layout, screenshots and the rest), which all pass on the fixture data.
+ * viewport screenshots and runs GATE_CHECKS; --all runs every audits spec
+ * (axe, target size, layout, screenshots and the rest), which all pass on the
+ * fixture data.
  */
 export function playwrightArgs({ all = false, update = false } = {}) {
   const args = ['test', '--config=playwright.audits.config.mjs'];
   if (!all) {
-    args.push('tests/playwright/portfolio-audits.spec.mjs', '-g', `visual baselines (${GATE_ROUTES.join('|')}) (desktop|mobile) viewport matches baseline`);
+    const screenshots = `visual baselines (${GATE_ROUTES.join('|')}) (desktop|mobile) viewport matches baseline`;
+    args.push('tests/playwright/portfolio-audits.spec.mjs', 'tests/playwright/sw-lifecycle.spec.mjs', '-g', [screenshots, ...GATE_CHECKS].join('|'));
   }
   // `all`, not the default `changed`: a baseline within the diff threshold
   // would otherwise stay a render of whatever data it was taken from.

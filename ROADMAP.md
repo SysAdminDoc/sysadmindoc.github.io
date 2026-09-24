@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Run the offline-palette and gutter browser checks before a deploy
-  Why: Both run only in `audit:playwright`, which nothing runs on a schedule, so a regression they'd catch ships.
-  Evidence: eighth drain review, 2026-09-23; the `deploy:preflight` chain in `package.json`.
-  Touches: `package.json`, `scripts/visual-gate.mjs` or the preflight chain.
-  Acceptance: `deploy:preflight` runs both checks on the fixture build.
-  Complexity: S
-
 - [ ] P3: Check every logger that writes to the edge container's log
   Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
   Evidence: eighth drain review, 2026-09-23; `verifyEdgeLogging` in `scripts/deploy-vps.mjs`.

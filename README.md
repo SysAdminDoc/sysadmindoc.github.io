@@ -98,7 +98,7 @@ npm run lhci:summary   # summarize LHCI filesystem warning reports
 npm run a11y:audit     # static WCAG checks over the built dist/ (advisory; --strict to fail)
 npm run audit:playwright # the whole browser suite (axe, layout, screenshots) against a fixture build; live data is swapped back after
 npm run audit:playwright:update # the same run, rewriting every win32 screenshot baseline from the fixtures
-npm run visual:gate   # just the deploy gate: /, /ai/, /healthcare-it/, /resume/ and /catalog/ in both themes
+npm run visual:gate   # just the deploy gate: /, /ai/, /healthcare-it/, /resume/ and /catalog/ in both themes, every route's phone gutter, and the offline command palette
 node scripts/visual-gate.mjs --restore # put back the live data a killed gate run left in src/data
 npm run audit:interactions # focused rendered interaction smoke against built dist/
 npm test              # cwd-guarded node:test unit suite (pure data/script helpers)
