@@ -3,6 +3,7 @@
 // hooks cannot live in one file.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import net from 'node:net';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -13,6 +14,7 @@ export function astroPreview(args, { ignoreErrors = false, env = {} } = {}) {
     execFileSync('npx', ['astro', 'preview', ...args], {
       stdio: 'pipe',
       shell: process.platform === 'win32',
+      windowsHide: true,
       timeout: 60_000,
       // The background daemon inherits this environment (astro/dist/cli/server.js).
       env: { ...process.env, ...env },
@@ -21,6 +23,55 @@ export function astroPreview(args, { ignoreErrors = false, env = {} } = {}) {
   } catch (error) {
     if (ignoreErrors) return false;
     throw error;
+  }
+}
+
+/** Does anything accept a connection on host:port? */
+export function portAnswers(hostname, port, timeoutMs = 1_000) {
+  return new Promise((resolve) => {
+    const socket = net.connect({ host: hostname, port: Number(port) });
+    const done = (answer) => {
+      socket.destroy();
+      resolve(answer);
+    };
+    socket.setTimeout(timeoutMs, () => done(false));
+    socket.once('connect', () => done(true));
+    socket.once('error', () => done(false));
+  });
+}
+
+// When the configured port is taken, Astro serves on the next free one and
+// says so in output nobody reads, while the tests keep using the configured
+// port: the twelfth drain review's screenshots passed against another
+// checkout's server that way. So the port has to be free before the preview
+// starts (after this checkout's own old daemon is stopped, which can take a
+// moment to let go), and what answers afterwards has to be this build.
+
+/** Refuse a port that something else is serving on. */
+export async function assertPortFree(hostname, port, { waitMs = 5_000, pollMs = 250 } = {}) {
+  const deadline = Date.now() + waitMs;
+  for (;;) {
+    if (!(await portAnswers(hostname, port))) return;
+    if (Date.now() >= deadline) {
+      throw new Error(
+        `preview-server: something else is serving on ${hostname}:${port}, and the tests would audit it instead of this build. ` +
+          'Stop it, or run on another port (PLAYWRIGHT_AUDIT_PORT or PLAYWRIGHT_PORT).',
+      );
+    }
+    await new Promise((resolve) => setTimeout(resolve, pollMs));
+  }
+}
+
+/** Refuse a server whose home page isn't this checkout's dist/index.html. */
+export async function assertServesBuild(baseURL, distDir) {
+  const expected = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+  const response = await fetch(new URL('/', baseURL), { redirect: 'manual' });
+  const body = await response.text();
+  if (response.status !== 200 || body !== expected) {
+    throw new Error(
+      `preview-server: ${baseURL} answers (HTTP ${response.status}), but its home page isn't ${path.join(distDir, 'index.html')}, ` +
+        'so it is some other server or build.',
+    );
   }
 }
 

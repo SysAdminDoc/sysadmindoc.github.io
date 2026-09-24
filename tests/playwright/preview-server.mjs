@@ -17,8 +17,11 @@
 // it to answer, and let preview-server-teardown.mjs stop it. Setting
 // PLAYWRIGHT_BASE_URL bypasses all of this, which is what a manual run against an
 // already-serving preview wants.
+import path from 'node:path';
 import process from 'node:process';
 import {
+  assertPortFree,
+  assertServesBuild,
   astroPreview,
   clearMarker,
   markerOwnerAlive,
@@ -51,6 +54,8 @@ export default async function globalSetup(config) {
   // A leftover daemon from an earlier run serves an older dist/, so a stale
   // server would quietly audit the wrong build. Always replace it.
   astroPreview(['stop'], { ignoreErrors: true });
+  // Anything still on the port isn't ours (preview-server-control.mjs).
+  await assertPortFree(hostname, port);
   // Serve the production CSP response header (astro.config.mjs), so the
   // service worker runs under the policy the live /sw.js is delivered with.
   astroPreview(['--background', '--host', hostname, '--port', port], {
@@ -59,14 +64,21 @@ export default async function globalSetup(config) {
 
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
+    let answered = false;
     try {
-      const response = await fetch(baseURL, { redirect: 'manual' });
-      if (response.status > 0) {
-        writeMarker({ pid: process.pid, baseURL, startedAt: new Date().toISOString() });
-        return;
-      }
+      answered = (await fetch(baseURL, { redirect: 'manual' })).status > 0;
     } catch {
       /* not up yet */
+    }
+    if (answered) {
+      try {
+        await assertServesBuild(baseURL, path.join(process.cwd(), 'dist'));
+      } catch (error) {
+        astroPreview(['stop'], { ignoreErrors: true });
+        throw error;
+      }
+      writeMarker({ pid: process.pid, baseURL, startedAt: new Date().toISOString() });
+      return;
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }

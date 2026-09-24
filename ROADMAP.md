@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each variant above that forges the header fails, the two harmless ones pass, and the deploy reads the adapted config and ntfy's effective settings from the running containers.
   Complexity: M
 
-- [ ] P2: Make the browser suites fail when their preview server isn't the one answering
-  Why: `tests/playwright/preview-server.mjs` accepts any answer on the port. With the port taken, Astro moved to the next one and logged it, while the tests kept using the configured port: 13 screenshots passed against another project's server and 7 got `ERR_CONNECTION_REFUSED`.
-  Evidence: twelfth drain review, 2026-09-24, port 4391 in a second worktree.
-  Touches: `tests/playwright/preview-server.mjs`, a test.
-  Acceptance: with the port held by another server, the global setup fails naming the port, and a server that answers but isn't this build's preview is refused.
-  Complexity: S
-
 - [ ] P2: Let only one process take a stale gate lock
   Why: With six workers taking the lock and exiting without releasing it, as a killed run does, 4 of 3,529 stale takeovers left two holders at once. The move-aside-and-put-back path in `scripts/visual-gate.mjs` lets a third run in, which its own comment admits, and the CHANGELOG says one run holds it at a time.
   Evidence: eleventh drain review, 2026-09-24, `lock-race.mjs`; `scripts/visual-gate.mjs:197-212`.
