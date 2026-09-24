@@ -237,10 +237,9 @@ function verifyCspReportShape(since, runId) {
   const output = captureRemote(
     `docker exec portfolio-csp-reporter sh -c 'grep -hF "/__live-smoke-${runId}/" /var/lib/csp-reports/reports.ndjson.1 /var/lib/csp-reports/reports.ndjson 2>/dev/null' || true`,
   );
-  // The store's oldest row, so a smoke row rotated out by a flood is named as that.
-  const oldest = captureRemote(
-    "docker exec portfolio-csp-reporter sh -c 'head -n1 /var/lib/csp-reports/reports.ndjson.1 2>/dev/null || head -n1 /var/lib/csp-reports/reports.ndjson 2>/dev/null; true'",
-  );
+  // The rotated file's oldest row, so a smoke row rotated out by a flood is
+  // named as that. A store that never rotated can't have lost one.
+  const oldest = captureRemote("docker exec portfolio-csp-reporter sh -c 'head -n1 /var/lib/csp-reports/reports.ndjson.1 2>/dev/null; true'");
   const problem = smokeReportProblem(output, { since, runId, oldest });
   if (problem) throw new Error(`deploy-vps: ${problem}.`);
   console.log('deploy-vps: the CSP report sink filed the smoke report as synthetic, with its sample scrubbed.');

@@ -144,6 +144,31 @@ test('scrubSample catches what it missed and leaves code it mangled alone', () =
   assert.equal(scrubSample('f("headline")'), 'f("headline")');
 });
 
+// The fifteenth drain review's samples: four leaks and two regressions.
+test('scrubSample finds a cut in a sample with line breaks, a cut ID after any mark, and an at sign however it is written', () => {
+  // Cut at 40 by the browser, 28 once its whitespace collapses.
+  const indented = `if(a){\n${' '.repeat(12)}send("abcdefghijklmnopabcdefghijklmnop`.slice(0, 40);
+  assert.equal(indented.length, 40);
+  assert.equal(scrubSample(indented), 'if(a){ send("[id]');
+  assert.equal(scrubSample(`x = headline${' '.repeat(28)}`), 'x = headline', 'a sample that ends in whitespace ended on a whole word');
+  for (const mark of ['{', '[', '/', ';']) {
+    assert.equal(scrubSample(`${'x=1;'.repeat(8)}${mark}abcdefghijklmnop`), `${'x=1;'.repeat(8)}${mark}[id]`, mark);
+  }
+
+  const backslash = '\\';
+  const ats = ['%2540', '%252540', `${backslash}x40`, `${backslash}u0040`, `${backslash}u{40}`, '&#64;', '&#x40;', `${backslash}40 `, String.fromCharCode(0xff20), String.fromCharCode(0xfe6b)];
+  for (const at of ats) assert.equal(scrubSample(`mail("jane${at}example.com")`), 'mail("[email]")', JSON.stringify(at));
+});
+
+test('scrubSample scrubs an ID joined to a word and a number dialled abroad again', () => {
+  assert.equal(scrubSample('--abcdefghijklmnopabcdefghijklmnop-root:1'), '[id]:');
+  assert.equal(scrubSample('x:var(--Abcdefghijklmnopqrstu-bg)'), 'x:var([id])', 'a 21-letter word is no word');
+  assert.equal(scrubSample('--portfolio-accent-highlight-strong:red'), '--portfolio-accent-highlight-strong:red', 'a long custom property still stays');
+  assert.equal(scrubSample('tel:+33 6 12 34 56 78'), 'tel:[number]');
+  assert.equal(scrubSample('tel:0033 6 12 34 56 78'), 'tel:[number]');
+  assert.equal(scrubSample('<path d="M12 2C6.48 2 2 6.48 2 12s4.48"'), '<path d="M12 2C6.48 2 2 6.48 2 12s4.48"', 'path data still stays');
+});
+
 // The eleventh drain review: at 120 requests a minute of 20 reports each,
 // forged rows can rotate the smoke's row out of the store's two files before
 // the deploy reads it back. The read-back then has to say so.
@@ -157,13 +182,19 @@ test('a flood between the smoke and the read-back is named, not mistaken for a m
       await reporter.handleRequest(requestMock({ body }), response);
       assert.equal(response.status, 204);
     };
-    // What the deploy reads: this run's rows from both files, and the oldest row.
+    // What the deploy reads: this run's rows from both files, and the rotated
+    // file's oldest row.
     const readBack = async () => {
       const files = await Promise.all([`${logPath}.1`, logPath].map((file) => fs.readFile(file, 'utf8').catch(() => '')));
       const text = files.join('\n').split('\n').filter((line) => line.includes(`/__live-smoke-${runId}/`)).join('\n');
-      const oldest = (files[0] || files[1]).split('\n')[0] ?? '';
+      const oldest = files[0].split('\n')[0] ?? '';
       return smokeReportProblem(text, { since, runId, oldest });
     };
+
+    // A store younger than the deploy's margin, without the smoke's row: that
+    // row is missing, not pushed out (fifteenth drain review).
+    await post('https://portfolio.getparkerai.com/', 'first ever');
+    assert.match(await readBack(), /holds no smoke report from this deploy \(run flood1\)/);
 
     await post(`https://portfolio.getparkerai.com/__live-smoke-${runId}/`, SMOKE_REPORT_SAMPLE);
     assert.equal(await readBack(), null, 'found with no flood');

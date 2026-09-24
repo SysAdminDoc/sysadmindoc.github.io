@@ -43,6 +43,11 @@ export function parseStore(text) {
   return { reports, unreadable };
 }
 
+// Far past anything the sink stores, which is 40 characters of which every
+// two can become a seven-character mark.
+const KEY_SAMPLE_MAX = 512;
+const KEY_MAX = 2048;
+
 // A violation is the directive plus what it blocked: a host for a URL, and the
 // keyword ("inline", "eval") otherwise. A keyword violation also carries the
 // start of its sample, so that a forged burst for `style-src-elem inline` burns
@@ -61,12 +66,13 @@ export function violationKey(report) {
       blocked = keyword ? report.blocked.toLowerCase() : '(unreadable)';
     }
   }
-  // The whole stored sample (the sink keeps 40 characters, a little more after
-  // its [id] and [number] marks). Cut to 21, reports spread over an hour could
-  // alert once and then silence every real block that began the same way
-  // (eleventh drain review).
-  const sample = keyword ? printable(report?.sample, 64).replaceAll('"', "'") : '';
-  return sample ? `${directive} ${blocked} "${sample}"` : `${directive} ${blocked}`;
+  // The whole stored sample (the sink keeps 40 characters, more after its
+  // [email] and [number] marks), quoted JSON-style. Cut to 21, reports spread
+  // over an hour could alert once and then silence every real block that began
+  // the same way (eleventh drain review); cut to 64, or with " turned into ',
+  // two samples still shared a key (fifteenth).
+  const sample = keyword ? printable(report?.sample, KEY_SAMPLE_MAX) : '';
+  return sample ? `${directive} ${blocked} ${JSON.stringify(sample)}` : `${directive} ${blocked}`;
 }
 
 /** "45 min" under two hours, "3.2 h" above. */
@@ -114,7 +120,7 @@ export function summarizeReports(
   const knownKeys = new Set(known);
   const firstParty = [...groups.values()]
     .map((group) => ({
-      key: printable(group.key, 120),
+      key: printable(group.key, KEY_MAX),
       count: group.count,
       spanMs: group.firstAt && group.lastAt ? Date.parse(group.lastAt) - Date.parse(group.firstAt) : 0,
       lastAt: group.lastAt,
@@ -145,7 +151,10 @@ export const SMOKE_REPORT_SCRUBBED = 'live-smoke uid=[number]';
  * @param {string} text  the store's lines that name this run
  * @param {{ since: number, runId: string, oldest?: string }} options  epoch
  *   seconds before the smoke started, the run id the deploy gave the smoke, and
- *   the first line of the store's oldest file, if any
+ *   the first line of the store's rotated file, if it has one. Only a store
+ *   that has rotated can have lost a row: a young one whose first row came in
+ *   after `since`, within the deploy's margin, is just missing the smoke's
+ *   (fifteenth drain review).
  * @returns {string | null}  what's wrong, or null
  */
 export function smokeReportProblem(text, { since, runId, oldest = '' }) {

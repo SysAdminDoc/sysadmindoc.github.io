@@ -49,7 +49,9 @@ test('a violation is keyed on its directive and what it blocked', () => {
   assert.equal(violationKey(report({ blocked: undefined, directive: 'bad directive;' })), '(none) (none)');
   // A keyword violation carries the start of its sample; a URL one doesn't.
   assert.equal(violationKey(report({ blocked: 'inline', directive: 'style-src-elem', sample: 'p{a:1}' })), 'style-src-elem inline "p{a:1}"');
-  assert.equal(violationKey(report({ blocked: 'inline', sample: 'x="y"' })), 'script-src-elem inline "x=\'y\'"');
+  // Quoted JSON-style: turning " into ' merged these two (fifteenth drain review).
+  assert.equal(violationKey(report({ blocked: 'inline', sample: 'x="y"' })), 'script-src-elem inline "x=\\"y\\""');
+  assert.notEqual(violationKey(report({ blocked: 'inline', sample: 'getElementById("app")' })), violationKey(report({ blocked: 'inline', sample: "getElementById('app')" })));
   assert.equal(violationKey(report({ blocked: 'https://cdn.example.test/x.js', sample: 'p{a:1}' })), 'script-src-elem cdn.example.test');
 });
 
@@ -174,6 +176,17 @@ test('two samples that differ only after the 21st character get two keys', () =>
   assert.match(first, /"window\.dataLayer=window\.dataLayer\|\|\[\];a"$/, 'the whole stored sample');
 });
 
+// The fifteenth drain review: the sink's marks can take a stored sample past
+// the key's 64 characters, and the summary cut every key to 120.
+test('samples that differ only past 64 or 120 characters keep two keys, through the summary too', () => {
+  for (const length of [70, 130]) {
+    const samples = ['a', 'b'].map((end) => `${'[email],'.repeat(20)}`.slice(0, length - 1) + end);
+    assert.notEqual(violationKey(report({ sample: samples[0] })), violationKey(report({ sample: samples[1] })), `${length}`);
+    const keys = summarizeReports(samples.map((sample) => report({ sample }))).firstParty.map((group) => group.key);
+    assert.equal(new Set(keys).size, 2, `${length}`);
+  }
+});
+
 test("the deploy's read-back accepts only the smoke report the current sink would store", () => {
   const since = Date.parse('2026-09-24T02:00:00Z') / 1000;
   // What the sink makes of the report scripts/smoke-live-site.mjs posts.
@@ -226,6 +239,9 @@ test('every deploy posts the sample and reads the smoke report back after the sm
   // the store for that run's rows alone.
   assert.match(deploy, /\], \{ env: \{ \.\.\.process\.env, LIVE_SMOKE_RUN_ID: smokeRunId \} \}\);/);
   assert.match(deploy, /grep -hF "\/__live-smoke-\$\{runId\}\/"/);
+  // Flood evidence comes from the rotated file alone (fifteenth drain review).
+  assert.match(deploy, /const oldest = captureRemote\("docker exec portfolio-csp-reporter sh -c 'head -n1 \/var\/lib\/csp-reports\/reports\.ndjson\.1 2>\/dev\/null; true'"\);/);
+  assert.doesNotMatch(deploy, /head -n1 \/var\/lib\/csp-reports\/reports\.ndjson 2/);
   assert.match(smoke, /const runId = \/\^\[a-z0-9-\]\{8,64\}\$\/\.test\(process\.env\.LIVE_SMOKE_RUN_ID \?\? ''\)/);
 });
 

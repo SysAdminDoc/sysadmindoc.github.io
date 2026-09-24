@@ -157,29 +157,49 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 // in groups of 2 or more after the first (card and phone numbers, but not an
 // ISO date or a path's single-digit coordinates); and any 6 digits in a row.
 // The eleventh drain review found the %40, _ and / numbers and the cut ID
-// leaking, and custom properties, dates and path data mangled.
+// leaking, and custom properties, dates and path data mangled. The fifteenth
+// found an at sign escaped, encoded twice or full width, an ID cut after `{`,
+// `[` or `/`, a cut missed in a sample with line breaks, and two regressions:
+// an ID joined to a word by a hyphen, and a phone number with a one-digit
+// group after its country code.
+const NOT_ADDRESS = '[^\\s@"\'`<>(){};,]';
+// @ as a URL (%40, %2540), a JS string (\x40, @, \u{40}), HTML (&#64;,
+// &#x40;) or CSS (\40 ) can write it. NFKC below makes the full-width and
+// small at signs plain ones.
+const AT = String.raw`(?:@|%(?:25)*40|\\x40|\\u0*40|\\u\{0*40\}|&#0*64;?|&#x0*40;?|\\0*40 ?)`;
+const EMAIL = new RegExp(`${NOT_ADDRESS}+?${AT}${NOT_ADDRESS}*`, 'gi');
 export function scrubSample(value) {
   if (typeof value !== 'string') return null;
-  const whole = value
-    .slice(0, 256)
+  const raw = value.slice(0, 256);
+  const whole = raw
+    .normalize('NFKC')
     .replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  const cut = whole.length >= 40;
+  // A browser cuts the sample at 40 characters before its whitespace is
+  // collapsed here, so a cut one with line breaks or indentation comes out
+  // shorter: measure what arrived. One that ends in whitespace ended on a
+  // whole word.
+  const cut = whole.length >= 40 || (raw.length >= 40 && !/[\s\p{Cc}\p{Cf}\p{Zl}\p{Zp}]$/u.test(raw));
   let text = whole
     .slice(0, 40)
-    .replace(/[^\s@"'`<>(){};,]+?(?:@|%40)[^\s@"'`<>(){};,]*/gi, '[email]')
+    .replace(EMAIL, '[email]')
     .replace(/\b([a-z]+(?:-[a-z]+)*-extension|webkit-masked-url):\/\/[^\s"'`<>()]*/gi, '$1://[extension]')
     .replace(/[A-Za-z0-9_-]{12,}/g, (run) => {
-      if (/^-{0,2}[A-Za-z]+(?:-[A-Za-z]+)+$/.test(run) || /^\d{4}-\d{2}-\d{2}(?:T\d{2})?$/.test(run)) return run;
+      // Words joined by hyphens, like a long custom property, but not an ID
+      // joined to one (`--<id>-root`): no word runs past 16 letters.
+      const words = /^-{0,2}[A-Za-z]+(?:-[A-Za-z]+)+$/.test(run) && run.split('-').every((part) => part.length <= 16);
+      if (words || /^\d{4}-\d{2}-\d{2}(?:T\d{2})?$/.test(run)) return run;
       return run.length >= 24 || (/\d/.test(run) && /[A-Za-z]/.test(run)) ? '[id]' : run;
     });
-  if (cut) text = text.replace(/(["'`(=,:\s])[a-p]{6,}$/, '$1[id]');
+  if (cut) text = text.replace(/(^|[^A-Za-z0-9_])[a-p]{6,}$/, '$1[id]');
   text = text
     .replace(/\+?\d[\d ()./_-]{4,}\d/g, (run) => {
       if (/^\d{4}([-/.])\d{2}\1\d{2}$/.test(run)) return run;
       const groups = run.split(/\D+/).filter(Boolean);
-      return groups.join('').length >= 7 && groups.slice(1).every((group) => group.length >= 2) ? '[number]' : run;
+      if (groups.join('').length < 7) return run;
+      // A leading + or 00 dials abroad, whatever the groups: +33 6 12 34 56 78.
+      return /^(?:\+|00)/.test(run) || groups.slice(1).every((group) => group.length >= 2) ? '[number]' : run;
     })
     .replace(/\d{6,}/g, '[number]');
   return text || null;

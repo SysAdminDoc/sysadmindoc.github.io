@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: only text whose own positioned box sits off-screen is skipped, fully transparent text is skipped, text is clipped by its overflow-hiding ancestors before it's measured, and each case is checked planted.
   Complexity: S
 
-- [ ] P3: Close the CSP sink's scrub regressions and cut-off gaps
-  Why: The cut rule measures the sample after whitespace is collapsed, so a browser-cut sample with a newline or indentation never counts as cut; a cut-off ID after `{`, `[` or `/` survives; a whole ID joined to a word by a hyphen (`--<id>-root`) now passes, and so does `+33 6 12 34 56 78` (one single-digit group), both of which the previous version scrubbed; `\x40`, `%2540`, a full-width at sign and `@` hide an email. Keys still collide once a scrubbed sample passes 64 characters, and the `"` to `'` swap merges `getElementById("app")` with `getElementById('app')`. A store younger than the smoke's five-minute margin reads a missing smoke row as a flood.
-  Evidence: fifteenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:168-182`, `scripts/lib/csp-report-summary.mjs:68`.
-  Touches: those files and their tests.
-  Acceptance: each leaking case is scrubbed, each regression is back to `[id]` or `[number]`, keys don't collide on either case, and a young store with no smoke row says the row is missing.
-  Complexity: S
-
 - [ ] P3: Check the preflight's browser audit on a busy PC
   Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
   Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.
