@@ -38,13 +38,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: a kill status (4294967295, or a signal) is no verdict, with a test.
   Complexity: S
 
-- [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit
-  Why: parse5 names `xlink:href` and `href` both `href`, and the first kept wins, so `<image xlink:href="A" href="B">` counts A while browsers load B (`feImage` too). `http:noslash.example/a.png` and `http:/oneslash...` load in Chromium but the `//` check misses them. `<svg><script href>` loads in both engines and is missed. Comments are stripped before CSS escapes are read, so `\/*` hides a real url(). Older misses: `<table background>` and a static `import` in a module script.
-  Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:79,159,173,194,222`.
-  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
-  Acceptance: `href` wins over `xlink:href`, every value is resolved with `new URL(value, pageUrl)` and any origin but the site's counts, SVG script href counts, escapes are read before comments, and the two older misses are found, each with a test.
-  Complexity: S
-
 - [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit
   Why: 79c031f0's rule catches `\p{Pd}` and one spaced hyphen only, so `Home -- tools`, a spaced U+2212 minus, U+2796, a box horizontal and `&nbsp;-&nbsp;` in a feed title all pass (planted in a copied build, the audit passed). It never reads `manifest.json`'s `name`, the one the commit fixed, nor `og:site_name`, nor the feed item titles the site writes itself (catalog names, atom's `(live)` suffix, `releases.xml`'s `${project} ${tag}`). Each feed's own title is `Matt Parker | Projects` while its link says `Recent projects | Matt Parker`.
   Evidence: eighteenth drain review, 2026-09-24; `scripts/lib/title-style.mjs:25,32`, `scripts/audit-title-style.mjs:47-81`.

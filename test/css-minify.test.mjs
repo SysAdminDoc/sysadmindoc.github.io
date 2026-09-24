@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import { Features } from 'lightningcss';
-import { cssOutputProblems, embeddedCss, scriptCarriesLightDark, svgUnreadable } from '../scripts/lib/css-output-check.mjs';
+import { cssOutputProblems, embeddedCss, scriptCarriesLightDark, stripCssComments, svgUnreadable } from '../scripts/lib/css-output-check.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE, minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -83,6 +83,19 @@ test('the source writes standard properties alone, and Vite minifies with the sa
 // The built stylesheets are checked by css:output:audit inside build:ci, on the
 // build it just made. A test here could only read whatever dist/ the last
 // build left, since deploy:preflight runs npm test before it builds.
+// The nineteenth drain review: comments were cut out without regard to
+// escapes, strings or url(), so an escaped `\/*` hid the rules after it.
+test('CSS comments are found where the tokenizer finds them', () => {
+  assert.equal(stripCssComments('a{} /* x */ b{}'), 'a{}   b{}', 'a comment still separates what it stood between');
+  assert.equal(stripCssComments('a\\/* url(x) */'), 'a\\/* url(x) */', 'an escaped slash opens nothing');
+  assert.equal(stripCssComments('@import "data:text/css,/*";@import "b.css";'), '@import "data:text/css,/*";@import "b.css";', 'nor does one in a string');
+  assert.equal(stripCssComments('b{background:url(https://z.example/*.png)} /* gone */'), 'b{background:url(https://z.example/*.png)}  ', 'nor in an unquoted url()');
+  assert.equal(stripCssComments('c{content:"\\"/*"} /* gone */ d{}'), 'c{content:"\\"/*"}   d{}');
+  assert.equal(stripCssComments('e{} /* unterminated'), 'e{}  ');
+  assert.equal(stripCssComments('myurl(/* x */)'), 'myurl( )', 'a function other than url() takes comments');
+  assert.equal(stripCssComments('url/**/(x)'), 'url (x)');
+});
+
 test('the output check finds a blur left without its standard property, or a folded timeline', () => {
   const good = cssOutputProblems('a{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}b{animation:fill linear;animation-timeline:scroll()}');
   assert.deepEqual(good, { problems: [], prefixed: 1 });

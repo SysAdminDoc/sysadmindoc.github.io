@@ -245,6 +245,42 @@ test('what a page loads with scripting on or off, in a shadow root, an SVG image
   assert.deepEqual(unused.map((entry) => entry.token), ['https://inert.example'], 'only a plain template stays inert');
 });
 
+// The nineteenth drain review: xlink:href beat a plain href on an SVG image,
+// and scheme-only URLs, an SVG script's href, a url() after an escaped `\/*`,
+// a table's background and a module's static import were all missed.
+test('SVG hrefs, scheme-only URLs, SVG scripts, escaped openers, backgrounds and static imports load what browsers load', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review19-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const images = ['href-wins', 'xlink-loses', 'fe-href', 'escaped', 'table-bg', 'same-scheme'];
+  const policy = [
+    "default-src 'self'",
+    `img-src 'self' ${images.map((host) => `https://${host}.example`).join(' ')} http://noslash.example http://oneslash.example`,
+    "script-src 'self' https://svg-script.example https://static-import.example https://reexport.example https://classic.example",
+  ].join('; ');
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body>` +
+      '<svg><image xlink:href="https://xlink-loses.example/a.png" href="https://href-wins.example/a.png"/>' +
+      '<filter><feImage href="https://fe-href.example/a.png" xlink:href="https://xlink-loses.example/b.png"/></filter>' +
+      '<script href="https://svg-script.example/a.js"></script></svg>' +
+      '<img src="http:noslash.example/a.png"><img src="http:/oneslash.example/a.png"><img src="https:same-scheme.example/a.png">' +
+      '<table background="https://table-bg.example/a.png"><tr><td>cell</td></tr></table>' +
+      '<style>.b\\/* {background:url(https://escaped.example/a.png)} .c{} /* a real comment */</style>' +
+      '<script type="module">import { a } from "https://static-import.example/m.js"; export * from "https://reexport.example/n.js";</script>' +
+      '<script>const links = ["https://classic.example/page"]; export const x = 1;</script>' +
+      '</body></html>',
+  );
+
+  const references = await collectHostReferences(dist);
+  assert.deepEqual(references.filter((reference) => !reference.hostname.endsWith('.example')), [], 'a reference that stays on the page is none');
+  const unused = unusedHostSources(parseCsp(policy), references);
+  assert.deepEqual(
+    unused.map((entry) => entry.token),
+    ['https://xlink-loses.example', 'https://same-scheme.example', 'https://classic.example'],
+    'https:host on an https page is a path on the page, and a string that is not an import loads nothing',
+  );
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

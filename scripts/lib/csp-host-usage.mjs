@@ -17,7 +17,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parse } from 'parse5';
-import { unescapeCss } from './css-output-check.mjs';
+import { stripCssComments, unescapeCss } from './css-output-check.mjs';
 
 const KINDS_BY_DIRECTIVE = {
   'img-src': ['img'],
@@ -65,24 +65,29 @@ export function parseHostSource(token) {
   };
 }
 
+// Where a relative reference lands: the site itself, which 'self' covers.
+const PAGE_BASE = 'https://self.invalid/page/';
+const PAGE_ORIGIN = new URL(PAGE_BASE).origin;
+const HOST_SCHEMES = new Set(['http', 'https', 'ws', 'wss']);
+
 /**
- * The host and scheme of an absolute or protocol-relative URL (which takes
- * https), or null. Read as a browser's URL parser reads it: spaces and control
- * characters at either end go, tabs and newlines anywhere go, and a backslash
- * is a slash, so `https:\\host/` loads from host (seventeenth drain review).
+ * The host and scheme a reference loads from, or null for the page's own
+ * origin or a scheme with no host (data:, blob:, javascript:). Resolved against
+ * an https page by the URL parser browsers use, which trims spaces and control
+ * characters, drops tabs and newlines, reads a backslash as a slash
+ * (seventeenth drain review), and reads `http:host/a.png` or `http:/host/`
+ * as http://host/ while `https:host/a.png` stays on the page (nineteenth).
  */
 function absoluteTarget(value) {
-  const url = String(value ?? '')
-    .replace(/^[\x00-\x20]+|[\x00-\x20]+$/g, '')
-    .replace(/[\t\n\r]/g, '')
-    .replace(/\\/g, '/');
-  if (!/^(?:(?:https?|wss?):)?\/\//i.test(url)) return null;
+  let parsed;
   try {
-    const parsed = new URL(url, 'https://self.invalid/');
-    return { hostname: parsed.hostname.toLowerCase(), scheme: parsed.protocol.slice(0, -1).toLowerCase() };
+    parsed = new URL(String(value ?? ''), PAGE_BASE);
   } catch {
     return null;
   }
+  const scheme = parsed.protocol.slice(0, -1).toLowerCase();
+  if (!HOST_SCHEMES.has(scheme) || parsed.origin === PAGE_ORIGIN) return null;
+  return { hostname: parsed.hostname.toLowerCase(), scheme };
 }
 
 function srcsetUrls(value) {
@@ -108,6 +113,10 @@ const PRELOAD_KIND = {
 };
 
 const DECLARATIVE_SHADOW_ROOT = new Set(['shadowrootmode', 'shadowroot']);
+const SVG = 'http://www.w3.org/2000/svg';
+const XLINK = 'http://www.w3.org/1999/xlink';
+// The legacy background attribute browsers still load as an image.
+const BACKGROUND_TAGS = new Set(['body', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th']);
 
 /**
  * Every element of a parsed document, depth first. A template's contents live
@@ -156,7 +165,16 @@ function treeReferences(tree) {
     const tag = element.tagName.toLowerCase();
     /** @type {Record<string, string>} */
     const attrs = {};
-    for (const attr of element.attrs ?? []) attrs[attr.name.toLowerCase()] ??= attr.value;
+    let xlinkHref;
+    for (const attr of element.attrs ?? []) {
+      // parse5 names xlink:href `href` in the xlink namespace; kept apart,
+      // since SVG loads a plain href over it wherever they stand (nineteenth
+      // drain review).
+      if (attr.namespace === XLINK && attr.name === 'href') xlinkHref ??= attr.value;
+      else attrs[attr.name.toLowerCase()] ??= attr.value;
+    }
+    const svgHref = element.namespaceURI === SVG ? (attrs.href ?? xlinkHref) : undefined;
+    if (BACKGROUND_TAGS.has(tag)) add('img', attrs.background);
     if (tag === 'img' || tag === 'input') {
       add('img', attrs.src);
       for (const url of srcsetUrls(attrs.srcset)) add('img', url);
@@ -171,7 +189,8 @@ function treeReferences(tree) {
     } else if (tag === 'audio' || tag === 'track') {
       add('media', attrs.src);
     } else if (tag === 'script') {
-      add('script', attrs.src);
+      // An SVG script loads its href, as HTML's loads src.
+      add('script', element.namespaceURI === SVG ? svgHref : attrs.src);
       const type = String(attrs.type ?? '').toLowerCase();
       if (!type.includes('json')) found.push(...scriptReferences(textOf(element)));
     } else if (tag === 'link') {
@@ -189,9 +208,8 @@ function treeReferences(tree) {
       add('frame', attrs.src);
       // A srcdoc document inherits this page's policy, so what it loads counts here.
       if (attrs.srcdoc !== undefined) found.push(...htmlReferences(attrs.srcdoc));
-    } else if ((tag === 'image' || tag === 'feimage') && element.namespaceURI === 'http://www.w3.org/2000/svg') {
-      // href, or xlink:href, which parse5 names `href` under the xlink prefix.
-      add('img', attrs.href);
+    } else if ((tag === 'image' || tag === 'feimage') && element.namespaceURI === SVG) {
+      add('img', svgHref);
     } else if (tag === 'embed' || tag === 'object') {
       add('object', attrs.src ?? attrs.data);
     } else if (tag === 'form') {
@@ -217,9 +235,10 @@ function cssReferences(css) {
     const target = absoluteTarget(value);
     if (target) found.push({ kind, ...target });
   };
-  // Escapes read first, as the CSS tokenizer reads them: `url(https\3a //x)`
-  // loads from x (seventeenth drain review).
-  let rest = unescapeCss(String(css).replace(/\/\*[\s\S]*?\*\//g, ''));
+  // Comments go where the tokenizer finds them, so an escaped `\/*` hides
+  // nothing (nineteenth drain review), then escapes are read, so
+  // `url(https\3a //x)` loads from x (seventeenth).
+  let rest = unescapeCss(stripCssComments(css));
   // Fonts first, so a font's url() never counts as an image.
   rest = rest.replace(/@font-face\s*\{[^}]*\}/gi, (block) => {
     for (const match of block.matchAll(CSS_URL)) add('font', match[1] ?? match[2] ?? match[3]);
@@ -246,6 +265,8 @@ const LOADING_CALLS = [
   [/\bnew\s+(?:EventSource|WebSocket)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
   [/\.open\s*\(\s*(["'`])[A-Za-z]+\1\s*,\s*(["'`])([^"'`]+)\2/g, 'connect'],
   [/\bimport\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
+  // A static import or re-export in a module loads its specifier too.
+  [/\b(?:import|export)\s*(?:[\w$*{}\s,]+?\s*from\s*)?(["'])([^"'\n]+)\1/g, 'script-call'],
   [/\bimportScripts\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
   [/\bnew\s+(?:Shared)?Worker\s*\(\s*(["'`])([^"'`]+)\1/g, 'worker'],
 ];
