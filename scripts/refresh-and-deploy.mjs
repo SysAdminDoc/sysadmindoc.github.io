@@ -30,6 +30,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { withoutOutsideServer } from './lib/audit-server.mjs';
 import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 import { restoreKilledRun } from './visual-gate.mjs';
 
@@ -365,7 +366,9 @@ async function main() {
     log(`RUN   refresh-and-deploy${dryRun ? ' (dry run)' : ''}`);
     const githubToken = resolveGithubToken();
     env = {
-      ...process.env,
+      // The preflight's browser audit checks the build that ships, never a
+      // server named by a variable left in this environment.
+      ...withoutOutsideServer(process.env),
       ...(githubToken ? { GITHUB_TOKEN: githubToken } : {}),
       CATALOG_AUDIT_REPORT_ONLY: '1',
       // Same treatment for an unsigned featured release in another repo.

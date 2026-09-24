@@ -1,11 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import { outsideServer } from './scripts/lib/audit-server.mjs';
 
 // Focused Firefox + WebKit interaction smoke. Kept separate from the audits and
 // interactions configs (which are Chromium-only) so cross-engine coverage never
 // duplicates the visual-baseline matrix. Runs only cross-engine-smoke.spec.mjs.
 const host = process.env.PLAYWRIGHT_HOST ?? '127.0.0.1';
 const port = Number.parseInt(process.env.PLAYWRIGHT_CROSS_ENGINE_PORT ?? '4326', 10);
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://${host}:${port}`;
+// Someone else's server only when asked for explicitly (scripts/lib/audit-server.mjs).
+const baseURL = outsideServer() ?? `http://${host}:${port}`;
 
 export default defineConfig({
   testDir: './tests/playwright',

@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: only a file writer to a real file is exempt, every other logger is held to the filter whatever it includes, include and exclude follow Caddy's loggerAllowed, and each case has a test.
   Complexity: S
 
-- [ ] P2: Keep PLAYWRIGHT_BASE_URL out of every deploy step, in any case
-  Why: `playwrightEnv` drops only the exact key, and Windows environment names are case-insensitive, so `Playwright_Base_Url` still reaches the child. `deploy:preflight` also runs `a11y:audit:browser` straight through Playwright, which honours the variable and skips the preview checks. A direct Playwright run outside the gate lock during `deploy:vps`'s build-to-tar window, or a hard-killed setup before `SKIP_BUILD=1`, can leave a `__preview-check-*` token in what ships.
-  Evidence: fifteenth drain review, 2026-09-24; `scripts/visual-gate.mjs:112`, `playwright.audits.config.mjs:5`, `tests/playwright/preview-server.mjs:51`.
-  Touches: `playwright.audits.config.mjs`, `tests/playwright/preview-server.mjs`, `scripts/visual-gate.mjs`, `scripts/deploy-vps.mjs`.
-  Acceptance: the audits config takes an outside server only when it's asked for explicitly, any casing of the variable is dropped, and the deploy never packs a token file.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Tighten the holder test's budget

@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
 import process from 'node:process';
+import { SERVE_TOKEN_PREFIX } from '../../scripts/lib/audit-server.mjs';
 
 export const ownedMarkerPath = path.join(process.cwd(), '.tmp', 'playwright-owns-preview');
 
@@ -62,7 +63,8 @@ export async function assertPortFree(hostname, port, { waitMs = 5_000, pollMs = 
   }
 }
 
-const TOKEN_PREFIX = '__preview-check-';
+// deploy-vps.mjs refuses to pack a file by this name, in case one outlives its run.
+const TOKEN_PREFIX = SERVE_TOKEN_PREFIX;
 
 /**
  * Put a file only this run knows into dist/, before the preview starts, so

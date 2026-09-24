@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
+import { SERVE_TOKEN_PREFIX, outsideServer, packedServeTokens, withoutOutsideServer } from '../scripts/lib/audit-server.mjs';
 import { playwrightEnv } from '../scripts/visual-gate.mjs';
 import { assertPortFree, assertServesBuild, assertServesToken, portAnswers, writeServeToken } from '../tests/playwright/preview-server-control.mjs';
 
@@ -95,6 +97,58 @@ test('the gate audits its own build, whatever PLAYWRIGHT_BASE_URL says', () => {
   assert.deepEqual(playwrightEnv({ PLAYWRIGHT_BASE_URL: 'http://elsewhere', PATH: 'x' }), { PATH: 'x' });
   const gate = fs.readFileSync(path.join(root, 'scripts', 'visual-gate.mjs'), 'utf8');
   assert.match(gate, /\.\.\.playwrightArgs\(\{ all, update \}\)\], playwrightEnv\(\)\);/);
+});
+
+// The fifteenth drain review: `Playwright_Base_Url` still reached the gate's
+// child on Windows, and a stray PLAYWRIGHT_BASE_URL alone pointed the deploy
+// preflight's browser audit at another server.
+test('an outside server counts only when asked for, and the gate and the nightly deploy drop both names in any case', () => {
+  assert.equal(outsideServer({ PLAYWRIGHT_BASE_URL: 'http://elsewhere' }), undefined);
+  assert.equal(outsideServer({ PLAYWRIGHT_BASE_URL: 'http://elsewhere', PLAYWRIGHT_OUTSIDE_SERVER: 'yes' }), undefined);
+  assert.equal(outsideServer({ PLAYWRIGHT_OUTSIDE_SERVER: '1' }), undefined);
+  assert.equal(outsideServer({ PLAYWRIGHT_BASE_URL: 'http://elsewhere', PLAYWRIGHT_OUTSIDE_SERVER: '1' }), 'http://elsewhere');
+  const env = { Playwright_Base_Url: 'http://a', playwright_base_url: 'http://b', PLAYWRIGHT_OUTSIDE_SERVER: '1', playwright_Outside_Server: '1', PLAYWRIGHT_BASE_URL_X: 'kept', Path: 'x' };
+  assert.deepEqual(playwrightEnv(env), { PLAYWRIGHT_BASE_URL_X: 'kept', Path: 'x' });
+  assert.deepEqual(withoutOutsideServer(env), { PLAYWRIGHT_BASE_URL_X: 'kept', Path: 'x' });
+  const refresh = fs.readFileSync(path.join(root, 'scripts', 'refresh-and-deploy.mjs'), 'utf8');
+  assert.match(refresh, /env = \{[^}]*\.\.\.withoutOutsideServer\(process\.env\),/, 'the preflight runs without them');
+  assert.doesNotMatch(refresh, /\.\.\.process\.env\b/);
+  for (const config of ['playwright.audits.config.mjs', 'playwright.interactions.config.mjs', 'playwright.cross-engine.config.mjs']) {
+    const source = fs.readFileSync(path.join(root, config), 'utf8');
+    assert.match(source, /const baseURL = outsideServer\(\) \?\? `http:\/\/\$\{host\}:\$\{port\}`;/, config);
+    assert.doesNotMatch(source, /process\.env\.PLAYWRIGHT_BASE_URL/, config);
+  }
+  const setup = fs.readFileSync(path.join(root, 'tests', 'playwright', 'preview-server.mjs'), 'utf8');
+  assert.match(setup, /\n  if \(outsideServer\(\)\) return;\n/);
+  assert.doesNotMatch(setup, /if \(process\.env\.PLAYWRIGHT_BASE_URL\) return/);
+});
+
+test('the deploy packs no serve token, even one left in dist/', () => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'deploy-dist-'));
+  const tarball = path.join(os.tmpdir(), `deploy-token-${process.pid}.tar.gz`);
+  try {
+    fs.writeFileSync(path.join(dist, 'index.html'), '<p>site</p>');
+    writeServeToken(dist, 'left-by-a-killed-run');
+    fs.mkdirSync(path.join(dist, 'notes'));
+    fs.writeFileSync(path.join(dist, 'notes', `${SERVE_TOKEN_PREFIX}nested.txt`), 'x');
+    execFileSync('tar', ['-czf', tarball, '-C', dist, '.'], { windowsHide: true });
+    const everything = execFileSync('tar', ['-tzf', tarball], { encoding: 'utf8', windowsHide: true });
+    assert.deepEqual(packedServeTokens(everything).sort(), ['./__preview-check-left-by-a-killed-run.txt', './notes/__preview-check-nested.txt'], 'the listing check sees one anywhere');
+    fs.rmSync(tarball);
+    execFileSync('tar', ['-czf', tarball, `--exclude=${SERVE_TOKEN_PREFIX}*`, '-C', dist, '.'], { windowsHide: true });
+    const shipped = execFileSync('tar', ['-tzf', tarball], { encoding: 'utf8', windowsHide: true });
+    assert.deepEqual(packedServeTokens(shipped), []);
+    assert.match(shipped, /\.\/index\.html/);
+  } finally {
+    fs.rmSync(dist, { recursive: true, force: true });
+    fs.rmSync(tarball, { force: true });
+  }
+  const deploy = fs.readFileSync(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
+  const pack = deploy.indexOf("run('tar', ['-czf', tarball, `--exclude=${SERVE_TOKEN_PREFIX}*`, '-C', distDir, '.']);");
+  const check = deploy.indexOf("packedServeTokens(execFileSync('tar', ['-tzf', tarball]");
+  const refuse = deploy.indexOf('if (packedTokens.length) {');
+  const ship = deploy.indexOf("run('scp', [...sshOptions, tarball,");
+  assert.ok(pack > 0 && pack < check && check < refuse && refuse < ship, 'packed without tokens, and read back before it ships');
 });
 
 test('the global setup checks the port before it starts the preview, and the build before it claims it', () => {

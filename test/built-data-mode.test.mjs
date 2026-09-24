@@ -35,7 +35,7 @@ test('deploy-vps holds the gate lock from its build to its tarball, and restores
   const restored = deploy.indexOf('restoreLeftovers({ log: console.log });');
   const built = deploy.indexOf("run('npm', ['run', 'build']);");
   const checked = deploy.indexOf('const builtData = builtDataProblem(');
-  const tarred = deploy.indexOf("run('tar', ['-czf', tarball, '-C', distDir, '.']);");
+  const tarred = deploy.indexOf("run('tar', ['-czf', tarball, `--exclude=${SERVE_TOKEN_PREFIX}*`, '-C', distDir, '.']);");
   const released = deploy.indexOf('\nreleaseGateLock();');
   assert.ok(locked > 0 && locked < restored && restored < built && built < checked && checked < tarred && tarred < released, 'lock, restore, build, check, tar, release');
   assert.match(deploy, /process\.on\('exit', releaseGateLock\);/, 'an early exit lets go too');

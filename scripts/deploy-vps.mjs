@@ -32,6 +32,7 @@ import { SERVER_LOG_MB } from '../src/data/retention.ts';
 import { smokeReportProblem } from './lib/csp-report-summary.mjs';
 import { vpsSshOptions } from './lib/vps-ssh.mjs';
 import { acquireLock, restoreLeftovers } from './visual-gate.mjs';
+import { SERVE_TOKEN_PREFIX, packedServeTokens } from './lib/audit-server.mjs';
 
 const root = process.cwd();
 const ssh = process.env.PORTFOLIO_VPS_SSH;
@@ -322,7 +323,15 @@ fs.rmSync(projectRedirectsFile, { force: true });
 const tarball = path.join(root, '.tmp', 'dist-deploy.tar.gz');
 fs.mkdirSync(path.dirname(tarball), { recursive: true });
 fs.rmSync(tarball, { force: true });
-run('tar', ['-czf', tarball, '-C', distDir, '.']);
+// A Playwright setup's serve token outlives its run when the run is killed, and
+// one run outside the gate lock can write one mid-pack, so it's left out by
+// name and the packed list is read back to prove it (fifteenth drain review).
+run('tar', ['-czf', tarball, `--exclude=${SERVE_TOKEN_PREFIX}*`, '-C', distDir, '.']);
+const packedTokens = packedServeTokens(execFileSync('tar', ['-tzf', tarball], { encoding: 'utf8', windowsHide: true, maxBuffer: 64 * 1024 * 1024 }));
+if (packedTokens.length) {
+  console.error(`deploy-vps: the tarball holds a Playwright serve token (${packedTokens.join(', ')}); nothing shipped.`);
+  process.exit(1);
+}
 releaseGateLock();
 run('scp', [...sshOptions, tarball, `${ssh}:${remoteDir}/dist-deploy.tar.gz`]);
 runRemote(

@@ -14,12 +14,13 @@
 // the run.
 //
 // So the server is managed here instead: start the background preview, wait for
-// it to answer, and let preview-server-teardown.mjs stop it. Setting
-// PLAYWRIGHT_BASE_URL bypasses all of this, which is what a manual run against an
-// already-serving preview wants.
+// it to answer, and let preview-server-teardown.mjs stop it. PLAYWRIGHT_BASE_URL
+// with PLAYWRIGHT_OUTSIDE_SERVER=1 bypasses all of this, which is what a manual
+// run against an already-serving preview wants (scripts/lib/audit-server.mjs).
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import process from 'node:process';
+import { outsideServer } from '../../scripts/lib/audit-server.mjs';
 import {
   assertPortFree,
   assertServesBuild,
@@ -43,12 +44,15 @@ export default async function globalSetup(config) {
     throw new Error(
       `preview-server: another Playwright run (pid ${existing.pid}, ${existing.baseURL}) already owns the preview server. ` +
         'Astro allows one preview daemon per project, so audit configs cannot run concurrently. ' +
-        'Wait for it to finish, or run this one against your own server with PLAYWRIGHT_BASE_URL.',
+        'Wait for it to finish, or run this one against your own server with PLAYWRIGHT_BASE_URL and PLAYWRIGHT_OUTSIDE_SERVER=1.',
     );
   }
   // The owner is gone (killed run), so its marker is meaningless.
   clearMarker();
-  if (process.env.PLAYWRIGHT_BASE_URL) return;
+  if (outsideServer()) return;
+  if (process.env.PLAYWRIGHT_BASE_URL) {
+    console.warn('preview-server: PLAYWRIGHT_BASE_URL is set without PLAYWRIGHT_OUTSIDE_SERVER=1, so this run serves and audits its own build.');
+  }
 
   const baseURL = config.projects[0]?.use?.baseURL ?? config.use?.baseURL;
   if (!baseURL) throw new Error('preview-server: no baseURL configured');

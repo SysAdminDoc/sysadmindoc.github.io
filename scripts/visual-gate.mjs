@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
+import { withoutOutsideServer } from './lib/audit-server.mjs';
 
 const root = process.cwd();
 const dataDir = path.join(root, 'src', 'data');
@@ -103,14 +104,14 @@ function run(command, args, env = process.env) {
 }
 
 /**
- * The environment the gate's Playwright run gets: without PLAYWRIGHT_BASE_URL,
- * which points the audits at an already running server and skips every check
- * that it's this build (tests/playwright/preview-server.mjs). The gate always
- * audits the fixture build it just made (thirteenth drain review).
+ * The environment the gate's Playwright run gets: without PLAYWRIGHT_BASE_URL
+ * or its opt-in, in any case, which point the audits at an already running
+ * server and skip every check that it's this build
+ * (tests/playwright/preview-server.mjs). The gate always audits the fixture
+ * build it just made (thirteenth and fifteenth drain reviews).
  */
 export function playwrightEnv(env = process.env) {
-  const { PLAYWRIGHT_BASE_URL: _dropped, ...rest } = env;
-  return rest;
+  return withoutOutsideServer(env);
 }
 
 /**
