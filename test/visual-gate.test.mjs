@@ -289,19 +289,25 @@ test('a claim older than a minute is stale whatever its pid, and dead claims on 
   fs.writeFileSync(claimFile(env.lock, 'x4'), '');
   assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
 
-  // Ten dead claims deep, past the depth limit: the bottom one is dropped
-  // rather than locking everyone out.
+  // Ten dead claims deep, past the depth limit: nothing is removed there
+  // without a claim (the fifteenth drain review got two holders out of that),
+  // so the run waits, and the sweep clears the chain once it's ten minutes old.
   staleLock('x5');
   let chainParent = null;
   let chainId = 'x5';
+  const chain = [];
   for (let depth = 0; depth < 10; depth += 1) {
     const file = claimFile(env.lock, chainId, chainParent);
     const nonce = `d${depth}`;
     fs.writeFileSync(file, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce }));
+    chain.push(file);
     chainParent = file;
     chainId = nonce;
   }
-  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, false, 'it waits at the depth limit');
+  const elevenMinutesAgo = (Date.now() - 11 * 60_000) / 1000;
+  for (const file of chain) if (fs.existsSync(file)) fs.utimesSync(file, elevenMinutesAgo, elevenMinutesAgo);
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true, 'and the sweep lets it through');
 
   // However deep, a claim's path stays short enough for Windows.
   let parent = claimFile(env.lock, `${process.pid}.${'f'.repeat(36)}`);

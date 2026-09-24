@@ -272,18 +272,18 @@ function claimInstance(lock, id, isAlive, now, parent = null, depth = 0) {
           if (readLock(claim).id === nonce) fs.rmSync(claim, { force: true });
         };
       } catch (error) {
+        // ENOENT: stalled so long the sweep took the draft; claim nothing.
+        if (error.code === 'ENOENT') return null;
         if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
       }
       const left = readLock(claim);
       if (left.state === 'absent') continue;
       if (left.state !== 'present' || !claimIsStale(left.holder, now, isAlive)) return null;
       // At the bottom of a chain of dead claims, nine processes killed inside
-      // their milliseconds, drop the stale one outright rather than lock
-      // everyone out for good.
-      if (depth >= CLAIM_MAX_DEPTH) {
-        if (readLock(claim).id === left.id) fs.rmSync(claim, { force: true });
-        continue;
-      }
+      // their milliseconds, wait. Removing one here without claiming it let
+      // two runs both take the lock (fifteenth drain review); the sweep in
+      // tryLock clears the chain once it's ten minutes old.
+      if (depth >= CLAIM_MAX_DEPTH) return null;
       const releaseStale = claimInstance(lock, left.id, isAlive, now, claim, depth + 1);
       if (!releaseStale) return null;
       try {
@@ -334,7 +334,8 @@ function replaceFile(from, to) {
  */
 export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive } = {}) {
   fs.mkdirSync(path.dirname(lock), { recursive: true });
-  sweepLeftovers(lock, now);
+  // File times are real time, whatever `now` a caller passes for staleness.
+  sweepLeftovers(lock, Date.now());
   const nonce = `${process.pid}.${randomUUID()}`;
   const draft = `${lock}.${nonce}.new`;
   fs.writeFileSync(draft, `${JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce })}\n`);
@@ -344,6 +345,12 @@ export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive 
         fs.linkSync(draft, lock);
         return { taken: true, holder: null };
       } catch (error) {
+        // ENOENT: this run stalled past the sweep, which took its draft (fifteenth
+        // drain review); it says so and waits like any other contender.
+        if (error.code === 'ENOENT') {
+          const current = readLock(lock);
+          return { taken: false, holder: current.state === 'present' ? current.holder : null };
+        }
         // EPERM: on Windows, a lock that's being deleted can't be replaced yet.
         if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
       }
@@ -356,7 +363,12 @@ export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive 
         // Nobody else can replace or remove this instance while the claim is
         // ours, so if it's still the one judged stale, it's ours to replace.
         if (readLock(lock).id !== current.id) continue;
-        replaceFile(draft, lock);
+        try {
+          replaceFile(draft, lock);
+        } catch (error) {
+          if (error.code === 'ENOENT') return { taken: false, holder: current.holder };
+          throw error;
+        }
         return { taken: true, holder: null };
       } finally {
         release();

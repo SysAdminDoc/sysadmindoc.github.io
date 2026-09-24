@@ -22,13 +22,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: the audits config takes an outside server only when it's asked for explicitly, any casing of the variable is dropped, and the deploy never packs a token file.
   Complexity: S
 
-- [ ] P2: Undo the depth-limit claim removal, and let a stalled claimant wait instead of throw
-  Why: Removing a stale claim at the depth limit without claiming it let two threads against a nine-deep dead chain both take the lock, 4 of 4 paced runs. The ten-minute sweep already clears old chains. A claimant stalled past ten minutes has its draft swept, so its link throws ENOENT.
-  Evidence: fifteenth drain review, 2026-09-24; `scripts/visual-gate.mjs:283-284`. Fourth refutation of the lock work: anything left after this goes to Roadmap_Blocked.md.
-  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
-  Acceptance: the paced nine-deep race gives one holder, a swept draft makes tryLock report not taken, and the races still show one holder.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Tighten the holder test's budget
