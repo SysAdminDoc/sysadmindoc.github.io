@@ -1072,6 +1072,18 @@ test('the retention period comes from CONTACT_RETENTION_DAYS', () => {
   assert.throws(() => loadConfig({ ...base, CONTACT_RETENTION_DAYS: '0' }), /CONTACT_RETENTION_DAYS/);
 });
 
+// The deploy holds this to /privacy/ (scripts/lib/lead-retention-check.mjs).
+test('/healthz reports the retention the purge uses', async () => {
+  for (const days of [365, 90]) {
+    await withHandler({ config: { leadRetentionDays: days } }, async ({ handler }) => {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ method: 'GET', url: '/healthz' }), response);
+      assert.equal(response.status, 200);
+      assert.deepEqual(JSON.parse(response.body), { ok: true, leadRetentionDays: days });
+    });
+  }
+});
+
 test('the client is the right-most address that is not on a private network', () => {
   assert.equal(clientAddress({ 'x-forwarded-for': '203.0.113.7, 172.18.0.2' }), '203.0.113.7');
   assert.equal(clientAddress({ 'x-forwarded-for': 'spoofed, 198.51.100.4, 172.18.0.2' }), '198.51.100.4');

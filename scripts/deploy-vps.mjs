@@ -171,11 +171,12 @@ function verifyServerLogRetention() {
 }
 
 // /privacy/ states how long a lead is kept, and contact-secrets.env on the
-// server can override the handler's default. Only that one variable leaves
-// the box: the rest of the environment holds the handler's secrets.
+// server can override the handler's default. The handler's /healthz reports
+// the retention it enforces, which is all that leaves the box, and the new
+// container gets up to 20 seconds to start listening.
 function verifyLeadRetention() {
   const output = captureRemote(
-    "docker inspect portfolio-contact-handler --format 'container={{.Name}}{{println}}{{range .Config.Env}}{{println .}}{{end}}' 2>&1 | grep -E '^(container=|CONTACT_RETENTION_DAYS=)' || true",
+    "for try in $(seq 20); do out=$(docker exec portfolio-contact-handler wget -qO- http://127.0.0.1:8090/healthz 2>/dev/null) && break; out='no answer from /healthz'; sleep 1; done; printf '%s\\n' \"$out\"",
   );
   const problem = leadRetentionProblem(output, LEAD_RETENTION_DAYS);
   if (problem) throw new Error(`deploy-vps: ${problem}.`);

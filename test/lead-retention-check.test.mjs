@@ -6,28 +6,34 @@ import { LEAD_RETENTION_DAYS } from '../src/data/retention.ts';
 import { leadRetentionProblem } from '../scripts/lib/lead-retention-check.mjs';
 
 const root = process.cwd();
-const running = 'container=/portfolio-contact-handler';
+const health = (days) => JSON.stringify({ ok: true, leadRetentionDays: days });
 
 // The third drain review: CONTACT_RETENTION_DAYS in the server's
 // contact-secrets.env overrides the default the privacy page is built from,
-// and no test can read that file.
+// and no test can read that file. The twentieth: the variable in the
+// container's config isn't what the process uses, so the handler says.
 test('the running handler keeps leads as long as /privacy/ says, or the deploy says what it keeps instead', () => {
-  assert.equal(leadRetentionProblem(`${running}\n`, 365), null, 'unset: the default, which a test holds to the page');
-  assert.equal(leadRetentionProblem(`${running}\nCONTACT_RETENTION_DAYS=365\n`, 365), null);
-  assert.equal(leadRetentionProblem(`${running}\nCONTACT_RETENTION_DAYS=\n`, 365), null, 'empty reads as unset');
-  assert.match(leadRetentionProblem(`${running}\nCONTACT_RETENTION_DAYS=730\n`, 365) ?? '', /keeps leads 730 days .* but \/privacy\/ says 365/);
-  assert.match(leadRetentionProblem(`${running}\nCONTACT_RETENTION_DAYS=forever\n`, 365) ?? '', /refuses to start with/);
-  assert.match(leadRetentionProblem("Error: No such object: portfolio-contact-handler", 365) ?? '', /could not read the contact handler's environment/);
+  assert.equal(leadRetentionProblem(`${health(365)}\n`, 365), null);
+  assert.match(leadRetentionProblem(health(730), 365) ?? '', /deletes leads after 730 days, but \/privacy\/ says 365/);
+  for (const days of [undefined, null, 0, -1, 1.5, '365']) {
+    assert.match(leadRetentionProblem(JSON.stringify({ ok: true, leadRetentionDays: days }), 365) ?? '', /doesn't say how long it keeps leads/, String(days));
+  }
+  assert.match(leadRetentionProblem('ok', 365) ?? '', /could not read the contact handler's health \(got "ok"\)/, 'an older handler that answers plain ok');
+  assert.match(leadRetentionProblem('no answer from /healthz', 365) ?? '', /could not read/);
   assert.match(leadRetentionProblem('', 365) ?? '', /could not read/, 'nothing read is not a pass');
-  assert.match(leadRetentionProblem('container=/some-other-container\n', 365) ?? '', /could not read/);
+  assert.match(leadRetentionProblem(JSON.stringify({ ok: false, leadRetentionDays: 365 }), 365) ?? '', /could not read/);
+  assert.match(leadRetentionProblem('[365]', 365) ?? '', /could not read/);
 });
 
-test('the deploy reads it from the recreated container, and only that variable leaves the box', () => {
+test('the deploy asks the recreated container, and only its health leaves the box', () => {
   const deploy = fs.readFileSync(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
   const body = deploy.match(/function verifyLeadRetention\(\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
-  assert.match(body, /docker inspect portfolio-contact-handler --format 'container=\{\{\.Name\}\}\{\{println\}\}\{\{range \.Config\.Env\}\}\{\{println \.\}\}\{\{end\}\}' 2>&1 \| grep -E '\^\(container=\|CONTACT_RETENTION_DAYS=\)'/);
+  assert.match(body, /docker exec portfolio-contact-handler wget -qO- http:\/\/127\.0\.0\.1:8090\/healthz/);
+  assert.doesNotMatch(body, /docker inspect|\.Config\.Env/, 'none of the environment, which holds its secrets');
   assert.match(body, /leadRetentionProblem\(output, LEAD_RETENTION_DAYS\)/);
   assert.match(body, /if \(problem\) throw new Error\(/);
+  const compose = fs.readFileSync(path.join(root, 'deploy', 'vps', 'docker-compose.yml'), 'utf8');
+  assert.match(compose, /"http:\/\/127\.0\.0\.1:8090\/healthz"/, 'the port the healthcheck uses');
   const recreated = deploy.indexOf('up -d --force-recreate');
   const checked = deploy.indexOf('\nverifyLeadRetention();');
   assert.ok(recreated > 0 && checked > recreated, 'it reads the new container');

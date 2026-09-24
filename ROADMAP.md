@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Check the retention the contact handler uses, not the variable it was given
-  Why: the deploy reads `CONTACT_RETENTION_DAYS` from the container's configured env. Another variable such as `NODE_OPTIONS` can set a different value inside the process, and a multi-line value can print a fake `CONTACT_RETENTION_DAYS=` line ahead of the real one.
-  Evidence: twentieth review. `NODE_OPTIONS=--import=data:text/javascript,process.env.CONTACT_RETENTION_DAYS="730"` makes Node see 730 while the check passes on "unset".
-  Touches: `deploy/vps/contact-handler.mjs`, `scripts/lib/lead-retention-check.mjs`, `scripts/deploy-vps.mjs`, their tests.
-  Acceptance: the handler reports the retention it enforces on `/healthz`, and the deploy fails unless that matches the expected days.
-  Complexity: S
-
 - [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit
   Why: parse5 names `xlink:href` and `href` both `href`, and the first kept wins, so `<image xlink:href="A" href="B">` counts A while browsers load B (`feImage` too). `http:noslash.example/a.png` and `http:/oneslash...` load in Chromium but the `//` check misses them. `<svg><script href>` loads in both engines and is missed. Comments are stripped before CSS escapes are read, so `\/*` hides a real url(). Older misses: `<table background>` and a static `import` in a module script.
   Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:79,159,173,194,222`.

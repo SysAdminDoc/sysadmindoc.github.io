@@ -271,7 +271,10 @@ What the site keeps, and for how long, is on `/privacy/`. Every period there
 comes from `src/data/retention.ts`, and `test/privacy-retention.test.mjs` holds
 the things that enforce them to the same numbers: the handler's lead purge
 (365 days, run at start and daily), the edge log roll in `caddy-block.txt`
-(30 days), ntfy's cache (72 hours) and the CSP report store (10 MB).
+(30 days), ntfy's cache (72 hours) and the CSP report store (10 MB). The
+server can override the lead period, so each deploy also asks the running
+handler's `/healthz` how long it keeps leads and stops if that isn't what
+`/privacy/` says.
 
 There are two ways to deploy, both local:
 

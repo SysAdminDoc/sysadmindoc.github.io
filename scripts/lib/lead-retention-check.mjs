@@ -1,35 +1,36 @@
 // /privacy/ says how long a contact message is kept (LEAD_RETENTION_DAYS in
 // src/data/retention.ts), and test/privacy-retention.test.mjs keeps the
 // handler's default equal to it. But CONTACT_RETENTION_DAYS in the server-side
-// contact-secrets.env overrides that default, and no test can see that file,
-// so the deploy reads the running handler's own environment (third drain
-// review).
+// contact-secrets.env overrides that default, and no test can see that file
+// (third drain review). Reading the variable from the container's config
+// wasn't enough either: NODE_OPTIONS can set it again inside the process, and
+// a multi-line value can print a line that looks like it (twentieth). So the
+// deploy asks the running handler, whose /healthz reports the retention its
+// purge uses.
 
 /**
  * Why the running contact handler keeps leads for a time /privacy/ doesn't
  * state, or null.
- * @param {string} output `container=<name>` and any `CONTACT_RETENTION_DAYS=`
- *   line, filtered on the server from `docker inspect`
+ * @param {string} output the handler's /healthz body, read inside its container
  * @param {number} days what /privacy/ states
  * @returns {string | null}
  */
 export function leadRetentionProblem(output, days) {
-  const lines = String(output).split(/\r?\n/);
-  if (!lines.some((line) => /^container=\/?portfolio-contact-handler$/.test(line.trim()))) {
-    return `could not read the contact handler's environment (got "${String(output).trim().slice(0, 80)}")`;
+  let health;
+  try {
+    health = JSON.parse(String(output));
+  } catch {
+    health = null;
   }
-  const setting = lines.find((line) => line.startsWith('CONTACT_RETENTION_DAYS='));
-  // Unset, the handler keeps its default, which a test holds to the page.
-  if (setting === undefined) return null;
-  const value = setting.slice('CONTACT_RETENTION_DAYS='.length);
-  // The handler reads it as Number() of the string, and an empty one as unset.
-  if (value === '') return null;
-  const parsed = Number(value);
-  if (!Number.isSafeInteger(parsed) || parsed < 1) {
-    return `the contact handler's CONTACT_RETENTION_DAYS is "${value.slice(0, 20)}", which it refuses to start with`;
+  if (!health || typeof health !== 'object' || health.ok !== true) {
+    return `could not read the contact handler's health (got "${String(output).trim().slice(0, 80)}")`;
   }
-  if (parsed !== days) {
-    return `the contact handler keeps leads ${parsed} days (CONTACT_RETENTION_DAYS in contact-secrets.env), but /privacy/ says ${days}`;
+  const kept = health.leadRetentionDays;
+  if (!Number.isSafeInteger(kept) || kept < 1) {
+    return `the contact handler doesn't say how long it keeps leads (got ${String(JSON.stringify(kept) ?? 'nothing').slice(0, 40)})`;
+  }
+  if (kept !== days) {
+    return `the contact handler deletes leads after ${kept} days, but /privacy/ says ${days}`;
   }
   return null;
 }

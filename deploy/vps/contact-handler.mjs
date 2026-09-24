@@ -752,8 +752,11 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   async function handleRequest(request, response) {
     const pathname = new URL(request.url ?? '/', 'http://contact').pathname;
     if (request.method === 'GET' && pathname === '/healthz') {
-      response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-      response.end('ok');
+      // The retention this process enforces, which the deploy holds to
+      // /privacy/; the variable it came from can be overridden in-process
+      // (twentieth drain review).
+      response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+      response.end(JSON.stringify({ ok: true, leadRetentionDays: config.leadRetentionDays }));
       return;
     }
     if (request.method === 'GET' && (pathname === '/contact/token' || pathname === '/api/contact/token')) {
