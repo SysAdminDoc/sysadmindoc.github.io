@@ -11,6 +11,7 @@ import {
   REMOVED_FILES,
   SWAPPED_FILES,
   backUpLiveData,
+  claimFile,
   playwrightArgs,
   releaseLock,
   restoreKilledRun,
@@ -205,9 +206,11 @@ test('only the process that claims a stale lock replaces it, and a dead claimant
   const onlyMeAlive = (pid) => pid === process.pid;
   const stale = JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'stale-one' });
 
-  // Someone alive is replacing this stale lock: leave it to them.
+  // Someone alive is replacing this stale lock: leave it to them. (A claim
+  // carries the time it was made; one without it is stale since the
+  // thirteenth review, so these fixtures give theirs.)
   fs.writeFileSync(env.lock, stale);
-  fs.writeFileSync(`${env.lock}.stale-one.claim`, JSON.stringify({ pid: process.pid, nonce: 'theirs' }));
+  fs.writeFileSync(`${env.lock}.stale-one.claim`, JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce: 'theirs' }));
   const held = tryLock({ lock: env.lock, now, isAlive: onlyMeAlive });
   assert.equal(held.taken, false);
   assert.equal(fs.readFileSync(env.lock, 'utf8'), stale, 'the stale lock is left for the claimant');
@@ -238,12 +241,57 @@ test('only the process that claims a stale lock replaces it, and a dead claimant
 
   // A holder never removes a lock while someone has claimed it, and one it
   // doesn't hold is never its to remove.
-  fs.writeFileSync(`${env.lock}.${mine.nonce}.claim`, JSON.stringify({ pid: process.pid, nonce: 'taker' }));
-  releaseLock({ lock: env.lock, isAlive: alive });
+  fs.writeFileSync(`${env.lock}.${mine.nonce}.claim`, JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce: 'taker' }));
+  releaseLock({ lock: env.lock, isAlive: alive, now });
   assert.equal(fs.existsSync(env.lock), true);
   fs.rmSync(`${env.lock}.${mine.nonce}.claim`);
-  releaseLock({ lock: env.lock, isAlive: alive });
+  releaseLock({ lock: env.lock, isAlive: alive, now });
   assert.equal(fs.existsSync(env.lock), false);
+  fs.rmSync(env.base, { recursive: true, force: true });
+});
+
+// The thirteenth drain review left the lock untakeable for good two ways: a
+// dead claimant's pid reused by a live process, and a dead claim with a dead
+// claim on it. Claims now expire after a minute, and a claim on a claim is
+// resolved the same way at every depth.
+test('a claim older than a minute is stale whatever its pid, and dead claims on claims resolve', () => {
+  const env = setup();
+  const now = Date.parse('2026-09-24T03:00:00Z');
+  const deadPid = 999_999;
+  const onlyMeAlive = (pid) => pid === process.pid;
+  const staleLock = (nonce) => fs.writeFileSync(env.lock, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce }));
+  const leftovers = () => fs.readdirSync(path.dirname(env.lock)).filter((name) => name.startsWith(`${path.basename(env.lock)}.`));
+
+  // A live pid (reused) on a claim made 61 s ago.
+  staleLock('x1');
+  fs.writeFileSync(claimFile(env.lock, 'x1'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 61_000).toISOString(), nonce: 'c1' }));
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+  assert.deepEqual(leftovers(), []);
+  // One made 59 s ago still stands.
+  staleLock('x2');
+  fs.writeFileSync(claimFile(env.lock, 'x2'), JSON.stringify({ pid: process.pid, takenAt: new Date(now - 59_000).toISOString(), nonce: 'c2' }));
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, false);
+  fs.rmSync(claimFile(env.lock, 'x2'));
+
+  // Killed three times over: a dead claim, a dead claim on it, and one on that.
+  staleLock('x3');
+  const first = claimFile(env.lock, 'x3');
+  fs.writeFileSync(first, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'c3' }));
+  const second = claimFile(env.lock, 'c3', first);
+  fs.writeFileSync(second, JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'c4' }));
+  fs.writeFileSync(claimFile(env.lock, 'c4', second), JSON.stringify({ pid: deadPid, takenAt: new Date(now).toISOString(), nonce: 'c5' }));
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+  assert.deepEqual(leftovers(), [], 'every dead claim is gone');
+
+  // A claim that can't be read, like the old empty one, is stale too.
+  staleLock('x4');
+  fs.writeFileSync(claimFile(env.lock, 'x4'), '');
+  assert.equal(tryLock({ lock: env.lock, now, isAlive: onlyMeAlive }).taken, true);
+
+  // However deep, a claim's path stays short enough for Windows.
+  let parent = claimFile(env.lock, `${process.pid}.${'f'.repeat(36)}`);
+  for (let depth = 0; depth < 10; depth += 1) parent = claimFile(env.lock, 'f'.repeat(36), parent);
+  assert.ok(`${parent}.${'f'.repeat(36)}.new`.length < env.lock.length + 80);
   fs.rmSync(env.base, { recursive: true, force: true });
 });
 

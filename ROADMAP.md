@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Close the lock's claim gaps: half-written claims and claims that never expire
-  Why: A claim is created with an exclusive open and then written, so a contender that reads it in between sees an empty file, takes the claimant for dead and replaces the claim: two workers both got `taken: true` in 3 of 3 paced runs, and the race recorded 214 empty-claim reads. A claim whose pid is alive again (reused) blocks that stale lock forever, and so do a dead claim plus a dead claim on it, where the old code took the lock at once.
-  Evidence: thirteenth drain review, 2026-09-24, `rv-lock-interleave.mjs` and `rv-lock-deadlock.mjs`; `scripts/visual-gate.mjs` `claimInstance`.
-  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
-  Acceptance: the paced interleaving gives one holder, a claim older than any real one is stale whatever its pid, any number of dead nested claims resolve, and the six-worker race still shows no overlap.
-  Complexity: M
-
 - [ ] P2: Prove the preview answering is this run's, and keep the gate on its own build
   Why: `assertServesBuild` passed a server that returns this checkout's `dist/index.html` for `/` and other pages for every other path, and two checkouts at one commit have identical home pages, so a run that lost the port race could audit the other's server and have it stopped under it. `PLAYWRIGHT_BASE_URL`, if set in the shell, skips every check, and `visual-gate.mjs` doesn't clear it, so the deploy gate would audit whatever it names.
   Evidence: thirteenth drain review, 2026-09-24; `tests/playwright/preview-server.mjs:48`, `preview-server-control.mjs`.

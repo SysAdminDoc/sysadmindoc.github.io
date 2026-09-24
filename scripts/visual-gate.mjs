@@ -186,36 +186,75 @@ function readLock(lock) {
   return { state: 'present', holder, id };
 }
 
+// A claim is held for the milliseconds a takeover or release takes, so one
+// older than this belongs to a process that died, whatever its pid names now.
+const CLAIM_MAX_AGE_MS = 60_000;
+// Each level down is a claim on a dead claim, one per process killed inside
+// that window, so this bounds work, not correctness.
+const CLAIM_MAX_DEPTH = 8;
+
+/**
+ * Where the claim on instance `id` lives: beside the lock for the lock's own
+ * instance, and for a claim on a claim (`parent`), under a fixed-length name,
+ * so that however deep they go, paths stay inside Windows' 260 characters.
+ */
+export function claimFile(lock, id, parent = null) {
+  if (parent === null) return `${lock}.${id}.claim`;
+  return `${lock}.${createHash('sha256').update(`${parent}\0${id}`).digest('hex').slice(0, 20)}.claim`;
+}
+
+/** A claim whose process is gone, that's over a minute old, or that can't be read. */
+function claimIsStale(holder, now, isAlive) {
+  if (holder === null || !Number.isSafeInteger(holder?.pid) || !isAlive(holder.pid)) return true;
+  const takenAt = Date.parse(holder.takenAt ?? '');
+  return !Number.isFinite(takenAt) || now - takenAt > CLAIM_MAX_AGE_MS;
+}
+
 /**
  * Claim the lock instance `id`: create its claim file, which only one process
  * can. Only a claim's owner replaces or removes that instance, so a stale lock
- * is replaced once, and a run never takes a lock someone else took first. A
- * claim is held for milliseconds; one left by a process killed in that window
- * is itself claimed (one level down) and removed once that process is gone.
+ * is replaced once, and a run never takes a lock someone else took first. The
+ * claim is written to a file of its own and hard-linked into place, like the
+ * lock, so nobody ever reads one half-written: the thirteenth drain review
+ * read a claim between its exclusive create and its write, took the claimant
+ * for dead and got two holders. A stale claim is itself claimed, one level
+ * down, and removed; so is a stale claim on that one, down to CLAIM_MAX_DEPTH.
+ * @param {string} lock the lock file
+ * @param {string} id the instance to claim: the lock's, or at depth > 0 a claim's
+ * @param {string | null} parent the claim file `id` names, below the lock
  * @returns {(() => void) | null} the claim's release, or null if another process has it
  */
-function claimInstance(lock, id, isAlive, depth = 0) {
-  const claim = `${lock}.${id}.claim`;
-  const record = `${JSON.stringify({ pid: process.pid, nonce: randomUUID() })}\n`;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      fs.writeFileSync(claim, record, { flag: 'wx' });
-      return () => fs.rmSync(claim, { force: true });
-    } catch (error) {
-      if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
+function claimInstance(lock, id, isAlive, now, parent = null, depth = 0) {
+  const claim = claimFile(lock, id, parent);
+  const nonce = randomUUID();
+  const draft = `${claim}.${nonce}.new`;
+  fs.writeFileSync(draft, `${JSON.stringify({ pid: process.pid, takenAt: new Date(now).toISOString(), nonce })}\n`);
+  try {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        fs.linkSync(draft, claim);
+        // Only ever remove the claim this call made.
+        return () => {
+          if (readLock(claim).id === nonce) fs.rmSync(claim, { force: true });
+        };
+      } catch (error) {
+        if (error.code !== 'EEXIST' && error.code !== 'EPERM') throw error;
+      }
+      const left = readLock(claim);
+      if (left.state === 'absent') continue;
+      if (left.state !== 'present' || !claimIsStale(left.holder, now, isAlive) || depth >= CLAIM_MAX_DEPTH) return null;
+      const releaseStale = claimInstance(lock, left.id, isAlive, now, claim, depth + 1);
+      if (!releaseStale) return null;
+      try {
+        if (readLock(claim).id === left.id) fs.rmSync(claim, { force: true });
+      } finally {
+        releaseStale();
+      }
     }
-    if (depth > 0) return null;
-    const left = readLock(claim);
-    if (left.state !== 'present' || (Number.isSafeInteger(left.holder?.pid) && isAlive(left.holder.pid))) return null;
-    const releaseStale = claimInstance(claim, left.id, isAlive, depth + 1);
-    if (!releaseStale) return null;
-    try {
-      if (readLock(claim).id === left.id) fs.rmSync(claim, { force: true });
-    } finally {
-      releaseStale();
-    }
+    return null;
+  } finally {
+    fs.rmSync(draft, { force: true });
   }
-  return null;
 }
 
 /** A holder whose process is gone, or whose lock is over an hour old. A lock from the future is fresh. */
@@ -269,7 +308,7 @@ export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive 
       const current = readLock(lock);
       if (current.state !== 'present') continue;
       if (!isStale(current.holder, now, isAlive)) return { taken: false, holder: current.holder };
-      const release = claimInstance(lock, current.id, isAlive);
+      const release = claimInstance(lock, current.id, isAlive, now);
       if (!release) return { taken: false, holder: current.holder };
       try {
         // Nobody else can replace or remove this instance while the claim is
@@ -293,10 +332,10 @@ export function tryLock({ lock = lockPath, now = Date.now(), isAlive = pidAlive 
  * way a takeover does, so a release never removes a lock that has just
  * replaced its own.
  */
-export function releaseLock({ lock = lockPath, isAlive = pidAlive } = {}) {
+export function releaseLock({ lock = lockPath, isAlive = pidAlive, now = Date.now() } = {}) {
   const current = readLock(lock);
   if (current.state !== 'present' || current.holder?.pid !== process.pid) return;
-  const release = claimInstance(lock, current.id, isAlive);
+  const release = claimInstance(lock, current.id, isAlive, now);
   if (!release) return;
   try {
     if (readLock(lock).id === current.id) fs.rmSync(lock, { force: true });
