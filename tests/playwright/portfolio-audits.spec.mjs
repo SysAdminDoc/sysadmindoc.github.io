@@ -462,70 +462,135 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
 // unless it sits in a container that scrolls sideways on purpose. Every text
 // node counts, not just headings and paragraphs: a label, a table cell or a
 // link on its own reaches the edge the same way (eighth drain review).
+/**
+ * The text in main that comes within 12px of either screen edge, described,
+ * run in the page. Self-contained, since page.evaluate sends only its source.
+ */
+function flushText() {
+  const found = new Map();
+  // From the text's own element up: a <pre> that scrolls holds its text
+  // directly (thirteenth drain review).
+  const scrollsSideways = (element) => {
+    for (let node = element; node && node !== document.body; node = node.parentElement) {
+      const overflow = getComputedStyle(node).overflowX;
+      if ((overflow === 'auto' || overflow === 'scroll') && node.scrollWidth > node.clientWidth + 1) return true;
+    }
+    return false;
+  };
+  // Clipped away for screen readers only, like Pagefind's input hint.
+  // `clip` only applies to an absolutely or fixed positioned box, and
+  // Chromium reports it on a static one that it doesn't clip.
+  const visuallyHidden = (element) => {
+    for (let node = element; node && node !== document.body; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (style.clipPath === 'inset(100%)') return true;
+      if ((style.position === 'absolute' || style.position === 'fixed') && /^rect\(0px,? 0px,? 0px,? 0px\)$/.test(style.clip)) return true;
+      const box = node.getBoundingClientRect();
+      if (style.overflow === 'hidden' && box.width <= 1 && box.height <= 1) return true;
+    }
+    return false;
+  };
+  // The nearest absolutely or fixed positioned box, the element's own or an
+  // ancestor's: only that box sitting off the screen hides its text on purpose.
+  const positionedBox = (element) => {
+    for (let node = element; node && node !== document.body; node = node.parentElement) {
+      const position = getComputedStyle(node).position;
+      if (position === 'absolute' || position === 'fixed') return node.getBoundingClientRect();
+    }
+    return null;
+  };
+  // What of `rect` the element's overflow: hidden or clip ancestors leave to
+  // be seen, or null for none of it. A positioned box escapes the ones between
+  // it and its containing block, as it does in the browser.
+  const visiblePart = (element, rect) => {
+    let { left, right, top, bottom } = rect;
+    let escaping = null;
+    for (let node = element; node && node !== document.documentElement; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      const containing =
+        escaping === null ||
+        style.transform !== 'none' ||
+        (escaping === 'absolute' && style.position !== 'static');
+      if (containing) {
+        escaping = null;
+        const box = node.getBoundingClientRect();
+        if (style.overflowX === 'hidden' || style.overflowX === 'clip') {
+          left = Math.max(left, box.left);
+          right = Math.min(right, box.right);
+        }
+        if (style.overflowY === 'hidden' || style.overflowY === 'clip') {
+          top = Math.max(top, box.top);
+          bottom = Math.min(bottom, box.bottom);
+        }
+      }
+      if (style.position === 'absolute' || style.position === 'fixed') escaping = style.position;
+    }
+    return right > left && bottom > top ? { left, right } : null;
+  };
+  const main = document.querySelector('main');
+  if (!main) return ['no main element'];
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const element = node.parentElement;
+    if (!element || !node.textContent.trim() || found.has(element)) continue;
+    // aria-hidden text is still on screen (the 01/02/03 numerals, arrows),
+    // so it counts; only what isn't drawn is left out, fully transparent
+    // text included (fifteenth drain review).
+    if (element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) continue;
+    if (!element.checkVisibility({ visibilityProperty: true, opacityProperty: true }) || visuallyHidden(element)) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const whole = range.getBoundingClientRect();
+    if (whole.width === 0 || whole.height === 0) continue;
+    // Measured as drawn: an ellipsis cuts the line where its box ends.
+    const text = visiblePart(element, whole);
+    if (!text) continue;
+    // Moved wholly off the screen by its own absolutely or fixed positioned
+    // box, the other way to hide text from sight but not from screen readers,
+    // like the contact form's honeypot label at left: -9999px. Text moved off
+    // some other way, by a transform or a margin inside an on-screen card,
+    // still counts, and so does text only partly off the screen.
+    const box = positionedBox(element);
+    const offScreen = (rect) => rect.right <= 0 || rect.left >= window.innerWidth;
+    if (box && offScreen(box) && offScreen(text)) continue;
+    if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
+      found.set(element, `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${node.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
+    }
+  }
+  return [...found.values()].slice(0, 8);
+}
+
 test.describe('Mobile gutter audit', () => {
   for (const route of routes) {
     test(`${route.name} keeps its text off the screen edge at 390px`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 900 });
       await preparePage(page, route.path, route.ready);
-      const flush = await page.evaluate(() => {
-        const found = new Map();
-        // From the text's own element up: a <pre> that scrolls holds its text
-        // directly (thirteenth drain review).
-        const scrollsSideways = (element) => {
-          for (let node = element; node && node !== document.body; node = node.parentElement) {
-            const overflow = getComputedStyle(node).overflowX;
-            if ((overflow === 'auto' || overflow === 'scroll') && node.scrollWidth > node.clientWidth + 1) return true;
-          }
-          return false;
-        };
-        // Clipped away for screen readers only, like Pagefind's input hint.
-        // `clip` only applies to an absolutely or fixed positioned box, and
-        // Chromium reports it on a static one that it doesn't clip.
-        const visuallyHidden = (element) => {
-          for (let node = element; node && node !== document.body; node = node.parentElement) {
-            const style = getComputedStyle(node);
-            if (style.clipPath === 'inset(100%)') return true;
-            if ((style.position === 'absolute' || style.position === 'fixed') && /^rect\(0px,? 0px,? 0px,? 0px\)$/.test(style.clip)) return true;
-            const box = node.getBoundingClientRect();
-            if (style.overflow === 'hidden' && box.width <= 1 && box.height <= 1) return true;
-          }
-          return false;
-        };
-        const positionedOffScreen = (element) => {
-          for (let node = element; node && node !== document.body; node = node.parentElement) {
-            const position = getComputedStyle(node).position;
-            if (position === 'absolute' || position === 'fixed') return true;
-          }
-          return false;
-        };
-        const main = document.querySelector('main');
-        if (!main) return ['no main element'];
-        const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-          const element = node.parentElement;
-          if (!element || !node.textContent.trim() || found.has(element)) continue;
-          // aria-hidden text is still on screen (the 01/02/03 numerals, arrows),
-          // so it counts; only what isn't drawn is left out.
-          if (element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) continue;
-          if (!element.checkVisibility({ visibilityProperty: true }) || visuallyHidden(element)) continue;
-          const range = document.createRange();
-          range.selectNodeContents(node);
-          const text = range.getBoundingClientRect();
-          if (text.width === 0 || text.height === 0) continue;
-          // Moved wholly off the screen by an absolutely or fixed positioned box,
-          // the other way to hide text from sight but not from screen readers,
-          // like the contact form's honeypot label at left: -9999px. Text that's
-          // only partly off the screen still counts.
-          if ((text.right <= 0 || text.left >= window.innerWidth) && positionedOffScreen(element)) continue;
-          if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
-            found.set(element, `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${node.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
-          }
-        }
-        return [...found.values()].slice(0, 8);
-      });
-      expect(flush).toEqual([]);
+      expect(await page.evaluate(flushText)).toEqual([]);
     });
   }
+
+  // Each way text can reach the edge, or look as if it does, planted in one
+  // page, so the check is seen to flag and skip what it means to (fifteenth
+  // drain review).
+  test('flags and skips planted text as meant', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.setContent(`<!doctype html><html><body style="margin:0"><main style="padding:0 20px">
+      <p id="flush" style="margin:0 -20px">Flush with the edge</p>
+      <p id="inside">Well inside the gutter</p>
+      <span id="numeral" aria-hidden="true" style="position:relative;left:-20px">01</span>
+      <div style="position:absolute;left:20px;top:100px;width:300px"><p id="margin-off" style="margin:0 0 0 -600px">Moved off by a margin</p></div>
+      <div style="position:absolute;left:20px;top:140px;width:300px"><p id="transform-off" style="transform:translateX(-600px)">Moved off by a transform</p></div>
+      <div style="position:relative"><p id="relative-off" style="position:relative;left:-600px">Moved off inside a relative box</p></div>
+      <div style="position:absolute;left:-9999px"><label id="honeypot">Leave this empty</label></div>
+      <p id="fixed-off" style="position:fixed;left:-9999px">Hidden the fixed way</p>
+      <span id="transparent" aria-hidden="true" style="position:relative;left:-20px;opacity:0">Fully transparent</span>
+      <p id="ellipsis" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line far too long for a phone screen, cut by an ellipsis '.repeat(3)}</p>
+      <p id="ellipsis-flush" style="margin:0 -20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line cut by an ellipsis right at the edge '.repeat(3)}</p>
+      <div style="overflow:hidden"><div style="position:absolute;left:0;top:400px"><span id="escaped">Escapes a clip it isn't inside</span></div></div>
+      </main></body></html>`);
+    const flagged = (await page.evaluate(flushText)).map((line) => line.match(/^\w+#([\w-]+)/)?.[1] ?? line).sort();
+    expect(flagged).toEqual(['ellipsis-flush', 'escaped', 'flush', 'margin-off', 'numeral', 'relative-off', 'transform-off']);
+  });
 });
 
 test.describe('Playwright visual baselines', () => {

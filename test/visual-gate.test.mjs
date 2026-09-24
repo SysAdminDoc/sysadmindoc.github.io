@@ -438,6 +438,9 @@ test('the gate also runs every route gutter check and the offline palette check'
   }
   assert.match(spec, /test\.describe\('Mobile gutter audit'/);
   assert.match(spec, /test\(`\$\{route\.name\} keeps its text off the screen edge at 390px`/);
+  // The check's planted cases run in the gate too (fifteenth drain review).
+  assert.match(spec, /test\('flags and skips planted text as meant'/);
+  assert.match('chromium portfolio-audits.spec.mjs Mobile gutter audit flags and skips planted text as meant', gate);
   const sw = fs.readFileSync(path.join(root, 'tests', 'playwright', 'sw-lifecycle.spec.mjs'), 'utf8');
   const palette = 'the command palette works offline for a returning visitor who never opened it';
   assert.ok(sw.includes(`test('${palette}'`), 'the title still names the test');

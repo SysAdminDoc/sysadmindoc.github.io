@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Narrow the gutter check's off-screen skip, and stop two false alarms
-  Why: Text is skipped when wholly off-screen and any ancestor is positioned, so a `<p>` moved off by a transform or a negative margin inside a positioned card passes. `aria-hidden` text at `opacity: 0` near the edge fails though it isn't drawn, and an ellipsis-truncated line fails on text it hides.
-  Evidence: fifteenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:494-500,519`.
-  Touches: `tests/playwright/portfolio-audits.spec.mjs`.
-  Acceptance: only text whose own positioned box sits off-screen is skipped, fully transparent text is skipped, text is clipped by its overflow-hiding ancestors before it's measured, and each case is checked planted.
-  Complexity: S
-
 - [ ] P3: Check the preflight's browser audit on a busy PC
   Why: `a11y:audit:browser` runs with a 90-second test timeout, a 10-second expect timeout and no retries, so the load that stopped the runner tests on 2026-09-23 could stop it too. Nobody has tried it under load.
   Evidence: ninth drain review, 2026-09-23; `playwright.audits.config.mjs:14,16,25`.

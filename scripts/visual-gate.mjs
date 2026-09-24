@@ -70,6 +70,8 @@ export const GATE_ROUTES = Object.freeze(['home', 'ai', 'healthcare', 'resume', 
 export const GATE_CHECKS = Object.freeze([
   // Any route name, since a route called lang-c# would fall outside [\w-]+.
   'Mobile gutter audit .+ keeps its text off the screen edge at 390px',
+  // And the check's own planted cases, so a change to it is seen to still catch.
+  'Mobile gutter audit flags and skips planted text as meant',
   'the command palette works offline for a returning visitor who never opened it',
 ]);
 
