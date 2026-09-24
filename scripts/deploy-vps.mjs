@@ -139,14 +139,14 @@ function verifyInnerLogging() {
   console.log("deploy-vps: portfolio-app's own log drops what identifies a visitor.");
 }
 
-// /privacy/ says how much of each Caddy server's own log Docker keeps. The
-// edge has no log options of its own and takes the host's defaults, so a
-// change to /etc/docker/daemon.json would make the page wrong unnoticed.
+// /privacy/ says how much of each Caddy server's own log Docker keeps. What
+// counts is each container's own LogConfig, which Docker fixed when it created
+// the container; the host's daemon.json defaults don't reach one made before
+// them (scripts/lib/log-retention.mjs).
 function verifyServerLogRetention() {
-  const daemon = captureRemote('cat /etc/docker/daemon.json 2>/dev/null || true');
   for (const container of ['caddy', 'portfolio-app']) {
     const config = captureRemote(`docker inspect ${container} --format '{{json .HostConfig.LogConfig}}' 2>&1 || true`);
-    const problem = logRetentionProblem(container, config, daemon, SERVER_LOG_MB);
+    const problem = logRetentionProblem(container, config, SERVER_LOG_MB);
     if (problem) throw new Error(`deploy-vps: ${problem}.`);
   }
   console.log(`deploy-vps: Docker keeps ${SERVER_LOG_MB} MB of each Caddy server's own log, as /privacy/ says.`);

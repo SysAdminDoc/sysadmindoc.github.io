@@ -6,13 +6,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
-- [ ] P1: Make the edge's Docker log rotate, and check each container's own log settings
-  Why: Docker copies daemon.json's log defaults into a container only when it's created, and the edge was created before they were set, so `docker inspect caddy` shows json-file with no options and its log never rotates. The deploy's check merges today's daemon.json and passes, so `/privacy/`'s "Docker keeps only the latest 30 MB of each server's log" is false for the edge. The check also reads sizes in binary units and rejects `10mb`, where Docker uses decimal units and accepts it.
-  Evidence: eleventh drain review, 2026-09-24; moby `daemon/create.go` and `daemon/container/container.go`; `verifyServerLogRetention` in `scripts/deploy-vps.mjs`.
-  Touches: the edge's compose file in Contabo-VPS-Ops, the retention check and its test, the ops notes from b242e95.
-  Acceptance: the check reads only the container's own LogConfig, with Docker's units, and fails on `{"Type":"json-file","Config":{}}`. The edge's inspect shows a size limit and file count, and the deploy passes on it.
-  Complexity: S
-
 ### P2
 
 - [ ] P2: Check the proxy trust settings the way Caddy and ntfy read them

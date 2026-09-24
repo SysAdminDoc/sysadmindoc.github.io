@@ -18,8 +18,8 @@ export const CSP_REPORT_STORE_MB = 10;
 /**
  * Each Caddy server's own log (its warnings and errors), which Docker keeps by
  * size: 3 files of 10 MB. portfolio-app sets that in deploy/vps/docker-compose.yml,
- * and the edge takes it from the host's /etc/docker/daemon.json. Every deploy
- * reads both back (scripts/lib/log-retention.mjs).
+ * and the edge in its own compose file (Contabo-VPS-Ops). Every deploy reads
+ * both containers' own settings back (scripts/lib/log-retention.mjs).
  */
 export const SERVER_LOG_MB = 30;
 
