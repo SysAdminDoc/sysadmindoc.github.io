@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Re-store the samples already in the CSP store under the new rule
-  Why: The sink now keeps only the site's own samples and a keyed marker for the rest, but rows written before that keep whatever the old scrub rules let through, which the seventeenth review showed can include an address or a key, until 10 MB of new reports rotate them out.
-  Evidence: `deploy/vps/csp-report-server.mjs` (`storedSample`), the store at `/home/deploy/sites/portfolio/csp-reports/`.
-  Touches: `deploy/vps/csp-report-server.mjs` (rewrite the store's samples at start), its tests.
-  Acceptance: at start the sink rewrites every stored sample that isn't the site's own as the marker, atomically and once per row, and a test shows a planted old row come out as a marker with the rest of the row unchanged.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit

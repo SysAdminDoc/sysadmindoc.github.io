@@ -288,6 +288,30 @@ test('reporter appends a redacted report and returns a stored marker', async () 
   });
 });
 
+// Rows written under the old scrub rules keep what those let through until a
+// rotation drops them, so the sink rewrites them before it listens.
+test('the sink stores older samples as markers at start, once, and leaves the rest of each row alone', async () => {
+  await withTempReporter({ ownSamples: OWN }, async ({ logPath }) => {
+    const row = (sample, extra = {}) => JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'script-src-elem', blocked: 'inline', category: 'first-party', ...(sample === undefined ? {} : { sample }), ...extra });
+    await fs.writeFile(`${logPath}.1`, `${row('mail("[email]") k=Zm9vYmFy+YmF6', { document: 'https://portfolio.getparkerai.com/a/' })}\n`);
+    await fs.writeFile(logPath, [row(OWN[0]), row('[other 0123456789ab]'), row(undefined), 'not json', row('addr 203.0.113.9'), ''].join('\n'));
+    const reporter = createReporter({ ...DEFAULT_CONFIG, logPath, ownSamples: OWN });
+    assert.equal(await reporter.restoreSamples(), 2);
+    const rotated = JSON.parse((await fs.readFile(`${logPath}.1`, 'utf8')).trim());
+    assert.match(rotated.sample, MARKER);
+    assert.equal(rotated.document, 'https://portfolio.getparkerai.com/a/', 'the rest of the row stays');
+    const current = (await fs.readFile(logPath, 'utf8')).split('\n');
+    assert.equal(JSON.parse(current[0]).sample, OWN[0], "the site's own sample stays");
+    assert.equal(JSON.parse(current[1]).sample, '[other 0123456789ab]', 'a marker stays');
+    assert.equal(JSON.parse(current[2]).sample, undefined);
+    assert.equal(current[3], 'not json');
+    assert.match(JSON.parse(current[4]).sample, MARKER);
+    assert.doesNotMatch(current.join('\n') + rotated.sample, /203\.0\.113\.9|Zm9vYmFy|\[email\]/);
+    assert.equal(await reporter.restoreSamples(), 0, 'a second run finds nothing to do');
+    assert.deepEqual((await fs.readdir(path.dirname(logPath))).sort(), ['reports.ndjson', 'reports.ndjson.1', 'sample.key'], 'no temporary file is left');
+  });
+});
+
 test("the reporter keeps the site's own sample, and one key across restarts", async () => {
   await withTempReporter({ ownSamples: OWN }, async ({ logPath }) => {
     const post = async (reporter, sample) => {

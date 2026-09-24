@@ -460,11 +460,58 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
     }
   }
 
-  return { handleRequest };
+  /**
+   * Rewrite every stored sample under today's rule: rows written before the
+   * sink kept only the site's own samples carry whatever the old scrub rules
+   * let through. Each file is rewritten to a temporary one and renamed over,
+   * and a sample that is already a marker or the site's own stays as it is,
+   * so running it again changes nothing. Called before the server listens.
+   * @returns {Promise<number>} how many samples became markers
+   */
+  async function restoreSamples() {
+    const samples = { ownSamples: config.ownSamples ?? [], key: await sampleKey() };
+    let changed = 0;
+    for (const file of [config.logPath, rotatedLogPath(config.logPath)]) {
+      let text;
+      try {
+        text = await fileSystem.readFile(file, 'utf8');
+      } catch (error) {
+        if (error.code === 'ENOENT') continue;
+        throw error;
+      }
+      let fileChanged = 0;
+      const lines = text.split('\n').map((line) => {
+        let row;
+        try {
+          row = JSON.parse(line);
+        } catch {
+          return line;
+        }
+        if (!row || typeof row !== 'object' || typeof row.sample !== 'string' || STORED_MARKER.test(row.sample)) return line;
+        const stored = storedSample(row.sample, samples);
+        if (stored === row.sample) return line;
+        fileChanged += 1;
+        return JSON.stringify({ ...row, sample: stored });
+      });
+      if (fileChanged === 0) continue;
+      const temporary = `${file}.restore`;
+      await fileSystem.writeFile(temporary, lines.join('\n'), { encoding: 'utf8', mode: 0o600 });
+      await fileSystem.rename(temporary, file);
+      changed += fileChanged;
+    }
+    return changed;
+  }
+
+  return { handleRequest, restoreSamples };
 }
 
-export function startServer(config = loadConfig()) {
+const STORED_MARKER = /^\[other(?: [0-9a-f]{12})?\]$/;
+
+export async function startServer(config = loadConfig()) {
   const reporter = createReporter(config);
+  // Before the first report can arrive, so nothing is appended mid-rewrite.
+  const restored = await reporter.restoreSamples();
+  if (restored > 0) console.log(`csp-report: stored ${restored} older sample(s) as markers`);
   const server = http.createServer((request, response) => {
     reporter.handleRequest(request, response).catch((error) => {
       console.error(`csp-report: unhandled request error: ${error.message}`);
@@ -481,4 +528,9 @@ export function startServer(config = loadConfig()) {
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) startServer();
+if (isMain) {
+  startServer().catch((error) => {
+    console.error(`csp-report: could not start: ${error.message}`);
+    process.exit(1);
+  });
+}
