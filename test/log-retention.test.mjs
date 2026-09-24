@@ -13,6 +13,18 @@ test('sizes read the way Docker reads them, in decimal units', () => {
   assert.equal(sizeMb('10000000'), 10, 'no unit means bytes');
   for (const value of ['10mb', '10MB', '10 m', '10MiB', '10M']) assert.equal(sizeMb(value), 10, value);
   for (const value of ['-1', '0', '', 'ten', undefined, '10mm', '10 mb b']) assert.equal(sizeMb(value), null, String(value));
+  // Go's ParseFloat reads these, and go-units cuts to whole bytes (thirteenth
+  // drain review: each of them used to fail a deploy Docker would accept).
+  for (const [value, mb] of [['1e7', 10], ['+10m', 10], ['.5m', 0.5], ['10.m', 10], ['10.0000001m', 10], ['10000000.9', 10]]) {
+    assert.equal(sizeMb(value), mb, String(value));
+  }
+  for (const value of ['10mbb', '10bb', '10xb', '10 m b', 'e7', '1e7.5']) assert.equal(sizeMb(value), null, value);
+});
+
+test('the none driver keeps nothing, and says so', () => {
+  assert.equal(keptLogMb('{"Type":"none","Config":{}}'), 0);
+  assert.equal(logRetentionProblem('caddy', '{"Type":"none","Config":{}}', 30), "Docker keeps nothing of caddy's own log, but /privacy/ says 30 MB");
+  assert.equal(logRetentionProblem('caddy', inspect('json-file', { 'max-size': '10.0000001m', 'max-file': '3' }), 30), null);
 });
 
 // The eleventh drain review: Docker merges daemon.json's defaults into a

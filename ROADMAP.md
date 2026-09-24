@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each case fails the audit, with a plant or test apiece, or the CHANGELOG says plainly what isn't read.
   Complexity: S
 
-- [ ] P3: Read log sizes exactly as go-units does
-  Why: `sizeMb` rejects sizes Docker accepts (`1e7`, `+10m`, `.5m`, `10.m`) and doesn't truncate to whole bytes, so `10.0000001m`, exactly 10 MB to Docker, fails as "30 MB, but /privacy/ says 30 MB". The `none` driver reads as "no limit". All of these stop a deploy rather than pass a wrong one.
-  Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/log-retention.mjs`.
-  Touches: `scripts/lib/log-retention.mjs`, `test/log-retention.test.mjs`.
-  Acceptance: each of those sizes reads as Docker reads it, and `none` says it keeps nothing.
-  Complexity: S
-
 - [ ] P3: Make css:audit's fallback rule exact both ways
   Why: A prefixed value anywhere later in a chain exempts everything before it (`width:10px` then `20px` then `-webkit-fill-available` keeps the dead 10px), a prefixed value before a universal one is exempt, and the prefix test matches inside strings. The other way, fallbacks for features newer than the targets, like `text-wrap:wrap` before `pretty` or a colour before relative colour syntax, are still reported dead.
   Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:38,66,74`.
