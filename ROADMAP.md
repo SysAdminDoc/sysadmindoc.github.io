@@ -6,7 +6,21 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P1
 
+- [ ] P1: Drop the user agent from the inner Caddy's own log
+  Why: The inner Caddy runs the same ACME challenge handler as the edge, and its warning carries a top-level `user_agent`. The edge's filter deletes it only because of the portfolio block's appended fields, the inner's doesn't, and the deploy checks the inner without that deletion, so `/privacy/`'s "leave out ... your browser's headers" is false there. A local Caddy 2.11.4 with the inner's global log block logged the user agent for a challenge request.
+  Evidence: thirteenth drain review, 2026-09-24; certmagic v0.25.3 `httphandlers.go:117-122`; `deploy/vps/Caddyfile`; `verifyInnerLogging` in `scripts/deploy-vps.mjs`.
+  Touches: `deploy/vps/Caddyfile`, `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: both servers' filters must delete `user_agent` and `referer` for the deploy to pass, and a challenge request to the inner leaves neither in its log.
+  Complexity: S
+
 ### P2
+
+- [ ] P2: Close the lock's claim gaps: half-written claims and claims that never expire
+  Why: A claim is created with an exclusive open and then written, so a contender that reads it in between sees an empty file, takes the claimant for dead and replaces the claim: two workers both got `taken: true` in 3 of 3 paced runs, and the race recorded 214 empty-claim reads. A claim whose pid is alive again (reused) blocks that stale lock forever, and so do a dead claim plus a dead claim on it, where the old code took the lock at once.
+  Evidence: thirteenth drain review, 2026-09-24, `rv-lock-interleave.mjs` and `rv-lock-deadlock.mjs`; `scripts/visual-gate.mjs` `claimInstance`.
+  Touches: `scripts/visual-gate.mjs`, `test/visual-gate.test.mjs`.
+  Acceptance: the paced interleaving gives one holder, a claim older than any real one is stale whatever its pid, any number of dead nested claims resolve, and the six-worker race still shows no overlap.
+  Complexity: M
 
 - [ ] P2: Prove the preview answering is this run's, and keep the gate on its own build
   Why: `assertServesBuild` passed a server that returns this checkout's `dist/index.html` for `/` and other pages for every other path, and two checkouts at one commit have identical home pages, so a run that lost the port race could audit the other's server and have it stopped under it. `PLAYWRIGHT_BASE_URL`, if set in the shell, skips every check, and `visual-gate.mjs` doesn't clear it, so the deploy gate would audit whatever it names.
@@ -29,6 +43,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/css-output-check.mjs:43,47`.
   Touches: `scripts/lib/css-output-check.mjs`, `scripts/audit-css-output.mjs`, `scripts/audit-gate-selftest.mjs`, `test/css-minify.test.mjs`.
   Acceptance: each case fails the audit, with a plant or test apiece, or the CHANGELOG says plainly what isn't read.
+  Complexity: S
+
+- [ ] P3: Read log sizes exactly as go-units does
+  Why: `sizeMb` rejects sizes Docker accepts (`1e7`, `+10m`, `.5m`, `10.m`) and doesn't truncate to whole bytes, so `10.0000001m`, exactly 10 MB to Docker, fails as "30 MB, but /privacy/ says 30 MB". The `none` driver reads as "no limit". All of these stop a deploy rather than pass a wrong one.
+  Evidence: thirteenth drain review, 2026-09-24; `scripts/lib/log-retention.mjs`.
+  Touches: `scripts/lib/log-retention.mjs`, `test/log-retention.test.mjs`.
+  Acceptance: each of those sizes reads as Docker reads it, and `none` says it keeps nothing.
   Complexity: S
 
 - [ ] P3: Make css:audit's fallback rule exact both ways
