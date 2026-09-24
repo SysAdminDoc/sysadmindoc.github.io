@@ -10,12 +10,14 @@ import { Features, transform } from 'lightningcss';
 // cost Chromium and Firefox every backdrop blur on the site.
 export const CSS_BROWSER_TARGETS = Object.freeze(['chrome111', 'edge111', 'firefox114', 'safari16.4', 'ios16.4']);
 
-// light-dark() is lowered too. All 50 uses set a custom property (the green,
-// yellow and red accents and the tokens mixed from them), and the plain value
-// written before each is no fallback: a custom property takes any value and
-// the last one wins. So in the targets that predate light-dark() (Chrome and
-// Edge 111-122, Safari 16.4-17.4, Firefox 114-119) those accents resolved to
-// nothing. lightningcss rewrites each into two var() fallbacks switched by
+// light-dark() is lowered too. All 50 uses set a custom property: the page
+// backgrounds, the three text tones, the glass, surface, border and shadow
+// tokens, the selection colour and every accent (26 in critical.css, 20 in
+// layers/homepage.css, 4 in layers/foundation.css). A plain value written
+// before one is no fallback, since a custom property takes any value and the
+// last one wins. So in the targets that predate light-dark() (Chrome and Edge
+// 111-122, Safari 16.4-17.4, Firefox 114-119) each of those tokens that no
+// later rule sets plainly, the red accent among them, resolved to nothing. lightningcss rewrites each into two var() fallbacks switched by
 // --lightningcss-light and --lightningcss-dark, which it sets wherever the
 // source declares color-scheme: :root (dark) and html[data-theme="light"],
 // the two places the theme toggle switches.

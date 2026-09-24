@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Make the CSS output checks cover what they claim
-  Why: css-minify's "lowers only light-dark()" test checks the rest with features every target already supports, so an exclude mask that also lowered nesting, `:dir()` and `:lang()` lists passed all five tests. `css:output:audit` reads only `_assets/*.css` and index.html, so a `light-dark()` in `dist/styles/offline.css` or Pagefind's CSS passes, though the CHANGELOG says the build fails on any. The comment in `minify-css.mjs` says all 50 uses are the accents; most are other tokens.
-  Evidence: eighth drain review, 2026-09-23; `test/css-minify.test.mjs:14-24`, `scripts/audit-css-output.mjs:32-38`, `scripts/lib/minify-css.mjs:13-14`.
-  Touches: those files.
-  Acceptance: a wider exclude mask fails the test, a `light-dark()` planted in any built CSS or HTML fails the audit, and the comment is right.
-  Complexity: S
-
 - [ ] P3: Keep `css:audit` from calling live declarations dead
   Why: The dead-declaration rule reports the earlier of two `!important` declarations in anonymous `@layer {}` blocks, which browsers apply, folds custom property names to lower case so `--Accent` and `--accent` read as one, and would delete a working fallback across rules such as `-webkit-fill-available` before `stretch`. Nothing in today's source trips it.
   Evidence: eighth drain review on synthetic CSS, 2026-09-23; `scripts/lib/css-overrides.mjs`.

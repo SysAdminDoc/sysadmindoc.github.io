@@ -354,6 +354,32 @@ const cases = [
       return true;
     },
   },
+  // The audit once read only _assets/ and index.html (eighth drain review), so
+  // each of these passed.
+  ...['styles/offline.css', 'pagefind/pagefind-ui.css'].map((file) => ({
+    name: `css:output:audit (${file})`,
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: `a light-dark() in ${file}, outside the bundled stylesheets`,
+    expect: new RegExp(`${file.replace(/[./]/g, '\\$&')}: a light-dark\\(\\) the minifier left in place`),
+    plant() {
+      if (!fs.existsSync(path.join(scratch, file))) return false;
+      writeScratch(file, `${readScratch(file)}\n.planted{color:light-dark(#000,#fff)}`);
+      return true;
+    },
+  })),
+  {
+    name: 'css:output:audit (another page)',
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: "a light-dark() in /privacy/'s inline styles",
+    expect: /privacy\/index\.html <style> \d+: a light-dark\(\) the minifier left in place/,
+    plant() {
+      const html = readScratch('privacy/index.html');
+      const planted = html.replace(/(<style\b[^>]*>)/, '$1.planted{color:light-dark(#000,#fff)}');
+      if (planted === html) return false;
+      writeScratch('privacy/index.html', planted);
+      return true;
+    },
+  },
   {
     name: 'css:output:audit (inline)',
     args: ['scripts/audit-css-output.mjs', '--dist', scratch],

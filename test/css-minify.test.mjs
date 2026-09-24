@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { Features } from 'lightningcss';
 import { cssOutputProblems } from '../scripts/lib/css-output-check.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE, minifyCss } from '../scripts/lib/minify-css.mjs';
 
@@ -19,8 +20,24 @@ test('minifying keeps standard properties, adds the prefixes Safari 16.4 needs, 
   assert.match(out, /[{;]backdrop-filter:blur\(2px\)/);
   assert.match(out, /animation-timeline:scroll\(\)/);
   assert.doesNotMatch(out, /animation:[^;}]*scroll\(\)/, 'the timeline stays out of the shorthand');
-  assert.match(out, /inset:0/, 'nothing else is lowered: inset stays a shorthand');
+  assert.match(out, /inset:0/, 'inset stays a shorthand');
   assert.match(out, /color-mix\(/, 'and color-mix() stays as written');
+
+  // inset and color-mix() work in every target, so they couldn't show that
+  // nothing else gets lowered. These don't all: with a wider mask lightningcss
+  // unnests the rule, spells :dir() out as 19 :lang() tests, splits the
+  // :lang() list and turns the percentage into calc(), each of which changes
+  // what a browser matches or draws (eighth drain review).
+  const lowerable = minifyCss('f{color:red;&:hover{color:blue}}g:dir(rtl){margin-left:1px}h:lang(en,fr){quotes:none}i{text-decoration-thickness:10%}');
+  assert.match(lowerable, /f\{color:red;&:hover\{/, 'nesting stays nested');
+  assert.match(lowerable, /g:dir\(rtl\)\{/, ':dir() stays as written');
+  assert.match(lowerable, /h:lang\(en,\s*fr\)\{/, 'and so does a :lang() list');
+  assert.match(lowerable, /text-decoration-thickness:10%/, 'and a percentage thickness');
+  const allowed = Object.entries(Features)
+    .filter(([, flag]) => Number.isInteger(flag) && (flag & ~LIGHTNINGCSS_EXCLUDE) !== 0)
+    .map(([name]) => name)
+    .sort();
+  assert.deepEqual(allowed, ['Colors', 'LightDark', 'VendorPrefixes'], 'Colors only because it includes LightDark');
 });
 
 // All 50 light-dark() uses set a custom property, and the targets before

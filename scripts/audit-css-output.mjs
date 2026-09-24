@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The built stylesheets keep what the minifier once dropped: each prefixed
 // backdrop-filter beside its standard property, and scroll timelines out of the
-// animation shorthand. This runs in build:ci against the build it just made;
+// animation shorthand. And none keeps a light-dark(), which the older target
+// browsers can't read. This runs in build:ci against the build it just made;
 // npm test runs before the build in deploy:preflight, so a test reading dist/
 // only ever saw the one before.
 //
@@ -29,13 +30,30 @@ function check(label, css) {
   for (const problem of result.problems) problems.push(`${label}: ${problem}`);
 }
 
-for (const name of fs.readdirSync(assets).filter((file) => file.endsWith('.css')).sort()) {
-  check(`_assets/${name}`, fs.readFileSync(path.join(assets, name), 'utf8'));
+/** Every file under `dir` whose name ends with `suffix`, as paths relative to dist. */
+function builtFiles(dir, suffix) {
+  const found = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) found.push(...builtFiles(full, suffix));
+    else if (entry.name.endsWith(suffix)) found.push(full);
+  }
+  return found;
 }
-// The critical CSS every page inlines goes through the same minifier.
-const home = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
-for (const [index, match] of [...home.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].entries()) {
-  check(`index.html <style> ${index + 1}`, match[1]);
+const relative = (file) => path.relative(dist, file).replaceAll('\\', '/');
+
+// Every stylesheet the build ships, not just the bundled ones: the offline
+// page's and Pagefind's too (eighth drain review).
+for (const file of builtFiles(dist, '.css').sort()) {
+  check(relative(file), fs.readFileSync(file, 'utf8'));
+}
+// The inline <style> blocks of every page. The critical CSS each page inlines
+// goes through the same minifier, and a page can carry blocks of its own.
+for (const file of builtFiles(dist, '.html').sort()) {
+  const html = fs.readFileSync(file, 'utf8');
+  for (const [index, match] of [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].entries()) {
+    check(`${relative(file)} <style> ${index + 1}`, match[1]);
+  }
 }
 if (prefixed === 0) problems.push('no built rule carries a prefixed backdrop blur, so this check saw nothing to check');
 
@@ -44,4 +62,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`  - ${problem}`);
   process.exit(1);
 }
-console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, and no timeline in an animation shorthand.`);
+console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, no timeline in an animation shorthand, and no light-dark() left, across every built stylesheet and every page's inline styles.`);
