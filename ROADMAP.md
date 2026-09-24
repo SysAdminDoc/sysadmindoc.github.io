@@ -8,6 +8,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Keep a new upstream repo from failing the nightly deploy on a README count
+  Why: `test/project-count-source.test.mjs` holds the README's "catalog (N feed-backed / ...)" to the profile feed the nightly has just synced, so the day a new public repo reaches the feed, `deploy:preflight` fails in `npm test` and nothing deploys (2026-09-24 23:01Z: 206 in the feed, 205 in the README). The number is documentation; it shouldn't stop a deploy of everything else.
+  Evidence: `.tmp/refresh-and-deploy.log` 2026-09-24T23:01:14Z; `test/project-count-source.test.mjs:30-46`.
+  Touches: `test/project-count-source.test.mjs`, `scripts/refresh-and-deploy.mjs` or the README sentence.
+  Acceptance: a feed that gains or loses a project doesn't fail the nightly's tests, the README count is still checked against something stable (the committed fixtures) or reported as drift the way catalog drift is, and a test shows both.
+  Complexity: S
+
 - [ ] P2: Recognise every engine's sample of the site's own inline blocks
   Why: Firefox appends "…" to a 40-character sample, so both of the site's real blocks (41 characters with it) are stored as markers; Chromium trims whitespace at both ends, so a block that starts with whitespace, or a short one ending in a space, never matches. WebKit matches.
   Evidence: nineteenth drain review, 2026-09-24 (headless Chromium, Firefox and WebKit probes); `deploy/vps/csp-report-server.mjs:187`, `scripts/lib/csp-own-samples.mjs:43`.
