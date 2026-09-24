@@ -10,6 +10,34 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
+- [ ] P3: Refuse a `style-src` looser than `style-src-elem` in the CSP audit
+  Why: the fallback check added in 09034a67 only fails a `style-src` that blocks the site's own blocks. With `'unsafe-inline'`, `'unsafe-hashes'` or `*` in `style-src` it passes, and Firefox before 108 and Safari before 15.4 ignore `style-src-attr`, so they'd allow every style attribute again. Only `styleSrc = styleElemSrc` in `Base.astro` keeps that from happening.
+  Evidence: twenty-first review, planted in all 26 pages of a dist copy; `audit-csp.mjs --dist --active-style-src-elem --strict` exits 0 for each.
+  Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `scripts/audit-gate-selftest.mjs`.
+  Acceptance: strict mode fails unless every `style-src` token is also in `style-src-elem`, with a test and a gate plant.
+  Complexity: S
+
+- [ ] P3: Fail on a corrupt README count input instead of reading it as missing
+  Why: `readmeCountInputs` returns null on any error, so a truncated `_profile-projects.json` or `dist/projects.json` makes the README count test skip ("fixture files not installed") and the nightly skip its rendered-count check.
+  Evidence: twenty-first review. Truncating `src/data/_profile-projects.json` to 200 bytes turns `test/project-count-source.test.mjs` into a skip; before a8ee7b75 the same input failed with a SyntaxError.
+  Touches: `scripts/lib/readme-counts.mjs`, `test/project-count-source.test.mjs`.
+  Acceptance: only a missing file reads as missing, and a file that doesn't parse fails the test and the nightly step, with a test for each.
+  Complexity: S
+
+- [ ] P3: Say so when a report-only flag is set outside the nightly runner
+  Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
+  Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.
+  Touches: `scripts/ensure-project-cwd.mjs` (or the preflight's first step), `scripts/refresh-and-deploy.mjs` (`REPORT_ONLY_FLAGS`), a test.
+  Acceptance: any report-only flag set outside the runner prints a warning that names it, and the preflight fails unless the runner set it.
+  Complexity: S
+
+- [ ] P3: Count a force-killed planted audit as no verdict on Windows
+  Why: `plantVerdict` counts any non-null exit as a rejection once the expected text is in the output. A Windows force-kill exits 4294967295, so an audit that printed its reason and then hung until something killed it still reads as rejected.
+  Evidence: twenty-first review; a script that prints the og-cards reason and idles, killed with `Stop-Process -Force` after 2.5 s, gives `{status: 4294967295, timedOut: false}` and a null verdict.
+  Touches: `scripts/lib/run-audit.mjs`, its test.
+  Acceptance: a kill status (4294967295, or a signal) is no verdict, with a test.
+  Complexity: S
+
 - [ ] P3: Read SVG hrefs, scheme-only URLs and SVG scripts as browsers do in the CSP host audit
   Why: parse5 names `xlink:href` and `href` both `href`, and the first kept wins, so `<image xlink:href="A" href="B">` counts A while browsers load B (`feImage` too). `http:noslash.example/a.png` and `http:/oneslash...` load in Chromium but the `//` check misses them. `<svg><script href>` loads in both engines and is missed. Comments are stripped before CSS escapes are read, so `\/*` hides a real url(). Older misses: `<table background>` and a static `import` in a module script.
   Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/csp-host-usage.mjs:79,159,173,194,222`.
