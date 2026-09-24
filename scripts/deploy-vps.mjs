@@ -22,7 +22,7 @@ import process from 'node:process';
 import { SITE_URL } from '../site.config.mjs';
 import { buildCspHeaderValue } from './lib/csp-header.mjs';
 import { projectRedirectsCaddy } from './lib/project-redirects.mjs';
-import { EDGE_EXCLUDES, defaultLogProblem } from './lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, loggingProblem } from './lib/edge-log-check.mjs';
 import { EDGE_PROXY_ADDRESS, edgeAddressProblem } from './lib/edge-address.mjs';
 import { caddyTrustProblems, networkProblems, ntfyTrustProblems } from './lib/proxy-trust-check.mjs';
 import { accessLogShapeProblem } from './lib/access-log-shape.mjs';
@@ -126,16 +126,19 @@ function verifyCaddyVersion() {
 // back through their admin APIs, which listen on IPv4 loopback only. The edge
 // is the shared one (Contabo-VPS-Ops); if its admin API ever moves to a unix
 // socket, this fails closed and needs the new address.
+// Every logger, not just `default`: any other one writing to the container's
+// output would pass a check of `default` alone while it wrote addresses
+// (eighth drain review).
 function verifyEdgeLogging() {
-  const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs/default 2>&1 || true');
-  const problem = defaultLogProblem(output, { mustExclude: EDGE_EXCLUDES });
+  const output = captureRemote('docker exec caddy wget -qO- http://127.0.0.1:2019/config/logging/logs 2>&1 || true');
+  const problem = loggingProblem(output, { mustExclude: EDGE_EXCLUDES });
   if (problem) throw new Error(`deploy-vps: on the edge, ${problem}.`);
   console.log("deploy-vps: the edge's own log drops what identifies a portfolio visitor.");
 }
 
 function verifyInnerLogging() {
-  const output = captureRemote('docker exec portfolio-app wget -qO- http://127.0.0.1:2019/config/logging/logs/default 2>&1 || true');
-  const problem = defaultLogProblem(output);
+  const output = captureRemote('docker exec portfolio-app wget -qO- http://127.0.0.1:2019/config/logging/logs 2>&1 || true');
+  const problem = loggingProblem(output);
   if (problem) throw new Error(`deploy-vps: in portfolio-app, ${problem}.`);
   console.log("deploy-vps: portfolio-app's own log drops what identifies a visitor.");
 }

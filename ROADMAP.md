@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: an IPv6 address in `error` text is masked on both servers, `remote` is deleted, and the deploy fails on a filter without either.
   Complexity: S
 
-- [ ] P3: Check every logger that writes to the edge container's log
-  Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
-  Evidence: eighth drain review, 2026-09-23; `verifyEdgeLogging` in `scripts/deploy-vps.mjs`.
-  Touches: `scripts/lib/edge-log-check.mjs`, `scripts/deploy-vps.mjs`.
-  Acceptance: the deploy reads the whole `logging.logs` config and fails on any logger other than the site loggers that writes to the container's output unfiltered.
-  Complexity: S
-
 - [ ] P3: Tokenize built HTML the way a browser does in the corner cases
   Why: `splitHtml` lets `<!-->` and `<!--->` hide the markup after them, counts hosts inside double-escaped script text, nested `<template>`, `<xmp>` and `<noframes>`, and lets a tag opener inside an attribute value swallow the rest of the page. No built page has any of these today.
   Evidence: eighth drain review, 2026-09-23; `scripts/lib/csp-host-usage.mjs:123-150`.

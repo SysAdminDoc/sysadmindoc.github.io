@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
-import { EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem } from '../scripts/lib/edge-log-check.mjs';
+import { EDGE_EXCLUDES, REQUIRED_DELETIONS, defaultLogProblem, loggingProblem } from '../scripts/lib/edge-log-check.mjs';
 
 const root = process.cwd();
 
@@ -74,6 +74,38 @@ test('the address and page some entries carry at the top level are dropped too',
   assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, uri: { filter: 'regexp', regexp: '#.*$' } }))) ?? '', /keeps the query string \(uri\)/);
 });
 
+// The edge's loggers as its admin API listed them on 2026-09-24: the filtered
+// default on stderr, nine other sites' access logs and the portfolio's, all
+// to files.
+const fileLogger = (name) => ({ encoder: { format: 'json' }, include: [`http.log.access.${name}`], writer: { output: 'file', filename: `/var/log/caddy/${name}.log` } });
+const edgeLogs = () => ({
+  default: filtered,
+  ...Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`log${index}`, fileLogger(`log${index}`)])),
+  portfolio: fileLogger('portfolio'),
+});
+
+// The eighth drain review: the deploy read only `default`, so a second logger
+// on the container's output would have passed while it wrote addresses.
+test('every logger that writes to the container output is held to the default one\'s filter', () => {
+  const check = (logs) => loggingProblem(JSON.stringify(logs), edgeOptions);
+  assert.equal(check(edgeLogs()), null, 'the edge as it runs');
+  assert.equal(loggingProblem(JSON.stringify({ default: { ...filtered, exclude: undefined } })), null, 'and the inner Caddy');
+
+  const plain = { encoder: { format: 'json' }, writer: { output: 'stderr' } };
+  assert.match(check({ ...edgeLogs(), extra: plain }) ?? '', /the extra logger's format is json, not a filter .*, and it writes to the container's stderr/);
+  assert.match(check({ ...edgeLogs(), extra: { ...plain, writer: { output: 'stdout' } } }) ?? '', /extra logger.*stdout/);
+  assert.match(check({ ...edgeLogs(), extra: { encoder: { format: 'json' } } }) ?? '', /extra logger/, 'no writer means stderr');
+  assert.match(check({ ...edgeLogs(), extra: { ...plain, include: ['http.log.access.portfolio'] } }) ?? '', /extra logger/, 'the portfolio access log on stderr');
+  assert.match(check({ ...edgeLogs(), extra: { ...plain, include: ['http.handlers.reverse_proxy'] } }) ?? '', /extra logger/, 'handler warnings carry portfolio requests too');
+  assert.equal(check({ ...edgeLogs(), extra: { ...plain, include: ['http.log.access.log3', 'http.log.error.log3'] } }), null, 'another site\'s own logs never see a portfolio request');
+  assert.equal(check({ ...edgeLogs(), extra: { ...filtered } }), null, 'a second logger filtered like default passes');
+  assert.match(check({ ...edgeLogs(), extra: { ...filtered, exclude: [] } }) ?? '', /extra logger, which writes to the container's stderr, doesn't exclude http\.log\.error\.portfolio/);
+  assert.equal(check({ ...edgeLogs(), extra: { ...filtered, exclude: [], include: ['http.log.access.log4'] } }), null, 'an exclusion it can never need');
+  assert.match(check({ ...edgeLogs(), default: undefined }) ?? '', /no default logger/);
+  assert.match(loggingProblem('null') ?? '', /no loggers are configured/);
+  assert.match(loggingProblem("wget: can't connect to remote host") ?? '', /could not read the logging config/);
+});
+
 // The seventh drain review got whole portfolio requests into the edge's
 // container log through reverse_proxy's warning for a cut-short download and
 // through a mixed-case Host, while the old check, which read only the exclude
@@ -113,9 +145,11 @@ test('both Caddyfiles carry the filter, and the deploy reads both running config
   assert.match(block, /\blog portfolio \{\s*\n\s*output file \/var\/log\/caddy\/portfolio\.log/, 'the exclusion names the portfolio logger');
 
   const deploy = await fs.readFile(path.join(root, 'scripts', 'deploy-vps.mjs'), 'utf8');
-  assert.match(deploy, /docker exec caddy wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs\/default /);
-  assert.match(deploy, /docker exec portfolio-app wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs\/default /);
-  assert.match(deploy, /defaultLogProblem\(output, \{ mustExclude: EDGE_EXCLUDES \}\)/, 'the edge is held to its exclusion');
+  // Every logger now, not just default (eighth drain review), so the whole
+  // logs object is read rather than /logs/default.
+  assert.match(deploy, /docker exec caddy wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs /);
+  assert.match(deploy, /docker exec portfolio-app wget -qO- http:\/\/127\.0\.0\.1:2019\/config\/logging\/logs /);
+  assert.match(deploy, /loggingProblem\(output, \{ mustExclude: EDGE_EXCLUDES \}\)/, 'the edge is held to its exclusion');
   // The edge's check doesn't depend on the new build, so it runs before
   // anything ships; the inner one reads the container the deploy just made.
   const edgeChecked = deploy.indexOf('\nverifyEdgeLogging();');
