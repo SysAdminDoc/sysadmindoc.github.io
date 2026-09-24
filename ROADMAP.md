@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Keep forged reports from rotating out the smoke row or silencing a key
-  Why: The store keeps two 5 MB files, and at 120 requests a minute of 20 reports each, forged rows can rotate the smoke's row out before the read-back. Keys carry only 21 characters of the sample, so reports spread over an hour alert once and then silence every later real block that starts the same way.
-  Evidence: eleventh drain review, 2026-09-24; `scripts/lib/csp-report-summary.mjs`.
-  Touches: `scripts/lib/csp-report-summary.mjs`, `deploy/vps/csp-report-server.mjs`, the deploy's read-back.
-  Acceptance: a test floods the store between the smoke and the read-back and the read-back still finds its row or fails naming the flood, and two samples that differ after character 21 get two keys.
-  Complexity: S
-
 - [ ] P3: Time the holder test from the next step's own start
   Why: The test now times the runner's `START profile-feed:sync` line, but a runner that logs START on time and then waits up to 30 s for the held step's pipes before spawning passed it in 32.7 s. A log line is still standing in for the run moving on.
   Evidence: twelfth drain review, 2026-09-24; `test/refresh-and-deploy.test.mjs:279-282`.

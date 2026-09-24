@@ -12,6 +12,7 @@ import {
   normalizeReports,
   scrubSample,
 } from '../deploy/vps/csp-report-server.mjs';
+import { SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
 
 async function withTempReporter(options = {}, callback) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-csp-report-'));
@@ -141,6 +142,36 @@ test('scrubSample catches what it missed and leaves code it mangled alone', () =
   assert.equal(scrubSample('var built="2026-09-24T12:00:00Z";'), 'var built="2026-09-24T12:00:00Z";', 'an ISO date');
   // A short sample isn't cut, so a trailing word stays.
   assert.equal(scrubSample('f("headline")'), 'f("headline")');
+});
+
+// The eleventh drain review: at 120 requests a minute of 20 reports each,
+// forged rows can rotate the smoke's row out of the store's two files before
+// the deploy reads it back. The read-back then has to say so.
+test('a flood between the smoke and the read-back is named, not mistaken for a missing smoke', async () => {
+  await withTempReporter({ maxLogBytes: 2000, maxRequestsPerMinute: 10_000 }, async ({ reporter, logPath }) => {
+    const since = Math.floor(Date.now() / 1000) - 1;
+    const runId = 'flood1';
+    const post = async (documentURL, sample) => {
+      const body = JSON.stringify({ type: 'csp-violation', url: documentURL, body: { documentURL, effectiveDirective: 'script-src', blockedURL: 'https://live-smoke.invalid/synthetic.js', sample } });
+      const response = responseMock();
+      await reporter.handleRequest(requestMock({ body }), response);
+      assert.equal(response.status, 204);
+    };
+    // What the deploy reads: this run's rows from both files, and the oldest row.
+    const readBack = async () => {
+      const files = await Promise.all([`${logPath}.1`, logPath].map((file) => fs.readFile(file, 'utf8').catch(() => '')));
+      const text = files.join('\n').split('\n').filter((line) => line.includes(`/__live-smoke-${runId}/`)).join('\n');
+      const oldest = (files[0] || files[1]).split('\n')[0] ?? '';
+      return smokeReportProblem(text, { since, runId, oldest });
+    };
+
+    await post(`https://portfolio.getparkerai.com/__live-smoke-${runId}/`, SMOKE_REPORT_SAMPLE);
+    assert.equal(await readBack(), null, 'found with no flood');
+    for (let index = 0; index < 5; index += 1) await post('https://portfolio.getparkerai.com/', `forged ${index}`);
+    assert.equal(await readBack(), null, 'a few reports after it change nothing');
+    for (let index = 0; index < 40; index += 1) await post('https://portfolio.getparkerai.com/', `forged ${index}`);
+    assert.match(await readBack(), /rotated past this deploy's smoke report \(run flood1\): its oldest row came in at .*, after the smoke, so a flood of reports pushed it out/);
+  });
 });
 
 test('classifyReport tells the smoke, extensions, this site and everything else apart', () => {

@@ -61,7 +61,11 @@ export function violationKey(report) {
       blocked = keyword ? report.blocked.toLowerCase() : '(unreadable)';
     }
   }
-  const sample = keyword ? printable(report?.sample, 24).replaceAll('"', "'") : '';
+  // The whole stored sample (the sink keeps 40 characters, a little more after
+  // its [id] and [number] marks). Cut to 21, reports spread over an hour could
+  // alert once and then silence every real block that began the same way
+  // (eleventh drain review).
+  const sample = keyword ? printable(report?.sample, 64).replaceAll('"', "'") : '';
   return sample ? `${directive} ${blocked} "${sample}"` : `${directive} ${blocked}`;
 }
 
@@ -139,11 +143,12 @@ export const SMOKE_REPORT_SCRUBBED = 'live-smoke uid=[number]';
 
 /**
  * @param {string} text  the store's lines that name this run
- * @param {{ since: number, runId: string }} options  epoch seconds before the
- *   smoke started, and the run id the deploy gave the smoke
+ * @param {{ since: number, runId: string, oldest?: string }} options  epoch
+ *   seconds before the smoke started, the run id the deploy gave the smoke, and
+ *   the first line of the store's oldest file, if any
  * @returns {string | null}  what's wrong, or null
  */
-export function smokeReportProblem(text, { since, runId }) {
+export function smokeReportProblem(text, { since, runId, oldest = '' }) {
   // Only this run's own row counts. Anyone can post a smoke-looking report, so
   // the newest one is not necessarily ours.
   const marker = `/__live-smoke-${runId}/`;
@@ -152,7 +157,16 @@ export function smokeReportProblem(text, { since, runId }) {
     const time = Date.parse(report.receivedAt);
     return !Number.isNaN(time) && time / 1000 >= since;
   });
-  if (fresh.length === 0) return `the CSP report store holds no smoke report from this deploy (run ${runId})`;
+  if (fresh.length === 0) {
+    // The store keeps two files of 5 MB. If even its oldest row came in after
+    // the smoke, enough reports arrived in between to rotate the smoke's row
+    // out: a flood, forged or not (eleventh drain review).
+    const oldestAt = Date.parse(parseStore(oldest).reports[0]?.receivedAt ?? '');
+    if (!Number.isNaN(oldestAt) && oldestAt / 1000 > since) {
+      return `the CSP report store rotated past this deploy's smoke report (run ${runId}): its oldest row came in at ${new Date(oldestAt).toISOString()}, after the smoke, so a flood of reports pushed it out`;
+    }
+    return `the CSP report store holds no smoke report from this deploy (run ${runId})`;
+  }
   const newest = fresh[fresh.length - 1];
   if (newest.category !== 'synthetic') {
     return `the smoke's CSP report was stored as ${JSON.stringify(newest.category ?? '(no category)')}, not "synthetic"`;

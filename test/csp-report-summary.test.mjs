@@ -165,6 +165,15 @@ test('the summary line names new violations and says so when there are none', ()
   assert.match(summaryLine(summarizeReports(reportsOver(3, 40, {}))), /\(3 report\(s\) over 80 min\)$/);
 });
 
+// The eleventh drain review: keys kept 21 characters of the sample, so a
+// forged block alerted once and silenced every real one that began the same.
+test('two samples that differ only after the 21st character get two keys', () => {
+  const first = violationKey(report({ blocked: 'inline', sample: 'window.dataLayer=window.dataLayer||[];a' }));
+  const second = violationKey(report({ blocked: 'inline', sample: 'window.dataLayer=window.dataLayer||[];b' }));
+  assert.notEqual(first, second);
+  assert.match(first, /"window\.dataLayer=window\.dataLayer\|\|\[\];a"$/, 'the whole stored sample');
+});
+
 test("the deploy's read-back accepts only the smoke report the current sink would store", () => {
   const since = Date.parse('2026-09-24T02:00:00Z') / 1000;
   // What the sink makes of the report scripts/smoke-live-site.mjs posts.
