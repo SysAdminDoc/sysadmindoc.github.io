@@ -318,29 +318,32 @@ test('csp audit can verify rendered style elements against the active policy', (
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-active-style-'));
   const inlineCss = 'body{color:#123;background:#fff}';
   const inlineHash = sha256Csp(inlineCss);
+  // style-src carries the hash too: a browser without style-src-elem checks
+  // the block against it (research roadmap, style-src fallback).
   const policy = [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self'",
+    `style-src 'self' '${inlineHash}'`,
     `style-src-elem 'self' '${inlineHash}'`,
     "style-src-attr 'none'",
     "form-action 'self'",
   ].join('; ');
+  const page = (csp) =>
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${csp}"><style>${inlineCss}</style><link rel="stylesheet" href="/assets/site.css"></head><body></body></html>`;
+  const audit = () => spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], { cwd: repoRoot, encoding: 'utf8', windowsHide: true });
 
-  fs.writeFileSync(
-    path.join(tmp, 'index.html'),
-    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><style>${inlineCss}</style><link rel="stylesheet" href="/assets/site.css"></head><body></body></html>`,
-  );
-
-  const result = spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], {
-    cwd: repoRoot,
-    encoding: 'utf8',
-  });
-
+  fs.writeFileSync(path.join(tmp, 'index.html'), page(policy));
+  const result = audit();
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Active style-src-elem: 'self' 'sha256-/);
   assert.match(result.stdout, /PASS - active policy allows all current style element\/link surfaces/);
   assert.equal(result.stderr, '');
+
+  // Without it, Firefox before 108 and Safari before 15.4 refuse the block.
+  fs.writeFileSync(path.join(tmp, 'index.html'), page(policy.replace(`style-src 'self' '${inlineHash}'`, "style-src 'self'")));
+  const fallback = audit();
+  assert.equal(fallback.status, 1);
+  assert.match(fallback.stderr + fallback.stdout, /style-src 'self' would block 1 inline style block\(s\) that browsers without style-src-elem check against it/);
 });
 
 test('csp audit strict dist mode fails on missing or divergent CSP metadata', () => {

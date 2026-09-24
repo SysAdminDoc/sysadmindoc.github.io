@@ -641,6 +641,11 @@ const activeScriptUnsafeInlineRequired = [
 const activeStyleElemUnsafeInlineRequired = styleBlocks
   .filter((style) => !styleAllowedByCandidate(style, styleElemSrc))
   .length > 0;
+// A browser without style-src-elem (Firefox before 108, Safari before 15.4)
+// checks an inline <style> against style-src, so in the active policy that has
+// to allow every block style-src-elem does (research roadmap: 33 reports from
+// those browsers blocked the site's own critical CSS).
+const styleSrcFallbackBlockers = options.activeStyleElemSrc ? styleBlocks.filter((style) => !styleAllowedByCandidate(style, styleSrc)) : [];
 const activeStyleAttrUnsafeInlineRequired = [
   ...styleAttributes.filter((style) => !styleAttributeAllowedByCandidate(style, styleAttrSrc)),
   ...cssTextWrites.filter((write) => !styleAttributeAllowedByCandidate(write, styleAttrSrc)),
@@ -858,6 +863,9 @@ if (options.strict && options.activeStyleElemSrc && directiveAllowsUnsafeInline(
 if (options.strict && candidateStyleElem && candidateStyleElemBlockers.length > 0) {
   const styleElemLabel = options.activeStyleElemSrc ? 'active style-src-elem' : 'candidate style-src-elem';
   failures.push(`${styleElemLabel} ${candidateStyleElem.join(' ')} would block ${candidateStyleElemBlockers.length} current style element/link surface(s).`);
+}
+if (options.strict && styleSrcFallbackBlockers.length > 0) {
+  failures.push(`style-src ${styleSrc.join(' ')} would block ${styleSrcFallbackBlockers.length} inline style block(s) that browsers without style-src-elem check against it; give it the hashes style-src-elem has.`);
 }
 if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
   failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);

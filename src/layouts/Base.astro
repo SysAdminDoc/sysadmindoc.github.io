@@ -71,10 +71,15 @@ const isDev = import.meta.env.DEV;
 // Without 'wasm-unsafe-eval' (WebAssembly compilation only, not JS eval) every
 // live search hung at "Searching" from the 2026-08-20 header rollout onward.
 const scriptSrc = isDev ? "'self' 'unsafe-inline' 'wasm-unsafe-eval'" : "'self' 'wasm-unsafe-eval'";
-const styleSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
 const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"
   : ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');
+// A browser without style-src-elem (Firefox before 108, Safari before 15.4)
+// checks an inline style element against style-src instead, so it carries the same
+// hashes; one that knows style-src-elem never reads it for elements. Style
+// attributes stay blocked either way: a hash allows an attribute only beside
+// 'unsafe-hashes', and style-src-attr is 'none' where it's understood.
+const styleSrc = styleElemSrc;
 const styleAttrSrc = isDev ? "'unsafe-inline'" : "'none'";
 // Trusted Types (cross-browser Baseline since Feb 2026): require TrustedHTML/
 // TrustedScriptURL at script sinks. A same-origin default policy (loaded first

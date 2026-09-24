@@ -113,6 +113,28 @@ const cases = [
       return true;
     },
   },
+  {
+    name: 'csp:audit:dist:style:elem (style-src fallback)',
+    args: ['scripts/audit-csp.mjs', '--dist', scratch, '--active-style-src-elem', '--strict'],
+    violation: "a style-src without the inline blocks' hashes, which browsers without style-src-elem check against",
+    expect: /inline style block\(s\) that browsers without style-src-elem check against it/,
+    prepare() {
+      fs.rmSync(path.join(scratch, 'pagefind'), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+    },
+    plant() {
+      // Every page, so none fails for drifting from the rest instead.
+      let planted = 0;
+      for (const file of scratchHtmlFiles()) {
+        const html = fs.readFileSync(file, 'utf8');
+        const next = html.replace(/style-src 'self'(?: 'sha256-[^']+')+ 'report-sample'/, "style-src 'self' 'report-sample'");
+        if (next !== html) {
+          fs.writeFileSync(file, next, 'utf8');
+          planted += 1;
+        }
+      }
+      return planted > 0;
+    },
+  },
   // The build stamps sw.js once, and a stamped worker has nothing left to
   // stamp, so it would skip every check. Each run here starts from the
   // unstamped template.
