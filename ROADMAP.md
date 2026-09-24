@@ -8,7 +8,28 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Hold the proxy trust checks to an allowlist (fourth attempt)
+  Why: A placeholder with no colon (`{$ "x}`, which Caddy replaces with nothing) and one whose variable is set (`{$PATH:"}`) still fool the static lexer; `header_up * "^[^,]+," "{http.request.header.X-Real-IP},"` rewrites X-Forwarded-For through a wildcard that neither check reads; reverse_proxy's own `trusted_proxies` on a handler isn't read live; wildcard deletes (`X-Forwarded-*`) pass. Three rounds of fixing each spelling haven't held.
+  Evidence: fifteenth drain review, 2026-09-24; Caddy v2.11.4 parse.go:94-105, headers.go:287-310, reverseproxy.go:147,928-935.
+  Touches: `scripts/lib/proxy-trust-check.mjs`, `scripts/lib/caddyfile.mjs`, `test/endpoint-header-contract.test.mjs`, `test/proxy-trust-check.test.mjs`.
+  Acceptance: the static check refuses every `{$...}` but `{$CSP_POLICY}`, both checks refuse a request header name holding `*` or a placeholder and any handler-level `trusted_proxies`, and each of these variants fails. If this is refuted again, the item moves to Roadmap_Blocked.md.
+  Complexity: S
+
+- [ ] P2: Count every writer that can reach a Caddy container's output
+  Why: A `net` writer with `soft_start` falls back to stderr; a file writer aimed at `/dev/stderr` or `/proc/self/fd/1` writes to the container log; the include/exclude reading isn't Caddy's longest-match rule (an include of `http` and `http.log.error.portfolio` with an exclude of `http.log.error` still logs portfolio errors); and a logger that names only another site's log can still receive portfolio requests through a catch-all site, a mixed-case Host or `log_name`. `exclude ["*"]` reads as a leak though Caddy drops every module log with it.
+  Evidence: fifteenth drain review, 2026-09-24; Caddy logging.go:94-113,549-591, netwriter.go:199-211, httptype.go:914-917; `scripts/lib/edge-log-check.mjs`.
+  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: only a file writer to a real file is exempt, every other logger is held to the filter whatever it includes, include and exclude follow Caddy's loggerAllowed, and each case has a test.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Close the CSP sink's scrub regressions and cut-off gaps
+  Why: The cut rule measures the sample after whitespace is collapsed, so a browser-cut sample with a newline or indentation never counts as cut; a cut-off ID after `{`, `[` or `/` survives; a whole ID joined to a word by a hyphen (`--<id>-root`) now passes, and so does `+33 6 12 34 56 78` (one single-digit group), both of which the previous version scrubbed; `\x40`, `%2540`, a full-width at sign and `@` hide an email. Keys still collide once a scrubbed sample passes 64 characters, and the `"` to `'` swap merges `getElementById("app")` with `getElementById('app')`. A store younger than the smoke's five-minute margin reads a missing smoke row as a flood.
+  Evidence: fifteenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:168-182`, `scripts/lib/csp-report-summary.mjs:68`.
+  Touches: those files and their tests.
+  Acceptance: each leaking case is scrubbed, each regression is back to `[id]` or `[number]`, keys don't collide on either case, and a young store with no smoke row says the row is missing.
+  Complexity: S
 
 - [ ] P3: Tokenize built HTML the way a browser does in the corner cases
   Why: `splitHtml` lets `<!-->` and `<!--->` hide the markup after them, counts hosts inside double-escaped script text, nested `<template>`, `<xmp>` and `<noframes>`, and lets a tag opener inside an attribute value swallow the rest of the page. No built page has any of these today.
