@@ -7,7 +7,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parse } from 'parse5';
 
-const SAMPLE_LENGTH = 40;
+// Trimmed and a little past a sample's 40 characters, the way the sink reads a
+// sample (deploy/vps/csp-report-server.mjs, OWN_SAMPLE_LENGTH), so Chromium's
+// trimmed samples still match a block that starts with whitespace.
+const SAMPLE_LENGTH = 64;
 
 function* elements(node) {
   for (const child of node.childNodes ?? []) {
@@ -28,7 +31,7 @@ function htmlFiles(dir) {
 }
 
 /**
- * The first 40 characters of every inline <style> and <script> in a page,
+ * The start of every inline <style> and <script> in a page, trimmed,
  * read with scripting off so a <noscript> block's style counts.
  * @param {string} html
  * @returns {string[]}
@@ -39,8 +42,8 @@ export function inlineSampleStarts(html) {
     const tag = element.tagName;
     if (tag !== 'style' && tag !== 'script') continue;
     if (tag === 'script' && (element.attrs ?? []).some((attr) => attr.name === 'src')) continue;
-    const text = textOf(element).replace(/\r\n?/g, '\n');
-    if (text.trim()) starts.push(text.slice(0, SAMPLE_LENGTH));
+    const text = textOf(element).replace(/\r\n?/g, '\n').trim();
+    if (text) starts.push(text.slice(0, SAMPLE_LENGTH));
   }
   return starts;
 }

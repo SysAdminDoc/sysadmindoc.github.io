@@ -155,7 +155,7 @@ test('no visitor or extension text survives, whatever it holds', () => {
 
 test("the site's own samples arrive base64url-encoded, and a bad value stops the sink", () => {
   assert.deepEqual(decodeOwnSamples(encodeOwnSamples(OWN)), OWN);
-  assert.deepEqual(decodeOwnSamples(encodeOwnSamples(['x'.repeat(60)])), ['x'.repeat(40)], 'only a sample-sized start is kept');
+  assert.deepEqual(decodeOwnSamples(encodeOwnSamples(['x'.repeat(80)])), ['x'.repeat(64)], 'only a start a little past a sample is kept');
   assert.deepEqual(decodeOwnSamples(undefined), []);
   assert.throws(() => decodeOwnSamples('not-json'), /CSP_OWN_SAMPLES/);
   assert.throws(() => decodeOwnSamples(encodeOwnSamples(['ok', ''])), /CSP_OWN_SAMPLES/);

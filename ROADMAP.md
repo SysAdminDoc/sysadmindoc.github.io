@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Recognise every engine's sample of the site's own inline blocks
-  Why: Firefox appends "…" to a 40-character sample, so both of the site's real blocks (41 characters with it) are stored as markers; Chromium trims whitespace at both ends, so a block that starts with whitespace, or a short one ending in a space, never matches. WebKit matches.
-  Evidence: nineteenth drain review, 2026-09-24 (headless Chromium, Firefox and WebKit probes); `deploy/vps/csp-report-server.mjs:187`, `scripts/lib/csp-own-samples.mjs:43`.
-  Touches: `deploy/vps/csp-report-server.mjs`, `scripts/lib/csp-own-samples.mjs`, their tests.
-  Acceptance: each engine's real sample of every built inline block is kept as the site's own: a trailing "…" is dropped and whitespace is trimmed at both ends before comparing, with a test per engine's shape.
-  Complexity: S
-
 - [ ] P2: Count a planted audit as rejected only when it says why
   Why: On Windows an audit killed from outside exits 1 (taskkill, `process.kill`) or 4294967295 (Stop-Process), never a null status, so `noVerdict` misses it and the self-test still prints "rejects ..." for the eleven cases without an `expect`; the test used a hand-made `{ status: null }`. `build:ci` also runs `og-cards:audit` directly with no time limit.
   Evidence: nineteenth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:25,34`, `scripts/audit-gate-selftest.mjs:515`.

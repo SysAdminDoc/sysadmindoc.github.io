@@ -156,7 +156,12 @@ function redactUrl(value, { allowBareToken = false } = {}) {
 // was tried and dropped: with the key beside the store, a short secret came
 // back from its hash in seconds (nineteenth drain review), and grouping other
 // samples bought nothing, since the site's own blocks keep their text.
-export const OWN_SAMPLE_LENGTH = 40;
+// The deploy sends each block's start trimmed and a little past 40 characters,
+// and a sample is read the same way, so each engine's shape matches: Firefox
+// adds an ellipsis after 40 characters, Chromium trims whitespace at both ends,
+// WebKit sends the 40 as they are (nineteenth drain review).
+export const OWN_SAMPLE_LENGTH = 64;
+const ELLIPSIS = String.fromCharCode(0x2026);
 export const OTHER_SAMPLE = '[other]';
 const MIN_OWN_MATCH = 16;
 
@@ -183,7 +188,10 @@ export function decodeOwnSamples(value) {
  */
 export function storedSample(value, { ownSamples = [] } = {}) {
   if (typeof value !== 'string' || value === '') return null;
-  const text = value.slice(0, 256).replace(/\r\n?/g, '\n');
+  let text = value.slice(0, 256).replace(/\r\n?/g, '\n');
+  if (text.endsWith(ELLIPSIS)) text = text.slice(0, -1);
+  text = text.trim();
+  if (text === '') return OTHER_SAMPLE;
   const own = ownSamples.some((start) => start.startsWith(text) && text.length >= Math.min(MIN_OWN_MATCH, start.length));
   return own ? text : OTHER_SAMPLE;
 }
