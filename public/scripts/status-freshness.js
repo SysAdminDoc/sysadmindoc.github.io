@@ -8,6 +8,9 @@
   if (!cards.length) return;
 
   const stalePanel = document.getElementById('status-stale-now');
+  // The first deadline of any part of the data, the catalog check's included,
+  // which has no card of its own (/status.json generatedData.staleAfter).
+  const staleAfter = stalePanel ? Date.parse(stalePanel.dataset.staleAfter || '') : NaN;
   const TONES = ['green', 'amber', 'blue'];
   let timer = 0;
 
@@ -54,6 +57,7 @@
       value.textContent = card.dataset.freshnessIso.slice(0, 10) + ' (' + formatAge(hours) + ' ago)';
     });
 
+    if (!Number.isNaN(staleAfter) && Date.now() > staleAfter) anyStale = true;
     if (stalePanel) stalePanel.hidden = !anyStale;
     return anyStale;
   }

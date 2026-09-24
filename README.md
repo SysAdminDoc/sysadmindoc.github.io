@@ -329,7 +329,8 @@ fixtures.
 The live site says when its data expires. `/status.json` carries
 `generatedData.staleAfter`, the first moment any part of the data goes past
 the 36-hour contract (the GitHub fetch, the profile feed and the catalog check
-each keep their own clock), beside a
+each keep their own clock, and a part with no time of its own counts as past
+it already), beside a
 `status` that was only true when the file was built. `npm run smoke:live` and
 `npm run deploy:status` both fail once `staleAfter` has passed, so a nightly
 run that stops deploying shows up the next time either one runs.

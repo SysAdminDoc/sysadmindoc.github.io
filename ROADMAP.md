@@ -15,13 +15,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: at start the sink rewrites every stored sample that isn't the site's own as the marker, atomically and once per row, and a test shows a planted old row come out as a marker with the rest of the row unchanged.
   Complexity: S
 
-- [ ] P2: Let no missing clock push `staleAfter` later, and show the stale panel by it
-  Why: a82ddce1 leaves a part with no parseable time out of the minimum, so a build whose feed has no `cachedAt`, or whose catalog record is missing or has no verdict, gets the fetch deadline and passes the live check for 34 more hours, though it's `attention-required` and the README says the first part to expire sets it. And `/status/`'s "gone stale" panel (`public/scripts/status-freshness.js`) reads only the two age cards, so once the catalog deadline passes, `smoke:live` and `deploy:status` fail while the page stays green.
-  Evidence: eighteenth drain review, 2026-09-24; `src/data/generated-trust.ts:324-329`, `src/pages/status.astro:121-122`.
-  Touches: `src/data/generated-trust.ts`, `public/scripts/status-freshness.js`, `src/pages/status.astro`, `test/status-freshness.test.mjs`.
-  Acceptance: a part that is warned stale with no parseable time puts `staleAfter` at or before `evaluatedAt`, and the status page shows its stale panel once the current time is past `generatedData.staleAfter`, each with a test.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit

@@ -205,15 +205,18 @@ const cmdkSections = [
       )}
 
       {/* Revealed by status-freshness.js when the deployed build has aged past
-          the freshness contract since it was published. A build-time warning
-          cannot cover this case: at build time the data was fresh. */}
-      <div class="status-warning-panel" id="status-stale-now" role="status" aria-label="Deployment freshness warning" hidden>
+          the freshness contract since it was published: an age card passes its
+          limit, or the viewer's clock passes staleAfter, the first deadline of
+          any part of the data (the catalog check's included, which has no
+          card). A build-time warning cannot cover this case: at build time the
+          data was fresh. */}
+      <div class="status-warning-panel" id="status-stale-now" role="status" aria-label="Deployment freshness warning" data-stale-after={generatedData.staleAfter ?? ''} hidden>
         <div class="status-warning-title">This deployment has gone stale</div>
         <ul>
           <li>
-            The cached GitHub data behind this page is older than the {generatedData.maxAgeHours}h freshness
-            contract. The site has not been rebuilt since that data was fetched, so counts and dates
-            here may lag the real repositories.
+            Part of the data behind this page (the GitHub fetch, the profile feed or the catalog check)
+            is older than the {generatedData.maxAgeHours}h freshness contract. The site hasn't been
+            rebuilt since, so counts and dates here may lag the real repositories.
           </li>
         </ul>
       </div>

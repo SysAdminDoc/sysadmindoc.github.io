@@ -257,6 +257,31 @@ test.describe('status freshness state coverage', () => {
     await expect(card.locator('.sr-only')).toHaveText('Healthy');
     await expect(page.locator('#status-stale-now')).toBeHidden();
   });
+
+  // The eighteenth drain review: past the catalog check's deadline, which has
+  // no card, smoke:live and deploy:status failed while this page stayed green.
+  test('the stale panel shows once the clock passes staleAfter, whatever the cards say', async ({ page }) => {
+    const card = dataAgeCard(page);
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await page.goto('/status/', { waitUntil: 'load' });
+    const iso = await card.getAttribute('data-freshness-iso');
+    expect(await page.locator('#status-stale-now').getAttribute('data-stale-after'), 'the page carries staleAfter').toBeTruthy();
+    const viewAt = Date.parse(iso) + 60 * 60 * 1000;
+    const withDeadline = async (deadline) => {
+      await page.unroute('**/status/');
+      await page.route('**/status/', async (route) => {
+        const response = await route.fetch();
+        const html = (await response.text()).replace(/data-stale-after="[^"]*"/, `data-stale-after="${new Date(deadline).toISOString()}"`);
+        await route.fulfill({ response, body: html });
+      });
+      await prepareAtClock(page, '/status/', viewAt);
+      await expect(card.locator('.sr-only')).toHaveText('Healthy');
+    };
+    await withDeadline(viewAt - 60_000);
+    await expect(page.locator('#status-stale-now')).toBeVisible();
+    await withDeadline(viewAt + 60_000);
+    await expect(page.locator('#status-stale-now')).toBeHidden();
+  });
 });
 
 test.describe('empty catalog state coverage', () => {

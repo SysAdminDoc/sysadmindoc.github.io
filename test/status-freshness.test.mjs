@@ -33,14 +33,16 @@ test('staleAfter is fetchedAt plus the contract, and evaluatedAt is the build', 
 // The third drain review: the profile feed and the catalog check keep their
 // own 36-hour clocks, so a fresh fetch carried an older feed past its deadline.
 test('staleAfter is the earliest deadline of the fetch, the profile feed and the catalog check', () => {
-  const trust = (profileAt, catalog) =>
+  /** @type {any} */
+  const measured = { generatedAt: '2026-09-21T10:45:00Z', complete: true };
+  const trust = (profileAt, catalog = measured, source = 'live') =>
     buildGeneratedDataTrust({
       stats: { fetchedAt: '2026-09-21T10:00:00Z', totalRepos: 10, totalStars: 5 },
       starEntries: 0,
       metadataEntries: 0,
       readmeEntries: 0,
       releaseEntries: 0,
-      profileFeedInfo: { active: true, source: 'live', projectCount: 0, cachedAt: profileAt },
+      profileFeedInfo: { active: true, source, projectCount: 0, cachedAt: profileAt },
       catalogDrift: catalog,
       now: BUILD,
     });
@@ -48,8 +50,13 @@ test('staleAfter is the earliest deadline of the fetch, the profile feed and the
   assert.equal(trust('2026-09-21T10:30:00Z').staleAfter, '2026-09-22T22:00:00.000Z', 'a newer feed leaves the fetch deadline');
   assert.equal(trust('2026-09-21T10:30:00Z', { generatedAt: '2026-09-20T20:00:00Z', complete: true }).staleAfter, '2026-09-22T08:00:00.000Z', 'so does an older catalog check');
   assert.equal(trust('2026-09-21T10:30:00Z', { generatedAt: '2026-09-18T20:00:00Z', complete: true }).staleAfter, '2026-09-20T08:00:00.000Z', 'an expired catalog check puts it in the past');
-  assert.equal(trust('2026-09-21T10:30:00Z', { generatedAt: '2026-09-18T20:00:00Z' }).staleAfter, '2026-09-22T22:00:00.000Z', 'a record with no verdict measured nothing');
-  assert.equal(trust(null).staleAfter, '2026-09-22T22:00:00.000Z', 'a feed with no time is already reported stale');
+  // The eighteenth drain review: a part with no time of its own is past its
+  // contract already, so less evidence can't buy a later deadline.
+  assert.equal(trust('2026-09-21T10:30:00Z', { generatedAt: '2026-09-18T20:00:00Z' }).staleAfter, BUILD.toISOString(), 'a record with no verdict measured nothing');
+  assert.equal(trust('2026-09-21T10:30:00Z', null).staleAfter, BUILD.toISOString(), 'nor did a missing one');
+  assert.equal(trust(null).staleAfter, BUILD.toISOString(), 'a feed with no time is already stale');
+  assert.equal(trust('not-a-date').staleAfter, BUILD.toISOString());
+  assert.equal(trust('2026-09-21T10:30:00Z', null, 'fixture').staleAfter, '2026-09-22T22:00:00.000Z', 'a fixture build is never catalog-checked, and says so nowhere');
   // The live file keeps failing once the earliest deadline passes.
   const live = { generatedData: trust('2026-09-20T12:00:00Z') };
   assert.throws(() => checkStatusFreshness(live, Date.parse('2026-09-22T01:00:00Z')), /went past its 36h freshness contract at 2026-09-22T00:00:00\.000Z/);
