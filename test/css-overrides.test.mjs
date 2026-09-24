@@ -28,6 +28,26 @@ test('what can still apply is left alone', () => {
   assert.deepEqual(found('.a{margin-top:1px}\n.a{margin:0}'), [], 'a shorthand is another property');
 });
 
+// Three live declarations the rule used to call dead (eighth drain review).
+test('two anonymous layers are two layers, and the earlier one wins on !important', () => {
+  assert.deepEqual(found('@layer{.a{color:red !important}}\n@layer{.a{color:blue !important}}'), [], 'browsers apply the red');
+  assert.deepEqual(found('@layer{.a{color:red}}\n@layer{.a{color:blue}}'), [], "the audit doesn't order anonymous layers, so it keeps both");
+  assert.deepEqual(found('@layer x{.a{color:red !important}}\n@layer x{.a{color:blue !important}}'), ['.a color 1>2'], 'one named layer is one layer');
+});
+
+test('custom property names keep their case, and other property names lose it', () => {
+  assert.deepEqual(found('.a{--Accent:red}\n.a{--accent:blue}'), [], 'two properties');
+  assert.deepEqual(found('.a{--accent:red}\n.a{--accent:blue}'), ['.a --accent 1>2']);
+  assert.deepEqual(found('.a{COLOR:red}\n.a{color:blue}'), ['.a COLOR 1>2']);
+});
+
+test('a vendor-prefixed value and the values around it are fallbacks for each other', () => {
+  assert.deepEqual(found('.a{width:-webkit-fill-available}\n.a{width:stretch}'), [], 'a browser without stretch keeps the prefixed value');
+  assert.deepEqual(found('.a{width:stretch}\n.a{width:-webkit-fill-available}'), [], 'and one without the prefix keeps stretch');
+  assert.deepEqual(found('.a{width:100%}\n.a{width:-moz-available}\n.a{width:stretch}'), [], 'and one with neither keeps 100%');
+  assert.deepEqual(found('.a{width:100%}\n.a{width:stretch}'), ['.a width 1>2'], 'without a prefix in the chain, nothing is a fallback');
+});
+
 test('a later !important replaces an earlier normal declaration', () => {
   assert.deepEqual(found('.a{color:red}\n.a{color:blue !important}'), ['.a color 1>2']);
   assert.deepEqual(found('.a{color:red !important}\n.a{color:blue !important}'), ['.a color 1>2']);

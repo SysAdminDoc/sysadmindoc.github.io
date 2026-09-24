@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Keep `css:audit` from calling live declarations dead
-  Why: The dead-declaration rule reports the earlier of two `!important` declarations in anonymous `@layer {}` blocks, which browsers apply, folds custom property names to lower case so `--Accent` and `--accent` read as one, and would delete a working fallback across rules such as `-webkit-fill-available` before `stretch`. Nothing in today's source trips it.
-  Evidence: eighth drain review on synthetic CSS, 2026-09-23; `scripts/lib/css-overrides.mjs`.
-  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
-  Acceptance: each of the three cases passes `css:audit`, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Pin the fixture build's layout checks and file four fixes under Fixed
   Why: The live-card check accepts 1 to 6 cards, though the fixture build it runs on renders exactly 6. The gutter check looks only at `h1`-`h3`, `p`, `li`, `dt`, `dd`, `blockquote` and `figcaption`, while the CHANGELOG says it covers any page text. Four fixes sit under `### Removed`.
   Evidence: eighth drain review, 2026-09-23; `tests/playwright/portfolio-audits.spec.mjs:429-430,468`; `CHANGELOG.md:38-41`.
