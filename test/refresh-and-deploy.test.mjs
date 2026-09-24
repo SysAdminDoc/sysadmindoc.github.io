@@ -212,12 +212,13 @@ test('a step that leaves a process holding its output does not hold the run', { 
   // How long npm takes to get a script running here, right now, which the
   // next step pays before its first line.
   const startMs = npmStartMs(dir);
+  const graceMs = 2_000;
 
   const { child, exited } = runRunner(dir, {
     ...process.env,
     GITHUB_TOKEN: 'test-token',
     REFRESH_STEP_TIMEOUT_MS: '45000',
-    REFRESH_OUTPUT_GRACE_MS: '2000',
+    REFRESH_OUTPUT_GRACE_MS: String(graceMs),
     npm_config_update_notifier: 'false',
   });
   runnerChild = child;
@@ -243,16 +244,17 @@ test('a step that leaves a process holding its output does not hold the run', { 
   // last command to the next step really running. The tenth drain review
   // timed this step's OK line and the twelfth its successor's START line, and
   // a runner can log either on time and still sit on the pipes before it
-  // spawns anything. npm's own start, measured just before, is allowed for
-  // three times over, so a slow machine can't fail it and a 30 s wait can't
-  // pass it.
+  // spawns anything. The next step pays one npm start, measured just before;
+  // half as much again and 3 s cover a machine that slows down meanwhile.
+  // The fifteenth drain review passed runners that sat 8 s too long inside
+  // the old 10 s plus three npm starts, and 30 s once starts were slowed.
   const doneAt = Number(await fs.readFile(path.join(dir, '.tmp', 'step-done.txt'), 'utf8'));
   const nextAt = Number(await fs.readFile(path.join(dir, '.tmp', 'next-started.txt'), 'utf8').catch(() => 'NaN'));
   assert.ok(Number.isFinite(doneAt) && Number.isFinite(nextAt), 'the step and the next one both recorded their times');
-  const budgetMs = 10_000 + 3 * startMs;
+  const budgetMs = graceMs + 3_000 + 1.5 * startMs;
   assert.ok(
     nextAt - doneAt < budgetMs,
-    `the next step started ${((nextAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s and npm takes ${(startMs / 1000).toFixed(1)} s here`,
+    `the next step started ${((nextAt - doneAt) / 1000).toFixed(1)} s after the step's last command, against ${(budgetMs / 1000).toFixed(1)} s; the grace is ${graceMs / 1000} s and npm takes ${(startMs / 1000).toFixed(1)} s here`,
   );
 });
 

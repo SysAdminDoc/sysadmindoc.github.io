@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Tighten the holder test's budget
-  Why: It allows 10 s plus three npm starts, so at normal speed a runner that releases 8 s late, or waits 8 s after logging OK or START, passes at about 10.25 s against 10.7 s; slowed by 5 s per start, the budget reaches 55.9 s and the 30 s mutants pass at 47.3 s.
-  Evidence: fifteenth drain review, 2026-09-24; `test/refresh-and-deploy.test.mjs:252`.
-  Touches: `test/refresh-and-deploy.test.mjs`.
-  Acceptance: the 8 s and 30 s mutants fail at normal speed and the 30 s ones slowed, while the unchanged runner passes both ways.
-  Complexity: S
-
 - [ ] P3: Narrow the gutter check's off-screen skip, and stop two false alarms
   Why: Text is skipped when wholly off-screen and any ancestor is positioned, so a `<p>` moved off by a transform or a negative margin inside a positioned card passes. `aria-hidden` text at `opacity: 0` near the edge fails though it isn't drawn, and an ellipsis-truncated line fails on text it hides.
   Evidence: fifteenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:494-500,519`.
