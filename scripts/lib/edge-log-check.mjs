@@ -88,8 +88,14 @@ export function defaultLogProblem(text, { mustExclude = [] } = {}) {
  * @returns {string | null}
  */
 function filterProblem(logger, { mustExclude = [], subject, possessive }) {
-  if (String(logger.level ?? '').toLowerCase() === 'debug') {
+  const level = String(logger.level ?? '');
+  if (level.toLowerCase() === 'debug') {
     return `${subject} runs at DEBUG, which logs every proxied request in full`;
+  }
+  // Caddy fills placeholders in the level first, so `{env.LVL}` can come out
+  // as debug (seventeenth drain review).
+  if (level.includes('{')) {
+    return `${subject} takes its level from a placeholder (${level}), which could come out as DEBUG`;
   }
   const encoder = logger.encoder ?? {};
   if (encoder.format !== 'filter') {

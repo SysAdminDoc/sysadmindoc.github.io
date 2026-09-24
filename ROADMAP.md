@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: the audit runs with the CPU starved (a busy loop on every core, or the browser processes slowed), the longest test time is reported against 90 s, and the limits change if it doesn't pass.
   Complexity: S
 
-- [ ] P3: Refuse a Caddy logger level with a placeholder in it
-  Why: `scripts/lib/edge-log-check.mjs:91` compares the level literally, but Caddy fills placeholders first, so `level: "{env.LVL}"` with `LVL=debug` passes and logs debug entries.
-  Evidence: seventeenth drain review, 2026-09-24.
-  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: a level containing `{` is refused, with a test.
-  Complexity: S
-
 ## Research-Driven Additions
 
 Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the owner's decision went to Roadmap_Blocked.md instead.

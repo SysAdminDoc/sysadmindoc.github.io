@@ -200,6 +200,10 @@ test('the old exclusion-only setup, and any gap in the filter, fails', () => {
   assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, error: { filter: 'regexp', regexp: 'broken pipe', value: 'x' } }))) ?? '', /keeps addresses in error text/);
   assert.match(defaultLogProblem(withFields((fields) => ({ ...fields, error: undefined }))) ?? '', /keeps addresses in error text/);
   assert.match(defaultLogProblem(JSON.stringify({ ...filtered, level: 'DEBUG' })) ?? '', /runs at DEBUG/);
+  // Caddy fills placeholders in the level before reading it (seventeenth drain review).
+  assert.match(defaultLogProblem(JSON.stringify({ ...filtered, level: '{env.LVL}' })) ?? '', /takes its level from a placeholder \(\{env\.LVL\}\)/);
+  assert.match(loggingProblem(JSON.stringify({ ...edgeLogs(), extra: { ...filtered, level: '{env.LVL}' } }), { ...edgeOptions, realFiles: edgeFiles }) ?? '', /extra logger.*placeholder/);
+  assert.equal(defaultLogProblem(JSON.stringify({ ...filtered, level: 'INFO' })), null);
   assert.match(defaultLogProblem(JSON.stringify({ ...filtered, exclude: ['http.log.access.portfolio'] }), edgeOptions) ?? '', /doesn't exclude http\.log\.error\.portfolio/);
   assert.match(defaultLogProblem('null') ?? '', /no default logger/);
   assert.match(defaultLogProblem("wget: can't connect to remote host") ?? '', /could not read/);
