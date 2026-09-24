@@ -38,13 +38,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: an IPv6 address in `error` text is masked on both servers, `remote` is deleted, and the deploy fails on a filter without either.
   Complexity: S
 
-- [ ] P3: Time the holder test from the next step's own start
-  Why: The test now times the runner's `START profile-feed:sync` line, but a runner that logs START on time and then waits up to 30 s for the held step's pipes before spawning passed it in 32.7 s. A log line is still standing in for the run moving on.
-  Evidence: twelfth drain review, 2026-09-24; `test/refresh-and-deploy.test.mjs:279-282`.
-  Touches: `test/refresh-and-deploy.test.mjs`.
-  Acceptance: the fake next step records when it actually starts, the test times that, and the START-then-wait mutant fails while the unchanged runner passes, also slowed.
-  Complexity: S
-
 - [ ] P3: Check every logger that writes to the edge container's log
   Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
   Evidence: eighth drain review, 2026-09-23; `verifyEdgeLogging` in `scripts/deploy-vps.mjs`.

@@ -196,17 +196,22 @@ test('a step that leaves a process holding its output does not hold the run', { 
       'setTimeout(() => {}, 60000);',
     ].join('\n'),
   );
-  // The step's last command stamps the time, just before its shell exits.
+  // The step's last command stamps the time, just before its shell exits, and
+  // the next step stamps the moment it really starts running.
   await fs.writeFile(path.join(dir, 'done.cjs'), "require('fs').writeFileSync('.tmp/step-done.txt', String(Date.now()));");
+  await fs.writeFile(path.join(dir, 'next.cjs'), "require('fs').writeFileSync('.tmp/next-started.txt', String(Date.now())); process.exit(3);");
   const background = process.platform === 'win32' ? 'start /b node hold.cjs & node done.cjs' : 'node hold.cjs & node done.cjs';
   await fs.writeFile(
     path.join(dir, 'package.json'),
     JSON.stringify({
       name: 'refresh-fixture',
       private: true,
-      scripts: { 'fetch-stars': background, 'profile-feed:sync': 'node -e "process.exit(3)"' },
+      scripts: { 'fetch-stars': background, 'profile-feed:sync': 'node next.cjs', noop: 'node -e ""' },
     }),
   );
+  // How long npm takes to get a script running here, right now, which the
+  // next step pays before its first line.
+  const startMs = npmStartMs(dir);
 
   const { child, exited } = runRunner(dir, {
     ...process.env,
@@ -235,13 +240,20 @@ test('a step that leaves a process holding its output does not hold the run', { 
   assert.match(log, /WARN {2}fetch-stars: finished, but something it started still held its output after 2s/);
   assert.doesNotMatch(log, /STOP/);
   // It also moved on within the grace, give or take: counted from the step's
-  // last command rather than the run's start, so a slow machine can't stretch
-  // it, and up to the next step's START rather than this one's OK, which a
-  // runner could log on time and still wait on the pipes (tenth drain review).
+  // last command to the next step really running. The tenth drain review
+  // timed this step's OK line and the twelfth its successor's START line, and
+  // a runner can log either on time and still sit on the pipes before it
+  // spawns anything. npm's own start, measured just before, is allowed for
+  // three times over, so a slow machine can't fail it and a 30 s wait can't
+  // pass it.
   const doneAt = Number(await fs.readFile(path.join(dir, '.tmp', 'step-done.txt'), 'utf8'));
-  const nextAt = Date.parse(log.match(/^(\S+) START profile-feed:sync$/m)?.[1] ?? '');
-  assert.ok(Number.isFinite(doneAt) && Number.isFinite(nextAt), 'the step and the runner both recorded their times');
-  assert.ok(nextAt - doneAt < 10_000, `the run moved on ${((nextAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s`);
+  const nextAt = Number(await fs.readFile(path.join(dir, '.tmp', 'next-started.txt'), 'utf8').catch(() => 'NaN'));
+  assert.ok(Number.isFinite(doneAt) && Number.isFinite(nextAt), 'the step and the next one both recorded their times');
+  const budgetMs = 10_000 + 3 * startMs;
+  assert.ok(
+    nextAt - doneAt < budgetMs,
+    `the next step started ${((nextAt - doneAt) / 1000).toFixed(1)} s after the step's last command; the grace is 2 s and npm takes ${(startMs / 1000).toFixed(1)} s here`,
+  );
 });
 
 test('an unsigned featured release still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
