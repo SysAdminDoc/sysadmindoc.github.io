@@ -16,10 +16,10 @@
 //
 //   --dist <path>   source build to copy (default dist)
 //   --keep          leave the scratch copy in place for inspection
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { noVerdict, runAudit } from './lib/run-audit.mjs';
 
 const root = process.cwd();
 const distArg = process.argv.indexOf('--dist');
@@ -480,15 +480,6 @@ function resetScratch() {
   fs.cpSync(sourceDist, scratch, { recursive: true });
 }
 
-function runAudit(args) {
-  try {
-    execFileSync(process.execPath, args, { cwd: root, stdio: 'pipe', windowsHide: true });
-    return { status: 0, stderr: '' };
-  } catch (error) {
-    return { status: typeof error.status === 'number' ? error.status : 1, stderr: String(error.stderr ?? '') };
-  }
-}
-
 console.log('Audit gate self-test');
 console.log(`  source build: ${path.relative(root, sourceDist).replace(/\\/g, '/') || sourceDist}`);
 
@@ -497,8 +488,14 @@ for (const testCase of cases) {
   resetScratch();
   testCase.prepare?.();
 
-  // The clean copy must pass, or a "failure" below proves nothing.
-  const clean = runAudit(testCase.args);
+  // The clean copy must pass, or a "failure" below proves nothing. A run that
+  // hangs or is killed gives no verdict either way.
+  const clean = runAudit(testCase.args, { cwd: root });
+  const cleanHung = noVerdict(clean);
+  if (cleanHung) {
+    failures.push(`${testCase.name}: ${cleanHung} on the unmodified build, so it gave no verdict`);
+    continue;
+  }
   if (clean.status !== 0) {
     failures.push(`${testCase.name}: refused the unmodified build (exit ${clean.status}), so its planted-violation result means nothing`);
     continue;
@@ -509,7 +506,12 @@ for (const testCase of cases) {
     continue;
   }
 
-  const planted = runAudit(testCase.args);
+  const planted = runAudit(testCase.args, { cwd: root });
+  const plantedHung = noVerdict(planted);
+  if (plantedHung) {
+    failures.push(`${testCase.name}: ${plantedHung} with ${testCase.violation} planted, which is no rejection`);
+    continue;
+  }
   if (planted.status === 0) {
     failures.push(`${testCase.name}: passed with ${testCase.violation} planted, so the gate does not check what it claims`);
     continue;

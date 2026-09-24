@@ -274,6 +274,31 @@ test('the build removes dist/ first so stale artifacts cannot ship', async () =>
   }
 });
 
+// 2026-09-24: og-cards:audit hung in sharp on a plant, build:ci waited, and
+// killing it would have counted as the plant being rejected.
+test('a self-test run that hangs or is killed gives no verdict, and the self-test fails on it', async () => {
+  const { noVerdict, runAudit } = await import('../scripts/lib/run-audit.mjs');
+  const hang = runAudit(['-e', 'setInterval(() => {}, 1000)'], { cwd: root, timeoutMs: 1500 });
+  assert.equal(hang.status, null);
+  assert.equal(hang.timedOut, true);
+  assert.equal(noVerdict(hang, 1500), 'was still running after 1.5s');
+  const refused = runAudit(['-e', 'console.error("planted violation found"); process.exit(1)'], { cwd: root });
+  assert.deepEqual({ ...refused, stderr: refused.stderr.trim() }, { status: 1, stderr: 'planted violation found', timedOut: false });
+  assert.equal(noVerdict(refused), null);
+  assert.deepEqual(runAudit(['-e', ''], { cwd: root }), { status: 0, stderr: '', timedOut: false });
+  assert.equal(noVerdict({ status: null, stderr: '', timedOut: false }), 'was killed before it exited');
+
+  const script = await fs.readFile(path.join(root, 'scripts', 'audit-gate-selftest.mjs'), 'utf8');
+  const clean = script.indexOf('const cleanHung = noVerdict(clean);');
+  const cleanPass = script.indexOf('if (clean.status !== 0) {');
+  const planted = script.indexOf('const plantedHung = noVerdict(planted);');
+  const plantedPass = script.indexOf('if (planted.status === 0) {');
+  assert.ok(clean > 0 && clean < cleanPass, 'a hung clean run is caught before its exit code is read');
+  assert.ok(planted > 0 && planted < plantedPass, 'and a hung planted run before it can count as a rejection');
+  assert.match(script, /if \(cleanHung\) \{\s*failures\.push\(/);
+  assert.match(script, /if \(plantedHung\) \{\s*failures\.push\(/);
+});
+
 test('every dist-reading audit is proven able to reject a planted violation', async () => {
   const pkg = await readPackage();
   const script = await fs.readFile(path.join(root, 'scripts', 'audit-gate-selftest.mjs'), 'utf8');

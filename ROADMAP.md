@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Give each gate self-test run a time limit, and count running out as a failure
-  Why: On 2026-09-24 `og-cards:audit` hung in sharp on the planted blank raster (0.25 s of CPU in 13 minutes), and `runAudit` in `scripts/audit-gate-selftest.mjs:483` has no timeout, so `build:ci` waited with it; killing the process then counted as the plant being rejected, which proves nothing. A nightly deploy would sit on its 45-minute preflight limit instead.
-  Evidence: 2026-09-24 restore build; `scripts/audit-gate-selftest.mjs:483-490`.
-  Touches: `scripts/audit-gate-selftest.mjs`, `test/toolchain.test.mjs`.
-  Acceptance: each audit run gets a time limit, a run that hits it fails the self-test with its name, and neither a hung clean run nor a hung planted run can pass.
-  Complexity: S
-
 - [ ] P2: Store only the site's own samples in the CSP sink, and a marker for the rest
   Why: Four rounds of scrub rules still leak. The seventeenth review got through `jane.doe&commat;example.com`, the JS octal `jane.doe\100example.com`, `(at)` and `[at]` spellings, standard base64 keys (`+` and `/` split the run; 28% of random 12-byte tokens survived whole), IPv4 and IPv6 addresses, a MAC address and a dotted session ID. The sample exists to tell the site's own inline code from an extension's, and the site knows its own inline blocks.
   Evidence: seventeenth drain review, 2026-09-24; `deploy/vps/csp-report-server.mjs:169-203`.
