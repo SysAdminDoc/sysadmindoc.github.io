@@ -306,6 +306,46 @@ test('an unsigned featured release still deploys, then fails the run as drift', 
   assert.match(log, /PROVENANCE 1 featured release\(s\) without a checksum or attestation: Alpha@v1\.0\.0/);
 });
 
+// 2026-09-24 23:01Z: a new public repo reached the profile feed, the README
+// still said 205, and the preflight's tests stopped the whole deploy.
+test('a README count the synced data has outgrown still deploys, then fails the run as drift', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  await fs.mkdir(path.join(dir, 'src', 'data'), { recursive: true });
+  await fs.writeFile(path.join(dir, 'README.md'), 'catalog (205 feed-backed / 2 local fallback)\nsmoke:live -- --expected-releases 1\n');
+  await fs.writeFile(path.join(dir, 'src', 'data', '_profile-projects.json'), JSON.stringify({ projectCount: 206 }));
+  await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), JSON.stringify([{ tag: 'v1' }]));
+  await fs.writeFile(path.join(dir, 'src', 'data', 'projects.ts'), 'export const catalog: CatalogEntry[] = [\n  { repo: "a" },\n  { repo: "b" },\n];\n');
+  // The fake preflight stands in for the test run: it passes only when the
+  // runner tells the README count test to step aside.
+  await fs.writeFile(path.join(dir, 'preflight.cjs'), "if (process.env.README_COUNTS_REPORT_ONLY !== '1') process.exit(9);");
+  await writeCspFixture(dir);
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node preflight.cjs',
+        'deploy:vps': "node -e \"require('fs').writeFileSync('deployed.marker', 'yes')\"",
+        'csp:reports': 'node csp.cjs',
+      },
+    }),
+  );
+
+  const { exited } = runRunner(dir, { ...process.env, GITHUB_TOKEN: 'test-token', PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10', npm_config_update_notifier: 'false' });
+  assert.equal(await exited, 1, 'the run reports failure');
+  assert.equal(await fs.readFile(path.join(dir, 'deployed.marker'), 'utf8'), 'yes', 'but the deploy went ahead');
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.status, 'drift');
+  assert.equal(status.step, 'readme counts');
+  assert.match(status.detail, /README counts: the README says 205 feed-backed projects, the profile feed has 206/);
+  const log = await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy.log'), 'utf8');
+  assert.match(log, /DRIFT the README says 205 feed-backed projects, the profile feed has 206/);
+});
+
 test('a security.txt inside its 60-day window still deploys, and the status carries the warning', { timeout: HANG_BOUND_MS }, async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));

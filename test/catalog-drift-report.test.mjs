@@ -123,8 +123,9 @@ test('the unattended refresh reports unsigned featured releases the same way', a
   assert.match(source, /PROVENANCE_REPORT_ONLY: '1'/);
   assert.match(source, /function readProvenanceDrift\(\)/);
   assert.equal((source.match(/PROVENANCE \$\{unsigned\.length\}/g) ?? []).length, 2);
-  // The deploy path also passes what the CSP report check found.
-  assert.equal((source.match(/writeStatus\('drift', driftRecord\(uncataloged, unsigned(?:, cspViolations)?\)\)/g) ?? []).length, 2);
+  // The deploy path also passes what the CSP report check found, and both
+  // pass the README count drift.
+  assert.equal((source.match(/writeStatus\('drift', driftRecord\(uncataloged, unsigned, (?:cspViolations|\[\]), readme\)\)/g) ?? []).length, 2);
 });
 
 test('the drift artifact is gitignored so a local check never becomes tracked data', async () => {

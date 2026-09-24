@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { readmeCountDrift, readmeCountInputs } from '../scripts/lib/readme-counts.mjs';
 
 const root = process.cwd();
 const indexPath = path.join(root, 'src', 'pages', 'index.astro');
@@ -29,22 +30,16 @@ test('homepage project count remains build-time truth without GitHub hydration',
 });
 
 test('README public command examples match generated portfolio counts', async (t) => {
-  const profilePath = path.join(root, 'src', 'data', '_profile-projects.json');
-  const releasesPath = path.join(root, 'src', 'data', '_releases.json');
-  const profileExists = await fs.access(profilePath).then(() => true, () => false);
-  const releasesExists = await fs.access(releasesPath).then(() => true, () => false);
-  if (!profileExists || !releasesExists) { t.skip('fixture files not installed — run npm run generated:fixtures'); return; }
-  const readme = await fs.readFile(readmePath, 'utf8');
-  const profile = JSON.parse(await fs.readFile(profilePath, 'utf8'));
-  const releases = JSON.parse(await fs.readFile(releasesPath, 'utf8'));
-  const projectsSource = await fs.readFile(path.join(root, 'src', 'data', 'projects.ts'), 'utf8');
-  const catalogBlock = projectsSource.match(/export const catalog: CatalogEntry\[] = \[[\s\S]*?\n\];/)?.[0] ?? '';
-  const localFallbackCount = catalogBlock.match(/\{ repo: /g)?.length ?? 0;
-
-  assert.ok(localFallbackCount > 0);
-  // These two describe the SOURCE corpora, which is what the README sentence claims.
-  assert.match(readme, new RegExp(`catalog \\(${profile.projectCount} feed-backed / ${localFallbackCount} local fallback\\)`));
-  assert.match(readme, new RegExp(`--expected-releases ${releases.length}`));
+  // The nightly syncs the data first and reports this as drift after it
+  // deploys (scripts/refresh-and-deploy.mjs), so a new upstream repo can't stop
+  // the deploy of everything else over a line of documentation.
+  if (process.env.README_COUNTS_REPORT_ONLY === '1') { t.skip('README count drift is reported by the nightly after it deploys'); return; }
+  const inputs = readmeCountInputs(root);
+  if (!inputs) { t.skip('fixture files not installed, run npm run generated:fixtures'); return; }
+  const readme = inputs.readme;
+  assert.ok(inputs.counts.fallbackCount > 0);
+  // The catalog counts describe the SOURCE corpora, which is what the README sentence claims.
+  assert.deepEqual(readmeCountDrift(readme, { ...inputs.counts, renderedCount: null }), []);
 
   // `--expected-projects` / `--expected-feed-items` are different numbers:
   // smoke-live-site.mjs compares them against the RENDERED /status.json,

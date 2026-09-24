@@ -31,6 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { withoutOutsideServer } from './lib/audit-server.mjs';
+import { readmeCountDrift, readmeCountInputs } from './lib/readme-counts.mjs';
 import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 import { restoreKilledRun } from './visual-gate.mjs';
 
@@ -290,13 +291,22 @@ function readProvenanceDrift() {
   }
 }
 
-function driftRecord(uncataloged, unsigned, cspViolations = []) {
+// What the README says about the catalog and releases against the data just
+// synced and built (scripts/lib/readme-counts.mjs); the preflight's test steps
+// aside under README_COUNTS_REPORT_ONLY so this can't stop a deploy.
+function readReadmeDrift() {
+  const inputs = readmeCountInputs(root);
+  return inputs ? readmeCountDrift(inputs.readme, inputs.counts) : [];
+}
+
+function driftRecord(uncataloged, unsigned, cspViolations = [], readme = []) {
   return {
-    failedStep: uncataloged.length > 0 ? 'catalog:audit' : unsigned.length > 0 ? 'data:summary:deploy' : 'csp:reports',
+    failedStep: uncataloged.length > 0 ? 'catalog:audit' : unsigned.length > 0 ? 'data:summary:deploy' : cspViolations.length > 0 ? 'csp:reports' : 'readme counts',
     detail: [
       uncataloged.length > 0 ? `uncataloged: ${uncataloged.join(', ')}` : '',
       unsigned.length > 0 ? `featured releases without a checksum or attestation: ${unsigned.join(', ')}` : '',
       cspViolations.length > 0 ? `new first-party CSP violations: ${cspViolations.join(', ')}` : '',
+      readme.length > 0 ? `README counts: ${readme.join('; ')}` : '',
     ]
       .filter(Boolean)
       .join('; '),
@@ -373,6 +383,8 @@ async function main() {
       CATALOG_AUDIT_REPORT_ONLY: '1',
       // Same treatment for an unsigned featured release in another repo.
       PROVENANCE_REPORT_ONLY: '1',
+      // And for the README's counts, which a new upstream repo changes.
+      README_COUNTS_REPORT_ONLY: '1',
     };
     if (!githubToken) {
       // Not fatal on its own: the preflight's own gate decides. Surfacing it here
@@ -394,13 +406,15 @@ async function main() {
     if (dryRun) {
       const uncataloged = readCatalogDrift();
       const unsigned = readProvenanceDrift();
+      const readme = readReadmeDrift();
       log('DONE  dry run complete; preflight passed and nothing was deployed');
-      if (uncataloged.length > 0 || unsigned.length > 0) {
+      if (uncataloged.length > 0 || unsigned.length > 0 || readme.length > 0) {
         if (uncataloged.length > 0) {
           log(`DRIFT ${uncataloged.length} uncataloged public repo(s): ${uncataloged.join(', ')}; /status/ reports an incomplete catalog`);
         }
         if (unsigned.length > 0) log(`PROVENANCE ${unsigned.length} featured release(s) without a checksum or attestation: ${unsigned.join(', ')}`);
-        writeStatus('drift', driftRecord(uncataloged, unsigned));
+        for (const line of readme) log(`DRIFT ${line}`);
+        writeStatus('drift', driftRecord(uncataloged, unsigned, [], readme));
         process.exit(1);
       }
       writeStatus('dry-run');
@@ -420,7 +434,8 @@ async function main() {
     const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);
     const uncataloged = readCatalogDrift();
     const unsigned = readProvenanceDrift();
-    if (uncataloged.length > 0 || unsigned.length > 0 || cspViolations.length > 0) {
+    const readme = readReadmeDrift();
+    if (uncataloged.length > 0 || unsigned.length > 0 || cspViolations.length > 0 || readme.length > 0) {
       // The site is fresh and honest about the gap, but somebody still has to
       // catalog these, sign those releases or look at what the browsers
       // refused, so the run reports failure rather than passing quietly.
@@ -430,7 +445,8 @@ async function main() {
       }
       if (unsigned.length > 0) log(`PROVENANCE ${unsigned.length} featured release(s) without a checksum or attestation: ${unsigned.join(', ')}`);
       if (cspViolations.length > 0) log(`CSP   ${cspViolations.length} new first-party violation(s): ${cspViolations.join(', ')}`);
-      writeStatus('drift', driftRecord(uncataloged, unsigned, cspViolations));
+      for (const line of readme) log(`DRIFT ${line}`);
+      writeStatus('drift', driftRecord(uncataloged, unsigned, cspViolations, readme));
       process.exit(1);
     }
     log(`DONE  deployed in ${elapsed}s`);

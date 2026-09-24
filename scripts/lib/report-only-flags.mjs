@@ -6,7 +6,7 @@
 // The strict provenance test failed every nightly run that way.
 import process from 'node:process';
 
-export const REPORT_ONLY_FLAGS = Object.freeze(['CATALOG_AUDIT_REPORT_ONLY', 'PROVENANCE_REPORT_ONLY']);
+export const REPORT_ONLY_FLAGS = Object.freeze(['CATALOG_AUDIT_REPORT_ONLY', 'PROVENANCE_REPORT_ONLY', 'README_COUNTS_REPORT_ONLY']);
 
 /**
  * `env` without any report-only flag, plus `extra`.
