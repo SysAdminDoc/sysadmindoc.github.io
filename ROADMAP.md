@@ -59,13 +59,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: the fake next step records when it actually starts, the test times that, and the START-then-wait mutant fails while the unchanged runner passes, also slowed.
   Complexity: S
 
-- [ ] P3: Read built CSS the way browsers do: any case, any closing tag spacing, SVG and style attributes
-  Why: A `<STYLE>` block, a block closed with `</style >`, and `LIGHT-DARK(` in a stylesheet copied as is all pass `css:output:audit`, and Chromium applies each. A `<style>` inside an SVG and a `style` attribute aren't read either (the CSP blocks the attribute). The CHANGELOG says the audit reads any built CSS or HTML. Separately, the CHANGELOG's "every pixel's colour has to match" skips that pixelmatch ignores pixels it takes for anti-aliasing.
-  Evidence: twelfth drain review, 2026-09-24; `scripts/audit-css-output.mjs:54`, `scripts/lib/css-output-check.mjs`.
-  Touches: those files, `scripts/audit-gate-selftest.mjs`, `CHANGELOG.md`.
-  Acceptance: each of those plants fails the audit, and both CHANGELOG lines say what the checks do.
-  Complexity: S
-
 - [ ] P3: Check every logger that writes to the edge container's log
   Why: The deploy reads back only the edge's `default` logger. A second logger with stderr or stdout output would pass the check while it writes visitors' addresses.
   Evidence: eighth drain review, 2026-09-23; `verifyEdgeLogging` in `scripts/deploy-vps.mjs`.

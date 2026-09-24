@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { cssOutputProblems } from './lib/css-output-check.mjs';
+import { cssOutputProblems, embeddedCss } from './lib/css-output-check.mjs';
 
 const root = process.cwd();
 const distArg = process.argv.indexOf('--dist');
@@ -47,13 +47,13 @@ const relative = (file) => path.relative(dist, file).replaceAll('\\', '/');
 for (const file of builtFiles(dist, '.css').sort()) {
   check(relative(file), fs.readFileSync(file, 'utf8'));
 }
-// The inline <style> blocks of every page. The critical CSS each page inlines
-// goes through the same minifier, and a page can carry blocks of its own.
-for (const file of builtFiles(dist, '.html').sort()) {
-  const html = fs.readFileSync(file, 'utf8');
-  for (const [index, match] of [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].entries()) {
-    check(`${relative(file)} <style> ${index + 1}`, match[1]);
-  }
+// The <style> blocks and style attributes of every page and SVG. The critical
+// CSS each page inlines goes through the same minifier, and a page or an image
+// can carry CSS of its own. They're read the way a browser reads them: a
+// <STYLE> block, or one closed with </style >, still applies (twelfth drain
+// review).
+for (const file of [...builtFiles(dist, '.html'), ...builtFiles(dist, '.svg')].sort()) {
+  for (const { label, css } of embeddedCss(fs.readFileSync(file, 'utf8'))) check(`${relative(file)} ${label}`, css);
 }
 if (prefixed === 0) problems.push('no built rule carries a prefixed backdrop blur, so this check saw nothing to check');
 
@@ -62,4 +62,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`  - ${problem}`);
   process.exit(1);
 }
-console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, no timeline in an animation shorthand, and no light-dark() left, across every built stylesheet and every page's inline styles.`);
+console.log(`CSS output audit passed: ${prefixed} prefixed blurs, each beside its standard property, no timeline in an animation shorthand, and no light-dark() left, across every built stylesheet and the styles in every page and SVG.`);

@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
 import { Features } from 'lightningcss';
-import { cssOutputProblems } from '../scripts/lib/css-output-check.mjs';
+import { cssOutputProblems, embeddedCss } from '../scripts/lib/css-output-check.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE, minifyCss } from '../scripts/lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -92,6 +92,24 @@ test('the output check finds a blur left without its standard property, or a fol
   assert.match(folded.problems.join('\n'), /timeline folded into the animation shorthand/);
   assert.match(cssOutputProblems(':root{--red:light-dark(#b42332,#f87171)}').problems.join('\n'), /a light-dark\(\) the minifier left in place/);
   assert.deepEqual(cssOutputProblems('d{width:1px}'), { problems: [], prefixed: 0 });
+});
+
+// The twelfth drain review got a light-dark() past the audit each of these
+// ways, and Chromium applies every one of them but the attribute, which the
+// CSP blocks.
+test('the output check reads CSS the way browsers do: any case, any closing-tag spacing, attributes too', () => {
+  assert.match(cssOutputProblems('.a{color:LIGHT-DARK(#000,#fff)}').problems.join('\n'), /light-dark/);
+  assert.equal(cssOutputProblems('A{-WEBKIT-BACKDROP-FILTER:blur(2px);BACKDROP-FILTER:blur(2px)}').prefixed, 1);
+  const found = embeddedCss(
+    '<STYLE>a{color:red}</STYLE><style media="x">b{color:red}</style ><main data-style="no" style="color:blue"><p STYLE=\'margin:0\'><a href="/?style=1">x</a></main>',
+  );
+  assert.deepEqual(found, [
+    { label: '<style> 1', css: 'a{color:red}' },
+    { label: '<style> 2', css: 'b{color:red}' },
+    { label: 'style attribute 1', css: 'color:blue' },
+    { label: 'style attribute 2', css: 'margin:0' },
+  ]);
+  assert.deepEqual(embeddedCss('<svg><style>.x{fill:red}</style></svg>'), [{ label: '<style> 1', css: '.x{fill:red}' }]);
 });
 
 test('build:ci runs the output check on its own build, and the self-test proves it can fail', async () => {

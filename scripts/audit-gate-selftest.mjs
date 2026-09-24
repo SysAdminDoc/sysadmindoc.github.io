@@ -52,6 +52,7 @@ function scratchHtmlFiles(dir = scratch) {
 // mutation that violates exactly what that audit exists to catch. A case with
 // `expect` must also fail for that reason, not for something the plant broke
 // on the way.
+/** @type {{ name: string, args: string[], violation: string, expect?: RegExp, prepare?: () => void, plant: () => boolean }[]} */
 const cases = [
   {
     name: 'csp:audit:dist:style:elem',
@@ -364,6 +365,28 @@ const cases = [
     plant() {
       if (!fs.existsSync(path.join(scratch, file))) return false;
       writeScratch(file, `${readScratch(file)}\n.planted{color:light-dark(#000,#fff)}`);
+      return true;
+    },
+  })),
+  // Ways a browser still reads CSS that the audit once skipped (twelfth drain
+  // review): each applies in Chromium, or is an SVG's or an attribute's.
+  ...[
+    { kind: 'upper-case tag', form: 'an upper-case <STYLE> block', file: 'privacy/index.html', plantIn: (/** @type {string} */ html) => html.replace(/(<\/head>)/i, '<STYLE>.planted{color:light-dark(#000,#fff)}</STYLE>$1'), expect: /privacy\/index\.html <style> \d+: a light-dark/ },
+    { kind: 'spaced closing tag', form: 'a block closed with </style >', file: 'privacy/index.html', plantIn: (/** @type {string} */ html) => html.replace(/(<\/head>)/i, '<style>.planted{color:light-dark(#000,#fff)}</style >$1'), expect: /privacy\/index\.html <style> \d+: a light-dark/ },
+    { kind: 'upper-case function', form: 'an upper-case LIGHT-DARK()', file: 'styles/offline.css', plantIn: (/** @type {string} */ css) => `${css}\n.planted{color:LIGHT-DARK(#000,#fff)}`, expect: /styles\/offline\.css: a light-dark/ },
+    { kind: 'SVG style', form: "an SVG's own <style>", file: 'favicon.svg', plantIn: (/** @type {string} */ svg) => svg.replace(/(<svg\b[^>]*>)/i, '$1<style>.planted{fill:light-dark(#000,#fff)}</style>'), expect: /favicon\.svg <style> \d+: a light-dark/ },
+    { kind: 'style attribute', form: 'a style attribute', file: 'privacy/index.html', plantIn: (/** @type {string} */ html) => html.replace(/<main\b/i, '<main style="color:light-dark(#000,#fff)"'), expect: /privacy\/index\.html style attribute \d+: a light-dark/ },
+  ].map(({ kind, form, file, plantIn, expect }) => ({
+    name: `css:output:audit (${kind})`,
+    args: ['scripts/audit-css-output.mjs', '--dist', scratch],
+    violation: `a light-dark() in ${file}, in ${form}`,
+    expect,
+    plant() {
+      if (!fs.existsSync(path.join(scratch, file))) return false;
+      const before = readScratch(file);
+      const planted = plantIn(before);
+      if (planted === before) return false;
+      writeScratch(file, planted);
       return true;
     },
   })),
