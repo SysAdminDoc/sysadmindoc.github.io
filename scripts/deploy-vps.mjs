@@ -243,7 +243,7 @@ function verifyAccessLogShape(since) {
 }
 
 // The smoke's synthetic CSP report, read back from the store. Only the sink in
-// this repo files it as synthetic with its sample scrubbed, so this also proves
+// this repo files it as synthetic with its sample stored as [other], so this also proves
 // the container runs the code that was just shipped. The rows are picked by
 // the run id this deploy gave the smoke, so no report posted after it, forged
 // or real, can stand in for it or push it out of view.
@@ -256,7 +256,7 @@ function verifyCspReportShape(since, runId) {
   const oldest = captureRemote("docker exec portfolio-csp-reporter sh -c 'head -n1 /var/lib/csp-reports/reports.ndjson.1 2>/dev/null; true'");
   const problem = smokeReportProblem(output, { since, runId, oldest });
   if (problem) throw new Error(`deploy-vps: ${problem}.`);
-  console.log('deploy-vps: the CSP report sink filed the smoke report as synthetic, with its sample scrubbed.');
+  console.log('deploy-vps: the CSP report sink filed the smoke report as synthetic, with its sample stored as [other].');
 }
 
 function writeProjectRedirects(distDir) {
