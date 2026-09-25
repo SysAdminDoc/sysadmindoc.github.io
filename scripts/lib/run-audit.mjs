@@ -35,8 +35,16 @@ export function runAudit(args, { cwd = process.cwd(), timeoutMs = AUDIT_TIMEOUT_
   }
 }
 
+// Stop-Process and TerminateProcess(-1) leave -1 as the exit code, which
+// reads back unsigned. No audit exits with it on its own, so a run that
+// printed its reason and then hung until something ended it this way isn't a
+// rejection (twenty-first drain review). A kill that leaves exit code 1
+// (taskkill) still can't be told apart; the self-test's timeout covers a hang.
+const KILLED_STATUS = 4294967295;
+
 /** Why a run gave no verdict, or null when it exited on its own. */
 export function noVerdict(run, timeoutMs = AUDIT_TIMEOUT_MS) {
+  if (run.status === KILLED_STATUS) return 'was killed before it exited';
   if (run.status !== null) return null;
   return run.timedOut ? `was still running after ${timeoutMs / 1000}s` : 'was killed before it exited';
 }

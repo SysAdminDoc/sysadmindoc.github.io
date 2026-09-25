@@ -292,6 +292,11 @@ test('a self-test run counts as a rejection only when it says why, not when it h
   assert.match(plantVerdict(refused, /another reason/) ?? '', /failed, but not for that reason/);
   assert.match(plantVerdict(runAudit(['-e', ''], { cwd: root }), /x/) ?? '', /^passed, so the gate does not check what it claims$/);
   assert.equal(noVerdict({ status: null, output: '', timedOut: false }), 'was killed before it exited');
+  // The twenty-first review: Stop-Process ends a process with 4294967295, so a
+  // hung audit that had already printed its reason read as a rejection.
+  const stopped = { status: 4294967295, output: 'og.png: dimensions 1x1, expected 1200x630\n', timedOut: false };
+  assert.equal(noVerdict(stopped), 'was killed before it exited');
+  assert.match(plantVerdict(stopped, /dimensions 1x1/) ?? '', /^was killed before it exited, which is no rejection$/);
 
   // A real kill from outside, the way the 2026-09-24 hang was ended.
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'run-audit-kill-'));

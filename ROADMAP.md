@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: any report-only flag set outside the runner prints a warning that names it, and the preflight fails unless the runner set it.
   Complexity: S
 
-- [ ] P3: Count a force-killed planted audit as no verdict on Windows
-  Why: `plantVerdict` counts any non-null exit as a rejection once the expected text is in the output. A Windows force-kill exits 4294967295, so an audit that printed its reason and then hung until something killed it still reads as rejected.
-  Evidence: twenty-first review; a script that prints the og-cards reason and idles, killed with `Stop-Process -Force` after 2.5 s, gives `{status: 4294967295, timedOut: false}` and a null verdict.
-  Touches: `scripts/lib/run-audit.mjs`, its test.
-  Acceptance: a kill status (4294967295, or a signal) is no verdict, with a test.
-  Complexity: S
-
 - [ ] P3: Close the CSS output audit's foreign-content, comment and script-escape gaps
   Why: 371502dd regressed two cases: an `.svg` whose `<style>` sits after `<p/>` keeps `light-dar&#x6b;(` undecoded because parse5 leaves foreign content there, and `@import "data:text/css,/*";...` hides a later import because comments are stripped inside strings. JS spellings still pass: `'light\-dark('`, octal `'\154ight-dark('`, a line continuation, `'light-'+'dark('`, an `onerror=` handler, and `<link rel=preload onload="this.rel='stylesheet'" href="data:...">`; `@import` data URIs with `\"`, a leading space or `; base64` are missed.
   Evidence: seventeenth drain review, 2026-09-24; `scripts/audit-css-output.mjs:57`, `scripts/lib/css-output-check.mjs:40-106`.
