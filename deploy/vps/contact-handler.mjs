@@ -992,8 +992,15 @@ export async function startServer(config = loadConfig()) {
   retryTimer.unref();
   await new Promise((resolve, reject) => {
     server.once('error', reject);
-    server.listen(config.port, config.host, () => resolve(undefined));
+    server.listen(config.port, config.host, () => {
+      server.off('error', reject);
+      resolve(undefined);
+    });
   });
+  // Past the listen, a server error (a failed accept, say) is logged. The
+  // listen's one-off listener used to stay on, so a second error found none
+  // and ended the process (twenty-third drain review).
+  server.on('error', (error) => console.error(`contact: server error: ${error.message}`));
   console.log(`contact: listening on ${config.host}:${config.port}`);
   return server;
 }

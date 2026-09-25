@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: CSS is preprocessed (CRLF, CR and form feed to LF) before comments are cut, url() is found at any distance and never inside a string, the import pattern runs in linear time with comments skipped, and each case has a test.
   Complexity: S
 
-- [ ] P3: Log every contact handler server error after it starts listening
-  Why: `startServer` attaches `server.once('error', reject)` for the listen and never removes it, so the first later server error is swallowed and a second is an unhandled `'error'` event that ends the process.
-  Evidence: twenty-third review, from the code (`deploy/vps/contact-handler.mjs:973`).
-  Touches: `deploy/vps/contact-handler.mjs`, its test.
-  Acceptance: the listen handler is removed once listening, a permanent handler logs later errors, and two emitted errors leave the server up, with a test.
-  Complexity: S
-
 - [ ] P3: Say so when a report-only flag is set outside the nightly runner
   Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
   Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.

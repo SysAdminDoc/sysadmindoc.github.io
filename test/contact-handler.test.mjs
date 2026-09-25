@@ -19,6 +19,7 @@ import {
   readToken,
   returnPath,
   signToken,
+  startServer,
   truncateBytes,
 } from '../deploy/vps/contact-handler.mjs';
 import { tokenWaitMs } from '../scripts/lib/lead-delivery-check.mjs';
@@ -1113,6 +1114,27 @@ test('each purge runs whatever the other does, and /healthz says when retention 
     assert.deepEqual(await handler.purgeExpired(), { leads: 1, legacy: 0 });
     assert.equal((await health()).retentionEnforced, true, 'a purge that works again restores it');
   });
+});
+
+// The twenty-third drain review: the listen's one-off error listener stayed
+// on, so the first later server error was swallowed and a second, with no
+// listener left, ended the process.
+test('server errors after the handler is listening are logged and leave it up', async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-contact-server-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const errors = t.mock.method(console, 'error', () => {});
+  t.mock.method(console, 'log', () => {});
+  const server = await startServer({ ...DEFAULT_CONFIG, ...TEST_CONFIG, ntfyUrl: 'http://127.0.0.1:9/portfolio-leads', storePath: path.join(dir, 'leads.ndjson'), host: '127.0.0.1', port: 0 });
+  try {
+    server.emit('error', Object.assign(new Error('accept failed once'), { code: 'EMFILE' }));
+    server.emit('error', Object.assign(new Error('accept failed twice'), { code: 'EMFILE' }));
+    assert.equal(server.listening, true);
+    const said = errors.mock.calls.map((call) => String(call.arguments[0])).join('\n');
+    assert.match(said, /contact: server error: accept failed once/);
+    assert.match(said, /contact: server error: accept failed twice/);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
 
 test('the retention period comes from CONTACT_RETENTION_DAYS', () => {
