@@ -56,7 +56,7 @@ for (const file of [...builtFiles(dist, '.html'), ...builtFiles(dist, '.svg')].s
   const text = fs.readFileSync(file, 'utf8');
   const unreadable = file.endsWith('.svg') ? svgUnreadable(text) : null;
   if (unreadable) problems.push(`${relative(file)}: ${unreadable}`);
-  for (const piece of embeddedCss(text)) {
+  for (const piece of embeddedCss(text, { svg: file.endsWith('.svg') })) {
     if (!piece.script) check(`${relative(file)} ${piece.label}`, piece.css);
     else if (scriptCarriesLightDark(piece.css)) problems.push(`${relative(file)} ${piece.label}: a script carries a light-dark() it could put on the page`);
   }

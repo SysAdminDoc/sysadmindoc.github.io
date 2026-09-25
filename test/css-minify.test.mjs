@@ -156,6 +156,36 @@ test('the output check reads what a browser reads, comments, SVG, links and scri
   assert.equal(svgUnreadable('<svg><style>.p{}</style></svg>'), null);
 });
 
+// The seventeenth drain review: each of these reaches a browser as a
+// light-dark() and passed the check.
+test('the output check reads SVG as XML, imports by their tokens, and every way a script can spell it', () => {
+  const lightDark = (css) => /light-dark/.test(cssOutputProblems(css).problems.join('\n'));
+  const svgStyles = embeddedCss('<svg xmlns="http://www.w3.org/2000/svg"><p/><style>a{color:light-dar&#x6b;(red,blue)}</style><g style="fill:light-dar&#107;(red,blue)"/></svg>', { svg: true });
+  assert.ok(lightDark(svgStyles.find((piece) => piece.label === '<style> 1')?.css ?? ''), 'an SVG style after <p/>, read as XML');
+  assert.ok(lightDark(svgStyles.find((piece) => piece.label === 'style attribute 1')?.css ?? ''), 'an SVG style attribute');
+  assert.ok(scriptCarriesLightDark(embeddedCss('<svg xmlns="http://www.w3.org/2000/svg"><rect onclick="this.style.fill=&apos;light-dark(red,blue)&apos;"/></svg>', { svg: true }).find((piece) => piece.script)?.css ?? ''), 'an SVG event handler');
+
+  const data = (css) => `data:text/css,${encodeURIComponent(css)}`;
+  assert.ok(lightDark(`@import "data:text/css,/*";@import "${data('b{color:light-dark(red,blue)}')}";/* a real comment */`), 'an import after one whose string holds /*');
+  assert.ok(lightDark('@import "data:text/css,a{content:\\"\\"}b{color:light-dark(red,blue)}";'), 'an escaped quote in the string');
+  assert.ok(lightDark(`@import " ${data('c{color:light-dark(red,blue)}')}";`), 'a leading space');
+  assert.ok(lightDark(`@import url("data:text/css; base64,${Buffer.from('d{color:light-dark(red,blue)}').toString('base64')}");`), 'a space before base64');
+
+  for (const [name, js] of [
+    ['an identity escape', "x.style.color = 'light\\-dark(red,blue)';"],
+    ['a legacy octal escape', "x.style.color = '\\154ight-dark(red,blue)';"],
+    ['a line continuation', "x.style.color = 'light-\\\ndark(red,blue)';"],
+    ['two strings joined', "x.style.color = 'light-' + 'dark(red,blue)';"],
+  ]) {
+    assert.ok(scriptCarriesLightDark(js), name);
+  }
+  assert.ok(!scriptCarriesLightDark("x.textContent = 'light and dark';"), 'no false alarm');
+
+  const page = embeddedCss(`<img src="x" onerror="this.style.color='light-dark(red,blue)'"><link rel="preload" as="style" onload="this.rel='stylesheet'" href="${data('e{color:light-dark(red,blue)}')}">`);
+  assert.ok(scriptCarriesLightDark(page.find((piece) => piece.label === 'event handler 1')?.css ?? ''), 'an onerror handler');
+  assert.ok(lightDark(page.find((piece) => piece.label === 'data: stylesheet link 1')?.css ?? ''), 'a preload a script turns into a stylesheet');
+});
+
 test('build:ci runs the output check on its own build, and the self-test proves it can fail', async () => {
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
   const steps = pkg.scripts['build:ci'].split('&&').map((step) => step.trim());
