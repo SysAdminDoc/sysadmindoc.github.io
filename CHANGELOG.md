@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- The CSP report sink logs a network error on its socket after it starts listening and keeps running. It had no handler for one at all, so any such error ended it.
 - A second network error on the contact handler's socket, such as running out of file handles twice, no longer ends the process. Errors after it starts listening are logged and it keeps serving.
 - Old contact records keep getting deleted on schedule even when one of the two clean-ups fails. A failing clean-up of the message store used to stop the one for the older submission log as well. The handler's `/healthz` now says when a clean-up has failed, and the deploy stops until it works again.
 - The gate self-test no longer counts a planted audit as rejected when the audit printed its reason and then hung until something force-killed it on Windows.

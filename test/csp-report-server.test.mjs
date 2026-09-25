@@ -373,6 +373,25 @@ test('the restore drops a line too long to be a report without holding it, and o
   });
 });
 
+// Found beside the contact handler's (twenty-third drain review): the sink had
+// no 'error' listener once listening, so any server error ended it.
+test('server errors after the sink is listening are logged and leave it up', async (t) => {
+  await withTempReporter({}, async ({ logPath }) => {
+    const errors = t.mock.method(console, 'error', () => {});
+    t.mock.method(console, 'log', () => {});
+    const server = await startServer({ ...DEFAULT_CONFIG, logPath, ownSamples: [], host: '127.0.0.1', port: 0 });
+    try {
+      if (!server.listening) await once(server, 'listening');
+      server.emit('error', Object.assign(new Error('accept failed'), { code: 'EMFILE' }));
+      server.emit('error', Object.assign(new Error('accept failed again'), { code: 'EMFILE' }));
+      assert.equal(server.listening, true);
+      assert.match(errors.mock.calls.map((call) => String(call.arguments[0])).join('\n'), /csp-report: server error: accept failed again/);
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+  });
+});
+
 // Reading both files whole took a 64 MiB container to its cap with two-byte
 // text (twentieth drain review). V8 keeps a string with one character past
 // Latin-1 at two bytes a character, so each 5 MB file here is 10 MB in memory.

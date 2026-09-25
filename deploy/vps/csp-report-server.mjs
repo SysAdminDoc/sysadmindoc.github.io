@@ -583,6 +583,10 @@ export async function startServer(config = loadConfig()) {
   server.requestTimeout = 10_000;
   server.headersTimeout = 12_000;
   server.listen(config.port, config.host, () => {
+    // Once listening, a server error (a failed accept, say) is logged rather
+    // than left with no listener to end the process. A failed listen still
+    // ends it, so the container restarts instead of idling unbound.
+    server.on('error', (error) => console.error(`csp-report: server error: ${error.message}`));
     console.log(`csp-report: listening on ${config.host}:${config.port}`);
   });
   return server;
