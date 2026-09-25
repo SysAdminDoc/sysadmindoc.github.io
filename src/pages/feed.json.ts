@@ -37,7 +37,7 @@ export async function GET(context: APIContext) {
 
   const feed = {
     version: 'https://jsonfeed.org/version/1.1',
-    title: 'Matt Parker | Projects',
+    title: 'Recent projects (JSON Feed) | Matt Parker',
     home_page_url: `${site}/`,
     feed_url: `${site}/feed.json`,
     icon: `${site}/icon-512.png`,

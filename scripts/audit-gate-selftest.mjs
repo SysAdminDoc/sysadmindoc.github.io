@@ -250,6 +250,58 @@ const cases = [
     },
   },
   {
+    name: 'title-style:audit (manifest name)',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: 'a doubled hyphen between spaces in the web app manifest name',
+    expect: /manifest\.json: name "[^"]*" has a dash lookalike between spaces/,
+    plant() {
+      const manifest = JSON.parse(readScratch('manifest.json'));
+      if (typeof manifest.name !== 'string') return false;
+      manifest.name = `${manifest.name} -- app`;
+      writeScratch('manifest.json', JSON.stringify(manifest, null, 2));
+      return true;
+    },
+  },
+  {
+    name: 'title-style:audit (og:site_name)',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: 'a spaced minus sign in og:site_name',
+    expect: /index\.html: og:site_name "[^"]*" has a dash lookalike between spaces \(U\+2212\)/,
+    plant() {
+      const html = readScratch('index.html');
+      const planted = html.replace(/(<meta\b[^>]*\bproperty="og:site_name"[^>]*\bcontent=")/, `$1Portfolio ${String.fromCharCode(0x2212)} `);
+      if (planted === html) return false;
+      writeScratch('index.html', planted);
+      return true;
+    },
+  },
+  {
+    name: 'title-style:audit (feed item)',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: 'an em dash in an item title the site writes into rss.xml',
+    expect: /rss\.xml: the item title "[^"]*" has an em dash/,
+    plant() {
+      const text = readScratch('rss.xml');
+      const planted = text.replace(/(<item>\s*<title>)/, '$1Retired &#8212; ');
+      if (planted === text) return false;
+      writeScratch('rss.xml', planted);
+      return true;
+    },
+  },
+  {
+    name: 'title-style:audit (feed title and link)',
+    args: ['scripts/audit-title-style.mjs', '--dist', scratch],
+    violation: "an Atom feed whose own title isn't the name its links give it",
+    expect: /the \/atom\.xml link "[^"]*" doesn't match the feed's own title "Projects \| Matt Parker"/,
+    plant() {
+      const text = readScratch('atom.xml');
+      const planted = text.replace(/<title>[^<]*<\/title>/, '<title>Projects | Matt Parker</title>');
+      if (planted === text) return false;
+      writeScratch('atom.xml', planted);
+      return true;
+    },
+  },
+  {
     name: 'feed:audit',
     args: ['scripts/audit-feed.mjs', '--dist', scratch],
     violation: 'a JSON feed with no items',

@@ -59,13 +59,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: a kill status (4294967295, or a signal) is no verdict, with a test.
   Complexity: S
 
-- [ ] P3: Catch dash lookalikes, and read every name the site writes, in the title audit
-  Why: 79c031f0's rule catches `\p{Pd}` and one spaced hyphen only, so `Home -- tools`, a spaced U+2212 minus, U+2796, a box horizontal and `&nbsp;-&nbsp;` in a feed title all pass (planted in a copied build, the audit passed). It never reads `manifest.json`'s `name`, the one the commit fixed, nor `og:site_name`, nor the feed item titles the site writes itself (catalog names, atom's `(live)` suffix, `releases.xml`'s `${project} ${tag}`). Each feed's own title is `Matt Parker | Projects` while its link says `Recent projects | Matt Parker`.
-  Evidence: eighteenth drain review, 2026-09-24; `scripts/lib/title-style.mjs:25,32`, `scripts/audit-title-style.mjs:47-81`.
-  Touches: `scripts/lib/title-style.mjs`, `scripts/audit-title-style.mjs`, `scripts/audit-gate-selftest.mjs`, the feed titles, their tests.
-  Acceptance: any run of hyphen-like characters (dash punctuation, U+2212, U+2796, box horizontals) between spaces fails, the audit reads the manifest's `name` and `short_name`, `og:site_name` and the item titles the site writes, each with a gate plant, and a feed's own title matches its link's name.
-  Complexity: S
-
 - [ ] P3: Close the CSS output audit's foreign-content, comment and script-escape gaps
   Why: 371502dd regressed two cases: an `.svg` whose `<style>` sits after `<p/>` keeps `light-dar&#x6b;(` undecoded because parse5 leaves foreign content there, and `@import "data:text/css,/*";...` hides a later import because comments are stripped inside strings. JS spellings still pass: `'light\-dark('`, octal `'\154ight-dark('`, a line continuation, `'light-'+'dark('`, an `onerror=` handler, and `<link rel=preload onload="this.rel='stylesheet'" href="data:...">`; `@import` data URIs with `\"`, a leading space or `; base64` are missed.
   Evidence: seventeenth drain review, 2026-09-24; `scripts/audit-css-output.mjs:57`, `scripts/lib/css-output-check.mjs:40-106`.

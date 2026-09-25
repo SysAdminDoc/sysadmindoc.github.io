@@ -65,7 +65,7 @@ export async function GET(context: APIContext) {
     });
 
   return withEndpointCache(await rss({
-    title: 'Matt Parker | Projects',
+    title: 'Recent projects | Matt Parker',
     // Count the categories actually represented, not every declared label —
     // several labels have no projects behind them.
     description: `Public projects, live web apps, and the full catalog by Matt Parker. Browse ${catalog.length} projects across ${new Set(catalog.map((entry) => entry.category)).size} categories.`,
