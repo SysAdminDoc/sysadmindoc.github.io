@@ -135,6 +135,28 @@ const cases = [
       return planted > 0;
     },
   },
+  {
+    name: 'csp:audit:dist:style:elem (style-src looser)',
+    args: ['scripts/audit-csp.mjs', '--dist', scratch, '--active-style-src-elem', '--strict'],
+    violation: "a style-src with 'unsafe-inline' that style-src-elem doesn't have, which older browsers would apply to style attributes",
+    expect: /style-src carries 'unsafe-inline' that style-src-elem doesn't/,
+    prepare() {
+      fs.rmSync(path.join(scratch, 'pagefind'), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+    },
+    plant() {
+      // Every page, so none fails for drifting from the rest instead.
+      let planted = 0;
+      for (const file of scratchHtmlFiles()) {
+        const html = fs.readFileSync(file, 'utf8');
+        const next = html.replace(/style-src 'self'/, "style-src 'self' 'unsafe-inline'");
+        if (next !== html) {
+          fs.writeFileSync(file, next, 'utf8');
+          planted += 1;
+        }
+      }
+      return planted > 0;
+    },
+  },
   // The build stamps sw.js once, and a stamped worker has nothing left to
   // stamp, so it would skip every check. Each run here starts from the
   // unstamped template.

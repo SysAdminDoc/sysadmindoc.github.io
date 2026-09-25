@@ -344,6 +344,19 @@ test('csp audit can verify rendered style elements against the active policy', (
   const fallback = audit();
   assert.equal(fallback.status, 1);
   assert.match(fallback.stderr + fallback.stdout, /style-src 'self' would block 1 inline style block\(s\) that browsers without style-src-elem check against it/);
+
+  // The twenty-first drain review: a style-src looser than style-src-elem
+  // passed, and those same browsers ignore style-src-attr too, so it would
+  // allow every style attribute again.
+  for (const extra of ["'unsafe-inline'", "'unsafe-hashes'", '*', 'https://cdn.example']) {
+    fs.writeFileSync(path.join(tmp, 'index.html'), page(policy.replace(`style-src 'self' '${inlineHash}'`, `style-src 'self' '${inlineHash}' ${extra}`)));
+    const loose = audit();
+    assert.equal(loose.status, 1, extra);
+    assert.match(loose.stderr, new RegExp(`style-src carries ${extra.replace(/[.*]/g, '\\$&')} that style-src-elem doesn't`), extra);
+  }
+  // Keywords match whatever their case; a hash has to match exactly.
+  fs.writeFileSync(path.join(tmp, 'index.html'), page(policy.replace(`style-src 'self' '${inlineHash}'`, `style-src 'SELF' '${inlineHash}'`)));
+  assert.equal(audit().status, 0, 'keyword case');
 });
 
 test('csp audit strict dist mode fails on missing or divergent CSP metadata', () => {

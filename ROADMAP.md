@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Refuse a `style-src` looser than `style-src-elem` in the CSP audit
-  Why: the fallback check added in 09034a67 only fails a `style-src` that blocks the site's own blocks. With `'unsafe-inline'`, `'unsafe-hashes'` or `*` in `style-src` it passes, and Firefox before 108 and Safari before 15.4 ignore `style-src-attr`, so they'd allow every style attribute again. Only `styleSrc = styleElemSrc` in `Base.astro` keeps that from happening.
-  Evidence: twenty-first review, planted in all 26 pages of a dist copy; `audit-csp.mjs --dist --active-style-src-elem --strict` exits 0 for each.
-  Touches: `scripts/audit-csp.mjs`, `test/csp-audit.test.mjs`, `scripts/audit-gate-selftest.mjs`.
-  Acceptance: strict mode fails unless every `style-src` token is also in `style-src-elem`, with a test and a gate plant.
-  Complexity: S
-
 - [ ] P3: Fail on a corrupt README count input instead of reading it as missing
   Why: `readmeCountInputs` returns null on any error, so a truncated `_profile-projects.json` or `dist/projects.json` makes the README count test skip ("fixture files not installed") and the nightly skip its rendered-count check.
   Evidence: twenty-first review. Truncating `src/data/_profile-projects.json` to 200 bytes turns `test/project-count-source.test.mjs` into a skip; before a8ee7b75 the same input failed with a SyntaxError.

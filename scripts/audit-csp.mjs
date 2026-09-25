@@ -646,6 +646,13 @@ const activeStyleElemUnsafeInlineRequired = styleBlocks
 // to allow every block style-src-elem does (research roadmap: 33 reports from
 // those browsers blocked the site's own critical CSS).
 const styleSrcFallbackBlockers = options.activeStyleElemSrc ? styleBlocks.filter((style) => !styleAllowedByCandidate(style, styleSrc)) : [];
+// The other way, style-src must allow nothing style-src-elem doesn't: those
+// browsers ignore style-src-attr too, so an 'unsafe-inline' there would allow
+// every style attribute again (twenty-first drain review). Keywords are
+// matched in any case; hashes and nonces exactly.
+const cspTokenKey = (token) => (/^'(?:sha(?:256|384|512)|nonce)-/i.test(token) ? token : token.toLowerCase());
+const styleElemKeys = new Set(styleElemSrc.map(cspTokenKey));
+const styleSrcBeyondElem = options.activeStyleElemSrc ? styleSrc.filter((token) => !styleElemKeys.has(cspTokenKey(token))) : [];
 const activeStyleAttrUnsafeInlineRequired = [
   ...styleAttributes.filter((style) => !styleAttributeAllowedByCandidate(style, styleAttrSrc)),
   ...cssTextWrites.filter((write) => !styleAttributeAllowedByCandidate(write, styleAttrSrc)),
@@ -866,6 +873,9 @@ if (options.strict && candidateStyleElem && candidateStyleElemBlockers.length > 
 }
 if (options.strict && styleSrcFallbackBlockers.length > 0) {
   failures.push(`style-src ${styleSrc.join(' ')} would block ${styleSrcFallbackBlockers.length} inline style block(s) that browsers without style-src-elem check against it; give it the hashes style-src-elem has.`);
+}
+if (options.strict && styleSrcBeyondElem.length > 0) {
+  failures.push(`style-src carries ${styleSrcBeyondElem.join(' ')} that style-src-elem doesn't; browsers without style-src-elem and style-src-attr (Firefox before 108, Safari before 15.4) would allow it for every style element and attribute.`);
 }
 if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
   failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);
