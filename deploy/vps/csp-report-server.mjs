@@ -455,28 +455,70 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
    * @returns {Promise<number>} how many lines changed
    */
   async function restoreFile(file, samples) {
-    let input;
+    let stat;
     try {
-      input = await fileSystem.open(file, 'r');
+      stat = await fileSystem.lstat(file);
     } catch (error) {
       if (error.code === 'ENOENT') return 0;
       throw error;
     }
+    // Only a regular file: a FIFO would block open() and the sink with it
+    // (twenty-second drain review).
+    if (!stat.isFile()) throw new Error('not a regular file');
+    const input = await fileSystem.open(file, 'r');
     const temporary = `${file}.restore`;
     let changed = 0;
     try {
       const output = await fileSystem.open(temporary, 'w', 0o600);
       try {
         let pending = '';
-        for await (const line of input.readLines({ encoding: 'utf8', autoClose: false })) {
-          const next = restoredLine(line, samples);
-          if (next !== line) changed += 1;
-          pending += `${next}\n`;
-          if (pending.length >= 64 * 1024) {
-            await output.write(pending);
-            pending = '';
+        // Lines are cut from the bytes by hand, since readLines builds each
+        // one whole: a line past maxLineBytes can't be a report this sink
+        // wrote, so it's dropped as soon as it grows that long (twenty-second).
+        let parts = [];
+        let partBytes = 0;
+        let tooLong = false;
+        const take = (bytes) => {
+          if (tooLong) return;
+          if (partBytes + bytes.length > config.maxLineBytes) {
+            tooLong = true;
+            parts = [];
+            partBytes = 0;
+            return;
           }
+          parts.push(Buffer.from(bytes));
+          partBytes += bytes.length;
+        };
+        const endLine = async () => {
+          if (tooLong) {
+            changed += 1;
+          } else {
+            const line = Buffer.concat(parts, partBytes).toString('utf8');
+            const next = restoredLine(line, samples);
+            if (next !== line) changed += 1;
+            pending += `${next}\n`;
+            if (pending.length >= 64 * 1024) {
+              await output.write(pending);
+              pending = '';
+            }
+          }
+          parts = [];
+          partBytes = 0;
+          tooLong = false;
+        };
+        const chunk = Buffer.alloc(64 * 1024);
+        for (;;) {
+          const { bytesRead } = await input.read(chunk, 0, chunk.length, null);
+          if (bytesRead === 0) break;
+          let start = 0;
+          for (let end = chunk.indexOf(0x0a, start); end !== -1 && end < bytesRead; end = chunk.indexOf(0x0a, start)) {
+            take(chunk.subarray(start, end));
+            await endLine();
+            start = end + 1;
+          }
+          if (start < bytesRead) take(chunk.subarray(start, bytesRead));
         }
+        if (partBytes > 0 || tooLong) await endLine();
         if (pending !== '') await output.write(pending);
       } finally {
         await output.close();

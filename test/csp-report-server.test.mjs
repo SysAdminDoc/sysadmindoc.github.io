@@ -334,6 +334,45 @@ test('the sink still starts whatever its store holds, and a row cut short keeps 
   });
 });
 
+// The twenty-second drain review: one 5 MB line got the streaming restore
+// OOM-killed, since a line was built whole before it was read, and a FIFO at a
+// store path blocked open() so the sink never listened.
+test('the restore drops a line too long to be a report without holding it, and opens only regular files', async (t) => {
+  await withTempReporter({}, async ({ logPath }) => {
+    const wide = String.fromCharCode(0x4e2d);
+    const row = JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'style-src', blocked: 'inline', category: 'other', sample: 'addr 203.0.113.9' });
+    const huge = `{"sample":"${wide}${'x'.repeat(5 * 1024 * 1024)}`;
+    await fs.writeFile(logPath, `${huge}\n${row}\n`);
+    await fs.writeFile(`${logPath}.1`, huge);
+    const server = pathToFileURL(fileURLToPath(new URL('../deploy/vps/csp-report-server.mjs', import.meta.url))).href;
+    const script = [
+      `import { createReporter, DEFAULT_CONFIG } from ${JSON.stringify(server)};`,
+      `const reporter = createReporter({ ...DEFAULT_CONFIG, logPath: ${JSON.stringify(logPath)} });`,
+      'console.log(await reporter.restoreSamples());',
+    ].join('\n');
+    const run = spawnSync(process.execPath, ['--max-old-space-size=16', '--input-type=module', '-e', script], { encoding: 'utf8', windowsHide: true, timeout: 120_000 });
+    assert.equal(run.status, 0, run.stderr.slice(-2000));
+    assert.equal(run.stdout.trim(), '3', 'both long lines dropped, the row marked');
+    const current = (await fs.readFile(logPath, 'utf8')).split('\n');
+    assert.deepEqual(current.map((line) => (line ? JSON.parse(line).sample : line)), ['[other]', '']);
+    assert.equal(await fs.readFile(`${logPath}.1`, 'utf8'), '');
+
+    // A FIFO can't be made on every system, so the file system says so instead.
+    const errors = t.mock.method(console, 'error', () => {});
+    await fs.writeFile(`${logPath}.1`, `${row}\n`);
+    const fifo = `${logPath}.1`;
+    const fileSystem = {
+      ...fs,
+      lstat: async (/** @type {string} */ file) => (file === fifo ? { isFile: () => false } : fs.lstat(file)),
+      open: async (/** @type {string} */ file, /** @type {any[]} */ ...rest) => (file === fifo ? new Promise(() => {}) : fs.open(file, ...rest)),
+    };
+    const reporter = createReporter({ ...DEFAULT_CONFIG, logPath }, { fileSystem });
+    const outcome = await Promise.race([reporter.restoreSamples(), new Promise((resolve) => setTimeout(() => resolve('hung'), 2000))]);
+    assert.equal(outcome, 0, 'the restore finishes without opening it');
+    assert.match(errors.mock.calls.map((call) => String(call.arguments[0])).join('\n'), /reports\.ndjson\.1 as it was: not a regular file/);
+  });
+});
+
 // Reading both files whole took a 64 MiB container to its cap with two-byte
 // text (twentieth drain review). V8 keeps a string with one character past
 // Latin-1 at two bytes a character, so each 5 MB file here is 10 MB in memory.
