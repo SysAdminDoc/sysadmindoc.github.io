@@ -1065,6 +1065,32 @@ test('the legacy submissions file follows the same retention and goes once empty
   });
 });
 
+// The twenty-second drain review: a purge that threw left a rejected promise
+// nothing handled as the store's queue, so the process exited and the form
+// went down with it.
+test('a purge that fails is reported, and the handler keeps taking messages', async () => {
+  const unhandled = [];
+  const onUnhandled = (/** @type {unknown} */ reason) => unhandled.push(reason);
+  process.on('unhandledRejection', onUnhandled);
+  try {
+    await withHandler({}, async ({ handler, storePath }) => {
+      await fs.writeFile(storePath, `${leadAt('old', daysAgo(400))}\n`);
+      // The temporary file can't be opened for writing.
+      await fs.mkdir(`${storePath}.purge`);
+      await assert.rejects(handler.purgeExpired());
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      assert.deepEqual(unhandled, [], 'the failure reaches its caller and nothing else');
+
+      await handler.handleRequest(requestMock({ body: formBody({ name: 'After Purge', email: 'a@example.test', message: 'sent after a failed purge' }) }), responseMock());
+      await handler.idle();
+      const leads = (await readEntries(storePath)).filter((entry) => entry.type === 'lead');
+      assert.deepEqual(leads.map((entry) => (entry.name === 'After Purge' ? 'new' : entry.id)), ['old', 'new'], 'the store takes the next message');
+    });
+  } finally {
+    process.off('unhandledRejection', onUnhandled);
+  }
+});
+
 test('the retention period comes from CONTACT_RETENTION_DAYS', () => {
   const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
   assert.equal(loadConfig(base).leadRetentionDays, 365);

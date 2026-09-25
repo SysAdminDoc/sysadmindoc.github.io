@@ -8,13 +8,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Keep the contact handler serving when its start-up purge fails
-  Why: `purgeBefore` sets `queue = task.then(() => undefined)`, a promise nothing handles, so a purge that throws becomes an unhandled rejection and the process exits. The contact form goes down and the container restart-loops. The deploy's `/healthz` check does catch it ("no answer from /healthz").
-  Evidence: twenty-second review; a directory at `leads.ndjson.purge` kills the handler with exit 1. `deploy/vps/contact-handler.mjs:557`.
-  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
-  Acceptance: a purge that fails is logged, the handler listens and takes messages, and a later append still runs, with a test.
-  Complexity: S
-
 ### P3
 
 - [ ] P3: Keep the CSP sink's restore bounded for one huge line, and skip anything that isn't a file

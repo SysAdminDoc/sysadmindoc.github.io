@@ -554,7 +554,10 @@ export function createLeadStore(storePath, fileSystem = fs) {
       startOnFreshLine = false;
       return removed;
     });
-    queue = task.then(() => undefined);
+    // The caller hears about a failure through `task`; the queue only orders
+    // the next write, so it settles either way. A rejected queue nothing
+    // handled took the process down (twenty-second drain review).
+    queue = task.then(() => undefined, () => undefined);
     return task;
   }
 
