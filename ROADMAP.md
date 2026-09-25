@@ -8,7 +8,35 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Keep the contact handler serving when its start-up purge fails
+  Why: `purgeBefore` sets `queue = task.then(() => undefined)`, a promise nothing handles, so a purge that throws becomes an unhandled rejection and the process exits. The contact form goes down and the container restart-loops. The deploy's `/healthz` check does catch it ("no answer from /healthz").
+  Evidence: twenty-second review; a directory at `leads.ndjson.purge` kills the handler with exit 1. `deploy/vps/contact-handler.mjs:557`.
+  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
+  Acceptance: a purge that fails is logged, the handler listens and takes messages, and a later append still runs, with a test.
+  Complexity: S
+
 ### P3
+
+- [ ] P3: Keep the CSP sink's restore bounded for one huge line, and skip anything that isn't a file
+  Why: `readLines` builds a whole line before handing it over, so one 5 MB line with a two-byte character gets the sink OOM-killed under its 64 MiB limit, where the old whole-file restore peaked at 45 MB. A FIFO at a store path blocks `open()`, so the sink never listens. The sink never writes a line over 8 KB itself, so neither comes from its own output.
+  Evidence: twenty-second review, under `systemd-run MemoryMax=64M` (exit 137 in 2 of 2 runs; 3 MB line 50.5 MB peak); a FIFO at `reports.ndjson.1` left the sink not listening after 5 s.
+  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`.
+  Acceptance: a line past `maxLineBytes` is dropped without being held whole, only a regular file is opened, and both are tested (the long line under a 16 MB heap).
+  Complexity: S
+
+- [ ] P3: Leave the catalog out of `staleAfter` in fixture builds, and never throw on a far-future time
+  Why: a fixture build with a catalog verdict but no time shows `fresh` with no warnings yet puts `staleAfter` at the build time, so the page shows its stale panel at once. A `generatedAt` or `cachedAt` of `+275760-09-13T00:00:00.000Z` makes `staleAfterIso` throw a RangeError and fails the build, which the malformed-record rule forbids.
+  Evidence: twenty-second review (12,300 combinations probed); `src/data/generated-trust.ts:158,331`.
+  Touches: `src/data/generated-trust.ts`, `test/status-freshness.test.mjs`.
+  Acceptance: fixture mode gives the catalog no deadline, and a sum that isn't a valid date gives null, each with a test.
+  Complexity: S
+
+- [ ] P3: Refuse a Caddy logger with a `core` the edge log check can't read
+  Why: Caddy tees a logger's entries to its `core` beside the writer and encoder, and `loggingProblem` never reads it. Stock 2.11.4 only ships the `mock` core, so this needs a custom build.
+  Evidence: twenty-second review; Caddy 2.11.4 logging.go:385-391, `scripts/lib/edge-log-check.mjs`.
+  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
+  Acceptance: any `core` other than `mock` is refused, with a test.
+  Complexity: S
 
 - [ ] P3: Refuse a `style-src` looser than `style-src-elem` in the CSP audit
   Why: the fallback check added in 09034a67 only fails a `style-src` that blocks the site's own blocks. With `'unsafe-inline'`, `'unsafe-hashes'` or `*` in `style-src` it passes, and Firefox before 108 and Safari before 15.4 ignore `style-src-attr`, so they'd allow every style attribute again. Only `styleSrc = styleElemSrc` in `Base.astro` keeps that from happening.
