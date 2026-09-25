@@ -10,6 +10,27 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
+- [ ] P3: Read CSS strings and module imports the way the tokenizers do in the host audit
+  Why: `stripCssComments` skips `\` plus one character, so an escaped CRLF inside a string ends the string at the LF and a `/*` after it hides a real url(), and a lone CR or form feed doesn't end a string there though it does in CSS. Its unquoted-url() test looks at 64 characters, so `url(` then 61 spaces then a quoted URL holding `)` is misread. `CSS_URL` ignores strings, so `content:"url("` swallows the url() after it. The static-import regex backtracks in cubic time on long whitespace (19 s for 5,000 spaces after `export`), misses a comment between `import` and `from` or a non-ASCII name, and counts `export ... from "..."` inside a string or a comment. `rel="preload prefetch" as=image` credits `img-src`, which Firefox doesn't honour for the prefetch.
+  Evidence: twenty-third review, with Chromium 153 and Firefox 155 loading each hidden url(); `scripts/lib/css-output-check.mjs:49,56`, `scripts/lib/csp-host-usage.mjs:235,257,274`.
+  Touches: `scripts/lib/css-output-check.mjs`, `scripts/lib/csp-host-usage.mjs`, their tests.
+  Acceptance: CSS is preprocessed (CRLF, CR and form feed to LF) before comments are cut, url() is found at any distance and never inside a string, the import pattern runs in linear time with comments skipped, and each case has a test.
+  Complexity: S
+
+- [ ] P3: Keep lead retention running when one of its purges fails
+  Why: `purgeExpired` runs the legacy purge only after the lead purge succeeds, so a lead purge that keeps failing also stops old records in `submissions.ndjson` from being deleted, and `/healthz` still reports the retention as in force.
+  Evidence: twenty-third review; a directory at `leads.ndjson.purge` left a 2020 legacy record in place.
+  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
+  Acceptance: both purges run whatever the other does, a failure is logged, and `/healthz` says retention isn't being enforced after one, with a test.
+  Complexity: S
+
+- [ ] P3: Log every contact handler server error after it starts listening
+  Why: `startServer` attaches `server.once('error', reject)` for the listen and never removes it, so the first later server error is swallowed and a second is an unhandled `'error'` event that ends the process.
+  Evidence: twenty-third review, from the code (`deploy/vps/contact-handler.mjs:973`).
+  Touches: `deploy/vps/contact-handler.mjs`, its test.
+  Acceptance: the listen handler is removed once listening, a permanent handler logs later errors, and two emitted errors leave the server up, with a test.
+  Complexity: S
+
 - [ ] P3: Say so when a report-only flag is set outside the nightly runner
   Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
   Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.
