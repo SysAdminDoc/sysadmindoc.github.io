@@ -97,6 +97,13 @@ function levelProblem(logger, subject) {
   if (level.includes('{')) {
     return `${subject} takes its level from a placeholder (${level}), which could come out as DEBUG`;
   }
+  // Caddy tees every entry to a logger's core beside its writer and encoder
+  // (logging.go), so a core this check can't read could send the whole
+  // request anywhere. Stock Caddy ships only `mock`, which drops it
+  // (twenty-second drain review).
+  if (logger.core !== undefined && logger.core !== null && logger.core?.module !== 'mock') {
+    return `${subject} tees its entries to a core (${String(logger.core?.module ?? 'no module named')}) this check can't read`;
+  }
   return null;
 }
 

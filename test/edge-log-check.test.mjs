@@ -139,6 +139,12 @@ test('only a file writer the container shows to be a regular file, or a discard 
   assert.match(check({ ...plain, ...debugFile, level: '{env.LVL}' }, withDebugFile) ?? '', /the extra logger, which writes to \/var\/log\/caddy\/debug\.log, takes its level from a placeholder/);
   assert.equal(check({ ...plain, ...debugFile, level: 'INFO' }, withDebugFile), null);
   assert.equal(check({ ...plain, level: 'debug', writer: { output: 'discard' } }), null, 'a discard logger is gone whatever its level');
+  // The twenty-second: a core gets every entry beside the writer.
+  assert.match(check({ ...plain, ...debugFile, core: { module: 'tee_to_net' } }, withDebugFile) ?? '', /the extra logger, which writes to \/var\/log\/caddy\/debug\.log, tees its entries to a core \(tee_to_net\)/);
+  assert.match(check({ ...filtered, writer: { output: 'stderr' }, core: {} }) ?? '', /tees its entries to a core \(no module named\)/);
+  assert.equal(check({ ...plain, ...debugFile, core: { module: 'mock' } }, withDebugFile), null, "stock Caddy's mock core drops what it gets");
+  assert.match(defaultLogProblem(JSON.stringify({ ...filtered, core: { module: 'custom' } })) ?? '', /the default logger tees its entries to a core \(custom\)/);
+  assert.equal(check({ ...plain, core: { module: 'custom' }, writer: { output: 'discard' } }), null, 'Caddy deletes a discard logger, core and all');
   assert.match(loggingProblem(JSON.stringify(edgeLogs()), edgeOptions) ?? '', /the log0 logger's format is json, .*, and it writes to \/var\/log\/caddy\/log0\.log, which isn't shown to be a regular file/, 'no proof, no exemption');
   for (const filename of ['/dev/stderr', '/proc/self/fd/1', '/var/log/caddy/linked-to-stdout.log']) {
     assert.match(check({ ...plain, writer: { output: 'file', filename } }) ?? '', new RegExp(`writes to ${filename.replace(/[./]/g, '\\$&')}, which isn't shown`), filename);

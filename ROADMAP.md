@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Refuse a Caddy logger with a `core` the edge log check can't read
-  Why: Caddy tees a logger's entries to its `core` beside the writer and encoder, and `loggingProblem` never reads it. Stock 2.11.4 only ships the `mock` core, so this needs a custom build.
-  Evidence: twenty-second review; Caddy 2.11.4 logging.go:385-391, `scripts/lib/edge-log-check.mjs`.
-  Touches: `scripts/lib/edge-log-check.mjs`, `test/edge-log-check.test.mjs`.
-  Acceptance: any `core` other than `mock` is refused, with a test.
-  Complexity: S
-
 - [ ] P3: Refuse a `style-src` looser than `style-src-elem` in the CSP audit
   Why: the fallback check added in 09034a67 only fails a `style-src` that blocks the site's own blocks. With `'unsafe-inline'`, `'unsafe-hashes'` or `*` in `style-src` it passes, and Firefox before 108 and Safari before 15.4 ignore `style-src-attr`, so they'd allow every style attribute again. Only `styleSrc = styleElemSrc` in `Base.astro` keeps that from happening.
   Evidence: twenty-first review, planted in all 26 pages of a dist copy; `audit-csp.mjs --dist --active-style-src-elem --strict` exits 0 for each.
