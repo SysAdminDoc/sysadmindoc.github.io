@@ -1091,6 +1091,30 @@ test('a purge that fails is reported, and the handler keeps taking messages', as
   }
 });
 
+// The twenty-third drain review: a lead purge that kept failing stopped the
+// legacy purge too, while /healthz still reported the retention.
+test('each purge runs whatever the other does, and /healthz says when retention lapsed', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    const health = async () => {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ method: 'GET', url: '/healthz' }), response);
+      return JSON.parse(response.body);
+    };
+    assert.equal((await health()).retentionEnforced, true, 'nothing has failed yet');
+    const legacyPath = path.join(path.dirname(storePath), 'submissions.ndjson');
+    await fs.writeFile(legacyPath, `${JSON.stringify({ ts: daysAgo(400), name: 'N', email: 'n@example.test', messageLen: 12, status: 200 })}\n`);
+    await fs.writeFile(storePath, `${leadAt('old', daysAgo(400))}\n`);
+    await fs.mkdir(`${storePath}.purge`);
+    await assert.rejects(handler.purgeExpired(), /could not purge leads: /);
+    await assert.rejects(fs.access(legacyPath), 'the legacy purge ran anyway');
+    assert.deepEqual(await health(), { ok: true, leadRetentionDays: 365, retentionEnforced: false });
+
+    await fs.rm(`${storePath}.purge`, { recursive: true });
+    assert.deepEqual(await handler.purgeExpired(), { leads: 1, legacy: 0 });
+    assert.equal((await health()).retentionEnforced, true, 'a purge that works again restores it');
+  });
+});
+
 test('the retention period comes from CONTACT_RETENTION_DAYS', () => {
   const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
   assert.equal(loadConfig(base).leadRetentionDays, 365);
@@ -1105,7 +1129,7 @@ test('/healthz reports the retention the purge uses', async () => {
       const response = responseMock();
       await handler.handleRequest(requestMock({ method: 'GET', url: '/healthz' }), response);
       assert.equal(response.status, 200);
-      assert.deepEqual(JSON.parse(response.body), { ok: true, leadRetentionDays: days });
+      assert.deepEqual(JSON.parse(response.body), { ok: true, leadRetentionDays: days, retentionEnforced: true });
     });
   }
 });

@@ -32,5 +32,10 @@ export function leadRetentionProblem(output, days) {
   if (kept !== days) {
     return `the contact handler deletes leads after ${kept} days, but /privacy/ says ${days}`;
   }
+  // Its last purge failed, so nothing past the period is being deleted
+  // (twenty-third drain review); the reason is in its log.
+  if (health.retentionEnforced !== true) {
+    return `the contact handler's last purge failed, so leads past ${days} days aren't being deleted (see its log)`;
+  }
   return null;
 }

@@ -622,6 +622,8 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   /** @type {Map<string, any>} */
   const pending = new Map();
   const inFlight = new Set();
+  // False from a failed purge until one succeeds; /healthz reports it.
+  let retentionEnforced = true;
 
   // A new key every start. Used tokens are remembered in memory only, so a key
   // that outlived a restart let a token be used again after one. A visitor whose
@@ -759,7 +761,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
       // /privacy/; the variable it came from can be overridden in-process
       // (twentieth drain review).
       response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-      response.end(JSON.stringify({ ok: true, leadRetentionDays: config.leadRetentionDays }));
+      response.end(JSON.stringify({ ok: true, leadRetentionDays: config.leadRetentionDays, retentionEnforced }));
       return;
     }
     if (request.method === 'GET' && (pathname === '/contact/token' || pathname === '/api/contact/token')) {
@@ -923,11 +925,28 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     while (inFlight.size) await Promise.all([...inFlight]);
   }
 
-  /** Deletes leads, and legacy submission records, older than the retention period. */
+  /**
+   * Deletes leads, and legacy submission records, older than the retention
+   * period. Each purge runs whatever the other does, and a failure is kept
+   * for /healthz until a purge succeeds again: a lead purge that kept failing
+   * used to stop the legacy one too while the retention still read as in
+   * force (twenty-third drain review).
+   */
   async function purgeExpired() {
     const cutoff = now().getTime() - config.leadRetentionDays * 24 * 60 * 60_000;
-    const leads = await store.purgeBefore(cutoff);
-    const legacy = await purgeLegacySubmissions(config.storePath, cutoff, dependencies.fileSystem ?? fs);
+    const failures = [];
+    let leads = 0;
+    let legacy = 0;
+    try {
+      leads = await store.purgeBefore(cutoff);
+    } catch (error) {
+      failures.push(`leads: ${error.message}`);
+    }
+    try {
+      legacy = await purgeLegacySubmissions(config.storePath, cutoff, dependencies.fileSystem ?? fs);
+    } catch (error) {
+      failures.push(`legacy records: ${error.message}`);
+    }
     for (const id of [...pending.keys()]) {
       const receivedAt = Date.parse(pending.get(id)?.receivedAt ?? '');
       if (Number.isFinite(receivedAt) && receivedAt < cutoff) pending.delete(id);
@@ -935,6 +954,8 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     if (leads || legacy) {
       logger.log(`contact: deleted ${leads} lead(s) and ${legacy} legacy record(s) older than ${config.leadRetentionDays} days`);
     }
+    retentionEnforced = failures.length === 0;
+    if (failures.length > 0) throw new Error(`could not purge ${failures.join('; ')}`);
     return { leads, legacy };
   }
 

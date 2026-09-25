@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Old contact records keep getting deleted on schedule even when one of the two clean-ups fails. A failing clean-up of the message store used to stop the one for the older submission log as well. The handler's `/healthz` now says when a clean-up has failed, and the deploy stops until it works again.
 - The gate self-test no longer counts a planted audit as rejected when the audit printed its reason and then hung until something force-killed it on Windows.
 - A generated data file that doesn't parse no longer makes the README count check quietly skip. Only a missing file counts as "not installed" now. A corrupt one fails the test, and in the nightly it ends the run as drift naming the file.
 - The CSP host audit counts a cross-origin `<link rel=prefetch>` only toward `default-src`, whatever its `as` says. Firefox 155 checks a prefetch against `default-src` alone. Chromium 153 lets one through when any directive names the host. So a host listed only in `img-src` doesn't make an image prefetch work everywhere, and the audit no longer says it does. A preload still counts toward the directive its `as` names.

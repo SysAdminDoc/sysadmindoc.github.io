@@ -6,7 +6,7 @@ import { LEAD_RETENTION_DAYS } from '../src/data/retention.ts';
 import { leadRetentionProblem } from '../scripts/lib/lead-retention-check.mjs';
 
 const root = process.cwd();
-const health = (days) => JSON.stringify({ ok: true, leadRetentionDays: days });
+const health = (days, retentionEnforced = true) => JSON.stringify({ ok: true, leadRetentionDays: days, retentionEnforced });
 
 // The third drain review: CONTACT_RETENTION_DAYS in the server's
 // contact-secrets.env overrides the default the privacy page is built from,
@@ -18,6 +18,9 @@ test('the running handler keeps leads as long as /privacy/ says, or the deploy s
   for (const days of [undefined, null, 0, -1, 1.5, '365']) {
     assert.match(leadRetentionProblem(JSON.stringify({ ok: true, leadRetentionDays: days }), 365) ?? '', /doesn't say how long it keeps leads/, String(days));
   }
+  // The twenty-third review: a purge that keeps failing deletes nothing.
+  assert.match(leadRetentionProblem(health(365, false), 365) ?? '', /last purge failed, so leads past 365 days aren't being deleted/);
+  assert.match(leadRetentionProblem(JSON.stringify({ ok: true, leadRetentionDays: 365 }), 365) ?? '', /last purge failed/, "a handler that doesn't say is not a pass");
   assert.match(leadRetentionProblem('ok', 365) ?? '', /could not read the contact handler's health \(got "ok"\)/, 'an older handler that answers plain ok');
   assert.match(leadRetentionProblem('no answer from /healthz', 365) ?? '', /could not read/);
   assert.match(leadRetentionProblem('', 365) ?? '', /could not read/, 'nothing read is not a pass');

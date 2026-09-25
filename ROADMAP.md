@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: CSS is preprocessed (CRLF, CR and form feed to LF) before comments are cut, url() is found at any distance and never inside a string, the import pattern runs in linear time with comments skipped, and each case has a test.
   Complexity: S
 
-- [ ] P3: Keep lead retention running when one of its purges fails
-  Why: `purgeExpired` runs the legacy purge only after the lead purge succeeds, so a lead purge that keeps failing also stops old records in `submissions.ndjson` from being deleted, and `/healthz` still reports the retention as in force.
-  Evidence: twenty-third review; a directory at `leads.ndjson.purge` left a 2020 legacy record in place.
-  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
-  Acceptance: both purges run whatever the other does, a failure is logged, and `/healthz` says retention isn't being enforced after one, with a test.
-  Complexity: S
-
 - [ ] P3: Log every contact handler server error after it starts listening
   Why: `startServer` attaches `server.once('error', reject)` for the listen and never removes it, so the first later server error is swallowed and a second is an unhandled `'error'` event that ends the process.
   Evidence: twenty-third review, from the code (`deploy/vps/contact-handler.mjs:973`).
