@@ -133,10 +133,3 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Touches: the release steps in `README.md`, `scripts/smoke-release-artifact.mjs`.
   Acceptance: Each minor version from v0.43.0 has a release with the static-site ZIP and its SHA-256, and `smoke:release` passes against the newest one.
   Complexity: S
-
-- [ ] P3: Match the CSP host audit to how browsers check a prefetch
-  Why: `scripts/lib/csp-host-usage.mjs` counts a `rel=prefetch` against the directive its `as` names, but CSP Level 3 checks prefetches against `default-src`.
-  Evidence: third drain review, from the spec; not yet tested in a browser.
-  Touches: `scripts/lib/csp-host-usage.mjs`, `test/csp-host-usage.test.mjs`.
-  Acceptance: A Chromium and a Firefox check show which directive governs a cross-origin prefetch, and the audit maps it the same way.
-  Complexity: S

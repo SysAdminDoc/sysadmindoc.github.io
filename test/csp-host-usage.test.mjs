@@ -281,6 +281,31 @@ test('SVG hrefs, scheme-only URLs, SVG scripts, escaped openers, backgrounds and
   );
 });
 
+// The third drain review asked which directive governs a cross-origin
+// prefetch. Probed on 2026-09-24: Firefox 155 checks default-src alone, and
+// Chromium 153 lets one through when any directive names the host, reporting
+// default-src when none does. So a prefetch keeps only a default-src host in
+// use, whatever its `as`; a preload still goes by `as`.
+test('a prefetch counts toward default-src alone, and a preload toward its as', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-prefetch-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const policy = [
+    "default-src 'self' https://pf-default.example",
+    "img-src 'self' https://pf-image.example https://pl-image.example",
+  ].join('; ');
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}">` +
+      '<link rel="prefetch" as="image" href="https://pf-image.example/a.png">' +
+      '<link rel="prefetch" href="https://pf-default.example/b.bin">' +
+      '<link rel="preload" as="image" href="https://pl-image.example/c.png">' +
+      '</head><body></body></html>',
+  );
+
+  const unused = unusedHostSources(parseCsp(policy), await collectHostReferences(dist));
+  assert.deepEqual(unused, [{ directive: 'img-src', token: 'https://pf-image.example' }]);
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

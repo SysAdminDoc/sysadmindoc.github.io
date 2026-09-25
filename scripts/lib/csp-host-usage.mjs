@@ -199,11 +199,16 @@ function treeReferences(tree) {
       if (rel.some((value) => value === 'icon' || value === 'apple-touch-icon' || value === 'mask-icon')) add('img', attrs.href);
       if (rel.includes('manifest')) add('manifest', attrs.href);
       if (rel.includes('modulepreload')) add('script', attrs.href);
-      if (rel.includes('preload') || rel.includes('prefetch')) {
+      if (rel.includes('preload')) {
         const kind = PRELOAD_KIND[String(attrs.as ?? '').toLowerCase()];
         if (kind) add(kind, attrs.href);
         if (kind === 'img') for (const url of srcsetUrls(attrs.imagesrcset)) add('img', url);
       }
+      // A prefetch ignores its `as`: Firefox 155 checks it against default-src
+      // alone, and Chromium 153 lets it through when any directive names the
+      // host, so only a default-src host serves both (probed 2026-09-24). No
+      // directive lists this kind, so it keeps only default-src hosts in use.
+      if (rel.includes('prefetch')) add('prefetch', attrs.href);
     } else if (tag === 'iframe' || tag === 'frame') {
       add('frame', attrs.src);
       // A srcdoc document inherits this page's policy, so what it loads counts here.
