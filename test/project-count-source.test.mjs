@@ -29,6 +29,33 @@ test('homepage project count remains build-time truth without GitHub hydration',
   assert.doesNotMatch(index, /data-live|stats\.totalRepos|total_count/);
 });
 
+// The twenty-first drain review: any read error meant "not installed", so a
+// truncated data file turned the README count test into a skip.
+test('only a missing data file reads as not installed; one that does not parse fails', async (t) => {
+  const os = await import('node:os');
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'readme-counts-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  await fs.mkdir(path.join(dir, 'src', 'data'), { recursive: true });
+  await fs.mkdir(path.join(dir, 'dist'));
+  await fs.writeFile(path.join(dir, 'README.md'), 'catalog (1 feed-backed / 1 local fallback)\n--expected-releases 1\n');
+  await fs.writeFile(path.join(dir, 'src', 'data', 'projects.ts'), 'export const catalog: CatalogEntry[] = [\n  { repo: "a" },\n];\n');
+  assert.equal(readmeCountInputs(dir), null, 'nothing generated yet');
+
+  await fs.writeFile(path.join(dir, 'src', 'data', '_profile-projects.json'), JSON.stringify({ projectCount: 1 }));
+  await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), JSON.stringify([{ tag: 'v1' }]));
+  assert.deepEqual(readmeCountInputs(dir)?.counts, { feedCount: 1, fallbackCount: 1, releaseCount: 1, renderedCount: null }, 'no build yet');
+  await fs.writeFile(path.join(dir, 'dist', 'projects.json'), JSON.stringify({ projects: [{}, {}] }));
+  assert.equal(readmeCountInputs(dir)?.counts.renderedCount, 2);
+
+  await fs.writeFile(path.join(dir, 'dist', 'projects.json'), '{"projects": [');
+  assert.throws(() => readmeCountInputs(dir), /dist\/projects\.json doesn't parse/);
+  await fs.writeFile(path.join(dir, 'dist', 'projects.json'), JSON.stringify({ items: [] }));
+  assert.throws(() => readmeCountInputs(dir), /dist\/projects\.json has no projects list/);
+  await fs.rm(path.join(dir, 'dist', 'projects.json'));
+  await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), '[{"tag":');
+  assert.throws(() => readmeCountInputs(dir), /src\/data\/_releases\.json doesn't parse/);
+});
+
 test('README public command examples match generated portfolio counts', async (t) => {
   // The nightly syncs the data first and reports this as drift after it
   // deploys (scripts/refresh-and-deploy.mjs), so a new upstream repo can't stop

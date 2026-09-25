@@ -10,13 +10,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Fail on a corrupt README count input instead of reading it as missing
-  Why: `readmeCountInputs` returns null on any error, so a truncated `_profile-projects.json` or `dist/projects.json` makes the README count test skip ("fixture files not installed") and the nightly skip its rendered-count check.
-  Evidence: twenty-first review. Truncating `src/data/_profile-projects.json` to 200 bytes turns `test/project-count-source.test.mjs` into a skip; before a8ee7b75 the same input failed with a SyntaxError.
-  Touches: `scripts/lib/readme-counts.mjs`, `test/project-count-source.test.mjs`.
-  Acceptance: only a missing file reads as missing, and a file that doesn't parse fails the test and the nightly step, with a test for each.
-  Complexity: S
-
 - [ ] P3: Say so when a report-only flag is set outside the nightly runner
   Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
   Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.

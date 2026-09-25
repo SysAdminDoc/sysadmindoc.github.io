@@ -295,7 +295,13 @@ function readProvenanceDrift() {
 // synced and built (scripts/lib/readme-counts.mjs); the preflight's test steps
 // aside under README_COUNTS_REPORT_ONLY so this can't stop a deploy.
 function readReadmeDrift() {
-  const inputs = readmeCountInputs(root);
+  let inputs;
+  try {
+    inputs = readmeCountInputs(root);
+  } catch (error) {
+    // A data file that doesn't parse is drift to report, not a pass.
+    return [`the README counts couldn't be checked: ${error.message}`];
+  }
   return inputs ? readmeCountDrift(inputs.readme, inputs.counts) : [];
 }
 

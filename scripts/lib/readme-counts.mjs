@@ -36,29 +36,49 @@ export function readmeCountDrift(readme, { feedCount, fallbackCount, releaseCoun
   return drift;
 }
 
+/** A file's text, or null when it isn't there. Any other error is thrown. */
+function readIfPresent(file) {
+  try {
+    return fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+/** JSON that has to parse: one that doesn't is corrupt, not missing. */
+function parsed(text, name) {
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`${name} doesn't parse: ${error.message}`);
+  }
+}
+
 /**
  * The counts the README describes, from a checkout's generated data, or null
- * when that data isn't installed.
+ * when that data isn't installed. Only a missing file reads as not installed:
+ * one that doesn't parse throws, so a truncated file can't turn the check
+ * into a skip (twenty-first drain review).
  * @param {string} root
  */
 export function readmeCountInputs(root) {
-  try {
-    const profile = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_profile-projects.json'), 'utf8'));
-    const releases = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_releases.json'), 'utf8'));
-    const projects = fs.readFileSync(path.join(root, 'src', 'data', 'projects.ts'), 'utf8');
-    let renderedCount = null;
-    try {
-      const built = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'projects.json'), 'utf8'));
-      if (Array.isArray(built.projects)) renderedCount = built.projects.length;
-    } catch {
-      renderedCount = null;
-    }
-    const catalog = projects.match(/export const catalog: CatalogEntry\[] = \[[\s\S]*?\n\];/)?.[0] ?? '';
-    return {
-      readme: fs.readFileSync(path.join(root, 'README.md'), 'utf8'),
-      counts: { feedCount: Number(profile.projectCount), fallbackCount: catalog.match(/\{ repo: /g)?.length ?? 0, releaseCount: Array.isArray(releases) ? releases.length : NaN, renderedCount },
-    };
-  } catch {
-    return null;
+  const profileText = readIfPresent(path.join(root, 'src', 'data', '_profile-projects.json'));
+  const releasesText = readIfPresent(path.join(root, 'src', 'data', '_releases.json'));
+  if (profileText === null || releasesText === null) return null;
+  const profile = parsed(profileText, 'src/data/_profile-projects.json');
+  const releases = parsed(releasesText, 'src/data/_releases.json');
+  const projects = fs.readFileSync(path.join(root, 'src', 'data', 'projects.ts'), 'utf8');
+  const builtText = readIfPresent(path.join(root, 'dist', 'projects.json'));
+  let renderedCount = null;
+  if (builtText !== null) {
+    const built = parsed(builtText, 'dist/projects.json');
+    if (!Array.isArray(built?.projects)) throw new Error('dist/projects.json has no projects list');
+    renderedCount = built.projects.length;
   }
+  const catalog = projects.match(/export const catalog: CatalogEntry\[] = \[[\s\S]*?\n\];/)?.[0] ?? '';
+  return {
+    readme: fs.readFileSync(path.join(root, 'README.md'), 'utf8'),
+    counts: { feedCount: Number(profile.projectCount), fallbackCount: catalog.match(/\{ repo: /g)?.length ?? 0, releaseCount: Array.isArray(releases) ? releases.length : NaN, renderedCount },
+  };
 }
