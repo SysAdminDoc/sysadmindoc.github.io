@@ -306,6 +306,56 @@ test('a prefetch counts toward default-src alone, and a preload toward its as', 
   assert.deepEqual(unused, [{ directive: 'img-src', token: 'https://pf-image.example' }]);
 });
 
+// The twenty-third drain review: an escaped CRLF or url( before a long run of
+// spaces hid a url() that Chromium 153 and Firefox 155 both load, url( inside
+// a string swallowed the real one, and the static import pattern backtracked
+// in cubic time, missed comments and non-ASCII names and read strings and
+// comments as imports.
+test('CSS strings, url() and module imports are read as the tokenizers read them', async (t) => {
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-review23-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const images = ['crlf', 'spaces', 'instring', 'cr-comment', 'preload-prefetch'];
+  const scripts = ['import-comment', 'import-nonascii', 'import-string', 'import-line-comment'];
+  const policy = [
+    "default-src 'self'",
+    `img-src 'self' ${images.map((host) => `https://${host}.example`).join(' ')}`,
+    `script-src 'self' ${scripts.map((host) => `https://${host}.example`).join(' ')}`,
+  ].join('; ');
+  await fs.mkdir(path.join(dist, '_assets'));
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}">` +
+      '<link rel="preload prefetch" as="image" href="https://preload-prefetch.example/a.png">' +
+      '</head><body></body></html>',
+  );
+  await fs.writeFile(
+    path.join(dist, '_assets', 'site.css'),
+    '.a{content:"\\\r\n/*"}.b{background:url(https://crlf.example/x.png)}/*"*/\n' +
+      `.c{background:url(${' '.repeat(61)}"http://h.example/x)/*.png")}.d{background:url(https://spaces.example/y.png)}/*"*/\n` +
+      '.e{content:"url("}.f{background:url(https://instring.example/z.png)}\n' +
+      // A lone CR ends the string, so what follows is a comment browsers skip.
+      '.g{content:"x\r/*"}.h{background:url(https://cr-comment.example/w.png)}/*x*/\n',
+  );
+  await fs.writeFile(
+    path.join(dist, '_assets', 'app.js'),
+    'import /* c */ x from "https://import-comment.example/a.js";\n' +
+      `import ${String.fromCharCode(0xf1)} from "https://import-nonascii.example/b.js";\n` +
+      "const s = 'export * from \"https://import-string.example/c.js\"';\n" +
+      '// import y from "https://import-line-comment.example/d.js"\n',
+  );
+  // Long runs of spaces after the keywords, which the old pattern took
+  // seconds over, and must not now.
+  await fs.writeFile(path.join(dist, '_assets', 'spaces.js'), `export${' '.repeat(20000)};\nimport${' '.repeat(20000)};\n`);
+
+  const started = Date.now();
+  const references = await collectHostReferences(dist);
+  assert.ok(Date.now() - started < 3000, `read in ${Date.now() - started} ms`);
+  assert.deepEqual(
+    unusedHostSources(parseCsp(policy), references).map((entry) => entry.token),
+    ['https://cr-comment.example', 'https://preload-prefetch.example', 'https://import-string.example', 'https://import-line-comment.example'],
+  );
+});
+
 test('the dist audit fails on an allowed host nothing loads, and passes once it is gone', async (t) => {
   const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'csp-host-audit-'));
   t.after(() => fs.rm(dist, { recursive: true, force: true }));

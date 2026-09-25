@@ -17,7 +17,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parse } from 'parse5';
-import { stripCssComments, unescapeCss } from './css-output-check.mjs';
+import { cssTokens } from './css-tokens.mjs';
 
 const KINDS_BY_DIRECTIVE = {
   'img-src': ['img'],
@@ -199,7 +199,9 @@ function treeReferences(tree) {
       if (rel.some((value) => value === 'icon' || value === 'apple-touch-icon' || value === 'mask-icon')) add('img', attrs.href);
       if (rel.includes('manifest')) add('manifest', attrs.href);
       if (rel.includes('modulepreload')) add('script', attrs.href);
-      if (rel.includes('preload')) {
+      // Beside prefetch, Firefox treats the link as a prefetch alone
+      // (twenty-third drain review), so its `as` counts only for a preload.
+      if (rel.includes('preload') && !rel.includes('prefetch')) {
         const kind = PRELOAD_KIND[String(attrs.as ?? '').toLowerCase()];
         if (kind) add(kind, attrs.href);
         if (kind === 'img') for (const url of srcsetUrls(attrs.imagesrcset)) add('img', url);
@@ -232,32 +234,64 @@ function treeReferences(tree) {
   return found;
 }
 
-const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi;
 
+const IMAGE_SETS = new Set(['image-set', '-webkit-image-set']);
+
+/**
+ * What a stylesheet loads, read from its tokens (scripts/lib/css-tokens.mjs):
+ * a url() or its string is a font inside a font-face rule, a stylesheet in
+ * an import rule's prelude and an image anywhere else, and image-set() also
+ * takes bare strings. The tokenizer resolves escapes, so `url(https\3a //x)` loads from x
+ * (seventeenth drain review), and it keeps strings, url() and comments apart
+ * as browsers do, which the regexes this replaced didn't (nineteenth and
+ * twenty-third).
+ */
 function cssReferences(css) {
   const found = [];
   const add = (kind, value) => {
     const target = absoluteTarget(value);
     if (target) found.push({ kind, ...target });
   };
-  // Comments go where the tokenizer finds them, so an escaped `\/*` hides
-  // nothing (nineteenth drain review), then escapes are read, so
-  // `url(https\3a //x)` loads from x (seventeenth).
-  let rest = unescapeCss(stripCssComments(css));
-  // Fonts first, so a font's url() never counts as an image.
-  rest = rest.replace(/@font-face\s*\{[^}]*\}/gi, (block) => {
-    for (const match of block.matchAll(CSS_URL)) add('font', match[1] ?? match[2] ?? match[3]);
-    return '';
-  });
-  // @import takes a quoted string or url(), and url() may leave its URL unquoted.
-  rest = rest.replace(/@import\s+(?:url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)|"([^"]*)"|'([^']*)')/gi, (...args) => {
-    add('style', args.slice(1, 6).find((value) => value !== undefined));
-    return '';
-  });
-  for (const match of rest.matchAll(CSS_URL)) add('img', match[1] ?? match[2] ?? match[3]);
-  // image-set() also takes bare quoted URLs, without url().
-  for (const set of rest.matchAll(/image-set\(([^)]*(?:\([^)]*\)[^)]*)*)\)/gi)) {
-    for (const quoted of set[1].matchAll(/(?<!url\(\s*)["']([^"']+)["']/gi)) add('img', quoted[1]);
+  const tokens = cssTokens(css).filter((token) => token.type !== 'whitespace');
+  let depth = 0;
+  /** @type {number | null} the block depth an @font-face block opened at */
+  let fontDepth = null;
+  let fontFacePrelude = false;
+  let importPrelude = false;
+  /** @type {string[]} the functions and brackets open around each token */
+  const open = [];
+  const kindHere = () => (importPrelude ? 'style' : fontDepth !== null ? 'font' : 'img');
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (token.type === 'at-keyword') {
+      const name = token.value.toLowerCase();
+      fontFacePrelude = name === 'font-face';
+      importPrelude = name === 'import';
+    } else if (token.type === '{') {
+      depth += 1;
+      if (fontFacePrelude) fontDepth = depth;
+      fontFacePrelude = false;
+      importPrelude = false;
+    } else if (token.type === '}') {
+      if (fontDepth === depth) fontDepth = null;
+      depth = Math.max(0, depth - 1);
+    } else if (token.type === ';') {
+      fontFacePrelude = false;
+      importPrelude = false;
+    } else if (token.type === 'function') {
+      const name = token.value.toLowerCase();
+      open.push(name);
+      if (name === 'url' && tokens[index + 1]?.type === 'string') add(kindHere(), tokens[index + 1].value);
+    } else if (token.type === '(' || token.type === '[') {
+      open.push('');
+    } else if (token.type === ')' || token.type === ']') {
+      open.pop();
+    } else if (token.type === 'url') {
+      add(kindHere(), token.value);
+    } else if (token.type === 'string') {
+      if (importPrelude && open.length === 0) add('style', token.value);
+      else if (IMAGE_SETS.has(open.at(-1) ?? '')) add(kindHere(), token.value);
+    }
   }
   return found;
 }
@@ -270,8 +304,14 @@ const LOADING_CALLS = [
   [/\bnew\s+(?:EventSource|WebSocket)\s*\(\s*(["'`])([^"'`]+)\1/g, 'connect'],
   [/\.open\s*\(\s*(["'`])[A-Za-z]+\1\s*,\s*(["'`])([^"'`]+)\2/g, 'connect'],
   [/\bimport\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
-  // A static import or re-export in a module loads its specifier too.
-  [/\b(?:import|export)\s*(?:[\w$*{}\s,]+?\s*from\s*)?(["'])([^"'\n]+)\1/g, 'script-call'],
+  // A static import or re-export in a module loads its specifier too. Only
+  // where a statement can start (the text's start, a newline, `;`, a brace or
+  // a comment's end), so a string or a // comment that reads like one doesn't
+  // count, and with a bounded middle that may hold comments and any names, so
+  // it runs in linear time: the unbounded one took 19 s over 5,000 spaces
+  // (twenty-third drain review).
+  [/(?:^|[\n;{}]|\*\/)[\t ]*(?:import|export)\b[^;'"`]{0,500}?\bfrom[\t\n ]*(["'])([^"'\n]+)\1/g, 'script-call'],
+  [/(?:^|[\n;{}]|\*\/)[\t ]*import[\t\n ]*(["'])([^"'\n]+)\1/g, 'script-call'],
   [/\bimportScripts\s*\(\s*(["'`])([^"'`]+)\1/g, 'script-call'],
   [/\bnew\s+(?:Shared)?Worker\s*\(\s*(["'`])([^"'`]+)\1/g, 'worker'],
 ];

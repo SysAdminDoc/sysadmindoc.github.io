@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- The CSP host audit reads stylesheets with a real CSS tokenizer instead of regexes, so strings, `url()` and comments come apart as browsers see them. An escaped line break inside a string, `url(` followed by a long run of spaces, or `url(` written inside a string no longer hides a real `url()` after it. Its check for module imports now runs in linear time (the old pattern took 19 seconds over 5,000 spaces), reads past a comment or a non-ASCII name, and no longer counts an import written inside a string or a `//` comment. A link that is both `preload` and `prefetch` counts as a prefetch, as Firefox treats it.
 - The CSP report sink logs a network error on its socket after it starts listening and keeps running. It had no handler for one at all, so any such error ended it.
 - A second network error on the contact handler's socket, such as running out of file handles twice, no longer ends the process. Errors after it starts listening are logged and it keeps serving.
 - Old contact records keep getting deleted on schedule even when one of the two clean-ups fails. A failing clean-up of the message store used to stop the one for the older submission log as well. The handler's `/healthz` now says when a clean-up has failed, and the deploy stops until it works again.

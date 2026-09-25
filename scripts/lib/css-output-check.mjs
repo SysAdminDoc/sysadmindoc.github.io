@@ -25,47 +25,6 @@ export function unescapeCss(css) {
     });
 }
 
-/**
- * CSS text with each comment replaced by a space, found the way the tokenizer
- * finds them: never inside a string or an unquoted url(), and not where the
- * slash is escaped, so `\/*` and `"data:text/css,/*"` hide nothing after them
- * (seventeenth and nineteenth drain reviews). The space keeps the tokens on
- * either side apart, as the comment did. Run before unescapeCss, which would
- * turn `\/*` into a real opener.
- * @param {string} css
- */
-export function stripCssComments(css) {
-  const text = String(css);
-  let out = '';
-  let i = 0;
-  while (i < text.length) {
-    const char = text[i];
-    if (char === '\\') {
-      out += text.slice(i, i + 2);
-      i += 2;
-    } else if (char === '"' || char === "'") {
-      // A string ends at its quote or, unclosed, at a newline.
-      let end = i + 1;
-      while (end < text.length && text[end] !== char && text[end] !== '\n') end += text[end] === '\\' ? 2 : 1;
-      out += text.slice(i, end + 1);
-      i = end + 1;
-    } else if (char === '/' && text[i + 1] === '*') {
-      const end = text.indexOf('*/', i + 2);
-      out += ' ';
-      i = end === -1 ? text.length : end + 2;
-    } else if (/^url\(\s*(?!["'\s])/i.test(text.slice(i, i + 64)) && !/[\w-]/.test(text[i - 1] ?? '')) {
-      let end = text.indexOf('(', i) + 1;
-      while (end < text.length && text[end] !== ')') end += text[end] === '\\' ? 2 : 1;
-      out += text.slice(i, end + 1);
-      i = end + 1;
-    } else {
-      out += char;
-      i += 1;
-    }
-  }
-  return out;
-}
-
 /** A data: URI's body, decoded; bytes that aren't valid UTF-8 percent-escapes come through one by one. */
 export function decodeDataUri(uri) {
   const comma = uri.indexOf(',');
