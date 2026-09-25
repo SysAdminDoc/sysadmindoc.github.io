@@ -155,7 +155,11 @@ function ageHours(value: NullableDate, now: Date) {
 function staleAfterIso(value: NullableDate, maxAgeHours: number) {
   const date = new Date(value ?? '');
   if (Number.isNaN(date.getTime())) return null;
-  return new Date(date.getTime() + maxAgeHours * 3_600_000).toISOString();
+  // A time near the last representable date has no deadline after it, and
+  // toISOString would throw on the sum and fail the build (twenty-second
+  // drain review).
+  const deadline = new Date(date.getTime() + maxAgeHours * 3_600_000);
+  return Number.isNaN(deadline.getTime()) ? null : deadline.toISOString();
 }
 
 function roundMetric(value: number | null | undefined, digits = 4) {
@@ -322,16 +326,17 @@ export function buildGeneratedDataTrust(input: GeneratedDataTrustInput): Generat
   // review). A part that is warned stale with no time of its own is already
   // past its contract, so its deadline is now: leaving it out gave a build
   // with less evidence a later deadline (eighteenth drain review), and a
-  // catalog verdict with no readable time is one of those (twentieth). Without
-  // a fetch time there's still no contract to state.
+  // catalog verdict with no readable time is one of those (twentieth), as is
+  // a time too late to add the contract to (twenty-second). A fixture build
+  // never checks the catalog and says nothing of it, so the catalog sets no
+  // deadline there. Without a fetch time there's still no contract to state.
   const already = now.toISOString();
-  const profileDeadline = profileAgeHours == null ? already : staleAfterIso(input.profileFeedInfo.cachedAt, maxAgeHours);
-  const catalogDeadline =
-    catalogMeasured || catalogStaleRecord
+  const profileDeadline = profileAgeHours == null ? already : (staleAfterIso(input.profileFeedInfo.cachedAt, maxAgeHours) ?? already);
+  const catalogDeadline = fixtureMode
+    ? null
+    : catalogMeasured || catalogStaleRecord
       ? (staleAfterIso(catalogCompleteness.checkedAt, maxAgeHours) ?? already)
-      : fixtureMode
-        ? null
-        : already;
+      : already;
   const deadlines = [staleAfterIso(stats.fetchedAt, maxAgeHours), profileDeadline, catalogDeadline]
     .filter((value): value is string => value !== null)
     .sort();

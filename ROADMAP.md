@@ -17,13 +17,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: a line past `maxLineBytes` is dropped without being held whole, only a regular file is opened, and both are tested (the long line under a 16 MB heap).
   Complexity: S
 
-- [ ] P3: Leave the catalog out of `staleAfter` in fixture builds, and never throw on a far-future time
-  Why: a fixture build with a catalog verdict but no time shows `fresh` with no warnings yet puts `staleAfter` at the build time, so the page shows its stale panel at once. A `generatedAt` or `cachedAt` of `+275760-09-13T00:00:00.000Z` makes `staleAfterIso` throw a RangeError and fails the build, which the malformed-record rule forbids.
-  Evidence: twenty-second review (12,300 combinations probed); `src/data/generated-trust.ts:158,331`.
-  Touches: `src/data/generated-trust.ts`, `test/status-freshness.test.mjs`.
-  Acceptance: fixture mode gives the catalog no deadline, and a sum that isn't a valid date gives null, each with a test.
-  Complexity: S
-
 - [ ] P3: Refuse a Caddy logger with a `core` the edge log check can't read
   Why: Caddy tees a logger's entries to its `core` beside the writer and encoder, and `loggingProblem` never reads it. Stock 2.11.4 only ships the `mock` core, so this needs a custom build.
   Evidence: twenty-second review; Caddy 2.11.4 logging.go:385-391, `scripts/lib/edge-log-check.mjs`.
