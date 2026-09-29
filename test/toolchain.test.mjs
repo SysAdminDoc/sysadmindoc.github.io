@@ -342,6 +342,10 @@ test('a self-test run counts as a rejection only when it says why, not when it h
   const og = await fs.readFile(path.join(root, 'scripts', 'audit-og-cards.mjs'), 'utf8');
   assert.match(og, /setTimeout\(\(\) => \{\s*console\.error\([^)]*\);\s*process\.exit\(1\);\s*\}, OG_AUDIT_WATCHDOG_MS\)\.unref\(\);/);
   assert.match(og, /const OG_AUDIT_WATCHDOG_MS = 120_000;/);
+  // A static import of sharp loads before the timer exists, so the watchdog
+  // could not catch a stalled native load.
+  assert.doesNotMatch(og, /^import\s+sharp\b/m, 'sharp must load after the watchdog is armed');
+  assert.ok(og.indexOf("await import('sharp')") > og.indexOf('OG_AUDIT_WATCHDOG_MS).unref()'), 'sharp loads after the watchdog');
 });
 
 test('every dist-reading audit is proven able to reject a planted violation', async () => {

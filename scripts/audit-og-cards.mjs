@@ -11,7 +11,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import sharp from 'sharp';
 
 // On 2026-09-24 this sat in sharp for 13 minutes with 0.25 s of CPU, and
 // build:ci runs it directly, outside the gate self-test's time limit. A hung
@@ -22,6 +21,11 @@ setTimeout(() => {
   console.error(`OG card audit FAILED: still running after ${OG_AUDIT_WATCHDOG_MS / 1000}s, so a sharp read has hung.`);
   process.exit(1);
 }, OG_AUDIT_WATCHDOG_MS).unref();
+
+// Loaded after the watchdog: a static import runs before this module's body, so
+// a stalled native load of sharp (2026-09-29, under load from other builds) hung
+// with no timer armed.
+const { default: sharp } = await import('sharp');
 
 const root = process.cwd();
 // --dist lets the gate self-test point this at a throwaway copy of the build

@@ -6,6 +6,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 - The catalog follows two repos that GitHub now spells HushFeed and HushFacebook, and drops FantasyLeagueFootball, which went private. The nightly deploy stopped on those three stale links.
+- The social card audit starts its two-minute watchdog before it loads the image library, so a stalled load fails the build instead of hanging it.
 
 ## [v0.46.0] - 2026-09-29
 
