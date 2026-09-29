@@ -7,7 +7,8 @@
 // names. No em dash, en dash or other dash, and no hyphen or dash lookalike
 // between spaces (scripts/lib/title-style.mjs). A feed's own title is also
 // the name its links give it, so a reader subscribes to what the link said
-// (eighteenth drain review).
+// (eighteenth drain review). The project feeds' descriptions are held to the
+// dash half of the rule too, since every catalog card shows the same text.
 //
 //   --dist <path>   the build to read (default dist)
 import fs from 'node:fs';
@@ -15,13 +16,17 @@ import path from 'node:path';
 import process from 'node:process';
 import { XMLParser } from 'fast-xml-parser';
 import { parse } from 'parse5';
-import { decodeReferences, titleStyleProblem } from './lib/title-style.mjs';
+import { dashProblem, decodeReferences, titleStyleProblem } from './lib/title-style.mjs';
 
 const root = process.cwd();
 const distArg = process.argv.indexOf('--dist');
 const distDir = path.resolve(root, distArg === -1 ? 'dist' : process.argv[distArg + 1]);
 const HTML = 'http://www.w3.org/1999/xhtml';
 const FEEDS = ['rss.xml', 'releases.xml', 'atom.xml', 'feed.json'];
+// The project feeds carry each project's description as running text, held to
+// the dash half of the rule. releases.xml carries upstream release notes, so
+// its bodies stay out.
+const DESCRIBED = new Set(['rss.xml', 'atom.xml', 'feed.json']);
 const NAME_METAS = new Set(['og:title', 'twitter:title', 'og:site_name', 'application-name', 'apple-mobile-web-app-title']);
 
 if (!fs.existsSync(path.join(distDir, 'index.html'))) {
@@ -84,13 +89,28 @@ function feedNames() {
     if (text === null) continue;
     if (file === 'feed.json') {
       const feed = JSON.parse(text);
-      feeds.push({ file, title: String(feed?.title ?? ''), items: list(feed?.items).map((item) => String(item?.title ?? '')) });
+      feeds.push({
+        file,
+        title: String(feed?.title ?? ''),
+        items: list(feed?.items).map((item) => String(item?.title ?? '')),
+        descriptions: list(feed?.items).map((item) => String(item?.content_text ?? item?.summary ?? '')),
+      });
     } else if (file === 'atom.xml') {
       const feed = xml.parse(text)?.feed;
-      feeds.push({ file, title: textValue(feed?.title), items: list(feed?.entry).map((entry) => textValue(entry?.title)) });
+      feeds.push({
+        file,
+        title: textValue(feed?.title),
+        items: list(feed?.entry).map((entry) => textValue(entry?.title)),
+        descriptions: list(feed?.entry).map((entry) => textValue(entry?.summary)),
+      });
     } else {
       const channel = xml.parse(text)?.rss?.channel;
-      feeds.push({ file, title: textValue(channel?.title), items: list(channel?.item).map((item) => textValue(item?.title)) });
+      feeds.push({
+        file,
+        title: textValue(channel?.title),
+        items: list(channel?.item).map((item) => textValue(item?.title)),
+        descriptions: list(channel?.item).map((item) => textValue(item?.description)),
+      });
     }
   }
   return feeds;
@@ -137,13 +157,21 @@ for (const { href, text, own, pages } of mismatches.values()) {
   problems.push(`${pages[0]}${pages.length > 1 ? ` and ${pages.length - 1} more page(s)` : ''}: the ${href} link "${text.slice(0, 100)}" doesn't match the feed's own title "${own.slice(0, 100)}"`);
 }
 let items = 0;
-for (const { file, title, items: titles } of feeds) {
+let descriptions = 0;
+for (const { file, title, items: titles, descriptions: texts } of feeds) {
   const problem = titleStyleProblem(title);
   if (problem) problems.push(`${file}: the feed's title "${title.slice(0, 100)}" has ${problem}`);
   for (const item of titles) {
     items += 1;
     const itemProblem = titleStyleProblem(item);
     if (itemProblem) problems.push(`${file}: the item title "${item.slice(0, 100)}" has ${itemProblem}`);
+  }
+  if (!DESCRIBED.has(file)) continue;
+  for (const text of texts) {
+    if (!text) continue;
+    descriptions += 1;
+    const textProblem = dashProblem(text);
+    if (textProblem) problems.push(`${file}: the description "${text.slice(0, 100)}" has ${textProblem}`);
   }
 }
 const manifest = manifestNames();
@@ -158,4 +186,4 @@ if (problems.length > 0) {
   if (problems.length > 20) console.error(`  ...and ${problems.length - 20} more`);
   process.exit(1);
 }
-console.log(`title-style audit passed: ${files.length} pages, ${feeds.length} feeds with ${items} items and ${manifest.length} manifest names, no dash in any of them.`);
+console.log(`title-style audit passed: ${files.length} pages, ${feeds.length} feeds with ${items} items and ${manifest.length} manifest names, no dash in any of them, and no dash in ${descriptions} project descriptions.`);

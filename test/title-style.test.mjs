@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
-import { decodeReferences, titleStyleProblem } from '../scripts/lib/title-style.mjs';
+import { dashProblem, decodeReferences, titleStyleProblem } from '../scripts/lib/title-style.mjs';
 
 const root = process.cwd();
 const EM = String.fromCharCode(0x2014);
@@ -38,6 +38,13 @@ test('hyphens joining words, and the site\'s own separators, are fine', () => {
   assert.equal(decodeReferences('&amp; &#65; &#x42; &bogus;'), '&amp; A B &bogus;');
 });
 
+test('a description is held to the dash half of the rule only', () => {
+  assert.equal(dashProblem('Intelligence aggregator &mdash; OSINT data feeds'), 'an em dash');
+  assert.equal(dashProblem(`Every landfall (1851${EN}present)`), 'an en dash');
+  assert.equal(dashProblem('Power-user package manager. Continuation of AppManager'), null);
+  assert.equal(dashProblem('Audio to MIDI - then WAV'), null, 'a spaced hyphen in running text is left to the writer');
+});
+
 // The eighteenth drain review: the site writes its feed item titles too
 // (catalog names, atom's "(live)" suffix, "project tag" in releases.xml), and
 // the manifest, og:site_name and each feed's own title went unread.
@@ -54,14 +61,16 @@ test('the audit reads every name the site writes, holds each feed to its link, a
     fs.writeFileSync(path.join(dist, 'colophon', 'index.html'), page('Colophon | Matt Parker'));
     fs.writeFileSync(path.join(dist, 'rss.xml'), rss(RSS, 'ImgConverter (live)'));
     fs.writeFileSync(path.join(dist, 'atom.xml'), '<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom"><title>Recent projects (Atom) | Matt Parker</title><entry><title>One entry</title></entry></feed>');
-    fs.writeFileSync(path.join(dist, 'feed.json'), JSON.stringify({ title: 'Recent projects (JSON Feed) | Matt Parker', items: [{ title: 'Kotlin-first tools' }] }));
+    fs.writeFileSync(path.join(dist, 'feed.json'), JSON.stringify({ title: 'Recent projects (JSON Feed) | Matt Parker', items: [{ title: 'Kotlin-first tools', content_text: 'A launcher. Compose, clone not a port' }] }));
     fs.writeFileSync(path.join(dist, 'manifest.json'), JSON.stringify({ name: 'Matt Parker | Technical Service Bureau', short_name: 'SysAdminDoc', shortcuts: [{ name: 'Project catalog', short_name: 'Catalog' }] }));
     const clean = audit();
     assert.equal(clean.status, 0, clean.stderr);
     assert.match(clean.stdout, /2 pages, 3 feeds with 4 items and 4 manifest names/);
+    assert.match(clean.stdout, /no dash in 1 project descriptions/);
 
     fs.writeFileSync(path.join(dist, 'colophon', 'index.html'), page(`Colophon ${EM} Matt Parker`, { feedName: 'Matt Parker - recent projects', siteName: `Matt Parker ${String.fromCharCode(0x2212)} Portfolio` }));
     fs.writeFileSync(path.join(dist, 'rss.xml'), rss('Matt Parker &#8211; projects', 'Old tool &#8212; retired'));
+    fs.writeFileSync(path.join(dist, 'feed.json'), JSON.stringify({ title: 'Recent projects (JSON Feed) | Matt Parker', items: [{ title: 'Kotlin-first tools', content_text: `A launcher ${EM} Compose` }] }));
     fs.writeFileSync(path.join(dist, 'atom.xml'), '<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom"><title>Projects | Matt Parker</title><entry><title>Tool&#160;-&#160;beta</title></entry></feed>');
     fs.writeFileSync(path.join(dist, 'index.html'), page('Matt Parker | Home').replace('</head>', '<link rel="alternate" type="application/atom+xml" title="Recent projects (Atom) | Matt Parker" href="/atom.xml"></head>'));
     fs.mkdirSync(path.join(dist, 'about'));
@@ -77,6 +86,7 @@ test('the audit reads every name the site writes, holds each feed to its link, a
     assert.match(said, /rss\.xml: the feed's title "[^"]*" has an en dash/);
     assert.match(said, /rss\.xml: the item title "Old tool &#8212; retired" has an em dash/);
     assert.match(said, /atom\.xml: the item title "[^"]*" has a hyphen between spaces/);
+    assert.match(said, /feed\.json: the description "A launcher . Compose" has an em dash/);
     assert.match(said, /index\.html: the \/atom\.xml link "Recent projects \(Atom\) \| Matt Parker" doesn't match the feed's own title "Projects \| Matt Parker"/);
     assert.match(said, /index\.html and 1 more page\(s\): the \/rss\.xml link "Recent projects \| Matt Parker" doesn't match the feed's own title "Matt Parker &#8211; projects"/, 'once for every page carrying it');
     assert.match(said, /colophon\/index\.html: the \/rss\.xml link "Matt Parker - recent projects" doesn't match/);

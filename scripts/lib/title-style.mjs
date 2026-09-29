@@ -24,19 +24,31 @@ export function decodeReferences(text) {
 }
 
 /**
- * What in a title breaks the rule, in words, or null.
- * @param {string} title
+ * The dash half of the rule alone, for running text such as a project
+ * description: any dash punctuation that isn't a hyphen, in words, or null.
+ * @param {string} value
  * @returns {string | null}
  */
-export function titleStyleProblem(title) {
-  const text = decodeReferences(title);
-  for (const character of text) {
+export function dashProblem(value) {
+  for (const character of decodeReferences(value)) {
     if (!/\p{Pd}/u.test(character) || HYPHENS.has(character)) continue;
     const code = character.codePointAt(0) ?? 0;
     if (code === 0x2014) return 'an em dash';
     if (code === 0x2013) return 'an en dash';
     return `a dash (${hex(character)})`;
   }
+  return null;
+}
+
+/**
+ * What in a title breaks the rule, in words, or null.
+ * @param {string} title
+ * @returns {string | null}
+ */
+export function titleStyleProblem(title) {
+  const dash = dashProblem(title);
+  if (dash) return dash;
+  const text = decodeReferences(title);
   const run = STANDING_ALONE.exec(text)?.[1];
   if (run === undefined) return null;
   if (run.length === 1 && HYPHENS.has(run)) return 'a hyphen between spaces';
