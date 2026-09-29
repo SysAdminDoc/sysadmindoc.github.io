@@ -73,6 +73,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
+- [ ] P3: Name the network error behind a failed lead delivery, and pace an email backlog
+  Why: when a restart retried four pending leads at once, two emails failed with a bare "fetch failed" and went out a tick later. The log drops `error.cause`, so it can't say whether that was DNS, a reset or a connect timeout, and a larger backlog fired all at once would also run into Resend's default of 2 requests a second.
+  Evidence: `docker logs portfolio-contact-handler`, 2026-09-29 21:31 UTC (leads 37e2fb and 88c0a5, attempt 6).
+  Touches: `deliver()` and `retryPending()` in `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
+  Acceptance: a failed fetch logs its cause code (for example ECONNRESET or EAI_AGAIN), retried emails go out no faster than 2 a second, and a test covers both.
+  Complexity: S
+
 - [ ] P3: Stop counting extension-injected inline code as first-party CSP violations
   Why: the nightly flagged 43 style-src-elem and 37 script-src-elem "first-party" reports over about four days. Every one has sample `[other]` and source `(invalid-url)`, which fits code a browser extension injects rather than the site's own hash-pinned inline blocks, so the alert is noise that hides a real regression.
   Evidence: `npm run csp:reports` on 2026-09-29 (mostly `/` and `/catalog/`, plus 42 style-src-attr).
