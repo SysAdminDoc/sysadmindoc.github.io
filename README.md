@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.46.0-blue)
+![Version](https://img.shields.io/badge/version-0.47.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -230,6 +230,16 @@ server files and asserts the running ntfy version, and its live smoke checks
 that the notify host refuses anonymous access. It then sends a synthetic lead
 through the real form and reads it back as a subscriber within 60 seconds.
 Smoke leads go to their own topic, so they never reach the phone.
+
+Each lead is also emailed to the owner's inbox through Resend when
+`contact-secrets.env` on the server sets `RESEND_API_KEY`, `CONTACT_EMAIL_TO`
+and `CONTACT_EMAIL_FROM` (a sender on a domain Resend has verified). The email
+carries the whole message and sets Reply-To to the visitor, so a reply goes
+straight to them. The handler tracks the push and the email separately and
+keeps retrying whichever one failed, so an outage on either side never loses a
+lead or sends it twice. Smoke leads are emailed to Resend's `delivered@resend.dev`
+test inbox. The handler is the only container on `portfolio-mail`, the one
+compose network with a route out, which it needs to reach the Resend API.
 
 `ContactForm.astro` loads its own script, so any page that shows the form can
 send it. With JavaScript the form posts in place and shows the handler's reply.

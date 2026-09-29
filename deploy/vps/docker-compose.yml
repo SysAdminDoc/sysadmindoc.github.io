@@ -165,7 +165,8 @@ services:
       # retention and is removed once empty.
       CONTACT_STORE: /var/lib/contact/leads.ndjson
     # NTFY_TOKEN (write-only) and CONTACT_SMOKE_SECRET, from
-    # deploy/vps/provision-notify-secrets.sh. Never committed.
+    # deploy/vps/provision-notify-secrets.sh, plus RESEND_API_KEY,
+    # CONTACT_EMAIL_TO and CONTACT_EMAIL_FROM for the email copy. Never committed.
     env_file:
       - path: ./contact-secrets.env
         required: true
@@ -188,6 +189,7 @@ services:
       start_period: 5s
     networks:
       - portfolio-private
+      - portfolio-mail
 
 networks:
   web:
@@ -197,6 +199,11 @@ networks:
   # network has no route out.
   portfolio-private:
     internal: true
+  # The contact handler alone, for its HTTPS call to the email API. This one
+  # has a route out, and nothing else joins it, so no other container can
+  # reach the handler through it.
+  portfolio-mail:
+    driver: bridge
   # Only portfolio-app and the report sink, with no route out.
   portfolio-reports:
     internal: true

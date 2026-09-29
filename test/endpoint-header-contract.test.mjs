@@ -448,7 +448,7 @@ test('only portfolio-app joins the shared web network, and each service sits on 
   const services = composeServiceNetworks(compose);
   const sets = Object.fromEntries(Object.keys(services).sort().map((name) => [name, [...services[name]].sort()]));
   assert.deepEqual(sets, {
-    'contact-handler': ['portfolio-private'],
+    'contact-handler': ['portfolio-mail', 'portfolio-private'],
     'csp-reporter': ['portfolio-reports'],
     ntfy: ['portfolio-private'],
     'portfolio-app': ['portfolio-private', 'portfolio-reports', 'web'],
@@ -456,8 +456,9 @@ test('only portfolio-app joins the shared web network, and each service sits on 
   assert.deepEqual(composeTopNetworks(compose), {
     web: { external: true },
     'portfolio-private': { internal: true },
+    'portfolio-mail': { driver: 'bridge' },
     'portfolio-reports': { internal: true },
-  }, 'both portfolio networks have no route out, and there is no other');
+  }, 'the private and report networks have no route out; only the contact handler, alone on portfolio-mail, has one');
   // network_mode puts a service on the host's network or another container's,
   // whatever its networks say.
   for (const [name, service] of Object.entries(parseYaml(compose).services)) {

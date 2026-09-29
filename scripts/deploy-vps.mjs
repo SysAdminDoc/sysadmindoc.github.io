@@ -210,7 +210,7 @@ function verifyProxyTrust() {
     ...networkProblems(networks, {
       'portfolio-app': ['portfolio_portfolio-private', 'portfolio_portfolio-reports', 'web'],
       'portfolio-ntfy': ['portfolio_portfolio-private'],
-      'portfolio-contact-handler': ['portfolio_portfolio-private'],
+      'portfolio-contact-handler': ['portfolio_portfolio-mail', 'portfolio_portfolio-private'],
       'portfolio-csp-reporter': ['portfolio_portfolio-reports'],
     }),
   ].join('; ');

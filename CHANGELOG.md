@@ -4,6 +4,14 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.47.0] - 2026-09-29
+
+### Added
+- Messages from the contact forms (homepage, AI and Healthcare IT pages) now land in my inbox as email too, with the whole message and Reply-To set to the sender. The phone push still goes out. Each one is tracked on its own, so a hiccup on either side gets retried without losing the message or sending it twice.
+
+### Changed
+- The privacy page says the email copy goes through Resend, an email delivery service.
+
 ### Fixed
 - The catalog follows two repos that GitHub now spells HushFeed and HushFacebook, and drops FantasyLeagueFootball, which went private. The nightly deploy stopped on those three stale links.
 - The social card audit starts its two-minute watchdog before it loads the image library, so a stalled load fails the build instead of hanging it.

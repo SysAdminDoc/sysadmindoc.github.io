@@ -130,7 +130,7 @@ http://notify.getparkerai.com {
 	# script a signed timestamp to send back with the form, so submissions are
 	# timed on the server's clock; POST /api/contact checks the token, the
 	# honeypot, the fields and the rate limits, stores the lead, then notifies
-	# the local ntfy. No third-party service in the flow.
+	# the local ntfy and, when configured, emails the owner through Resend.
 	@contact path /api/contact /api/contact/token
 	handle @contact {
 		header Cache-Control "no-store"

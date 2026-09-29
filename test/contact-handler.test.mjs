@@ -10,9 +10,12 @@ import {
   MAX_MIN_TIME_SECONDS,
   NOTIFY_MESSAGE_MAX_BYTES,
   NOTIFY_TITLE_MAX_BYTES,
+  SMOKE_EMAIL_TO,
   clientAddress,
   createContactHandler,
+  emailFor,
   isNavigation,
+  isPlainAddress,
   isSameSitePost,
   loadConfig,
   notificationFor,
@@ -1200,4 +1203,177 @@ test('loadConfig requires a topic URL and an absolute store path', () => {
   const config = loadConfig({ NTFY_URL: 'http://ntfy:80/portfolio-leads' });
   assert.equal(config.storePath, '/var/lib/contact/leads.ndjson');
   assert.equal(config.port, 8090);
+});
+
+const EMAIL_CONFIG = {
+  resendApiKey: 're_test_0123456789abcdefghij',
+  emailTo: 'owner@example.test',
+  emailFrom: 'Portfolio <portfolio@example.test>',
+};
+
+/**
+ * ntfy and Resend behind one fetch, as the handler sees them. `ntfy` and
+ * `email` set a failing status for that side.
+ * @param {{ ntfy?: number, email?: number }} fail
+ */
+function fakeChannels(fail = {}) {
+  /** @type {{ url: string, headers: Headers, body: any }[]} */
+  const ntfy = [];
+  /** @type {{ url: string, headers: Headers, body: any }[]} */
+  const email = [];
+  async function fetchStub(url, init = {}) {
+    const call = { url: String(url), headers: new Headers(init.headers), body: JSON.parse(String(init.body)) };
+    const isEmail = call.url === DEFAULT_CONFIG.resendUrl;
+    (isEmail ? email : ntfy).push(call);
+    const status = isEmail ? fail.email : fail.ntfy;
+    if (status) return new Response(JSON.stringify({ message: 'The example.test domain is not verified.' }), { status });
+    return new Response(isEmail ? '{"id":"email-1"}' : '{}', { status: 200 });
+  }
+  return { fetch: fetchStub, ntfy, email };
+}
+
+async function postLead(handler, fields = {}, headers = {}) {
+  const response = responseMock();
+  await handler.handleRequest(
+    requestMock({ body: formBody({ name: 'Pat Lee', email: 'pat@example.test', message: 'Can you look at our PACS migration?', subject: 'Healthcare IT', ...fields }), headers }),
+    response,
+  );
+  await handler.idle();
+  return response;
+}
+
+test('with a Resend key each lead is emailed in full, and counts as sent only once both channels have it', async () => {
+  const channels = fakeChannels();
+  await withHandler({ config: EMAIL_CONFIG, dependencies: { fetch: channels.fetch } }, async ({ handler, storePath, logger }) => {
+    // Past the push's 3,000-byte cut, inside the form's 5,000 characters.
+    const long = 'We run three imaging sites. '.repeat(150);
+    assert.equal((await postLead(handler, { message: long })).status, 200);
+
+    assert.equal(channels.ntfy.length, 1);
+    assert.equal(channels.email.length, 1);
+    const [call] = channels.email;
+    assert.equal(call.headers.get('authorization'), `Bearer ${EMAIL_CONFIG.resendApiKey}`);
+    assert.match(call.headers.get('idempotency-key'), /^portfolio-lead\/20260922-[0-9a-f]{6}\/1$/);
+    assert.equal(call.body.from, EMAIL_CONFIG.emailFrom);
+    assert.deepEqual(call.body.to, ['owner@example.test']);
+    assert.equal(call.body.reply_to, 'pat@example.test', 'a reply goes straight to the visitor');
+    assert.equal(call.body.subject, 'Portfolio message from Pat Lee (Healthcare IT)');
+    assert.ok(call.body.text.includes(long.trim()), 'the email carries the whole message, unlike the push');
+    assert.match(call.body.text, /Page: \/ai\//);
+
+    const status = (await readEntries(storePath)).filter((entry) => entry.type === 'status');
+    assert.deepEqual(status.map((entry) => [entry.status, entry.done]), [['sent', { ntfy: true, email: true }]]);
+    assert.ok(logger.lines.some((line) => /emailed$/.test(line)));
+    assert.ok(!logger.lines.join('\n').includes('three imaging sites'), 'visitor text stays out of the log');
+  });
+});
+
+test('a failed email keeps the lead pending, and the retry sends only the email', async () => {
+  const fail = { email: 503 };
+  const channels = fakeChannels(fail);
+  await withHandler({ config: EMAIL_CONFIG, dependencies: { fetch: channels.fetch } }, async ({ handler, storePath, logger, setClock }) => {
+    await postLead(handler);
+    let entries = await readEntries(storePath);
+    assert.deepEqual(entries.at(-1).done, { ntfy: true });
+    assert.equal(entries.at(-1).status, 'pending');
+    assert.ok(logger.lines.some((line) => /email failed \(attempt 1\): Resend answered 503: The example\.test domain is not verified\./.test(line)));
+
+    delete fail.email;
+    setClock(new Date(NOW.getTime() + 61_000));
+    assert.equal(await handler.retryPending(), 1);
+    assert.equal(channels.ntfy.length, 1, 'the push is not sent a second time');
+    assert.equal(channels.email.length, 2);
+    assert.equal(
+      channels.email[1].headers.get('idempotency-key'),
+      channels.email[0].headers.get('idempotency-key'),
+      'a send whose outcome is unknown is retried under the same key',
+    );
+    entries = await readEntries(storePath);
+    assert.equal(entries.at(-1).status, 'sent');
+    assert.equal(await handler.retryPending(), 0);
+  });
+});
+
+test('a refused email is retried under a fresh key, and the channel state survives a restart', async () => {
+  const channels = fakeChannels({ email: 403 });
+  await withHandler({ config: EMAIL_CONFIG, dependencies: { fetch: channels.fetch } }, async ({ handler, storePath }) => {
+    await postLead(handler);
+    const first = channels.email[0].headers.get('idempotency-key');
+    assert.equal((await readEntries(storePath)).at(-1).emailKey, undefined, 'a definite refusal drops its key');
+
+    const after = fakeChannels();
+    const restarted = createContactHandler(
+      { ...DEFAULT_CONFIG, ...TEST_CONFIG, ...EMAIL_CONFIG, storePath },
+      { fetch: after.fetch, now: () => new Date(NOW.getTime() + 120_000), logger: captureLogger() },
+    );
+    assert.equal(await restarted.restorePending(), 1);
+    assert.equal(await restarted.retryPending(), 1);
+    assert.equal(after.ntfy.length, 0, 'the push already went out before the restart');
+    assert.equal(after.email.length, 1);
+    assert.notEqual(after.email[0].headers.get('idempotency-key'), first);
+    assert.equal((await readEntries(storePath)).at(-1).status, 'sent');
+  });
+});
+
+test('a lead stored before email existed is emailed after an upgrade, and one already sent is not', async () => {
+  await withHandler({}, async ({ handler, storePath }) => {
+    await postLead(handler, { name: 'Already Sent' });
+    await fs.appendFile(
+      storePath,
+      `${JSON.stringify({ type: 'lead', id: '20260922-abcdef', receivedAt: NOW.toISOString(), name: 'Still Pending', email: 'sp@example.test', message: 'Stored while ntfy was down.', subject: '', page: '/', status: 'pending' })}\n` +
+        `${JSON.stringify({ type: 'status', id: '20260922-abcdef', status: 'pending', at: NOW.toISOString(), attempts: 3 })}\n`,
+    );
+    const after = fakeChannels();
+    const upgraded = createContactHandler(
+      { ...DEFAULT_CONFIG, ...TEST_CONFIG, ...EMAIL_CONFIG, storePath },
+      { fetch: after.fetch, now: () => new Date(NOW.getTime() + 120_000), logger: captureLogger() },
+    );
+    assert.equal(await upgraded.restorePending(), 1);
+    await upgraded.retryPending();
+    assert.deepEqual(after.email.map((call) => call.body.subject), ['Portfolio message from Still Pending']);
+    assert.equal(after.ntfy.length, 1);
+  });
+});
+
+test('smoke leads are emailed to the Resend test inbox, and an odd visitor address gets no Reply-To', async () => {
+  const channels = fakeChannels();
+  const smokeSecret = 'smoke-secret-for-tests-0123456789';
+  await withHandler({ config: { ...EMAIL_CONFIG, smokeSecret }, dependencies: { fetch: channels.fetch } }, async ({ handler }) => {
+    await postLead(handler, { email: 'smoke@example.invalid' }, { 'x-contact-smoke': smokeSecret });
+    assert.deepEqual(channels.email[0].body.to, [SMOKE_EMAIL_TO]);
+    assert.equal(channels.email[0].body.reply_to, undefined);
+
+    await postLead(handler, { email: 'pat@example test' });
+    assert.deepEqual(channels.email[1].body.to, ['owner@example.test']);
+    assert.equal(channels.email[1].body.reply_to, undefined, 'Resend refuses a malformed reply_to, which would strand the lead');
+    assert.match(channels.email[1].body.text, /did not look deliverable/);
+  });
+});
+
+test('the email subject and details cannot be split into extra header lines', () => {
+  const mail = emailFor(
+    { id: '20260922-abcdef', receivedAt: NOW.toISOString(), name: 'Eve\r\nBcc: x@example.test', email: 'eve@example.test', subject: 'Hi\nthere', message: 'Line one\nLine two', page: '/' },
+    EMAIL_CONFIG,
+  );
+  assert.equal(mail.subject, 'Portfolio message from Eve Bcc: x@example.test (Hi there)');
+  assert.match(mail.text, /^Name: Eve Bcc: x@example\.test$/m);
+  assert.match(mail.text, /Line one\nLine two/, 'the message body keeps its own lines');
+  assert.equal(isPlainAddress('pat@example.test'), true);
+  for (const bad of ['pat@example', 'pat example@x.test', 'a@b.test,c@d.test', 'pat@example.test\r\nBcc: x', '<pat@example.test>']) {
+    assert.equal(isPlainAddress(bad), false, bad);
+  }
+});
+
+test('loadConfig takes the email settings only as a complete, well-formed set', () => {
+  const base = { NTFY_URL: 'http://ntfy:80/portfolio-leads' };
+  const good = { ...base, RESEND_API_KEY: EMAIL_CONFIG.resendApiKey, CONTACT_EMAIL_TO: 'owner@example.test', CONTACT_EMAIL_FROM: 'Portfolio <portfolio@example.test>' };
+  const config = loadConfig(good);
+  assert.equal(config.resendApiKey, EMAIL_CONFIG.resendApiKey);
+  assert.equal(config.emailTo, 'owner@example.test');
+  assert.equal(loadConfig(base).resendApiKey, '', 'email stays off without a key');
+  assert.throws(() => loadConfig({ ...good, RESEND_API_KEY: 'sk_live_abc' }), /RESEND_API_KEY/);
+  assert.throws(() => loadConfig({ ...good, CONTACT_EMAIL_TO: '' }), /CONTACT_EMAIL_TO/);
+  assert.throws(() => loadConfig({ ...good, CONTACT_EMAIL_TO: 'a@b.test,c@d.test' }), /CONTACT_EMAIL_TO/);
+  assert.throws(() => loadConfig({ ...good, CONTACT_EMAIL_FROM: 'Portfolio' }), /CONTACT_EMAIL_FROM/);
+  assert.throws(() => loadConfig({ ...base, CONTACT_EMAIL_TO: 'owner@example.test' }), /without RESEND_API_KEY/);
 });

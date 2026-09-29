@@ -20,6 +20,14 @@
 //                                   at most 60, the longest the page script and the smoke wait)
 //   CONTACT_RETENTION_DAYS optional days a lead is kept, then deleted at start and daily (default 365;
 //                                   /privacy/ states the same number, src/data/retention.ts)
+//   RESEND_API_KEY        optional  Resend sending key (re_...). With it, every lead is also emailed,
+//                                   and a lead counts as delivered only once both channels have it
+//   CONTACT_EMAIL_TO      with key  the owner's inbox
+//   CONTACT_EMAIL_FROM    with key  sender on a Resend-verified domain, e.g. Portfolio <portfolio@example.com>
+//
+// Each channel is tracked on its own, so a retry never sends the push or the
+// email a second time. Smoke leads are emailed to Resend's delivered@ test
+// address, which exercises the API without reaching anyone's inbox.
 //
 // Form tokens: the page script fetches GET /api/contact/token, a server
 // timestamp and nonce signed with HMAC, and sends it back with the form. A
@@ -47,6 +55,10 @@ import { fileURLToPath } from 'node:url';
  * @property {string} ntfyUrl
  * @property {string} ntfyToken
  * @property {string} smokeSecret
+ * @property {string} resendApiKey
+ * @property {string} resendUrl
+ * @property {string} emailTo
+ * @property {string} emailFrom
  * @property {string} tokenSecret
  * @property {string} storePath
  * @property {number} leadRetentionDays
@@ -71,6 +83,10 @@ export const DEFAULT_CONFIG = Object.freeze({
   ntfyUrl: '',
   ntfyToken: '',
   smokeSecret: '',
+  resendApiKey: '',
+  resendUrl: 'https://api.resend.com/emails',
+  emailTo: '',
+  emailFrom: '',
   // Empty in a deployment, so each start makes its own key. Tests set it to mint
   // tokens.
   tokenSecret: '',
@@ -174,6 +190,19 @@ export function loadConfig(env = process.env) {
   if (smokeSecret && smokeSecret.length < 24) {
     throw new Error('CONTACT_SMOKE_SECRET must be at least 24 characters.');
   }
+  const resendApiKey = String(env.RESEND_API_KEY ?? '').trim();
+  const emailTo = String(env.CONTACT_EMAIL_TO ?? '').trim();
+  const emailFrom = String(env.CONTACT_EMAIL_FROM ?? '').trim();
+  if (resendApiKey) {
+    if (!/^re_[A-Za-z0-9_]{16,}$/.test(resendApiKey)) throw new Error('RESEND_API_KEY must be a Resend API key (re_...).');
+    if (!isPlainAddress(emailTo)) throw new Error('CONTACT_EMAIL_TO must be one email address when RESEND_API_KEY is set.');
+    const fromAddress = emailFrom.match(/<([^<>]+)>$/)?.[1] ?? emailFrom;
+    if (!isPlainAddress(fromAddress) || /[\r\n]/.test(emailFrom)) {
+      throw new Error('CONTACT_EMAIL_FROM must be an address, or Name <address>, when RESEND_API_KEY is set.');
+    }
+  } else if (emailTo || emailFrom) {
+    throw new Error('CONTACT_EMAIL_TO and CONTACT_EMAIL_FROM do nothing without RESEND_API_KEY.');
+  }
 
   return {
     ...DEFAULT_CONFIG,
@@ -182,6 +211,9 @@ export function loadConfig(env = process.env) {
     ntfyUrl,
     ntfyToken,
     smokeSecret,
+    resendApiKey,
+    emailTo,
+    emailFrom,
     storePath,
     minTimeSeconds: atMost(positiveInteger(env.CONTACT_MIN_TIME, DEFAULT_CONFIG.minTimeSeconds, 'CONTACT_MIN_TIME'), MAX_MIN_TIME_SECONDS, 'CONTACT_MIN_TIME'),
     leadRetentionDays: positiveInteger(env.CONTACT_RETENTION_DAYS, DEFAULT_CONFIG.leadRetentionDays, 'CONTACT_RETENTION_DAYS'),
@@ -385,6 +417,45 @@ export function notificationFor(lead) {
   };
 }
 
+/**
+ * One address with nothing a mail header could split on. The form only asks
+ * for an "@", and Resend refuses a malformed reply_to outright, so a visitor's
+ * typo must not become a lead that can never be emailed.
+ */
+export function isPlainAddress(value) {
+  return typeof value === 'string' && value.length <= 254 && /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]+$/.test(value);
+}
+
+// Resend's test inbox: accepts the send and reports it delivered, reaches no one.
+export const SMOKE_EMAIL_TO = 'delivered@resend.dev';
+
+/** The email for one lead: the whole message, with replies going to the visitor. */
+export function emailFor(lead, config) {
+  const oneLine = (text) => String(text ?? '').replace(/[\p{Cc}\p{Zl}\p{Zp}]+/gu, ' ').trim();
+  const name = oneLine(lead.name);
+  const topic = oneLine(lead.subject);
+  const replyTo = !lead.synthetic && isPlainAddress(lead.email) ? lead.email : null;
+  const details = [
+    `Name: ${name}`,
+    `Email: ${lead.email}`,
+    `Page: ${lead.page || 'unknown'}`,
+    ...(topic ? [`Topic: ${topic}`] : []),
+    `Received: ${lead.receivedAt}`,
+    `Lead: ${lead.id}`,
+  ];
+  const footer = replyTo
+    ? `Reply to this email to answer ${name} directly.`
+    : 'The address above did not look deliverable, so replying to this email will not reach the sender.';
+  const subject = Array.from(`Portfolio message from ${name}${topic ? ` (${topic})` : ''}`).slice(0, 150).join('');
+  return {
+    from: config.emailFrom,
+    to: [lead.synthetic ? SMOKE_EMAIL_TO : config.emailTo],
+    ...(replyTo ? { reply_to: replyTo } : {}),
+    subject,
+    text: `${details.join('\n')}\n\n${lead.message}\n\n-- \n${footer}\n`,
+  };
+}
+
 // Every record is serialized with "type" as its first key, and a quote inside a
 // JSON string is always escaped, so this text only ever occurs where a record
 // begins. That lets a whole record be recovered from a line it shares with a
@@ -495,6 +566,10 @@ export function createLeadStore(storePath, fileSystem = fs) {
             lead.status = entry.status;
             lead.attempts = Number(entry.attempts) || lead.attempts;
             lead.lastAttemptAt = entry.at;
+            // Status lines written before email existed carry no channels, so
+            // such a lead is sent on every channel, as it would be when new.
+            if (entry.done && typeof entry.done === 'object') lead.done = { ...entry.done };
+            lead.emailKey = typeof entry.emailKey === 'string' ? entry.emailKey : undefined;
           }
         }
       }
@@ -679,25 +754,80 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     }
   }
 
+  async function sendEmail(lead) {
+    // The key covers the send whose outcome is unknown (a timeout, a 5xx), so a
+    // retry of one Resend already accepted isn't mailed twice. A definite refusal
+    // sent nothing, and the next attempt takes a fresh key in case Resend
+    // remembers the refusal under the old one.
+    lead.emailKey ??= `portfolio-lead/${lead.id}/${lead.attempts ?? 0}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), config.notifyTimeoutMs);
+    try {
+      const response = await fetchImpl(config.resendUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${config.resendApiKey}`,
+          'Idempotency-Key': lead.emailKey,
+        },
+        body: JSON.stringify(emailFor(lead, config)),
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        const detail = await response.text().then((text) => {
+          try {
+            return String(JSON.parse(text)?.message ?? '');
+          } catch {
+            return '';
+          }
+        }, () => '');
+        if (response.status >= 400 && response.status < 500 && response.status !== 409 && response.status !== 429) {
+          lead.emailKey = undefined;
+        }
+        throw new Error(`Resend answered ${response.status}${detail ? `: ${truncateBytes(detail.replace(/\s+/g, ' '), 200)}` : ''}`);
+      }
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /** The channels a lead must reach before it counts as delivered. */
+  const channels = config.resendApiKey ? ['ntfy', 'email'] : ['ntfy'];
+
   async function deliver(lead) {
     const attempts = (lead.attempts ?? 0) + 1;
     lead.attempts = attempts;
     lead.runAttempts = (lead.runAttempts ?? 0) + 1;
     lead.lastAttemptAt = now().toISOString();
-    let delivered = false;
-    try {
-      await publish(lead);
-      delivered = true;
-    } catch (error) {
-      logger.error(`contact: lead ${lead.id} notification failed (attempt ${attempts}): ${error.message}`);
-    }
+    lead.done = { ...lead.done };
+    await Promise.all(
+      channels.filter((channel) => !lead.done[channel]).map(async (channel) => {
+        try {
+          if (channel === 'email') await sendEmail(lead);
+          else await publish(lead);
+          lead.done[channel] = true;
+          logger.log(channel === 'email' ? `contact: lead ${lead.id} emailed` : `contact: lead ${lead.id} delivered to ntfy`);
+        } catch (error) {
+          const what = channel === 'email' ? 'email' : 'notification';
+          logger.error(`contact: lead ${lead.id} ${what} failed (attempt ${attempts}): ${error.message}`);
+        }
+      }),
+    );
+    const delivered = channels.every((channel) => lead.done[channel]);
     if (delivered) {
       lead.status = 'sent';
       pending.delete(lead.id);
-      logger.log(`contact: lead ${lead.id} delivered to ntfy`);
     }
     try {
-      await store.append({ type: 'status', id: lead.id, status: delivered ? 'sent' : 'pending', at: lead.lastAttemptAt, attempts });
+      await store.append({
+        type: 'status',
+        id: lead.id,
+        status: delivered ? 'sent' : 'pending',
+        at: lead.lastAttemptAt,
+        attempts,
+        done: lead.done,
+        ...(lead.emailKey ? { emailKey: lead.emailKey } : {}),
+      });
     } catch (error) {
       logger.error(`contact: could not record the attempt for lead ${lead.id}: ${error.message}`);
     }
