@@ -429,6 +429,19 @@ async function main() {
   const readmes = Object.fromEntries(
     Object.entries(existingReadmes).filter(([name, value]) => repoNames.has(name) && typeof value === 'string'),
   );
+  // A repo that left the public set (made private, renamed, archived away) just
+  // lost its cached README above, so its README ETag goes too. Otherwise the two
+  // halves of the cache disagree for good, since the worker below only visits
+  // public repos and never gets a chance to repair it.
+  let readmeEtagsDropped = 0;
+  for (const key of Object.keys(savedEtags)) {
+    const departed = key.match(/^https:\/\/api\.github\.com\/repos\/[^/]+\/([^/]+)\/readme$/);
+    if (departed && !repoNames.has(departed[1])) {
+      delete savedEtags[key];
+      readmeEtagsDropped += 1;
+    }
+  }
+  if (readmeEtagsDropped > 0) console.log(`Dropped ${readmeEtagsDropped} README ETags for repos no longer public.`);
   const readmeRefreshedRepos = new Set();
 
   function writeReadmeRefreshSummary({

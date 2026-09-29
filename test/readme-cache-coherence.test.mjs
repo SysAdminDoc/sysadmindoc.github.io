@@ -51,6 +51,18 @@ test('fetch-stars drops a README ETag whose cached body is missing', () => {
   );
 });
 
+// A repo that goes private drops out of publicRepos, so its README body is
+// filtered out of the cache while the per-repo worker never visits it again.
+// Without a matching sweep its ETag outlives the body forever (observed
+// 2026-09-29 after five repos went private).
+test('fetch-stars drops README ETags for repos that left the public set', () => {
+  const source = fs.readFileSync(fetchStars, 'utf8');
+  assert.match(source, /if \(departed && !repoNames\.has\(departed\[1\]\)\)/);
+  const sweep = source.indexOf('readmeEtagsDropped += 1');
+  const worker = source.indexOf('async function worker()');
+  assert.ok(sweep > 0 && sweep < worker, 'the departed-repo sweep runs before the README worker');
+});
+
 // The releases pass has the same shape as the README pass and had the same
 // defect: on a 304 it pushed `existingReleasesByRepo.get(name)` into the output
 // and counted a "reuse" even when that returned undefined, so a trimmed
