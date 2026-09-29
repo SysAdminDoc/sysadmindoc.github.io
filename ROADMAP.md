@@ -8,7 +8,70 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Fold the stacked stylesheet layers into one design system
+  Why: v0.46.0's Studio block sits on top of seven earlier redesigns (foundation through additions, then unlayered), so a rule often has three or four older copies below it. The override audit only catches repeats of one selector inside one file, and changing a component still means chasing specificity across files. The scroll-reveal transform and the old `section::before` sweep both bit during the redesign.
+  Evidence: v0.46.0 redesign, 2026-09-29; `src/styles/global.css` imports eight layers plus `layers/unlayered.css`.
+  Touches: `src/styles/**`, `scripts/audit-css.mjs`, `test/css-layer.test.mjs`, the visual baselines.
+  Acceptance: one token file and one component sheet per surface, no rule overridden across files, and the visual gate unchanged.
+  Complexity: L
+
 ### P3
+
+- [ ] P3: Read repeated and mixed-case CSP directives the way browsers do
+  Why: `parseCsp` keeps the last copy of a repeated directive, but browsers use the first, so `style-src 'self' 'unsafe-inline'; style-src 'self'` passes. `directiveAllowsUnsafeInline` compares case-sensitively while `cspTokenKey` doesn't, so `'UNSAFE-INLINE'` in `style-src-elem` hides. A policy with neither `style-src` nor `default-src` passes when a page has no inline block. The subset check fails `'SHA256-'` against `'sha256-'`, base64url hashes, hosts with a trailing slash, and `'report-sample'` or `'unsafe-eval'`.
+  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/audit-csp.mjs:226` and `:250`.
+  Touches: `scripts/audit-csp.mjs`, its tests.
+  Acceptance: each case comes out as a browser reads it, with a planted test apiece.
+  Complexity: S
+
+- [ ] P3: Fail the README count check on a corrupt profile feed even when releases is missing
+  Why: `readmeCountInputs` returns null, which the test reads as "not installed" and skips, when `_releases.json` is missing, even if `_profile-projects.json` is present and doesn't parse.
+  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/readme-counts.mjs:65`.
+  Touches: `scripts/lib/readme-counts.mjs`, `test/project-count-source.test.mjs`.
+  Acceptance: a corrupt file fails whatever else is missing, and only a clean absence skips.
+  Complexity: S
+
+- [ ] P3: Count a crashed planted audit as no verdict on Windows
+  Why: `noVerdict` treats a timeout and a kill as no verdict, but not exit code 134 or a Windows status at or above 0xC0000000 (access violation, stack overflow), so a planted audit that crashes counts as rejected.
+  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:46`.
+  Touches: `scripts/lib/run-audit.mjs`, its test.
+  Acceptance: both come back as no verdict, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Purge a torn or undatable lead line even when nothing else expires
+  Why: when no dated lead has expired, the purge leaves a torn or undatable line in place and `/healthz` still reports `retentionEnforced: true`.
+  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:626` and `:957`.
+  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
+  Acceptance: the line goes (or health reports false) on a purge with nothing else to drop, with a test.
+  Complexity: S
+
+- [ ] P3: Never requeue expired leads after a failed start-up purge
+  Why: `restorePending` sends leads past their retention to ntfy when the start-up purge failed, so a message that should be gone gets delivered.
+  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:722`.
+  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
+  Acceptance: an expired lead is never queued whether or not the purge worked, with a test.
+  Complexity: S
+
+- [ ] P3: Answer 400 to a request path `new URL` can't parse
+  Why: a request for `//%%%/x` throws inside `new URL`, which both servers turn into a 500 and an error log line.
+  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:758`, `deploy/vps/csp-report-server.mjs:400`.
+  Touches: both servers and their tests.
+  Acceptance: both answer 400 without logging an error, with a test apiece.
+  Complexity: S
+
+- [ ] P3: Rerun the twenty-fourth review
+  Why: it covered titles, `staleAfter`, the report sink's byte splitter and the Caddy core, and it was stopped before it finished on 2026-09-24.
+  Evidence: drain notes for 2026-09-24.
+  Touches: whatever it finds.
+  Acceptance: the review runs to the end without another running beside it, and its findings are filed here.
+  Complexity: M
+
+- [ ] P3: Keep the catalog filters to one row each on phones
+  Why: at 390px the Show and Category filters wrap to six rows of chips, about 3 1/2 inches of scrolling before the first project.
+  Evidence: v0.46.0 phone captures of `/catalog/`, 2026-09-29.
+  Touches: `src/components/CatalogSection.astro`, `src/styles/layers/unlayered.css`.
+  Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
+  Complexity: S
 
 - [ ] P3: Say so when a report-only flag is set outside the nightly runner
   Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
@@ -62,13 +125,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Evidence: second drain review, 2026-09-23; the `handle_errors` block in `deploy/vps/Caddyfile`.
   Touches: `deploy/vps/Caddyfile`, a not-sent page under `src/pages/contact/`, `test/endpoint-header-contract.test.mjs`.
   Acceptance: A 5xx from `/api/contact` on a navigation shows a page saying the message wasn't sent and giving the email address, and a test pins the route.
-  Complexity: S
-
-- [ ] P3: Take the em dashes out of the project descriptions
-  Why: 41 descriptions in `src/data/projects.ts` join their halves with `&mdash;` (ImgConverter's among them), and they reach every catalog card, `rss.xml`, `atom.xml` and `feed.json`, which breaks the site's own writing rule. `title-style:audit` checks names only, not descriptions.
-  Evidence: `git grep -c '&mdash;' src/data/projects.ts` gives 41 on 2026-09-24; 18 in `rss.xml`, 18 in `atom.xml` and 9 in `feed.json` in that day's build.
-  Touches: `src/data/projects.ts`, a check over built descriptions (the feed audit or the title-style audit).
-  Acceptance: No project description in `src/data` or in any built feed has an em dash or en dash, each rewritten as a sentence rather than a mechanical swap, and a build check keeps it that way.
   Complexity: S
 
 - [ ] P3: Publish GitHub releases for v0.43.0 through v0.45.x

@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.45.2-blue)
+![Version](https://img.shields.io/badge/version-0.46.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -22,10 +22,10 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (206 feed-backed / 209 local fallback), skills (8)
-- **Technical Service Bureau design system**: a mineral-paper independent-practice publication with civic-blue rules, vermilion signals, restrained diagnostic surfaces, and a complete dark-theme counterpart
+- **Content collections**: featured (9), live apps (22), catalog (207 feed-backed / 209 local fallback), skills (8)
+- **Studio design system**: dark by default with a matching light theme, one blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
 - **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
-- **Minimal homepage evidence sequence**: concise positioning, three proof points, three selected systems, two live previews, three practice lanes, and direct archive/search handoffs
+- **Homepage on one 1240px grid**: positioning with a proof card, three selected-work cards, six live-app cards, three practice cards, catalog and search handoffs that say where they go, and a contact form next to direct links
 - **Focused AI implementation track**: three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
 - **Build-time GitHub API**: stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline**: year-in-review page built from release and project-push evidence
@@ -161,7 +161,7 @@ Offline fixture checks do not use GitHub metadata credentials. They install trac
 The curated fallback and live-app screenshot overlays live in **[src/data/projects.ts](src/data/projects.ts)** and are validated by **[scripts/validate-project-data.mjs](scripts/validate-project-data.mjs)**. Add an entry -> `npm run data:validate` -> `npm run build` -> deploy. Live apps also need a tracked screenshot in `public/screenshots/<slug>.jpg`, a stable public thumbnail in `public/screenshots/thumbs/<slug>.jpg`, a matching Astro thumbnail input in `src/assets/screenshots/thumbs/<slug>.jpg`, and an `ok` provenance entry in `public/screenshots/manifest.json` from `npm run capture-screenshots`.
 
 - Featured: surface in Selected Work, the command palette, and feeds
-- Live Apps: for GitHub Pages demos, the screenshots gallery, and two homepage previews
+- Live Apps: for GitHub Pages demos, the screenshots gallery, and six homepage cards
 - Catalog: full searchable repo list with a build-time `Recommended` sort (categories: `ps|py|web|ext|kt|sec|media|cs|guide|fork|other|cpp`)
 - Skills: reviewed technology metadata for language lanes and discovery
 
