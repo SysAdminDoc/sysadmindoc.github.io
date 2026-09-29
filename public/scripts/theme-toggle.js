@@ -1,6 +1,6 @@
-/* Theme toggle — light (default) vs dark.
- * The warm editorial light theme is the intentional first impression. Dark
- * remains an explicit, persisted alternative for readers who prefer it.
+/* Theme toggle — dark (default) vs light.
+ * Dark is the first impression. Light remains an explicit, persisted
+ * alternative for readers who prefer it.
  *
  * CRITICAL: this script must execute before first paint (loaded in <head>
  * without defer/async) so the saved theme is applied before any content is
@@ -41,7 +41,7 @@
     root.dataset.theme = theme;
     var nextTheme = theme === 'dark' ? 'light' : 'dark';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#071421' : '#f4f0e7');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0b0e14' : '#f6f7f9');
     var btn = document.getElementById('themeToggle');
     if (btn) {
       btn.removeAttribute('aria-pressed');
@@ -53,12 +53,12 @@
 
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
-  apply(saved === 'dark' ? 'dark' : 'light');
+  apply(saved === 'light' ? 'light' : 'dark');
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('themeToggle');
     if (!btn) return;
-    apply(root.dataset.theme || 'light');
+    apply(root.dataset.theme || 'dark');
     btn.addEventListener('click', function () {
       var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       apply(next);

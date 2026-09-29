@@ -19,11 +19,11 @@ try {
   for (const capture of captures) {
     const context = await browser.newContext({
       viewport: { width: capture.width, height: capture.height },
-      colorScheme: 'light',
+      colorScheme: 'dark',
       serviceWorkers: 'block',
     });
     await context.addInitScript(() => {
-      localStorage.setItem('theme-pref', 'light');
+      localStorage.setItem('theme-pref', 'dark');
     });
     const page = await context.newPage();
     await page.route('https://api.github.com/**', (route) =>

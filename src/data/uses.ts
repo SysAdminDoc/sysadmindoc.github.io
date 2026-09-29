@@ -66,7 +66,7 @@ export const uses: UsesCategory[] = [
   {
     title: 'Design',
     items: [
-      { name: 'Theme by context', note: 'Warm editorial light here. Dark-first in most apps.' },
+      { name: 'Theme by context', note: 'Dark by default here and in most apps, with a light mode that remembers your pick.' },
       { name: 'Catppuccin Mocha', note: 'Preferred color palette' },
       { name: 'Glassmorphism', note: 'Frosted glass, shimmer, and depth' },
     ],

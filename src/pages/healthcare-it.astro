@@ -229,8 +229,8 @@ const cmdkSections = [
   .hcit-title{max-width:18ch!important;font-size:clamp(44px,6vw,72px)!important;line-height:.96!important;color:var(--t1)}
   .hcit-intro{max-width:700px!important;font-size:18px!important;line-height:1.6!important}
   .hcit-actions{margin-top:24px}
-  .hcit-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--t1);font-family:var(--mono);font-size:11px;font-weight:650;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
-  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--grn)}
+  .hcit-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--blue);font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0;text-decoration:none;text-transform:none}
+  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--t1)}
   .hcit-assurances{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:900px;margin:34px 0 0;padding:0;border-block:1px solid var(--border-soft);list-style:none}
   .hcit-assurances li{padding:14px 18px 14px 0;border-right:1px solid var(--border-soft);color:var(--t2);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
   .hcit-assurances li:not(:first-child){padding-left:18px}
@@ -238,16 +238,16 @@ const cmdkSections = [
 
   .hcit-section{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px)}
   .hcit-section-alt{border-block:1px solid var(--border-soft);background:var(--surface-1)}
-  .hcit-section-head{display:grid;grid-template-columns:140px minmax(300px,1.05fr) minmax(260px,.75fr);gap:30px;align-items:start;max-width:1100px;margin:0 auto}
+  .hcit-section-head{display:grid;grid-template-columns:140px minmax(300px,1.05fr) minmax(260px,.75fr);gap:30px;align-items:start;max-width:none;margin:0}
   .hcit-eyebrow,.hcit-offer-index,.hcit-timeline-label{font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase}
-  .hcit-eyebrow,.hcit-offer-index{color:var(--grn)}
-  .hcit-h2{max-width:14ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.06;letter-spacing:-.04em}
+  .hcit-eyebrow,.hcit-offer-index{color:var(--blue)}
+  .hcit-h2{max-width:14ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-.028em}
   .hcit-section-head>p{max-width:42ch;margin:2px 0 0;color:var(--t2);font-size:15px;line-height:1.65}
 
-  .hcit-offer-list{max-width:1100px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
+  .hcit-offer-list{max-width:none;margin:44px 0 0;border-top:1px solid var(--border-strong)}
   .hcit-offer{display:grid;grid-template-columns:44px 210px minmax(0,1fr);gap:24px;align-items:start;padding:27px 0;border-bottom:1px solid var(--border-soft)}
   .hcit-offer-meta{display:grid;gap:5px}
-  .hcit-offer-meta span{color:var(--grn);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .hcit-offer-meta span{color:var(--blue);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
   .hcit-offer-meta strong{color:var(--t3);font-size:13px;font-weight:500}
   .hcit-offer-body{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.2fr);gap:28px}
   .hcit-offer-body h3{margin:0;color:var(--t1);font-size:clamp(20px,2.2vw,28px);line-height:1.15;letter-spacing:-.03em}
@@ -255,7 +255,7 @@ const cmdkSections = [
 
   .hcit-timeline{max-width:820px;margin:44px auto 0;padding:0;border-top:1px solid var(--border-strong);list-style:none}
   .hcit-timeline li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
-  .hcit-timeline-label{color:var(--grn);padding-top:2px}
+  .hcit-timeline-label{color:var(--blue);padding-top:2px}
   .hcit-timeline p{margin:0;color:var(--t2);font-size:15px;line-height:1.65}
 
   .hcit-trust-list{max-width:820px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
@@ -276,7 +276,7 @@ const cmdkSections = [
     .hcit-contact-grid{grid-template-columns:1fr;gap:16px}
   }
   /* v0.45 composition pass: one structural accent, one left edge, tighter rhythm. */
-  .hcit-eyebrow,.hcit-offer-index,.hcit-offer-meta span,.hcit-timeline-label{color:var(--org)}
+  .hcit-eyebrow,.hcit-offer-index,.hcit-offer-meta span,.hcit-timeline-label{color:var(--blue)}
   .hcit-eyebrow{font-size:11px;grid-column:1/-1}
   .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--blue)}
   .hcit-hero{padding-bottom:clamp(36px,4vw,52px)!important}
@@ -285,8 +285,9 @@ const cmdkSections = [
   .hcit-contact-grid{grid-template-columns:1fr;gap:14px}
   /* Sections share the hero's left edge instead of centering a narrower block. */
   .hcit-section,.hcit-contact{padding-inline:clamp(20px,3.2vw,32px)}
-  .hcit-section .si,.hcit-contact .si{max-width:calc(var(--content-max,1320px) - 64px)}
-  .hcit-section-head,.hcit-offer-list,.hcit-timeline,.hcit-trust-list,.hcit-contact-grid{margin-left:0;margin-right:0}
+  .hcit-section .si,.hcit-contact .si{max-width:var(--content-max,1240px)}
+  .hcit-section-head,.hcit-offer-list,.hcit-timeline,.hcit-trust-list{margin-left:0;margin-right:0}
+  .hcit-contact-grid{margin-left:auto;margin-right:auto}
 
   @media(max-width:720px){
     .hcit-assurances{grid-template-columns:1fr}

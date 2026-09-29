@@ -50,7 +50,7 @@ test('homepage runtime stays minimal and preserves section reveal targets', asyn
   assert.match(nav, /Date\.now\(\)>=\(window\.__PORTFOLIO_SECTION_HASH_LOCK_UNTIL\|\|0\)/);
   assert.match(greatestHits, /id="greatest-hits"/);
   assert.match(greatestHits, /class="selected-work-list"/);
-  assert.match(greatestHits, /grid-template-columns:54px minmax\(210px,.68fr\) minmax\(0,1fr\) 112px/);
+  assert.match(greatestHits, /\.selected-work-list\{\s*display:grid;\s*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(index, /<GreatestHits limit=\{3\} \/>/);
   assert.doesNotMatch(greatestHits, /word-break:break-word|max-width:12ch/);
   assert.match(index, /id="live"/);

@@ -1,10 +1,10 @@
 /* Interior routes share this focused layer so the homepage bundle stays lean. */
 body.route-interior main{min-height:calc(100vh - 160px)}
-body.route-interior .page-shell{max-width:var(--content-max);display:block;padding-top:104px;padding-bottom:30px}
+body.route-interior .page-shell{max-width:calc(var(--content-max) + 64px);display:block;padding:104px 32px 30px}
 body.route-interior .page-shell > .sh{display:grid;grid-template-columns:1fr;gap:10px;align-items:start;margin:0 0 26px;padding:0;border:0}
 body.route-interior .page-shell > .sh .sl{grid-row:auto;padding-top:0;margin-bottom:4px}
 body.route-interior .page-shell > .sh .st,body.route-interior .page-shell > .sh .sd,body.route-interior .page-shell > .sh .page-updated{grid-column:1}
-body.route-interior .page-shell > .sh .st{max-width:16ch;font-size:clamp(42px,4.4vw,62px)!important;line-height:.98}
+body.route-interior .page-shell > .sh .st{max-width:18ch;font-size:clamp(40px,4.4vw,60px)!important;line-height:1.04}
 body.route-interior .page-shell > .sh .sd{max-width:62ch;margin-top:6px;font-size:17px;line-height:1.55}
 body.route-interior .page-updated{margin-top:6px}
 body.route-interior .page-stat-grid{display:grid;gap:0;margin-top:22px;border-block:1px solid var(--border-soft)}
@@ -23,7 +23,7 @@ body.route-interior .dv{display:none}
 body.route-interior footer{margin-top:64px}
 @media(max-width:640px){body.route-interior .page-jump-link{min-height:44px}}
 
-body.route-interior .rel-month{max-width:var(--content-max);margin:0 auto;padding:0 32px}
+body.route-interior .rel-month{max-width:none;margin:0;padding:0}
 body.route-interior .rel-month-shell{display:grid;grid-template-columns:180px minmax(0,1fr);gap:32px;padding:28px 0;border:0;border-top:1px solid var(--border-soft);border-radius:0;background:transparent;box-shadow:none}
 body.route-interior .rel-month-head{display:block;margin:0;padding:0;border:0}
 body.route-interior .rel-month-label{font-family:var(--sans);font-size:22px;font-weight:700;letter-spacing:-.025em;text-transform:none;color:var(--t1)}
@@ -76,6 +76,8 @@ body.route-interior .now-li,body.route-interior .now-p{font-size:16px;line-heigh
 body.route-interior .uses-content{margin-top:34px;padding:0 32px}
 /* An interior page's content block after its intro: the gutter .page-shell gives the intro. */
 body.route-interior .page-content{padding-inline:32px}
+/* Blocks that carry their own 32px gutter sit one gutter wider than the content column, so their text lands on the same edge as the intro. */
+body.route-interior .page-content,body.route-interior .uses-content,body.route-interior .search-fallbacks{max-width:calc(var(--content-max) + 64px)}
 body.route-interior .uses-section-head{margin-bottom:16px;padding-bottom:10px}
 body.route-interior .uses-section-head p{font-size:15px}
 body.route-interior .uses-grid{gap:0 40px}
@@ -99,7 +101,7 @@ body.route-interior .screenshots-filters{padding:12px 0;border-block:1px solid v
 body.route-interior .screenshots-filter-btn{border:0;background:transparent}
 body.route-interior .screenshots-grid{gap:24px}
 body.route-interior .screenshots-card{border:0;border-radius:0;background:transparent;box-shadow:none}
-body.route-interior .screenshots-card img{border-radius:5px}
+body.route-interior .screenshots-card img{border-radius:8px}
 body.route-interior .screenshots-card-info{padding:10px 0}
 body.route-interior .lang-hero-surface,body.route-interior .lang-hero-signal,body.route-interior .lang-card{border-radius:0;background:transparent;box-shadow:none}
 body.route-interior .lang-hero-surface{padding:0;border:0}
@@ -123,7 +125,6 @@ body.route-interior .lang-card{padding:20px 0;border:0;border-top:1px solid var(
   body.route-interior .page-shell > .sh .sd{font-size:16px}
   body.route-interior .page-stat{padding:12px 10px 12px 0}
   body.route-interior .page-stat-value{font-size:19px}
-  body.route-interior .rel-month{padding-inline:20px}
   body.route-interior .rel-month-shell{grid-template-columns:1fr;gap:14px;padding:22px 0}
   body.route-interior .timeline-years,body.route-interior .timeline-events-wrap,body.route-interior .archive-content,body.route-interior .uses-content,body.route-interior .page-content,body.route-interior .search-fallbacks{padding-inline:20px}
   body.route-interior .archive-policy-grid{grid-template-columns:1fr}

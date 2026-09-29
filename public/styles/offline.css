@@ -12,13 +12,13 @@
 
 :root {
   color-scheme: light dark;
-  --bg: #f4f0e7;
-  --panel: #faf7f0;
-  --text: #071a32;
-  --muted: #34465c;
-  --line: rgba(7, 26, 50, .22);
-  --accent: #1648dc;
-  --signal: #b83a22;
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --text: #0e1422;
+  --muted: #3a4558;
+  --line: rgba(14, 20, 34, .12);
+  --accent: #2a5bd7;
+  --signal: #2a5bd7;
   --accent-text: #ffffff;
 }
 
@@ -141,13 +141,13 @@ h1 {
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #071421;
-    --panel: #0b1a2b;
-    --text: #f2f5fa;
-    --muted: #b8c4d2;
-    --line: rgba(177, 198, 224, .22);
-    --accent: #7ea2ff;
-    --signal: #ef7452;
-    --accent-text: #071421;
+    --bg: #0b0e14;
+    --panel: #11151d;
+    --text: #edf1f7;
+    --muted: #b4bdcc;
+    --line: rgba(160, 174, 200, .16);
+    --accent: #7aa2ff;
+    --signal: #7aa2ff;
+    --accent-text: #0b0e14;
   }
 }

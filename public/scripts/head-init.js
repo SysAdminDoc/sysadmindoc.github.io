@@ -2,12 +2,12 @@
   document.documentElement.classList.add('js');
   try {
     var theme = localStorage.getItem('theme-pref');
-    var isLight = theme !== 'dark';
+    var isLight = theme === 'light';
     document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isLight ? '#f4f0e7' : '#071421');
+    if (meta) meta.setAttribute('content', isLight ? '#f6f7f9' : '#0b0e14');
   } catch (error) {
-    document.documentElement.dataset.theme = 'light';
+    document.documentElement.dataset.theme = 'dark';
   }
 
   document.querySelectorAll('link[data-async-style]').forEach(function (link) {

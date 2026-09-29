@@ -133,17 +133,16 @@ if (isHome) {
 }
 ---
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  {/* Light first, matching the served `data-theme="light"` default. Listing dark
-      first made a dark-mode OS paint a dark UA canvas for the sliver before the
-      inline critical CSS applies `color-scheme:light`. */}
-  <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#f4f0e7" />
+  {/* Dark first, matching the served `data-theme="dark"` default, so the UA
+      canvas is already dark for the sliver before the inline critical CSS. */}
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0b0e14" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="SysAdminDoc" />
