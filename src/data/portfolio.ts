@@ -93,6 +93,8 @@ const langLabels: Record<Lang, string> = {
 
 const repoRenames: Record<string, string> = {
   NovaCut: 'ClearCut',
+  hushfeed: 'HushFeed',
+  Hushfacebook: 'HushFacebook',
 };
 
 const visibleFeedProjects = (profileFeed?.projects ?? []).filter(

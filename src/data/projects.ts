@@ -230,7 +230,6 @@ export const catalog: CatalogEntry[] = [
   { repo: "project-nomad", name: "project-nomad", url: "https://github.com/SysAdminDoc/project-nomad", category: "other", desc: "Project N.O.M.A.D., the original offline survival computer concept &amp; spec" },
   { repo: "AstraDownloader", name: "AstraDownloader", url: "https://github.com/SysAdminDoc/AstraDownloader", category: "py", desc: "Desktop video downloader for Windows; paste a link from almost any site" },
   { repo: "Segue", name: "Segue", url: "https://github.com/SysAdminDoc/Segue", category: "py", desc: "Move Spotify playlists to YouTube Music with a match-review step" },
-  { repo: "FantasyLeagueFootball", name: "FantasyLeagueFootball", url: "https://github.com/SysAdminDoc/FantasyLeagueFootball", category: "py", desc: "Offline draft-day board for Yahoo fantasy football, zero dependencies" },
   { repo: "HostnameForensics", name: "HostnameForensics", url: "https://github.com/SysAdminDoc/HostnameForensics", category: "ps", desc: "Trace how and when a Windows hostname was changed, with raw evidence bundle" },
   { repo: "LogVerdict", name: "LogVerdict", url: "https://github.com/SysAdminDoc/LogVerdict", category: "ps", desc: "Scan Windows logs and rule on each signature in plain English" },
   { repo: "PatchDock", name: "PatchDock", url: "https://github.com/SysAdminDoc/PatchDock", category: "kt", desc: "Find, patch, sign, and install Android apps on-device, no PC needed" },
@@ -243,8 +242,8 @@ export const catalog: CatalogEntry[] = [
   { repo: "WeightTrack", name: "WeightTrack", url: "https://github.com/SysAdminDoc/WeightTrack", category: "kt", desc: "Free Android weight tracker. No subscription, no account, no ads" },
   { repo: "NoNo", name: "NoNo", url: "https://github.com/SysAdminDoc/NoNo", category: "kt", desc: "Local-first Android notification rule manager with redacted metadata" },
   { repo: "IRL_Streamer", name: "IRL_Streamer", url: "https://github.com/SysAdminDoc/IRL_Streamer", category: "kt", desc: "Android live-streaming console with camera, mic, and RTMP/RTMPS broadcast" },
-  { repo: "hushfeed", name: "hushfeed", url: "https://github.com/SysAdminDoc/hushfeed", category: "kt", desc: "Morphe patch bundle for TikTok, with quieter feeds and saner taps" },
-  { repo: "Hushfacebook", name: "Hushfacebook", url: "https://github.com/SysAdminDoc/Hushfacebook", category: "kt", desc: "Morphe patch bundle for Facebook that clears ads, Reels and Stories out of the feed" },
+  { repo: "HushFeed", name: "HushFeed", url: "https://github.com/SysAdminDoc/HushFeed", category: "kt", desc: "Morphe patch bundle for TikTok, with quieter feeds and saner taps" },
+  { repo: "HushFacebook", name: "HushFacebook", url: "https://github.com/SysAdminDoc/HushFacebook", category: "kt", desc: "Morphe patch bundle for Facebook that clears ads, Reels and Stories out of the feed" },
   { repo: "BillMinder4PC", name: "BillMinder4PC", url: "https://github.com/SysAdminDoc/BillMinder4PC", category: "cs", desc: "Tray-resident Windows bill tracker. Offline, no account. Compose Multiplatform" },
   { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" }
 ];

@@ -22,7 +22,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (207 feed-backed / 209 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (207 feed-backed / 208 local fallback), skills (8)
 - **Studio design system**: dark by default with a matching light theme, one blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
 - **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
 - **Homepage on one 1240px grid**: positioning with a proof card, three selected-work cards, six live-app cards, three practice cards, catalog and search handoffs that say where they go, and a contact form next to direct links
@@ -89,7 +89,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 209 --expected-releases 60 --expected-feed-items 209
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 208 --expected-releases 60 --expected-feed-items 208
 npm run smoke:release -- --tag v<version> --asset sysadmindoc-portfolio-v<version>.zip --min-size 1000000
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
