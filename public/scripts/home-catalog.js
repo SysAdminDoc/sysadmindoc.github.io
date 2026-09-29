@@ -163,7 +163,7 @@
             const matchSearch=!q||searchBody.includes(q);
             const show=matchFilter&&matchView&&matchSearch;
             item.classList.toggle('hid',!show);
-            const nameEl=item.querySelector('.cna');
+            const nameEl=item.querySelector('.cna-label')||item.querySelector('.cna');
             const descEl=item.querySelector('.cds');
             if(nameEl)highlight(nameEl,show?q:'');
             if(descEl)highlight(descEl,show?q:'');
