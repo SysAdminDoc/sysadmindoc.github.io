@@ -74,6 +74,19 @@ const operatingLanes = [
 
 let renderQueue: Promise<void> = Promise.resolve();
 
+// Studio palette: the site's dark default tokens. scripts/audit-og-cards.mjs
+// samples bg, ink, blue and green, so keep the two files in step.
+const OG = {
+  bg: '#0b0e14',
+  ink: '#edf1f7',
+  body: '#b4bdcc',
+  muted: '#8792a5',
+  blue: '#7aa2ff',
+  green: '#5fd49a',
+  markInk: '#0b0e14',
+  rule: 'rgba(160,174,200,.2)',
+} as const;
+
 export function renderOgCard(card: OgCardModel): Promise<Uint8Array> {
   const next = renderQueue.then(() => renderOgCardNow(card));
   renderQueue = next.then(
@@ -85,7 +98,7 @@ export function renderOgCard(card: OgCardModel): Promise<Uint8Array> {
 
 async function renderOgCardNow(card: OgCardModel) {
   const fonts = await loadOgFonts();
-  const accent = card.accent ?? '#1648dc';
+  const accent = card.accent ?? OG.blue;
 
   const svg = await satori(
     {
@@ -96,10 +109,10 @@ async function renderOgCardNow(card: OgCardModel) {
           height: OG_HEIGHT,
           display: 'flex',
           flexDirection: 'column',
-          background: '#f4f0e7',
-          color: '#071a32',
+          background: OG.bg,
+          color: OG.ink,
           fontFamily: 'Outfit',
-          borderTop: '8px solid #1648dc',
+          borderTop: `8px solid ${OG.blue}`,
         },
         children: [
           {
@@ -112,7 +125,7 @@ async function renderOgCardNow(card: OgCardModel) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '0 44px',
-                borderBottom: '1px solid rgba(7,26,50,.24)',
+                borderBottom: `1px solid ${OG.rule}`,
               },
               children: [
                 {
@@ -129,8 +142,9 @@ async function renderOgCardNow(card: OgCardModel) {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: '#1648dc',
-                            color: '#ffffff',
+                            background: OG.blue,
+                            color: OG.markInk,
+                            borderRadius: 8,
                             fontSize: 18,
                             fontWeight: 800,
                             letterSpacing: '-.04em',
@@ -154,7 +168,7 @@ async function renderOgCardNow(card: OgCardModel) {
                               type: 'div',
                               props: {
                                 style: {
-                                  color: '#667386',
+                                  color: OG.muted,
                                   fontFamily: 'JetBrains Mono',
                                   fontSize: 8,
                                   fontWeight: 700,
@@ -173,7 +187,7 @@ async function renderOgCardNow(card: OgCardModel) {
                   type: 'div',
                   props: {
                     style: {
-                      color: '#d84b2d',
+                      color: OG.green,
                       fontFamily: 'JetBrains Mono',
                       fontSize: 11,
                       fontWeight: 700,
@@ -209,7 +223,7 @@ async function renderOgCardNow(card: OgCardModel) {
                             alignItems: 'center',
                             gap: 12,
                             marginBottom: 20,
-                            color: '#d84b2d',
+                            color: OG.green,
                             fontFamily: 'JetBrains Mono',
                             fontSize: 11,
                             fontWeight: 700,
@@ -229,7 +243,7 @@ async function renderOgCardNow(card: OgCardModel) {
                         props: {
                           style: {
                             maxWidth: 760,
-                            color: '#071a32',
+                            color: OG.ink,
                             fontSize: headlineSize(card.title),
                             fontWeight: 800,
                             lineHeight: .92,
@@ -247,7 +261,7 @@ async function renderOgCardNow(card: OgCardModel) {
                             display: '-webkit-box',
                             marginTop: 22,
                             overflow: 'hidden',
-                            color: '#34465c',
+                            color: OG.body,
                             fontSize: 22,
                             lineHeight: 1.42,
                             WebkitBoxOrient: 'vertical',
@@ -261,7 +275,7 @@ async function renderOgCardNow(card: OgCardModel) {
                         props: {
                           style: {
                             marginTop: 20,
-                            color: '#1648dc',
+                            color: OG.blue,
                             fontFamily: 'JetBrains Mono',
                             fontSize: 11,
                             fontWeight: 700,
@@ -281,7 +295,7 @@ async function renderOgCardNow(card: OgCardModel) {
                       display: 'flex',
                       flexDirection: 'column',
                       padding: '32px 34px 26px',
-                      borderLeft: '1px solid rgba(7,26,50,.24)',
+                      borderLeft: `1px solid ${OG.rule}`,
                     },
                     children: [
                       {
@@ -289,7 +303,7 @@ async function renderOgCardNow(card: OgCardModel) {
                         props: {
                           style: {
                             marginBottom: 18,
-                            color: '#d84b2d',
+                            color: OG.green,
                             fontFamily: 'JetBrains Mono',
                             fontSize: 10,
                             fontWeight: 700,
@@ -306,7 +320,7 @@ async function renderOgCardNow(card: OgCardModel) {
                             display: 'flex',
                             gap: 12,
                             padding: '14px 0',
-                            borderTop: '1px solid rgba(7,26,50,.2)',
+                            borderTop: `1px solid ${OG.rule}`,
                           },
                           children: [
                             {
@@ -314,7 +328,7 @@ async function renderOgCardNow(card: OgCardModel) {
                               props: {
                                 style: {
                                   width: 24,
-                                  color: '#d84b2d',
+                                  color: OG.green,
                                   fontFamily: 'JetBrains Mono',
                                   fontSize: 9,
                                 },
@@ -337,7 +351,7 @@ async function renderOgCardNow(card: OgCardModel) {
                                     type: 'div',
                                     props: {
                                       style: {
-                                        color: '#667386',
+                                        color: OG.muted,
                                         fontFamily: 'JetBrains Mono',
                                         fontSize: 7,
                                         fontWeight: 700,
@@ -367,7 +381,7 @@ async function renderOgCardNow(card: OgCardModel) {
                 flexShrink: 0,
                 display: 'flex',
                 margin: '0 44px',
-                borderTop: '2px solid #1648dc',
+                borderTop: `2px solid ${OG.blue}`,
               },
               children: card.metrics.map((metric, index) => ({
                 type: 'div',
@@ -378,7 +392,7 @@ async function renderOgCardNow(card: OgCardModel) {
                     flexDirection: 'column',
                     justifyContent: 'center',
                     padding: index === 0 ? '0 24px 0 0' : '0 24px',
-                    borderLeft: index === 0 ? '0' : '1px solid rgba(7,26,50,.24)',
+                    borderLeft: index === 0 ? '0' : `1px solid ${OG.rule}`,
                   },
                   children: [
                     {
@@ -386,7 +400,7 @@ async function renderOgCardNow(card: OgCardModel) {
                       props: {
                         style: {
                           marginBottom: 7,
-                          color: '#d84b2d',
+                          color: OG.green,
                           fontFamily: 'JetBrains Mono',
                           fontSize: 9,
                           fontWeight: 700,
@@ -399,7 +413,7 @@ async function renderOgCardNow(card: OgCardModel) {
                       type: 'div',
                       props: {
                         style: {
-                          color: '#071a32',
+                          color: OG.ink,
                           fontFamily: 'JetBrains Mono',
                           fontSize: 26,
                           fontWeight: 700,

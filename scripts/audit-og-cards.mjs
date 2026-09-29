@@ -33,12 +33,12 @@ const reportOnly = process.argv.includes('--report');
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 
-// Operational Clarity brand palette (must match src/data/og-card.ts).
+// Studio brand palette (must match the OG constant in src/data/og-card.ts).
 const PALETTE = {
-  paper: [244, 240, 231], // #f4f0e7 background
-  ink: [7, 26, 50], // #071a32 headline/metric text
-  cobalt: [22, 72, 220], // #1648dc rules, MP mark
-  vermilion: [216, 75, 45], // #d84b2d eyebrows/labels (the layer that goes missing)
+  paper: [11, 14, 20], // #0b0e14 background
+  ink: [237, 241, 247], // #edf1f7 headline/metric text
+  cobalt: [122, 162, 255], // #7aa2ff rules, MP mark
+  vermilion: [95, 212, 154], // #5fd49a eyebrows/labels (the layer that goes missing)
 };
 
 // Minimum share (of sampled pixels) each signal must reach for the card to count

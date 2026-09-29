@@ -99,8 +99,8 @@ test('social cards use the Technical Service Bureau identity and live data', asy
 
   assert.match(rendererSource, /SYSADMINDOC/);
   assert.match(rendererSource, /INDEPENDENT TECHNICAL PRACTICE/);
-  assert.match(rendererSource, /#f4f0e7/i);
-  assert.match(rendererSource, /#1648dc/i);
+  assert.match(rendererSource, /bg: '#0b0e14'/i);
+  assert.match(rendererSource, /blue: '#7aa2ff'/i);
   assert.match(rendererSource, /renderQueue/, 'Satori/Resvg renders should remain serialized');
   assert.match(homepageSource, /catalog\.length/);
   assert.match(homepageSource, /liveApps\.length/);
