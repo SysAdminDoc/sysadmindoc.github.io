@@ -5,12 +5,25 @@ import { planQueuedRun, queueScriptPath } from '../scripts/queued.mjs';
 
 const QUEUE = 'C:\\tools\\build-queue.ps1';
 const noRegistry = () => '';
+const onDisk = () => true;
 
 test('a heavy script takes a queue slot when the machine has a queue', () => {
-  const plan = planQueuedRun({ script: 'deploy:preflight', env: { BUILD_QUEUE_SCRIPT: QUEUE }, platform: 'win32', readUserEnv: noRegistry });
+  const plan = planQueuedRun({ script: 'deploy:preflight', env: { BUILD_QUEUE_SCRIPT: QUEUE }, platform: 'win32', readUserEnv: noRegistry, exists: onDisk });
   assert.equal(plan.queued, true);
   assert.equal(plan.file, 'pwsh');
   assert.deepEqual(plan.args, ['-NoProfile', '-NonInteractive', '-File', QUEUE, '-Label', 'portfolio deploy:preflight', '-Run', 'npm run deploy:preflight']);
+});
+
+test('a queue that is named but not on disk counts as no queue', () => {
+  let checked = '';
+  const missing = (file) => {
+    checked = file;
+    return false;
+  };
+  const plan = planQueuedRun({ script: 'build', env: { BUILD_QUEUE_SCRIPT: QUEUE }, platform: 'win32', readUserEnv: noRegistry, exists: missing });
+  assert.equal(checked, QUEUE);
+  assert.equal(plan.queued, false);
+  assert.equal(plan.file, 'npm run build');
 });
 
 test('a call already inside a slot runs directly instead of queueing behind its parent', () => {
@@ -43,7 +56,7 @@ test("a shell that predates the variable still finds the queue in the user's reg
 });
 
 test('arguments pass through after --, and a word that needs quoting is refused', () => {
-  const plan = planQueuedRun({ script: 'visual:gate', args: ['--update'], env: { BUILD_QUEUE_SCRIPT: QUEUE }, platform: 'win32', readUserEnv: noRegistry });
+  const plan = planQueuedRun({ script: 'visual:gate', args: ['--update'], env: { BUILD_QUEUE_SCRIPT: QUEUE }, platform: 'win32', readUserEnv: noRegistry, exists: onDisk });
   assert.equal(plan.command, 'npm run visual:gate -- --update');
   assert.equal(plan.args.at(-1), 'npm run visual:gate -- --update');
   // cmd.exe and PowerShell quote differently, so nothing that needs quoting gets through.

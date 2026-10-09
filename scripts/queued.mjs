@@ -9,6 +9,7 @@
 //   npm run queued -- deploy:preflight
 //   npm run queued -- visual:gate -- --update
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 
@@ -38,17 +39,18 @@ export function queueScriptPath(env, platform, readUserEnv = readUserRegistryEnv
 }
 
 /**
- * What to spawn for `npm run <script> [-- args]`.
- * @param {{ script: string, args?: string[], env: NodeJS.ProcessEnv, platform: string, readUserEnv?: (name: string, env: NodeJS.ProcessEnv) => string }} options
+ * What to spawn for `npm run <script> [-- args]`. A queue named but not on
+ * disk (a stale variable) counts as no queue, as the nightly registration does.
+ * @param {{ script: string, args?: string[], env: NodeJS.ProcessEnv, platform: string, readUserEnv?: (name: string, env: NodeJS.ProcessEnv) => string, exists?: (file: string) => boolean }} options
  * @returns {{ queued: boolean, command: string, file: string, args: string[] }}
  */
-export function planQueuedRun({ script, args = [], env, platform, readUserEnv }) {
+export function planQueuedRun({ script, args = [], env, platform, readUserEnv, exists = fs.existsSync }) {
   for (const word of [script, ...args]) {
     if (!PLAIN_WORD.test(word ?? '')) throw new Error(`"${word}" needs quoting; give the queue plain words only`);
   }
   const command = ['npm', 'run', script, ...(args.length > 0 ? ['--', ...args] : [])].join(' ');
   const queue = env.BUILD_QUEUE_TICKET ? '' : queueScriptPath(env, platform, readUserEnv);
-  if (!queue) return { queued: false, command, file: command, args: [] };
+  if (!queue || !exists(queue)) return { queued: false, command, file: command, args: [] };
   return {
     queued: true,
     command,

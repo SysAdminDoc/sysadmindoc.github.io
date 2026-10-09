@@ -219,7 +219,7 @@ function main() {
     return index === -1 ? undefined : argv[index + 1];
   };
   const stage = argv[0];
-  if (!stage || stage.startsWith('-')) fail(`usage: npm run release -- <${STAGES.join('|')}> [--tag vX.Y.Z] [--root <checkout>]`);
+  if (!STAGES.includes(stage)) fail(`usage: npm run release -- <${STAGES.join('|')}> [--tag vX.Y.Z] [--root <checkout>]`);
   const root = path.resolve(option('--root') ?? here);
   const version = JSON.parse(read(root, 'package.json')).version;
   const tag = option('--tag') ?? `v${version}`;
