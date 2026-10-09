@@ -25,8 +25,21 @@ test('a 5xx from the contact handler on a navigation shows the not-sent page, no
   const children = (node) => (node?.children ?? []).map(line);
   const matcher = errors.children.find((node) => node.tokens[0] === '@contact_not_sent');
   assert.deepEqual(children(matcher), ['path /api/contact', 'expression {err.status_code} >= 500']);
+  // The headers set for the file that was asked for stay on the error
+  // response: a missing /sw.js went out as a 404 with max-age=600, and a
+  // missing page with the speculation rules (twenty-fourth review rerun).
+  assert.deepEqual(
+    errors.children.filter((node) => node.tokens[0] === 'header').map(line),
+    ['header Cache-Control no-store', 'header -Speculation-Rules'],
+    'an error response is never cached or prefetched',
+  );
   const handles = errors.children.filter((node) => node.tokens[0] === 'handle');
   assert.deepEqual(handles.map(line), ['handle @contact_not_sent', 'handle'], 'the contact branch comes before the fallback');
+  // The proxied routes answer no-store, which nothing pinned before.
+  for (const name of ['@contact', '@csp_report']) {
+    const route = site.children.find((node) => line(node) === `handle ${name}`);
+    assert.ok(children(route).includes('header Cache-Control no-store'), `${name} answers no-store`);
+  }
   const [contact, fallback] = handles;
   assert.deepEqual(children(contact), ['rewrite * /contact/not-sent/index.html', 'file_server']);
   assert.deepEqual(children(fallback), ['rewrite * /404.html', 'file_server']);

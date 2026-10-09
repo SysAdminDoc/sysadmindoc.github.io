@@ -160,6 +160,12 @@ http://notify.getparkerai.com {
 	# status through explicitly so the code survives Caddy upgrades;
 	# `npm run smoke:live` fails if a missing path stops returning 404.
 	handle_errors {
+		# The headers set above for the file that was asked for are still on the
+		# response here, so a missing /sw.js or /status.json went out as a 404
+		# with max-age=600, and a missing page with the speculation rules
+		# (twenty-fourth review rerun). An error is never worth keeping.
+		header Cache-Control "no-store"
+		header -Speculation-Rules
 		# A form posted without JavaScript while the contact handler is down
 		# gets a page saying the message wasn't sent and where to email instead,
 		# not the 404 page. The page script reads any reply that isn't JSON as

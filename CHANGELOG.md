@@ -14,6 +14,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The nightly deploy ships the build its preflight just made. It used to build the whole site a second time.
 - The contact form's daily cleanup also removes a half-written line or a stored message with no date, even on a day when nothing else is old enough to go.
 - A message older than the retention period is never sent on after a restart, even when the cleanup that should have removed it failed.
+- An error response from the site (a missing file, or the contact handler being down) no longer carries the cache and prefetch headers meant for the file that was asked for. A missing `/sw.js` used to go out as a 404 the browser kept for ten minutes. The live smoke now checks it.
 - Someone who posts the contact form without JavaScript while the handler is down now sees a page saying the message wasn't sent, with the email address to use instead. Before, they got the 404 page.
 - The contact form and the CSP report endpoint answer a garbled request address with "bad request" instead of a server error.
 - The security policy check matches a stylesheet or script link against an allowed host the way browsers do. A source can now name a path, a `*.` subdomain, a port or no scheme. Before, a source narrowed to one file failed the check for that very file.

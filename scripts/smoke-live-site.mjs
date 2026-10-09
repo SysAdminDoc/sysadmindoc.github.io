@@ -362,7 +362,17 @@ async function checkNotFoundStatus(baseUrl, summary) {
   if (!/404/.test(body)) {
     throw new Error(`A missing path returned HTTP 404 but did not render the 404 document from ${target}.`);
   }
-  summary.push('missing path: HTTP 404 with the 404 document');
+  // The headers set for the file that was asked for used to stay on the
+  // error, so a missing /sw.js went out as a 404 the browser kept for ten
+  // minutes (twenty-fourth review rerun).
+  const cacheControl = response.headers.get('cache-control') ?? '';
+  if (cacheControl !== 'no-store') {
+    throw new Error(
+      `A missing path returned HTTP 404 with Cache-Control "${cacheControl || '(missing)'}" from ${target}; expected no-store ` +
+        '(the handle_errors block in deploy/vps/Caddyfile).',
+    );
+  }
+  summary.push('missing path: HTTP 404 with the 404 document, no-store');
 }
 
 async function checkRetiredUrls(baseUrl, summary) {
