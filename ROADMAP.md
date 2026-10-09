@@ -4,6 +4,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P0
 
+- [ ] P0: Recapture the 22 live-app screenshots so the nightly deploys again, and warn before the 90-day line
+  Why: `Portfolio Refresh and Deploy` aborted at `deploy:preflight` every night from 2026-10-02 to 2026-10-09, so the last deploy is 2026-10-01 and the live site has missed every star, release and profile-feed change since. The cause is a time bomb, not a regression. 22 manifest captures taken around 2026-07-08 crossed `STALE_DAYS = 90` together, and the audit has no earlier warning.
+  Evidence: `.tmp/refresh-and-deploy.log` (eight `ABORT ... at step "deploy:preflight"` lines, last `OK deploy:vps` on 2026-10-01). `.tmp/refresh-and-deploy-step-deploy-preflight.log` ("Live app availability audit failed: 44 issue(s)": 22 "manifest capture is 91-93d old" plus 22 stale screenshots, among them IconForge, SPECTRE, ImageXpert, ConvertFlow, ClipForge, Text-Filter-Editor, HurricaneMap, ApocalypseWatch and BetterTTS). `scripts/audit-live-apps.mjs:15` and `:161-171`. Found during the SysAdminDoc profile research pass.
+  Touches: `scripts/capture-screenshots.mjs` (recapture), the capture manifest it writes, `scripts/audit-live-apps.mjs` (a warning band, for example from 75 days, that the nightly's summary surfaces before the hard fail), its tests, `CLAUDE.md`.
+  Acceptance: `deploy:preflight` passes the live-app audit, the next 03:00 run logs `OK deploy:vps`, and a test proves a capture 76 days old warns without failing while one 91 days old still fails. The capture job is heavy browser work, so it runs through the build queue after hours.
+  Complexity: S
+
 ### P1
 
 ### P2
