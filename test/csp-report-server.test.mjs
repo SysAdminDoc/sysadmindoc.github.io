@@ -457,6 +457,19 @@ test('reporter rejects oversized bodies, unsupported methods, and unknown paths'
   });
 });
 
+// The twenty-sixth drain review: new URL throws on a path that reads as a bad
+// host, which the server turned into a 500 and an error line.
+test('reporter answers 400 to a request path that does not parse', async () => {
+  await withTempReporter({}, async ({ reporter }) => {
+    for (const url of ['//%%%/x', '//[/csp-report']) {
+      const response = responseMock();
+      await reporter.handleRequest(requestMock({ url }), response);
+      assert.equal(response.status, 400, url);
+      assert.equal(response.body, 'Bad request\n');
+    }
+  });
+});
+
 test('reporter rotates the log before it exceeds its bound', async () => {
   await withTempReporter({ maxLogBytes: 250 }, async ({ reporter, logPath }) => {
     const report = JSON.stringify({ type: 'csp-violation', body: { documentURL: 'https://portfolio.getparkerai.com/', effectiveDirective: 'script-src' } });

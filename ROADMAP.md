@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: both come back as no verdict, with a test apiece.
   Complexity: S
 
-- [ ] P3: Answer 400 to a request path `new URL` can't parse
-  Why: a request for `//%%%/x` throws inside `new URL`, which both servers turn into a 500 and an error log line.
-  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:758`, `deploy/vps/csp-report-server.mjs:400`.
-  Touches: both servers and their tests.
-  Acceptance: both answer 400 without logging an error, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Rerun the twenty-fourth review
   Why: it covered titles, `staleAfter`, the report sink's byte splitter and the Caddy core, and it was stopped before it finished on 2026-09-24.
   Evidence: drain notes for 2026-09-24.

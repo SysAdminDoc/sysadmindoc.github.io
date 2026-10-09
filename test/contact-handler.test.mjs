@@ -996,6 +996,20 @@ test('a lead that could not be stored gives its place under the cap back', async
   });
 });
 
+// The twenty-sixth drain review: new URL throws on a path that reads as a bad
+// host, which the server turned into a 500 and an error line.
+test('a request path that does not parse gets a 400 and no error line', async () => {
+  await withHandler({}, async ({ handler, logger }) => {
+    for (const url of ['//%%%/x', '//[/api/contact']) {
+      const response = responseMock();
+      await handler.handleRequest(requestMock({ url, body: formBody({ name: 'Bad Path', email: 'b@example.test', message: 'sent to a bad path' }) }), response);
+      assert.equal(response.status, 400, url);
+      assert.deepEqual(JSON.parse(response.body), { error: 'bad request' });
+    }
+    assert.deepEqual(logger.lines, []);
+  });
+});
+
 test('refused attempts count against the client limit too', async () => {
   await withHandler({ config: { clientMax: 3 } }, async ({ handler }) => {
     const statuses = [];

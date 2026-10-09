@@ -918,7 +918,16 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   }
 
   async function handleRequest(request, response) {
-    const pathname = new URL(request.url ?? '/', 'http://contact').pathname;
+    let pathname;
+    try {
+      pathname = new URL(request.url ?? '/', 'http://contact').pathname;
+    } catch {
+      // A path such as //%%%/x reads as a host that can't parse. That's the
+      // client's mistake, so it gets a 400 and leaves no error in the log.
+      request.resume();
+      sendJson(response, 400, { error: 'bad request' });
+      return;
+    }
     if (request.method === 'GET' && pathname === '/healthz') {
       // The retention this process enforces, which the deploy holds to
       // /privacy/; the variable it came from can be overridden in-process

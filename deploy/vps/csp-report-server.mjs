@@ -397,7 +397,16 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
   }
 
   async function handleRequest(request, response) {
-    const pathname = new URL(request.url ?? '/', 'http://csp-reporter').pathname;
+    let pathname;
+    try {
+      pathname = new URL(request.url ?? '/', 'http://csp-reporter').pathname;
+    } catch {
+      // A path such as //%%%/x reads as a host that can't parse. That's the
+      // client's mistake, so it gets a 400 and leaves no error in the log.
+      request.resume();
+      sendResponse(response, 400, 'Bad request\n', { 'Content-Type': 'text/plain; charset=utf-8' });
+      return;
+    }
     if (pathname === '/healthz' && request.method === 'GET') {
       sendResponse(response, 200, 'ok\n', { 'Content-Type': 'text/plain; charset=utf-8' });
       return;
