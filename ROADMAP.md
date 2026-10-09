@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Read Caddyfile heredocs the way Caddy does
-  Why: the parser in `scripts/lib/caddyfile.mjs` closes a heredoc on `EOF trailing text` (Caddy refuses it), doesn't strip the closing marker's indentation from the body, and only sees a heredoc at a token's start. The trust check reads the file through this parser, so a heredoc Caddy reads differently could carry a header line past it.
-  Evidence: twenty-fourth review rerun, 2026-10-09; `scripts/lib/caddyfile.mjs` around line 95.
-  Touches: `scripts/lib/caddyfile.mjs`, `test/caddyfile.test.mjs` (or the contract test).
-  Acceptance: a heredoc closes only on its marker alone on a line, the body loses the marker's indentation, and a planted heredoc hiding a `header_up X-Forwarded-For` line fails the trust check.
-  Complexity: S
-
 - [ ] P3: Keep the catalog filters to one row each on phones
   Why: at 390px the Show and Category filters wrap to six rows of chips, about 3 1/2 inches of scrolling before the first project.
   Evidence: v0.46.0 phone captures of `/catalog/`, 2026-09-29.

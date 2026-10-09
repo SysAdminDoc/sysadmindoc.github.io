@@ -4,16 +4,53 @@
 // `backticks` taken raw; a backslash before a newline outside quotes, which
 // continues the line; <<MARKER heredocs; and # as a comment only where a token
 // would start. Environment placeholders, which Caddy replaces before it lexes,
-// are expanded by expandEnvDefaults. Lines and { } blocks then form a tree. It
-// knows no directives. That's enough for the trust tests to find every header
-// a config touches however it's written, which pattern-matching the raw text
-// couldn't (eighth drain review), and which the first version of this lexer
-// couldn't for \\ before a quote, a continued line or a heredoc (eleventh).
+// are expanded by expandEnvDefaults. Lines and { } blocks then form a tree,
+// split into lines the way Caddy's dispenser does. It knows no directives.
+// That's enough for the trust tests to find every header a config touches
+// however it's written, which pattern-matching the raw text couldn't (eighth
+// drain review), and which the first version of this lexer couldn't for \\
+// before a quote, a continued line or a heredoc (eleventh).
+//
+// Heredocs follow what `caddy adapt` 2.11.4 does, not what its docs suggest
+// (twenty-fourth review rerun). One ends the moment the text read so far ends
+// with its marker, mid-line or glued to more text too; the text before the
+// marker on that last line is stripped from the front of every body line, and
+// a body line that doesn't start with it is refused. The dispenser counts a
+// heredoc as its body's lines plus two, so a heredoc that ends on its first
+// body line pulls the next line's tokens onto its own.
 
 /**
- * @typedef {{ text: string, line: number, quoted: boolean }} CaddyToken
+ * @typedef {{ text: string, line: number, quoted: boolean, breaks: number }} CaddyToken
+ * `line` is where the token starts and `breaks` the line breaks Caddy's
+ * dispenser counts inside it (caddyfile/dispenser.go, numLineBreaks).
  * @typedef {{ tokens: string[], line: number, children: CaddyNode[] | null }} CaddyNode
  */
+
+const lineBreaks = (value) => value.split('\n').length - 1;
+
+/**
+ * A heredoc's body as Caddy's finalizeHeredoc leaves it.
+ * @param {string} body everything between the opening line and the marker
+ * @param {string} marker
+ * @param {number} line the line the heredoc opens on
+ */
+function finalizeHeredoc(body, marker, line) {
+  const lastNewline = body.lastIndexOf('\n');
+  const padding = body.slice(lastNewline + 1);
+  const lines = body.slice(0, lastNewline + 1).split('\n').slice(0, -1);
+  let value = '';
+  lines.forEach((text, offset) => {
+    if (text === '') {
+      value += '\n';
+      return;
+    }
+    if (!text.startsWith(padding)) {
+      throw new Error(`line ${line + offset + 1} of the <<${marker} heredoc doesn't start with the text before its closing marker, which Caddy refuses`);
+    }
+    value += `${text.slice(padding.length)}\n`;
+  });
+  return value.endsWith('\n') ? value.slice(0, -1) : value;
+}
 
 /**
  * @param {string} source
@@ -78,33 +115,34 @@ export function lexCaddyfile(source) {
         value += next;
         index += 1;
       }
-      tokens.push({ text: value, line: start, quoted: true });
+      tokens.push({ text: value, line: start, quoted: true, breaks: lineBreaks(value) });
       continue;
     }
+    // A heredoc opens only where a token starts, as <<MARKER and a newline; a
+    // space after the marker leaves a plain token.
     const heredoc = /^<<([A-Za-z0-9_-]+)\n/.exec(text.slice(index));
     if (heredoc) {
-      const bodyStart = index + heredoc[0].length;
-      const close = new RegExp(`^[ \\t]*${heredoc[1]}(?=[\\s]|$)`, 'm');
-      const rest = text.slice(bodyStart);
-      const end = close.exec(rest);
-      if (!end) throw new Error(`a heredoc on line ${start} is never closed`);
-      const value = rest.slice(0, end.index).replace(/\n$/, '');
-      physical += text.slice(index, bodyStart + end.index + end[0].length).split('\n').length - 1;
+      const [opening, marker] = heredoc;
+      const bodyStart = index + opening.length;
+      const close = text.indexOf(marker, bodyStart);
+      if (close < 0) throw new Error(`a heredoc on line ${start} is never closed`);
+      const value = finalizeHeredoc(text.slice(bodyStart, close), marker, start);
+      physical += lineBreaks(text.slice(index, close));
       line = physical;
-      tokens.push({ text: value, line: start, quoted: true });
-      index = bodyStart + end.index + end[0].length;
+      tokens.push({ text: value, line: start, quoted: true, breaks: lineBreaks(value) + 2 });
+      index = close + marker.length;
       continue;
     }
     if (char === '`') {
       const end = text.indexOf('`', index + 1);
       if (end < 0) throw new Error(`a backtick on line ${start} is never closed`);
       const value = text.slice(index + 1, end);
-      const newlines = value.split('\n').length - 1;
+      const newlines = lineBreaks(value);
       if (newlines > 0) {
         physical += newlines;
         line = physical;
       }
-      tokens.push({ text: value, line: start, quoted: true });
+      tokens.push({ text: value, line: start, quoted: true, breaks: newlines });
       index = end + 1;
       continue;
     }
@@ -116,7 +154,7 @@ export function lexCaddyfile(source) {
       value += text[index];
       index += 1;
     }
-    tokens.push({ text: value, line: start, quoted: false });
+    tokens.push({ text: value, line: start, quoted: false, breaks: 0 });
   }
   return tokens;
 }
@@ -155,7 +193,9 @@ export function expandEnvDefaults(source) {
 /**
  * The file's lines as a tree: each line's tokens, and the block it opens, if any.
  * A `{` alone on a line opens a block with no tokens of its own, which is how
- * the global options block reads.
+ * the global options block reads. A token starts a new line, as in Caddy's
+ * dispenser (isNewLine), only when it starts past the line the previous token
+ * started on plus the line breaks counted inside that token.
  * @param {string} source
  * @returns {CaddyNode[]}
  */
@@ -165,8 +205,12 @@ export function parseCaddyfile(source) {
   const stack = [root];
   /** @type {CaddyNode | null} */
   let current = null;
+  /** @type {CaddyToken | null} */
+  let previous = null;
   for (const token of lexCaddyfile(source)) {
     const parent = stack[stack.length - 1];
+    const sameLine = previous !== null && previous.line + previous.breaks >= token.line;
+    previous = token;
     if (!token.quoted && token.text === '}') {
       if (stack.length === 1) throw new Error(`a } on line ${token.line} closes nothing`);
       stack.pop();
@@ -174,7 +218,7 @@ export function parseCaddyfile(source) {
       continue;
     }
     if (!token.quoted && token.text === '{') {
-      let owner = current && current.line === token.line && current.children === null ? current : null;
+      let owner = current && sameLine && current.children === null ? current : null;
       if (!owner) {
         owner = { tokens: [], line: token.line, children: null };
         parent.children?.push(owner);
@@ -184,7 +228,7 @@ export function parseCaddyfile(source) {
       current = null;
       continue;
     }
-    if (!current || current.line !== token.line) {
+    if (!current || !sameLine) {
       current = { tokens: [], line: token.line, children: null };
       parent.children?.push(current);
     }

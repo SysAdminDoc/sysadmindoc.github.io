@@ -27,6 +27,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The homepage title is short enough to show whole in a search result (54 characters, down from 92). A language page with one project says "1 project" and "1 star", and the offline page names the site the way every other page does. The title check now fails a title over 70 characters, two pages sharing one, an og:title or twitter:title that doesn't match the title, and "1 projects".
 - The status page reads a data timestamp written without a time zone as UTC. Before, a hand-edited one was read in the build machine's zone and shifted every freshness deadline by that offset.
 - After a crash in the middle of saving a CSP report, the report store gets its line ending back when the sink restarts, so the next report isn't glued onto the cut one. A line too long to be a report now leaves a short placeholder behind, and the nightly summary counts it with the unreadable lines instead of the drop showing up only in the server's startup log.
+- The server config check reads heredocs and multi-line strings the way Caddy 2.11.4 does. A heredoc ends wherever its marker first shows up, even mid-line, and its body loses the closing line's indent. Lines are split the way Caddy splits them, so a heredoc can no longer hide a live `header_up X-Forwarded-For` line from the check that guards visitors' addresses.
 - The gate self-test no longer counts a planted audit that crashed (a Node abort, an access violation, a stack overflow) as having caught the plant.
 
 ### Security

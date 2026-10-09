@@ -342,6 +342,25 @@ test('ntfy sees each visitor\'s own address, and only the edge can hand one on',
   assert.ok(checked < shipped, 'the edge address is checked before the trust settings ship');
 });
 
+// The twenty-fourth review rerun, each case checked against `caddy adapt`
+// 2.11.4: a heredoc ends where its marker first appears, the text before the
+// marker on that line comes off every body line, and Caddy's dispenser counts
+// a heredoc as its body's lines plus two and a quote as the lines it spans.
+test('heredocs and multi-line tokens split into lines the way Caddy splits them', () => {
+  const lines = (source) => [...caddyfileLines(parseCaddyfile(source))].map((node) => node.tokens);
+  assert.deepEqual(lines('respond <<EOF\n\thello\n\tEOF 200\n'), [['respond', 'hello', '200']], 'tokens after the marker stay on its line');
+  assert.deepEqual(lines('respond <<EOF\n\t\thello\n\n\t\t  world\n\t\tEOF\n'), [['respond', 'hello\n\n  world']]);
+  assert.deepEqual(lines('respond <<EOF\n\thello\n\tEOFX 200\n'), [['respond', 'hello', 'X', '200']], 'a marker glued to more text still ends it');
+  assert.deepEqual(lines('respond <<EOF\nhello EOF\nmore\nEOF\n'), [['respond', '', 'more'], ['EOF']], 'so does one mid-line, and the next line joins it');
+  assert.deepEqual(lines('respond <<EOF\n\tv\n\tEOF\nheader X-A b\n'), [['respond', 'v'], ['header', 'X-A', 'b']]);
+  assert.deepEqual(lines('respond x<<EOF\nhello\nEOF\n'), [['respond', 'x<<EOF'], ['hello'], ['EOF']], 'a heredoc opens only where a token starts');
+  assert.deepEqual(lines('respond <<EOF still\n'), [['respond', '<<EOF', 'still']], 'and not before a space');
+  assert.throws(() => lines('respond <<EOF\nhello\n\tEOF\n'), /doesn't start with the text before its closing marker/);
+  assert.throws(() => lines('respond <<EOF\nhello\n'), /never closed/);
+  assert.deepEqual(lines('respond "a\nb" 200\nheader X-A b\n'), [['respond', 'a\nb', '200'], ['header', 'X-A', 'b']], 'a token after a closing quote stays on the line');
+  assert.deepEqual(lines('respond `a\nb` 200\n'), [['respond', 'a\nb', '200']]);
+});
+
 test('each way the reviews reopened the forgery fails the trust check', async () => {
   const [caddyfile, compose] = await Promise.all([
     fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
@@ -398,6 +417,14 @@ test('each way the reviews reopened the forgery fails the trust check', async ()
     'a heredoc holding a quote': inCaddyfile(
       'reverse_proxy ntfy:80 {',
       'reverse_proxy ntfy:80 {\n\t\theader_up X-Note <<EOF\n\t\t"\n\t\tEOF\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}',
+    ),
+    // The twenty-fourth review rerun's: Caddy ends the first heredoc at
+    // "noteEOF", so the header_up after it is live (`caddy adapt` 2.11.4 sets
+    // X-Forwarded-For from X-Real-IP), while a lexer that waited for EOF alone
+    // on a line read it as heredoc text.
+    'a heredoc Caddy ends mid-line, before a header_up': inCaddyfile(
+      'reverse_proxy ntfy:80 {',
+      'reverse_proxy ntfy:80 {\n\t\theader_up X-Note <<EOF\n\t\tnoteEOF\n\n\t\theader_up X-Forwarded-For {http.request.header.X-Real-IP}\n\n\t\theader_up X-Other <<EOF\n\t\tEOF\n',
     ),
     'a proxy_protocol listener wrapper on one listener': inCaddyfile(
       '\tservers {',
