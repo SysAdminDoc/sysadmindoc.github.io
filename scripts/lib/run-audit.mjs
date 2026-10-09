@@ -42,9 +42,19 @@ export function runAudit(args, { cwd = process.cwd(), timeoutMs = AUDIT_TIMEOUT_
 // (taskkill) still can't be told apart; the self-test's timeout covers a hang.
 const KILLED_STATUS = 4294967295;
 
+// A crash is no verdict either (twenty-fifth drain review). Node exits 134 when
+// it aborts on Windows, out of heap for one (elsewhere an abort is a SIGABRT,
+// which leaves no status), and Windows ends a process that dies of an
+// exception with its NTSTATUS, 0xC0000000 and up: 0xC0000005 for an access
+// violation, 0xC00000FD for a stack overflow.
+const NODE_ABORT_STATUS = 134;
+const NTSTATUS_ERROR = 0xC0000000;
+
 /** Why a run gave no verdict, or null when it exited on its own. */
 export function noVerdict(run, timeoutMs = AUDIT_TIMEOUT_MS) {
   if (run.status === KILLED_STATUS) return 'was killed before it exited';
+  if (run.status === NODE_ABORT_STATUS) return 'crashed (exit code 134, a Node abort)';
+  if (run.status !== null && run.status >= NTSTATUS_ERROR) return `crashed (status 0x${run.status.toString(16).toUpperCase()})`;
   if (run.status !== null) return null;
   return run.timedOut ? `was still running after ${timeoutMs / 1000}s` : 'was killed before it exited';
 }

@@ -298,6 +298,17 @@ test('a self-test run counts as a rejection only when it says why, not when it h
   assert.equal(noVerdict(stopped), 'was killed before it exited');
   assert.match(plantVerdict(stopped, /dimensions 1x1/) ?? '', /^was killed before it exited, which is no rejection$/);
 
+  // The twenty-fifth review: a crash that printed the reason first isn't a
+  // rejection. A real abort exits 134 on Windows and dies of SIGABRT elsewhere.
+  const aborted = runAudit(['-e', 'console.error("planted violation found"); process.abort()'], { cwd: root });
+  assert.match(plantVerdict(aborted, /planted violation found/) ?? '', /^(crashed \(exit code 134, a Node abort\)|was killed before it exited), which is no rejection$/);
+  for (const [status, reason] of [[3221225477, 'crashed (status 0xC0000005)'], [3221225725, 'crashed (status 0xC00000FD)']]) {
+    const crashed = { status, output: 'planted violation found\n', timedOut: false };
+    assert.equal(noVerdict(crashed), reason);
+    assert.equal(plantVerdict(crashed, /planted violation found/), `${reason}, which is no rejection`);
+  }
+  assert.equal(noVerdict({ status: 2, output: '', timedOut: false }), null, 'an ordinary failure is still a verdict');
+
   // A real kill from outside, the way the 2026-09-24 hang was ended.
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'run-audit-kill-'));
   try {

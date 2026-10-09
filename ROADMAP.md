@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Count a crashed planted audit as no verdict on Windows
-  Why: `noVerdict` treats a timeout and a kill as no verdict, but not exit code 134 or a Windows status at or above 0xC0000000 (access violation, stack overflow), so a planted audit that crashes counts as rejected.
-  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:46`.
-  Touches: `scripts/lib/run-audit.mjs`, its test.
-  Acceptance: both come back as no verdict, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Rerun the twenty-fourth review
   Why: it covered titles, `staleAfter`, the report sink's byte splitter and the Caddy core, and it was stopped before it finished on 2026-09-24.
   Evidence: drain notes for 2026-09-24.
