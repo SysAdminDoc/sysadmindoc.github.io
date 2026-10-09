@@ -31,12 +31,33 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Rerun the twenty-fourth review
-  Why: it covered titles, `staleAfter`, the report sink's byte splitter and the Caddy core, and it was stopped before it finished on 2026-09-24.
-  Evidence: drain notes for 2026-09-24.
-  Touches: whatever it finds.
-  Acceptance: the review runs to the end without another running beside it, and its findings are filed here.
-  Complexity: M
+- [ ] P3: Keep page titles within what search results show, and make the title audit check more than dashes
+  Why: the default `<title>` (and `og:title`) is the 92-character headline from `src/data/career.ts`, past the roughly 60 characters a result shows. `scripts/audit-title-style.mjs` checks only for dashes, so a long, duplicated or h1-disagreeing title passes the gate (`audit-a11y.mjs` catches an empty one). `src/pages/lang/[slug].astro:61` says "1 projects" for a lane with one repo, in the title and the description. `public/offline.html` calls the site "SysAdminDoc Portfolio", which no other page does.
+  Evidence: twenty-fourth review rerun, 2026-10-09; `src/layouts/Base.astro:40`.
+  Touches: `src/layouts/Base.astro`, `src/pages/lang/[slug].astro`, `public/offline.html`, `scripts/audit-title-style.mjs`, `test/title-style.test.mjs` (or wherever its test lives).
+  Acceptance: every built title is 70 characters or fewer, no title says "1 projects", the offline page names the site the way the others do, and the audit fails a planted long title and a planted title that disagrees with its og:title.
+  Complexity: S
+
+- [ ] P3: Read a generated timestamp with no zone as UTC
+  Why: `staleAfterIso` (`src/data/generated-trust.ts:155`) parses with `new Date(string)`, so a timestamp without a `Z` or offset is read in the build host's zone. Every writer uses `toISOString()`, so only a hand-edited file gets there, but the status page would then be wrong by the host's offset.
+  Evidence: twenty-fourth review rerun, 2026-10-09.
+  Touches: `src/data/generated-trust.ts`, `test/status-freshness.test.mjs`.
+  Acceptance: a zone-less timestamp parses as UTC, or counts as already past, and a test says which.
+  Complexity: S
+
+- [ ] P3: Give the CSP report store back its final newline after a crash mid-append
+  Why: `restoreFile` in `deploy/vps/csp-report-server.mjs` returns early when it changed no row, so a store whose last line was cut without a newline keeps it that way, and the next `appendFile` glues two reports into one line that `parseStore` counts as two unreadable ones. The contact handler got the same fix for its lead store on 2026-10-09.
+  Evidence: twenty-fourth review rerun, 2026-10-09.
+  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`.
+  Acceptance: a store ending mid-line gets its newline before the next append, the dropped-line count reaches the nightly summary rather than only the startup log, and a test plants both.
+  Complexity: S
+
+- [ ] P3: Read Caddyfile heredocs the way Caddy does
+  Why: the parser in `scripts/lib/caddyfile.mjs` closes a heredoc on `EOF trailing text` (Caddy refuses it), doesn't strip the closing marker's indentation from the body, and only sees a heredoc at a token's start. The trust check reads the file through this parser, so a heredoc Caddy reads differently could carry a header line past it.
+  Evidence: twenty-fourth review rerun, 2026-10-09; `scripts/lib/caddyfile.mjs` around line 95.
+  Touches: `scripts/lib/caddyfile.mjs`, `test/caddyfile.test.mjs` (or the contract test).
+  Acceptance: a heredoc closes only on its marker alone on a line, the body loses the marker's indentation, and a planted heredoc hiding a `header_up X-Forwarded-For` line fails the trust check.
+  Complexity: S
 
 - [ ] P3: Keep the catalog filters to one row each on phones
   Why: at 390px the Show and Category filters wrap to six rows of chips, about 3 1/2 inches of scrolling before the first project.
