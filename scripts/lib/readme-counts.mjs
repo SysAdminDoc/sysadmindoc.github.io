@@ -59,15 +59,17 @@ function parsed(text, name) {
  * The counts the README describes, from a checkout's generated data, or null
  * when that data isn't installed. Only a missing file reads as not installed:
  * one that doesn't parse throws, so a truncated file can't turn the check
- * into a skip (twenty-first drain review).
+ * into a skip (twenty-first drain review). Each file present is parsed before
+ * the other's absence is read as a skip, so a corrupt feed fails even when the
+ * release cache is missing (twenty-fifth drain review).
  * @param {string} root
  */
 export function readmeCountInputs(root) {
   const profileText = readIfPresent(path.join(root, 'src', 'data', '_profile-projects.json'));
   const releasesText = readIfPresent(path.join(root, 'src', 'data', '_releases.json'));
+  const profile = profileText === null ? null : parsed(profileText, 'src/data/_profile-projects.json');
+  const releases = releasesText === null ? null : parsed(releasesText, 'src/data/_releases.json');
   if (profileText === null || releasesText === null) return null;
-  const profile = parsed(profileText, 'src/data/_profile-projects.json');
-  const releases = parsed(releasesText, 'src/data/_releases.json');
   const projects = fs.readFileSync(path.join(root, 'src', 'data', 'projects.ts'), 'utf8');
   const builtText = readIfPresent(path.join(root, 'dist', 'projects.json'));
   let renderedCount = null;

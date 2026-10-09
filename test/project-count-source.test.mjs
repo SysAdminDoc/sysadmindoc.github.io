@@ -54,6 +54,16 @@ test('only a missing data file reads as not installed; one that does not parse f
   await fs.rm(path.join(dir, 'dist', 'projects.json'));
   await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), '[{"tag":');
   assert.throws(() => readmeCountInputs(dir), /src\/data\/_releases\.json doesn't parse/);
+
+  // Twenty-fifth drain review: a corrupt file fails whatever else is missing.
+  await fs.rm(path.join(dir, 'src', 'data', '_releases.json'));
+  await fs.writeFile(path.join(dir, 'src', 'data', '_profile-projects.json'), '{"projectCount":');
+  assert.throws(() => readmeCountInputs(dir), /src\/data\/_profile-projects\.json doesn't parse/, 'corrupt feed, no release cache');
+  await fs.rm(path.join(dir, 'src', 'data', '_profile-projects.json'));
+  await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), '[{"tag":');
+  assert.throws(() => readmeCountInputs(dir), /src\/data\/_releases\.json doesn't parse/, 'corrupt release cache, no feed');
+  await fs.writeFile(path.join(dir, 'src', 'data', '_releases.json'), JSON.stringify([{ tag: 'v1' }]));
+  assert.equal(readmeCountInputs(dir), null, 'a clean absence still skips');
 });
 
 test('README public command examples match generated portfolio counts', async (t) => {

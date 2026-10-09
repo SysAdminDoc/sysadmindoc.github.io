@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Fail the README count check on a corrupt profile feed even when releases is missing
-  Why: `readmeCountInputs` returns null, which the test reads as "not installed" and skips, when `_releases.json` is missing, even if `_profile-projects.json` is present and doesn't parse.
-  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/readme-counts.mjs:65`.
-  Touches: `scripts/lib/readme-counts.mjs`, `test/project-count-source.test.mjs`.
-  Acceptance: a corrupt file fails whatever else is missing, and only a clean absence skips.
-  Complexity: S
-
 - [ ] P3: Count a crashed planted audit as no verdict on Windows
   Why: `noVerdict` treats a timeout and a kill as no verdict, but not exit code 134 or a Windows status at or above 0xC0000000 (access violation, stack overflow), so a planted audit that crashes counts as rejected.
   Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/run-audit.mjs:46`.
