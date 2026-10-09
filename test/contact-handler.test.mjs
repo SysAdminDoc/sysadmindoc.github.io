@@ -1081,6 +1081,24 @@ test('a torn line and a lead with no receive date go even when nothing has expir
   });
 });
 
+// The twenty-sixth drain review: when the start-up purge failed, the restore
+// queued leads past their retention and sent them to ntfy.
+test('a lead past its retention is never queued, whether or not the purge worked', async () => {
+  for (const purgeWorks of [false, true]) {
+    await withHandler({}, async ({ handler, storePath, ntfy, logger }) => {
+      await fs.writeFile(storePath, [leadAt('expired', daysAgo(400)), leadAt('undated', ''), leadAt('recent', daysAgo(10)), ''].join('\n'));
+      if (!purgeWorks) await fs.mkdir(`${storePath}.purge`);
+      if (purgeWorks) await handler.purgeExpired();
+      else await assert.rejects(handler.purgeExpired());
+      assert.equal(await handler.restorePending(), 1, purgeWorks ? 'after a purge' : 'after a failed purge');
+      await handler.retryPending();
+      await handler.idle();
+      assert.deepEqual(ntfy.calls.map((call) => call.body.title), ['Portfolio lead recent: N']);
+      if (!purgeWorks) assert.ok(logger.lines.some((line) => /2 undelivered lead\(s\) are past the 365-day retention/.test(line)), logger.lines.join('\n'));
+    });
+  }
+});
+
 test('the legacy submissions file follows the same retention and goes once empty', async () => {
   await withHandler({}, async ({ handler, storePath }) => {
     const legacyPath = path.join(path.dirname(storePath), 'submissions.ndjson');

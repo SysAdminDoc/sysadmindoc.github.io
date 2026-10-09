@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: both come back as no verdict, with a test apiece.
   Complexity: S
 
-- [ ] P3: Never requeue expired leads after a failed start-up purge
-  Why: `restorePending` sends leads past their retention to ntfy when the start-up purge failed, so a message that should be gone gets delivered.
-  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:722`.
-  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
-  Acceptance: an expired lead is never queued whether or not the purge worked, with a test.
-  Complexity: S
-
 - [ ] P3: Answer 400 to a request path `new URL` can't parse
   Why: a request for `//%%%/x` throws inside `new URL`, which both servers turn into a 500 and an error log line.
   Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:758`, `deploy/vps/csp-report-server.mjs:400`.

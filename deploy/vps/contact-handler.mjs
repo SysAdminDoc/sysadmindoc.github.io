@@ -874,12 +874,23 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   function restorePending() {
     const run = (async () => {
       const leads = await store.loadUndelivered();
+      const cutoff = retentionCutoff();
+      let expired = 0;
       for (const lead of leads.values()) {
         if (pending.has(lead.id)) continue;
+        // The start-up purge should have deleted it. When that purge failed,
+        // a lead past its retention must still never go out.
+        if (pastRetention(lead, cutoff)) {
+          expired += 1;
+          continue;
+        }
         // Each start gets a fresh round of attempts, retried at once, so a lead
         // that used up its attempts during a long ntfy outage isn't silenced for
         // good. The nightly deploy recreates this container.
         pending.set(lead.id, { ...lead, runAttempts: 0, lastAttemptAt: undefined });
+      }
+      if (expired) {
+        logger.error(`contact: ${expired} undelivered lead(s) are past the ${config.leadRetentionDays}-day retention and were not queued; the next purge that works deletes them`);
       }
       return pending.size;
     })();
