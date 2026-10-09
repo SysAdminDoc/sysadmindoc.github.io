@@ -13,6 +13,7 @@ import {
   SMOKE_EMAIL_TO,
   clientAddress,
   createContactHandler,
+  describeError,
   emailFor,
   isNavigation,
   isPlainAddress,
@@ -1434,4 +1435,48 @@ test('loadConfig takes the email settings only as a complete, well-formed set', 
   assert.throws(() => loadConfig({ ...good, CONTACT_EMAIL_TO: 'a@b.test,c@d.test' }), /CONTACT_EMAIL_TO/);
   assert.throws(() => loadConfig({ ...good, CONTACT_EMAIL_FROM: 'Portfolio' }), /CONTACT_EMAIL_FROM/);
   assert.throws(() => loadConfig({ ...base, CONTACT_EMAIL_TO: 'owner@example.test' }), /without RESEND_API_KEY/);
+});
+
+// 2026-09-29 21:31 UTC: a restart retried four leads at once, and two emails
+// failed with a bare "fetch failed" that couldn't say whether it was DNS, a
+// reset or a timeout.
+test('a failed delivery logs the network reason behind "fetch failed"', async () => {
+  const withCause = (cause) => Object.assign(new TypeError('fetch failed'), { cause });
+  const coded = (code) => Object.assign(new Error(`connect ${code}`), { code });
+  assert.equal(describeError(withCause(coded('ECONNRESET'))), 'fetch failed (ECONNRESET)');
+  assert.equal(describeError(withCause(coded('EAI_AGAIN'))), 'fetch failed (EAI_AGAIN)');
+  // undici wraps some reasons a level deeper, and happy eyeballs collects one per address.
+  assert.equal(describeError(withCause(Object.assign(new Error('wrapped'), { cause: coded('UND_ERR_CONNECT_TIMEOUT') }))), 'fetch failed (UND_ERR_CONNECT_TIMEOUT)');
+  assert.equal(describeError(withCause(new AggregateError([new Error('x'), coded('ECONNREFUSED')]))), 'fetch failed (ECONNREFUSED)');
+  // With no code anywhere, the cause's own words are the next best thing.
+  assert.equal(describeError(withCause(new Error('other side closed'))), 'fetch failed (other side closed)');
+  assert.equal(describeError(new Error('Resend answered 503')), 'Resend answered 503', 'an error with no cause reads as before');
+
+  async function failingEmail(url, init = {}) {
+    if (String(url) === DEFAULT_CONFIG.resendUrl) throw withCause(coded('ECONNRESET'));
+    return new Response('{}', { status: 200 });
+  }
+  await withHandler({ config: EMAIL_CONFIG, dependencies: { fetch: failingEmail } }, async ({ handler, logger }) => {
+    await postLead(handler);
+    assert.ok(logger.lines.some((line) => /email failed \(attempt 1\): fetch failed \(ECONNRESET\)$/.test(line)), logger.lines.join('\n'));
+  });
+});
+
+test('a backlog of emails goes out no faster than the interval allows', async () => {
+  /** @type {number[]} */
+  const starts = [];
+  async function timedFetch(url) {
+    if (String(url) === DEFAULT_CONFIG.resendUrl) starts.push(performance.now());
+    return new Response('{"id":"email-1"}', { status: 200 });
+  }
+  await withHandler({ config: { ...EMAIL_CONFIG, emailIntervalMs: 100 }, dependencies: { fetch: timedFetch } }, async ({ handler, storePath }) => {
+    await fs.writeFile(storePath, ['a', 'b', 'c', 'd'].map((id) => leadAt(id, daysAgo(1))).join('\n') + '\n');
+    assert.equal(await handler.restorePending(), 4);
+    assert.equal(await handler.retryPending(), 4, 'all four are due at once');
+    await handler.idle();
+    assert.equal(starts.length, 4);
+    // Timers can fire a hair early, never a whole interval early.
+    for (let i = 1; i < starts.length; i += 1) assert.ok(starts[i] - starts[i - 1] >= 95, `email ${i + 1} started ${(starts[i] - starts[i - 1]).toFixed(1)} ms after the one before`);
+  });
+  assert.equal(DEFAULT_CONFIG.emailIntervalMs, 500, "two a second, Resend's default limit");
 });

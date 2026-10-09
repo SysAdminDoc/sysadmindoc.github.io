@@ -74,6 +74,7 @@ import { fileURLToPath } from 'node:url';
  * @property {number} retryIntervalMs
  * @property {number} maxNotifyAttempts
  * @property {number} notifyTimeoutMs
+ * @property {number} emailIntervalMs
  */
 
 /** @type {ContactConfig} */
@@ -116,6 +117,9 @@ export const DEFAULT_CONFIG = Object.freeze({
   retryIntervalMs: 60_000,
   maxNotifyAttempts: 20,
   notifyTimeoutMs: 10_000,
+  // Resend allows 2 requests a second by default. A restart retries every
+  // pending lead at once, so emails start at least this far apart.
+  emailIntervalMs: 500,
 });
 
 // ntfy's default message-size-limit is 4096 bytes, and a larger body becomes an
@@ -698,6 +702,22 @@ function secretMatches(provided, expected) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+/**
+ * An error's message with the network reason behind it. Node's fetch throws a
+ * bare "fetch failed" and keeps the reason (ECONNRESET, EAI_AGAIN, a connect
+ * timeout) in its cause, which the log needs to tell DNS from a reset.
+ */
+export function describeError(error) {
+  const message = String(error?.message ?? error);
+  let fallback = '';
+  for (let cause = error?.cause, depth = 0; cause && depth < 4; cause = cause.cause, depth += 1) {
+    const reason = cause.code ?? cause.errors?.find((inner) => inner?.code)?.code;
+    if (reason) return `${message} (${reason})`;
+    if (!fallback && cause.message && cause.message !== message) fallback = cause.message;
+  }
+  return fallback ? `${message} (${fallback})` : message;
+}
+
 function retryDelayMs(attempts) {
   return Math.min(60 * 60_000, 60_000 * 2 ** Math.max(0, attempts - 1));
 }
@@ -776,7 +796,22 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     }
   }
 
+  // Email starts are spaced emailIntervalMs apart, in the order they were asked
+  // for, so a backlog retried at once stays inside Resend's rate limit.
+  let emailQueue = Promise.resolve();
+  let lastEmailStart = -Infinity;
+  function emailTurn() {
+    const turn = emailQueue.then(async () => {
+      const wait = lastEmailStart + config.emailIntervalMs - performance.now();
+      if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+      lastEmailStart = performance.now();
+    });
+    emailQueue = turn;
+    return turn;
+  }
+
   async function sendEmail(lead) {
+    await emailTurn();
     // The key covers the send whose outcome is unknown (a timeout, a 5xx), so a
     // retry of one Resend already accepted isn't mailed twice. A definite refusal
     // sent nothing, and the next attempt takes a fresh key in case Resend
@@ -831,7 +866,7 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
           logger.log(channel === 'email' ? `contact: lead ${lead.id} emailed` : `contact: lead ${lead.id} delivered to ntfy`);
         } catch (error) {
           const what = channel === 'email' ? 'email' : 'notification';
-          logger.error(`contact: lead ${lead.id} ${what} failed (attempt ${attempts}): ${error.message}`);
+          logger.error(`contact: lead ${lead.id} ${what} failed (attempt ${attempts}): ${describeError(error)}`);
         }
       }),
     );

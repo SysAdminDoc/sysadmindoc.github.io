@@ -13,6 +13,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The contact form's daily cleanup also removes a half-written line or a stored message with no date, even on a day when nothing else is old enough to go.
 - A message older than the retention period is never sent on after a restart, even when the cleanup that should have removed it failed.
 - The contact form and the CSP report endpoint answer a garbled request address with "bad request" instead of a server error.
+- When a contact email or push can't get through, the log names the network reason (a reset, a DNS failure, a timeout) instead of a bare "fetch failed". Emails also go out at most two a second, so a backlog sent after a restart stays inside the mail service's rate limit.
 
 ## [v0.47.0] - 2026-09-29
 
