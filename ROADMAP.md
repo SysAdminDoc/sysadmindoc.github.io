@@ -66,13 +66,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
-- [ ] P3: Clip the gutter check the way CSS does, and skip transparent and vertically hidden text
-  Why: d109412f treats only transform and position as containing blocks and only `overflow: hidden|clip` as clipping, so text in a positioned box inside an `overflow: hidden` parent with `filter`, `translate` or `contain: paint`, or inside `overflow: auto`, is flagged though it's cut off; `color: transparent` text is flagged; a box at `top: -9999px; left: 0` is flagged because only horizontal off-screen counts. Option text, textarea text, input values and CSS `content` text are never measured.
-  Evidence: seventeenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:510-554`.
-  Touches: `tests/playwright/portfolio-audits.spec.mjs`.
-  Acceptance: containing blocks follow CSS (transform, translate, filter, contain, will-change), every scroll container clips, fully transparent text colour is skipped, a box off-screen in any direction is skipped, form-control and generated text are measured, and each case is planted on the check's page.
-  Complexity: S
-
 - [ ] P3: Load the browser too when checking the preflight's audit on a busy PC
   Why: b8a38227's run slowed only node process starts; Chromium and its renderers ran at full speed, and the slowdown fell in global setup, outside the 90 s and 10 s limits, so the limits never met the load.
   Evidence: seventeenth drain review, 2026-09-24; `playwright.audits.config.mjs:14,16,25`.

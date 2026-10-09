@@ -495,13 +495,31 @@ function flushText() {
   const positionedBox = (element) => {
     for (let node = element; node && node !== document.body; node = node.parentElement) {
       const position = getComputedStyle(node).position;
-      if (position === 'absolute' || position === 'fixed') return node.getBoundingClientRect();
+      if (position === 'absolute' || position === 'fixed') return { rect: node.getBoundingClientRect(), position };
     }
     return null;
   };
-  // What of `rect` the element's overflow: hidden or clip ancestors leave to
-  // be seen, or null for none of it. A positioned box escapes the ones between
-  // it and its containing block, as it does in the browser.
+  // Whether a box is the containing block of a positioned descendant for a
+  // reason other than its own position: a transform, a filter, paint or layout
+  // containment, or a will-change naming one of those, each of which also
+  // holds a fixed descendant (seventeenth drain review).
+  const containsPositioned = (style) =>
+    style.transform !== 'none' ||
+    style.translate !== 'none' ||
+    style.rotate !== 'none' ||
+    style.scale !== 'none' ||
+    style.perspective !== 'none' ||
+    style.filter !== 'none' ||
+    style.backdropFilter !== 'none' ||
+    /\b(?:paint|layout|strict|content)\b/.test(style.contain) ||
+    /\b(?:transform|translate|rotate|scale|perspective|filter|backdrop-filter|contain)\b/.test(style.willChange);
+  // Every overflow value but visible clips what sticks out of the box: a
+  // scroll container shows only what's scrolled into view, and paint
+  // containment clips on its own.
+  const clips = (overflow, style) => overflow !== 'visible' || /\b(?:paint|strict|content)\b/.test(style.contain);
+  // What of `rect` the element's clipping ancestors leave to be seen, or null
+  // for none of it. A positioned box escapes the ones between it and its
+  // containing block, as it does in the browser.
   const visiblePart = (element, rect) => {
     let { left, right, top, bottom } = rect;
     let escaping = null;
@@ -509,23 +527,59 @@ function flushText() {
       const style = getComputedStyle(node);
       const containing =
         escaping === null ||
-        style.transform !== 'none' ||
+        containsPositioned(style) ||
         (escaping === 'absolute' && style.position !== 'static');
       if (containing) {
         escaping = null;
         const box = node.getBoundingClientRect();
-        if (style.overflowX === 'hidden' || style.overflowX === 'clip') {
+        if (clips(style.overflowX, style)) {
           left = Math.max(left, box.left);
           right = Math.min(right, box.right);
         }
-        if (style.overflowY === 'hidden' || style.overflowY === 'clip') {
+        if (clips(style.overflowY, style)) {
           top = Math.max(top, box.top);
           bottom = Math.min(bottom, box.bottom);
         }
       }
       if (style.position === 'absolute' || style.position === 'fixed') escaping = style.position;
     }
-    return right > left && bottom > top ? { left, right } : null;
+    return right > left && bottom > top ? { left, right, top, bottom } : null;
+  };
+  // Off the screen with no way to scroll to it: past either side (the page
+  // never scrolls sideways), above the document's start, or, for a fixed box,
+  // below the viewport, and for an absolute one past the document's end.
+  const offScreen = (rect, position) => {
+    if (rect.right <= 0 || rect.left >= window.innerWidth) return true;
+    if (position === 'fixed') return rect.bottom <= 0 || rect.top >= window.innerHeight;
+    return rect.bottom + window.scrollY <= 0 || rect.top + window.scrollY >= document.documentElement.scrollHeight;
+  };
+  // Moved wholly off the screen by its own absolutely or fixed positioned box,
+  // the other way to hide text from sight but not from screen readers, like
+  // the contact form's honeypot label at left: -9999px. Text moved off some
+  // other way, by a transform or a margin inside an on-screen card, still
+  // counts, and so does text only partly off the screen.
+  const hiddenOffScreen = (element, part) => {
+    const box = positionedBox(element);
+    return Boolean(box) && offScreen(box.rect, box.position) && offScreen(part, box.position);
+  };
+  // Text drawn in a fully transparent colour isn't seen, unless a background
+  // shows through it (background-clip: text) or a shadow outlines it.
+  const transparentText = (style) => {
+    const fill = style.webkitTextFillColor || style.color;
+    if (!/^rgba\(\d+, \d+, \d+, 0\)$/.test(fill) && fill !== 'transparent') return false;
+    return !/\btext\b/.test(`${style.backgroundClip} ${style.webkitBackgroundClip}`) && style.textShadow === 'none';
+  };
+  const skipped = (element) =>
+    Boolean(element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) ||
+    !element.checkVisibility({ visibilityProperty: true, opacityProperty: true }) ||
+    visuallyHidden(element);
+  const describe = (element, text, part) =>
+    `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${text.trim().slice(0, 40)}" ${Math.round(part.left)}..${Math.round(part.right)}`;
+  const flagged = (element, rect, text) => {
+    if (rect.width === 0 || rect.height === 0) return;
+    const part = visiblePart(element, rect);
+    if (!part || hiddenOffScreen(element, part)) return;
+    if ((part.left < 12 || part.right > window.innerWidth - 12) && !scrollsSideways(element)) found.set(element, describe(element, text, part));
   };
   const main = document.querySelector('main');
   if (!main) return ['no main element'];
@@ -536,28 +590,48 @@ function flushText() {
     // aria-hidden text is still on screen (the 01/02/03 numerals, arrows),
     // so it counts; only what isn't drawn is left out, fully transparent
     // text included (fifteenth drain review).
-    if (element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) continue;
-    if (!element.checkVisibility({ visibilityProperty: true, opacityProperty: true }) || visuallyHidden(element)) continue;
+    if (skipped(element) || transparentText(getComputedStyle(element))) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
-    const whole = range.getBoundingClientRect();
-    if (whole.width === 0 || whole.height === 0) continue;
     // Measured as drawn: an ellipsis cuts the line where its box ends.
-    const text = visiblePart(element, whole);
-    if (!text) continue;
-    // Moved wholly off the screen by its own absolutely or fixed positioned
-    // box, the other way to hide text from sight but not from screen readers,
-    // like the contact form's honeypot label at left: -9999px. Text moved off
-    // some other way, by a transform or a margin inside an on-screen card,
-    // still counts, and so does text only partly off the screen.
-    const box = positionedBox(element);
-    const offScreen = (rect) => rect.right <= 0 || rect.left >= window.innerWidth;
-    if (box && offScreen(box) && offScreen(text)) continue;
-    if ((text.left < 12 || text.right > window.innerWidth - 12) && !scrollsSideways(element)) {
-      found.set(element, `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${[...element.classList].join('.')} "${node.textContent.trim().slice(0, 40)}" ${Math.round(text.left)}..${Math.round(text.right)}`);
+    flagged(element, range.getBoundingClientRect(), node.textContent);
+  }
+  // A control's text is no text node: an input's value, a select's chosen
+  // option, a textarea's contents all sit inside the control's own box
+  // (seventeenth drain review).
+  for (const control of main.querySelectorAll('input, textarea, select')) {
+    if (found.has(control) || skipped(control)) continue;
+    if (control instanceof HTMLInputElement && ['hidden', 'checkbox', 'radio', 'range', 'color', 'file'].includes(control.type)) continue;
+    const shown = control instanceof HTMLSelectElement ? control.selectedOptions[0]?.label ?? '' : control.value || control.placeholder || '';
+    if (!shown.trim()) continue;
+    flagged(control, control.getBoundingClientRect(), shown);
+  }
+  // Generated text (::before, ::after) has no node to measure either. Its
+  // element's content box stands in: the text starts at that box's left edge,
+  // and an inline element's box ends where its text does. A pseudo-element
+  // positioned on its own can be anywhere, so it's left alone.
+  const text = (content) => {
+    if (/attr\(|counter/.test(content)) return content;
+    const quoted = [...content.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((match) => match[1]).join('');
+    return quoted.trim() ? quoted : '';
+  };
+  for (const element of main.querySelectorAll('*')) {
+    if (found.has(element) || skipped(element)) continue;
+    for (const pseudo of ['::before', '::after']) {
+      const style = getComputedStyle(element, pseudo);
+      const shown = text(style.content);
+      if (!shown || style.display === 'none' || style.visibility === 'hidden' || transparentText(style)) continue;
+      if (style.position === 'absolute' || style.position === 'fixed') continue;
+      const own = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      const inline = own.display.startsWith('inline');
+      const left = box.left + parseFloat(own.borderLeftWidth) + parseFloat(own.paddingLeft);
+      const right = inline ? box.right - parseFloat(own.borderRightWidth) - parseFloat(own.paddingRight) : left + 1;
+      flagged(element, { left, right, top: box.top, bottom: box.bottom, width: box.width, height: box.height }, shown);
+      if (found.has(element)) break;
     }
   }
-  return [...found.values()].slice(0, 8);
+  return [...found.values()].slice(0, 24);
 }
 
 test.describe('Mobile gutter audit', () => {
@@ -587,9 +661,40 @@ test.describe('Mobile gutter audit', () => {
       <p id="ellipsis" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line far too long for a phone screen, cut by an ellipsis '.repeat(3)}</p>
       <p id="ellipsis-flush" style="margin:0 -20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line cut by an ellipsis right at the edge '.repeat(3)}</p>
       <div style="overflow:hidden"><div style="position:absolute;left:0;top:400px"><span id="escaped">Escapes a clip it isn't inside</span></div></div>
+      <div style="overflow:hidden;filter:blur(0);margin:0 20px"><div style="position:absolute;left:-20px"><span id="filter-clipped">Clipped by the box a filter makes</span></div></div>
+      <div style="overflow:hidden;translate:0;margin:0 20px"><div style="position:absolute;left:-20px"><span id="translate-clipped">Clipped by the box a translate makes</span></div></div>
+      <div style="overflow:hidden;contain:paint;margin:0 20px"><div style="position:absolute;left:-20px"><span id="contain-clipped">Clipped by paint containment</span></div></div>
+      <div style="overflow:hidden;will-change:transform;margin:0 20px"><div style="position:absolute;left:-20px"><span id="willchange-clipped">Clipped by a will-change box</span></div></div>
+      <div style="overflow:auto;height:40px;margin:0 20px"><p style="height:60px;margin:0">Fills the scroll box</p><p id="scrolled-out" style="position:relative;left:-20px;width:100px;margin:0">Scrolled out of view</p></div>
+      <span id="transparent-color" style="position:relative;left:-20px;color:transparent">Drawn in a transparent colour</span>
+      <span id="gradient-text" style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(red,blue);-webkit-background-clip:text;background-clip:text">Gradient text shows through</span>
+      <div style="position:absolute;top:-9999px;left:0"><label id="above-screen">Above the screen</label></div>
+      <p id="fixed-below" style="position:fixed;top:5000px;left:0">Fixed below the screen</p>
+      <div style="position:absolute;top:1500px;left:0"><p id="below-fold">Reachable by scrolling</p></div>
+      <div><select id="select-flush" style="margin-left:-20px"><option>Pick one</option></select></div>
+      <div><textarea id="textarea-flush" style="margin-left:-20px">Typed text</textarea></div>
+      <div><input id="input-flush" value="Typed value" style="margin-left:-20px"></div>
+      <div><input id="input-inside" value="Inside the gutter"></div>
+      <style>#generated::before{content:'Generated text'}#generated-empty::before{content:''}</style>
+      <div><span id="generated" style="margin-left:-20px"></span></div>
+      <div><span id="generated-empty" style="margin-left:-20px"></span></div>
       </main></body></html>`);
     const flagged = (await page.evaluate(flushText)).map((line) => line.match(/^\w+#([\w-]+)/)?.[1] ?? line).sort();
-    expect(flagged).toEqual(['ellipsis-flush', 'escaped', 'flush', 'margin-off', 'numeral', 'relative-off', 'transform-off']);
+    expect(flagged).toEqual([
+      'below-fold',
+      'ellipsis-flush',
+      'escaped',
+      'flush',
+      'generated',
+      'gradient-text',
+      'input-flush',
+      'margin-off',
+      'numeral',
+      'relative-off',
+      'select-flush',
+      'textarea-flush',
+      'transform-off',
+    ]);
   });
 });
 
