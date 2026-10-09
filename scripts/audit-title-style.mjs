@@ -9,6 +9,10 @@
 // the name its links give it, so a reader subscribes to what the link said
 // (eighteenth drain review). The project feeds' descriptions are held to the
 // dash half of the rule too, since every catalog card shows the same text.
+// Each page's <title> is also held to 70 characters (a search result shows
+// about 60), to its og:title and twitter:title, to being its own, and to not
+// counting one thing as many (twenty-fourth review rerun: the homepage title
+// was 92 characters, and a one-repo lane said "1 projects").
 //
 //   --dist <path>   the build to read (default dist)
 import fs from 'node:fs';
@@ -28,6 +32,9 @@ const FEEDS = ['rss.xml', 'releases.xml', 'atom.xml', 'feed.json'];
 // its bodies stay out.
 const DESCRIBED = new Set(['rss.xml', 'atom.xml', 'feed.json']);
 const NAME_METAS = new Set(['og:title', 'twitter:title', 'og:site_name', 'application-name', 'apple-mobile-web-app-title']);
+const TITLE_MAX = 70;
+const TITLE_COPIES = new Set(['og:title', 'twitter:title']);
+const COUNT_OF_ONE = /(?<![\d.,])\b1 (?:projects|stars|releases|repos|apps)\b/i;
 
 if (!fs.existsSync(path.join(distDir, 'index.html'))) {
   console.error(`title-style audit: ${distDir}/index.html not found. Run the build first.`);
@@ -135,6 +142,8 @@ const feeds = feedNames();
 const feedTitles = new Map(feeds.map((feed) => [`/${feed.file}`, feed.title]));
 /** @type {Map<string, { href: string, text: string, own: string, pages: string[] }>} */
 const mismatches = new Map();
+/** @type {Map<string, string[]>} */
+const titlePages = new Map();
 const files = htmlFiles(distDir);
 for (const file of files) {
   const rel = path.relative(distDir, file).replaceAll('\\', '/');
@@ -142,6 +151,16 @@ for (const file of files) {
   for (const { where, text } of names) {
     const problem = titleStyleProblem(text);
     if (problem) problems.push(`${rel}: ${where} "${text.trim().slice(0, 100)}" has ${problem}`);
+  }
+  const titleName = names.find((name) => name.where === '<title>');
+  if (titleName) {
+    const title = same(titleName.text);
+    if (title.length > TITLE_MAX) problems.push(`${rel}: <title> "${title.slice(0, 100)}" is ${title.length} characters, past the ${TITLE_MAX} a search result has room for`);
+    if (COUNT_OF_ONE.test(title)) problems.push(`${rel}: <title> "${title.slice(0, 100)}" counts one thing as many`);
+    for (const { where, text } of names) {
+      if (TITLE_COPIES.has(where) && same(text) !== title) problems.push(`${rel}: ${where} "${same(text).slice(0, 100)}" doesn't match the <title> "${title.slice(0, 100)}"`);
+    }
+    titlePages.set(title, [...(titlePages.get(title) ?? []), rel]);
   }
   for (const { href, text } of links) {
     const own = feedTitles.get(href);
@@ -151,6 +170,9 @@ for (const file of files) {
     entry.pages.push(rel);
     mismatches.set(key, entry);
   }
+}
+for (const [title, pages] of titlePages) {
+  if (pages.length > 1) problems.push(`${pages.sort().join(', ')}: share the <title> "${title.slice(0, 100)}"`);
 }
 // The layout writes the same links on every page, so one mismatch is reported once.
 for (const { href, text, own, pages } of mismatches.values()) {
@@ -186,4 +208,4 @@ if (problems.length > 0) {
   if (problems.length > 20) console.error(`  ...and ${problems.length - 20} more`);
   process.exit(1);
 }
-console.log(`title-style audit passed: ${files.length} pages, ${feeds.length} feeds with ${items} items and ${manifest.length} manifest names, no dash in any of them, and no dash in ${descriptions} project descriptions.`);
+console.log(`title-style audit passed: ${files.length} pages, ${feeds.length} feeds with ${items} items and ${manifest.length} manifest names, no dash in any of them, no dash in ${descriptions} project descriptions, and every page title ${TITLE_MAX} characters or fewer, its own, and the same as its og:title.`);

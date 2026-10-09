@@ -58,8 +58,9 @@ const laneHeroProjects = repos.slice(0, 3).map((repo) => {
   };
 });
 
-const title = `${lang.label} | ${repos.length} projects by Matt Parker`;
-const description = `Everything I've shipped in ${lang.label}. ${repos.length} public projects, ${totalStars} stars.`;
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`;
+const title = `${lang.label} | ${count(repos.length, 'project')} by Matt Parker`;
+const description = `Everything I've shipped in ${lang.label}. ${count(repos.length, 'public project')}, ${count(totalStars, 'star')}.`;
 const compactUtcDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const laneHeroSignals = [
   {
@@ -74,7 +75,7 @@ const laneHeroSignals = [
   },
   {
     label: 'Public footprint',
-    value: `${repos.length} projects / ${totalStars} stars`,
+    value: `${count(repos.length, 'project')} / ${count(totalStars, 'star')}`,
     meta: `${featuredCount} featured and ${liveCount} browser-ready builds`,
   },
 ] as const;

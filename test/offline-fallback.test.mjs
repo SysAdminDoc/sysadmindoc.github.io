@@ -36,7 +36,8 @@ test('service worker exposes a local offline navigation fallback', async () => {
   assert.match(sw, /if \(url\.origin !== self\.location\.origin\) return;/);
   assert.doesNotMatch(sw, /putTimestamped|CROSS_ORIGIN_TTL|api\.github\.com/);
 
-  assert.match(html, /<title>Offline \| SysAdminDoc Portfolio<\/title>/);
+  // Every other page names the site "Matt Parker" after the bar.
+  assert.match(html, /<title>Offline \| Matt Parker<\/title>/);
   assert.match(html, /Content-Security-Policy/);
   assert.ok(html.includes(expectedStyleElem));
   assert.match(html, /href="\/styles\/offline\.css"/);

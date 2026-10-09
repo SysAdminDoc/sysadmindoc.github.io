@@ -25,6 +25,8 @@ export interface CareerRole {
 export const careerProfile = {
   name: 'Matt Parker',
   headline: 'I build tools, automate the tedious stuff, and keep healthcare systems running.',
+  /** The headline in a few words, for the homepage <title>: a search result shows about 60 characters. */
+  titleTagline: 'Tools, Automation and Healthcare Systems',
   currentTitle: 'Sr. Technical Support Manager',
   currentCompany: 'Maven Imaging',
   location: 'Sarasota, FL',

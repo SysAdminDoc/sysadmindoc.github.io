@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Keep page titles within what search results show, and make the title audit check more than dashes
-  Why: the default `<title>` (and `og:title`) is the 92-character headline from `src/data/career.ts`, past the roughly 60 characters a result shows. `scripts/audit-title-style.mjs` checks only for dashes, so a long, duplicated or h1-disagreeing title passes the gate (`audit-a11y.mjs` catches an empty one). `src/pages/lang/[slug].astro:61` says "1 projects" for a lane with one repo, in the title and the description. `public/offline.html` calls the site "SysAdminDoc Portfolio", which no other page does.
-  Evidence: twenty-fourth review rerun, 2026-10-09; `src/layouts/Base.astro:40`.
-  Touches: `src/layouts/Base.astro`, `src/pages/lang/[slug].astro`, `public/offline.html`, `scripts/audit-title-style.mjs`, `test/title-style.test.mjs` (or wherever its test lives).
-  Acceptance: every built title is 70 characters or fewer, no title says "1 projects", the offline page names the site the way the others do, and the audit fails a planted long title and a planted title that disagrees with its og:title.
-  Complexity: S
-
 - [ ] P3: Read a generated timestamp with no zone as UTC
   Why: `staleAfterIso` (`src/data/generated-trust.ts:155`) parses with `new Date(string)`, so a timestamp without a `Z` or offset is read in the build host's zone. Every writer uses `toISOString()`, so only a hand-edited file gets there, but the status page would then be wrong by the host's offset.
   Evidence: twenty-fourth review rerun, 2026-10-09.

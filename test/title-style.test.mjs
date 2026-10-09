@@ -76,6 +76,19 @@ test('the audit reads every name the site writes, holds each feed to its link, a
     fs.mkdirSync(path.join(dist, 'about'));
     fs.writeFileSync(path.join(dist, 'about', 'index.html'), page('About | Matt Parker'));
     fs.writeFileSync(path.join(dist, 'manifest.json'), JSON.stringify({ name: 'Matt Parker -- Bureau', short_name: 'SysAdminDoc', shortcuts: [{ name: `Catalog ${String.fromCharCode(0x2500)} all`, short_name: 'Catalog' }] }));
+    // The twenty-fourth review rerun: a 92 character homepage title and a
+    // one-repo lane's "1 projects" passed, as would a copy or a stale og:title.
+    const titled = (dir, title, og = title) => {
+      fs.mkdirSync(path.join(dist, dir));
+      fs.writeFileSync(
+        path.join(dist, dir, 'index.html'),
+        `<!doctype html><html lang="en"><head><title>${title}</title><meta property="og:title" content="${og}"><meta name="twitter:title" content="${title}"></head><body></body></html>`,
+      );
+    };
+    titled('long', `Matt Parker | ${'Tools '.repeat(12).trim()}`);
+    titled('stale', 'Uses | Matt Parker', 'Uses and tools | Matt Parker');
+    titled('lane', 'Kotlin | 1 projects by Matt Parker');
+    titled('copy', 'About | Matt Parker');
     const planted = audit();
     assert.equal(planted.status, 1);
     const said = planted.stderr;
@@ -93,6 +106,11 @@ test('the audit reads every name the site writes, holds each feed to its link, a
     assert.match(said, /manifest\.json: name "Matt Parker -- Bureau" has a dash lookalike between spaces \(U\+002D U\+002D\)/);
     assert.match(said, /manifest\.json: shortcuts\[0\]\.name "[^"]*" has a dash lookalike between spaces \(U\+2500\)/);
     assert.doesNotMatch(said, /An icon/, "an SVG title is not one of the site's names");
+    assert.match(said, /long\/index\.html: <title> "Matt Parker \| Tools[^"]*" is 85 characters, past the 70/);
+    assert.match(said, /stale\/index\.html: og:title "Uses and tools \| Matt Parker" doesn't match the <title> "Uses \| Matt Parker"/);
+    assert.doesNotMatch(said, /stale\/index\.html: twitter:title/, 'a copy that matches is fine');
+    assert.match(said, /lane\/index\.html: <title> "Kotlin \| 1 projects by Matt Parker" counts one thing as many/);
+    assert.match(said, /about\/index\.html, copy\/index\.html: share the <title> "About \| Matt Parker"/);
   } finally {
     fs.rmSync(dist, { recursive: true, force: true });
   }
