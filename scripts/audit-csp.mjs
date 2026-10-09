@@ -6,6 +6,7 @@ import process from 'node:process';
 import ts from 'typescript';
 import { parseMarkupAttributes, scanMarkup } from './lib/csp-markup-parser.mjs';
 import { collectHostReferences, hostSourceAllowsUrl, unusedHostSources } from './lib/csp-host-usage.mjs';
+import { WASM_SCRIPT_SRC } from './lib/csp-header.mjs';
 import { minifyCss } from './lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -148,6 +149,8 @@ async function resolveGeneratedCsp(filePath, text, value) {
     throw new Error(`Unable to resolve source CSP in ${filePath}: criticalCss is neither a ?raw import nor minifyCss() of one.`);
   }
   values.set('isDev', false);
+  // Source mode checks the policy every page but /search/ carries.
+  values.set('isSearch', false);
   values.set('criticalCss', criticalCss);
 
   for (const statement of sourceFile.statements) {
@@ -590,12 +593,21 @@ const cssTextWrites = runtimeStyleAudits.flatMap((audit) => audit.cssTextWrites)
 const setAttributeStyleWrites = runtimeStyleAudits.flatMap((audit) => audit.setAttributeStyleWrites);
 const directStylePropertyReferences = runtimeStyleAudits.flatMap((audit) => audit.directStylePropertyReferences);
 const htmlSinkWrites = runtimeStyleAudits.flatMap((audit) => audit.htmlSinkWrites);
-const activeCsp = cspMetas[0]?.content ?? '';
+// The active policy is the one dist/index.html carries, which is what the
+// response header is built from (scripts/lib/csp-header.mjs). The built
+// /search/ page alone adds 'wasm-unsafe-eval' to script-src, for Pagefind's
+// main-thread fallback (src/layouts/Base.astro). It must match the rest with
+// exactly that added, and any other page with the keyword drifts.
+const distRoot = options.distDir ? path.resolve(root, options.distDir) : null;
+const isDistFile = (meta, name) => distRoot !== null && toPosix(path.relative(distRoot, path.resolve(root, meta.file))) === name;
+const isWasmPage = (meta) => isDistFile(meta, 'search/index.html');
+const activeCsp = (cspMetas.find((meta) => isDistFile(meta, 'index.html')) ?? cspMetas.find((meta) => !isWasmPage(meta)) ?? cspMetas[0])?.content ?? '';
+const wasmPageCsp = activeCsp.replace(WASM_SCRIPT_SRC.find, WASM_SCRIPT_SRC.replace);
 const cspPolicies = new Set(cspMetas.map((meta) => meta.content));
 const filesWithoutCsp = options.distDir ? sourceAudits.filter((audit) => audit.cspMetas.length === 0) : [];
 const filesWithMultipleCsp = options.distDir ? sourceAudits.filter((audit) => audit.cspMetas.length > 1) : [];
 const divergentCspMetas = options.distDir && activeCsp
-  ? cspMetas.filter((meta) => meta.content !== activeCsp)
+  ? cspMetas.filter((meta) => meta.content !== (isWasmPage(meta) ? wasmPageCsp : activeCsp))
   : [];
 const directives = parseCsp(activeCsp);
 // Only a build shows what the site really loads, so this is a dist-mode check.

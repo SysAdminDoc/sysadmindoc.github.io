@@ -157,8 +157,8 @@ test('source-mode CSP resolution follows the production branch and rejects unsaf
   fs.mkdirSync(stylesDir, { recursive: true });
   const source = fs.readFileSync(baseLayoutPath, 'utf8');
   const mutated = source.replace(
-    `const scriptSrc = isDev ? "'self' 'unsafe-inline' 'wasm-unsafe-eval'" : "'self' 'wasm-unsafe-eval'";`,
-    `const scriptSrc = isDev ? "'self' 'unsafe-inline' 'wasm-unsafe-eval'" : "'self' 'unsafe-inline' 'wasm-unsafe-eval'";`,
+    `isSearch ? "'self' 'wasm-unsafe-eval'" : "'self'";`,
+    `isSearch ? "'self' 'wasm-unsafe-eval'" : "'self' 'unsafe-inline'";`,
   );
   assert.notEqual(mutated, source);
 
@@ -496,7 +496,38 @@ test('csp audit strict dist mode fails on missing or divergent CSP metadata', ()
   assert.match(result.stdout, /files with one CSP meta: 2\/3/);
   assert.match(result.stdout, /unique CSP policies: 2/);
   assert.match(result.stderr, /1 built HTML file\(s\) are missing a CSP meta tag: .*missing\.html/);
-  assert.match(result.stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*(index\.html|nested\/divergent\.html)/);
+  assert.match(result.stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*nested\/divergent\.html/);
+});
+
+test("csp audit dist mode lets /search/ alone add 'wasm-unsafe-eval'", () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-wasm-page-'));
+  const policy = "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'none'; form-action 'self'";
+  const wasmPolicy = policy.replace("script-src 'self'", "script-src 'self' 'wasm-unsafe-eval'");
+  const page = (dir, content) => {
+    fs.mkdirSync(path.join(tmp, dir), { recursive: true });
+    fs.writeFileSync(
+      path.join(tmp, dir, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${content}"></head><body></body></html>`,
+    );
+  };
+  const audit = () => spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--strict'], { cwd: repoRoot, encoding: 'utf8' });
+
+  try {
+    page('', policy);
+    page('uses', policy);
+    page('search', wasmPolicy);
+    assert.doesNotMatch(audit().stderr, /differ from the active policy/);
+
+    // Without the keyword, search's main-thread fallback can't compile.
+    page('search', policy);
+    assert.match(audit().stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*search\/index\.html/);
+
+    page('search', wasmPolicy);
+    page('uses', wasmPolicy);
+    assert.match(audit().stderr, /1 built CSP meta tag\(s\) differ from the active policy: .*uses\/index\.html/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 });
 
 test('csp audit strict dist mode fails when active style-src-attr blocks an inline style', () => {

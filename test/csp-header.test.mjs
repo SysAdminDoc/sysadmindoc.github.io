@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
-import { buildCspHeaderValue, decodeHtmlAttribute } from '../scripts/lib/csp-header.mjs';
+import { buildCspHeaderValue, buildWasmCspHeaderValue, decodeHtmlAttribute, WASM_SCRIPT_SRC } from '../scripts/lib/csp-header.mjs';
 
 const root = process.cwd();
 
@@ -66,24 +66,61 @@ test('the Playwright preview serves the production CSP header', async () => {
   // and the browser suites cannot see what the live site refuses.
   assert.match(preview, /env: \{ PORTFOLIO_PREVIEW_PRODUCTION_HEADERS: '1' \}/);
   assert.match(config, /process\.env\.PORTFOLIO_PREVIEW_PRODUCTION_HEADERS === '1'/);
-  assert.match(config, /'Content-Security-Policy': buildCspHeaderValue\(/);
+  // The preview can't choose a header by path, so it sends the search value
+  // everywhere; every other page's own <meta> policy narrows it back.
+  assert.match(config, /'Content-Security-Policy': buildWasmCspHeaderValue\(/);
   assert.match(config, /server: \{ headers: productionPreviewHeaders \}/);
 });
 
-test('script-src allows WebAssembly compilation for Pagefind in every policy copy', async () => {
-  const [base, offline] = await Promise.all([
+// Pagefind compiles its index reader in /pagefind/pagefind-worker.js, which
+// runs under its own response header, and on /search/ itself when the worker
+// fails or takes over 5 seconds to start. Without the keyword on the worker,
+// live search hung at "Searching" from 2026-08-20 until 2026-09-23. Every
+// page's policy carried the keyword too until 2026-10-09, though only /search/
+// can compile WebAssembly.
+test("'wasm-unsafe-eval' reaches the Pagefind worker and /search/ and nothing else", async (t) => {
+  const [base, offline, caddyfile] = await Promise.all([
     fs.readFile(path.join(root, 'src', 'layouts', 'Base.astro'), 'utf8'),
     fs.readFile(path.join(root, 'public', 'offline.html'), 'utf8'),
+    fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
   ]);
+  assert.match(base, /^const isSearch = Astro\.url\.pathname === '\/search\/';$/m);
+  const scriptSrc = base.match(/const scriptSrc = isDev \? "([^"]+)" : isSearch \? "([^"]+)" : "([^"]+)";/);
+  assert.ok(scriptSrc, 'Base.astro must declare scriptSrc for dev, /search/ and every other page');
+  assert.equal(scriptSrc[3], "'self'", 'an ordinary page policy allows no eval of any kind');
+  assert.equal(scriptSrc[2], "'self' 'wasm-unsafe-eval'", "/search/ keeps Pagefind's main-thread fallback");
+  assert.doesNotMatch(scriptSrc[1], /'wasm-unsafe-eval'|'unsafe-eval'/);
+  assert.doesNotMatch(offline, /wasm-unsafe-eval/);
 
-  // Pagefind compiles its index reader in /pagefind/pagefind-worker.js, which
-  // runs under the stamped response header. Without the keyword, live search
-  // hung at "Searching" from 2026-08-20 until 2026-09-23.
-  const scriptSrc = base.match(/const scriptSrc = isDev \? "([^"]+)" : "([^"]+)";/);
-  assert.ok(scriptSrc, 'Base.astro must declare scriptSrc for dev and production');
-  assert.match(scriptSrc[2], /'wasm-unsafe-eval'/);
-  assert.doesNotMatch(scriptSrc[2], /'unsafe-eval'|'unsafe-inline'/);
-  assert.match(offline, /script-src 'self' 'wasm-unsafe-eval'[^;]*;/);
+  // The Caddyfile widens the stamped header for the worker and /search/ with
+  // the same pair the preview uses, so the two can't drift apart. Caddy reads
+  // the find value as a regular expression.
+  assert.equal(WASM_SCRIPT_SRC.find, "script-src 'self'");
+  assert.equal(WASM_SCRIPT_SRC.replace, "script-src 'self' 'wasm-unsafe-eval'");
+  assert.doesNotMatch(WASM_SCRIPT_SRC.find, /[.*+?^${}()|[\]\\]/);
+  assert.match(caddyfile, /^\t@pagefind_wasm path \/search\/ \/search\/index\.html \/pagefind\/pagefind-worker\.js$/m);
+  // A header with a matcher runs before the unmatched one that sets the
+  // policy, so an immediate replace finds nothing; local Caddy 2.11.4 served
+  // the worker without the keyword until the replace was deferred.
+  assert.ok(
+    caddyfile.includes(
+      `\theader @pagefind_wasm {\n\t\tContent-Security-Policy "${WASM_SCRIPT_SRC.find}" "${WASM_SCRIPT_SRC.replace}"\n\t\tdefer\n\t}\n`,
+    ),
+    'the header rewrite uses the shared pair and is deferred',
+  );
+  assert.equal((caddyfile.match(/wasm-unsafe-eval/g) ?? []).length, 1, 'the keyword appears on the Pagefind route alone');
+
+  const dir = await distWith(
+    '<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\' \'report-sample\'; report-to csp-endpoint">',
+  );
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  assert.equal(
+    buildWasmCspHeaderValue(dir),
+    "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'report-sample'; report-to csp-endpoint; frame-ancestors 'none'; report-uri /csp-report",
+  );
+  const odd = await distWith('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'none\'; report-to csp-endpoint">');
+  t.after(() => fs.rm(odd, { recursive: true, force: true }));
+  assert.throws(() => buildWasmCspHeaderValue(odd), /no "script-src 'self'" for the search header to widen/);
 });
 
 test("'report-sample' rides on every directive an inline block is checked against, and only those", async () => {

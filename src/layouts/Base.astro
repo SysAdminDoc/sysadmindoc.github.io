@@ -67,10 +67,15 @@ function sha256Csp(value: string) {
 
 const isDev = import.meta.env.DEV;
 // Pagefind compiles its WebAssembly inside /pagefind/pagefind-worker.js, and a
-// worker's CSP is the response header deploy-vps.mjs stamps from this policy.
-// Without 'wasm-unsafe-eval' (WebAssembly compilation only, not JS eval) every
-// live search hung at "Searching" from the 2026-08-20 header rollout onward.
-const scriptSrc = isDev ? "'self' 'unsafe-inline' 'wasm-unsafe-eval'" : "'self' 'wasm-unsafe-eval'";
+// worker's CSP is its own script's response header, which the Caddyfile widens
+// with 'wasm-unsafe-eval' (scripts/lib/csp-header.mjs keeps the pair). When
+// the worker fails or takes over 5 seconds to start, pagefind.js compiles the
+// module on /search/ instead, so that page keeps the keyword too. Every other
+// page goes without it, and a WebAssembly compile there is refused. Without
+// the keyword on the worker's header, every live search hung at "Searching"
+// from the 2026-08-20 header rollout to 2026-09-23.
+const isSearch = Astro.url.pathname === '/search/';
+const scriptSrc = isDev ? "'self' 'unsafe-inline'" : isSearch ? "'self' 'wasm-unsafe-eval'" : "'self'";
 const styleElemSrc = isDev
   ? "'self' 'unsafe-inline'"
   : ["'self'", `'${sha256Csp(criticalCss)}'`, `'${sha256Csp(noJsRevealCss)}'`].join(' ');

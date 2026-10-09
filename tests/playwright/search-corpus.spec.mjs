@@ -71,4 +71,26 @@ test.describe('Pagefind relevance corpus', () => {
     expect(excerpts.length).toBeGreaterThanOrEqual(2);
     expect(new Set(excerpts).size).toBe(excerpts.length);
   });
+
+  // The preview sends 'wasm-unsafe-eval' in every response header, as the
+  // live server does for /search/ and the Pagefind worker. A page's own
+  // policy narrows it, and only /search/ keeps the keyword, for Pagefind's
+  // main-thread fallback when its worker fails or is slow to start.
+  test('only /search/ may compile WebAssembly on the page itself', async ({ page }) => {
+    const compile = () => page.evaluate(async () => {
+      // The smallest valid module: the magic number and version 1.
+      const bytes = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
+      try {
+        await WebAssembly.compile(bytes);
+        return 'compiled';
+      } catch (error) {
+        return error.name;
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'load' });
+    expect(await compile()).toBe('CompileError');
+    await page.goto('/search/', { waitUntil: 'load' });
+    expect(await compile()).toBe('compiled');
+  });
 });

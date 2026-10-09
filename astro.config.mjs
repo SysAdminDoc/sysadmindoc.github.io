@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { reviewedInteriorPages } from './src/data/page-freshness.ts';
 import { SITE_URL } from './site.config.mjs';
-import { buildCspHeaderValue } from './scripts/lib/csp-header.mjs';
+import { buildWasmCspHeaderValue } from './scripts/lib/csp-header.mjs';
 import { CSS_BROWSER_TARGETS, LIGHTNINGCSS_EXCLUDE } from './scripts/lib/minify-css.mjs';
 
 const reviewedDateByRoute = new Map(
@@ -15,9 +15,12 @@ const reviewedDateByRoute = new Map(
 // (tests/playwright/preview-server.mjs sets the flag). Without it the service
 // worker runs under no policy at all locally, because a worker's CSP comes only
 // from its own script's response headers. Only the preview asks: a build loads
-// this file before dist/ exists.
+// this file before dist/ exists. The live server widens the header with
+// 'wasm-unsafe-eval' for the Pagefind worker and /search/ alone; the preview
+// can't choose by path, so it sends the wider header everywhere and each
+// other page's <meta> policy narrows its own back.
 const productionPreviewHeaders = process.env.PORTFOLIO_PREVIEW_PRODUCTION_HEADERS === '1'
-  ? { 'Content-Security-Policy': buildCspHeaderValue(fileURLToPath(new URL('./dist/', import.meta.url))) }
+  ? { 'Content-Security-Policy': buildWasmCspHeaderValue(fileURLToPath(new URL('./dist/', import.meta.url))) }
   : null;
 
 export default defineConfig({

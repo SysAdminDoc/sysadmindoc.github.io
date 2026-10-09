@@ -48,3 +48,28 @@ export function buildCspHeaderValue(distDir) {
   }
   return `${policy}; frame-ancestors 'none'; report-uri /csp-report`;
 }
+
+// Pagefind compiles its WebAssembly in /pagefind/pagefind-worker.js, and a
+// worker's policy is its own script's response header. When the worker fails
+// or takes over 5 seconds to start, pagefind.js compiles the same module on
+// the /search/ page itself. So those two responses carry 'wasm-unsafe-eval'
+// and no other page's policy does, and a WebAssembly compile anywhere else is
+// refused. The Caddyfile rewrites the stamped header for those paths with this
+// same pair (deploy/vps/Caddyfile, @pagefind_wasm), and Caddy reads `find` as
+// a regular expression, so it stays free of metacharacters.
+export const WASM_SCRIPT_SRC = Object.freeze({ find: "script-src 'self'", replace: "script-src 'self' 'wasm-unsafe-eval'" });
+
+/**
+ * The header the Pagefind worker and /search/ carry: the page policy with
+ * WebAssembly compilation allowed. The Playwright preview sends it to every
+ * response, since astro preview can't choose by path; every other page's
+ * <meta> policy narrows its own back, so the browser suites still see an
+ * ordinary page refuse WebAssembly, as the live site does.
+ */
+export function buildWasmCspHeaderValue(distDir) {
+  const policy = buildCspHeaderValue(distDir);
+  if (!policy.includes(WASM_SCRIPT_SRC.find)) {
+    throw new Error(`csp-header: the built policy has no "${WASM_SCRIPT_SRC.find}" for the search header to widen.`);
+  }
+  return policy.replace(WASM_SCRIPT_SRC.find, WASM_SCRIPT_SRC.replace);
+}

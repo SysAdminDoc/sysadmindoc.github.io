@@ -145,6 +145,17 @@ http://notify.getparkerai.com {
 	# violations. A missing value makes compose fail before an incomplete policy
 	# is served.
 	header Content-Security-Policy "{$CSP_POLICY}"
+	# Pagefind compiles its WebAssembly in its worker, whose policy is its own
+	# script's response header, and on /search/ itself when the worker fails or
+	# is slow to start. Only those responses allow it; every other page refuses.
+	# scripts/lib/csp-header.mjs keeps the same pair for the Playwright preview.
+	# A header with a matcher runs before the unmatched one above, so the
+	# replace is deferred until the policy is on the response.
+	@pagefind_wasm path /search/ /search/index.html /pagefind/pagefind-worker.js
+	header @pagefind_wasm {
+		Content-Security-Policy "script-src 'self'" "script-src 'self' 'wasm-unsafe-eval'"
+		defer
+	}
 
 	# HTML must revalidate: the URLs are stable, so a cached copy would otherwise
 	# pin a visitor to an old build. The service worker owns offline behavior.
