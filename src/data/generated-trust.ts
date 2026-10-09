@@ -141,19 +141,30 @@ export type GeneratedDataTrustInput = {
   maxAgeHours?: number;
 };
 
+// Every writer stamps toISOString(), but a hand-edited file can drop the zone,
+// and new Date() reads a date and time without one in the build host's zone,
+// which would move the status page by the host's offset. So it's read as UTC,
+// the way a date on its own already is.
+const ZONELESS_DATE_TIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
+
+function parseTimestamp(value: NullableDate) {
+  const text = value ?? '';
+  return new Date(ZONELESS_DATE_TIME.test(text) ? `${text.replace(' ', 'T')}Z` : text);
+}
+
 function isoOrNull(value: NullableDate) {
-  const date = new Date(value ?? '');
+  const date = parseTimestamp(value);
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
 function ageHours(value: NullableDate, now: Date) {
-  const date = new Date(value ?? '');
+  const date = parseTimestamp(value);
   if (Number.isNaN(date.getTime())) return null;
   return roundMetric((now.getTime() - date.getTime()) / 3_600_000);
 }
 
 function staleAfterIso(value: NullableDate, maxAgeHours: number) {
-  const date = new Date(value ?? '');
+  const date = parseTimestamp(value);
   if (Number.isNaN(date.getTime())) return null;
   // A time near the last representable date has no deadline after it, and
   // toISOString would throw on the sum and fail the build (twenty-second

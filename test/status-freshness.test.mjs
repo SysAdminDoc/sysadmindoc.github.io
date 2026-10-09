@@ -30,6 +30,24 @@ test('staleAfter is fetchedAt plus the contract, and evaluatedAt is the build', 
   assert.equal(trustAt(null).staleAfter, null);
 });
 
+// The twenty-fourth review rerun: new Date() read a hand-edited time with no
+// zone in the build host's zone, so the status page moved by its offset.
+test('a time with no zone is read as UTC, whatever zone the build runs in', (t) => {
+  const zone = process.env.TZ;
+  process.env.TZ = 'America/New_York';
+  t.after(() => {
+    if (zone === undefined) delete process.env.TZ;
+    else process.env.TZ = zone;
+  });
+  assert.notEqual(new Date('2026-09-21T10:55:31').getTime(), Date.parse('2026-09-21T10:55:31Z'), 'the host zone took effect');
+
+  assert.equal(trustAt('2026-09-21T10:55:31').staleAfter, '2026-09-22T22:55:31.000Z');
+  assert.equal(trustAt('2026-09-21 10:55:31.5').staleAfter, '2026-09-22T22:55:31.500Z', 'a space for the T');
+  assert.equal(trustAt('2026-09-21T10:55').staleAfter, '2026-09-22T22:55:00.000Z', 'no seconds');
+  assert.equal(trustAt('2026-09-21T10:55:31-04:00').staleAfter, '2026-09-23T02:55:31.000Z', 'a written offset still counts');
+  assert.equal(trustAt('2026-09-21').staleAfter, '2026-09-22T12:00:00.000Z', 'a date alone was UTC already');
+});
+
 // The third drain review: the profile feed and the catalog check keep their
 // own 36-hour clocks, so a fresh fetch carried an older feed past its deadline.
 test('staleAfter is the earliest deadline of the fetch, the profile feed and the catalog check', () => {

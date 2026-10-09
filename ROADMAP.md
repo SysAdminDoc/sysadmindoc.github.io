@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Read a generated timestamp with no zone as UTC
-  Why: `staleAfterIso` (`src/data/generated-trust.ts:155`) parses with `new Date(string)`, so a timestamp without a `Z` or offset is read in the build host's zone. Every writer uses `toISOString()`, so only a hand-edited file gets there, but the status page would then be wrong by the host's offset.
-  Evidence: twenty-fourth review rerun, 2026-10-09.
-  Touches: `src/data/generated-trust.ts`, `test/status-freshness.test.mjs`.
-  Acceptance: a zone-less timestamp parses as UTC, or counts as already past, and a test says which.
-  Complexity: S
-
 - [ ] P3: Give the CSP report store back its final newline after a crash mid-append
   Why: `restoreFile` in `deploy/vps/csp-report-server.mjs` returns early when it changed no row, so a store whose last line was cut without a newline keeps it that way, and the next `appendFile` glues two reports into one line that `parseStore` counts as two unreadable ones. The contact handler got the same fix for its lead store on 2026-10-09.
   Evidence: twenty-fourth review rerun, 2026-10-09.
