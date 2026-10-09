@@ -499,11 +499,16 @@ function flushText() {
     }
     return null;
   };
+  // content-visibility: auto or hidden brings paint and layout containment
+  // with it, though the computed `contain` still says none (drain review,
+  // 2026-10-09: the homepage's sections use auto).
+  const containsByVisibility = (style) => style.contentVisibility === 'auto' || style.contentVisibility === 'hidden';
   // Whether a box is the containing block of a positioned descendant for a
   // reason other than its own position: a transform, a filter, paint or layout
   // containment, or a will-change naming one of those, each of which also
   // holds a fixed descendant (seventeenth drain review).
   const containsPositioned = (style) =>
+    containsByVisibility(style) ||
     style.transform !== 'none' ||
     style.translate !== 'none' ||
     style.rotate !== 'none' ||
@@ -516,7 +521,7 @@ function flushText() {
   // Every overflow value but visible clips what sticks out of the box: a
   // scroll container shows only what's scrolled into view, and paint
   // containment clips on its own.
-  const clips = (overflow, style) => overflow !== 'visible' || /\b(?:paint|strict|content)\b/.test(style.contain);
+  const clips = (overflow, style) => overflow !== 'visible' || /\b(?:paint|strict|content)\b/.test(style.contain) || containsByVisibility(style);
   // What of `rect` the element's clipping ancestors leave to be seen, or null
   // for none of it. A positioned box escapes the ones between it and its
   // containing block, as it does in the browser.
@@ -562,12 +567,21 @@ function flushText() {
     const box = positionedBox(element);
     return Boolean(box) && offScreen(box.rect, box.position) && offScreen(part, box.position);
   };
-  // Text drawn in a fully transparent colour isn't seen, unless a background
-  // shows through it (background-clip: text) or a shadow outlines it.
-  const transparentText = (style) => {
+  // Text drawn in a fully transparent color isn't seen, unless a shadow
+  // outlines it or a background shows through it: background-clip: text on
+  // its own box or any box around it. The clip isn't inherited, but the
+  // transparent fill is, and a box's background shows through every glyph
+  // inside it, like the homepage's counts inside .hsn (drain review,
+  // 2026-10-09).
+  const clipsToText = (style) => /\btext\b/.test(`${style.backgroundClip} ${style.webkitBackgroundClip}`);
+  const transparentText = (style, element) => {
     const fill = style.webkitTextFillColor || style.color;
     if (!/^rgba\(\d+, \d+, \d+, 0\)$/.test(fill) && fill !== 'transparent') return false;
-    return !/\btext\b/.test(`${style.backgroundClip} ${style.webkitBackgroundClip}`) && style.textShadow === 'none';
+    if (style.textShadow !== 'none' || clipsToText(style)) return false;
+    for (let node = element; node && node !== document.documentElement; node = node.parentElement) {
+      if (clipsToText(getComputedStyle(node))) return false;
+    }
+    return true;
   };
   const skipped = (element) =>
     Boolean(element.closest('script, style, template, noscript, .sr-only, dialog:not([open])')) ||
@@ -590,21 +604,29 @@ function flushText() {
     // aria-hidden text is still on screen (the 01/02/03 numerals, arrows),
     // so it counts; only what isn't drawn is left out, fully transparent
     // text included (fifteenth drain review).
-    if (skipped(element) || transparentText(getComputedStyle(element))) continue;
+    if (skipped(element) || transparentText(getComputedStyle(element), element)) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
     // Measured as drawn: an ellipsis cuts the line where its box ends.
     flagged(element, range.getBoundingClientRect(), node.textContent);
   }
   // A control's text is no text node: an input's value, a select's chosen
-  // option, a textarea's contents all sit inside the control's own box
-  // (seventeenth drain review).
+  // option, a textarea's contents all sit inside the control's content box,
+  // past its border and padding (seventeenth drain review; drain review,
+  // 2026-10-09).
+  const contentBox = (element) => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    const left = box.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
+    const right = box.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight);
+    return { left, right, top: box.top, bottom: box.bottom, width: Math.max(0, right - left), height: box.height };
+  };
   for (const control of main.querySelectorAll('input, textarea, select')) {
     if (found.has(control) || skipped(control)) continue;
     if (control instanceof HTMLInputElement && ['hidden', 'checkbox', 'radio', 'range', 'color', 'file'].includes(control.type)) continue;
     const shown = control instanceof HTMLSelectElement ? control.selectedOptions[0]?.label ?? '' : control.value || control.placeholder || '';
     if (!shown.trim()) continue;
-    flagged(control, control.getBoundingClientRect(), shown);
+    flagged(control, contentBox(control), shown);
   }
   // Generated text (::before, ::after) has no node to measure either. Its
   // element's content box stands in: the text starts at that box's left edge,
@@ -620,7 +642,7 @@ function flushText() {
     for (const pseudo of ['::before', '::after']) {
       const style = getComputedStyle(element, pseudo);
       const shown = text(style.content);
-      if (!shown || style.display === 'none' || style.visibility === 'hidden' || transparentText(style)) continue;
+      if (!shown || style.display === 'none' || style.visibility === 'hidden' || transparentText(style, element)) continue;
       if (style.position === 'absolute' || style.position === 'fixed') continue;
       const own = getComputedStyle(element);
       const box = element.getBoundingClientRect();
@@ -661,13 +683,15 @@ test.describe('Mobile gutter audit', () => {
       <p id="ellipsis" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line far too long for a phone screen, cut by an ellipsis '.repeat(3)}</p>
       <p id="ellipsis-flush" style="margin:0 -20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${'A line cut by an ellipsis right at the edge '.repeat(3)}</p>
       <div style="overflow:hidden"><div style="position:absolute;left:0;top:400px"><span id="escaped">Escapes a clip it isn't inside</span></div></div>
-      <div style="overflow:hidden;filter:blur(0);margin:0 20px"><div style="position:absolute;left:-20px"><span id="filter-clipped">Clipped by the box a filter makes</span></div></div>
-      <div style="overflow:hidden;translate:0;margin:0 20px"><div style="position:absolute;left:-20px"><span id="translate-clipped">Clipped by the box a translate makes</span></div></div>
-      <div style="overflow:hidden;contain:paint;margin:0 20px"><div style="position:absolute;left:-20px"><span id="contain-clipped">Clipped by paint containment</span></div></div>
-      <div style="overflow:hidden;will-change:transform;margin:0 20px"><div style="position:absolute;left:-20px"><span id="willchange-clipped">Clipped by a will-change box</span></div></div>
-      <div style="overflow:auto;height:40px;margin:0 20px"><p style="height:60px;margin:0">Fills the scroll box</p><p id="scrolled-out" style="position:relative;left:-20px;width:100px;margin:0">Scrolled out of view</p></div>
-      <span id="transparent-color" style="position:relative;left:-20px;color:transparent">Drawn in a transparent colour</span>
+      <div style="overflow:hidden;filter:blur(0);margin:0 20px"><div style="position:absolute;left:-40px"><span id="filter-clipped">Clipped by the box a filter makes</span></div></div>
+      <div style="overflow:hidden;translate:0;margin:0 20px"><div style="position:absolute;left:-40px"><span id="translate-clipped">Clipped by the box a translate makes</span></div></div>
+      <div style="overflow:hidden;contain:paint;margin:0 20px"><div style="position:absolute;left:-40px"><span id="contain-clipped">Clipped by paint containment</span></div></div>
+      <div style="overflow:hidden;will-change:transform;margin:0 20px"><div style="position:absolute;left:-40px"><span id="willchange-clipped">Clipped by a will-change box</span></div></div>
+      <div style="content-visibility:auto;margin:0 20px"><div style="position:absolute;left:-40px"><span id="visibility-clipped">Clipped by content-visibility</span></div></div>
+      <div style="overflow:auto;height:40px;margin:0 20px"><p style="height:60px;margin:0">Fills the scroll box</p><p id="scrolled-out" style="position:relative;left:-40px;width:100px;margin:0">Scrolled out of view</p></div>
+      <span id="transparent-color" style="position:relative;left:-20px;color:transparent">Drawn in a transparent color</span>
       <span id="gradient-text" style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(red,blue);-webkit-background-clip:text;background-clip:text">Gradient text shows through</span>
+      <div><span style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(red,blue);-webkit-background-clip:text;background-clip:text"><span id="gradient-child">Inside gradient text</span></span></div>
       <div style="position:absolute;top:-9999px;left:0"><label id="above-screen">Above the screen</label></div>
       <p id="fixed-below" style="position:fixed;top:5000px;left:0">Fixed below the screen</p>
       <div style="position:absolute;top:1500px;left:0"><p id="below-fold">Reachable by scrolling</p></div>
@@ -675,6 +699,7 @@ test.describe('Mobile gutter audit', () => {
       <div><textarea id="textarea-flush" style="margin-left:-20px">Typed text</textarea></div>
       <div><input id="input-flush" value="Typed value" style="margin-left:-20px"></div>
       <div><input id="input-inside" value="Inside the gutter"></div>
+      <div><input id="input-padded" value="Padded in from the edge" style="margin-left:-20px;padding-left:16px;border:0"></div>
       <style>#generated::before{content:'Generated text'}#generated-empty::before{content:''}</style>
       <div><span id="generated" style="margin-left:-20px"></span></div>
       <div><span id="generated-empty" style="margin-left:-20px"></span></div>
@@ -686,6 +711,7 @@ test.describe('Mobile gutter audit', () => {
       'escaped',
       'flush',
       'generated',
+      'gradient-child',
       'gradient-text',
       'input-flush',
       'margin-off',
