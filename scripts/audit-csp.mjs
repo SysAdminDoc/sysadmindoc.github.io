@@ -228,9 +228,30 @@ function parseCsp(policy) {
   for (const part of String(policy ?? '').split(';')) {
     const tokens = part.trim().split(/\s+/).filter(Boolean);
     if (tokens.length === 0) continue;
-    directives.set(tokens[0].toLowerCase(), tokens.slice(1));
+    const name = tokens[0].toLowerCase();
+    // A browser obeys the first copy of a repeated directive and ignores the rest.
+    if (!directives.has(name)) directives.set(name, tokens.slice(1));
   }
   return directives;
+}
+
+/**
+ * A source expression as a browser compares it: keywords, schemes and hosts
+ * in any case, a hash's algorithm in any case but its value exactly (base64url
+ * read as base64, as CSP3 matches it), a nonce exactly, and a host whose path
+ * is a bare "/" as the host alone.
+ */
+function cspTokenKey(token) {
+  const hash = /^'(sha256|sha384|sha512)-([^']*)'$/i.exec(token);
+  if (hash) return `'${hash[1].toLowerCase()}-${hash[2].replace(/-/g, '+').replace(/_/g, '/')}'`;
+  if (/^'nonce-/i.test(token)) return `'nonce-${token.slice(7)}`;
+  return token.toLowerCase().replace(/^((?:[a-z][a-z0-9+.-]*:\/\/)?[^/'\s]+)\/$/, '$1');
+}
+
+/** @param {string[]} tokens @param {string} wanted */
+function hasSource(tokens, wanted) {
+  const key = cspTokenKey(wanted);
+  return tokens.some((token) => cspTokenKey(token) === key);
 }
 
 function effectiveDirective(directives, name, fallbacks = []) {
@@ -242,13 +263,22 @@ function effectiveDirective(directives, name, fallbacks = []) {
 }
 
 function directiveLabel(name, directive) {
+  if (!directive.source) return '(not set, and no fallback, so nothing is restricted)';
   const tokens = directive.tokens.join(' ') || '(none)';
-  if (!directive.source || directive.source === name) return tokens;
+  if (directive.source === name) return tokens;
   return `${tokens} (inherits ${directive.source})`;
 }
 
+// What a directive that isn't set, with no fallback either, allows: anything,
+// inline code included, since the browser applies no restriction at all.
+const UNRESTRICTED = Object.freeze(['*', "'unsafe-inline'"]);
+
+function directiveTokens(directive) {
+  return directive.source ? directive.tokens : [...UNRESTRICTED];
+}
+
 function directiveAllowsUnsafeInline(tokens) {
-  return tokens.includes("'unsafe-inline'");
+  return hasSource(tokens, "'unsafe-inline'");
 }
 
 function findExecutableAllowlist(record) {
@@ -301,30 +331,30 @@ function candidateTokens(value) {
 function scriptAllowedByCandidate(record, tokens) {
   if (directiveAllowsUnsafeInline(tokens)) return true;
   if (!record.hash) return false;
-  return tokens.includes(`'${record.hash}'`) || tokens.includes(record.hash);
+  return hasSource(tokens, `'${record.hash}'`) || tokens.includes(record.hash);
 }
 
 function styleAllowedByCandidate(record, tokens) {
   if (directiveAllowsUnsafeInline(tokens)) return true;
   if (record.kind === 'style-block' && record.hash) {
-    return tokens.includes(`'${record.hash}'`) || tokens.includes(record.hash);
+    return hasSource(tokens, `'${record.hash}'`) || tokens.includes(record.hash);
   }
   return false;
 }
 
 function styleLinkAllowedByCandidate(record, tokens) {
-  if (tokens.includes('*')) return true;
-  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && tokens.includes("'self'")) return true;
-  if (record.sourceKind === 'third-party' && record.protocol && tokens.includes(record.protocol)) return true;
-  if (record.sourceKind === 'third-party' && record.origin && tokens.includes(record.origin)) return true;
+  if (hasSource(tokens, '*')) return true;
+  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && hasSource(tokens, "'self'")) return true;
+  if (record.sourceKind === 'third-party' && record.protocol && hasSource(tokens, record.protocol)) return true;
+  if (record.sourceKind === 'third-party' && record.origin && hasSource(tokens, record.origin)) return true;
   return false;
 }
 
 function scriptLinkAllowedByCandidate(record, tokens) {
-  if (tokens.includes('*')) return true;
-  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && tokens.includes("'self'")) return true;
-  if (record.protocol && tokens.includes(record.protocol)) return true;
-  if (record.origin && tokens.includes(record.origin)) return true;
+  if (hasSource(tokens, '*')) return true;
+  if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && hasSource(tokens, "'self'")) return true;
+  if (record.protocol && hasSource(tokens, record.protocol)) return true;
+  if (record.origin && hasSource(tokens, record.origin)) return true;
   return false;
 }
 
@@ -571,10 +601,10 @@ const scriptDirective = effectiveDirective(directives, 'script-src', ['default-s
 const styleDirective = effectiveDirective(directives, 'style-src', ['default-src']);
 const styleElemDirective = effectiveDirective(directives, 'style-src-elem', ['style-src', 'default-src']);
 const styleAttrDirective = effectiveDirective(directives, 'style-src-attr', ['style-src', 'default-src']);
-const scriptSrc = scriptDirective.tokens;
-const styleSrc = styleDirective.tokens;
-const styleElemSrc = styleElemDirective.tokens;
-const styleAttrSrc = styleAttrDirective.tokens;
+const scriptSrc = directiveTokens(scriptDirective);
+const styleSrc = directiveTokens(styleDirective);
+const styleElemSrc = directiveTokens(styleElemDirective);
+const styleAttrSrc = directiveTokens(styleAttrDirective);
 const executableInline = scripts.filter((script) => script.executable);
 const jsonDataScripts = scripts.filter((script) => script.type === 'json-ld' || script.type === 'data-json');
 const externalScripts = scripts.filter((script) => script.attrs.src);
@@ -648,11 +678,15 @@ const activeStyleElemUnsafeInlineRequired = styleBlocks
 const styleSrcFallbackBlockers = options.activeStyleElemSrc ? styleBlocks.filter((style) => !styleAllowedByCandidate(style, styleSrc)) : [];
 // The other way, style-src must allow nothing style-src-elem doesn't: those
 // browsers ignore style-src-attr too, so an 'unsafe-inline' there would allow
-// every style attribute again (twenty-first drain review). Keywords are
-// matched in any case; hashes and nonces exactly.
-const cspTokenKey = (token) => (/^'(?:sha(?:256|384|512)|nonce)-/i.test(token) ? token : token.toLowerCase());
+// every style attribute again (twenty-first drain review). Tokens compare as
+// cspTokenKey reads them, and a keyword that widens nothing for styles
+// ('report-sample' only adds a sample to reports; the eval and dynamic keywords
+// govern scripts) isn't counted.
+const STYLE_NO_OP_KEYWORDS = new Set(["'report-sample'", "'unsafe-eval'", "'wasm-unsafe-eval'", "'strict-dynamic'"]);
 const styleElemKeys = new Set(styleElemSrc.map(cspTokenKey));
-const styleSrcBeyondElem = options.activeStyleElemSrc ? styleSrc.filter((token) => !styleElemKeys.has(cspTokenKey(token))) : [];
+const styleSrcBeyondElem = options.activeStyleElemSrc
+  ? styleSrc.filter((token) => !STYLE_NO_OP_KEYWORDS.has(cspTokenKey(token)) && !styleElemKeys.has(cspTokenKey(token)))
+  : [];
 const activeStyleAttrUnsafeInlineRequired = [
   ...styleAttributes.filter((style) => !styleAttributeAllowedByCandidate(style, styleAttrSrc)),
   ...cssTextWrites.filter((write) => !styleAttributeAllowedByCandidate(write, styleAttrSrc)),
@@ -875,7 +909,11 @@ if (options.strict && styleSrcFallbackBlockers.length > 0) {
   failures.push(`style-src ${styleSrc.join(' ')} would block ${styleSrcFallbackBlockers.length} inline style block(s) that browsers without style-src-elem check against it; give it the hashes style-src-elem has.`);
 }
 if (options.strict && styleSrcBeyondElem.length > 0) {
-  failures.push(`style-src carries ${styleSrcBeyondElem.join(' ')} that style-src-elem doesn't; browsers without style-src-elem and style-src-attr (Firefox before 108, Safari before 15.4) would allow it for every style element and attribute.`);
+  failures.push(
+    styleDirective.source
+      ? `style-src carries ${styleSrcBeyondElem.join(' ')} that style-src-elem doesn't; browsers without style-src-elem and style-src-attr (Firefox before 108, Safari before 15.4) would allow it for every style element and attribute.`
+      : 'neither style-src nor default-src is set, so browsers without style-src-elem and style-src-attr (Firefox before 108, Safari before 15.4) restrict no style element or attribute at all.',
+  );
 }
 if (options.strict && candidateStyleAttr && candidateStyleAttrBlockers.length > 0) {
   failures.push(`candidate style-src-attr ${candidateStyleAttr.join(' ')} would block ${candidateStyleAttrBlockers.length} current style attribute surface(s).`);

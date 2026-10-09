@@ -359,6 +359,62 @@ test('csp audit can verify rendered style elements against the active policy', (
   assert.equal(audit().status, 0, 'keyword case');
 });
 
+// The twenty-fifth drain review: the audit read a policy unlike a browser in
+// six ways. Each case is planted on its own page.
+test('csp audit reads repeated, mixed-case and equivalent sources the way a browser does', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-browser-reading-'));
+  const inlineCss = 'body{color:#123;background:#fff}';
+  const hash = sha256Csp(inlineCss);
+  const base = "default-src 'self'; script-src 'self'; style-src-attr 'none'; form-action 'self'";
+  const audit = (policy) => {
+    fs.writeFileSync(
+      path.join(tmp, 'index.html'),
+      `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><style>${inlineCss}</style><link rel="stylesheet" href="https://cdn.example/site.css"></head><body></body></html>`,
+    );
+    return spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], { cwd: repoRoot, encoding: 'utf8', windowsHide: true });
+  };
+  const elem = `style-src-elem 'self' '${hash}' https://cdn.example`;
+  try {
+    // A browser obeys the first copy of a repeated directive.
+    const repeated = audit(`${base}; style-src 'self' '${hash}' https://cdn.example 'unsafe-inline'; style-src 'self' '${hash}' https://cdn.example; ${elem}`);
+    assert.equal(repeated.status, 1);
+    assert.match(repeated.stderr, /style-src carries 'unsafe-inline' that style-src-elem doesn't/);
+
+    // Keywords are case-insensitive, 'unsafe-inline' included.
+    const upper = audit(`${base}; style-src 'self' '${hash}' https://cdn.example; ${elem} 'UNSAFE-INLINE'`);
+    assert.equal(upper.status, 1);
+    assert.match(upper.stderr, /active style-src-elem still allows 'unsafe-inline'/);
+
+    // With neither style-src nor default-src, older browsers restrict no style at all.
+    const unset = audit(`script-src 'self'; style-src-attr 'none'; form-action 'self'; ${elem}`);
+    assert.equal(unset.status, 1);
+    assert.match(unset.stderr, /neither style-src nor default-src is set/);
+    assert.match(unset.stdout, /style-src: \(not set, and no fallback, so nothing is restricted\)/);
+
+    // Equivalent spellings of what style-src-elem already allows, and keywords
+    // that widen nothing for styles, are not "beyond" it.
+    const upperAlgorithm = hash.replace('sha256-', 'SHA256-');
+    const base64url = hash.replace(/\+/g, '-').replace(/\//g, '_');
+    assert.notEqual(base64url, hash, 'the planted hash must carry a + or / for the base64url case to mean anything');
+    for (const styleSrc of [
+      `'self' '${upperAlgorithm}' https://cdn.example`,
+      `'self' '${base64url}' https://cdn.example`,
+      `'self' '${hash}' https://cdn.example/`,
+      `'self' '${hash}' https://cdn.example 'report-sample' 'unsafe-eval'`,
+    ]) {
+      const result = audit(`${base}; style-src ${styleSrc}; ${elem}`);
+      assert.equal(result.status, 0, `${styleSrc}\n${result.stderr}`);
+    }
+
+    // A host style-src-elem doesn't have still fails.
+    const extra = audit(`${base}; style-src 'self' '${hash}' https://cdn.example https://other.example; ${elem}`);
+    assert.equal(extra.status, 1);
+    assert.match(extra.stderr, /style-src carries https:\/\/other\.example that style-src-elem doesn't/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
 test('csp audit strict dist mode fails on missing or divergent CSP metadata', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-meta-consistency-'));
   const nestedDir = path.join(tmp, 'nested');

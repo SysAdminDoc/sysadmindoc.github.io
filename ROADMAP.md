@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Read repeated and mixed-case CSP directives the way browsers do
-  Why: `parseCsp` keeps the last copy of a repeated directive, but browsers use the first, so `style-src 'self' 'unsafe-inline'; style-src 'self'` passes. `directiveAllowsUnsafeInline` compares case-sensitively while `cspTokenKey` doesn't, so `'UNSAFE-INLINE'` in `style-src-elem` hides. A policy with neither `style-src` nor `default-src` passes when a page has no inline block. The subset check fails `'SHA256-'` against `'sha256-'`, base64url hashes, hosts with a trailing slash, and `'report-sample'` or `'unsafe-eval'`.
-  Evidence: twenty-fifth drain review, 2026-09-24; `scripts/audit-csp.mjs:226` and `:250`.
-  Touches: `scripts/audit-csp.mjs`, its tests.
-  Acceptance: each case comes out as a browser reads it, with a planted test apiece.
-  Complexity: S
-
 - [ ] P3: Fail the README count check on a corrupt profile feed even when releases is missing
   Why: `readmeCountInputs` returns null, which the test reads as "not installed" and skips, when `_releases.json` is missing, even if `_profile-projects.json` is present and doesn't parse.
   Evidence: twenty-fifth drain review, 2026-09-24; `scripts/lib/readme-counts.mjs:65`.
