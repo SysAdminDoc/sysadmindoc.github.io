@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
-- [ ] P3: Teach css:audit five more late features, unknown properties and exact var()
-  Why: c4de5ded calls live fallbacks dead before `grid-template-rows:subgrid` (Chrome 117), `linear-gradient(in oklch, ...)` (Firefox 127), the `cap` unit (Chrome 118), `clip-path:xywh()` (Chrome 119) and unprefixed `background-clip:text` (Chrome 120). The other way, `transition-behavior:allow-discrete` before `transition-behavior:normal` is spared though a target without the property drops both, and `color:--my-var()` counts as var().
-  Evidence: seventeenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:43`.
-  Touches: `scripts/lib/css-overrides.mjs`, `test/css-overrides.test.mjs`.
-  Acceptance: each case comes out right, a property the targets don't know doesn't spare the declaration before it, and var() is matched as a whole function name, with a test apiece.
-  Complexity: S
-
 - [ ] P3: Match host sources with a path, a wildcard or no scheme in the CSP audit's link check
   Why: `styleLinkAllowedByCandidate` and `scriptLinkAllowedByCandidate` only match `*`, `'self'`, a scheme or a bare origin, so `style-src-elem https://cdn.example/site.css` "would block" a link to that same file, and `*.example.com`, `cdn.example` (no scheme) and `:*` ports never match. The live policy uses bare origins only, so nothing fails today, but the first narrowed source would fail the build for no reason.
   Evidence: drain review of 8bcf4716, 2026-10-09; a planted page with `style-src-elem 'self' https://cdn.example/site.css` and `<link href="https://cdn.example/site.css">` fails strict mode.

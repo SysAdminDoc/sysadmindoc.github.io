@@ -40,6 +40,12 @@ const propertyKey = (prop) => (prop.startsWith('--') ? prop : prop.toLowerCase()
 // scripts/lib/minify-css.mjs) doesn't parse, so it drops the declaration and
 // keeps the one before. Only what this site could plausibly write; a value
 // missing here reads as understood everywhere.
+//
+// No entry names a property alone. A target that doesn't know a property
+// drops every declaration of it, the earlier one too, so a later one still
+// hides the earlier one wherever either applies: transition-behavior: normal
+// after allow-discrete leaves nothing live (seventeenth drain review). Only a
+// value newer than its property belongs here.
 const NEWER_THAN_TARGETS = [
   { value: /\blight-dark\(/i }, // Chrome 123, Safari 17.5, Firefox 120
   { value: /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(\s*from\s/i }, // relative colour syntax
@@ -49,11 +55,19 @@ const NEWER_THAN_TARGETS = [
   { value: /\blinear\(/i }, // linear() easing: Chrome 113, Safari 17.2
   { value: /(?<![\w-])image-set\(/i }, // unprefixed: Chrome 113
   { value: /\dr?lh\b/i }, // the lh and rlh units: Firefox 120
-  { value: /\ballow-discrete\b/i }, // Chrome 117, Safari 17.4, Firefox 129
-  { prop: /^transition-behavior$/i, value: /./ },
+  { value: /\dr?cap\b/i }, // the cap unit: Chrome 118, Safari 17.2
+  { value: /(?<![\w-])--[\w-]+\(/ }, // a custom function (@function): Chrome 139
+  // A gradient's interpolation colour space: Firefox 127.
+  { value: /-gradient\(\s*(?:[^,()]*\s)?in\s+[a-z]/i },
+  // The shorthand's keyword: Chrome 117, Safari 17.4, Firefox 129. The
+  // transition-behavior property came with it, so any of its values is fine.
+  { prop: /^transition$/i, value: /\ballow-discrete\b/i },
   { prop: /^display$/i, value: /^\s*[a-z-]+\s+[a-z-]/i }, // two-value display: Chrome 115
   { prop: /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size))$/i, value: /^\s*stretch\s*$/i },
   { prop: /^text-wrap(?:-style)?$/i, value: /^\s*(?:pretty|balance|stable)\s*$/i },
+  { prop: /^grid(?:-template(?:-rows|-columns)?)?$/i, value: /\bsubgrid\b/i }, // Chrome 117
+  { prop: /^(?:clip-path|shape-outside|offset-path)$/i, value: /\b(?:xywh|rect)\(/i }, // Chrome 119, Safari 17.2
+  { prop: /^background-clip$/i, value: /\btext\b/i }, // unprefixed: Chrome 120
 ];
 
 /**
@@ -62,12 +76,13 @@ const NEWER_THAN_TARGETS = [
  * var() in it parses everywhere whatever else it holds: the browser checks it
  * only once the variable is filled in, and a value it can't use then makes
  * the property unset rather than bringing back the declaration before it
- * (fifteenth drain review).
+ * (fifteenth drain review). Only var() itself counts, not a custom function
+ * whose name ends in -var (seventeenth).
  */
 function understoodEverywhere(decl) {
   if (decl.prop.startsWith('--')) return true;
-  const value = decl.value.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""').replace(/\burl\([^)]*\)/gi, 'url()');
-  if (/\bvar\(/i.test(value)) return true;
+  const value = decl.value.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""').replace(/(?<![\w-])url\([^)]*\)/gi, 'url()');
+  if (/(?<![\w-])var\(/i.test(value)) return true;
   if (/(?:^|[\s,(/])-(?:webkit|moz|ms|o)-/i.test(value)) return false;
   return !NEWER_THAN_TARGETS.some((rule) => (!rule.prop || rule.prop.test(decl.prop)) && rule.value.test(value));
 }

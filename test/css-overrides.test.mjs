@@ -66,7 +66,6 @@ test('a value every target parses makes everything before it dead, prefixed or n
 test('newer syntax the list had missed leaves the value before it live', () => {
   const cases = [
     ['transition', 'opacity .2s', 'opacity .2s allow-discrete'],
-    ['transition-behavior', 'allow-discrete', 'normal'], // the property itself is new
     ['margin-top', '1em', '1lh'],
     ['padding-top', '4px', 'calc(.5rlh + 1px)'],
     ['transition-timing-function', 'ease', 'linear(0, .5 50%, 1)'],
@@ -82,6 +81,39 @@ test('newer syntax the list had missed leaves the value before it live', () => {
   assert.deepEqual(found('.a{background:red}\n.a{background:linear-gradient(red, blue)}'), ['.a background 1>2'], 'a gradient is not linear() easing');
   assert.deepEqual(found('.a{display:block}\n.a{display:inline-flex}'), ['.a display 1>2'], 'one keyword');
   assert.deepEqual(found('.a{background:red}\n.a{background:url(x1lh.png)}'), ['.a background 1>2'], 'a file name is not a unit');
+});
+
+// The seventeenth drain review: five more that c4de5ded called dead.
+test('subgrid, gradient colour spaces, cap, xywh() and unprefixed background-clip: text leave the value before them live', () => {
+  const cases = [
+    ['grid-template-rows', 'auto', 'subgrid'],
+    ['grid-template-columns', '1fr 1fr', 'subgrid'],
+    ['background-image', 'linear-gradient(red, blue)', 'linear-gradient(in oklch, red, blue)'],
+    ['background-image', 'linear-gradient(to right, red, blue)', 'linear-gradient(to right in oklch, red, blue)'],
+    ['margin-top', '1em', '1cap'],
+    ['clip-path', 'inset(0)', 'xywh(0 0 100% 100%)'],
+    ['background-clip', 'padding-box', 'text'],
+  ];
+  for (const [prop, before, after] of cases) {
+    assert.deepEqual(found(`.a{${prop}:${before}}\n.a{${prop}:${after}}`), [], `${prop}: ${after}`);
+  }
+  // Near misses every target understands.
+  assert.deepEqual(found('.a{background:red}\n.a{background:color-mix(in oklch, red, blue)}'), ['.a background 1>2'], 'color-mix() is older than the targets');
+  assert.deepEqual(found('.a{clip:rect(0 0 1px 1px)}\n.a{clip:rect(0 0 2px 2px)}'), ['.a clip 1>2'], 'the old clip property takes rect()');
+  assert.deepEqual(found('.a{content:"a"}\n.a{content:"1cap"}'), ['.a content 1>2'], 'a unit inside a string is text');
+});
+
+test("a property some target doesn't know doesn't spare the declaration before it", () => {
+  // A target without transition-behavior drops both, and one with it applies
+  // the later one, so the earlier one applies nowhere.
+  assert.deepEqual(found('.a{transition-behavior:allow-discrete}\n.a{transition-behavior:normal}'), ['.a transition-behavior 1>2']);
+  assert.deepEqual(found('.a{transition-behavior:normal}\n.a{transition-behavior:allow-discrete}'), ['.a transition-behavior 1>2']);
+});
+
+test('var() is matched as a whole function name', () => {
+  // --my-var() is a custom function, which the targets don't parse.
+  assert.deepEqual(found('.a{color:#888}\n.a{color:--my-var()}'), []);
+  assert.deepEqual(found('.a{color:#888}\n.a{color:var(--my-var)}'), ['.a color 1>2']);
 });
 
 // A value with var() parses everywhere and, if the browser can't use it once
