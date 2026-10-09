@@ -388,6 +388,22 @@ function redirect(response, location) {
   response.end();
 }
 
+/**
+ * The answer to a request the handler threw on. A form posted without
+ * JavaScript goes back to the form with its not-sent note, as a refused one
+ * does: Caddy's not-sent page covers only a handler it can't reach, and an
+ * answer from here passes straight through, so the browser showed raw JSON
+ * (drain review, 2026-10-09).
+ */
+export function answerUnhandled(request, response) {
+  if (response.headersSent) {
+    response.destroy();
+    return;
+  }
+  if (isNavigation(request.headers)) redirect(response, `${returnPath(request.headers.referer)}#contact-not-sent`);
+  else sendJson(response, 500, { error: 'Something went wrong. Please try emailing directly.' });
+}
+
 export function newLeadId(now = new Date()) {
   return `${now.toISOString().slice(0, 10).replace(/-/g, '')}-${randomBytes(3).toString('hex')}`;
 }
@@ -1190,8 +1206,7 @@ export async function startServer(config = loadConfig()) {
   const server = http.createServer((request, response) => {
     handler.handleRequest(request, response).catch((error) => {
       console.error(`contact: unhandled request error: ${error.message}`);
-      if (!response.headersSent) sendJson(response, 500, { error: 'Something went wrong. Please try emailing directly.' });
-      else response.destroy();
+      answerUnhandled(request, response);
     });
   });
   server.requestTimeout = 15_000;

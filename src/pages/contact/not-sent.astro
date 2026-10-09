@@ -1,8 +1,9 @@
 ---
 // What a visitor whose browser posted the form without JavaScript sees when
-// the contact handler is down or fails: Caddy's handle_errors serves this page
-// with the 5xx status for /api/contact (deploy/vps/Caddyfile). A refusal the
-// handler makes itself goes back to the form at #contact-not-sent instead.
+// Caddy can't reach the contact handler or gets no reply in time: its
+// handle_errors serves this page with the 5xx status for /api/contact
+// (deploy/vps/Caddyfile). A refusal or error the handler answers itself goes
+// back to the form at #contact-not-sent instead (answerUnhandled).
 // Kept out of search engines, the sitemap and the search index, like the
 // thank-you page.
 import Base from '../../layouts/Base.astro';

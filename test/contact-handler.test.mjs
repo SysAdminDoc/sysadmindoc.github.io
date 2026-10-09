@@ -11,6 +11,7 @@ import {
   NOTIFY_MESSAGE_MAX_BYTES,
   NOTIFY_TITLE_MAX_BYTES,
   SMOKE_EMAIL_TO,
+  answerUnhandled,
   clientAddress,
   createContactHandler,
   describeError,
@@ -138,6 +139,28 @@ function responseMock() {
     },
   };
 }
+
+// Drain review, 2026-10-09: Caddy passes the handler's own 500 straight
+// through, so a form posted without JavaScript that hit an unexpected error
+// showed the visitor raw JSON instead of the not-sent note.
+test('a request the handler throws on gets the form back without JavaScript, and JSON with it', () => {
+  const navigation = responseMock();
+  answerUnhandled({ headers: { 'sec-fetch-mode': 'navigate', referer: 'https://portfolio.getparkerai.com/ai/?x=1' } }, navigation);
+  assert.equal(navigation.status, 303);
+  assert.equal(navigation.headers.Location, '/ai/#contact-not-sent');
+  assert.equal(navigation.headers['Cache-Control'], 'no-store');
+
+  const script = responseMock();
+  answerUnhandled({ headers: { accept: 'application/json' } }, script);
+  assert.equal(script.status, 500);
+  assert.match(script.body, /try emailing directly/);
+
+  let destroyed = false;
+  const started = { ...responseMock(), headersSent: true, destroy: () => (destroyed = true) };
+  answerUnhandled({ headers: { 'sec-fetch-mode': 'navigate' } }, started);
+  assert.equal(destroyed, true, 'a reply already under way is cut off');
+  assert.equal(started.status, 0);
+});
 
 async function readEntries(storePath) {
   const text = await fs.readFile(storePath, 'utf8').catch(() => '');

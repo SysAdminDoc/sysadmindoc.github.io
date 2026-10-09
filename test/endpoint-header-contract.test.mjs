@@ -10,7 +10,10 @@ const root = process.cwd();
 
 // Second drain review: with the handler down, a form posted without JavaScript
 // got the 404 page under a 502, and the message was gone.
-test('a 5xx from the contact handler on a navigation shows the not-sent page, not the 404 page', async () => {
+// Caddy's errors are only its own (no handler to reach, or no reply in time);
+// a 5xx the handler sends itself passes through, and answerUnhandled in
+// contact-handler.mjs sends a navigation back to the form instead.
+test('a contact handler Caddy cannot reach shows a navigation the not-sent page, not the 404 page', async () => {
   const [caddyfile, page, searchAudit, astroConfig] = await Promise.all([
     fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
     fs.readFile(path.join(root, 'src', 'pages', 'contact', 'not-sent.astro'), 'utf8'),
