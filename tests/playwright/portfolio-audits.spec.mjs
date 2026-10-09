@@ -572,8 +572,10 @@ function flushText() {
   // its own box or any box around it. The clip isn't inherited, but the
   // transparent fill is, and a box's background shows through every glyph
   // inside it, like the homepage's counts inside .hsn (drain review,
-  // 2026-10-09).
-  const clipsToText = (style) => /\btext\b/.test(`${style.backgroundClip} ${style.webkitBackgroundClip}`);
+  // 2026-10-09). A clip with no background behind it shows nothing.
+  const clipsToText = (style) =>
+    /\btext\b/.test(`${style.backgroundClip} ${style.webkitBackgroundClip}`) &&
+    (style.backgroundImage !== 'none' || !/^rgba\(\d+, \d+, \d+, 0\)$/.test(style.backgroundColor));
   const transparentText = (style, element) => {
     const fill = style.webkitTextFillColor || style.color;
     if (!/^rgba\(\d+, \d+, \d+, 0\)$/.test(fill) && fill !== 'transparent') return false;
@@ -692,6 +694,7 @@ test.describe('Mobile gutter audit', () => {
       <span id="transparent-color" style="position:relative;left:-20px;color:transparent">Drawn in a transparent color</span>
       <span id="gradient-text" style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(red,blue);-webkit-background-clip:text;background-clip:text">Gradient text shows through</span>
       <div><span style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(red,blue);-webkit-background-clip:text;background-clip:text"><span id="gradient-child">Inside gradient text</span></span></div>
+      <span id="clip-nothing" style="position:relative;left:-20px;color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text">Clipped to a background that isn't there</span>
       <div style="position:absolute;top:-9999px;left:0"><label id="above-screen">Above the screen</label></div>
       <p id="fixed-below" style="position:fixed;top:5000px;left:0">Fixed below the screen</p>
       <div style="position:absolute;top:1500px;left:0"><p id="below-fold">Reachable by scrolling</p></div>
