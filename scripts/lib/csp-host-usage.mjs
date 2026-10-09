@@ -65,6 +65,47 @@ export function parseHostSource(token) {
   };
 }
 
+const DEFAULT_PORTS = { http: '80', https: '443', ws: '80', wss: '443' };
+
+function decodedPath(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+/**
+ * Whether a host source such as `https://cdn.example.com/css/` allows an
+ * absolute URL, as CSP3 matches them: the source's scheme, or the page's
+ * (https, as the site is) when it names none, with http allowing https; the
+ * host, or any subdomain for `*.`; the URL scheme's default port unless the
+ * source names one, and any for `:*`; and a path exactly, or as a prefix when
+ * it ends in `/`. Keywords, schemes and a bare `*` are other kinds of source.
+ * @param {string} token
+ * @param {string} url
+ */
+export function hostSourceAllowsUrl(token, url) {
+  if (token.startsWith("'") || token === '*' || /^[a-z][a-z0-9+.-]*:$/i.test(token)) return false;
+  const match = /^(?:([a-z][a-z0-9+.-]*):\/\/)?(\*\.)?([^/:*?#]+)(?::(\d+|\*))?(\/[^?#]*)?$/i.exec(token);
+  if (!match) return false;
+  let target;
+  try {
+    target = new URL(url);
+  } catch {
+    return false;
+  }
+  const urlScheme = target.protocol.slice(0, -1);
+  if (!schemeAllows(match[1] ? match[1].toLowerCase() : 'https', urlScheme)) return false;
+  const host = match[3].toLowerCase();
+  if (match[2] ? !target.hostname.endsWith(`.${host}`) : target.hostname !== host) return false;
+  if (match[4] ? match[4] !== '*' && match[4] !== (target.port || DEFAULT_PORTS[urlScheme]) : target.port !== '') return false;
+  const sourcePath = match[5] ? decodedPath(match[5]) : '';
+  if (!sourcePath) return true;
+  const urlPath = decodedPath(target.pathname);
+  return sourcePath.endsWith('/') ? urlPath.startsWith(sourcePath) : urlPath === sourcePath;
+}
+
 // Where a relative reference lands: the site itself, which 'self' covers.
 const PAGE_BASE = 'https://self.invalid/page/';
 const PAGE_ORIGIN = new URL(PAGE_BASE).origin;

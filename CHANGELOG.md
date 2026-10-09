@@ -15,6 +15,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The contact form's daily cleanup also removes a half-written line or a stored message with no date, even on a day when nothing else is old enough to go.
 - A message older than the retention period is never sent on after a restart, even when the cleanup that should have removed it failed.
 - The contact form and the CSP report endpoint answer a garbled request address with "bad request" instead of a server error.
+- The security policy check matches a stylesheet or script link against an allowed host the way browsers do. A source can now name a path, a `*.` subdomain, a port or no scheme. Before, a source narrowed to one file failed the check for that very file.
 - The build's security policy check reads a policy the way browsers do. The first copy of a repeated rule counts, keywords match in any case, a style rule that isn't set at all counts as allowing everything, and equivalent spellings of a hash or host no longer fail the check.
 - When a contact email or push can't get through, the log names the network reason (a reset, a DNS failure, a timeout) instead of a bare "fetch failed". Emails also go out at most two a second, so a backlog sent after a restart stays inside the mail service's rate limit.
 - The README count test fails on a corrupt project feed even when the release list hasn't been generated. Before, the missing file turned the whole check into a skip.

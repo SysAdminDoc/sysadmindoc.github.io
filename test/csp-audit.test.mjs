@@ -423,6 +423,41 @@ test('csp audit reads repeated, mixed-case and equivalent sources the way a brow
   }
 });
 
+// Drain review of 8bcf4716: the link check only knew bare origins, so a source
+// narrowed to a path "blocked" the very file it names.
+test('csp audit matches a link against a host source the way CSP3 does', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-host-source-'));
+  const audit = (source, body, scriptSource = '') => {
+    const policy = `default-src 'self'; script-src 'self'${scriptSource ? ` ${scriptSource}` : ''}; style-src 'self' ${source}; style-src-elem 'self' ${source}; style-src-attr 'none'; form-action 'self'`;
+    fs.writeFileSync(path.join(tmp, 'index.html'), `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}">${body}</head><body></body></html>`);
+    return spawnSync(process.execPath, [scriptPath, '--dist', tmp, '--active-style-src-elem', '--strict'], { cwd: repoRoot, encoding: 'utf8', windowsHide: true });
+  };
+  const link = (href) => `<link rel="stylesheet" href="${href}">`;
+  try {
+    for (const [source, href, allowed] of [
+      ['https://cdn.example/site.css', 'https://cdn.example/site.css', true],
+      ['https://cdn.example/css/', 'https://cdn.example/css/site.css', true],
+      ['https://cdn.example/css/', 'https://cdn.example/js/site.css', false],
+      ['*.example.com', 'https://cdn.example.com/site.css', true],
+      ['cdn.example', 'https://cdn.example/site.css', true],
+      ['https://cdn.example', 'https://cdn.example:8443/site.css', false],
+      ['https://cdn.example:*', 'https://cdn.example:8443/site.css', true],
+      ['http://cdn.example', 'https://cdn.example/site.css', true],
+    ]) {
+      const result = audit(source, link(href));
+      assert.equal(result.status, allowed ? 0 : 1, `${source} ${href}\n${result.stderr}`);
+      if (!allowed) assert.match(result.stderr, /would block 1 current style element\/link surface/);
+    }
+    const script = `${link('https://cdn.example/site.css')}<script src="https://cdn.example/js/app.js"></script>`;
+    assert.equal(audit('https://cdn.example', script, 'https://cdn.example/js/').status, 0);
+    const blocked = audit('https://cdn.example', script, 'https://cdn.example/css/');
+    assert.equal(blocked.status, 1);
+    assert.match(blocked.stderr, /1 external script source\(s\) are blocked by the active script-src: .*\(https:\/\/cdn\.example\/js\/app\.js\)/);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
 test('csp audit strict dist mode fails on missing or divergent CSP metadata', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'csp-meta-consistency-'));
   const nestedDir = path.join(tmp, 'nested');

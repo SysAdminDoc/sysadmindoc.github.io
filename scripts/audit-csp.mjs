@@ -5,7 +5,7 @@ import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
 import { parseMarkupAttributes, scanMarkup } from './lib/csp-markup-parser.mjs';
-import { collectHostReferences, unusedHostSources } from './lib/csp-host-usage.mjs';
+import { collectHostReferences, hostSourceAllowsUrl, unusedHostSources } from './lib/csp-host-usage.mjs';
 import { minifyCss } from './lib/minify-css.mjs';
 
 const root = process.cwd();
@@ -344,11 +344,14 @@ function styleAllowedByCandidate(record, tokens) {
   return false;
 }
 
+// A host source can name a path, a *. subdomain wildcard, a port or no scheme
+// at all, so a link's URL is matched against each one the way CSP3 does
+// (hostSourceAllowsUrl), not compared with its bare origin.
 function styleLinkAllowedByCandidate(record, tokens) {
   if (hasSource(tokens, '*')) return true;
   if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && hasSource(tokens, "'self'")) return true;
   if (record.sourceKind === 'third-party' && record.protocol && hasSource(tokens, record.protocol)) return true;
-  if (record.sourceKind === 'third-party' && record.origin && hasSource(tokens, record.origin)) return true;
+  if (record.sourceKind === 'third-party' && tokens.some((token) => hostSourceAllowsUrl(token, record.href))) return true;
   return false;
 }
 
@@ -356,7 +359,7 @@ function scriptLinkAllowedByCandidate(record, tokens) {
   if (hasSource(tokens, '*')) return true;
   if ((record.sourceKind === 'self-hosted' || record.sourceKind === 'dynamic-self') && hasSource(tokens, "'self'")) return true;
   if (record.protocol && hasSource(tokens, record.protocol)) return true;
-  if (record.origin && hasSource(tokens, record.origin)) return true;
+  if (record.origin && tokens.some((token) => hostSourceAllowsUrl(token, String(record.attrs?.src ?? '')))) return true;
   return false;
 }
 

@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
-- [ ] P3: Match host sources with a path, a wildcard or no scheme in the CSP audit's link check
-  Why: `styleLinkAllowedByCandidate` and `scriptLinkAllowedByCandidate` only match `*`, `'self'`, a scheme or a bare origin, so `style-src-elem https://cdn.example/site.css` "would block" a link to that same file, and `*.example.com`, `cdn.example` (no scheme) and `:*` ports never match. The live policy uses bare origins only, so nothing fails today, but the first narrowed source would fail the build for no reason.
-  Evidence: drain review of 8bcf4716, 2026-10-09; a planted page with `style-src-elem 'self' https://cdn.example/site.css` and `<link href="https://cdn.example/site.css">` fails strict mode.
-  Touches: `scripts/audit-csp.mjs` (the two link matchers), `test/csp-audit.test.mjs`.
-  Acceptance: a link matches a host source the way CSP3 does (scheme upgrade, `*.` subdomain wildcard, port and `:*`, exact path or a path ending in `/` as a prefix), and a planted page per case passes or fails as a browser would.
-  Complexity: S
-
 - [ ] P3: Clip the gutter check the way CSS does, and skip transparent and vertically hidden text
   Why: d109412f treats only transform and position as containing blocks and only `overflow: hidden|clip` as clipping, so text in a positioned box inside an `overflow: hidden` parent with `filter`, `translate` or `contain: paint`, or inside `overflow: auto`, is flagged though it's cut off; `color: transparent` text is flagged; a box at `top: -9999px; left: 0` is flagged because only horizontal off-screen counts. Option text, textarea text, input values and CSS `content` text are never measured.
   Evidence: seventeenth drain review, 2026-09-24; `tests/playwright/portfolio-audits.spec.mjs:510-554`.

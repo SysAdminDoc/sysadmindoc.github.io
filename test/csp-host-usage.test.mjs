@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { collectHostReferences, parseHostSource, unusedHostSources } from '../scripts/lib/csp-host-usage.mjs';
+import { collectHostReferences, hostSourceAllowsUrl, parseHostSource, unusedHostSources } from '../scripts/lib/csp-host-usage.mjs';
 
 const root = process.cwd();
 
@@ -22,6 +22,35 @@ test('host sources are told apart from keywords and schemes', () => {
   const wildcard = parseHostSource('*.example.com');
   assert.equal(wildcard.matches('a.example.com'), true);
   assert.equal(wildcard.matches('example.com'), false);
+});
+
+// Drain review of 8bcf4716: the CSP audit's link check only knew bare origins.
+test('a host source allows a URL the way CSP3 matches it', () => {
+  const cases = [
+    ['https://cdn.example/site.css', 'https://cdn.example/site.css', true],
+    ['https://cdn.example/site.css', 'https://cdn.example/Site.css', false, 'a path matches in its case'],
+    ['https://cdn.example/css/', 'https://cdn.example/css/a/b.css', true, 'a path ending in / is a prefix'],
+    ['https://cdn.example/css', 'https://cdn.example/css/a.css', false, 'any other path is exact'],
+    ['https://cdn.example/', 'https://cdn.example/any.css', true],
+    ['https://cdn.example/a%20b.css', 'https://cdn.example/a b.css', true, 'paths compare percent-decoded'],
+    ['http://cdn.example', 'https://cdn.example/a.css', true, 'http allows https'],
+    ['https://cdn.example', 'http://cdn.example/a.css', false],
+    ['cdn.example', 'https://cdn.example/a.css', true, "no scheme takes the page's"],
+    ['cdn.example', 'http://cdn.example/a.css', false],
+    ['*.example.com', 'https://a.b.example.com/x.js', true],
+    ['*.example.com', 'https://example.com/x.js', false, 'the wildcard needs a subdomain'],
+    ['https://CDN.Example', 'https://cdn.example/a.css', true, 'hosts in any case'],
+    ['https://cdn.example', 'https://cdn.example:8443/a.css', false, 'no port means the default'],
+    ['https://cdn.example:8443', 'https://cdn.example:8443/a.css', true],
+    ['https://cdn.example:443', 'https://cdn.example/a.css', true],
+    ['https://cdn.example:*', 'https://cdn.example:9/a.css', true],
+    ["'self'", 'https://cdn.example/', false, 'a keyword is another kind of source'],
+    ['https:', 'https://cdn.example/', false],
+    ['*', 'https://cdn.example/', false],
+  ];
+  for (const [token, url, allowed, why = ''] of cases) {
+    assert.equal(hostSourceAllowsUrl(token, url), allowed, `${token} ${url} ${why}`);
+  }
 });
 
 test('a host counts only when something of its kind loads from it', async (t) => {
