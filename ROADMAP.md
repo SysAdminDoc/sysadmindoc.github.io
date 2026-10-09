@@ -31,13 +31,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P3
 
-- [ ] P3: Give the CSP report store back its final newline after a crash mid-append
-  Why: `restoreFile` in `deploy/vps/csp-report-server.mjs` returns early when it changed no row, so a store whose last line was cut without a newline keeps it that way, and the next `appendFile` glues two reports into one line that `parseStore` counts as two unreadable ones. The contact handler got the same fix for its lead store on 2026-10-09.
-  Evidence: twenty-fourth review rerun, 2026-10-09.
-  Touches: `deploy/vps/csp-report-server.mjs`, `test/csp-report-server.test.mjs`.
-  Acceptance: a store ending mid-line gets its newline before the next append, the dropped-line count reaches the nightly summary rather than only the startup log, and a test plants both.
-  Complexity: S
-
 - [ ] P3: Read Caddyfile heredocs the way Caddy does
   Why: the parser in `scripts/lib/caddyfile.mjs` closes a heredoc on `EOF trailing text` (Caddy refuses it), doesn't strip the closing marker's indentation from the body, and only sees a heredoc at a token's start. The trust check reads the file through this parser, so a heredoc Caddy reads differently could carry a header line past it.
   Evidence: twenty-fourth review rerun, 2026-10-09; `scripts/lib/caddyfile.mjs` around line 95.

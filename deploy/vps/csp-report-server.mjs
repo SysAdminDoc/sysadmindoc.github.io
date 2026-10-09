@@ -478,6 +478,11 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
     }
   }
 
+  // What a line too long to be a report becomes. It's a JSON string, not a
+  // row, so the nightly summary counts it as an unreadable line, and a drop
+  // shows up there instead of only in this container's start-up log.
+  const droppedLine = JSON.stringify(`dropped: a line longer than ${config.maxLineBytes} bytes`);
+
   /**
    * One store file under today's rule, a line at a time into a temporary file
    * that is renamed over it, so memory holds a line rather than the file
@@ -504,7 +509,8 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
         let pending = '';
         // Lines are cut from the bytes by hand, since readLines builds each
         // one whole: a line past maxLineBytes can't be a report this sink
-        // wrote, so it's dropped as soon as it grows that long (twenty-second).
+        // wrote, so it's dropped as soon as it grows that long (twenty-second)
+        // and droppedLine takes its place.
         let parts = [];
         let partBytes = 0;
         let tooLong = false;
@@ -520,17 +526,18 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
           partBytes += bytes.length;
         };
         const endLine = async () => {
+          let next = droppedLine;
           if (tooLong) {
             changed += 1;
           } else {
             const line = Buffer.concat(parts, partBytes).toString('utf8');
-            const next = restoredLine(line, samples);
+            next = restoredLine(line, samples);
             if (next !== line) changed += 1;
-            pending += `${next}\n`;
-            if (pending.length >= 64 * 1024) {
-              await output.write(pending);
-              pending = '';
-            }
+          }
+          pending += `${next}\n`;
+          if (pending.length >= 64 * 1024) {
+            await output.write(pending);
+            pending = '';
           }
           parts = [];
           partBytes = 0;
@@ -548,7 +555,14 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
           }
           if (start < bytesRead) take(chunk.subarray(start, bytesRead));
         }
-        if (partBytes > 0 || tooLong) await endLine();
+        if (partBytes > 0 || tooLong) {
+          // A crash mid-append leaves the last line without its newline, and
+          // the next append would glue a report onto it, two unreadable lines
+          // in one. The rewrite ends it, so that alone is a change.
+          const before = changed;
+          await endLine();
+          if (changed === before) changed += 1;
+        }
         if (pending !== '') await output.write(pending);
       } finally {
         await output.close();
@@ -573,8 +587,9 @@ export function createReporter(config = DEFAULT_CONFIG, dependencies = {}) {
    * let through. A sample that is already a marker or the site's own stays as
    * it is, so running it again changes nothing. Called before the server
    * listens, and a store entry it can't rewrite is logged and left, so the
-   * sink starts regardless (twentieth drain review).
-   * @returns {Promise<number>} how many samples became markers
+   * sink starts regardless (twentieth drain review). A line too long to be a
+   * report is dropped, and a last line cut short gets its newline.
+   * @returns {Promise<number>} how many stored lines changed
    */
   async function restoreSamples() {
     const samples = { ownSamples: config.ownSamples ?? [] };
@@ -602,7 +617,7 @@ export async function startServer(config = loadConfig()) {
   const reporter = createReporter(config);
   // Before the first report can arrive, so nothing is appended mid-rewrite.
   const restored = await reporter.restoreSamples();
-  if (restored > 0) console.log(`csp-report: stored ${restored} older sample(s) as markers`);
+  if (restored > 0) console.log(`csp-report: rewrote ${restored} stored line(s) (older samples as markers, overlong lines dropped, a cut last line ended)`);
   const server = http.createServer((request, response) => {
     reporter.handleRequest(request, response).catch((error) => {
       console.error(`csp-report: unhandled request error: ${error.message}`);

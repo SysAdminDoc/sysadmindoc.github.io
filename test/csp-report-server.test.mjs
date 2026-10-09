@@ -17,7 +17,7 @@ import {
   startServer,
   storedSample,
 } from '../deploy/vps/csp-report-server.mjs';
-import { SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
+import { parseStore, SMOKE_REPORT_SAMPLE, smokeReportProblem } from '../scripts/lib/csp-report-summary.mjs';
 import { encodeOwnSamples } from '../scripts/lib/csp-own-samples.mjs';
 
 async function withTempReporter(options = {}, callback) {
@@ -383,9 +383,15 @@ test('the restore drops a line too long to be a report without holding it, and o
     const run = spawnSync(process.execPath, ['--max-old-space-size=16', '--input-type=module', '-e', script], { encoding: 'utf8', windowsHide: true, timeout: 120_000 });
     assert.equal(run.status, 0, run.stderr.slice(-2000));
     assert.equal(run.stdout.trim(), '3', 'both long lines dropped, the row marked');
-    const current = (await fs.readFile(logPath, 'utf8')).split('\n');
-    assert.deepEqual(current.map((line) => (line ? JSON.parse(line).sample : line)), ['[other]', '']);
-    assert.equal(await fs.readFile(`${logPath}.1`, 'utf8'), '');
+    const dropped = JSON.stringify(`dropped: a line longer than ${DEFAULT_CONFIG.maxLineBytes} bytes`);
+    const text = await fs.readFile(logPath, 'utf8');
+    const current = text.split('\n');
+    assert.equal(current[0], dropped, 'a placeholder takes the long line');
+    assert.equal(JSON.parse(current[1]).sample, '[other]');
+    assert.equal(current[2], '');
+    assert.equal(await fs.readFile(`${logPath}.1`, 'utf8'), `${dropped}\n`);
+    // The nightly summary counts the placeholder, so the drop reaches it.
+    assert.equal(parseStore(text).unreadable, 1);
 
     // A FIFO can't be made on every system, so the file system says so instead.
     const errors = t.mock.method(console, 'error', () => {});
@@ -400,6 +406,33 @@ test('the restore drops a line too long to be a report without holding it, and o
     const outcome = await Promise.race([reporter.restoreSamples(), new Promise((resolve) => setTimeout(() => resolve('hung'), 2000))]);
     assert.equal(outcome, 0, 'the restore finishes without opening it');
     assert.match(errors.mock.calls.map((call) => String(call.arguments[0])).join('\n'), /reports\.ndjson\.1 as it was: not a regular file/);
+  });
+});
+
+// The twenty-fourth review rerun: a crash mid-append left the last line with no
+// newline, a restore that changed no row kept it that way, and the next report
+// was glued onto it, two unreadable lines in one.
+test('a store that ends mid-line gets its newline back before the next report', async () => {
+  await withTempReporter({}, async ({ reporter, logPath }) => {
+    const row = JSON.stringify({ receivedAt: '2026-09-20T12:00:00.000Z', directive: 'img-src', blocked: 'https://cdn.example.test/x.png', category: 'first-party' });
+    const cut = '{"receivedAt":"2026-09-20T12:00:01.000Z","directive":"img';
+    await fs.writeFile(logPath, `${row}\n${cut}`);
+    assert.equal(await reporter.restoreSamples(), 1, 'ending the cut line is the one change');
+    assert.equal(await fs.readFile(logPath, 'utf8'), `${row}\n${cut}\n`);
+    assert.equal(await reporter.restoreSamples(), 0, 'and a second run finds nothing to do');
+
+    const response = responseMock();
+    await reporter.handleRequest(
+      requestMock({
+        body: JSON.stringify([{ type: 'csp-violation', body: { documentURL: 'https://portfolio.getparkerai.com/', blockedURL: 'https://cdn.example.test/y.png', effectiveDirective: 'img-src' } }]),
+        headers: { 'content-type': 'application/reports+json' },
+      }),
+      response,
+    );
+    assert.equal(response.status, 204);
+    const { reports, unreadable } = parseStore(await fs.readFile(logPath, 'utf8'));
+    assert.equal(reports.length, 2, 'the new report stands on its own line');
+    assert.equal(unreadable, 1, 'and only the cut line is unreadable');
   });
 });
 
