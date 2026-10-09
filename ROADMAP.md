@@ -78,13 +78,6 @@ Added 2026-09-22 from the research recorded in RESEARCH.md. Items that need the 
   Acceptance: Page policies drop `'wasm-unsafe-eval'` and the worker's header keeps it. The 11 search-corpus specs pass under production headers, and a `WebAssembly.compile` on an ordinary page is refused.
   Complexity: M
 
-- [ ] P3: Show a readable page when a no-JavaScript form post meets a handler that is down
-  Why: With the handler down, Caddy's `handle_errors` serves the 404 page, with a 502 status, to a visitor who posted without JavaScript, and their message is gone.
-  Evidence: second drain review, 2026-09-23; the `handle_errors` block in `deploy/vps/Caddyfile`.
-  Touches: `deploy/vps/Caddyfile`, a not-sent page under `src/pages/contact/`, `test/endpoint-header-contract.test.mjs`.
-  Acceptance: A 5xx from `/api/contact` on a navigation shows a page saying the message wasn't sent and giving the email address, and a test pins the route.
-  Complexity: S
-
 - [ ] P3: Publish GitHub releases for v0.43.0 through v0.45.x
   Why: v0.46.0 and v0.47.0 have releases, but between them and v0.42.0 the tags v0.43.0 to v0.45.2 have none.
   Evidence: `gh release list` on 2026-09-29.

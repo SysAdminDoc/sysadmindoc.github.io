@@ -160,9 +160,25 @@ http://notify.getparkerai.com {
 	# status through explicitly so the code survives Caddy upgrades;
 	# `npm run smoke:live` fails if a missing path stops returning 404.
 	handle_errors {
-		rewrite * /404.html
-		file_server {
-			status {err.status_code}
+		# A form posted without JavaScript while the contact handler is down
+		# gets a page saying the message wasn't sent and where to email instead,
+		# not the 404 page. The page script reads any reply that isn't JSON as
+		# the handler being unreachable, so it says the same.
+		@contact_not_sent {
+			path /api/contact
+			expression `{err.status_code} >= 500`
+		}
+		handle @contact_not_sent {
+			rewrite * /contact/not-sent/index.html
+			file_server {
+				status {err.status_code}
+			}
+		}
+		handle {
+			rewrite * /404.html
+			file_server {
+				status {err.status_code}
+			}
 		}
 	}
 }

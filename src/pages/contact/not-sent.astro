@@ -1,0 +1,43 @@
+---
+// What a visitor whose browser posted the form without JavaScript sees when
+// the contact handler is down or fails: Caddy's handle_errors serves this page
+// with the 5xx status for /api/contact (deploy/vps/Caddyfile). A refusal the
+// handler makes itself goes back to the form at #contact-not-sent instead.
+// Kept out of search engines, the sitemap and the search index, like the
+// thank-you page.
+import Base from '../../layouts/Base.astro';
+import InteriorNav from '../../components/InteriorNav.astro';
+import Footer from '../../components/Footer.astro';
+import { contactEmail, contactMailto } from '../../data/identity';
+---
+<Base title="Message not sent | Matt Parker" description="The contact form couldn't take your message. Email Matt Parker instead." noindex>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav contextLabel="Contact" contextTone="green" />
+
+  <main id="main" class="error-page">
+    <div class="si page-shell">
+      <div class="sh rv">
+        <div class="sl">// Message not sent</div>
+        <h1 class="st">Sorry, your message wasn't sent</h1>
+        <p class="sd">
+          The contact form is down right now, so nothing was saved. Please email me at
+          <a href={contactMailto()}>{contactEmail}</a> instead. Your browser's Back button usually brings back what you typed.
+        </p>
+      </div>
+
+      <div class="error-recovery rv">
+        <a href={contactMailto()} class="btn bp">Email me</a>
+        <a href="/" class="btn bg2">Back to homepage</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    summary="The contact form will be back soon."
+    links={[
+      { href: '/catalog/', label: 'Catalog' },
+      { href: '/resume/', label: 'Resume' },
+      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
+    ]}
+  />
+</Base>

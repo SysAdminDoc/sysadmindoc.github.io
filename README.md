@@ -248,6 +248,9 @@ send it. With JavaScript the form posts in place and shows the handler's reply.
 Without it the browser posts natively, and the handler answers with a 303: to
 `/contact/sent/` once the message is stored, or back to the form page at
 `#contact-not-sent`, where a note explains what happened without any script.
+If the handler itself is down, Caddy answers that post with `/contact/not-sent/`
+under the error status: the message wasn't saved, and the page gives the email
+address to use instead.
 
 Once someone starts filling in the form, its script fetches a signed token
 from `/api/contact/token` and sends it back with the message. The handler

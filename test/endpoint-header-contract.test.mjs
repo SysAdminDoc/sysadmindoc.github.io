@@ -8,6 +8,43 @@ import { EDGE_PROXY_ADDRESS } from '../scripts/lib/edge-address.mjs';
 
 const root = process.cwd();
 
+// Second drain review: with the handler down, a form posted without JavaScript
+// got the 404 page under a 502, and the message was gone.
+test('a 5xx from the contact handler on a navigation shows the not-sent page, not the 404 page', async () => {
+  const [caddyfile, page, searchAudit, astroConfig] = await Promise.all([
+    fs.readFile(path.join(root, 'deploy', 'vps', 'Caddyfile'), 'utf8'),
+    fs.readFile(path.join(root, 'src', 'pages', 'contact', 'not-sent.astro'), 'utf8'),
+    fs.readFile(path.join(root, 'scripts', 'audit-search-index.mjs'), 'utf8'),
+    fs.readFile(path.join(root, 'astro.config.mjs'), 'utf8'),
+  ]);
+  const nodes = parseCaddyfile(expandEnvDefaults(caddyfile));
+  const site = nodes.find((node) => node.tokens[0] === ':80');
+  const errors = site?.children?.find((node) => node.tokens[0] === 'handle_errors');
+  assert.ok(errors?.children, 'the site block has handle_errors');
+  const line = (node) => node.tokens.join(' ');
+  const children = (node) => (node?.children ?? []).map(line);
+  const matcher = errors.children.find((node) => node.tokens[0] === '@contact_not_sent');
+  assert.deepEqual(children(matcher), ['path /api/contact', 'expression {err.status_code} >= 500']);
+  const handles = errors.children.filter((node) => node.tokens[0] === 'handle');
+  assert.deepEqual(handles.map(line), ['handle @contact_not_sent', 'handle'], 'the contact branch comes before the fallback');
+  const [contact, fallback] = handles;
+  assert.deepEqual(children(contact), ['rewrite * /contact/not-sent/index.html', 'file_server']);
+  assert.deepEqual(children(fallback), ['rewrite * /404.html', 'file_server']);
+  for (const handle of handles) {
+    const server = handle.children.find((node) => node.tokens[0] === 'file_server');
+    assert.deepEqual(children(server), ['status {err.status_code}'], 'the error status passes through');
+  }
+  // The route the matcher names is the one the handler answers on.
+  assert.match(caddyfile, /^\t@contact path \/api\/contact \/api\/contact\/token$/m);
+  // The page says what happened and where to write instead, and stays out of
+  // search engines, the sitemap and the search index like the thank-you page.
+  assert.match(page, /\bnoindex\b/);
+  assert.match(page, /wasn't sent/);
+  assert.match(page, /\{contactEmail\}/);
+  assert.match(searchAudit, /'\/contact\/not-sent\/'/);
+  assert.match(astroConfig, /\\\/contact\\\//, 'the sitemap filter leaves out /contact/ pages');
+});
+
 test('source header intents stay separate from the deployed edge contract', async () => {
   const [audit, helpers, liveSmoke] = await Promise.all([
     fs.readFile(path.join(root, 'scripts', 'audit-public-endpoints.mjs'), 'utf8'),
