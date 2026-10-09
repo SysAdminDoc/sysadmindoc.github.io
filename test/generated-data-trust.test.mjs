@@ -295,8 +295,9 @@ test('deploy preflight script runs strict generated-data gate before tests and b
     // a11y:audit:browser is last on purpose: it is the only step that needs a
     // built dist/ served to a real browser, so it runs after `npm run build`.
     // visual:gate makes its own fixture build first, so the real build that
-    // ships comes after it.
-    /^npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run verify:release-tag && npm run deps:audit -- --strict && npm test && npm run check && npm run visual:gate && npm run build && npm run a11y:audit:browser$/,
+    // ships comes after it. The report-only check comes first, so a flag left
+    // in a shell can't turn the steps after it into reports.
+    /^npm run report-only:check -- --strict && npm run data:summary:deploy && npm run catalog:audit && npm run liveapps:audit && npm run verify:signatures && npm run verify:release-tag && npm run deps:audit -- --strict && npm test && npm run check && npm run visual:gate && npm run build && npm run a11y:audit:browser$/,
   );
   // GitHub Pages is a redirect stub now; nothing may publish over it.
   assert.equal(pkg.scripts['publish:pages'], undefined);

@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
-- [ ] P3: Say so when a report-only flag is set outside the nightly runner
-  Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
-  Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.
-  Touches: `scripts/ensure-project-cwd.mjs` (or the preflight's first step), `scripts/refresh-and-deploy.mjs` (`REPORT_ONLY_FLAGS`), a test.
-  Acceptance: any report-only flag set outside the runner prints a warning that names it, and the preflight fails unless the runner set it.
-  Complexity: S
-
 - [ ] P3: Teach css:audit five more late features, unknown properties and exact var()
   Why: c4de5ded calls live fallbacks dead before `grid-template-rows:subgrid` (Chrome 117), `linear-gradient(in oklch, ...)` (Firefox 127), the `cap` unit (Chrome 118), `clip-path:xywh()` (Chrome 119) and unprefixed `background-clip:text` (Chrome 120). The other way, `transition-behavior:allow-discrete` before `transition-behavior:normal` is spared though a target without the property drops both, and `color:--my-var()` counts as var().
   Evidence: seventeenth drain review, 2026-09-24; `scripts/lib/css-overrides.mjs:43`.

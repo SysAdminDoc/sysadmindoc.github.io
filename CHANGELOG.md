@@ -6,6 +6,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Added
 - Releases come from one script in four steps (preflight, pack, publish, smoke). Each step refuses to run before the one it needs, the notes are the whole changelog section for that version, and the ZIP comes out byte for byte the same from the same build.
+- The report-only switches the nightly uses (`CATALOG_AUDIT_REPORT_ONLY`, `PROVENANCE_REPORT_ONLY`, `README_COUNTS_REPORT_ONLY`) now belong to the nightly alone. `npm test` warns when one is set anywhere else, and `deploy:preflight` won't start with one, because a manual deploy would ship whatever it let through with nothing reporting it.
 - Heavy runs can wait their turn in the PC's shared build queue with `npm run queued -- <script>`. The nightly task does the same when it's registered on a machine that has one.
 
 ### Fixed

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { strayReportOnlyMessage } from './lib/report-only-flags.mjs';
 
 const expectedPackageName = 'sysadmindoc-portfolio';
 const cwd = process.cwd();
@@ -31,3 +32,8 @@ if (pkg.name !== expectedPackageName) {
 if (!fs.existsSync(testDir) || !fs.statSync(testDir).isDirectory()) {
   fail('test directory was not found; refusing to run ambient test discovery.');
 }
+
+// npm test starts here, so a report-only flag left in the shell is named
+// before the tests it turns into skips.
+const stray = strayReportOnlyMessage({ root: cwd });
+if (stray) console.error(`ensure-project-cwd: ${stray}`);

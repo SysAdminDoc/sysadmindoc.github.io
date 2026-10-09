@@ -33,6 +33,7 @@ import process from 'node:process';
 import { withoutOutsideServer } from './lib/audit-server.mjs';
 import { captureDueWarning } from './lib/capture-age.mjs';
 import { readmeCountDrift, readmeCountInputs } from './lib/readme-counts.mjs';
+import { REPORT_ONLY_OWNER, runnerMark } from './lib/report-only-flags.mjs';
 import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 import { restoreKilledRun } from './visual-gate.mjs';
 
@@ -409,6 +410,8 @@ async function main() {
       PROVENANCE_REPORT_ONLY: '1',
       // And for the README's counts, which a new upstream repo changes.
       README_COUNTS_REPORT_ONLY: '1',
+      // The preflight's first step refuses those flags from anyone but this run.
+      [REPORT_ONLY_OWNER]: runnerMark(process.pid, startedAt.toISOString()),
     };
     if (!githubToken) {
       // Not fatal on its own: the preflight's own gate decides. Surfacing it here

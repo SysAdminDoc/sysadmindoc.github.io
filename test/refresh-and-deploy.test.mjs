@@ -625,6 +625,52 @@ test('every report-only flag the nightly sets is one the tests know to strip', a
   assert.deepEqual(mentioned, [...REPORT_ONLY_FLAGS].sort());
 });
 
+// The preflight refuses a report-only flag from anyone but the run going now.
+test("the preflight's check passes the flags the runner set, and refuses them once the run is over", { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  const check = path.join(root, 'scripts', 'check-report-only-flags.mjs');
+  await fs.writeFile(
+    path.join(dir, 'preflight.cjs'),
+    [
+      "const { spawnSync } = require('node:child_process');",
+      `const run = spawnSync(process.execPath, [${JSON.stringify(check)}, '--strict'], { stdio: 'inherit', windowsHide: true });`,
+      "require('node:fs').writeFileSync('check-exit.txt', String(run.status));",
+      'process.exit(run.status ?? 1);',
+    ].join('\n'),
+  );
+  await writeCspFixture(dir);
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node preflight.cjs',
+        'deploy:vps': 'node -e ""',
+        'csp:reports': 'node csp.cjs',
+      },
+    }),
+  );
+  const { exited } = runRunner(dir, { ...process.env, GITHUB_TOKEN: 'test-token', PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10', npm_config_update_notifier: 'false' });
+  assert.equal(await exited, 0);
+  assert.equal(await fs.readFile(path.join(dir, 'check-exit.txt'), 'utf8'), '0', "the runner's own flags pass");
+
+  // The same flags and mark, left in a shell after the run, fail.
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.status, 'deployed');
+  const leftover = spawnSync(process.execPath, [check, '--strict'], {
+    cwd: dir,
+    encoding: 'utf8',
+    windowsHide: true,
+    env: { ...process.env, README_COUNTS_REPORT_ONLY: '1', PORTFOLIO_NIGHTLY_RUN: `${status.pid}@${status.startedAt}` },
+  });
+  assert.equal(leftover.status, 1);
+  assert.match(leftover.stderr, /README_COUNTS_REPORT_ONLY is set outside the nightly runner/);
+});
+
 test('the run is marked running before it asks gh for a token, and gh cannot hang it', async () => {
   const source = await fs.readFile(runner, 'utf8');
   // A gh waiting on a credential store used to hold the run before the running

@@ -346,6 +346,13 @@ fixture rows wherever GitHub answers 304. Gate runs take turns through
 going. `deploy:vps` refuses any build whose `status.json` says it came from the
 fixtures.
 
+The run sets `CATALOG_AUDIT_REPORT_ONLY`, `PROVENANCE_REPORT_ONLY` and
+`README_COUNTS_REPORT_ONLY`, so an uncataloged repo, an unsigned release
+elsewhere or a stale README count gets reported after the deploy instead of
+stopping it. Those flags belong to the run alone. `npm test` warns about one
+it finds anywhere else, and `deploy:preflight` won't start with one set, since
+nothing would report what it let through.
+
 The live site says when its data expires. `/status.json` carries
 `generatedData.staleAfter`, the first moment any part of the data goes past
 the 36-hour contract (the GitHub fetch, the profile feed and the catalog check
