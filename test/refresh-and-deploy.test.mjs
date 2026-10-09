@@ -427,6 +427,38 @@ test('a security.txt inside its 60-day window still deploys, and the status carr
   assert.match(log, /WARN {2}security\.txt expires /);
 });
 
+test('live-app captures past the warning line still deploy, and the status names them', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  // The fake preflight leaves the report the live-app audit writes.
+  const report = { results: [{ slug: 'IconForge', masterAgeDays: 78 }, { slug: 'Fresh', masterAgeDays: 3 }] };
+  await fs.writeFile(
+    path.join(dir, 'preflight.cjs'),
+    `require('node:fs').mkdirSync('.tmp', { recursive: true }); require('node:fs').writeFileSync('.tmp/live-app-audit.json', ${JSON.stringify(JSON.stringify(report))});`,
+  );
+  await writeCspFixture(dir);
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': 'node preflight.cjs',
+        'deploy:vps': 'node -e ""',
+        'csp:reports': 'node csp.cjs',
+      },
+    }),
+  );
+  const { exited } = runRunner(dir, { ...process.env, GITHUB_TOKEN: 'test-token', PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10', npm_config_update_notifier: 'false' });
+  assert.equal(await exited, 0, 'a warning does not fail the run');
+  const status = JSON.parse(await fs.readFile(path.join(dir, '.tmp', 'refresh-and-deploy-status.json'), 'utf8'));
+  assert.equal(status.status, 'deployed');
+  assert.equal(status.warnings.length, 1);
+  assert.match(status.warnings[0], /^1 live-app screenshot capture\(s\) are past 75 days \(oldest 78d\), and the deploy stops at 90: IconForge\./);
+});
+
 /** A whole fake run whose csp:reports step is `cspScript`. */
 async function runWithCspStep(dir, cspScript) {
   await fs.writeFile(

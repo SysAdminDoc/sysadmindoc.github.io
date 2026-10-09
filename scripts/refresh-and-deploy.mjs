@@ -31,6 +31,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { withoutOutsideServer } from './lib/audit-server.mjs';
+import { captureDueWarning } from './lib/capture-age.mjs';
 import { readmeCountDrift, readmeCountInputs } from './lib/readme-counts.mjs';
 import { securityTxtExpiresValue, securityTxtExpiry } from './lib/security-txt-expiry.mjs';
 import { restoreKilledRun } from './visual-gate.mjs';
@@ -362,6 +363,23 @@ function noteSecurityTxtExpiry() {
   }
 }
 
+// The preflight's live-app audit fails once a screenshot capture is 90 days
+// old; from 75 days its report names the captures due, and this carries them
+// into the status so the recapture happens before the deploy stops.
+function noteCaptureAge() {
+  let text;
+  try {
+    text = fs.readFileSync(path.join(tmpDir, 'live-app-audit.json'), 'utf8');
+  } catch {
+    return;
+  }
+  const warning = captureDueWarning(text);
+  if (warning) {
+    log(`WARN  ${warning}`);
+    warnings.push(warning);
+  }
+}
+
 function readFreshness() {
   try {
     const stats = JSON.parse(fs.readFileSync(path.join(root, 'src', 'data', '_stats.json'), 'utf8'));
@@ -408,6 +426,7 @@ async function main() {
     // and a full build. Nothing ships unless it passes.
     await step('deploy:preflight', 'npm', ['run', 'deploy:preflight']);
     noteSecurityTxtExpiry();
+    noteCaptureAge();
 
     if (dryRun) {
       const uncataloged = readCatalogDrift();

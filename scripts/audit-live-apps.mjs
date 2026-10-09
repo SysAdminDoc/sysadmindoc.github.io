@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import process from 'node:process';
 import ts from 'typescript';
+import { CAPTURE_STALE_DAYS as STALE_DAYS, CAPTURE_WARN_DAYS, captureAgeLevel } from './lib/capture-age.mjs';
 import { propertyName, sourceFile } from './lib/ts-data-utils.mjs';
 
 const root = process.cwd();
@@ -12,7 +13,6 @@ const publicThumbsDir = path.join(screenshotsDir, 'thumbs');
 const astroThumbsDir = path.join(root, 'src', 'assets', 'screenshots', 'thumbs');
 
 const TIMEOUT_MS = 15_000;
-const STALE_DAYS = 90;
 const RETRIES = 1;
 
 function parseStringProp(obj, key) {
@@ -158,7 +158,8 @@ for (const app of apps) {
   const masterAgeDays = captureAgeDays;
   const publicThumbAgeDays = publicThumbMtime ? Math.floor((now - publicThumbMtime.getTime()) / 86_400_000) : null;
   const astroThumbAgeDays = astroThumbMtime ? Math.floor((now - astroThumbMtime.getTime()) / 86_400_000) : null;
-  const screenshotStale = masterAgeDays !== null && masterAgeDays > STALE_DAYS;
+  const screenshotStale = captureAgeLevel(masterAgeDays) === 'stale';
+  const screenshotDue = captureAgeLevel(masterAgeDays) === 'due';
   const screenshotMissing = !masterMtime || !publicThumbMtime || !astroThumbMtime;
   const provenanceErrors = [];
 
@@ -193,6 +194,7 @@ for (const app of apps) {
     publicThumbAgeDays,
     astroThumbAgeDays,
     screenshotStale,
+    screenshotDue,
     screenshotMissing,
     hasManifestEntry: provenanceErrors.length === 0,
     provenanceErrors,
@@ -202,6 +204,7 @@ for (const app of apps) {
 const healthy = results.filter((r) => r.httpOk);
 const unhealthy = results.filter((r) => !r.httpOk);
 const stale = results.filter((r) => r.screenshotStale);
+const due = results.filter((r) => r.screenshotDue);
 const missing = results.filter((r) => r.screenshotMissing);
 const provenanceFailures = results.filter((r) => r.provenanceErrors.length > 0);
 
@@ -212,6 +215,7 @@ console.log(`  healthy: ${healthy.length}`);
 console.log(`  unhealthy: ${unhealthy.length}`);
 console.log(`  manifest provenance: ${withManifest.length}/${results.length}`);
 console.log(`  stale screenshots (>${STALE_DAYS}d): ${stale.length}`);
+console.log(`  screenshots due for recapture (>${CAPTURE_WARN_DAYS}d, warning only): ${due.length}`);
 console.log(`  missing screenshots: ${missing.length}`);
 
 if (unhealthy.length > 0) {
@@ -227,6 +231,14 @@ if (stale.length > 0) {
   console.log('');
   console.log('Stale screenshots:');
   for (const r of stale) {
+    console.log(`  - ${r.slug}: master ${r.masterAgeDays}d old`);
+  }
+}
+
+if (due.length > 0) {
+  console.log('');
+  console.log(`WARNING: screenshots due for recapture before they fail at ${STALE_DAYS}d (npm run queued -- capture-screenshots, after hours):`);
+  for (const r of due) {
     console.log(`  - ${r.slug}: master ${r.masterAgeDays}d old`);
   }
 }

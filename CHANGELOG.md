@@ -9,6 +9,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Heavy runs can wait their turn in the PC's shared build queue with `npm run queued -- <script>`. The nightly task does the same when it's registered on a machine that has one.
 
 ### Fixed
+- Live app screenshots now warn once they're 75 days old, in the audit and in the nightly's status, so there's two weeks to recapture before the 90 day check stops the deploy. Last time every capture crossed the line on the same day with no notice.
 - The nightly deploy ships the build its preflight just made. It used to build the whole site a second time.
 - The contact form's daily cleanup also removes a half-written line or a stored message with no date, even on a day when nothing else is old enough to go.
 - A message older than the retention period is never sent on after a restart, even when the cleanup that should have removed it failed.
