@@ -2,7 +2,7 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
-## [Unreleased]
+## [v0.48.0] - 2026-10-09
 
 ### Added
 - Releases come from one script in four steps (preflight, pack, publish, smoke). Each step refuses to run before the one it needs, the notes are the whole changelog section for that version, and the ZIP comes out byte for byte the same from the same build.
