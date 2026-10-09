@@ -235,7 +235,8 @@ test("classifyReport files inline code that isn't the site's own, from no site s
   const site = 'https://portfolio.getparkerai.com/';
   const injected = { document: site, blocked: 'inline', sample: '[other]', source: '(invalid-url)' };
   assert.equal(classifyReport(injected), 'extension');
-  assert.equal(classifyReport({ ...injected, source: undefined }), 'extension', 'no source is no site URL');
+  assert.equal(classifyReport({ ...injected, source: undefined }), 'first-party', 'no source says nothing either way');
+  assert.equal(classifyReport({ ...injected, source: '' }), 'first-party', 'nor does an empty one');
   assert.equal(classifyReport({ ...injected, source: 'https://cdn.example.test/x.js' }), 'extension');
   assert.equal(classifyReport({ ...injected, source: `${site}catalog/` }), 'first-party', "refused in the site's own page");
   assert.equal(classifyReport({ ...injected, sample: 'document.documentElement.dataset.th' }), 'first-party', "the site's own block keeps its sample");
@@ -247,7 +248,7 @@ test("classifyReport files inline code that isn't the site's own, from no site s
   const own = ['document.documentElement.dataset.theme = localStorage.getItem'];
   const posted = (sample) =>
     normalizeReport(
-      { type: 'csp-violation', body: { documentURL: site, blockedURL: 'inline', effectiveDirective: 'script-src-elem', sample } },
+      { type: 'csp-violation', body: { documentURL: site, blockedURL: 'inline', effectiveDirective: 'script-src-elem', sample, sourceFile: '(invalid-url)' } },
       new Date('2026-09-29T12:00:00.000Z'),
       DEFAULT_CONFIG.siteOrigin,
       { ownSamples: own },
@@ -296,8 +297,9 @@ test('reporter appends a redacted report and returns a stored marker', async () 
     const stored = JSON.parse(lines[0]);
     assert.equal(stored.directive, 'style-src');
     assert.equal(stored.blocked, 'inline');
-    // None of the site's own code, and no source in the site: an extension's.
-    assert.equal(stored.category, 'extension');
+    // None of the site's own code, but no source either, so nothing says it
+    // came from an extension.
+    assert.equal(stored.category, 'first-party');
     assert.match(stored.sample, MARKER);
     assert.doesNotMatch(lines[0], /48151623|visitor/);
   });

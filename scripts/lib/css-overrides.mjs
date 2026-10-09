@@ -57,7 +57,7 @@ const NEWER_THAN_TARGETS = [
   { value: /\dr?lh\b/i }, // the lh and rlh units: Firefox 120
   { value: /\dr?cap\b/i }, // the cap unit: Chrome 118, Safari 17.2
   { value: /(?<![\w-])--[\w-]+\(/ }, // a custom function (@function): Chrome 139
-  // A gradient's interpolation colour space: Firefox 127.
+  // A gradient's interpolation color space: Firefox 127.
   { value: /-gradient\(\s*(?:[^,()]*\s)?in\s+[a-z]/i },
   // The shorthand's keyword: Chrome 117, Safari 17.4, Firefox 129. The
   // transition-behavior property came with it, so any of its values is fine.

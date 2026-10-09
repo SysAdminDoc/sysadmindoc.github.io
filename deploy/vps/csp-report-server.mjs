@@ -208,9 +208,11 @@ function schemeOf(value) {
 // own and whose source isn't the site is filed with the extensions. The site's
 // own blocks keep their sample, and a refused inline block in the site's own
 // page or script names that as its source, so a real regression still counts
-// as first-party.
+// as first-party. A report with no source at all says nothing either way and
+// stays first-party, since that's the side a missed regression would hide on.
 export function injectedInline(report, siteOrigin) {
   if (report?.blocked !== 'inline' || report?.sample !== OTHER_SAMPLE) return false;
+  if (typeof report.source !== 'string' || report.source === '') return false;
   try {
     return new URL(report.source).origin !== siteOrigin;
   } catch {
