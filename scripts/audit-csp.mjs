@@ -238,14 +238,16 @@ function parseCsp(policy) {
 /**
  * A source expression as a browser compares it: keywords, schemes and hosts
  * in any case, a hash's algorithm in any case but its value exactly (base64url
- * read as base64, as CSP3 matches it), a nonce exactly, and a host whose path
- * is a bare "/" as the host alone.
+ * read as base64, as CSP3 matches it), a nonce exactly, a host's path exactly,
+ * and a host whose path is a bare "/" as the host alone.
  */
 function cspTokenKey(token) {
   const hash = /^'(sha256|sha384|sha512)-([^']*)'$/i.exec(token);
   if (hash) return `'${hash[1].toLowerCase()}-${hash[2].replace(/-/g, '+').replace(/_/g, '/')}'`;
   if (/^'nonce-/i.test(token)) return `'nonce-${token.slice(7)}`;
-  return token.toLowerCase().replace(/^((?:[a-z][a-z0-9+.-]*:\/\/)?[^/'\s]+)\/$/, '$1');
+  const host = /^((?:[a-z][a-z0-9+.-]*:\/\/)?[^/'\s]+)(\/.*)?$/i.exec(token);
+  if (!host) return token.toLowerCase();
+  return `${host[1].toLowerCase()}${host[2] === '/' ? '' : host[2] ?? ''}`;
 }
 
 /** @param {string[]} tokens @param {string} wanted */

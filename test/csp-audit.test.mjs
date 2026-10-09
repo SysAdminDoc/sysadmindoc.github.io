@@ -410,6 +410,14 @@ test('csp audit reads repeated, mixed-case and equivalent sources the way a brow
     const extra = audit(`${base}; style-src 'self' '${hash}' https://cdn.example https://other.example; ${elem}`);
     assert.equal(extra.status, 1);
     assert.match(extra.stderr, /style-src carries https:\/\/other\.example that style-src-elem doesn't/);
+
+    // A host's path matches in its exact case, unlike the host itself.
+    const pathElem = `style-src-elem 'self' '${hash}' https://cdn.example https://cdn.example/site.css`;
+    const sameHost = audit(`${base}; style-src 'self' '${hash}' https://cdn.example HTTPS://CDN.Example/site.css; ${pathElem}`);
+    assert.equal(sameHost.status, 0, sameHost.stderr);
+    const otherPath = audit(`${base}; style-src 'self' '${hash}' https://cdn.example https://cdn.example/Site.css; ${pathElem}`);
+    assert.equal(otherPath.status, 1);
+    assert.match(otherPath.stderr, /style-src carries https:\/\/cdn\.example\/Site\.css that style-src-elem doesn't/);
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
