@@ -10,6 +10,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Heavy runs can wait their turn in the PC's shared build queue with `npm run queued -- <script>`. The nightly task does the same when it's registered on a machine that has one.
 
 ### Changed
+- The profile feed puts the Hush patch bundles in a new `patches` category. The importer and the data check both map it to the Android lane, so the bundles show up where they always did, and a test keeps the two maps in step.
 - On a phone the catalog's Show and Category filters each sit in one row you can swipe sideways. At 390px they used to wrap into six rows of chips, about 3 1/2 inches of scrolling before the first project. Tabbing to a chip scrolls it into view with its focus outline showing.
 
 ### Fixed

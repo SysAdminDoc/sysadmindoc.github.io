@@ -69,6 +69,8 @@ const categoryMap: Record<string, Lang> = {
   web: 'web',
   extensions: 'ext',
   android: 'kt',
+  // Morphe patch bundles for Android apps; they stay in the Android lane.
+  patches: 'kt',
   security: 'sec',
   media: 'media',
   desktop: 'cs',

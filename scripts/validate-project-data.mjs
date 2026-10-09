@@ -241,6 +241,7 @@ const profileCategoryMap = {
   web: 'web',
   extensions: 'ext',
   android: 'kt',
+  patches: 'kt',
   security: 'sec',
   media: 'media',
   desktop: 'cs',
