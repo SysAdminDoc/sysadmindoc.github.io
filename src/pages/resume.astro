@@ -34,7 +34,7 @@ const pageJsonLd = reviewedWebPageJsonLd({
 });
 const cmdkSections = [
   { label: 'Overview', href: '#resume-header', desc: 'Identity, career summary, and public proof.', badge: 'DOSSIER' },
-  { label: 'Operating Lanes', href: '#resume-lanes', desc: 'AI implementation, healthcare systems, and infrastructure.', badge: '3 LANES' },
+  { label: 'Expertise', href: '#resume-lanes', desc: 'Infrastructure, healthcare, software, and creative work.', badge: `${careerLanes.length} AREAS` },
   { label: 'Experience', href: '#resume-experience', desc: 'Career history with highlights and technology stacks.', badge: `${careerRoles.length} ROLES` },
 ];
 ---
@@ -83,7 +83,7 @@ const cmdkSections = [
         <div class="resume-section-head">
           <span>02</span>
           <div>
-            <h2 id="resume-lanes-title">Three operating lanes</h2>
+            <h2 id="resume-lanes-title">Areas of expertise</h2>
             <p>{careerProfile.operatingNote}</p>
           </div>
         </div>

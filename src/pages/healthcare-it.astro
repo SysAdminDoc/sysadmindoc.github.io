@@ -1,299 +1,179 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import InteriorNav from '../components/InteriorNav.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Footer from '../components/Footer.astro';
+import avatar from '../assets/avatar.jpg';
+import { careerLanes, careerProfile, careerRoles } from '../data/career';
 import { interiorOgPageBySlug } from '../data/interior-og-pages';
 import { contactMailto, experienceLabel } from '../data/identity';
 import { faqPageNodes, formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
 
-const title = 'Healthcare IT | Matt Parker';
+const title = 'Experience | Matt Parker';
 const pageOg = interiorOgPageBySlug['healthcare-it'];
 const pageFreshness = pageFreshnessBySlug['healthcare-it'];
 const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
-
 const faqs = [
-  {
-    q: 'What healthcare IT work do you actually do?',
-    a: 'Hands-on support for imaging environments, including PACS deployments, DR panel configuration, DICOM routing, hosted-service migrations, workstation and network troubleshooting, and customer escalation. I own each issue from diagnosis through vendor coordination, recovery, and documentation.',
-  },
-  {
-    q: 'Do you handle PACS and hosted-service migrations?',
-    a: 'Yes. Migration work covers archive transfers, cutovers, validation, and workstation troubleshooting, with follow-up after the switch. The goal is a move that preserves access and imaging workflows rather than a risky one-shot cutover.',
-  },
-  {
-    q: "Why aren't individual customer projects listed here?",
-    a: "Most healthcare support work is operational and customer-specific. It includes migration notes, account recovery, workflow validation, and communication during service-impacting issues. The useful public summary is the role context and resume, not customer-specific implementation detail.",
-  },
-  {
-    q: 'What does "I own the problem" mean?',
-    a: "It means I don't hand it off. From the first call to the vendor follow-up to the documentation that keeps it from happening again, one person stays on it. The customer talks to the same person the whole way through.",
-  },
+  { q: 'Is your experience limited to healthcare IT?', a: 'No. My background includes managed IT services, nearly 11 years at a PBS affiliate, and healthcare technology. I also have extensive experience in digital design, Photoshop, video editing, and remastering. Software and hands-on creative work are both part of that background.' },
+  { q: 'What healthcare IT work do you do?', a: 'PACS deployments, DICOM routing, DR panel configuration, hosted-service migrations, and workstation or network troubleshooting. That includes vendor coordination, validation after a change, and follow-up with the people using the system.' },
+  { q: 'Where can I see your software?', a: 'The project catalog links to my public repositories, and the portfolio includes live browser apps. Those are independent projects. Customer systems, internal documentation, and patient information stay out of the public portfolio.' },
+  { q: 'How do you handle sensitive information?', a: "I follow the data-handling requirements of the organization I'm supporting. I don't transfer patient data to personal devices or use client data to train or evaluate AI models. Public examples use my own content." },
 ] as const;
-
-const pageJsonLd = reviewedWebPageJsonLd({
-  siteUrl,
-  route: pageFreshness.route,
-  title,
-  description: pageOg.description,
-  lastReviewed: pageFreshness.lastReviewed,
-  schemaTypes: pageFreshness.schemaTypes,
-  extraNodes: faqPageNodes({ siteUrl, route: pageFreshness.route, faqs }),
-});
-
-const workAreas = [
-  {
-    tag: 'Imaging',
-    name: 'PACS & DICOM',
-    title: 'Keep the images flowing.',
-    desc: "Deployments, DR panel configuration, DICOM routing, and the troubleshooting when a study doesn't arrive where it should. This is the core of what I do every day.",
-  },
-  {
-    tag: 'Migrations',
-    name: 'Hosted-service moves',
-    title: 'Move systems without losing data or sleep.',
-    desc: "Archive transfers, cutovers, validation, and post-switch follow-up. The goal is a migration that preserves access and workflows, not a weekend prayer.",
-  },
-  {
-    tag: 'Support',
-    name: 'Escalation & recovery',
-    title: 'One person, start to finish.',
-    desc: "I take the call, diagnose it, coordinate the vendor, document the fix, and follow up until it sticks. No handoffs, no ticket ping-pong.",
-  },
+const pageJsonLd = reviewedWebPageJsonLd({ siteUrl, route: pageFreshness.route, title, description: pageOg.description, lastReviewed: pageFreshness.lastReviewed, schemaTypes: pageFreshness.schemaTypes, extraNodes: faqPageNodes({ siteUrl, route: pageFreshness.route, faqs }) });
+const selectedWork = [
+  { name: 'Network Security Auditor', repo: 'Network_Security_Auditor', type: 'Infrastructure / automation', desc: 'A tool for checking network and system security, with reports that make the findings easier to act on.' },
+  { name: 'UniversalConverterX', repo: 'UniversalConverterX', type: 'Windows / desktop software', desc: 'A desktop application that brings media, document, and file conversion tools into one interface.' },
+  { name: 'OpenCut for Premiere Pro', repo: 'OpenCut', type: 'Video / creative tools', desc: 'Local tools for video editing workflows in Premiere Pro, including captions, audio processing, and visual effects.' },
+  { name: 'HostShield', repo: 'HostShield', type: 'Android / privacy', desc: 'An Android hosts-based blocker with root and VPN modes for different device setups.' },
 ] as const;
-
-const dayInLife = [
-  { time: 'Morning', task: 'Triage tickets, check overnight alerts, verify hosted services are clean.' },
-  { time: 'Midday', task: 'DICOM routing changes, workstation imaging, vendor calls, migration prep.' },
-  { time: 'Afternoon', task: 'Customer follow-ups, documentation, tooling for anything I did twice.' },
-  { time: 'After hours', task: 'Cutovers and migrations that can only run when clinics close.' },
+const approach = [
+  { title: 'Understand the environment', text: 'Start with the people, the workflow, and what breaks when a system is unavailable.' },
+  { title: 'Find the cause', text: 'Trace the problem across the workstation, network, application, and vendor boundaries.' },
+  { title: 'Make the change useful', text: 'Repair the system, plan the migration, or build a tool for the work that keeps repeating.' },
+  { title: 'Leave people ready', text: 'Validate the result, write down what changed, and help the team run it.' },
 ] as const;
-
 const cmdkSections = [
-  { label: 'Overview', href: '#track-overview', desc: 'What I do and why it matters.', badge: 'TRACK' },
-  { label: 'Work', href: '#work-areas', desc: 'PACS/DICOM, migrations, and escalation support.', badge: 'WORK' },
-  { label: 'A typical day', href: '#typical-day', desc: 'What the work actually looks like.', badge: 'DAY' },
-  { label: 'Data boundaries', href: '#data-boundaries', desc: 'PHI handling and what stays on your systems.', badge: 'TRUST' },
-  { label: 'Questions', href: '#hcit-faq', desc: 'Scope, migrations, and why projects stay private.', badge: 'FAQ' },
-  { label: 'Contact', href: '#hcit-contact', desc: 'Reach out about healthcare IT work.', badge: 'CONTACT' },
+  { label: 'Overview', href: '#track-overview', desc: 'Experience across industries and disciplines.', badge: 'START' },
+  { label: 'Expertise', href: '#work-areas', desc: 'Infrastructure, healthcare, software, and creative work.', badge: 'SKILLS' },
+  { label: 'Career', href: '#typical-day', desc: 'Managed services, public broadcasting, and medical imaging.', badge: 'CAREER' },
+  { label: 'Selected projects', href: '#selected-projects', desc: 'Public software you can inspect.', badge: 'WORK' },
+  { label: 'Approach', href: '#data-boundaries', desc: 'From diagnosis to a documented handoff.', badge: 'METHOD' },
+  { label: 'Questions', href: '#hcit-faq', desc: 'Background, healthcare work, and data handling.', badge: 'FAQ' },
+  { label: 'Contact', href: '#hcit-contact', desc: 'Discuss a role, project, or technical problem.', badge: 'CONTACT' },
 ];
 ---
-<Base
-  title={title}
-  description={pageOg.description}
-  ogImage={pageOg.ogImage}
-  ogImageAlt={pageOg.ogImageAlt}
-  cmdkSections={cmdkSections}
->
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
   <script is:inline type="application/ld+json" set:html={pageJsonLd} />
   <a href="#main" class="skip-link">Skip to content</a>
-  <InteriorNav active="healthcare" contextLabel="Healthcare IT track" contextTone="amber" />
-
-  <main id="main" class="hcit-page" data-pagefind-body data-pagefind-filter="Scope:Healthcare IT">
-    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Healthcare IT"></span>
-    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Healthcare IT"></span>
+  <InteriorNav active="healthcare" />
+  <main id="main" class="experience-page" data-pagefind-body data-pagefind-filter="Scope:Experience">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Experience"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Experience"></span>
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
-
-    <div class="si page-shell hcit-hero" id="track-overview">
-      <div class="sh">
-        <div class="sl">// Healthcare IT</div>
-        <h1 class="st hcit-title">When the imaging system goes down, I'm the one who picks up the phone.</h1>
-        <p class="sd hcit-intro">I support healthcare technology environments for a medical imaging integrator. PACS, DICOM, hosted-service migrations, and the 2 AM calls when something breaks and a clinic needs it fixed before doors open. {experienceLabel} of IT means I've seen most of what can go wrong, and I've built tools for the problems that kept coming back.</p>
+    <div class="exp-shell exp-hero" id="track-overview">
+      <div class="exp-hero-copy">
+        <p class="exp-eyebrow">Matt Parker / Experience</p>
+        <h1>I keep systems running.<br /><span>And build what's missing.</span></h1>
+        <p class="exp-lead">{experienceLabel} across managed IT services, public broadcasting, and healthcare. My work also spans software development, digital design, video editing, and remastering. I bring that range to the things I build and the people I support.</p>
+        <div class="exp-actions"><a href="#typical-day" class="btn bp">Explore my experience <span aria-hidden="true">↓</span></a><a href="/resume/" class="exp-link">View resume <span aria-hidden="true">↗</span></a></div>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
       </div>
-      <div class="hcit-actions page-actions">
-        <a href={contactMailto('Healthcare IT')} class="btn bp">Get in touch</a>
-        <a href="/resume/" class="hcit-text-link">Resume <span aria-hidden="true">&#8594;</span></a>
-      </div>
-      <ul class="hcit-assurances" aria-label="Operating principles">
-        <li>One person, start to finish</li>
-        <li>No patient data leaves your systems</li>
-        <li>Document everything, fix it once</li>
-      </ul>
+      <aside class="exp-profile" aria-label="Professional background">
+        <div class="exp-profile-identity"><Image src={avatar} alt="Matt Parker" width={72} height={72} densities={[1, 2]} loading="eager" /><div><strong>{careerProfile.name}</strong><span>{careerProfile.location}</span></div></div>
+        <p class="exp-profile-label">Hands-on experience across industries.</p>
+        <ul class="exp-environments">
+          <li><span>Healthcare</span><strong>Maven Imaging</strong><small>Imaging systems & technical support</small></li>
+          <li><span>Public broadcasting</span><strong>ThinkTV / PBS affiliate</strong><small>Enterprise & broadcast infrastructure</small></li>
+          <li><span>Managed services</span><strong>Dayton Technology Group</strong><small>IT support across client environments</small></li>
+        </ul>
+        <a class="exp-link" href="https://www.linkedin.com/in/matthewryanparker" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+      </aside>
     </div>
+    <nav class="exp-shell exp-index" aria-label="Explore experience"><a href="#work-areas">Expertise</a><a href="#typical-day">Career history</a><a href="#selected-projects">Public projects</a><a href="#hcit-contact">Get in touch <span aria-hidden="true">↗</span></a></nav>
 
-    <section class="hcit-section" id="work-areas">
-      <div class="si">
-        <header class="hcit-section-head">
-          <div class="hcit-eyebrow">01 / Work</div>
-          <h2 class="hcit-h2">The three things I spend my days on.</h2>
-          <p>Most of my time goes to keeping imaging systems running, moving customers between platforms without losing data, and owning problems until they're actually solved.</p>
-        </header>
-        <div class="hcit-offer-list">
-          {workAreas.map((area, index) => (
-            <article class="hcit-offer">
-              <div class="hcit-offer-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
-              <div class="hcit-offer-meta">
-                <span>{area.tag}</span>
-                <strong>{area.name}</strong>
-              </div>
-              <div class="hcit-offer-body">
-                <h3>{area.title}</h3>
-                <p>{area.desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+    <section class="exp-section" id="work-areas" aria-labelledby="expertise-heading"><div class="exp-shell">
+      <header class="exp-section-head"><div><p class="exp-eyebrow">01 / Expertise</p><h2 id="expertise-heading">Technical depth.<br />Creative experience.</h2></div><p>I work with the systems behind a business and the media people see. That includes infrastructure, practical software, Photoshop work, and years of editing and remastering video.</p></header>
+      <div class="exp-capabilities">{careerLanes.map((lane, index) => <article class="exp-capability" id={`expertise-${lane.id}`}><span class="exp-number" aria-hidden="true">0{index + 1}</span><h3>{lane.name}</h3><p>{lane.focus}</p><ul class="exp-skills" aria-label={`${lane.name} skills`}>{lane.expertise.slice(0, 4).map((skill) => <li>{skill}</li>)}</ul></article>)}</div>
+    </div></section>
 
-    <section class="hcit-section hcit-section-alt" id="typical-day">
-      <div class="si">
-        <header class="hcit-section-head">
-          <div class="hcit-eyebrow">02 / A typical day</div>
-          <h2 class="hcit-h2">What the work actually looks like.</h2>
-          <p>Healthcare IT doesn't have a lot of glamorous demos. It's operational, it's steady, and it matters because people depend on these systems every day.</p>
-        </header>
-        <ol class="hcit-timeline" role="list">
-          {dayInLife.map((item) => (
-            <li role="listitem">
-              <div class="hcit-timeline-label">{item.time}</div>
-              <p>{item.task}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
+    <section class="exp-section exp-section-tinted" id="typical-day" aria-labelledby="career-heading"><div class="exp-shell">
+      <header class="exp-section-head"><div><p class="exp-eyebrow">02 / Career</p><h2 id="career-heading">Different industries.<br />Real operating experience.</h2></div><p>From supporting multiple small-business environments to keeping broadcast and medical imaging systems working, each role added a different kind of responsibility.</p></header>
+      <div class="exp-career">{careerRoles.map((role) => <article class="exp-role"><div class="exp-role-period"><span>{role.period}</span><small>{role.location}</small>{role.tone === 'current' && <strong>Current role</strong>}</div><div class="exp-role-body"><p class="exp-employer">{role.company}</p><h3>{role.role}</h3><p>{role.summary}</p><ul>{role.highlights.slice(0, 2).map((highlight) => <li>{highlight}</li>)}</ul>{role.note && <p class="exp-role-note">{role.note}</p>}</div></article>)}</div>
+      <a class="exp-link" href="/resume/">Full resume, skills & education <span aria-hidden="true">→</span></a>
+    </div></section>
 
-    <section class="hcit-section" id="data-boundaries">
-      <div class="si">
-        <header class="hcit-section-head">
-          <div class="hcit-eyebrow">03 / Trust</div>
-          <h2 class="hcit-h2">Your data stays yours.</h2>
-          <p>Healthcare means sensitive data. Here's how I handle it, plainly.</p>
-        </header>
-        <dl class="hcit-trust-list">
-          <div class="hcit-trust-item">
-            <dt>Does this work touch PHI?</dt>
-            <dd>Support and migration work may involve systems that contain PHI. I follow the data-handling requirements of the organization I'm supporting. I don't store, copy, or transfer patient data to personal devices or outside systems.</dd>
-          </div>
-          <div class="hcit-trust-item">
-            <dt>Is client data used for AI?</dt>
-            <dd>No. Client data, customer data, and operational data from support work are never used to train, fine-tune, or evaluate any AI model. AI tools I use for my own workflow run on my own content, not yours.</dd>
-          </div>
-          <div class="hcit-trust-item">
-            <dt>What stays on your systems?</dt>
-            <dd>Operational notes, internal docs, and troubleshooting context stay in my secured local environment. Customer-specific detail never appears in the public portfolio.</dd>
-          </div>
-          <div class="hcit-trust-item">
-            <dt>Who else is in the chain?</dt>
-            <dd>I work directly. No subcontractors, no offshore teams. If an engagement needs a specialist, I'll say so up front.</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
+    <section class="exp-section" id="selected-projects" aria-labelledby="projects-heading"><div class="exp-shell">
+      <header class="exp-section-head"><div><p class="exp-eyebrow">03 / Public work</p><h2 id="projects-heading">I build things, too.</h2></div><p>Independent software is another part of my work. These public projects show how I turn technical problems into tools people can use.</p></header>
+      <div class="exp-projects">{selectedWork.map((project) => <a class="exp-project" href={`https://github.com/SysAdminDoc/${project.repo}`} target="_blank" rel="noopener noreferrer"><span class="exp-eyebrow">{project.type}</span><h3>{project.name}<span aria-hidden="true">↗</span></h3><p>{project.desc}</p><span class="exp-project-action">View project on GitHub <span aria-hidden="true">→</span></span></a>)}</div>
+      <div class="exp-project-footer"><p>Customer work stays private. These are my own public projects.</p><a class="exp-link" href="/catalog/">Browse all projects <span aria-hidden="true">→</span></a></div>
+    </div></section>
 
-    <section class="hcit-section hcit-section-alt" id="hcit-faq">
-      <div class="si">
-        <header class="hcit-section-head">
-          <div class="hcit-eyebrow">04 / Questions</div>
-          <h2 class="hcit-h2">Things people ask.</h2>
-          <p>Straight answers about the work, how I handle migrations, and why you won't find customer project details here.</p>
-        </header>
-        <dl class="hcit-trust-list">
-          {faqs.map((faq) => (
-            <div class="hcit-trust-item">
-              <dt>{faq.q}</dt>
-              <dd>{faq.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
+    <section class="exp-section exp-section-tinted" id="data-boundaries" aria-labelledby="approach-heading"><div class="exp-shell">
+      <header class="exp-section-head"><div><p class="exp-eyebrow">04 / Approach</p><h2 id="approach-heading">The work isn't done<br />at the handoff.</h2></div><p>Good technical work has to hold up for the people using it. Documentation, training, and follow-up are part of the job.</p></header>
+      <ol class="exp-approach">{approach.map((step, index) => <li><span class="exp-number" aria-hidden="true">0{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
+    </div></section>
 
-    <section class="hcit-contact" id="hcit-contact">
-      <div class="si hcit-contact-grid">
-        <div class="hcit-eyebrow">Get in touch</div>
-        <div>
-          <h2>Need help with healthcare IT?</h2>
-          <p>Whether it's a PACS deployment, a hosted-service migration, or a system that's been giving you trouble, tell me what's going on and I'll let you know if I can help.</p>
-          <ContactForm subject="Healthcare IT" />
-        </div>
-      </div>
-    </section>
+    <section class="exp-section" id="hcit-faq" aria-labelledby="questions-heading"><div class="exp-shell exp-faq-grid"><header><p class="exp-eyebrow">05 / A few details</p><h2 id="questions-heading">More about<br />the work.</h2><a class="exp-link" href="/ai/">AI implementation services <span aria-hidden="true">→</span></a></header><div class="exp-faqs">{faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p></details>)}</div></div></section>
+
+    <section class="exp-section exp-contact" id="hcit-contact" aria-labelledby="contact-heading"><div class="exp-shell exp-contact-grid"><div><p class="exp-eyebrow">Let's talk</p><h2 id="contact-heading">Have a role, a project,<br />or a problem in mind?</h2><p>Tell me what you're working on and where you need help. I'm interested in work that brings systems, software, and people together.</p><a class="exp-link" href={contactMailto('IT experience and projects')}>Email me directly <span aria-hidden="true">↗</span></a><p class="exp-contact-privacy">Please keep patient information, passwords, and other sensitive details out of your message.</p></div><ContactForm subject="IT experience and projects" /></div></section>
   </main>
-
-  <Footer
-    summary="Healthcare IT support, PACS/DICOM operations, and the steady work that keeps imaging systems running."
-    links={[
-      { href: '/rss.xml', label: 'RSS' },
-      { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true },
-    ]}
-  />
+  <Footer summary="Matt Parker. Technical depth and creative experience, with hands-on support across industries." links={[{ href: 'https://www.linkedin.com/in/matthewryanparker', label: 'LinkedIn', external: true }, { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true }]} />
 </Base>
 
 <style is:global>
-  .hcit-page{min-height:calc(100vh - 200px)}
-  .hcit-hero{padding-bottom:clamp(50px,7vw,84px)!important}
-  .hcit-title{max-width:18ch!important;font-size:clamp(44px,6vw,72px)!important;line-height:.96!important;color:var(--t1)}
-  .hcit-intro{max-width:700px!important;font-size:18px!important;line-height:1.6!important}
-  .hcit-actions{margin-top:24px}
-  .hcit-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--blue);font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0;text-decoration:none;text-transform:none}
-  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--t1)}
-  .hcit-assurances{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:900px;margin:34px 0 0;padding:0;border-block:1px solid var(--border-soft);list-style:none}
-  .hcit-assurances li{padding:14px 18px 14px 0;border-right:1px solid var(--border-soft);color:var(--t2);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-  .hcit-assurances li:not(:first-child){padding-left:18px}
-  .hcit-assurances li:last-child{border-right:0}
-
-  .hcit-section{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px)}
-  .hcit-section-alt{border-block:1px solid var(--border-soft);background:var(--surface-1)}
-  .hcit-section-head{display:grid;grid-template-columns:140px minmax(300px,1.05fr) minmax(260px,.75fr);gap:30px;align-items:start;max-width:none;margin:0}
-  .hcit-eyebrow,.hcit-offer-index,.hcit-timeline-label{font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase}
-  .hcit-eyebrow,.hcit-offer-index{color:var(--blue)}
-  .hcit-h2{max-width:14ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-.028em}
-  .hcit-section-head>p{max-width:42ch;margin:2px 0 0;color:var(--t2);font-size:15px;line-height:1.65}
-
-  .hcit-offer-list{max-width:none;margin:44px 0 0;border-top:1px solid var(--border-strong)}
-  .hcit-offer{display:grid;grid-template-columns:44px 210px minmax(0,1fr);gap:24px;align-items:start;padding:27px 0;border-bottom:1px solid var(--border-soft)}
-  .hcit-offer-meta{display:grid;gap:5px}
-  .hcit-offer-meta span{color:var(--blue);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-  .hcit-offer-meta strong{color:var(--t3);font-size:13px;font-weight:500}
-  .hcit-offer-body{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.2fr);gap:28px}
-  .hcit-offer-body h3{margin:0;color:var(--t1);font-size:clamp(20px,2.2vw,28px);line-height:1.15;letter-spacing:-.03em}
-  .hcit-offer-body p{margin:0;color:var(--t2);font-size:15px;line-height:1.65}
-
-  .hcit-timeline{max-width:820px;margin:44px auto 0;padding:0;border-top:1px solid var(--border-strong);list-style:none}
-  .hcit-timeline li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
-  .hcit-timeline-label{color:var(--blue);padding-top:2px}
-  .hcit-timeline p{margin:0;color:var(--t2);font-size:15px;line-height:1.65}
-
-  .hcit-trust-list{max-width:820px;margin:44px auto 0;border-top:1px solid var(--border-strong)}
-  .hcit-trust-item{display:grid;grid-template-columns:minmax(200px,.85fr) minmax(0,1.15fr);gap:26px;align-items:start;padding:22px 0;border-bottom:1px solid var(--border-soft)}
-  .hcit-trust-item dt{margin:0;color:var(--t1);font-size:17px;font-weight:600;line-height:1.35}
-  .hcit-trust-item dd{margin:0;color:var(--t2);font-size:15px;line-height:1.7}
-
-  .hcit-contact{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px);border-top:1px solid var(--border-soft)}
-  .hcit-contact-grid{display:grid;grid-template-columns:140px minmax(0,1fr);gap:30px;max-width:760px}
-  .hcit-contact h2{margin:0 0 10px;color:var(--t1);font-size:clamp(26px,3vw,36px);line-height:1.12;letter-spacing:-.03em}
-  .hcit-contact p{margin:0 0 28px;max-width:48ch;color:var(--t2);font-size:15px;line-height:1.65}
-
-  @media(max-width:860px){
-    .hcit-section-head{grid-template-columns:1fr;gap:12px}
-    .hcit-offer{grid-template-columns:1fr;gap:12px}
-    .hcit-offer-index{display:none}
-    .hcit-offer-body{grid-template-columns:1fr;gap:10px}
-    .hcit-contact-grid{grid-template-columns:1fr;gap:16px}
-  }
-  /* v0.45 composition pass: one structural accent, one left edge, tighter rhythm. */
-  .hcit-eyebrow,.hcit-offer-index,.hcit-offer-meta span,.hcit-timeline-label{color:var(--blue)}
-  .hcit-eyebrow{font-size:11px;grid-column:1/-1}
-  .hcit-text-link:hover,.hcit-text-link:focus-visible{color:var(--blue)}
-  .hcit-hero{padding-bottom:clamp(36px,4vw,52px)!important}
-  .hcit-section{padding-block:clamp(56px,6vw,76px)}
-  .hcit-section-head{grid-template-columns:minmax(0,1.05fr) minmax(260px,.75fr);gap:14px 48px}
-  .hcit-contact-grid{grid-template-columns:1fr;gap:14px}
-  /* Sections share the hero's left edge instead of centering a narrower block. */
-  .hcit-section,.hcit-contact{padding-inline:clamp(20px,3.2vw,32px)}
-  .hcit-section .si,.hcit-contact .si{max-width:var(--content-max,1240px)}
-  .hcit-section-head,.hcit-offer-list,.hcit-timeline,.hcit-trust-list{margin-left:0;margin-right:0}
-  .hcit-contact-grid{margin-left:auto;margin-right:auto}
-
-  @media(max-width:720px){
-    .hcit-assurances{grid-template-columns:1fr}
-    .hcit-assurances li{border-right:0;border-bottom:1px solid var(--border-soft);padding:12px 0}
-    .hcit-assurances li:last-child{border-bottom:0}
-    .hcit-trust-item{grid-template-columns:1fr;gap:8px;padding:18px 0}
-    .hcit-timeline li{grid-template-columns:1fr;gap:6px}
-  }
+  .experience-page{--exp-gap:clamp(24px,4vw,56px);color:var(--t1)}
+  .experience-page .exp-shell{width:100%;max-width:calc(var(--content-max) + 64px);margin-inline:auto;padding-inline:32px;box-sizing:border-box}
+  .experience-page h1,.experience-page h2,.experience-page h3{font-family:var(--sans);text-wrap:balance}
+  .experience-page p{margin:0}
+  .experience-page .exp-hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.85fr);gap:var(--exp-gap);align-items:center;padding-top:132px;padding-bottom:56px}
+  .exp-eyebrow,.exp-number{color:var(--blue);font-family:var(--mono);font-size:11px;font-weight:600;line-height:1.6;letter-spacing:.09em;text-transform:uppercase}
+  .experience-page h1{max-width:19ch;margin:20px 0 24px;font-size:clamp(40px,4.7vw,66px);line-height:1.05;letter-spacing:-.045em}
+  .experience-page h1 span{color:var(--blue)}
+  .exp-lead{max-width:58ch;color:var(--t2);font-size:18px;line-height:1.75}
+  .exp-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-block:28px}
+  .exp-link{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--blue);font-size:15px;font-weight:600;text-decoration:none}
+  .exp-link:hover{text-decoration:underline;text-underline-offset:5px}
+  .exp-profile{padding:28px;background:var(--surface-1);border:1px solid var(--border-strong);border-radius:12px}
+  .exp-profile-identity{display:flex;align-items:center;gap:16px;padding-bottom:24px;border-bottom:1px solid var(--border-soft)}
+  .exp-profile-identity img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+  .exp-profile-identity strong{display:block;color:var(--t1);font-size:21px;letter-spacing:-.02em}
+  .exp-profile-identity span{display:block;margin-top:4px;color:var(--t2);font-size:14px}
+  .experience-page .exp-profile-label{margin-top:22px;color:var(--t2);font-size:13px;line-height:1.6}
+  .exp-environments{display:grid;gap:18px;list-style:none;margin:20px 0;padding:0}
+  .exp-environments li{border-left:2px solid var(--blue);padding-left:14px}
+  .exp-environments span,.exp-environments strong,.exp-environments small{display:block}
+  .exp-environments span{margin-bottom:4px;color:var(--blue);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+  .exp-environments strong{font-size:15px;font-weight:600}
+  .exp-environments small{margin-top:4px;color:var(--t2);font-size:12px;line-height:1.5}
+  .experience-page .exp-index{display:flex;flex-wrap:wrap;gap:4px 32px;padding-block:14px;border-block:1px solid var(--border-soft)}
+  .exp-index a{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--t2);font-size:14px;font-weight:600;text-decoration:none}
+  .exp-index a:hover{color:var(--blue)}
+  .exp-index a:last-child{margin-left:auto;color:var(--blue)}
+  .experience-page .exp-section{padding:clamp(56px,6vw,88px) 0;scroll-margin-top:88px}
+  .exp-section-tinted{background:var(--surface-1);border-block:1px solid var(--border-soft)}
+  .exp-section-head{display:grid;grid-template-columns:1.2fr 1fr;align-items:end;gap:var(--exp-gap);margin-bottom:36px}
+  .experience-page h2{margin:12px 0 0;font-size:clamp(28px,3.1vw,42px);line-height:1.15;letter-spacing:-.035em}
+  .exp-section-head>p,.exp-contact-grid>div>p:not(.exp-eyebrow){color:var(--t2);font-size:16px;line-height:1.75;max-width:56ch}
+  .exp-capabilities,.exp-projects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .exp-capability{padding:28px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-1)}
+  .experience-page h3{margin:12px 0;font-size:22px;line-height:1.25;letter-spacing:-.025em}
+  .exp-capability>p,.exp-project>p,.exp-approach p{color:var(--t2);font-size:15px;line-height:1.75}
+  .exp-skills{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:22px 0 0;padding:0}
+  .exp-skills li{padding:6px 9px;border:1px solid var(--border-soft);border-radius:4px;color:var(--t2);font-family:var(--mono);font-size:11px;line-height:1.5}
+  .exp-role{display:grid;grid-template-columns:230px minmax(0,1fr);gap:var(--exp-gap);padding-block:32px;border-top:1px solid var(--border-soft)}
+  .exp-role-period{display:flex;flex-direction:column;align-items:start;gap:9px;font-size:14px;font-weight:600;color:var(--t1)}
+  .exp-role-period small{color:var(--t2);font-size:13px;font-weight:400}
+  .exp-role-period strong{padding:5px 8px;border:1px solid var(--border-strong);border-radius:4px;color:var(--blue);font-size:11px;font-weight:600}
+  .experience-page .exp-employer{color:var(--blue);font-size:14px;font-weight:600}
+  .exp-role-body>p:not(.exp-employer),.exp-role-body li{color:var(--t2);font-size:15px;line-height:1.75;max-width:78ch}
+  .exp-role-body ul{display:grid;gap:7px;margin:18px 0;padding-left:20px}
+  .experience-page .exp-role-note{padding:12px 16px;border-left:2px solid var(--border-strong);font-size:13px}
+  .exp-project{display:flex;flex-direction:column;align-items:start;padding:28px;color:var(--t1);border:1px solid var(--border-soft);border-radius:10px;text-decoration:none;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+  .exp-project:hover{border-color:var(--blue);background:var(--surface-1)}
+  .exp-project h3{display:flex;justify-content:space-between;gap:16px;width:100%;font-size:23px}
+  .exp-project h3 span{color:var(--blue);font-size:20px}
+  .exp-project-action{display:flex;gap:10px;margin-top:auto;padding-top:24px;color:var(--blue);font-size:13px;font-weight:600}
+  .exp-project-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;color:var(--t2);font-size:13px}
+  .exp-approach{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;list-style:none;margin:0;padding:0}
+  .exp-approach li{padding-top:20px;border-top:1px solid var(--border-strong)}
+  .exp-approach h3{font-size:19px}
+  .exp-faq-grid,.exp-contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:var(--exp-gap)}
+  .exp-faq-grid header>.exp-link{margin-top:20px}
+  .exp-faqs details{border-top:1px solid var(--border-soft)}
+  .exp-faqs details:last-child{border-bottom:1px solid var(--border-soft)}
+  .exp-faqs summary{padding:20px 8px 20px 0;font-size:16px;font-weight:600;line-height:1.5;cursor:pointer}
+  .exp-faqs summary::marker{color:var(--blue)}
+  .experience-page .exp-faqs details>p{padding:0 0 22px;color:var(--t2);font-size:15px;line-height:1.75}
+  .exp-contact{background:var(--surface-1);border-top:1px solid var(--border-soft)}
+  .exp-contact-grid>div>h2{margin-bottom:22px}
+  .exp-contact-grid>div>.exp-link{margin-top:20px}
+  .experience-page .exp-contact-grid .exp-contact-privacy{margin-top:24px;font-size:13px;max-width:45ch}
+  .experience-page .contact-form{margin:0;align-self:start}
+  .experience-page a:focus-visible,.experience-page summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;box-shadow:var(--focus-ring)}
+  @media(max-width:1000px){.experience-page .exp-hero{grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);gap:28px}.exp-profile{padding:22px}.exp-approach{grid-template-columns:repeat(2,minmax(0,1fr))}.exp-role{grid-template-columns:190px minmax(0,1fr)}}
+  @media(max-width:760px){.experience-page .exp-hero{grid-template-columns:1fr;padding-top:108px;padding-bottom:32px}.experience-page .exp-shell{padding-inline:24px}.experience-page h1{font-size:clamp(36px,7.8vw,54px);max-width:21ch}.exp-lead{font-size:16px}.exp-section-head,.exp-faq-grid,.exp-contact-grid{grid-template-columns:1fr;gap:22px}.exp-capabilities,.exp-projects{grid-template-columns:1fr}.exp-role{grid-template-columns:1fr;gap:18px}.exp-role-period{flex-direction:row;flex-wrap:wrap;align-items:center}.exp-role-period small{margin-right:auto}.exp-index a:last-child{margin-left:0}.experience-page .exp-index{gap:0 24px}.exp-capability,.exp-project{padding:24px}}
+  @media(max-width:420px){.experience-page .exp-shell{padding-inline:20px}.exp-approach{grid-template-columns:1fr;gap:24px}.exp-actions{gap:8px 20px}.exp-actions .btn{font-size:14px}.exp-profile{padding:22px}.experience-page h3{font-size:21px}.exp-environments small{font-size:13px}}
+  @media(prefers-reduced-motion:reduce){.exp-project{transition:none}}
 </style>

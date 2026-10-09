@@ -172,12 +172,12 @@ export const cmdkQuickLinks = [
     searchTerms: ['cv', 'career', 'hire', 'experience', 'printable'],
   },
   {
-    label: 'Healthcare IT Track',
+    label: 'Experience & Healthcare IT',
     url: '/healthcare-it/',
-    desc: 'Operational context for healthcare technology support, customer migrations, documentation, and escalation work.',
-    badge: 'TRACK',
+    desc: 'IT operations, software, healthcare systems, digital design, and video editing.',
+    badge: 'PAGE',
     tone: 'amber',
-    searchTerms: ['healthcare', 'support', 'customer systems'],
+    searchTerms: ['experience', 'career', 'healthcare', 'support', 'broadcasting', 'infrastructure', 'software', 'design', 'Photoshop', 'video editing', 'remastering'],
   },
   {
     label: 'AI Services Track',

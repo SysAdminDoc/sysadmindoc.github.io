@@ -3,6 +3,7 @@ import { Resvg } from '@resvg/resvg-js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { loadCachedFont } from './og-font-cache';
+import { careerLanes } from './career';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FONT_CACHE = join(__dirname, '..', '..', '.astro', 'fonts');
@@ -66,11 +67,9 @@ function headlineSize(title: string) {
   return 88;
 }
 
-const operatingLanes = [
-  ['01', 'AI IMPLEMENTATION', 'TOOLS · AUTOMATION · ENABLEMENT'],
-  ['02', 'HEALTHCARE SYSTEMS', 'PACS/DICOM · SUPPORT · MIGRATIONS'],
-  ['03', 'INFRASTRUCTURE & AUTOMATION', 'WINDOWS · NETWORKS · SOFTWARE'],
-] as const;
+const operatingLanes = careerLanes.map((lane, index) => [
+  String(index + 1).padStart(2, '0'), lane.name.toUpperCase(), lane.short.toUpperCase(),
+] as const);
 
 let renderQueue: Promise<void> = Promise.resolve();
 
@@ -174,7 +173,7 @@ async function renderOgCardNow(card: OgCardModel) {
                                   fontWeight: 700,
                                   letterSpacing: '.18em',
                                 },
-                                children: 'AI · HEALTHCARE · SYSTEMS',
+                                children: 'SYSTEMS · SOFTWARE · DESIGN',
                               },
                             },
                           ],
@@ -309,7 +308,7 @@ async function renderOgCardNow(card: OgCardModel) {
                             fontWeight: 700,
                             letterSpacing: '.16em',
                           },
-                          children: 'OPERATING INDEX',
+                          children: 'AREAS OF EXPERTISE',
                         },
                       },
                       ...operatingLanes.map(([number, name, detail]) => ({

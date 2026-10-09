@@ -26,6 +26,7 @@ test('host sources are told apart from keywords and schemes', () => {
 
 // Drain review of 8bcf4716: the CSP audit's link check only knew bare origins.
 test('a host source allows a URL the way CSP3 matches it', () => {
+  /** @type {Array<[token: string, url: string, allowed: boolean, why?: string]>} */
   const cases = [
     ['https://cdn.example/site.css', 'https://cdn.example/site.css', true],
     ['https://cdn.example/site.css', 'https://cdn.example/Site.css', false, 'a path matches in its case'],

@@ -38,7 +38,8 @@ const contactPaths = [
 const cmdkSections = [
   { label: 'Selected Work', href: '#greatest-hits', desc: 'Three representative public projects.', badge: 'START' },
   { label: 'Live Apps', href: '#live', desc: 'A small preview of browser-ready work.', badge: 'LIVE' },
-  { label: 'Practice', href: '#skills', desc: 'AI implementation, healthcare systems, and infrastructure.', badge: 'SECTION' },
+  { label: 'Practice', href: '#skills', desc: 'Infrastructure, healthcare, software, and creative work.', badge: 'SECTION' },
+  { label: 'Experience', href: '/healthcare-it/', desc: 'A career across managed IT, public broadcasting, and healthcare.', badge: 'PAGE' },
   { label: 'Project Catalog', href: '/catalog/', desc: 'Browse the complete public project archive.', badge: 'ARCHIVE' },
   { label: 'AI Services', href: '/ai/', desc: 'Implementation, workflow automation, training, and ongoing support.', badge: 'TRACK' },
   { label: 'Resume', href: '/resume/', desc: 'Career history, skills, and experience.', badge: 'PAGE' },
@@ -54,13 +55,13 @@ const cmdkSections = [
         <span class="brand-mark" aria-hidden="true">MP</span>
         <span class="brand-copy">
           <strong>SysAdminDoc</strong>
-          <small>AI · Healthcare · Systems</small>
+          <small>Systems · Software · Design</small>
         </span>
       </a>
       <div class="nk" id="navLinks">
         <a href="#greatest-hits">Work</a>
         <a href="#skills">Practice</a>
-        <a href="/ai/">AI</a>
+        <a href="/healthcare-it/">Experience</a>
         <a href="/resume/">Resume</a>
         <a href="#connect">Contact</a>
         <div class="nav-indicator" id="navIndicator"></div>
@@ -100,7 +101,7 @@ const cmdkSections = [
           <p class="hero-summary">{careerProfile.operatingNote}</p>
           <div class="ha">
             <a href="#greatest-hits" class="btn bp">See my work <span aria-hidden="true">↓</span></a>
-            <a href="/ai/" class="btn bg2">AI services <span aria-hidden="true">→</span></a>
+            <a href="/healthcare-it/" class="btn bg2">My experience <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
@@ -151,7 +152,7 @@ const cmdkSections = [
             <span class="home-section-index">03 / Practice</span>
             <h2 id="practice-title">What I actually do.</h2>
           </div>
-          <p class="home-section-intro">Three areas, one person. I go deep in each of these instead of spreading thin across everything.</p>
+          <p class="home-section-intro">Practical software and hands-on creative work, backed by years in IT operations. Each draws on a different part of my experience.</p>
         </header>
         <div class="practice-list">
           {careerLanes.map((lane, index) => (
@@ -607,10 +608,10 @@ const cmdkSections = [
     text-transform:none;
   }
 
-  /* Practice: three cards, each a way in. */
+  /* Practice: four complementary areas on a balanced grid. */
   :global(body.route-home) .practice-list{
     display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:24px;
   }
   :global(body.route-home) .practice-row{

@@ -4,16 +4,15 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P0
 
-- [ ] P0: Recapture the 22 live-app screenshots so the nightly deploys again
-  Why: `Portfolio Refresh and Deploy` aborted at `deploy:preflight` every night from 2026-10-02 to 2026-10-09, so the last deploy is 2026-10-01 and the live site has missed every star, release and profile-feed change since. 22 manifest captures taken around 2026-07-08 crossed `STALE_DAYS = 90` together. The 75-day warning is in (38f96ef2), so only the recapture is left.
-  Evidence: `.tmp/refresh-and-deploy.log` (eight `ABORT ... at step "deploy:preflight"` lines, last `OK deploy:vps` on 2026-10-01). `.tmp/refresh-and-deploy-step-deploy-preflight.log` ("Live app availability audit failed: 44 issue(s)": 22 "manifest capture is 91-93d old" plus 22 stale screenshots, among them IconForge, SPECTRE, ImageXpert, ConvertFlow, ClipForge, Text-Filter-Editor, HurricaneMap, ApocalypseWatch and BetterTTS).
-  Touches: `scripts/capture-screenshots.mjs` (run, not changed), the capture manifest and images it writes, the `/screenshots/` and homepage visual baselines, `CLAUDE.md`.
-  Acceptance: the recapture runs through the build queue after 19:00, the new images are looked over, `audit:playwright:update` refreshes the baselines they move, `deploy:preflight` passes the live-app audit, and the next 03:00 run logs `OK deploy:vps`. The capture and the baseline update are browser and test runs, so they wait for the owner's go-ahead.
-  Complexity: S
-
 ### P1
 
 ### P2
+
+- [ ] P2: Verify the next scheduled refresh after the screenshot repair
+  Why: the 22 captures and their visual baselines are current again. The next 03:00 scheduled execution still needs its own recorded result.
+  Touches: `.tmp/refresh-and-deploy.log`, `.tmp/refresh-and-deploy-status.json`.
+  Acceptance: inspect the first scheduled run after October 9 and confirm `OK deploy:vps`, or address the specific failure it records.
+  Complexity: S
 
 - [ ] P2: Time the gate and the nightly, then parse dist/ once across the build audits
   Why: the build-pipeline rule asks for numbers before and after, and none exist for this repo. `build:ci` runs about twenty audits that each read and parse the built HTML on their own (`dom:audit`, `schema:audit`, `a11y:audit`, `links:audit`, `title-style:audit`, `search:audit`, `csp:audit:dist:style:elem` and more), so the same pages are parsed many times per build.

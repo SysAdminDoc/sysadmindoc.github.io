@@ -166,7 +166,7 @@ const cmdkSections = [
     {
       name: 'Base cmdk section',
       file: 'src/layouts/Base.astro',
-      anchor: "  { label: 'Healthcare IT'",
+      anchor: "  { label: 'Experience'",
       insert: `  { label: '${title}', href: '${route}', desc: '${description}', badge: 'PAGE' },\n`,
     },
   ];

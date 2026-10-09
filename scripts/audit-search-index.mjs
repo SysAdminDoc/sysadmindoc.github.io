@@ -9,7 +9,7 @@ const pagefindDir = path.join(distDir, 'pagefind');
 const requiredScopeLabels = [
   'AI Services',
   'Archive',
-  'Healthcare IT',
+  'Experience',
   'Home',
   'Language Lane',
   'Now',

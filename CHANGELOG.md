@@ -2,6 +2,20 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.49.0] - 2026-10-09
+
+### Changed
+- The experience page now covers managed IT services, public broadcasting, healthcare systems, software development, and creative work. It includes employment history, Photoshop and video experience, public project examples, and direct contact options.
+- The homepage and resume share the broader profile. Navigation, search labels, social previews, and review dates follow the same wording, with the existing healthcare page address preserved.
+- Replaced the daily schedule with career evidence and added accessible questions, clear section links, and layouts for phones and desktops in both themes.
+- Local unit tests use two workers so validation doesn't overwhelm the desktop.
+- Added HushGram, HushMessenger, HushPinterest, HushTelegram, HushThreads, and Spot2YTMusic to the reviewed project catalog.
+- Updated image rendering and build dependencies. The dependency check reports no known vulnerabilities.
+
+### Fixed
+- Refreshed all 22 live-app screenshots so stale captures no longer stop deployment. ClipForge captures now wait for the editor to finish loading.
+- Corrected fixture types in the release checks without changing the assertions.
+
 ## [v0.48.0] - 2026-10-09
 
 ### Added

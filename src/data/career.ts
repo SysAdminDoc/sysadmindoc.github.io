@@ -24,21 +24,21 @@ export interface CareerRole {
 
 export const careerProfile = {
   name: 'Matt Parker',
-  headline: 'I build tools, automate the tedious stuff, and keep healthcare systems running.',
+  headline: "I keep systems running and build what's missing.",
   /** The headline in a few words, for the homepage <title>: a search result shows about 60 characters. */
-  titleTagline: 'Tools, Automation and Healthcare Systems',
+  titleTagline: 'IT, Software & Creative Work',
   currentTitle: 'Sr. Technical Support Manager',
   currentCompany: 'Maven Imaging',
   location: 'Sarasota, FL',
-  summary: `${experienceLabel} in enterprise IT and healthcare systems. I help businesses pick the right AI tools, automate the work nobody wants to do manually, train the team, and stick around to make sure it actually works.`,
-  operatingNote: 'I build it, I document it, I teach your people how to run it. Then I go fix the next thing.',
+  summary: `${experienceLabel} across managed IT services, public broadcasting, and healthcare. I build software and automate workflows, with extensive hands-on experience in digital design, Photoshop, video editing, and remastering. I stay involved with support and training so people can use what I build.`,
+  operatingNote: 'Hands-on work with systems and software, plus digital design and video. Support and clear documentation are part of the job.',
 } as const;
 
 // The experience proof point is a stable, non-count claim.
 export const careerProofExperience = {
   label: 'Experience',
   value: experienceLabel,
-  detail: 'Enterprise IT and healthcare systems',
+  detail: 'Managed IT, broadcasting & healthcare',
 } as const;
 
 // The project/live-app proof points are derived from the live catalog so the
@@ -53,28 +53,36 @@ export function buildCareerProof(projectCount: number, liveCount: number) {
 
 export const careerLanes = [
   {
-    id: 'ai',
-    name: 'AI implementation',
-    short: 'AI tools · automation · enablement',
-    focus: 'I help you pick the right AI tools, wire them into your actual workflows, and train your team so the tools get used instead of forgotten.',
-    expertise: ['AI implementation', 'LLM tooling', 'Workflow automation', 'Prompt engineering', 'AI training', 'Process automation'],
-    href: '/ai/',
+    id: 'systems',
+    name: 'Infrastructure & operations',
+    short: 'Servers · networks · endpoints',
+    focus: 'Windows infrastructure, virtualization, networking, and endpoint management. Experience in always-on broadcasting and across multiple managed-service clients.',
+    expertise: ['Windows Server', 'Active Directory', 'SCCM', 'Cisco networking', 'Hyper-V', 'Monitoring'],
+    href: '/healthcare-it/#expertise-systems',
   },
   {
     id: 'healthcare',
-    name: 'Healthcare systems',
+    name: 'Healthcare & imaging',
     short: 'PACS/DICOM · healthcare IT · support',
-    focus: 'PACS, DICOM, hosted-service migrations, and the customer calls when something breaks. I own the problem until it stays fixed.',
+    focus: 'PACS, DICOM, DR panel configuration, and hosted-service migrations. Support that connects imaging workflows with the workstations and networks behind them.',
     expertise: ['PACS', 'DICOM', 'Healthcare IT', 'Hosted services', 'Migrations', 'Customer support'],
-    href: '/healthcare-it/',
+    href: '/healthcare-it/#expertise-healthcare',
   },
   {
-    id: 'systems',
-    name: 'Infrastructure & automation',
-    short: 'Windows · networks · software delivery',
-    focus: 'Windows infrastructure, networking, and the scripts and tools I build when the vendor solution doesn\'t exist or costs too much.',
-    expertise: ['Windows Server', 'Active Directory', 'Group Policy', 'SCCM', 'Hyper-V', 'Cisco networking'],
-    href: '/#skills',
+    id: 'software',
+    name: 'Software & automation',
+    short: 'Desktop · web · Android · AI tools',
+    focus: 'Purpose-built applications, scripts, and workflow automation. I also help teams apply AI tools to useful work and understand how to use them.',
+    expertise: ['Python', 'PowerShell', 'TypeScript', 'C# / .NET', 'AI implementation', 'Android'],
+    href: '/catalog/',
+  },
+  {
+    id: 'creative',
+    name: 'Digital design & video',
+    short: 'Photoshop · editing · remastering',
+    focus: 'Extensive hands-on experience with digital design, Photoshop, video editing, and remastering. I work on the visual side of a project as well as the software behind it.',
+    expertise: ['Digital design', 'Adobe Photoshop', 'Video editing', 'Remastering'],
+    href: '/healthcare-it/#expertise-creative',
   },
 ] as const;
 
@@ -90,6 +98,7 @@ export const careerSkills = [
   { name: 'Healthcare Systems', sub: 'PACS, DICOM, migrations, customer support' },
   { name: 'Enterprise Infrastructure', sub: 'Windows Server, AD, GPO, SCCM, Hyper-V' },
   { name: 'Development & Delivery', sub: 'Python, PowerShell, TypeScript, C#/.NET' },
+  { name: 'Digital Design & Video', sub: 'Adobe Photoshop, digital design, video editing, remastering' },
   { name: 'Customer Operations', sub: 'escalation, recovery, vendor coordination' },
   { name: 'Documentation & Training', sub: 'runbooks, knowledge bases, team enablement' },
 ] as const;
@@ -121,14 +130,14 @@ export const careerRoles: readonly CareerRole[] = [
     endDate: '2025-02-01',
     tag: '~11 years',
     tone: 'previous',
-    note: 'Full-time; concurrent with Maven Imaging’s part-time phase before the February 2025 transition.',
-    summary: 'Supported network, server, workstation, and broadcast-adjacent infrastructure for a regional PBS affiliate environment. Work included Windows Server, Active Directory, virtualization, endpoint management, Cisco networking, monitoring, and user support in an always-on media operations setting.',
+    note: 'Full-time. Overlapped with part-time work at Maven Imaging before the February 2025 transition.',
+    summary: 'Supported IT and broadcast equipment at a regional PBS station, including Grass Valley K2 video servers and teleprompters. Systems work covered Windows Server, Active Directory, DNS, on-premises Exchange, virtualization, endpoint management, Cisco networking, and user support.',
     highlights: [
-      'Supported and administered network, server, workstation, and broadcast infrastructure',
+      'Supported Grass Valley K2 video servers, teleprompters, and other broadcast or audiovisual equipment alongside the station\'s IT infrastructure',
       'Implemented and maintained SCCM for 100+ Windows workstations, including imaging, application deployment, updates, and lifecycle work',
       'Documented systems and procedures, coordinated vendors and escalations, and supported broadcast servers and automation platforms',
     ],
-    stack: ['Windows Server 2008 to 2016', 'Active Directory & GPO', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP'],
+    stack: ['Windows Server 2008 to 2016', 'Active Directory & GPO', 'DNS', 'Microsoft Exchange', 'Hyper-V', 'SCCM', 'PRTG', 'Cisco', 'Avaya VOIP', 'Grass Valley K2', 'Teleprompters'],
   },
   {
     role: 'IT Support Technician',

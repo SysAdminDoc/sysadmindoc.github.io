@@ -39,9 +39,9 @@ test('same-origin navigation and layout hold at desktop width', async ({ page })
   await prepare(page, '/', '#hero');
   expect(await overflow(page)).toBeLessThanOrEqual(1);
 
-  await page.locator('#nav a[href="/ai/"]').first().click();
-  await expect(page).toHaveURL(/\/ai\/$/);
-  await expect(page.locator('main.aisvc-page')).toBeVisible();
+  await page.locator('#nav a[href="/healthcare-it/"]').first().click();
+  await expect(page).toHaveURL(/\/healthcare-it\/$/);
+  await expect(page.locator('main.experience-page')).toBeVisible();
   expect(await overflow(page)).toBeLessThanOrEqual(1);
   expect(errors).toEqual([]);
 });

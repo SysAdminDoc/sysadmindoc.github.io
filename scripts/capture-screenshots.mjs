@@ -122,6 +122,12 @@ async function captureOne({ slug, url }) {
 
     await page.waitForTimeout(1500);
 
+    // ClipForge downloads its editing engine after the shell is interactive.
+    // Capture the ready editor, not the temporary initialization overlay.
+    if (slug === 'ClipForge') {
+      await page.locator('#loadingOverlay').waitFor({ state: 'hidden', timeout: 60000 });
+    }
+
     const title = await page.title().catch(() => '');
     const bodyText = await page.locator('body').textContent().catch(() => '');
     const errorHint = `${title} ${bodyText}`.slice(0, 400);

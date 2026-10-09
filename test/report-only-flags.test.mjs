@@ -24,13 +24,15 @@ test('a report-only flag counts as stray unless the run going now set it', () =>
   assert.deepEqual(strayReportOnlyFlags({ README_COUNTS_REPORT_ONLY: '1' }, null), ['README_COUNTS_REPORT_ONLY']);
   assert.deepEqual(strayReportOnlyFlags({ CATALOG_AUDIT_REPORT_ONLY: 'TRUE', PROVENANCE_REPORT_ONLY: 'yes' }, null), ['CATALOG_AUDIT_REPORT_ONLY', 'PROVENANCE_REPORT_ONLY']);
   assert.deepEqual(strayReportOnlyFlags({ README_COUNTS_REPORT_ONLY: '1', ...mark }, running), [], "the runner's own");
-  for (const [why, status, env] of [
+  /** @type {Array<[why: string, status: string | null, env: Record<string, string>]>} */
+  const cases = [
     ['the run is over', JSON.stringify({ status: 'deployed', pid: 4242, startedAt }), mark],
     ['another run', running, { [REPORT_ONLY_OWNER]: runnerMark(4243, startedAt) }],
     ['no mark', running, {}],
     ['no status file', null, mark],
     ['a torn status file', '{"status":"runn', mark],
-  ]) {
+  ];
+  for (const [why, status, env] of cases) {
     assert.deepEqual(strayReportOnlyFlags({ README_COUNTS_REPORT_ONLY: '1', ...env }, status), ['README_COUNTS_REPORT_ONLY'], why);
   }
 });

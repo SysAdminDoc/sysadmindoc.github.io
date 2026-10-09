@@ -19,11 +19,11 @@ const isActive = (key: ActiveRoute) => active === key;
       <span class="brand-mark" aria-hidden="true">MP</span>
       <span class="brand-copy">
         <strong>SysAdminDoc</strong>
-        <small>AI · Healthcare · Systems</small>
+        <small>Systems · Software · Design</small>
       </span>
     </a>
     <div class="nk" id="navLinks">
-      <a href="/#greatest-hits">Work</a>
+      <a href="/healthcare-it/" class={isActive('healthcare') ? 'active' : undefined} aria-current={isActive('healthcare') ? 'page' : undefined}>Experience</a>
       <a href="/catalog/" class={isActive('catalog') ? 'active' : undefined} aria-current={isActive('catalog') ? 'page' : undefined}>Projects</a>
       <a href="/ai/" class={isActive('ai') ? 'active' : undefined} aria-current={isActive('ai') ? 'page' : undefined}>AI</a>
       <a href="/resume/" class={isActive('resume') ? 'active' : undefined} aria-current={isActive('resume') ? 'page' : undefined}>Resume</a>

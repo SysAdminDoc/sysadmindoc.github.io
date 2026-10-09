@@ -1,3 +1,5 @@
+import { experienceLabel } from './identity';
+
 export interface InteriorOgPage {
   slug: string;
   route: `/${string}/`;
@@ -124,12 +126,12 @@ export const interiorOgPages: InteriorOgPage[] = [
   {
     slug: 'healthcare-it',
     route: '/healthcare-it/',
-    title: 'Healthcare IT',
-    description: 'Healthcare IT context for customer support, hosted workflows, migrations, vendor coordination, and support documentation.',
-    label: 'Healthcare Track',
+    title: 'Experience',
+    description: `Matt Parker brings ${experienceLabel} across managed IT, broadcasting, and healthcare, alongside software development, digital design, Photoshop, video editing, and remastering.`,
+    label: 'Technical & Creative',
     accent: '#5ccfc0',
     ogImage: '/og/healthcare-it.png',
-    ogImageAlt: 'Healthcare IT page social preview card',
+    ogImageAlt: 'Matt Parker technical and creative experience social preview card',
   },
   {
     slug: 'status',

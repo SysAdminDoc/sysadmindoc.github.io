@@ -33,7 +33,7 @@ const defaultCmdkSections: CmdkSection[] = [
   { label: 'Portfolio data', href: '/data/', desc: 'Data overview.', badge: 'PAGE' },
   { label: 'How this was built', href: '/colophon/', desc: 'Colophon overview.', badge: 'PAGE' },
   { label: 'Privacy', href: '/privacy/', desc: 'What this site keeps about visitors, for how long, and how to have it deleted.', badge: 'PAGE' },
-  { label: 'Healthcare IT', href: '/healthcare-it/', desc: 'Operational context for customer systems, support workflows, and migrations.', badge: 'TRACK' },
+  { label: 'Experience', href: '/healthcare-it/', desc: 'IT operations, software, healthcare systems, and digital design.', badge: 'PAGE' },
   { label: 'AI Services', href: '/ai/', desc: 'Fractional AI implementation, automation, and training for businesses on a monthly retainer.', badge: 'TRACK' },
 ];
 const {
@@ -111,7 +111,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     '@id': 'https://portfolio.getparkerai.com/#website',
     url: 'https://portfolio.getparkerai.com',
     name: 'Matt Parker Portfolio',
-    description: 'Career portfolio and public project archive spanning systems administration, healthcare technology support, and practical software work.',
+    description: 'Career portfolio and public projects spanning IT operations, software development, healthcare technology, and digital design.',
     publisher: { '@id': personId },
   },
   {
@@ -122,7 +122,7 @@ const jsonLdGraph: Record<string, unknown>[] = [
     jobTitle: careerProfile.currentTitle,
     worksFor: { '@type': 'Organization', name: 'Maven Imaging' },
     address: { '@type': 'PostalAddress', addressLocality: 'Sarasota', addressRegion: 'FL', addressCountry: 'US' },
-    knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Healthcare IT','Customer Support','Technical Documentation','Active Directory','Hyper-V','Cisco Networking','AI Implementation','LLM Tooling','Workflow Automation'],
+    knowsAbout: ['PowerShell','Python','JavaScript','Kotlin','C#','C++','Systems Administration','Healthcare IT','Customer Support','Technical Documentation','Active Directory','Hyper-V','Cisco Networking','AI Implementation','LLM Tooling','Workflow Automation','Digital Design','Adobe Photoshop','Video Editing','Video Remastering'],
     sameAs: ['https://github.com/SysAdminDoc','https://www.linkedin.com/in/matthewryanparker'],
   },
 ];

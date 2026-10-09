@@ -437,7 +437,7 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
     // audit:playwright), whose profile feed lists exactly six, so a count
     // that drops any of them fails (eighth drain review).
     await expect(page.locator('#live .lc2')).toHaveCount(6);
-    await expect(page.locator('#skills .practice-row')).toHaveCount(3);
+    await expect(page.locator('#skills .practice-row')).toHaveCount(4);
     await expect(page.locator('#catalog .ca')).toHaveCount(0);
     await expect(page.locator('#catalog .handoff-links a')).toHaveCount(3);
     await expect(page.locator('.hero-selected, .hero-showcase, .video-grid')).toHaveCount(0);

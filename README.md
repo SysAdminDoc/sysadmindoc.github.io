@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.48.0-blue)
+![Version](https://img.shields.io/badge/version-0.49.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -22,10 +22,11 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (207 feed-backed / 208 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (211 feed-backed / 214 local fallback), skills (8)
 - **Studio design system**: dark by default with a matching light theme, one blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
-- **Shared career dossier**: résumé-backed profile, expertise, proof, education, and role data reused by the homepage, AI services, healthcare track, printable résumé, and JSON Resume export
-- **Homepage on one 1240px grid**: positioning with a proof card, three selected-work cards, six live-app cards, three practice cards, catalog and search handoffs that say where they go, and a contact form next to direct links
+- **Shared career profile**: experience across managed IT, public broadcasting, healthcare, and creative work, reused by the homepage, experience page, printable résumé, and JSON Resume export
+- **Experience page**: infrastructure, healthcare, software, and digital design. Includes employment history, Photoshop and video experience, public software examples, and contact options. The existing `/healthcare-it/` address and section links continue to work.
+- **Homepage on one 1240px grid**: positioning with a proof card, selected projects, six live-app cards, four practice areas, catalog and search links, and a contact form next to direct links
 - **Focused AI implementation track**: three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
 - **Build-time GitHub API**: stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline**: year-in-review page built from release and project-push evidence
@@ -89,7 +90,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 208 --expected-releases 60 --expected-feed-items 208
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 214 --expected-releases 60 --expected-feed-items 214
 npm run smoke:release -- --tag v<version> --asset sysadmindoc-portfolio-v<version>.zip --min-size 1000000
 npm run release -- preflight # then pack, publish, smoke: cut the GitHub release from the gate's dist/ (--root <checkout> for an older tag)
 npm run queued -- deploy:preflight # run any heavy script inside a slot of the machine's build queue (BUILD_QUEUE_SCRIPT), or directly when there is none

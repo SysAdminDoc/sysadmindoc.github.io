@@ -302,7 +302,9 @@ test('a self-test run counts as a rejection only when it says why, not when it h
   // rejection. A real abort exits 134 on Windows and dies of SIGABRT elsewhere.
   const aborted = runAudit(['-e', 'console.error("planted violation found"); process.abort()'], { cwd: root });
   assert.match(plantVerdict(aborted, /planted violation found/) ?? '', /^(crashed \(exit code 134, a Node abort\)|was killed before it exited), which is no rejection$/);
-  for (const [status, reason] of [[3221225477, 'crashed (status 0xC0000005)'], [3221225725, 'crashed (status 0xC00000FD)']]) {
+  /** @type {Array<[status: number, reason: string]>} */
+  const crashCases = [[3221225477, 'crashed (status 0xC0000005)'], [3221225725, 'crashed (status 0xC00000FD)']];
+  for (const [status, reason] of crashCases) {
     const crashed = { status, output: 'planted violation found\n', timedOut: false };
     assert.equal(noVerdict(crashed), reason);
     assert.equal(plantVerdict(crashed, /planted violation found/), `${reason}, which is no rejection`);

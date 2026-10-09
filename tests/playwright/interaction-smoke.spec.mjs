@@ -210,14 +210,14 @@ test.describe('rendered interaction smoke', () => {
       /script-src 'self'/,
     );
 
-    const servicesLink = page.locator('#nav a[href="/ai/"]').first();
-    await servicesLink.hover();
-    await servicesLink.focus();
+    const experienceLink = page.locator('#nav a[href="/healthcare-it/"]').first();
+    await experienceLink.hover();
+    await experienceLink.focus();
     await page.waitForTimeout(500);
     await expectNoCspViolations(page);
-    await servicesLink.click();
-    await expect(page).toHaveURL(/\/ai\/$/);
-    await expect(page.locator('main.aisvc-page')).toBeVisible();
+    await experienceLink.click();
+    await expect(page).toHaveURL(/\/healthcare-it\/$/);
+    await expect(page.locator('main.experience-page')).toBeVisible();
     await expectNoCspViolations(page);
 
     // The interior nav "Catalog" now points at the full static /catalog/ route.
@@ -1057,7 +1057,7 @@ test.describe('focus-not-obscured by sticky navigation', () => {
 const contactFormPages = [
   { path: '/', subject: '' },
   { path: '/ai/', subject: 'AI workflow' },
-  { path: '/healthcare-it/', subject: 'Healthcare IT' },
+  { path: '/healthcare-it/', subject: 'IT experience and projects' },
 ];
 
 async function fillContactForm(page) {
