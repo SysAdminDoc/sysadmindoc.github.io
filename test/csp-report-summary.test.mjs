@@ -75,6 +75,24 @@ test('categories are counted, and reports from before the store had them count a
   assert.deepEqual(summary.firstParty.map((group) => group.key), ['script-src-elem inline']);
 });
 
+// Rows stored before the sink filed injected inline code apart still say
+// first-party (2026-09-29: 80 of them in four days, none the site's own).
+test("stored first-party rows of inline code that isn't the site's own count as extension noise", () => {
+  const injected = { sample: '[other]', source: '(invalid-url)' };
+  const summary = summarizeReports([
+    ...reportsOver(4, 30, { ...injected, directive: 'style-src-elem' }),
+    ...reportsOver(4, 30, injected),
+    ...reportsOver(4, 30, { ...injected, source: `${site}/catalog/` }),
+    ...reportsOver(4, 30, { sample: 'document.documentElement.dataset.th', source: '(invalid-url)' }),
+  ]);
+  assert.equal(summary.counts.extension, 8);
+  assert.equal(summary.counts['first-party'], 8);
+  assert.deepEqual(summary.newViolations.map((group) => group.key).sort(), [
+    'script-src-elem inline "[other]"',
+    'script-src-elem inline "document.documentElement.dataset.th"',
+  ]);
+});
+
 test('a new first-party violation needs repeated reports an hour or more apart before it counts', () => {
   assert.equal(ALERT_MIN_REPORTS, 3);
   assert.equal(ALERT_MIN_SPAN_MS, 60 * 60_000);

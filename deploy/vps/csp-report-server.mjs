@@ -201,11 +201,29 @@ function schemeOf(value) {
   return value.match(/^([a-z][a-z0-9+.-]*)(?::|$)/i)?.[1]?.toLowerCase() ?? null;
 }
 
+// Browsers report code an extension injects into a page as the page's own: the
+// 2026-09-29 nightly counted 43 style-src-elem and 37 script-src-elem
+// first-party reports in four days, every one with an [other] sample and an
+// (invalid-url) source. So an inline block whose sample is none of the site's
+// own and whose source isn't the site is filed with the extensions. The site's
+// own blocks keep their sample, and a refused inline block in the site's own
+// page or script names that as its source, so a real regression still counts
+// as first-party.
+export function injectedInline(report, siteOrigin) {
+  if (report?.blocked !== 'inline' || report?.sample !== OTHER_SAMPLE) return false;
+  try {
+    return new URL(report.source).origin !== siteOrigin;
+  } catch {
+    return true;
+  }
+}
+
 // Every field used here was written by whoever sent the report, so a category
 // says what the report claims, not what happened. The live smoke's reports
 // (scripts/smoke-live-site.mjs) are synthetic; anything an extension's file
-// caused or tripped over is an extension's; the rest splits by whether the
-// document is this site.
+// caused or tripped over, or an extension's injected inline code
+// (injectedInline), is an extension's; the rest splits by whether the document
+// is this site.
 export function classifyReport(report, siteOrigin = DEFAULT_CONFIG.siteOrigin) {
   let documentOrigin = null;
   let documentPath = '';
@@ -224,7 +242,8 @@ export function classifyReport(report, siteOrigin = DEFAULT_CONFIG.siteOrigin) {
   }
   if (documentPath.startsWith('/__live-smoke-') || blockedHost === 'live-smoke.invalid') return 'synthetic';
   if ([report?.blocked, report?.source].some((value) => EXTENSION_SCHEMES.has(schemeOf(value)))) return 'extension';
-  return documentOrigin === siteOrigin ? 'first-party' : 'other';
+  if (documentOrigin !== siteOrigin) return 'other';
+  return injectedInline(report, siteOrigin) ? 'extension' : 'first-party';
 }
 
 function directive(value) {

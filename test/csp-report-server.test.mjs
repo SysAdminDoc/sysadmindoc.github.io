@@ -229,6 +229,33 @@ test('classifyReport tells the smoke, extensions, this site and everything else 
   assert.equal(classifyReport({ document: 'https://staging.example.test/' }, 'https://staging.example.test'), 'first-party');
 });
 
+// 2026-09-29: 80 first-party reports in four days, every one an [other] sample
+// with an (invalid-url) source, which is an extension's injected code.
+test("classifyReport files inline code that isn't the site's own, from no site source, with the extensions", () => {
+  const site = 'https://portfolio.getparkerai.com/';
+  const injected = { document: site, blocked: 'inline', sample: '[other]', source: '(invalid-url)' };
+  assert.equal(classifyReport(injected), 'extension');
+  assert.equal(classifyReport({ ...injected, source: undefined }), 'extension', 'no source is no site URL');
+  assert.equal(classifyReport({ ...injected, source: 'https://cdn.example.test/x.js' }), 'extension');
+  assert.equal(classifyReport({ ...injected, source: `${site}catalog/` }), 'first-party', "refused in the site's own page");
+  assert.equal(classifyReport({ ...injected, sample: 'document.documentElement.dataset.th' }), 'first-party', "the site's own block keeps its sample");
+  assert.equal(classifyReport({ ...injected, sample: undefined }), 'first-party', 'no sample says nothing either way');
+  assert.equal(classifyReport({ ...injected, blocked: 'eval' }), 'first-party', 'only inline code');
+  assert.equal(classifyReport({ ...injected, document: 'https://copy.example.test/' }), 'other');
+
+  // The same through the sink, which keeps only the site's own samples.
+  const own = ['document.documentElement.dataset.theme = localStorage.getItem'];
+  const posted = (sample) =>
+    normalizeReport(
+      { type: 'csp-violation', body: { documentURL: site, blockedURL: 'inline', effectiveDirective: 'script-src-elem', sample } },
+      new Date('2026-09-29T12:00:00.000Z'),
+      DEFAULT_CONFIG.siteOrigin,
+      { ownSamples: own },
+    );
+  assert.equal(posted(own[0].slice(0, 40)).category, 'first-party', 'a planted report with a real first-party sample');
+  assert.equal(posted('window.__extCfg={id:"u-1234"};').category, 'extension');
+});
+
 test('the site origin must be a bare https origin', () => {
   assert.equal(loadConfig({}).siteOrigin, 'https://portfolio.getparkerai.com');
   assert.equal(loadConfig({ CSP_REPORT_SITE_ORIGIN: 'https://staging.example.test' }).siteOrigin, 'https://staging.example.test');
@@ -269,7 +296,8 @@ test('reporter appends a redacted report and returns a stored marker', async () 
     const stored = JSON.parse(lines[0]);
     assert.equal(stored.directive, 'style-src');
     assert.equal(stored.blocked, 'inline');
-    assert.equal(stored.category, 'first-party');
+    // None of the site's own code, and no source in the site: an extension's.
+    assert.equal(stored.category, 'extension');
     assert.match(stored.sample, MARKER);
     assert.doesNotMatch(lines[0], /48151623|visitor/);
   });

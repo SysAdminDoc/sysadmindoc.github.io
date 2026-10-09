@@ -2,7 +2,7 @@
 // says what visitors' browsers refused. Anyone can post a report, so nothing
 // here trusts a value: a line that doesn't parse is counted and skipped, and
 // every string that reaches a log goes through printable() first.
-import { REPORT_CATEGORIES } from '../../deploy/vps/csp-report-server.mjs';
+import { injectedInline, REPORT_CATEGORIES } from '../../deploy/vps/csp-report-server.mjs';
 
 // A first-party violation the nightly hasn't reported before fails the run
 // once it has come in at least this often, with its first and last report at
@@ -81,6 +81,20 @@ function spanText(ms) {
   return ms < 2 * 60 * 60_000 ? `${Math.round(ms / 60_000)} min` : `${(ms / (60 * 60_000)).toFixed(1)} h`;
 }
 
+// Rows the sink stored before it filed injected inline code with the
+// extensions still say first-party, so they're read the way it files them now.
+function categoryOf(report) {
+  const category = REPORT_CATEGORIES.includes(report?.category) ? report.category : 'legacy';
+  if (category !== 'first-party') return category;
+  let documentOrigin = null;
+  try {
+    documentOrigin = new URL(report.document).origin;
+  } catch {
+    documentOrigin = null;
+  }
+  return injectedInline(report, documentOrigin) ? 'extension' : category;
+}
+
 function receivedAtOf(report) {
   if (typeof report?.receivedAt !== 'string') return null;
   const time = Date.parse(report.receivedAt);
@@ -101,7 +115,7 @@ export function summarizeReports(
   const counts = Object.fromEntries(SUMMARY_CATEGORIES.map((name) => [name, 0]));
   const groups = new Map();
   for (const report of reports) {
-    const category = REPORT_CATEGORIES.includes(report?.category) ? report.category : 'legacy';
+    const category = categoryOf(report);
     counts[category] += 1;
     if (category !== 'first-party') continue;
     const key = violationKey(report);

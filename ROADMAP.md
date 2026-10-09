@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
   Complexity: S
 
-- [ ] P3: Stop counting extension-injected inline code as first-party CSP violations
-  Why: the nightly flagged 43 style-src-elem and 37 script-src-elem "first-party" reports over about four days. Every one has sample `[other]` and source `(invalid-url)`, which fits code a browser extension injects rather than the site's own hash-pinned inline blocks, so the alert is noise that hides a real regression.
-  Evidence: `npm run csp:reports` on 2026-09-29 (mostly `/` and `/catalog/`, plus 42 style-src-attr).
-  Touches: the category logic in `scripts/lib/csp-report-summary.mjs` and the sample classes in `deploy/vps/csp-report-server.mjs`.
-  Acceptance: an inline report whose sample matches none of the site's own inline blocks and whose source is not a site URL is filed as extension noise, a planted report with a real first-party sample still counts as first-party, and a test covers both.
-  Complexity: S
-
 - [ ] P3: Say so when a report-only flag is set outside the nightly runner
   Why: `README_COUNTS_REPORT_ONLY` and the other report-only flags turn a failing check into a skip. The nightly reports what it skipped after deploying, but a manual `deploy:preflight` then `deploy:vps` with the flag left in a shell ships the drift with nothing reporting it.
   Evidence: twenty-first review; with `--expected-releases` changed, the test fails without the flag and skips with it.

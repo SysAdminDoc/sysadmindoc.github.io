@@ -17,6 +17,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The build's security policy check reads a policy the way browsers do. The first copy of a repeated rule counts, keywords match in any case, a style rule that isn't set at all counts as allowing everything, and equivalent spellings of a hash or host no longer fail the check.
 - When a contact email or push can't get through, the log names the network reason (a reset, a DNS failure, a timeout) instead of a bare "fetch failed". Emails also go out at most two a second, so a backlog sent after a restart stays inside the mail service's rate limit.
 - The README count test fails on a corrupt project feed even when the release list hasn't been generated. Before, the missing file turned the whole check into a skip.
+- Inline code a browser extension injects into a page no longer shows up as the site's own CSP violation. If the code isn't one of the site's own blocks and didn't come from the site, the report sink and the nightly summary both file it with the extensions, older stored reports included. Over four days that was 80 false alarms.
 - The gate self-test no longer counts a planted audit that crashed (a Node abort, an access violation, a stack overflow) as having caught the plant.
 
 ## [v0.47.0] - 2026-09-29
