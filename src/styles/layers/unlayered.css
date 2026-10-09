@@ -1097,9 +1097,11 @@ body.route-home .ca-side{grid-column:2;grid-row:1;justify-self:end}
    six rows of chips ahead of the first project (v0.46.0 phone captures of
    /catalog/). The padding leaves a focused chip's outline room inside the
    scroll box, and the margins take it back so the chips and the gaps around
-   them stay where they were. */
+   them stay where they were. The empty item at the end keeps room after the
+   last chip where a browser leaves a scrolling flex row's end padding out. */
 @media(max-width:640px){
   .cf{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;margin:-6px -6px 18px;padding:6px;scroll-padding-inline:6px}
+  .cf::after{content:'';flex:none;width:1px}
   .catalog-views{margin-bottom:6px}
   .cf .fb{flex:none}
 }
