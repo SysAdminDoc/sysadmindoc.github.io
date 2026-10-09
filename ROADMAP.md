@@ -8,6 +8,13 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
+- [ ] P2: Time the gate and the nightly, then parse dist/ once across the build audits
+  Why: the build-pipeline rule asks for numbers before and after, and none exist for this repo. `build:ci` runs about twenty audits that each read and parse the built HTML on their own (`dom:audit`, `schema:audit`, `a11y:audit`, `links:audit`, `title-style:audit`, `search:audit`, `csp:audit:dist:style:elem` and more), so the same pages are parsed many times per build.
+  Evidence: the `build:ci` chain in `package.json`; the queue and single-build change of 2026-10-09 has no timing yet.
+  Touches: the build audits under `scripts/`, a shared parsed-page cache under `scripts/lib/`, `CLAUDE.md` (timings).
+  Acceptance: `deploy:preflight` and each `build:ci` step are timed once before the change and once after, the numbers go in `CLAUDE.md`, and each built page is parsed once per build with every audit's verdict unchanged. Needs a build run, so it waits for one to be asked for.
+  Complexity: M
+
 - [ ] P2: Fold the stacked stylesheet layers into one design system
   Why: v0.46.0's Studio block sits on top of seven earlier redesigns (foundation through additions, then unlayered), so a rule often has three or four older copies below it. The override audit only catches repeats of one selector inside one file, and changing a component still means chasing specificity across files. The scroll-reveal transform and the old `section::before` sweep both bit during the redesign.
   Evidence: v0.46.0 redesign, 2026-09-29; `src/styles/global.css` imports eight layers plus `layers/unlayered.css`.

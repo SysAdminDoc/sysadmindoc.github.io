@@ -12,10 +12,10 @@ const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const scriptPath = fileURLToPath(import.meta.url);
 const selfTest = process.argv.includes('--self-test');
 
-const publicMarkdownAllowlist = new Set(['README.md']);
+// CHANGELOG.md is tracked, and scripts/release.mjs reads the release notes from it.
+const publicMarkdownAllowlist = new Set(['README.md', 'CHANGELOG.md']);
 const localOnlyMarkdownNames = [
   'AUTONOMOUS-LOOP-STATE.md',
-  'CHANGELOG.md',
   'COMPLETED.md',
   'HANDOFF.md',
   'PROJECT_CONTEXT.md',

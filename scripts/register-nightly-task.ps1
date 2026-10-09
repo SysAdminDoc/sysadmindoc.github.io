@@ -8,7 +8,9 @@
     through `conhost.exe --headless`, so no console window ever appears on the desktop (a hidden
     window style still flashes one). It uses the non-versioned node.exe path, starts late when
     the PC was asleep or off, and has no battery conditions: a Modern Standby desktop defers
-    battery-flagged tasks indefinitely instead of counting them as missed.
+    battery-flagged tasks indefinitely instead of counting them as missed. When BUILD_QUEUE_SCRIPT
+    names the machine's build queue, the run waits for a slot there like any other build; time in
+    line counts against the two-hour limit.
 
     Registering again replaces the task, so running this twice still leaves exactly one.
 
@@ -68,7 +70,16 @@ if ($node -match '\\WindowsApps\\') {
 }
 $conhost = Join-Path $env:WINDIR 'System32\conhost.exe'
 
-$action = New-ScheduledTaskAction -Execute $conhost -Argument ("--headless `"{0}`" scripts\refresh-and-deploy.mjs" -f $node) -WorkingDirectory $repo
+# With a machine build queue the run takes a slot like any other build, so the
+# preflight's build and browser audits never pile onto builds already going.
+$queue = if ($env:BUILD_QUEUE_SCRIPT) { $env:BUILD_QUEUE_SCRIPT } else { [Environment]::GetEnvironmentVariable('BUILD_QUEUE_SCRIPT', 'User') }
+$command = "`"{0}`" scripts\refresh-and-deploy.mjs" -f $node
+if ($queue -and (Test-Path -LiteralPath $queue)) {
+    $pwsh = (Get-Command pwsh.exe -ErrorAction Stop).Source
+    $command = "`"{0}`" -NoProfile -NonInteractive -File `"{1}`" -Label `"portfolio nightly`" -Run `"& '{2}' scripts\refresh-and-deploy.mjs`"" -f $pwsh, $queue, $node
+}
+
+$action = New-ScheduledTaskAction -Execute $conhost -Argument "--headless $command" -WorkingDirectory $repo
 $trigger = New-ScheduledTaskTrigger -Daily -At $At
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -WakeToRun -ExecutionTimeLimit (New-TimeSpan -Hours $runLimitHours) -MultipleInstances IgnoreNew
 $principal = New-ScheduledTaskPrincipal -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited
@@ -76,4 +87,5 @@ $description = "Nightly refresh and deploy of portfolio.getparkerai.com, registe
 
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Description $description -Force | Out-Null
 $count = @(Get-ScheduledTask | Where-Object TaskName -eq $TaskName).Count
-Write-Host "Registered '$TaskName': daily at $At, $count task with that name, node at $node."
+$queueNote = if ($command -match '-Label') { "inside the build queue ($queue)" } else { 'directly (no build queue on this machine)' }
+Write-Host "Registered '$TaskName': daily at $At, $count task with that name, node at $node, run $queueNote."

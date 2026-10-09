@@ -127,7 +127,7 @@ function stepLogPath(label) {
 // exit writes that tail into the main log so the failure reads back without a
 // rerun, then rejects with the step label (which the caller records as the
 // failed step).
-function step(label, command, args) {
+function step(label, command, args, extraEnv = {}) {
   return new Promise((resolve, reject) => {
     log(`START ${label}`);
     const stepLog = stepLogPath(label);
@@ -192,7 +192,7 @@ function step(label, command, args) {
     // `detached` makes the shell a process-group leader on POSIX so the timeout
     // can kill the group; on Windows it would open a new console, so not there.
     const child = spawn([command, ...args].join(' '), {
-      env,
+      env: { ...env, ...extraEnv },
       shell: true,
       stdio: ['ignore', 'pipe', 'pipe'],
       windowsHide: true,
@@ -434,7 +434,8 @@ async function main() {
     }
 
     // The build already ran inside preflight; reuse it rather than rebuilding.
-    await step('deploy:vps', 'npm', ['run', 'deploy:vps']);
+    // deploy:vps still refuses a dist/ built from the committed fixtures.
+    await step('deploy:vps', 'npm', ['run', 'deploy:vps'], { SKIP_BUILD: '1' });
     const cspViolations = await readCspReports();
 
     const elapsed = ((Date.now() - startedAt.getTime()) / 1000).toFixed(0);

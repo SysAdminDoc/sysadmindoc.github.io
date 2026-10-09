@@ -91,6 +91,8 @@ npm run endpoints:audit # verify built public JSON/text/script endpoint contract
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
 npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 208 --expected-releases 60 --expected-feed-items 208
 npm run smoke:release -- --tag v<version> --asset sysadmindoc-portfolio-v<version>.zip --min-size 1000000
+npm run release -- preflight # then pack, publish, smoke: cut the GitHub release from the gate's dist/ (--root <checkout> for an older tag)
+npm run queued -- deploy:preflight # run any heavy script inside a slot of the machine's build queue (BUILD_QUEUE_SCRIPT), or directly when there is none
 npm run audit:perf     # run local Chromium performance/bfcache smoke checks against a preview URL
 npm run forced-colors:audit # verify forced-colors SVG data visualizations after build
 npm run lhci:audit     # run advisory Lighthouse budgets against the built dist/
@@ -325,6 +327,9 @@ runs as the scheduled task "Portfolio Refresh and Deploy", daily at 03:00.
 the task (running it twice still leaves one), and `-Check` reports whether it
 exists, is enabled, and whether the last run was killed. The task starts node
 through `conhost.exe --headless`, so no window ever appears on the desktop.
+When `BUILD_QUEUE_SCRIPT` names a machine build queue at registration, the run
+waits for a slot there first, and its deploy step ships the `dist/` the
+preflight just built instead of building the site again.
 Every run writes `.tmp/refresh-and-deploy-status.json`: `running` before the
 first step, then `deployed`, `drift`, `dry-run` or `aborted` with the failing
 step. Each step has a timeout (20 minutes for fetch-stars, 5 for

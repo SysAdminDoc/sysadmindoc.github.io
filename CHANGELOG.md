@@ -4,6 +4,13 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Releases come from one script in four steps (preflight, pack, publish, smoke). Each step refuses to run before the one it needs, the notes are the whole changelog section for that version, and the ZIP comes out byte for byte the same from the same build.
+- Heavy runs can wait their turn in the PC's shared build queue with `npm run queued -- <script>`. The nightly task does the same when it's registered on a machine that has one.
+
+### Fixed
+- The nightly deploy ships the build its preflight just made. It used to build the whole site a second time.
+
 ## [v0.47.0] - 2026-09-29
 
 ### Added

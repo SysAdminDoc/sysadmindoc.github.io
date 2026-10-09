@@ -556,6 +556,34 @@ test('a failed deploy:vps does not claim the old deployment is still live', { ti
   assert.match(beforeShip.detail, /the previous deployment is still live/);
 });
 
+// The preflight ends in a full build of the real data, so the deploy ships that
+// dist/ instead of building the whole site a second time.
+test('deploy:vps reuses the preflight build instead of building again', { timeout: HANG_BOUND_MS }, async (t) => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-refresh-'));
+  t.after(() => fs.rm(dir, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 }));
+  await writeCspFixture(dir);
+  const record = (file) => `node -e "require('fs').writeFileSync('${file}', process.env.SKIP_BUILD || 'unset')"`;
+  await fs.writeFile(
+    path.join(dir, 'package.json'),
+    JSON.stringify({
+      name: 'refresh-fixture',
+      private: true,
+      scripts: {
+        'fetch-stars': 'node -e ""',
+        'profile-feed:sync': 'node -e ""',
+        'deploy:preflight': record('preflight-skip.txt'),
+        'deploy:vps': record('deploy-skip.txt'),
+        'csp:reports': 'node csp.cjs',
+      },
+    }),
+  );
+  const { SKIP_BUILD: _ignored, ...outside } = process.env;
+  const { exited } = runRunner(dir, { ...outside, GITHUB_TOKEN: 'test-token', PORTFOLIO_VPS_SSH: 'deploy@203.0.113.10', npm_config_update_notifier: 'false' });
+  assert.equal(await exited, 0);
+  assert.equal(await fs.readFile(path.join(dir, 'deploy-skip.txt'), 'utf8'), '1', 'the deploy reuses dist/');
+  assert.equal(await fs.readFile(path.join(dir, 'preflight-skip.txt'), 'utf8'), 'unset', 'the preflight still builds');
+});
+
 // npm test runs inside the preflight and inherits these flags. Tests strip the
 // shared list, so a flag the runner sets has to be on it.
 test('every report-only flag the nightly sets is one the tests know to strip', async () => {
