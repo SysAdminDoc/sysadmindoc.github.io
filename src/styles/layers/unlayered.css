@@ -1093,6 +1093,16 @@ body.route-home .ca-side{grid-column:2;grid-row:1;justify-self:end}
    [hidden] rule alongside its author-level display behavior. */
 .catalog-more[hidden]{display:none!important}
 @media(max-width:640px){.catalog-more{white-space:normal}}
+/* On phones each filter group is one row that scrolls sideways, instead of
+   six rows of chips ahead of the first project (v0.46.0 phone captures of
+   /catalog/). The padding leaves a focused chip's outline room inside the
+   scroll box, and the margins take it back so the chips and the gaps around
+   them stay where they were. */
+@media(max-width:640px){
+  .cf{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;margin:-6px -6px 18px;padding:6px;scroll-padding-inline:6px}
+  .catalog-views{margin-bottom:6px}
+  .cf .fb{flex:none}
+}
 body.route-home .ca-kind,
 body.route-home .ca-age,
 body.route-home .ca-side .lb2{font-size:12px;color:var(--t3)}

@@ -9,6 +9,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - The report-only switches the nightly uses (`CATALOG_AUDIT_REPORT_ONLY`, `PROVENANCE_REPORT_ONLY`, `README_COUNTS_REPORT_ONLY`) now belong to the nightly alone. `npm test` warns when one is set anywhere else, and `deploy:preflight` won't start with one, because a manual deploy would ship whatever it let through with nothing reporting it.
 - Heavy runs can wait their turn in the PC's shared build queue with `npm run queued -- <script>`. The nightly task does the same when it's registered on a machine that has one.
 
+### Changed
+- On a phone the catalog's Show and Category filters each sit in one row you can swipe sideways. At 390px they used to wrap into six rows of chips, about 3 1/2 inches of scrolling before the first project. Tabbing to a chip scrolls it into view with its focus outline showing.
+
 ### Fixed
 - Live app screenshots now warn once they're 75 days old, in the audit and in the nightly's status, so there's two weeks to recapture before the 90 day check stops the deploy. Last time every capture crossed the line on the same day with no notice.
 - The nightly deploy ships the build its preflight just made. It used to build the whole site a second time.

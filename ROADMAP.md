@@ -4,11 +4,11 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P0
 
-- [ ] P0: Recapture the 22 live-app screenshots so the nightly deploys again, and warn before the 90-day line
-  Why: `Portfolio Refresh and Deploy` aborted at `deploy:preflight` every night from 2026-10-02 to 2026-10-09, so the last deploy is 2026-10-01 and the live site has missed every star, release and profile-feed change since. The cause is a time bomb, not a regression. 22 manifest captures taken around 2026-07-08 crossed `STALE_DAYS = 90` together, and the audit has no earlier warning.
-  Evidence: `.tmp/refresh-and-deploy.log` (eight `ABORT ... at step "deploy:preflight"` lines, last `OK deploy:vps` on 2026-10-01). `.tmp/refresh-and-deploy-step-deploy-preflight.log` ("Live app availability audit failed: 44 issue(s)": 22 "manifest capture is 91-93d old" plus 22 stale screenshots, among them IconForge, SPECTRE, ImageXpert, ConvertFlow, ClipForge, Text-Filter-Editor, HurricaneMap, ApocalypseWatch and BetterTTS). `scripts/audit-live-apps.mjs:15` and `:161-171`. Found during the SysAdminDoc profile research pass.
-  Touches: `scripts/capture-screenshots.mjs` (recapture), the capture manifest it writes, `scripts/audit-live-apps.mjs` (a warning band, for example from 75 days, that the nightly's summary surfaces before the hard fail), its tests, `CLAUDE.md`.
-  Acceptance: `deploy:preflight` passes the live-app audit, the next 03:00 run logs `OK deploy:vps`, and a test proves a capture 76 days old warns without failing while one 91 days old still fails. The capture job is heavy browser work, so it runs through the build queue after hours.
+- [ ] P0: Recapture the 22 live-app screenshots so the nightly deploys again
+  Why: `Portfolio Refresh and Deploy` aborted at `deploy:preflight` every night from 2026-10-02 to 2026-10-09, so the last deploy is 2026-10-01 and the live site has missed every star, release and profile-feed change since. 22 manifest captures taken around 2026-07-08 crossed `STALE_DAYS = 90` together. The 75-day warning is in (38f96ef2), so only the recapture is left.
+  Evidence: `.tmp/refresh-and-deploy.log` (eight `ABORT ... at step "deploy:preflight"` lines, last `OK deploy:vps` on 2026-10-01). `.tmp/refresh-and-deploy-step-deploy-preflight.log` ("Live app availability audit failed: 44 issue(s)": 22 "manifest capture is 91-93d old" plus 22 stale screenshots, among them IconForge, SPECTRE, ImageXpert, ConvertFlow, ClipForge, Text-Filter-Editor, HurricaneMap, ApocalypseWatch and BetterTTS).
+  Touches: `scripts/capture-screenshots.mjs` (run, not changed), the capture manifest and images it writes, the `/screenshots/` and homepage visual baselines, `CLAUDE.md`.
+  Acceptance: the recapture runs through the build queue after 19:00, the new images are looked over, `audit:playwright:update` refreshes the baselines they move, `deploy:preflight` passes the live-app audit, and the next 03:00 run logs `OK deploy:vps`. The capture and the baseline update are browser and test runs, so they wait for the owner's go-ahead.
   Complexity: S
 
 ### P1
@@ -30,13 +30,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Complexity: L
 
 ### P3
-
-- [ ] P3: Keep the catalog filters to one row each on phones
-  Why: at 390px the Show and Category filters wrap to six rows of chips, about 3 1/2 inches of scrolling before the first project.
-  Evidence: v0.46.0 phone captures of `/catalog/`, 2026-09-29.
-  Touches: `src/components/CatalogSection.astro`, `src/styles/layers/unlayered.css`.
-  Acceptance: each filter group is one horizontally scrollable row (or a menu) under 640px, every chip stays reachable by keyboard, and the phone gutter check passes.
-  Complexity: S
 
 - [ ] P3: Load the browser too when checking the preflight's audit on a busy PC
   Why: b8a38227's run slowed only node process starts; Chromium and its renderers ran at full speed, and the slowdown fell in global setup, outside the 90 s and 10 s limits, so the limits never met the load.
