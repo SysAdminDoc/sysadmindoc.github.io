@@ -581,9 +581,12 @@ export function createLeadStore(storePath, fileSystem = fs) {
 
   /**
    * Rewrites the store without leads received before `cutoffMs`, and without
-   * their status lines. It runs in the append queue, so no append can land
+   * their status lines. A torn fragment and a lead with no readable receive
+   * date go too, since no cutoff could ever clear them, and they force the
+   * rewrite on their own. It runs in the append queue, so no append can land
    * between the read and the rename, and it streams, so a year of leads never
-   * has to fit in memory. Returns how many leads were removed.
+   * has to fit in memory. Returns how many expired leads were removed and how
+   * many unreadable lines were dropped.
    */
   function purgeBefore(cutoffMs) {
     const task = queue.catch(() => undefined).then(async () => {
@@ -591,24 +594,34 @@ export function createLeadStore(storePath, fileSystem = fs) {
       try {
         source = await fileSystem.open(storePath, 'r');
       } catch (error) {
-        if (error.code === 'ENOENT') return 0;
+        if (error.code === 'ENOENT') return { removed: 0, dropped: 0 };
         throw error;
       }
       const tmpPath = `${storePath}.purge`;
       const kept = new Set();
       let removed = 0;
+      let dropped = 0;
       let target;
       try {
         target = await fileSystem.open(tmpPath, 'w', 0o600);
         for await (const line of storeLines(source)) {
           if (!line.trim()) continue;
-          for (const entry of parseRecords(line)) {
+          let entries;
+          try {
+            entries = [JSON.parse(line)];
+          } catch {
+            // The whole records glued onto a torn fragment stay; the fragment goes.
+            entries = parseRecords(line);
+            dropped += 1;
+          }
+          for (const entry of entries) {
             let keep = false;
             if (entry?.type === 'lead' && typeof entry.id === 'string') {
               const receivedAt = Date.parse(entry.receivedAt ?? '');
-              keep = !(Number.isFinite(receivedAt) && receivedAt < cutoffMs);
+              if (!Number.isFinite(receivedAt)) dropped += 1;
+              else if (receivedAt < cutoffMs) removed += 1;
+              else keep = true;
               if (keep) kept.add(entry.id);
-              else removed += 1;
             } else if (entry?.type === 'status') {
               // A status follows its lead in the file, so its fate is known.
               keep = kept.has(entry.id);
@@ -621,13 +634,13 @@ export function createLeadStore(storePath, fileSystem = fs) {
         await target?.close();
         await source.close();
       }
-      if (removed === 0) {
+      if (removed === 0 && dropped === 0) {
         await fileSystem.rm(tmpPath, { force: true });
-        return 0;
+        return { removed, dropped };
       }
       await fileSystem.rename(tmpPath, storePath);
       startOnFreshLine = false;
-      return removed;
+      return { removed, dropped };
     });
     // The caller hears about a failure through `task`; the queue only orders
     // the next write, so it settles either way. A rejected queue nothing
@@ -699,6 +712,15 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
   const inFlight = new Set();
   // False from a failed purge until one succeeds; /healthz reports it.
   let retentionEnforced = true;
+
+  /** Leads received before this moment are past the retention period. */
+  const retentionCutoff = () => now().getTime() - config.leadRetentionDays * 24 * 60 * 60_000;
+
+  /** A lead with no readable receive date can't show it's inside the period either. */
+  function pastRetention(lead, cutoff) {
+    const receivedAt = Date.parse(lead?.receivedAt ?? '');
+    return !Number.isFinite(receivedAt) || receivedAt < cutoff;
+  }
 
   // A new key every start. Used tokens are remembered in memory only, so a key
   // that outlived a restart let a token be used again after one. A visitor whose
@@ -1063,12 +1085,13 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
    * force (twenty-third drain review).
    */
   async function purgeExpired() {
-    const cutoff = now().getTime() - config.leadRetentionDays * 24 * 60 * 60_000;
+    const cutoff = retentionCutoff();
     const failures = [];
     let leads = 0;
+    let unreadable = 0;
     let legacy = 0;
     try {
-      leads = await store.purgeBefore(cutoff);
+      ({ removed: leads, dropped: unreadable } = await store.purgeBefore(cutoff));
     } catch (error) {
       failures.push(`leads: ${error.message}`);
     }
@@ -1077,12 +1100,14 @@ export function createContactHandler(config = DEFAULT_CONFIG, dependencies = {})
     } catch (error) {
       failures.push(`legacy records: ${error.message}`);
     }
-    for (const id of [...pending.keys()]) {
-      const receivedAt = Date.parse(pending.get(id)?.receivedAt ?? '');
-      if (Number.isFinite(receivedAt) && receivedAt < cutoff) pending.delete(id);
+    for (const [id, lead] of [...pending]) {
+      if (pastRetention(lead, cutoff)) pending.delete(id);
     }
     if (leads || legacy) {
       logger.log(`contact: deleted ${leads} lead(s) and ${legacy} legacy record(s) older than ${config.leadRetentionDays} days`);
+    }
+    if (unreadable) {
+      logger.log(`contact: dropped ${unreadable} unreadable line(s) from the lead store (torn writes, or leads with no receive date)`);
     }
     retentionEnforced = failures.length === 0;
     if (failures.length > 0) throw new Error(`could not purge ${failures.join('; ')}`);

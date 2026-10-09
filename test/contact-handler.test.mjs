@@ -1055,6 +1055,32 @@ test('leads past the retention period are deleted with their status lines, and n
   });
 });
 
+// The twenty-sixth drain review: with no dated lead past the cutoff, the purge
+// kept the file as it was, so a torn line and a lead with no receive date
+// stayed for good while /healthz still said the retention held.
+test('a torn line and a lead with no receive date go even when nothing has expired', async () => {
+  await withHandler({}, async ({ handler, storePath, logger }) => {
+    const torn = '{"type":"lead","id":"torn","receivedAt":"2026-09';
+    await fs.writeFile(storePath, [torn, leadAt('undated', 'not a date'), statusFor('undated'), leadAt('recent', daysAgo(10)), statusFor('recent'), ''].join('\n'));
+    assert.deepEqual(await handler.purgeExpired(), { leads: 0, legacy: 0 });
+    const entries = await readEntries(storePath);
+    assert.deepEqual(entries.map((entry) => `${entry.type}:${entry.id}`), ['lead:recent', 'status:recent']);
+    assert.ok(logger.lines.some((line) => /dropped 2 unreadable line\(s\)/.test(line)), logger.lines.join('\n'));
+
+    // A record glued onto a fragment survives; only the fragment goes.
+    await fs.writeFile(storePath, `${torn}${leadAt('glued', daysAgo(5))}\n`);
+    await handler.purgeExpired();
+    assert.deepEqual((await readEntries(storePath)).map((entry) => entry.id), ['glued']);
+
+    const health = responseMock();
+    await handler.handleRequest(requestMock({ method: 'GET', url: '/healthz' }), health);
+    assert.equal(JSON.parse(health.body).retentionEnforced, true);
+    const before = await fs.readFile(storePath, 'utf8');
+    await handler.purgeExpired();
+    assert.equal(await fs.readFile(storePath, 'utf8'), before, 'a clean store is left alone');
+  });
+});
+
 test('the legacy submissions file follows the same retention and goes once empty', async () => {
   await withHandler({}, async ({ handler, storePath }) => {
     const legacyPath = path.join(path.dirname(storePath), 'submissions.ndjson');

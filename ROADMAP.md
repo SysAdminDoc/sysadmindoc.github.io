@@ -45,13 +45,6 @@ Actionable work only. Historical and completed roadmap material is archived in C
   Acceptance: both come back as no verdict, with a test apiece.
   Complexity: S
 
-- [ ] P3: Purge a torn or undatable lead line even when nothing else expires
-  Why: when no dated lead has expired, the purge leaves a torn or undatable line in place and `/healthz` still reports `retentionEnforced: true`.
-  Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:626` and `:957`.
-  Touches: `deploy/vps/contact-handler.mjs`, `test/contact-handler.test.mjs`.
-  Acceptance: the line goes (or health reports false) on a purge with nothing else to drop, with a test.
-  Complexity: S
-
 - [ ] P3: Never requeue expired leads after a failed start-up purge
   Why: `restorePending` sends leads past their retention to ntfy when the start-up purge failed, so a message that should be gone gets delivered.
   Evidence: twenty-sixth drain review, 2026-09-24; `deploy/vps/contact-handler.mjs:722`.

@@ -10,6 +10,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Fixed
 - The nightly deploy ships the build its preflight just made. It used to build the whole site a second time.
+- The contact form's daily cleanup also removes a half-written line or a stored message with no date, even on a day when nothing else is old enough to go.
 
 ## [v0.47.0] - 2026-09-29
 
