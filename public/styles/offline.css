@@ -1,6 +1,7 @@
 @font-face {
-  font-family: "Outfit";
-  src: url("/fonts/outfit-latin.woff2") format("woff2");
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin.woff2") format("woff2");
+  font-weight: 400 700;
   font-display: swap;
 }
 
@@ -34,7 +35,7 @@ body {
   padding: clamp(20px, 5vw, 52px);
   background: var(--bg);
   color: var(--text);
-  font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
 }
 
@@ -141,13 +142,13 @@ h1 {
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #0b0e14;
-    --panel: #11151d;
-    --text: #edf1f7;
-    --muted: #b4bdcc;
-    --line: rgba(160, 174, 200, .16);
+    --bg: #0a0b0e;
+    --panel: #111317;
+    --text: #eceef2;
+    --muted: #b1b6c0;
+    --line: rgba(255, 255, 255, .1);
     --accent: #7aa2ff;
     --signal: #7aa2ff;
-    --accent-text: #0b0e14;
+    --accent-text: #0a0b0e;
   }
 }

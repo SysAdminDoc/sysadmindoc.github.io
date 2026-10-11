@@ -41,7 +41,7 @@
     root.dataset.theme = theme;
     var nextTheme = theme === 'dark' ? 'light' : 'dark';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0b0e14' : '#f6f7f9');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0a0b0e' : '#f6f7f9');
     var btn = document.getElementById('themeToggle');
     if (btn) {
       btn.removeAttribute('aria-pressed');

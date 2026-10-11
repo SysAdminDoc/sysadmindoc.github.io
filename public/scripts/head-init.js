@@ -5,7 +5,7 @@
     var isLight = theme === 'light';
     document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isLight ? '#f6f7f9' : '#0b0e14');
+    if (meta) meta.setAttribute('content', isLight ? '#f6f7f9' : '#0a0b0e');
   } catch (error) {
     document.documentElement.dataset.theme = 'dark';
   }

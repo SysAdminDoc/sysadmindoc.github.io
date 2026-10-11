@@ -88,7 +88,6 @@ const cmdkSections = [
     <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
 
     <section class="hero minimal-hero" id="hero">
-      <div class="hero-grid" aria-hidden="true"></div>
       <div class="hi">
         <div class="ht">
           <p class="hero-eyebrow">Sarasota, FL</p>
@@ -131,7 +130,7 @@ const cmdkSections = [
       <div class="home-shell">
         <header class="home-section-head rv">
           <div>
-            <span class="home-section-index">02 / Live</span>
+            <span class="home-section-index">Live apps</span>
             <h2 id="live-title">These are running right now.</h2>
           </div>
           <div class="home-section-intro">
@@ -149,7 +148,7 @@ const cmdkSections = [
       <div class="home-shell">
         <header class="home-section-head rv">
           <div>
-            <span class="home-section-index">03 / Practice</span>
+            <span class="home-section-index">Practice</span>
             <h2 id="practice-title">What I actually do.</h2>
           </div>
           <p class="home-section-intro">Practical software and hands-on creative work, backed by years in IT operations. Each draws on a different part of my experience.</p>
@@ -174,7 +173,7 @@ const cmdkSections = [
       <div class="home-shell">
         <header class="home-section-head rv">
           <div>
-            <span class="home-section-index">04 / Explore</span>
+            <span class="home-section-index">The archive</span>
             <h2 id="catalog-title">Everything I've shipped.</h2>
           </div>
           <p class="home-section-intro">{publicProjectCount} public projects. Search them, filter by stack, or just browse. Every one links to its source code.</p>
@@ -191,7 +190,7 @@ const cmdkSections = [
       <div class="home-shell">
         <header class="home-section-head rv">
           <div>
-            <span class="home-section-index">05 / Contact</span>
+            <span class="home-section-index">Contact</span>
             <h2 id="contact-title">Want to work together?</h2>
           </div>
           <p class="home-section-intro">Tell me what you're dealing with. If I can help, I'll say so. If I can't, I'll say that too.</p>
@@ -230,8 +229,8 @@ const cmdkSections = [
 </Base>
 
 <style>
-  /* Hero: name and pitch on the left, a proof card on the right, over a faint
-     engineering grid that fades out toward the edges. */
+  /* Hero: name and pitch on the left, a proof card on the right. No texture of
+     its own; it sits in the page's overhead light (see the body ground). */
   :global(body.route-home) .minimal-hero{
     position:relative;
     min-height:0;
@@ -240,16 +239,6 @@ const cmdkSections = [
     background:transparent;
     overflow:hidden;
     isolation:isolate;
-  }
-  :global(body.route-home) .minimal-hero .hero-grid{
-    position:absolute;
-    inset:0;
-    z-index:-1;
-    pointer-events:none;
-    background-image:linear-gradient(var(--hero-grid) 1px,transparent 1px),linear-gradient(90deg,var(--hero-grid) 1px,transparent 1px);
-    background-size:56px 56px;
-    background-position:center top;
-    mask-image:radial-gradient(ellipse 72% 70% at 62% 28%,#000 25%,transparent 78%);
   }
   :global(body.route-home) .minimal-hero::after{display:none}
   :global(body.route-home) .minimal-hero .hi{
@@ -273,29 +262,17 @@ const cmdkSections = [
     border:0!important;
   }
   :global(body.route-home) .minimal-hero .hero-eyebrow{
-    display:flex;
-    width:max-content;
-    align-items:center;
-    gap:9px;
-    margin:0 0 32px;
-    padding:6px 12px 6px 10px;
-    border:1px solid var(--border-soft);
-    border-radius:6px;
-    background:var(--surface-1);
-    color:var(--t2);
-    font-family:var(--mono);
+    display:block;
+    margin:0 0 28px;
+    padding:0;
+    border:0;
+    background:none;
+    color:var(--t3);
+    font-family:var(--sans);
     font-size:12px;
-    font-weight:500;
-    letter-spacing:.06em;
+    font-weight:600;
+    letter-spacing:.12em;
     text-transform:uppercase;
-  }
-  :global(body.route-home) .minimal-hero .hero-eyebrow::before{
-    content:'';
-    width:7px;
-    height:7px;
-    border-radius:0;
-    background:var(--grn);
-    box-shadow:0 0 0 3px color-mix(in srgb,var(--grn) 22%,transparent);
   }
   :global(body.route-home) .minimal-hero .hero-identity{
     display:flex;
@@ -308,7 +285,7 @@ const cmdkSections = [
     height:76px;
     border:1px solid var(--border-soft);
     border-radius:12px;
-    box-shadow:0 0 0 4px var(--accent-soft);
+    box-shadow:var(--shadow-sm);
     object-fit:cover;
   }
   :global(body.route-home) .minimal-hero .hn{
@@ -330,6 +307,7 @@ const cmdkSections = [
     font-weight:500;
     line-height:1.35;
     letter-spacing:-.015em;
+    text-wrap:balance;
   }
   :global(body.route-home) .minimal-hero .hero-summary{
     max-width:58ch;
@@ -356,17 +334,8 @@ const cmdkSections = [
     padding:6px 28px;
     border:1px solid var(--border-soft);
     border-radius:12px;
-    background:linear-gradient(180deg,var(--surface-2),var(--surface-1) 60%);
-    box-shadow:var(--shadow-md);
-  }
-  :global(body.route-home) .minimal-hero .hero-proof-strip::before{
-    content:'';
-    position:absolute;
-    top:-1px;
-    left:24px;
-    right:24px;
-    height:1px;
-    background:linear-gradient(90deg,transparent,var(--blue),transparent);
+    background:var(--surface-1);
+    box-shadow:var(--edge),var(--shadow-md);
   }
   :global(body.route-home) .minimal-hero .hero-proof{
     display:flex;
@@ -385,10 +354,10 @@ const cmdkSections = [
   :global(body.route-home) .minimal-hero .hero-proof:first-child{border-top:0}
   :global(body.route-home) .minimal-hero .hero-proof-label{
     color:var(--t3);
-    font-family:var(--mono);
+    font-family:var(--sans);
     font-size:11px;
     font-weight:600;
-    letter-spacing:.1em;
+    letter-spacing:.12em;
     text-transform:uppercase;
   }
   :global(body.route-home) .minimal-hero .hero-proof-value{
@@ -420,7 +389,7 @@ const cmdkSections = [
   :global(body.route-home) .home-live,
   :global(body.route-home) .home-catalog-handoff{
     border-block:1px solid var(--border-soft);
-    background:var(--bg2);
+    background:var(--grain) repeat,var(--bg2);
   }
   :global(body.route-home) .home-shell{
     width:min(var(--content-max,1240px),100%);
@@ -434,22 +403,14 @@ const cmdkSections = [
     margin-bottom:48px;
   }
   :global(body.route-home) .home-section-index{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:16px;
+    display:block;
+    margin-bottom:18px;
     color:var(--blue);
-    font-family:var(--mono);
+    font-family:var(--sans);
     font-size:12px;
     font-weight:600;
-    letter-spacing:.1em;
+    letter-spacing:.12em;
     text-transform:uppercase;
-  }
-  :global(body.route-home) .home-section-index::before{
-    content:'';
-    width:24px;
-    height:1px;
-    background:currentColor;
   }
   :global(body.route-home) .home-section h2{
     max-width:18ch;
@@ -458,7 +419,7 @@ const cmdkSections = [
     font-size:clamp(34px,3.8vw,52px);
     font-weight:650;
     line-height:1.06;
-    letter-spacing:-.03em;
+    letter-spacing:-.022em;
   }
   :global(body.route-home) .home-section-intro{
     max-width:46ch;
@@ -508,7 +469,7 @@ const cmdkSections = [
   :global(body.route-home) .home-live-grid :global(.lc2::after){display:none}
   :global(body.route-home) .home-live-grid :global(.lc2:hover),
   :global(body.route-home) .home-live-grid :global(.lc2:focus-visible){
-    box-shadow:0 0 0 1px var(--border-strong),var(--shadow-lg);
+    box-shadow:0 0 0 1px var(--border-hover),var(--shadow-lg);
     transform:translateY(-4px);
   }
   :global(body.route-home) .home-live-grid :global(.lc2:focus-visible){outline:2px solid var(--focus-outline);outline-offset:3px}
@@ -623,15 +584,15 @@ const cmdkSections = [
     border:1px solid var(--border-soft);
     border-radius:12px;
     background:var(--surface-1);
-    box-shadow:var(--shadow-sm);
+    box-shadow:var(--edge),var(--shadow-sm);
     color:inherit;
     text-decoration:none;
     transition:transform var(--dur-base,.25s) var(--ease-out,ease-out),border-color var(--dur-base,.25s) var(--ease-out,ease-out),box-shadow var(--dur-base,.25s) var(--ease-out,ease-out);
   }
   :global(body.route-home) .practice-row:hover,
   :global(body.route-home) .practice-row:focus-visible{
-    border-color:var(--border-strong);
-    box-shadow:var(--shadow-lg);
+    border-color:var(--border-hover);
+    box-shadow:var(--edge),var(--shadow-lg);
     transform:translateY(-4px);
   }
   :global(body.route-home) .practice-row:hover .practice-action,
@@ -641,11 +602,12 @@ const cmdkSections = [
     grid-column:1;
     grid-row:1;
     align-self:center;
-    color:var(--blue);
-    font-family:var(--mono);
-    font-size:12px;
+    color:var(--t3);
+    font-family:var(--sans);
+    font-size:13px;
     font-weight:600;
-    letter-spacing:.1em;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:.04em;
   }
   :global(body.route-home) .practice-name{
     display:flex;
@@ -663,9 +625,10 @@ const cmdkSections = [
   }
   :global(body.route-home) .practice-name small{
     color:var(--t3);
-    font-family:var(--mono);
+    font-family:var(--sans);
     font-size:11px;
-    letter-spacing:.06em;
+    font-weight:600;
+    letter-spacing:.1em;
     text-transform:uppercase;
   }
   :global(body.route-home) .practice-focus{
@@ -696,34 +659,39 @@ const cmdkSections = [
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:24px;
   }
+  /* align-content:start keeps the rows packed at the top. Stretched, they
+     split a short tile's spare height and its title sat lower than a
+     neighbor's whose description wraps. */
   :global(body.route-home) .handoff-links a{
     display:grid;
     grid-template-columns:1fr auto;
+    align-content:start;
     gap:8px 16px;
     min-width:0;
     padding:28px;
     border:1px solid var(--border-soft);
     border-radius:12px;
     background:var(--surface-1);
-    box-shadow:var(--shadow-sm);
+    box-shadow:var(--edge),var(--shadow-sm);
     color:inherit;
     text-decoration:none;
     transition:transform var(--dur-base,.25s) var(--ease-out,ease-out),border-color var(--dur-base,.25s) var(--ease-out,ease-out),box-shadow var(--dur-base,.25s) var(--ease-out,ease-out);
   }
   :global(body.route-home) .handoff-links a:hover,
   :global(body.route-home) .handoff-links a:focus-visible{
-    border-color:var(--border-strong);
-    box-shadow:var(--shadow-lg);
+    border-color:var(--border-hover);
+    box-shadow:var(--edge),var(--shadow-lg);
     transform:translateY(-4px);
   }
   :global(body.route-home) .handoff-links a:focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
   :global(body.route-home) .handoff-links span{
     grid-column:1/-1;
-    color:var(--blue);
-    font-family:var(--mono);
-    font-size:12px;
+    margin-bottom:4px;
+    color:var(--t3);
+    font-family:var(--sans);
+    font-size:11px;
     font-weight:600;
-    letter-spacing:.08em;
+    letter-spacing:.12em;
     text-transform:uppercase;
   }
   :global(body.route-home) .handoff-links strong{
@@ -740,6 +708,7 @@ const cmdkSections = [
     font-size:15px;
     font-style:normal;
     line-height:1.6;
+    text-wrap:pretty;
   }
   :global(body.route-home) .handoff-links i{
     grid-column:2;
@@ -765,7 +734,7 @@ const cmdkSections = [
     border:1px solid var(--border-soft);
     border-radius:12px;
     background:var(--surface-1);
-    box-shadow:var(--shadow-md);
+    box-shadow:var(--edge),var(--shadow-md);
   }
   :global(body.route-home) .contact-card :global(.contact-form){max-width:none}
   :global(body.route-home) .contact-aside{
@@ -776,10 +745,10 @@ const cmdkSections = [
   :global(body.route-home) .contact-aside h3{
     margin:0 0 4px;
     color:var(--t3);
-    font-family:var(--mono);
+    font-family:var(--sans);
     font-size:12px;
     font-weight:600;
-    letter-spacing:.1em;
+    letter-spacing:.12em;
     text-transform:uppercase;
   }
   :global(body.route-home) .contact-list{
@@ -795,13 +764,14 @@ const cmdkSections = [
     border:1px solid var(--border-soft);
     border-radius:10px;
     background:var(--surface-1);
+    box-shadow:var(--edge);
     color:inherit;
     text-decoration:none;
     transition:border-color var(--dur-fast,.18s) var(--ease-out,ease-out),background-color var(--dur-fast,.18s) var(--ease-out,ease-out),transform var(--dur-base,.25s) var(--ease-out,ease-out);
   }
   :global(body.route-home) .contact-list a:hover,
   :global(body.route-home) .contact-list a:focus-visible{
-    border-color:var(--border-strong);
+    border-color:var(--border-hover);
     background:var(--surface-2);
     transform:translateY(-2px);
   }
@@ -809,10 +779,10 @@ const cmdkSections = [
   :global(body.route-home) .contact-list span{
     grid-column:1;
     color:var(--t3);
-    font-family:var(--mono);
+    font-family:var(--sans);
     font-size:11px;
     font-weight:600;
-    letter-spacing:.1em;
+    letter-spacing:.12em;
     text-transform:uppercase;
   }
   :global(body.route-home) .contact-list strong{

@@ -25,18 +25,19 @@ export interface OgCardModel {
   metrics: readonly [OgMetric, OgMetric, OgMetric];
 }
 
+// Instrument Sans tops out at 700, so the cards' 800-weight text resolves to it.
 const fontSources = {
-  outfit400: 'https://unpkg.com/@fontsource/outfit@5.3.0/files/outfit-latin-400-normal.woff',
-  outfit700: 'https://unpkg.com/@fontsource/outfit@5.3.0/files/outfit-latin-700-normal.woff',
-  outfit800: 'https://unpkg.com/@fontsource/outfit@5.3.0/files/outfit-latin-800-normal.woff',
+  sans400: 'https://unpkg.com/@fontsource/instrument-sans@5.3.0/files/instrument-sans-latin-400-normal.woff',
+  sans600: 'https://unpkg.com/@fontsource/instrument-sans@5.3.0/files/instrument-sans-latin-600-normal.woff',
+  sans700: 'https://unpkg.com/@fontsource/instrument-sans@5.3.0/files/instrument-sans-latin-700-normal.woff',
   mono400: 'https://github.com/JetBrains/JetBrainsMono/raw/v2.304/fonts/ttf/JetBrainsMono-Regular.ttf',
   mono700: 'https://github.com/JetBrains/JetBrainsMono/raw/v2.304/fonts/ttf/JetBrainsMono-Bold.ttf',
 } as const;
 
 let fontPromise: Promise<{
-  outfit400: ArrayBuffer;
-  outfit700: ArrayBuffer;
-  outfit800: ArrayBuffer;
+  sans400: ArrayBuffer;
+  sans600: ArrayBuffer;
+  sans700: ArrayBuffer;
   mono400: ArrayBuffer;
   mono700: ArrayBuffer;
 }> | null = null;
@@ -44,15 +45,15 @@ let fontPromise: Promise<{
 function loadOgFonts() {
   if (!fontPromise) {
     fontPromise = Promise.all([
-      loadCachedFont(join(FONT_CACHE, 'outfit-400.woff'), fontSources.outfit400),
-      loadCachedFont(join(FONT_CACHE, 'outfit-700.woff'), fontSources.outfit700),
-      loadCachedFont(join(FONT_CACHE, 'outfit-800.woff'), fontSources.outfit800),
+      loadCachedFont(join(FONT_CACHE, 'instrument-sans-400.woff'), fontSources.sans400),
+      loadCachedFont(join(FONT_CACHE, 'instrument-sans-600.woff'), fontSources.sans600),
+      loadCachedFont(join(FONT_CACHE, 'instrument-sans-700.woff'), fontSources.sans700),
       loadCachedFont(join(FONT_CACHE, 'jetbrains-mono-400.ttf'), fontSources.mono400),
       loadCachedFont(join(FONT_CACHE, 'jetbrains-mono-700.ttf'), fontSources.mono700),
-    ]).then(([outfit400, outfit700, outfit800, mono400, mono700]) => ({
-      outfit400,
-      outfit700,
-      outfit800,
+    ]).then(([sans400, sans600, sans700, mono400, mono700]) => ({
+      sans400,
+      sans600,
+      sans700,
       mono400,
       mono700,
     }));
@@ -76,14 +77,14 @@ let renderQueue: Promise<void> = Promise.resolve();
 // Studio palette: the site's dark default tokens. scripts/audit-og-cards.mjs
 // samples bg, ink, blue and green, so keep the two files in step.
 const OG = {
-  bg: '#0b0e14',
-  ink: '#edf1f7',
-  body: '#b4bdcc',
-  muted: '#8792a5',
+  bg: '#0a0b0e',
+  ink: '#eceef2',
+  body: '#b1b6c0',
+  muted: '#878d98',
   blue: '#7aa2ff',
   green: '#5fd49a',
-  markInk: '#0b0e14',
-  rule: 'rgba(160,174,200,.2)',
+  markInk: '#0a0b0e',
+  rule: 'rgba(255,255,255,.14)',
 } as const;
 
 export function renderOgCard(card: OgCardModel): Promise<Uint8Array> {
@@ -110,7 +111,7 @@ async function renderOgCardNow(card: OgCardModel) {
           flexDirection: 'column',
           background: OG.bg,
           color: OG.ink,
-          fontFamily: 'Outfit',
+          fontFamily: 'Instrument Sans',
           borderTop: `8px solid ${OG.blue}`,
         },
         children: [
@@ -433,9 +434,9 @@ async function renderOgCardNow(card: OgCardModel) {
       width: OG_WIDTH,
       height: OG_HEIGHT,
       fonts: [
-        { name: 'Outfit', data: fonts.outfit400, weight: 400, style: 'normal' },
-        { name: 'Outfit', data: fonts.outfit700, weight: 700, style: 'normal' },
-        { name: 'Outfit', data: fonts.outfit800, weight: 800, style: 'normal' },
+        { name: 'Instrument Sans', data: fonts.sans400, weight: 400, style: 'normal' },
+        { name: 'Instrument Sans', data: fonts.sans600, weight: 600, style: 'normal' },
+        { name: 'Instrument Sans', data: fonts.sans700, weight: 700, style: 'normal' },
         { name: 'JetBrains Mono', data: fonts.mono400, weight: 400, style: 'normal' },
         { name: 'JetBrains Mono', data: fonts.mono700, weight: 700, style: 'normal' },
       ],

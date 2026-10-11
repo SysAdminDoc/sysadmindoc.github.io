@@ -39,8 +39,8 @@ const OG_HEIGHT = 630;
 
 // Studio brand palette (must match the OG constant in src/data/og-card.ts).
 const PALETTE = {
-  paper: [11, 14, 20], // #0b0e14 background
-  ink: [237, 241, 247], // #edf1f7 headline/metric text
+  paper: [10, 11, 14], // #0a0b0e background
+  ink: [236, 238, 242], // #eceef2 headline/metric text
   cobalt: [122, 162, 255], // #7aa2ff rules, MP mark
   vermilion: [95, 212, 154], // #5fd49a eyebrows/labels (the layer that goes missing)
 };
