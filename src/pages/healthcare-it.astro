@@ -74,28 +74,28 @@ const cmdkSections = [
     <nav class="exp-shell exp-index" aria-label="Explore experience"><a href="#work-areas">Expertise</a><a href="#typical-day">Career history</a><a href="#selected-projects">Public projects</a><a href="#hcit-contact">Get in touch <span aria-hidden="true">↗</span></a></nav>
 
     <section class="exp-section" id="work-areas" aria-labelledby="expertise-heading"><div class="exp-shell">
-      <header class="exp-section-head"><div><p class="exp-eyebrow">01 / Expertise</p><h2 id="expertise-heading">Technical depth.<br />Creative experience.</h2></div><p>I work with the systems behind a business and the media people see. That includes infrastructure, practical software, Photoshop work, and years of editing and remastering video.</p></header>
+      <header class="exp-section-head"><div><p class="exp-eyebrow">Expertise</p><h2 id="expertise-heading">Technical depth.<br />Creative experience.</h2></div><p>I work with the systems behind a business and the media people see. That includes infrastructure, practical software, Photoshop work, and years of editing and remastering video.</p></header>
       <div class="exp-capabilities">{careerLanes.map((lane, index) => <article class="exp-capability" id={`expertise-${lane.id}`}><span class="exp-number" aria-hidden="true">0{index + 1}</span><h3>{lane.name}</h3><p>{lane.focus}</p><ul class="exp-skills" aria-label={`${lane.name} skills`}>{lane.expertise.slice(0, 4).map((skill) => <li>{skill}</li>)}</ul></article>)}</div>
     </div></section>
 
     <section class="exp-section exp-section-tinted" id="typical-day" aria-labelledby="career-heading"><div class="exp-shell">
-      <header class="exp-section-head"><div><p class="exp-eyebrow">02 / Career</p><h2 id="career-heading">Different industries.<br />Real operating experience.</h2></div><p>From supporting multiple small-business environments to keeping broadcast and medical imaging systems working, each role added a different kind of responsibility.</p></header>
+      <header class="exp-section-head"><div><p class="exp-eyebrow">Career</p><h2 id="career-heading">Different industries.<br />Real operating experience.</h2></div><p>From supporting multiple small-business environments to keeping broadcast and medical imaging systems working, each role added a different kind of responsibility.</p></header>
       <div class="exp-career">{careerRoles.map((role) => <article class="exp-role"><div class="exp-role-period"><span>{role.period}</span><small>{role.location}</small>{role.tone === 'current' && <strong>Current role</strong>}</div><div class="exp-role-body"><p class="exp-employer">{role.company}</p><h3>{role.role}</h3><p>{role.summary}</p><ul>{role.highlights.slice(0, 2).map((highlight) => <li>{highlight}</li>)}</ul>{role.note && <p class="exp-role-note">{role.note}</p>}</div></article>)}</div>
       <a class="exp-link" href="/resume/">Full resume, skills & education <span aria-hidden="true">→</span></a>
     </div></section>
 
     <section class="exp-section" id="selected-projects" aria-labelledby="projects-heading"><div class="exp-shell">
-      <header class="exp-section-head"><div><p class="exp-eyebrow">03 / Public work</p><h2 id="projects-heading">I build things, too.</h2></div><p>Independent software is another part of my work. These public projects show how I turn technical problems into tools people can use.</p></header>
+      <header class="exp-section-head"><div><p class="exp-eyebrow">Public work</p><h2 id="projects-heading">I build things, too.</h2></div><p>Independent software is another part of my work. These public projects show how I turn technical problems into tools people can use.</p></header>
       <div class="exp-projects">{selectedWork.map((project) => <a class="exp-project" href={`https://github.com/SysAdminDoc/${project.repo}`} target="_blank" rel="noopener noreferrer"><span class="exp-eyebrow">{project.type}</span><h3>{project.name}<span aria-hidden="true">↗</span></h3><p>{project.desc}</p><span class="exp-project-action">View project on GitHub <span aria-hidden="true">→</span></span></a>)}</div>
       <div class="exp-project-footer"><p>Customer work stays private. These are my own public projects.</p><a class="exp-link" href="/catalog/">Browse all projects <span aria-hidden="true">→</span></a></div>
     </div></section>
 
     <section class="exp-section exp-section-tinted" id="data-boundaries" aria-labelledby="approach-heading"><div class="exp-shell">
-      <header class="exp-section-head"><div><p class="exp-eyebrow">04 / Approach</p><h2 id="approach-heading">The work isn't done<br />at the handoff.</h2></div><p>Good technical work has to hold up for the people using it. Documentation, training, and follow-up are part of the job.</p></header>
+      <header class="exp-section-head"><div><p class="exp-eyebrow">Approach</p><h2 id="approach-heading">The work isn't done<br />at the handoff.</h2></div><p>Good technical work has to hold up for the people using it. Documentation, training, and follow-up are part of the job.</p></header>
       <ol class="exp-approach">{approach.map((step, index) => <li><span class="exp-number" aria-hidden="true">0{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
     </div></section>
 
-    <section class="exp-section" id="hcit-faq" aria-labelledby="questions-heading"><div class="exp-shell exp-faq-grid"><header><p class="exp-eyebrow">05 / A few details</p><h2 id="questions-heading">More about<br />the work.</h2><a class="exp-link" href="/ai/">AI implementation services <span aria-hidden="true">→</span></a></header><div class="exp-faqs">{faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p></details>)}</div></div></section>
+    <section class="exp-section" id="hcit-faq" aria-labelledby="questions-heading"><div class="exp-shell exp-faq-grid"><header><p class="exp-eyebrow">A few details</p><h2 id="questions-heading">More about<br />the work.</h2><a class="exp-link" href="/ai/">AI implementation services <span aria-hidden="true">→</span></a></header><div class="exp-faqs">{faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p></details>)}</div></div></section>
 
     <section class="exp-section exp-contact" id="hcit-contact" aria-labelledby="contact-heading"><div class="exp-shell exp-contact-grid"><div><p class="exp-eyebrow">Let's talk</p><h2 id="contact-heading">Have a role, a project,<br />or a problem in mind?</h2><p>Tell me what you're working on and where you need help. I'm interested in work that brings systems, software, and people together.</p><a class="exp-link" href={contactMailto('IT experience and projects')}>Email me directly <span aria-hidden="true">↗</span></a><p class="exp-contact-privacy">Please keep patient information, passwords, and other sensitive details out of your message.</p></div><ContactForm subject="IT experience and projects" /></div></section>
   </main>
@@ -108,14 +108,14 @@ const cmdkSections = [
   .experience-page h1,.experience-page h2,.experience-page h3{font-family:var(--sans);text-wrap:balance}
   .experience-page p{margin:0}
   .experience-page .exp-hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.85fr);gap:var(--exp-gap);align-items:center;padding-top:132px;padding-bottom:56px}
-  .exp-eyebrow,.exp-number{color:var(--blue);font-family:var(--mono);font-size:11px;font-weight:600;line-height:1.6;letter-spacing:.09em;text-transform:uppercase}
-  .experience-page h1{max-width:19ch;margin:20px 0 24px;font-size:clamp(40px,4.7vw,66px);line-height:1.05;letter-spacing:-.045em}
+  .exp-eyebrow,.exp-number{color:var(--blue);font-family:var(--sans);font-size:12px;font-weight:600;line-height:1.6;letter-spacing:.12em;text-transform:uppercase}
+  .experience-page h1{max-width:19ch;margin:20px 0 24px;font-size:clamp(40px,4.7vw,66px);line-height:1.05;letter-spacing:-.022em}
   .experience-page h1 span{color:var(--blue)}
   .exp-lead{max-width:58ch;color:var(--t2);font-size:18px;line-height:1.75}
   .exp-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-block:28px}
   .exp-link{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--blue);font-size:15px;font-weight:600;text-decoration:none}
   .exp-link:hover{text-decoration:underline;text-underline-offset:5px}
-  .exp-profile{padding:28px;background:var(--surface-1);border:1px solid var(--border-strong);border-radius:12px}
+  .exp-profile{padding:28px;background:var(--surface-1);border:1px solid var(--border-soft);border-radius:12px;box-shadow:var(--edge),var(--shadow-md)}
   .exp-profile-identity{display:flex;align-items:center;gap:16px;padding-bottom:24px;border-bottom:1px solid var(--border-soft)}
   .exp-profile-identity img{width:64px;height:64px;object-fit:cover;border-radius:8px}
   .exp-profile-identity strong{display:block;color:var(--t1);font-size:21px;letter-spacing:-.02em}
@@ -124,7 +124,7 @@ const cmdkSections = [
   .exp-environments{display:grid;gap:18px;list-style:none;margin:20px 0;padding:0}
   .exp-environments li{border-left:2px solid var(--blue);padding-left:14px}
   .exp-environments span,.exp-environments strong,.exp-environments small{display:block}
-  .exp-environments span{margin-bottom:4px;color:var(--blue);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+  .exp-environments span{margin-bottom:4px;color:var(--blue);font-family:var(--sans);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
   .exp-environments strong{font-size:15px;font-weight:600}
   .exp-environments small{margin-top:4px;color:var(--t2);font-size:12px;line-height:1.5}
   .experience-page .exp-index{display:flex;flex-wrap:wrap;gap:4px 32px;padding-block:14px;border-block:1px solid var(--border-soft)}
@@ -134,14 +134,14 @@ const cmdkSections = [
   .experience-page .exp-section{padding:clamp(56px,6vw,88px) 0;scroll-margin-top:88px}
   .exp-section-tinted{background:var(--surface-1);border-block:1px solid var(--border-soft)}
   .exp-section-head{display:grid;grid-template-columns:1.2fr 1fr;align-items:end;gap:var(--exp-gap);margin-bottom:36px}
-  .experience-page h2{margin:12px 0 0;font-size:clamp(28px,3.1vw,42px);line-height:1.15;letter-spacing:-.035em}
+  .experience-page h2{margin:12px 0 0;font-size:clamp(28px,3.1vw,42px);line-height:1.15;letter-spacing:-.02em}
   .exp-section-head>p,.exp-contact-grid>div>p:not(.exp-eyebrow){color:var(--t2);font-size:16px;line-height:1.75;max-width:56ch}
   .exp-capabilities,.exp-projects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-  .exp-capability{padding:28px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-1)}
+  .exp-capability{padding:28px;border:1px solid var(--border-soft);border-radius:10px;background:var(--surface-1);box-shadow:var(--edge)}
   .experience-page h3{margin:12px 0;font-size:22px;line-height:1.25;letter-spacing:-.025em}
   .exp-capability>p,.exp-project>p,.exp-approach p{color:var(--t2);font-size:15px;line-height:1.75}
   .exp-skills{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:22px 0 0;padding:0}
-  .exp-skills li{padding:6px 9px;border:1px solid var(--border-soft);border-radius:4px;color:var(--t2);font-family:var(--mono);font-size:11px;line-height:1.5}
+  .exp-skills li{padding:5px 10px;border:1px solid var(--border-soft);border-radius:4px;color:var(--t2);font-family:var(--sans);font-size:13px;font-weight:500;line-height:1.5}
   .exp-role{display:grid;grid-template-columns:230px minmax(0,1fr);gap:var(--exp-gap);padding-block:32px;border-top:1px solid var(--border-soft)}
   .exp-role-period{display:flex;flex-direction:column;align-items:start;gap:9px;font-size:14px;font-weight:600;color:var(--t1)}
   .exp-role-period small{color:var(--t2);font-size:13px;font-weight:400}

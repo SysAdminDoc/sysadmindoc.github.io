@@ -156,7 +156,7 @@ const cmdkSections = [
 
     <div class="si page-shell aisvc-hero" id="track-overview">
       <div class="sh">
-        <div class="sl">// AI implementation</div>
+        <div class="sl">AI implementation</div>
         <h1 class="st aisvc-title">I'll automate the work your team keeps doing by hand.</h1>
         <p class="sd aisvc-intro">I build AI tools for real workflows, not demos. Pick the right model, wire it into your systems, train your people, and hand the whole thing over. {experienceLabel} in IT and healthcare means I've seen what breaks when you skip the boring parts.</p>
         <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
@@ -175,7 +175,7 @@ const cmdkSections = [
     <section class="aisvc-section" id="services">
       <div class="si">
         <header class="aisvc-section-head">
-          <div class="aisvc-eyebrow">01 / Work</div>
+          <div class="aisvc-eyebrow">Work</div>
           <h2 class="aisvc-h2">Three things I do well.</h2>
           <p>I don't take on everything. These are the problems I'm good at solving, and the ones where my background actually matters.</p>
         </header>
@@ -200,7 +200,7 @@ const cmdkSections = [
     <section class="aisvc-section aisvc-section-process" id="engagement">
       <div class="si">
         <header class="aisvc-section-head">
-          <div class="aisvc-eyebrow">02 / Delivery</div>
+          <div class="aisvc-eyebrow">Delivery</div>
           <h2 class="aisvc-h2">How an engagement works.</h2>
           <p>We start small. One workflow, one problem. I build it, make it safe, document it, and hand it over. You run it from there.</p>
         </header>
@@ -220,7 +220,7 @@ const cmdkSections = [
     <section class="aisvc-section" id="proof">
       <div class="si">
         <header class="aisvc-section-head">
-          <div class="aisvc-eyebrow">03 / Proof</div>
+          <div class="aisvc-eyebrow">Proof</div>
           <h2 class="aisvc-h2">Don't take my word for it.</h2>
           <p>I ship in public. The projects are on GitHub, the apps are running live, and the whole pipeline that builds this site is something you can read. Here's what that looks like.</p>
         </header>
@@ -251,7 +251,7 @@ const cmdkSections = [
     <section class="aisvc-section" id="ai-faq">
       <div class="si">
         <header class="aisvc-section-head">
-          <div class="aisvc-eyebrow">04 / Questions</div>
+          <div class="aisvc-eyebrow">Questions</div>
           <h2 class="aisvc-h2">Questions I get asked a lot.</h2>
           <p>Honest answers. If any of these don't cover what you're wondering about, just ask.</p>
         </header>
@@ -294,22 +294,22 @@ const cmdkSections = [
 <style is:global>
   .aisvc-page{min-height:calc(100vh - 200px)}
   .aisvc-hero{padding-bottom:clamp(50px,7vw,84px)!important}
-  .aisvc-title{max-width:14ch!important;font-size:clamp(48px,6.4vw,78px)!important;line-height:.94!important;color:var(--t1)}
+  .aisvc-title{max-width:14ch!important;font-size:clamp(48px,6.4vw,78px)!important;line-height:1!important;letter-spacing:-.02em!important;color:var(--t1)}
   .aisvc-intro{max-width:680px!important;font-size:18px!important;line-height:1.6!important}
   .aisvc-actions{margin-top:24px}
   .aisvc-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--blue);font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0;text-decoration:none;text-transform:none}
   .aisvc-text-link span{color:inherit}
   .aisvc-text-link:hover,.aisvc-text-link:focus-visible{color:var(--t1)}
   .aisvc-assurances{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:900px;margin:34px 0 0;padding:0;border-block:1px solid var(--border-soft);list-style:none}
-  .aisvc-assurances li{padding:14px 18px 14px 0;border-right:1px solid var(--border-soft);color:var(--t2);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .aisvc-assurances li{padding:14px 18px 14px 0;border-right:1px solid var(--border-soft);color:var(--t2);font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
   .aisvc-assurances li:not(:first-child){padding-left:18px}
   .aisvc-assurances li:last-child{border-right:0}
   .aisvc-section{padding:clamp(68px,7vw,96px) clamp(20px,5vw,72px)}
   .aisvc-section-process{border-block:1px solid var(--border-soft);background:var(--surface-1)}
   .aisvc-section-head{display:grid;grid-template-columns:140px minmax(300px,1.05fr) minmax(260px,.75fr);gap:30px;align-items:start;max-width:none;margin:0}
-  .aisvc-eyebrow,.aisvc-offer-index,.aisvc-process-step,.aisvc-process-name,.aisvc-case-meta{font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase}
+  .aisvc-eyebrow,.aisvc-offer-index,.aisvc-process-step,.aisvc-process-name,.aisvc-case-meta{font-family:var(--sans);font-size:11px;font-weight:600;line-height:1.5;letter-spacing:.12em;text-transform:uppercase}
   .aisvc-eyebrow,.aisvc-offer-index,.aisvc-process-step,.aisvc-case-meta{color:var(--blue)}
-  .aisvc-h2{max-width:13ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-.028em}
+  .aisvc-h2{max-width:13ch;margin:0;color:var(--t1);font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-.02em}
   .aisvc-section-head>p{max-width:42ch;margin:2px 0 0;color:var(--t2);font-size:15px;line-height:1.65}
   .aisvc-offer-list{max-width:none;margin:44px 0 0;border-top:1px solid var(--border-strong)}
   .aisvc-offer{display:grid;grid-template-columns:44px 210px minmax(0,1fr);gap:24px;align-items:start;padding:27px 0;border-bottom:1px solid var(--border-soft)}
@@ -343,7 +343,7 @@ const cmdkSections = [
   .aisvc-faq dd{margin:0;color:var(--t2);font-size:14px;line-height:1.65}
   .aisvc-contact{padding:clamp(70px,8vw,108px) clamp(20px,5vw,72px);border-top:1px solid var(--border-strong)}
   .aisvc-contact-grid{display:grid;grid-template-columns:140px minmax(0,720px);gap:30px}
-  .aisvc-contact h2{max-width:15ch;margin:0;color:var(--t1);font-size:clamp(34px,4.6vw,54px);line-height:1.04;letter-spacing:-.03em}
+  .aisvc-contact h2{max-width:15ch;margin:0;color:var(--t1);font-size:clamp(34px,4.6vw,54px);line-height:1.04;letter-spacing:-.02em}
   .aisvc-contact p{max-width:56ch;margin:20px 0 0;color:var(--t2);font-size:16px;line-height:1.65}
   .aisvc-contact .aisvc-actions{margin-top:26px}
   .aisvc-actions-below{margin-top:18px}
@@ -386,7 +386,7 @@ const cmdkSections = [
   }
   /* v0.45 composition pass: one structural accent, one left edge, tighter rhythm. */
   .aisvc-eyebrow,.aisvc-offer-index,.aisvc-process-step,.aisvc-case-meta,.aisvc-offer-meta span,.aisvc-text-link span{color:var(--org)}
-  .aisvc-eyebrow{font-size:11px;grid-column:1/-1}
+  .aisvc-eyebrow{font-size:12px;grid-column:1/-1}
   .aisvc-text-link:hover,.aisvc-text-link:focus-visible{color:var(--blue)}
   .aisvc-hero{padding-bottom:clamp(36px,4vw,52px)!important}
   .aisvc-section{padding-block:clamp(56px,6vw,76px)}
