@@ -22,7 +22,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Astro 7**: static site generator with focused client-side enhancements for the homepage experience
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
-- **Content collections**: featured (9), live apps (22), catalog (211 feed-backed / 214 local fallback), skills (8)
+- **Content collections**: featured (9), live apps (22), catalog (211 feed-backed / 216 local fallback), skills (8)
 - **Studio design system**: dark by default with a matching light theme, set in Instrument Sans on a graphite ground with fine grain and a soft overhead light. One blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
 - **Shared career profile**: experience across managed IT, public broadcasting, healthcare, and creative work, reused by the homepage, experience page, printable résumé, and JSON Resume export
 - **Experience page**: infrastructure, healthcare, software, and digital design. Includes employment history, Photoshop and video experience, public software examples, and contact options. The existing `/healthcare-it/` address and section links continue to work.
@@ -90,7 +90,7 @@ npm run search:index   # build Pagefind static search index under dist/pagefind
 npm run search:audit   # verify generated Pagefind Scope filters, indexed routes, and direct GitHub catalog links
 npm run endpoints:audit # verify built public JSON/text/script endpoint contracts
 npm run feed:audit     # verify built JSON/Atom feed metadata and item contracts
-npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 214 --expected-releases 60 --expected-feed-items 214
+npm run smoke:live -- --base-url https://portfolio.getparkerai.com/ --expected-version <version> --expected-commit <commit-sha> --expected-projects 216 --expected-releases 60 --expected-feed-items 216
 npm run smoke:release -- --tag v<version> --asset sysadmindoc-portfolio-v<version>.zip --min-size 1000000
 npm run release -- preflight # then pack, publish, smoke: cut the GitHub release from the gate's dist/ (--root <checkout> for an older tag)
 npm run queued -- deploy:preflight # run any heavy script inside a slot of the machine's build queue (BUILD_QUEUE_SCRIPT), or directly when there is none

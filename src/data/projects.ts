@@ -251,7 +251,9 @@ export const catalog: CatalogEntry[] = [
   { repo: "HushTelegram", name: "HushTelegram", url: "https://github.com/SysAdminDoc/HushTelegram", category: "kt", desc: "Morphe patches for Telegram to remove sponsored messages and control usage reports" },
   { repo: "HushThreads", name: "HushThreads", url: "https://github.com/SysAdminDoc/HushThreads", category: "kt", desc: "Android patches that remove Threads feed ads and clean tracking tags from shared links" },
   { repo: "BillMinder4PC", name: "BillMinder4PC", url: "https://github.com/SysAdminDoc/BillMinder4PC", category: "cs", desc: "Tray-resident Windows bill tracker. Offline, no account. Compose Multiplatform" },
-  { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" }
+  { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" },
+  { repo: "HushFacebookWeb", name: "HushFacebookWeb", url: "https://github.com/SysAdminDoc/HushFacebookWeb", category: "ext", desc: "Userscript that takes ads, suggested posts and Meta AI out of Facebook on the web" },
+  { repo: "GitHub-Repo-Hider", name: "GitHub-Repo-Hider", url: "https://github.com/SysAdminDoc/GitHub-Repo-Hider", category: "ext", desc: "Userscript that hides the repos you pick from your own view of GitHub" }
 ];
 
 export const skills: Skill[] = [

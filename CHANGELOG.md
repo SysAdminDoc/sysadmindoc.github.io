@@ -4,6 +4,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## [v0.50.0] - 2026-10-10
 
+### Added
+- Two new userscripts in the catalog. HushFacebookWeb strips ads, suggested posts and Meta AI out of Facebook in the browser, and GitHub-Repo-Hider hides the repos you pick from your own view of GitHub.
+
 ### Changed
 - New background. The faint grid and blue glow behind the homepage hero are gone. Every page now sits on a near-black graphite ground with fine grain and a soft light from above, and cards catch that light along their top edge instead of glowing blue. The light theme gets the same treatment on its pale ground.
 - Text is set in Instrument Sans instead of Outfit, across the site, the offline page and the social preview cards. Big headings got a touch more letter spacing to suit it.
