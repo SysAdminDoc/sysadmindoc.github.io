@@ -75,6 +75,38 @@ test('Playwright browser a11y and visual baseline gates run locally', async () =
   assert.match(spec, /toHaveScreenshot/);
 });
 
+test('duplicate ids count markup only, not style or script text', async (t) => {
+  const { execFileSync } = await import('node:child_process');
+  const os = await import('node:os');
+  const dist = await fs.mkdtemp(path.join(os.tmpdir(), 'a11y-dupe-'));
+  t.after(() => fs.rm(dist, { recursive: true, force: true }));
+  const page = (body, head = '') =>
+    `<!doctype html><html lang="en"><head><title>t</title>${head}</head><body>${body}</body></html>`;
+  // The grain texture's SVG data URI repeats its filter id once per theme.
+  const grain = "url(\"data:image/svg+xml,%3Cfilter id='g'%3E%3C/filter%3E\")";
+  await fs.writeFile(
+    path.join(dist, 'index.html'),
+    page('<main id="main"></main><script>const s = "<i id=\'x\'></i><i id=\'x\'></i>";</script>', `<style>:root{--a:${grain};--b:${grain}}</style>`),
+  );
+  const run = () => {
+    try {
+      return { code: 0, out: execFileSync(process.execPath, ['scripts/audit-a11y.mjs', '--strict', '--dist', dist], { cwd: root, encoding: 'utf8', windowsHide: true }) };
+    } catch (error) {
+      return { code: error.status, out: `${error.stdout}${error.stderr}` };
+    }
+  };
+
+  const clean = run();
+  assert.equal(clean.code, 0, clean.out);
+  assert.match(clean.out, /no-duplicate-id: ok/);
+
+  // Positive control: a real duplicate in the markup still fails the gate.
+  await fs.writeFile(path.join(dist, 'dupe.html'), page('<div id="dup"></div><p id="dup"></p>'));
+  const dirty = run();
+  assert.equal(dirty.code, 1, dirty.out);
+  assert.match(dirty.out, /dupe\.html: duplicate id "dup" \(2×\)/);
+});
+
 test('the a11y gates are reachable from a chain, not merely declared', async () => {
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
 

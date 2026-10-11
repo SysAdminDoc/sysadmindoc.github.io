@@ -88,11 +88,14 @@ const rules = {
     return issues;
   },
 
+  // Style and script bodies are text, not markup: an SVG data URI in the inlined
+  // critical CSS carries its own filter id and isn't part of the document.
   'no-duplicate-id': (html) => {
+    const markup = html.replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi, '');
     const ids = new Map();
     const re = /\sid=["']([^"']+)["']/gi;
     let m;
-    while ((m = re.exec(html))) ids.set(m[1], (ids.get(m[1]) || 0) + 1);
+    while ((m = re.exec(markup))) ids.set(m[1], (ids.get(m[1]) || 0) + 1);
     return [...ids.entries()]
       .filter(([, n]) => n > 1)
       .map(([id, n]) => `duplicate id "${id}" (${n}×)`);

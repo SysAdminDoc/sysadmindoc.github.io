@@ -15,6 +15,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ### Fixed
 - The three archive tiles on the homepage line up again. A tile with a one-line description used to sit its title lower than its neighbors.
 - The homepage tagline and the archive descriptions no longer strand one word on the last line.
+- The build's accessibility check stopped flagging every page for a duplicate id. The id it found lives inside the grain texture in the page's stylesheet, not in the page itself, so the check now skips style and script text. Real duplicates in the markup still fail it.
 
 ## [v0.49.0] - 2026-10-09
 
