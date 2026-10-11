@@ -1,6 +1,6 @@
 # sysadmindoc.github.io
 
-![Version](https://img.shields.io/badge/version-0.49.0-blue)
+![Version](https://img.shields.io/badge/version-0.50.0-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Contabo%20VPS%20%2F%20Caddy-black)](https://portfolio.getparkerai.com)
 [![Built with Astro](https://img.shields.io/badge/built%20with-Astro%207-ff5d01)](https://astro.build)
@@ -23,7 +23,7 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
 - **Content collections**: featured (9), live apps (22), catalog (211 feed-backed / 214 local fallback), skills (8)
-- **Studio design system**: dark by default with a matching light theme, one blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
+- **Studio design system**: dark by default with a matching light theme, set in Instrument Sans on a graphite ground with fine grain and a soft overhead light. One blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
 - **Shared career profile**: experience across managed IT, public broadcasting, healthcare, and creative work, reused by the homepage, experience page, printable résumé, and JSON Resume export
 - **Experience page**: infrastructure, healthcare, software, and digital design. Includes employment history, Photoshop and video experience, public software examples, and contact options. The existing `/healthcare-it/` address and section links continue to work.
 - **Homepage on one 1240px grid**: positioning with a proof card, selected projects, six live-app cards, four practice areas, catalog and search links, and a contact form next to direct links

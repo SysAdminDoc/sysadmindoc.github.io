@@ -2,6 +2,20 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## [v0.50.0] - 2026-10-10
+
+### Changed
+- New background. The faint grid and blue glow behind the homepage hero are gone. Every page now sits on a near-black graphite ground with fine grain and a soft light from above, and cards catch that light along their top edge instead of glowing blue. The light theme gets the same treatment on its pale ground.
+- Text is set in Instrument Sans instead of Outfit, across the site, the offline page and the social preview cards. Big headings got a touch more letter spacing to suit it.
+- Section labels dropped their "01 /" numbers and "//" prefixes, and small labels moved from monospace to the main typeface. Monospace stays where the text really is code or an address.
+- The location above my name is plain text now, without the pill and status dot. The main button and the brand mark lost their blue glow.
+- Hovering a card lifts it with a neutral outline. Blue is saved for links, the main button and the keyboard focus ring.
+- The experience, AI services and resume pages use the same labels, card edges and heading spacing as the homepage.
+
+### Fixed
+- The three archive tiles on the homepage line up again. A tile with a one-line description used to sit its title lower than its neighbors.
+- The homepage tagline and the archive descriptions no longer strand one word on the last line.
+
 ## [v0.49.0] - 2026-10-09
 
 ### Changed
