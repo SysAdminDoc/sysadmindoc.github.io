@@ -11,7 +11,7 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
 ---
 <section id="greatest-hits" class="selected-work" aria-labelledby="selected-work-title">
   <div class="si">
-    <header class="selected-work-head rv">
+    <header class="selected-work-head">
       <div>
         <span class="selected-work-index">Selected work</span>
         <h2 id="selected-work-title">A few things I'm proud of.</h2>
@@ -20,7 +20,7 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
     </header>
     <div class="selected-work-list">
       {selectedHits.map((hit, index) => (
-        <a href={githubRepoUrl(hit.repo)} target="_blank" rel="noopener" class="selected-work-row card-enter" data-repo={hit.repo}>
+        <a href={githubRepoUrl(hit.repo)} target="_blank" rel="noopener" class="selected-work-row" data-repo={hit.repo}>
           <span class="selected-work-top">
             <span class="selected-work-rank">{String(index + 1).padStart(2, '0')}</span>
             <small class="selected-work-tag">{hit.tag}</small>
@@ -36,7 +36,7 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
 
 <style>
   .selected-work{
-    padding:clamp(80px,9vw,128px) 32px;
+    padding:32px 32px 96px;
     border:0;
     background:transparent;
   }
@@ -51,7 +51,7 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
     grid-template-columns:minmax(0,1fr) minmax(280px,440px);
     gap:24px 48px;
     align-items:end;
-    margin-bottom:48px;
+    margin-bottom:28px;
   }
   .selected-work-index{
     display:block;
@@ -64,10 +64,10 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
     text-transform:uppercase;
   }
   .selected-work h2{
-    max-width:18ch;
+    max-width:24ch;
     margin:0;
     color:var(--t1);
-    font-size:clamp(34px,3.8vw,52px);
+    font-size:clamp(34px,3.3vw,46px);
     font-weight:650;
     line-height:1.06;
     letter-spacing:-.022em;
@@ -76,16 +76,15 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
     max-width:46ch;
     margin:0;
     color:var(--t2);
-    font-size:17px;
-    line-height:1.7;
+    font-size:15px;
+    line-height:1.55;
   }
   .selected-work-list{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:24px;
   }
-  /* The id outranks the shared .card-enter entrance rules, which set their own
-     transform and transition on these cards. */
+  /* The first visible projects render immediately, with motion kept to hover. */
   #greatest-hits .selected-work-row{
     display:flex;
     min-width:0;

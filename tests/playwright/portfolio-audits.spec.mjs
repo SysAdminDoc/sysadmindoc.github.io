@@ -268,7 +268,7 @@ test.describe('Homepage live-card containment', () => {
   }
 });
 
-test('light-theme mobile ledgers reflow without squeezed columns or overlaps', async ({ page }) => {
+test('light-theme mobile proof strip and ledgers stay within their columns', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await preparePage(page, '/', '#hero');
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
@@ -285,8 +285,8 @@ test('light-theme mobile ledgers reflow without squeezed columns or overlaps', a
       rowRight: rect.right,
     };
   }));
-  expect(new Set(proofLayout.map((row) => Math.round(row.x))).size).toBe(1);
-  expect(proofLayout.every((row) => row.width > 300)).toBe(true);
+  expect(new Set(proofLayout.map((row) => Math.round(row.x))).size).toBe(3);
+  expect(proofLayout.every((row) => row.width > 90)).toBe(true);
   expect(proofLayout.every((row) => row.valueRight <= row.rowRight + 1)).toBe(true);
 
   // Since v0.45 the catalog page's intro holds the title and its copy, and
@@ -440,7 +440,9 @@ test('homepage stays intentionally bounded at every breakpoint', async ({ page }
     await expect(page.locator('#skills .practice-row')).toHaveCount(4);
     await expect(page.locator('#catalog .ca')).toHaveCount(0);
     await expect(page.locator('#catalog .handoff-links a')).toHaveCount(3);
-    await expect(page.locator('.hero-selected, .hero-showcase, .video-grid')).toHaveCount(0);
+    await expect(page.locator('.hero-selected, .video-grid')).toHaveCount(0);
+    await expect(page.locator('.hero-showcase .showcase-link')).toHaveCount(1);
+    await expect(page.locator('.hero-showcase img')).toHaveAttribute('alt', /IconForge/);
 
     expect(layoutMetrics.scrollWidth).toBeLessThanOrEqual(layoutMetrics.clientWidth + 1);
     expect(layoutMetrics.heroHeight).toBeGreaterThan(520);

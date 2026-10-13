@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import LiveCard from '../components/LiveCard.astro';
 import GreatestHits from '../components/GreatestHits.astro';
@@ -11,9 +11,11 @@ import { careerLanes, careerProfile, careerProofExperience } from '../data/caree
 // Served from this origin: the GitHub-hosted copy was the site's last
 // third-party request and kept a CDN in img-src for one photo.
 import avatar from '../assets/avatar.jpg';
+import iconForgePreview from '../assets/home-iconforge.jpg';
 
 const livePreview = liveApps.slice(0, 6);
 const publicProjectCount = catalog.length;
+const heroApp = liveApps.find((app) => app.slug === 'IconForge')!;
 const contactPaths = [
   {
     label: 'Email',
@@ -89,11 +91,10 @@ const cmdkSections = [
 
     <section class="hero minimal-hero" id="hero">
       <div class="hi">
-        <div class="ht">
-          <p class="hero-eyebrow">Sarasota, FL</p>
-          <div class="hero-identity h-card">
-            <Image class="hero-avatar loaded u-photo" id="heroAvatar" src={avatar} alt="Matt Parker" width={82} height={82} densities={[1, 2]} loading="eager" decoding="async" fetchpriority="high" />
-            <h1 class="hn p-name">Matt <span class="a">Parker</span></h1>
+        <div class="ht h-card">
+          <p class="hero-eyebrow">Systems. Software. Creative work.</p>
+          <div class="hero-identity">
+            <h1 class="hn p-name">Matt <span class="a">Parker<span class="hero-period" aria-hidden="true">.</span></span></h1>
             <a class="u-url" href="/" hidden>Matt Parker</a>
           </div>
           <p class="hr">{careerProfile.headline}</p>
@@ -102,23 +103,44 @@ const cmdkSections = [
             <a href="#greatest-hits" class="btn bp">See my work <span aria-hidden="true">↓</span></a>
             <a href="/healthcare-it/" class="btn bg2">My experience <span aria-hidden="true">→</span></a>
           </div>
+          <div class="hero-location">
+            <Image class="hero-avatar loaded u-photo" id="heroAvatar" src={avatar} alt="Matt Parker" width={52} height={52} densities={[1, 2]} loading="eager" decoding="async" />
+            <span>Based in Sarasota, FL</span>
+          </div>
+        </div>
+
+        <div class="hero-showcase">
+          <p class="showcase-eyebrow">Built here. Running now.</p>
+          <a class="showcase-link" href={heroApp.url} target="_blank" rel="noopener" aria-label="Open IconForge, my browser-based image and icon tool, in a new tab">
+            <div class="showcase-window">
+              <div class="showcase-toolbar" aria-hidden="true">
+                <span class="showcase-window-label">Live app preview</span>
+                <span>IconForge</span>
+              </div>
+              <Picture src={iconForgePreview} alt="IconForge interface with image upload, platform presets, and output options" formats={['avif', 'webp']} widths={[640, 960, 1440]} sizes="(max-width: 640px) calc(100vw - 36px), (max-width: 1080px) 100vw, 55vw" quality={82} loading="eager" decoding="async" fetchpriority="high" />
+            </div>
+            <div class="showcase-caption">
+              <span><strong>IconForge</strong><small>Generate favicons, PWA icons, and extension assets in seconds.</small></span>
+              <span class="showcase-action">Open live app <span aria-hidden="true">↗</span></span>
+            </div>
+          </a>
         </div>
 
         <div class="hs hero-proof-strip" role="group" aria-label="Experience and portfolio proof">
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">{careerProofExperience.label}</span>
+            <span class="hero-proof-label hsl sr-only">{careerProofExperience.label}</span>
             <strong class="hero-proof-value hsn">{careerProofExperience.value}</strong>
-            <span class="hero-proof-copy">{careerProofExperience.detail}</span>
+            <span class="hero-proof-copy">In IT and healthcare</span>
           </div>
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">Shipped</span>
+            <span class="hero-proof-label hsl sr-only">Shipped</span>
             <strong class="hero-proof-value hsn"><span id="statRepos">{publicProjectCount}</span><sup>+</sup> projects</strong>
-            <span class="hero-proof-copy">All public, all on GitHub</span>
+            <span class="hero-proof-copy">Public source code</span>
           </div>
           <div class="hs-item hero-proof">
-            <span class="hero-proof-label hsl">Running now</span>
+            <span class="hero-proof-label hsl sr-only">Running now</span>
             <strong class="hero-proof-value hsn"><span id="statLive">{liveApps.length}</span> live apps</strong>
-            <span class="hero-proof-copy">Open them and see</span>
+            <span class="hero-proof-copy">Open in your browser</span>
           </div>
         </div>
       </div>
@@ -229,12 +251,13 @@ const cmdkSections = [
 </Base>
 
 <style>
-  /* Hero: name and pitch on the left, a proof card on the right. No texture of
-     its own; it sits in the page's overhead light (see the body ground). */
+  /* Editorial homepage. Real app imagery sits beside the profile. */
+  :global(body.route-home){--content-max:1276px}
+  :global(body.route-home) #nav .ni{width:min(var(--content-max),calc(100% - 64px));max-width:none;padding-inline:0}
   :global(body.route-home) .minimal-hero{
     position:relative;
     min-height:0;
-    padding:calc(var(--nav-h,70px) + clamp(48px,7vw,104px)) 32px clamp(48px,5vw,72px);
+    padding:calc(var(--nav-h,70px) + 42px) 32px 0;
     border-bottom:0;
     background:transparent;
     overflow:hidden;
@@ -243,10 +266,10 @@ const cmdkSections = [
   :global(body.route-home) .minimal-hero::after{display:none}
   :global(body.route-home) .minimal-hero .hi{
     display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(320px,380px);
-    gap:48px clamp(40px,5vw,80px);
+    grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+    gap:30px 72px;
     align-items:center;
-    width:min(var(--content-max,1240px),100%);
+    width:min(var(--content-max),100%);
     max-width:none;
     min-height:0;
     margin:0 auto;
@@ -257,128 +280,141 @@ const cmdkSections = [
     display:block!important;
     grid-column:1;
     grid-row:1;
-    max-width:760px;
+    max-width:none;
     padding:0!important;
     border:0!important;
   }
-  :global(body.route-home) .minimal-hero .hero-eyebrow{
+  :global(body.route-home) .minimal-hero .hero-eyebrow,
+  .showcase-eyebrow{
     display:block;
-    margin:0 0 28px;
+    margin:0 0 22px;
     padding:0;
     border:0;
     background:none;
-    color:var(--t3);
+    color:var(--blue);
     font-family:var(--sans);
-    font-size:12px;
+    font-size:11px;
     font-weight:600;
-    letter-spacing:.12em;
+    letter-spacing:.16em;
     text-transform:uppercase;
   }
-  :global(body.route-home) .minimal-hero .hero-identity{
-    display:flex;
-    align-items:center;
-    gap:24px;
-  }
-  :global(body.route-home) .minimal-hero .hero-avatar{
-    flex:0 0 auto;
-    width:76px;
-    height:76px;
-    border:1px solid var(--border-soft);
-    border-radius:12px;
-    box-shadow:var(--shadow-sm);
-    object-fit:cover;
-  }
+  :global(body.route-home) .minimal-hero .hero-identity{display:block;margin:0}
   :global(body.route-home) .minimal-hero .hn{
     max-width:none;
     margin:0;
     color:var(--t1);
-    font-size:clamp(54px,7vw,96px);
+    font-size:clamp(86px,9.75vw,140px);
     font-weight:700;
-    line-height:.98;
-    letter-spacing:-.025em;
+    line-height:.78;
+    letter-spacing:-.035em;
+    text-wrap:initial;
   }
-  :global(body.route-home) .minimal-hero .hn .a{color:var(--t1)}
+  :global(body.route-home) .minimal-hero .hn .a{display:block;color:var(--blue)}
+  .hero-period{color:var(--t1)}
   :global(body.route-home) .minimal-hero .hr{
-    max-width:30ch;
-    margin:32px 0 0;
+    max-width:21ch;
+    margin:26px 0 0;
     color:var(--t1);
     font-family:var(--sans);
-    font-size:clamp(20px,1.9vw,26px);
-    font-weight:500;
-    line-height:1.35;
-    letter-spacing:-.015em;
-    text-wrap:balance;
+    font-size:clamp(24px,2.25vw,32px);
+    font-weight:600;
+    line-height:1.2;
+    letter-spacing:-.02em;
+    text-wrap:pretty;
   }
   :global(body.route-home) .minimal-hero .hero-summary{
-    max-width:58ch;
-    margin:16px 0 0;
+    max-width:49ch;
+    margin:18px 0 0;
     color:var(--t2);
     font-size:17px;
-    line-height:1.7;
+    line-height:1.55;
   }
-  :global(body.route-home) .minimal-hero .ha{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-top:36px;
-  }
+  :global(body.route-home) .minimal-hero .ha{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+  :global(body.route-home) .minimal-hero .ha .btn{min-width:190px;min-height:50px;padding:12px 28px;border-radius:6px;font-size:15px}
+  .hero-location{display:flex;align-items:center;gap:16px;margin-top:26px;color:var(--t2);font-size:13px}
+  :global(body.route-home) .minimal-hero .hero-avatar{order:0;flex:0 0 auto;width:44px;height:44px;margin:0;border:1px solid var(--border-soft);border-radius:12px;box-shadow:none;object-fit:cover;filter:none}
+  .hero-showcase{min-width:0;grid-column:2;grid-row:1;align-self:center}
+  .showcase-eyebrow{margin-bottom:16px}
+  .showcase-link{display:block;color:inherit;text-decoration:none}
+  .showcase-window{overflow:hidden;border:1px solid var(--border-hover);border-radius:10px;background:var(--surface-1);box-shadow:var(--edge),var(--shadow-lg);transition:border-color var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out)}
+  .showcase-toolbar{display:flex;justify-content:space-between;align-items:center;height:34px;padding:0 16px;border-bottom:1px solid var(--border-soft);background:var(--surface-2);color:var(--t3);font-size:10px}
+  .showcase-window-label{font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .showcase-window :global(picture){display:block;aspect-ratio:1.5;overflow:hidden}
+  .showcase-window :global(img){display:block;width:100%;height:100%;object-fit:cover;object-position:top left}
+  .showcase-caption{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-top:14px}
+  .showcase-caption strong{display:block;font-size:16px;font-weight:650}
+  .showcase-caption small{display:block;max-width:45ch;margin-top:5px;color:var(--t2);font-size:12px;line-height:1.55}
+  .showcase-action{flex-shrink:0;color:var(--blue);font-size:12px;font-weight:600}
+  .showcase-link:hover .showcase-window{border-color:var(--blue);transform:translateY(-3px)}
+  .showcase-link:focus-visible{outline:2px solid var(--focus-outline);outline-offset:6px;border-radius:10px}
   :global(body.route-home) .minimal-hero .hero-proof-strip{
     position:relative;
     display:grid;
-    grid-template-columns:1fr;
-    grid-column:2;
-    grid-row:1;
-    align-self:center;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-column:1/-1;
+    grid-row:2;
     width:100%;
+    max-width:none;
     margin:0;
-    padding:6px 28px;
-    border:1px solid var(--border-soft);
-    border-radius:12px;
-    background:var(--surface-1);
-    box-shadow:var(--edge),var(--shadow-md);
+    padding:28px 0;
+    border:0;
+    border-block:1px solid var(--border-soft);
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
   }
   :global(body.route-home) .minimal-hero .hero-proof{
     display:flex;
     min-width:0;
     min-height:0;
-    padding:22px 0;
+    padding:0 24px;
     flex-direction:column;
-    align-items:flex-start;
-    gap:6px;
+    align-items:center;
+    gap:7px;
     border:0;
-    border-top:1px solid var(--border-soft);
+    border-left:1px solid var(--border-soft);
     border-radius:0;
     background:transparent;
     box-shadow:none;
+    text-align:center;
   }
-  :global(body.route-home) .minimal-hero .hero-proof:first-child{border-top:0}
-  :global(body.route-home) .minimal-hero .hero-proof-label{
-    color:var(--t3);
-    font-family:var(--sans);
-    font-size:11px;
-    font-weight:600;
-    letter-spacing:.12em;
-    text-transform:uppercase;
+  :global(body.route-home) .minimal-hero .hero-proof:first-child{border-left:0}
+  :global(body.route-home) .minimal-hero .hero-proof-value{color:var(--t1);font-family:var(--sans);font-size:34px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+  :global(body.route-home) .minimal-hero .hero-proof-value sup{position:static;color:var(--t1);font-size:1em;vertical-align:baseline}
+  :global(body.route-home) .minimal-hero .hero-proof-copy{align-self:auto;max-width:none;color:var(--t2);font-size:15px;line-height:1.5;text-align:inherit}
+  @media(max-width:1080px){
+    :global(body.route-home) .minimal-hero .hi{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px 36px}
+    :global(body.route-home) .minimal-hero .hn{font-size:clamp(80px,10vw,110px)}
+    :global(body.route-home) .minimal-hero .hr{font-size:27px}
+    .showcase-caption{align-items:start;flex-direction:column;gap:8px}
   }
-  :global(body.route-home) .minimal-hero .hero-proof-value{
-    color:var(--t1);
-    font-family:var(--sans);
-    font-size:30px;
-    font-weight:650;
-    line-height:1.1;
-    letter-spacing:-.02em;
+  @media(max-width:800px){
+    :global(body.route-home) .minimal-hero .hi{grid-template-columns:1fr;gap:36px}
+    .hero-showcase{grid-column:1;grid-row:2}
+    :global(body.route-home) .minimal-hero .hero-proof-strip{grid-row:3}
+    .showcase-window :global(picture){aspect-ratio:1.6}
+    .showcase-caption{flex-direction:row;align-items:end}
   }
-  :global(body.route-home) .minimal-hero .hero-proof-value sup{
-    position:static;
-    color:var(--blue);
-    font-size:.6em;
-    vertical-align:super;
+  @media(max-width:640px){
+    :global(body.route-home) #nav .ni{width:calc(100% - 36px)}
+    :global(body.route-home) .minimal-hero{padding:calc(var(--nav-h,70px) + 40px) 18px 0}
+    :global(body.route-home) .minimal-hero .hero-eyebrow{font-size:10px;letter-spacing:.12em;margin-bottom:24px}
+    :global(body.route-home) .minimal-hero .hn{font-size:clamp(78px,21vw,112px);line-height:.9}
+    :global(body.route-home) .minimal-hero .hr{margin-top:24px;font-size:26px;max-width:24ch}
+    :global(body.route-home) .minimal-hero .hero-summary{font-size:16px;line-height:1.6}
+    :global(body.route-home) .minimal-hero .ha{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    :global(body.route-home) .minimal-hero .ha .btn{min-width:0;justify-content:center;padding:12px 14px;font-size:14px}
+    .hero-location{margin-top:22px}
+    .hero-showcase{margin-top:4px}
+    .showcase-caption{gap:12px}
+    .showcase-caption small{max-width:29ch;font-size:11px}
+    .showcase-action{font-size:11px}
+    :global(body.route-home) .minimal-hero .hero-proof-strip{padding:22px 0}
+    :global(body.route-home) .minimal-hero .hero-proof{padding:0 8px;gap:7px}
+    :global(body.route-home) .minimal-hero .hero-proof-value{font-size:clamp(17px,4.5vw,24px);white-space:nowrap}
+    :global(body.route-home) .minimal-hero .hero-proof-copy{font-size:11px;line-height:1.4;max-width:13ch}
   }
-  :global(body.route-home) .minimal-hero .hero-proof-copy{
-    color:var(--t3);
-    font-size:14px;
-    line-height:1.5;
-  }
+  @media(prefers-reduced-motion:reduce){.showcase-link:hover .showcase-window{transform:none}}
 
   /* Sections: shared head, alternating bands, cards instead of hairline rows. */
   :global(body.route-home) .home-section{
@@ -816,15 +852,6 @@ const cmdkSections = [
     :global(body.route-home) .home-live-grid :global(.lc2:hover .lc2-thumb img){transform:none}
   }
   @media(max-width:1080px){
-    :global(body.route-home) .minimal-hero .hi{grid-template-columns:1fr}
-    :global(body.route-home) .minimal-hero .hero-proof-strip{
-      grid-column:1;
-      grid-row:auto;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      padding:0;
-    }
-    :global(body.route-home) .minimal-hero .hero-proof{padding:22px 24px;border-top:0;border-left:1px solid var(--border-soft)}
-    :global(body.route-home) .minimal-hero .hero-proof:first-child{border-left:0}
     :global(body.route-home) .home-live-grid,
     :global(body.route-home) .practice-list,
     :global(body.route-home) .handoff-links{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -834,32 +861,6 @@ const cmdkSections = [
     :global(body.route-home) .home-section-head{grid-template-columns:1fr;gap:16px}
   }
   @media(max-width:640px){
-    :global(body.route-home) .minimal-hero{padding:calc(var(--nav-h,70px) + 36px) 18px 64px}
-    :global(body.route-home) .minimal-hero .hero-eyebrow{margin-bottom:26px}
-    :global(body.route-home) .minimal-hero .hero-identity{gap:16px}
-    :global(body.route-home) .minimal-hero .hero-avatar{width:58px;height:58px;border-radius:10px}
-    :global(body.route-home) .minimal-hero .hn{font-size:clamp(44px,13vw,60px)}
-    :global(body.route-home) .minimal-hero .hr{margin-top:26px;font-size:20px}
-    :global(body.route-home) .minimal-hero .hero-summary{font-size:16px;line-height:1.65}
-    :global(body.route-home) .minimal-hero .ha{display:grid;margin-top:28px}
-    :global(body.route-home) .minimal-hero .hero-proof-strip{
-      grid-template-columns:1fr;
-      padding:4px 20px;
-    }
-    :global(body.route-home) .minimal-hero .hero-proof{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      align-items:baseline;
-      gap:4px 14px;
-      width:100%;
-      padding:16px 0;
-      border-left:0;
-      border-top:1px solid var(--border-soft);
-    }
-    :global(body.route-home) .minimal-hero .hero-proof:first-child{border-top:0}
-    :global(body.route-home) .minimal-hero .hero-proof-label{grid-column:1/-1}
-    :global(body.route-home) .minimal-hero .hero-proof-value{font-size:24px}
-    :global(body.route-home) .minimal-hero .hero-proof-copy{text-align:right}
     :global(body.route-home) .home-section{padding:72px 18px}
     :global(body.route-home) .home-section-head{margin-bottom:32px}
     :global(body.route-home) .home-section h2{font-size:34px}

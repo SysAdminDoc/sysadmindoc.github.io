@@ -15,7 +15,7 @@ test('every route declares rel="me" identity links', async () => {
 
 test('the homepage exposes a representative h-card', async () => {
   const home = await fs.readFile(path.join(root, 'src', 'pages', 'index.astro'), 'utf8');
-  assert.match(home, /class="hero-identity h-card"/, 'h-card root belongs on the hero identity block');
+  assert.match(home, /class="ht h-card"/, 'h-card contains the name, profile URL, and location portrait');
   assert.match(home, /hero-avatar loaded u-photo/, 'the avatar is the u-photo');
   assert.match(home, /class="hn p-name"/, 'the h1 carries p-name');
   assert.match(home, /class="u-url" href="\/" hidden/, 'u-url must be present and non-visual');

@@ -23,10 +23,10 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Schema-checked TypeScript** fallback data layer ([src/data/projects.ts](src/data/projects.ts))
 - **Feed-backed portfolio adapter** ([src/data/portfolio.ts](src/data/portfolio.ts)) from the SysAdminDoc profile `projects.json`, reconciled against the locally reviewed visibility catalog
 - **Content collections**: featured (9), live apps (22), catalog (211 feed-backed / 216 local fallback), skills (8)
-- **Studio design system**: dark by default with a matching light theme, set in Instrument Sans on a graphite ground with fine grain and a soft overhead light. One blue accent, a shared token set for surfaces, borders, shadows and focus rings, and corner radii kept to 4, 6, 8, 10 and 12px
+- **Studio design system**: dark by default with a matching light theme, set in Instrument Sans on a graphite ground with fine grain and a soft overhead light. One blue accent and shared surface tokens. Corners stay between 4 and 12px
 - **Shared career profile**: experience across managed IT, public broadcasting, healthcare, and creative work, reused by the homepage, experience page, printable résumé, and JSON Resume export
 - **Experience page**: infrastructure, healthcare, software, and digital design. Includes employment history, Photoshop and video experience, public software examples, and contact options. The existing `/healthcare-it/` address and section links continue to work.
-- **Homepage on one 1240px grid**: positioning with a proof card, selected projects, six live-app cards, four practice areas, catalog and search links, and a contact form next to direct links
+- **Editorial homepage**: a two-line introduction beside a real IconForge preview, a horizontal experience strip, selected projects, six live-app cards, practice areas, and a contact form. The 1276px desktop grid becomes a single column on phones
 - **Focused AI implementation track**: three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
 - **Build-time GitHub API**: stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline**: year-in-review page built from release and project-push evidence

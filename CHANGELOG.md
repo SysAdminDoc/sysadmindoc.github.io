@@ -6,6 +6,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ### Changed
 - Updated the renderer used for social preview images.
+- The homepage pairs a larger two-line introduction with a real IconForge preview. Experience and project counts sit in a horizontal strip, with selected work closer to the first screen.
+- Phones get a single-column layout with the same live project link and theme controls. The portrait sits beside the location, and the page keeps its existing contact form and project destinations.
 
 ## [v0.50.0] - 2026-10-10
 
