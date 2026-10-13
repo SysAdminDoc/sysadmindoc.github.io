@@ -2,6 +2,11 @@
 
 All notable changes to sysadmindoc.github.io will be documented in this file.
 
+## Unreleased
+
+### Changed
+- Updated the renderer used for social preview images.
+
 ## [v0.50.0] - 2026-10-10
 
 ### Added
