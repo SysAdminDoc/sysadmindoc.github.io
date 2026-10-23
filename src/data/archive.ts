@@ -25,7 +25,6 @@ export const archiveEntries: ArchiveEntry[] = [
     source: 'src/data/catalog-policy.json intentionallySkippedPublicRepos.',
     links: [
       { label: 'Scripts', href: 'https://github.com/SysAdminDoc/Scripts', note: 'Public but intentionally outside the catalog' },
-      { label: 'ChanPrep', href: 'https://github.com/SysAdminDoc/ChanPrep', note: 'Public but intentionally outside the catalog' },
     ],
   },
   {
