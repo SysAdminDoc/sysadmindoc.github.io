@@ -49,7 +49,7 @@ export const caseStudies: CaseStudy[] = [
     problem:
       'Facebook, Instagram, TikTok and their siblings fill the feed with ads and suggested posts, and none of the apps has a setting that turns them off. The usual answers are a custom ROM or a modified APK from a stranger, and neither is something most people should install.',
     built:
-      "Patch bundles for the Morphe patcher. You bring the official APK, the patcher rewrites the app's own bytecode on your phone, and the result is the same app with a settings screen of its own: sponsored and suggested posts gone, analytics uploads stopped, tracking tags stripped from shared links. Each bundle pins one app version, ships with plain-language release notes, and is walked through on real phones and an emulator before it's tagged. Eight Android apps and the Facebook website so far.",
+      "Patch bundles for the Morphe patcher. You bring the official APK, the patcher rewrites the app's own bytecode on your phone, and the result is the same app with a settings screen of its own: sponsored and suggested posts gone, analytics uploads stopped, and shared links stripped of their tracking tags. Each bundle pins one app version and ships with plain-language release notes. I walk every release through on real phones and an emulator before I tag it. Eight Android apps and the Facebook website so far.",
     result:
       'People found them without any marketing. The three biggest bundles are the most starred repositories I have, the release downloads run well into six figures, and the issue trackers are where users and I work out what the next release carries.',
     caveat:
@@ -72,7 +72,7 @@ export const caseStudies: CaseStudy[] = [
     built:
       'A desktop app and a matching command line that enable the Server 2025 NVMe driver on Windows 11. It elevates itself, logs every step, and ships with a tray helper and a watchdog build. An MSI installs the whole set per machine under Program Files for fleets that deploy through management tooling, and ARM64 builds exist as diagnostic builds until Microsoft ships the driver for that platform.',
     result:
-      'It became the most starred Windows tool in my catalog, and most of the issue traffic is people reporting their benchmark results, which is how the README got its honest warning.',
+      'It is the most starred Windows-only project in my catalog. The README opens with a warning about where the gains show up, and the app carries a DiskSpd benchmark so people can measure their own drive before and after.',
     caveat:
       'The measured gains show up at high queue depths, the kind of load servers and heavy parallel I/O create. Ordinary desktop use may see little or no change, and the README says so before the download link.',
     shows: [
@@ -98,7 +98,7 @@ export const caseStudies: CaseStudy[] = [
     shows: [
       'Windows desktop development',
       'One catalog behind a GUI, a CLI and an API',
-      'Honest readiness checks instead of silent failure',
+      'Readiness checks instead of silent failure',
     ],
   },
   {
@@ -128,17 +128,17 @@ export const caseStudies: CaseStudy[] = [
     repos: ['OpenCut'],
     stack: 'Python, a local HTTP service, a Premiere Pro panel',
     problem:
-      "Caption generation, audio cleanup and effects for Premiere Pro mostly live in cloud services now. For many editors that's a subscription, a usage cap, and an upload of footage they'd rather keep on their own drive.",
+      "Caption generation, audio cleanup and effects for Premiere Pro mostly live in cloud services now. For many editors that means a subscription with a usage cap, and uploading footage they'd rather keep on their own drive.",
     built:
-      'A local service that Premiere talks to: transcription and captions, loudness and noise work, visual effects and multi-platform social export, with no subscription, no usage cap, and no API key needed for the core local features. The shipped route manifest counts 1,564 routes, each tagged as implemented, dependency-gated or a stub, and the suite runs over 14,500 tests.',
+      'A local service that Premiere talks to: transcription and captions, loudness and noise work, visual effects and social export for several platforms. The core local features need no subscription or API key, and there is no usage cap. The shipped route manifest counts 1,564 routes, each tagged as implemented, dependency-gated or a stub, and the suite runs over 14,500 tests.',
     result:
       'An editor gets the cloud-tool feature set on their own machine, and the route manifest means the README can say exactly what works instead of what is planned.',
     caveat:
-      'Cloud providers, downloads, telemetry and social uploads exist as optional, explicit network features. The core runs offline, but the project is large, and large projects carry stubs. The manifest labels them so nobody has to guess.',
+      'Cloud providers, downloads, telemetry and social uploads exist as optional, explicit network features. The core runs offline, but the project is large, and large projects carry stubs. The manifest labels each one.',
     shows: [
       'Python services and media processing',
       'Test discipline on a large codebase',
-      'Shipping an honest feature inventory',
+      'A feature inventory that labels its stubs',
     ],
   },
   {
@@ -152,9 +152,9 @@ export const caseStudies: CaseStudy[] = [
     built:
       'An open-source automation engine for Android: profiles, contexts and tasks with 78 built-in actions, seven context families and engine-level flow control. The automation database is encrypted at rest with SQLCipher behind a Keystore-wrapped key, existing plaintext databases migrate once, and a wrong key fails closed. A task or profile can be previewed before it runs, with every branch decision, expanded input and blocker shown first.',
     result:
-      'A Tasker alternative people can audit, and the most starred Kotlin project in my catalog. The preflight review is the feature I hear about most: people want to see what an automation will do before it does it.',
+      'A Tasker alternative people can audit, and the most starred Kotlin project in my catalog. The preflight review is the part I would show first. You see what an automation will do before it does it.',
     caveat:
-      "It's an alternative, not a clone. Plugins written for Tasker's condition protocol work, but someone moving a large Tasker setup still rebuilds it by hand.",
+      "It isn't a drop-in replacement. Plugins written for Tasker's condition protocol work, but someone moving a large Tasker setup still rebuilds it by hand.",
     shows: [
       'Kotlin and Jetpack Compose',
       'Encrypted storage design',

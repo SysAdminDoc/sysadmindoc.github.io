@@ -77,7 +77,7 @@ const cmdkSections = [
     <nav class="work-shell work-index" aria-label="Case studies on this page">{caseStudies.map((study, index) => <a href={studyAnchor(study.slug)}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{study.name}</a>)}<a href="#private-work">Work I can't show <span aria-hidden="true">↓</span></a></nav>
 
     <section class="work-section" id="studies" aria-labelledby="studies-heading"><div class="work-shell">
-      <header class="work-section-head"><div><p class="work-eyebrow">The studies</p><h2 id="studies-heading">Problem, build, result.<br />In that order.</h2></div><p>No study here reports a number I typed in. Stars, downloads and release dates come from the same GitHub data that drives the rest of this site, and each study ends with the limit you'd find on your own.</p></header>
+      <header class="work-section-head"><div><p class="work-eyebrow">The studies</p><h2 id="studies-heading">The problem, the build,<br />and what changed.</h2></div><p>None of the figures here were typed in. Stars, downloads and release dates come from the same GitHub data that drives the rest of this site, and each study ends with the limit you'd find on your own.</p></header>
       <div class="work-studies">
         {studies.map(({ study, figures }, index) => (
           <article class="work-study" id={`study-${study.slug}`} aria-labelledby={`study-${study.slug}-title`}>
