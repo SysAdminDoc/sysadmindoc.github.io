@@ -82,18 +82,18 @@ export const now = {
   // Keep equal to the /now/ entry in page-freshness.ts: the sitemap takes its
   // date from there, the page's structured data from here, and sitemap:audit
   // fails when they differ.
-  updated: '2026-09-23',
+  updated: '2026-10-23',
   location: 'Sarasota, FL',
   building: [
-    `Portfolio site ${siteVersion}: ${fallbackRepoCount} repos on Astro 7 and a Contabo VPS. Every deploy now sends a test message through the contact form and waits for its notification`,
+    `Portfolio site ${siteVersion}: ${fallbackRepoCount} repos on Astro 7 and a Contabo VPS. New this month: a case studies page that reads its stars, downloads and release dates from the GitHub data at build time`,
     'AI services: shipping fractional implementation engagements through Parker AI, including workflow automation and team training',
-    'OpenRadar: open weather workstation with Tauri 2, React 19, and raw radar data. Twelve research passes in, draining the last 20 items',
+    'The Hush patch bundles: nine of them now, covering Facebook (app and web), Messenger, Instagram, Threads, TikTok, Telegram, Pinterest and Tumblr. Each release pins one app version and gets walked through on real phones before it ships',
     'Healthcare support: PACS/DICOM migrations, hosted-service cutovers, and the documentation that makes them repeatable',
-    'Hushfeed: TikTok content patches extension, actively maintaining against upstream changes',
+    'OpenRadar: open weather workstation with Tauri 2, React 19, and raw radar data. On hold since late September while the Hush releases ship',
   ],
   thinking: [
     'How to show AI-assisted work honestly without either hiding or overclaiming it',
-    'Whether a first-party intake form on the VPS replaces mailto CTAs or just adds friction',
+    'What a case study can say when the client work stays private: the problem, the build, the change, and only the numbers a reader can check',
     'The right balance between "ship many things" and "maintain what shipped"',
   ],
   listening: 'Whatever keeps the focus going. Lately it\'s been a lot of ambient stuff and lo-fi.',
