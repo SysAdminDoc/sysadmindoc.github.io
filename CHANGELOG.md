@@ -5,6 +5,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## Unreleased
 
 ### Changed
+- Satori moves to 0.63.2, Vite to 8.3.4 and sanitize-html to 2.18.1. The nightly deploy had been stopping at the dependency gate on the old versions.
 - Updated the renderer used for social preview images.
 - The homepage pairs a larger two-line introduction with a real IconForge preview. Experience and project counts sit in a horizontal strip, with selected work closer to the first screen.
 - Phones get a single-column layout with the same live project link and theme controls. The portrait sits beside the location, and the page keeps its existing contact form and project destinations.
