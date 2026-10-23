@@ -163,6 +163,16 @@ export const interiorOgPages: InteriorOgPage[] = [
     ogImage: '/og/releases.png',
     ogImageAlt: 'Releases page social preview card',
   },
+  {
+    slug: 'work',
+    route: '/work/',
+    title: 'Case studies',
+    description: 'Six public projects told as the problem, what Matt Parker built, and what changed, with GitHub stars, release downloads and the latest release read at build time.',
+    label: 'Case studies',
+    accent: '#7aa2ff',
+    ogImage: '/og/work.png',
+    ogImageAlt: 'Case studies page social preview card',
+  },
 ];
 
 export const interiorOgPageBySlug = Object.fromEntries(

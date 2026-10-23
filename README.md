@@ -26,15 +26,16 @@ Personal portfolio and project showcase at [portfolio.getparkerai.com](https://p
 - **Studio design system**: dark by default with a matching light theme, set in Instrument Sans on a graphite ground with fine grain and a soft overhead light. One blue accent and shared surface tokens. Corners stay between 4 and 12px
 - **Shared career profile**: experience across managed IT, public broadcasting, healthcare, and creative work, reused by the homepage, experience page, printable résumé, and JSON Resume export
 - **Experience page**: infrastructure, healthcare, software, and digital design. Includes employment history, Photoshop and video experience, public software examples, and contact options. The existing `/healthcare-it/` address and section links continue to work.
+- **Case studies** at `/work/`: six public projects, each told as the problem, what was built and what changed. Stars, release downloads and the latest release come from the build-time GitHub caches, every study ends with its limit, and a note explains why employer and customer work stays off the page
 - **Editorial homepage**: a two-line introduction beside a real IconForge preview, a horizontal experience strip, selected projects, six live-app cards, practice areas, and a contact form. The 1276px desktop grid becomes a single column on phones
 - **Focused AI implementation track**: three concrete offer types, a map-to-handoff delivery path, and inspectable Parker AI/public-project proof without a generic card wall
 - **Build-time GitHub API**: stars, repo metadata, release summaries, and cached README telemetry
 - **Generated timeline**: year-in-review page built from release and project-push evidence
 - **Archive decisions**: public-safe anti-portfolio for retired, moved, or held-back project surfaces
 - **Static full-text search**: Pagefind index over portfolio routes, language lanes, releases, timeline entries, and archive decisions, with an audited Scope facet
-- **Shared interior navigation**: five primary routes stay visible while long-page section
+- **Shared interior navigation**: six primary routes stay visible while long-page section
   indexes remain available in a compact `SectionJumpNav` disclosure
-- **Interior freshness signals**: visible review dates on `/uses/`, `/resume/`, `/healthcare-it/`, `/ai/` and `/colophon/`. The build fails when any reviewed page's `WebPage.dateModified` differs from its sitemap `lastmod`
+- **Interior freshness signals**: visible review dates on `/uses/`, `/resume/`, `/healthcare-it/`, `/ai/`, `/work/` and `/colophon/`. The build fails when any reviewed page's `WebPage.dateModified` differs from its sitemap `lastmod`
 - **Catalog discovery**: build-time `Recommended` ranking plus URL-backed all/new/recently updated/has-download slices derived from GitHub metadata and release downloads
 - **Machine-readable indexes**: audited static `projects.json` and `releases.json` feeds with bounded generated-endpoint cache policy
 - **Performance, PWA, update, and CSP hygiene**: Lighthouse/bfcache audit, below-fold homepage render containment, Chromium/iOS install prompts, navigation preload, Trusted Types-ready DOM rendering, and sitewide service-worker update prompts

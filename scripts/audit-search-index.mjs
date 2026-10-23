@@ -20,6 +20,7 @@ const requiredScopeLabels = [
   'Status',
   'Timeline',
   'Uses',
+  'Work',
 ];
 // Utility pages with nothing worth finding. /contact/sent/ and
 // /contact/not-sent/ are the contact form's no-JavaScript result pages and are

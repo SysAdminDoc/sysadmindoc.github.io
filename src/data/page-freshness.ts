@@ -131,6 +131,14 @@ export const reviewedInteriorPages: ReviewedInteriorPage[] = [
     schemaTypes: ['CollectionPage', 'WebPage'],
     visibleFreshness: false,
   },
+  {
+    slug: 'work',
+    route: '/work/',
+    label: 'Case studies',
+    lastReviewed: '2026-10-23',
+    schemaTypes: ['CollectionPage', 'WebPage'],
+    visibleFreshness: true,
+  },
 ];
 
 export const pageFreshnessBySlug = Object.fromEntries(

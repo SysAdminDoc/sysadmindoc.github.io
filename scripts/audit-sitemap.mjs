@@ -23,6 +23,7 @@ const requiredRoutes = [
   '/resume/',
   '/healthcare-it/',
   '/ai/',
+  '/work/',
   '/timeline/',
   '/archive/',
 ];

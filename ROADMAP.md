@@ -8,11 +8,12 @@ Actionable work only. Historical and completed roadmap material is archived in C
 
 ### P2
 
-- [ ] P2: Verify the next scheduled refresh after the screenshot repair
-  Why: the 22 captures and their visual baselines are current again. The next 03:00 scheduled execution still needs its own recorded result.
-  Touches: `.tmp/refresh-and-deploy.log`, `.tmp/refresh-and-deploy-status.json`.
-  Acceptance: inspect the first scheduled run after October 9 and confirm `OK deploy:vps`, or address the specific failure it records.
-  Complexity: S
+- [ ] P2: Give the case studies lifetime download totals
+  Why: `/work/` sums downloads from `_releases.json`, which `scripts/fetch-stars.mjs` fills with the most recent releases across the archive, so a long-lived project shows a fraction of what it has shipped and the page carries a footnote saying so.
+  Evidence: `src/data/case-study-figures.ts` (`publicWorkTotals`, `caseStudyFigures`); the hero card note on `/work/`.
+  Touches: `scripts/fetch-stars.mjs` (a per-repo lifetime download count written to a new cache), `src/data/case-study-figures.ts`, `src/pages/work.astro`, `test/case-studies.test.mjs`.
+  Acceptance: each study and the hero card show the per-repo lifetime total from every release on GitHub, the footnote goes away, and the nightly refresh keeps the cache current.
+  Complexity: M
 
 - [ ] P2: Time the gate and the nightly, then parse dist/ once across the build audits
   Why: the build-pipeline rule asks for numbers before and after, and none exist for this repo. `build:ci` runs about twenty audits that each read and parse the built HTML on their own (`dom:audit`, `schema:audit`, `a11y:audit`, `links:audit`, `title-style:audit`, `search:audit`, `csp:audit:dist:style:elem` and more), so the same pages are parsed many times per build.

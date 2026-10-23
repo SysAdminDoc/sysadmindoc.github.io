@@ -5,6 +5,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 ## Unreleased
 
 ### Added
+- A case studies page at /work/. Six public projects, each told as the problem, what I built and what changed, with GitHub stars, release downloads and the latest release read from the build-time data rather than typed in. Each study ends with its limit, and a note explains why employer and customer work isn't on the page.
+- Case studies sit in the interior navigation, the command palette, the footer and under the selected work on the homepage.
 - HushTumblr joins the Android catalog. Its patches hide dashboard ads and filter unwanted posts.
 
 ### Changed

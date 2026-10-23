@@ -16,7 +16,10 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
         <span class="selected-work-index">Selected work</span>
         <h2 id="selected-work-title">A few things I'm proud of.</h2>
       </div>
-      <p>I build tools for problems where the commercial option doesn't exist, costs too much, or phones home. These are some of my favorites.</p>
+      <div class="selected-work-intro">
+        <p>I build tools for problems where the commercial option doesn't exist, costs too much, or phones home. These are some of my favorites.</p>
+        <a href="/work/" class="selected-work-more">Read the case studies <i aria-hidden="true">→</i></a>
+      </div>
     </header>
     <div class="selected-work-list">
       {selectedHits.map((hit, index) => (
@@ -166,6 +169,21 @@ const selectedHits = greatestHits.slice(0, Math.max(0, limit));
   }
   #greatest-hits .selected-work-row:hover .selected-work-action i,
   #greatest-hits .selected-work-row:focus-visible .selected-work-action i{transform:translate(2px,-2px)}
+  .selected-work-more{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    min-height:44px;
+    margin-top:6px;
+    color:var(--blue);
+    font-family:var(--sans);
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+  }
+  .selected-work-more i{font-style:normal}
+  .selected-work-more:hover,
+  .selected-work-more:focus-visible{text-decoration:underline;text-underline-offset:5px}
   @media(prefers-reduced-motion:reduce){
     #greatest-hits .selected-work-row:hover,
     #greatest-hits .selected-work-row:focus-visible{transform:none}

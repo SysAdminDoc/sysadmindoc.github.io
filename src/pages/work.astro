@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import InteriorNav from '../components/InteriorNav.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Footer from '../components/Footer.astro';
+import { catalog } from '../data/portfolio';
+import { githubRepoUrl } from '../data/github';
+import { contactMailto } from '../data/identity';
+import { caseStudies } from '../data/case-studies';
+import { caseStudyFigures, dataFetchedAt, formatFigure, formatFigureDate, publicWorkTotals } from '../data/case-study-figures';
+import { interiorOgPageBySlug } from '../data/interior-og-pages';
+import { formatReviewedDate, pageFreshnessBySlug, reviewedWebPageJsonLd } from '../data/page-freshness';
+
+const title = 'Case studies | Matt Parker';
+const pageOg = interiorOgPageBySlug['work'];
+const pageFreshness = pageFreshnessBySlug['work'];
+const reviewedLabel = formatReviewedDate(pageFreshness.lastReviewed);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://portfolio.getparkerai.com';
+const studies = caseStudies.map((study) => ({ study, figures: caseStudyFigures(study) }));
+const fetchedLabel = dataFetchedAt ? formatFigureDate(dataFetchedAt) : null;
+const personId = `${siteUrl}/#matt-parker`;
+const studyAnchor = (slug: string) => `#study-${slug}`;
+const itemList = {
+  '@type': 'ItemList',
+  '@id': `${siteUrl}${pageFreshness.route}#studies`,
+  name: 'Case studies',
+  numberOfItems: caseStudies.length,
+  itemListElement: caseStudies.map((study, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: `${siteUrl}${pageFreshness.route}${studyAnchor(study.slug)}`,
+    item: {
+      '@type': 'SoftwareSourceCode',
+      '@id': `${siteUrl}${pageFreshness.route}${studyAnchor(study.slug)}`,
+      name: study.name,
+      description: study.problem,
+      codeRepository: githubRepoUrl(study.repos[0]),
+      author: { '@id': personId },
+    },
+  })),
+};
+const pageJsonLd = reviewedWebPageJsonLd({ siteUrl, route: pageFreshness.route, title, description: pageOg.description, lastReviewed: pageFreshness.lastReviewed, schemaTypes: pageFreshness.schemaTypes, extraNodes: [itemList] });
+const cmdkSections = [
+  { label: 'Overview', href: '#work-overview', desc: 'Six public projects told the same way.', badge: 'START' },
+  ...caseStudies.map((study) => ({ label: study.name, href: studyAnchor(study.slug), desc: study.lane, badge: 'STUDY' })),
+  { label: "Work I can't show", href: '#private-work', desc: 'Why employer and customer work stays off this page.', badge: 'NOTE' },
+  { label: 'Contact', href: '#work-contact', desc: 'Talk through a role or a project.', badge: 'CONTACT' },
+];
+---
+<Base title={title} description={pageOg.description} ogImage={pageOg.ogImage} ogImageAlt={pageOg.ogImageAlt} cmdkSections={cmdkSections}>
+  <script is:inline type="application/ld+json" set:html={pageJsonLd} />
+  <a href="#main" class="skip-link">Skip to content</a>
+  <InteriorNav active="work" />
+  <main id="main" class="work-page" data-pagefind-body data-pagefind-filter="Scope:Work">
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="route_type:Work"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="type:Case studies"></span>
+    <span aria-hidden="true" data-pagefind-ignore data-pagefind-meta="category:Portfolio"></span>
+    <div class="work-shell work-hero" id="work-overview">
+      <div class="work-hero-copy">
+        <p class="work-eyebrow">Matt Parker / Case studies</p>
+        <h1>Real problems.<br /><span>Shipped answers.</span></h1>
+        <p class="work-lead">Six pieces of public work, each told the same way: the problem, what I built, and what changed. The figures come from GitHub when this page is built, and every line of source is open.</p>
+        <div class="work-actions"><a href="#studies" class="btn bp">Read the studies <span aria-hidden="true">↓</span></a><a href="/catalog/" class="work-link">Browse every project <span aria-hidden="true">→</span></a></div>
+        <p class="page-updated"><span>Last updated</span><time datetime={pageFreshness.lastReviewed}>{reviewedLabel}</time></p>
+      </div>
+      <aside class="work-totals" aria-label="Public work in numbers">
+        <p class="work-totals-label">Across the public work</p>
+        <dl>
+          <div><dt>Public projects</dt><dd>{formatFigure(catalog.length)}</dd></div>
+          <div><dt>GitHub stars</dt><dd>{formatFigure(publicWorkTotals.stars)}</dd></div>
+          <div><dt>Release downloads</dt><dd>{formatFigure(publicWorkTotals.downloads)}</dd></div>
+          <div><dt>Releases indexed</dt><dd>{formatFigure(publicWorkTotals.releasesIndexed)}</dd></div>
+        </dl>
+        <p class="work-totals-note">{fetchedLabel ? `GitHub data fetched ${fetchedLabel}.` : 'GitHub data is read when the site builds.'} Download totals cover the releases on the <a href="/releases/">Releases page</a>, not lifetime history.</p>
+      </aside>
+    </div>
+    <nav class="work-shell work-index" aria-label="Case studies on this page">{caseStudies.map((study, index) => <a href={studyAnchor(study.slug)}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{study.name}</a>)}<a href="#private-work">Work I can't show <span aria-hidden="true">↓</span></a></nav>
+
+    <section class="work-section" id="studies" aria-labelledby="studies-heading"><div class="work-shell">
+      <header class="work-section-head"><div><p class="work-eyebrow">The studies</p><h2 id="studies-heading">Problem, build, result.<br />In that order.</h2></div><p>No study here reports a number I typed in. Stars, downloads and release dates come from the same GitHub data that drives the rest of this site, and each study ends with the limit you'd find on your own.</p></header>
+      <div class="work-studies">
+        {studies.map(({ study, figures }, index) => (
+          <article class="work-study" id={`study-${study.slug}`} aria-labelledby={`study-${study.slug}-title`}>
+            <div class="work-study-side">
+              <p class="work-eyebrow"><span class="work-number">{String(index + 1).padStart(2, '0')}</span> {study.lane}</p>
+              <h2 id={`study-${study.slug}-title`}>{study.name}</h2>
+              <p class="work-stack">{study.stack}</p>
+              <dl class="work-figures">
+                {figures.stars > 0 && <div><dt>GitHub stars</dt><dd>{formatFigure(figures.stars)}</dd></div>}
+                {figures.downloads > 0 && <div><dt>Release downloads</dt><dd>{formatFigure(figures.downloads)}</dd></div>}
+                {figures.patches !== null && <div><dt>Patches in the latest release</dt><dd>{formatFigure(figures.patches)}</dd></div>}
+                {figures.latest && <div><dt>Latest release</dt><dd><a href={figures.latest.url} target="_blank" rel="noopener noreferrer">{figures.latest.repo} {figures.latest.tag}</a><time datetime={figures.latest.publishedAt}>{formatFigureDate(figures.latest.publishedAt)}</time></dd></div>}
+              </dl>
+              <div class="work-links">
+                <a class="work-link" href={githubRepoUrl(study.repos[0])} target="_blank" rel="noopener noreferrer">Source on GitHub <span aria-hidden="true">↗</span></a>
+                {study.family && <a class="work-link" href={study.family.href}>{study.family.label} <span aria-hidden="true">→</span></a>}
+              </div>
+            </div>
+            <div class="work-study-body">
+              <div class="work-step"><h3>The problem</h3><p>{study.problem}</p></div>
+              <div class="work-step"><h3>What I built</h3><p>{study.built}</p></div>
+              <div class="work-step"><h3>What changed</h3><p>{study.result}</p></div>
+              <p class="work-caveat"><strong>The honest part.</strong> {study.caveat}</p>
+              <ul class="work-shows" aria-label="What this work shows">{study.shows.map((item) => <li>{item}</li>)}</ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div></section>
+
+    <section class="work-section work-section-tinted" id="private-work" aria-labelledby="private-heading"><div class="work-shell work-private">
+      <header><p class="work-eyebrow">Work I can't show</p><h2 id="private-heading">The day job<br />stays private.</h2></header>
+      <div>
+        <p>I support medical imaging systems for a living: PACS deployments, DICOM routing, hosted-service migrations, and the call when a clinic's workstation won't image before the doors open. That work belongs to the practices and vendors involved, and so does the managed-services and broadcast work before it. None of it appears here, and no customer data ever touches this site.</p>
+        <p>The Experience page describes that work in general terms, the resume puts dates on it, and I'm glad to walk through specifics in a conversation.</p>
+        <div class="work-links"><a class="work-link" href="/healthcare-it/">Experience <span aria-hidden="true">→</span></a><a class="work-link" href="/resume/">Resume <span aria-hidden="true">→</span></a></div>
+      </div>
+    </div></section>
+
+    <section class="work-section work-contact" id="work-contact" aria-labelledby="contact-heading"><div class="work-shell work-contact-grid"><div><p class="work-eyebrow">Let's talk</p><h2 id="contact-heading">Have a problem<br />like one of these?</h2><p>Tell me what you're working on. I'm interested in roles and projects that bring systems, software and the people who use them together.</p><a class="work-link" href={contactMailto('Case studies')}>Email me directly <span aria-hidden="true">↗</span></a><p class="work-contact-privacy">Please keep patient information, passwords, and other sensitive details out of your message.</p></div><ContactForm subject="Case studies" /></div></section>
+  </main>
+  <Footer summary="Matt Parker. Six public case studies: the problem, what I built, and what changed." links={[{ href: 'https://www.linkedin.com/in/matthewryanparker', label: 'LinkedIn', external: true }, { href: 'https://github.com/SysAdminDoc', label: 'GitHub', external: true }]} />
+</Base>
+
+<style is:global>
+  .work-page{--work-gap:clamp(24px,4vw,56px);color:var(--t1)}
+  .work-page .work-shell{width:100%;max-width:calc(var(--content-max) + 64px);margin-inline:auto;padding-inline:32px;box-sizing:border-box}
+  .work-page h1,.work-page h2,.work-page h3{font-family:var(--sans);text-wrap:balance}
+  .work-page p{margin:0}
+  .work-page .work-hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.85fr);gap:var(--work-gap);align-items:center;padding-top:132px;padding-bottom:56px}
+  .work-eyebrow,.work-number{color:var(--blue);font-family:var(--sans);font-size:12px;font-weight:600;line-height:1.6;letter-spacing:.12em;text-transform:uppercase}
+  .work-page h1{max-width:19ch;margin:20px 0 24px;font-size:clamp(40px,4.7vw,66px);line-height:1.05;letter-spacing:-.022em}
+  .work-page h1 span{color:var(--blue)}
+  .work-lead{max-width:58ch;color:var(--t2);font-size:18px;line-height:1.75}
+  .work-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-block:28px}
+  .work-link{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--blue);font-size:15px;font-weight:600;text-decoration:none}
+  .work-link:hover{text-decoration:underline;text-underline-offset:5px}
+  .work-totals{padding:28px;background:var(--surface-1);border:1px solid var(--border-soft);border-radius:12px;box-shadow:var(--edge),var(--shadow-md)}
+  .work-page .work-totals-label{color:var(--t2);font-size:13px;line-height:1.6}
+  .work-totals dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0;padding:0}
+  .work-totals dl div{border-left:2px solid var(--blue);padding-left:14px}
+  .work-totals dt{color:var(--blue);font-family:var(--sans);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+  .work-totals dd{margin:6px 0 0;color:var(--t1);font-size:24px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .work-page .work-totals-note{color:var(--t2);font-size:12px;line-height:1.6}
+  .work-totals-note a{color:var(--blue)}
+  .work-page .work-index{display:flex;flex-wrap:wrap;gap:4px 28px;padding-block:14px;border-block:1px solid var(--border-soft)}
+  .work-index a{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--t2);font-size:14px;font-weight:600;text-decoration:none}
+  .work-index a span{color:var(--blue);font-size:12px;font-variant-numeric:tabular-nums}
+  .work-index a:hover{color:var(--blue)}
+  .work-index a:last-child{margin-left:auto;color:var(--blue)}
+  .work-page .work-section{padding:clamp(56px,6vw,88px) 0;scroll-margin-top:88px}
+  .work-section-tinted{background:var(--surface-1);border-block:1px solid var(--border-soft)}
+  .work-section-head{display:grid;grid-template-columns:1.2fr 1fr;align-items:end;gap:var(--work-gap);margin-bottom:36px}
+  .work-page h2{margin:12px 0 0;font-size:clamp(28px,3.1vw,42px);line-height:1.15;letter-spacing:-.02em}
+  .work-section-head>p,.work-private>div>p,.work-contact-grid>div>p:not(.work-eyebrow){color:var(--t2);font-size:16px;line-height:1.75;max-width:56ch}
+  .work-studies{display:grid;gap:28px}
+  .work-study{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.6fr);gap:var(--work-gap);padding:36px;border:1px solid var(--border-soft);border-radius:12px;background:var(--surface-1);box-shadow:var(--edge);scroll-margin-top:88px}
+  .work-study h2{font-size:clamp(26px,2.6vw,34px)}
+  .work-page .work-stack{margin-top:14px;color:var(--t2);font-size:14px;line-height:1.6}
+  .work-figures{display:grid;gap:14px;margin:24px 0 0;padding:0}
+  .work-figures div{border-top:1px solid var(--border-soft);padding-top:12px}
+  .work-figures dt{color:var(--t2);font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .work-figures dd{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:4px 0 0;color:var(--t1);font-size:22px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .work-figures dd a{color:var(--t1);font-size:18px;text-decoration:none;overflow-wrap:anywhere}
+  .work-figures dd a:hover{color:var(--blue);text-decoration:underline;text-underline-offset:4px}
+  .work-figures dd time{color:var(--t2);font-size:13px;font-weight:500}
+  .work-links{display:flex;flex-wrap:wrap;gap:4px 24px;margin-top:20px}
+  .work-study-body{display:grid;gap:22px;align-content:start}
+  .work-page h3{margin:0 0 8px;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+  .work-step p{color:var(--t2);font-size:16px;line-height:1.75;max-width:68ch}
+  .work-step:nth-child(3) p{color:var(--t1)}
+  .work-page .work-caveat{padding:14px 18px;border-left:2px solid var(--border-strong);color:var(--t2);font-size:14px;line-height:1.7;max-width:68ch}
+  .work-caveat strong{color:var(--t1);font-weight:600}
+  .work-shows{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+  .work-shows li{padding:5px 10px;border:1px solid var(--border-soft);border-radius:4px;color:var(--t2);font-family:var(--sans);font-size:13px;font-weight:500;line-height:1.5}
+  .work-private{display:grid;grid-template-columns:.85fr 1.15fr;gap:var(--work-gap)}
+  .work-private>div{display:grid;gap:18px}
+  .work-contact{background:var(--surface-1);border-top:1px solid var(--border-soft)}
+  .work-contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:var(--work-gap)}
+  .work-contact-grid>div>h2{margin-bottom:22px}
+  .work-contact-grid>div>.work-link{margin-top:20px}
+  .work-page .work-contact-grid .work-contact-privacy{margin-top:24px;font-size:13px;max-width:45ch}
+  .work-page .contact-form{margin:0;align-self:start}
+  .work-page a:focus-visible{outline:2px solid var(--blue);outline-offset:3px;box-shadow:var(--focus-ring)}
+  @media(max-width:1000px){.work-page .work-hero{grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);gap:28px}.work-totals{padding:22px}.work-study{grid-template-columns:minmax(220px,.9fr) minmax(0,1.5fr);padding:28px}}
+  @media(max-width:760px){.work-page .work-hero{grid-template-columns:1fr;padding-top:108px;padding-bottom:32px}.work-page .work-shell{padding-inline:24px}.work-page h1{font-size:clamp(36px,7.8vw,54px);max-width:21ch}.work-lead{font-size:16px}.work-section-head,.work-private,.work-contact-grid{grid-template-columns:1fr;gap:22px}.work-study{grid-template-columns:1fr;gap:24px;padding:24px}.work-index a:last-child{margin-left:0}.work-page .work-index{gap:0 24px}}
+  @media(max-width:420px){.work-page .work-shell{padding-inline:20px}.work-totals dl{grid-template-columns:1fr}.work-actions{gap:8px 20px}.work-actions .btn{font-size:14px}.work-study h2{font-size:24px}}
+</style>

@@ -1,5 +1,5 @@
 ---
-type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now' | 'uses' | 'resume' | 'healthcare' | 'screenshots' | 'status' | 'ai' | 'catalog' | 'data' | 'colophon';
+type ActiveRoute = 'search' | 'releases' | 'timeline' | 'archive' | 'now' | 'uses' | 'resume' | 'healthcare' | 'work' | 'screenshots' | 'status' | 'ai' | 'catalog' | 'data' | 'colophon';
 type ContextTone = 'blue' | 'green' | 'amber' | 'slate' | 'purple';
 
 export interface Props {
@@ -24,6 +24,7 @@ const isActive = (key: ActiveRoute) => active === key;
     </a>
     <div class="nk" id="navLinks">
       <a href="/healthcare-it/" class={isActive('healthcare') ? 'active' : undefined} aria-current={isActive('healthcare') ? 'page' : undefined}>Experience</a>
+      <a href="/work/" class={isActive('work') ? 'active' : undefined} aria-current={isActive('work') ? 'page' : undefined}>Case studies</a>
       <a href="/catalog/" class={isActive('catalog') ? 'active' : undefined} aria-current={isActive('catalog') ? 'page' : undefined}>Projects</a>
       <a href="/ai/" class={isActive('ai') ? 'active' : undefined} aria-current={isActive('ai') ? 'page' : undefined}>AI</a>
       <a href="/resume/" class={isActive('resume') ? 'active' : undefined} aria-current={isActive('resume') ? 'page' : undefined}>Resume</a>

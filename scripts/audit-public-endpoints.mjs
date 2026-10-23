@@ -566,6 +566,7 @@ function auditLlmsTxt(text, { projectCount }) {
     '/resume/',
     '/healthcare-it/',
     '/ai/',
+    '/work/',
     '/timeline/',
     '/archive/',
     '/lang/powershell/',
