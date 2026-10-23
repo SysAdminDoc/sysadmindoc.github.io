@@ -16,6 +16,7 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - Phones get a single-column layout with the same live project link and theme controls. The portrait sits beside the location, and the page keeps its existing contact form and project destinations.
 
 ### Fixed
+- The brand link in the header reads as its visible text to assistive technology instead of carrying a different label.
 - The archive no longer links to ChanPrep, which is private now.
 
 ## [v0.50.0] - 2026-10-10
