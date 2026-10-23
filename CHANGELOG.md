@@ -8,6 +8,8 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 - HushTumblr joins the Android catalog. Its patches hide dashboard ads and filter unwanted posts.
 
 ### Changed
+- The self-hosted fonts are cached for a year and the sitewide scripts for a day. Neither had a cache lifetime before, so browsers checked them again on every page.
+- The service worker fetches its precache from the network instead of the browser cache, so a new release can't precache a day-old script.
 - Satori moves to 0.63.2, Vite to 8.3.4 and sanitize-html to 2.18.1. The nightly deploy had been stopping at the dependency gate on the old versions.
 - Updated the renderer used for social preview images.
 - The homepage pairs a larger two-line introduction with a real IconForge preview. Experience and project counts sit in a horizontal strip, with selected work closer to the first screen.

@@ -33,7 +33,10 @@ async function resilientPrecache(cache, urls) {
     const failures = [];
     await Promise.all(urls.map(async (url) => {
         try {
-            await cache.add(url);
+            // Bypass the HTTP cache: /scripts/* now carries a one-day lifetime,
+            // and a new worker version must precache the current file, not the
+            // copy the browser kept from yesterday's page.
+            await cache.add(new Request(new URL(url, self.location.origin).href, { cache: 'reload' }));
         } catch (error) {
             failures.push(url);
         }

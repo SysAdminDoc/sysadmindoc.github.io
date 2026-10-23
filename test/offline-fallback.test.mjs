@@ -65,7 +65,11 @@ test('service worker install preserves valid precache entries when one URL fails
     },
     caches: {
       open: async () => ({
-        add: async (url) => {
+        // The worker precaches with a Request that bypasses the HTTP cache,
+        // so the fake sees a Request and keys on its path.
+        add: async (request) => {
+          assert.equal(request.cache, 'reload', 'precache must bypass the HTTP cache');
+          const url = new URL(request.url).pathname;
           if (url === '/missing.css') throw new Error('not found');
           cached.push(url);
         },
