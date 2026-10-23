@@ -250,6 +250,7 @@ export const catalog: CatalogEntry[] = [
   { repo: "HushPinterest", name: "HushPinterest", url: "https://github.com/SysAdminDoc/HushPinterest", category: "kt", desc: "Android patches for Pinterest that hide promoted pins and add pin downloads" },
   { repo: "HushTelegram", name: "HushTelegram", url: "https://github.com/SysAdminDoc/HushTelegram", category: "kt", desc: "Morphe patches for Telegram to remove sponsored messages and control usage reports" },
   { repo: "HushThreads", name: "HushThreads", url: "https://github.com/SysAdminDoc/HushThreads", category: "kt", desc: "Android patches that remove Threads feed ads and clean tracking tags from shared links" },
+  { repo: "HushTumblr", name: "HushTumblr", url: "https://github.com/SysAdminDoc/HushTumblr", category: "kt", desc: "Morphe patches for Tumblr that hide dashboard ads and filter unwanted posts" },
   { repo: "BillMinder4PC", name: "BillMinder4PC", url: "https://github.com/SysAdminDoc/BillMinder4PC", category: "cs", desc: "Tray-resident Windows bill tracker. Offline, no account. Compose Multiplatform" },
   { repo: "OpenRadar", name: "OpenRadar", url: "https://github.com/SysAdminDoc/OpenRadar", category: "cs", desc: "Desktop weather radar for Windows. Decodes NEXRAD Level II, MRMS, GOES and GFS locally in Rust" },
   { repo: "HushFacebookWeb", name: "HushFacebookWeb", url: "https://github.com/SysAdminDoc/HushFacebookWeb", category: "ext", desc: "Userscript that takes ads, suggested posts and Meta AI out of Facebook on the web" },

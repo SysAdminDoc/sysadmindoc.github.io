@@ -4,6 +4,9 @@ All notable changes to sysadmindoc.github.io will be documented in this file.
 
 ## Unreleased
 
+### Added
+- HushTumblr joins the Android catalog. Its patches hide dashboard ads and filter unwanted posts.
+
 ### Changed
 - Satori moves to 0.63.2, Vite to 8.3.4 and sanitize-html to 2.18.1. The nightly deploy had been stopping at the dependency gate on the old versions.
 - Updated the renderer used for social preview images.
